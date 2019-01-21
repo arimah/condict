@@ -212,7 +212,7 @@ module.exports = [
 
   {
     name: 'inflection_table_layouts',
-    comment: "Layouts for all inflected tables. This is a separate table for two reasons: it means we don\'t have to fetch a potentially large JSON object unless the layout is asked for, and it means we can actually reference `inflected_forms` in each cell so the data export/import works.",
+    comment: "Layouts for all inflected tables. This is a separate table for two reasons: it means we don't have to fetch a potentially large JSON object unless the layout is asked for, and it means we can actually reference `inflected_forms` in each cell so the data export/import works.",
     columns: [
       {
         name: 'inflection_table_id',

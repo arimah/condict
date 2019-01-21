@@ -47,7 +47,7 @@ class MysqlAdaptor extends Adaptor {
         } else {
           resolve(mapResults(results));
         }
-      })
+      });
     });
   }
 

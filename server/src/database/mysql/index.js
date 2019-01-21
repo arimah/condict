@@ -12,7 +12,7 @@ class DatabasePool {
     });
   }
 
-  getConnection(logger) {
+  getConnection() {
     return new Promise((resolve, reject) => {
       this.pool.getConnection((err, connection) => {
         if (err) {

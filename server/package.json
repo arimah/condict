@@ -7,7 +7,8 @@
     "condict-server": "./cli.js"
   },
   "scripts": {
-    "start": "node cli.js"
+    "start": "node cli.js",
+    "lint": "eslint --config ../eslint-node.config.js src/ cli.js index.js"
   },
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
@@ -22,5 +23,8 @@
     "graphql": "^14.0.2",
     "mysql": "^2.16.0",
     "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.1"
   }
 }

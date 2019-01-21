@@ -107,7 +107,7 @@ class CondictServer {
           outputStream.end(resolve);
         })
         .catch(err => reject(err));
-    })
+    });
   }
 
   import(inputFile) {

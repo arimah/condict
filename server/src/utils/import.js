@@ -87,7 +87,7 @@ module.exports = async (logger, db, inputStream) => {
       const columnImporters = getColumnImporters(table);
 
       let index = 0;
-      while (true) {
+      for (;;) {
         const line = await lines.read(true);
         if (line === null) {
           break;

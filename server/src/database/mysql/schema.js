@@ -36,7 +36,7 @@ const resolveBaseType = (column, findColumn) => {
     case 'varchar':
       return `varchar(${column.size})`;
     case 'enum':
-      return `enum(${column.values.map(v => mysql.escape(v)).join(',')})`
+      return `enum(${column.values.map(v => mysql.escape(v)).join(',')})`;
     case 'json':
       return 'json';
     default:

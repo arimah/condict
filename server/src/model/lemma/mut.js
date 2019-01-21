@@ -9,7 +9,6 @@ const termValidator =
 class LemmaMut extends Mutator {
   async ensureExists(languageId, term) {
     const {db} = this;
-    const {Lemma} = this.model;
 
     term = termValidator.validate(term);
 

@@ -20,7 +20,7 @@ const urlNameValidator = (db, currentId) =>
   validator('urlName')
     .map(value => value.toLowerCase().trim())
     .lengthBetween(1, 32)
-    .matches(/^[a-z0-9\-]+$/, () => 'can only contain a-z, 0-9 and -')
+    .matches(/^[a-z0-9-]+$/, () => 'can only contain a-z, 0-9 and -')
     .unique(currentId, urlName =>
       db.get`
         select id

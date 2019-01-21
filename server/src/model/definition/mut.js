@@ -1,7 +1,6 @@
 const {UserInputError} = require('apollo-server');
 
 const Mutator = require('../mutator');
-const FieldSet = require('../field-set');
 const validator = require('../validator');
 const inflectWord = require('../../utils/inflect-word');
 const MultiMap = require('../../utils/multi-map');
@@ -234,17 +233,17 @@ class DefinitionMut extends Mutator {
     for (const table of inflectionTables) {
       const {derivedForms} = table.id != null && !isNewDefinition
         ? await DefinitionInflectionTableMut.update(
-            table.id,
-            definitionData,
-            table,
-            tableIndex
-          )
+          table.id,
+          definitionData,
+          table,
+          tableIndex
+        )
         : await DefinitionInflectionTableMut.insert(
-            definitionData,
-            partOfSpeechId,
-            table,
-            tableIndex
-          );
+          definitionData,
+          partOfSpeechId,
+          table,
+          tableIndex
+        );
 
       // Add each form as a derived definition. So derivative.
       derivedForms.forEach((term, formId) =>
@@ -502,8 +501,6 @@ class DefinitionInflectionTableMut extends Mutator {
 
 class DerivedDefinitionMut extends Mutator {
   async insertAll(languageId, originalDefinitionId, derivedDefinitions) {
-    const {db} = this;
-
     for (const [term, inflectedFormId] of derivedDefinitions) {
       if (!term) {
         // Can't add an empty term – just skip these.

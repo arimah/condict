@@ -44,7 +44,7 @@ class Adaptor {
     notImplemented('release');
   }
 
-  tableExists(name) {
+  tableExists(_name) {
     notImplemented('tableExists');
   }
 

@@ -3,88 +3,88 @@
 // key are not stored in a particular order.
 
 class MultiMap {
-	constructor() {
-		this.map = new Map();
-	}
+  constructor() {
+    this.map = new Map();
+  }
 
-	get keyCount() {
-		return this.map.size;
-	}
+  get keyCount() {
+    return this.map.size;
+  }
 
-	sizeOf(key) {
-		const values = this.map.get(key);
-		if (values) {
-			return values.size;
-		}
-		return 0;
-	}
+  sizeOf(key) {
+    const values = this.map.get(key);
+    if (values) {
+      return values.size;
+    }
+    return 0;
+  }
 
-	getTotalSize() {
-		let total = 0;
-		for (const [_, values] in this.map) {
-			total += values.size;
-		}
-		return total;
-	}
+  getTotalSize() {
+    let total = 0;
+    for (const [_, values] in this.map) {
+      total += values.size;
+    }
+    return total;
+  }
 
-	get(key) {
-		return this.map.get(key);
-	}
+  get(key) {
+    return this.map.get(key);
+  }
 
-	add(key, value) {
-		const values = this.map.get(key);
-		if (!values) {
-			this.map.set(key, new Set().add(value));
-		} else {
-			values.add(value);
-		}
-		return this;
-	}
+  add(key, value) {
+    const values = this.map.get(key);
+    if (!values) {
+      this.map.set(key, new Set().add(value));
+    } else {
+      values.add(value);
+    }
+    return this;
+  }
 
-	delete(key, value) {
-		const values = this.map.get(key);
-		if (values) {
-			values.delete(value);
-			if (values.size === 0) {
-				this.map.delete(key);
-			}
-		}
-		return this;
-	}
+  delete(key, value) {
+    const values = this.map.get(key);
+    if (values) {
+      values.delete(value);
+      if (values.size === 0) {
+        this.map.delete(key);
+      }
+    }
+    return this;
+  }
 
-	deleteAll(key) {
-		this.map.delete(key);
-		return this;
-	}
+  deleteAll(key) {
+    this.map.delete(key);
+    return this;
+  }
 
-	clear() {
-		this.map.clear();
-		return this;
-	}
+  clear() {
+    this.map.clear();
+    return this;
+  }
 
-	keys() {
-		return this.map.keys();
-	}
+  keys() {
+    return this.map.keys();
+  }
 
-	*entries() {
-		for (const [key, values] of this.map) {
-			for (const value of values) {
-				yield [key, value];
-			}
-		}
-	}
+  *entries() {
+    for (const [key, values] of this.map) {
+      for (const value of values) {
+        yield [key, value];
+      }
+    }
+  }
 
-	forEach(cb) {
-		for (const [key, values] of this.map) {
-			for (const value of values) {
-				cb(key, value);
-			}
-		}
-	}
+  forEach(cb) {
+    for (const [key, values] of this.map) {
+      for (const value of values) {
+        cb(key, value);
+      }
+    }
+  }
 
-	[Symbol.iterator]() {
-		return this.entries();
-	}
+  [Symbol.iterator]() {
+    return this.entries();
+  }
 }
 
 module.exports = MultiMap;

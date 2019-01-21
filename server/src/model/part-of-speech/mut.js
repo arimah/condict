@@ -73,8 +73,7 @@ class PartOfSpeechMut extends Mutator {
           db,
           partOfSpeech.id,
           partOfSpeech.language_id
-        )
-        .validate(name);
+        ).validate(name);
 
       await db.exec`
         update parts_of_speech

@@ -196,7 +196,7 @@ class DerivedDefinition extends Model {
         `,
       row => row.original_definition_id
     );
-  };
+  }
 }
 
 module.exports = {
