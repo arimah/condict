@@ -1,0 +1,55 @@
+type PartOfSpeech {
+  "The globally unique ID of the part of speech."
+  id: ID!
+
+  "The display name of the part of speech."
+  name: String!
+
+  "The inflection tables defined in this part of speech."
+  inflectionTables: [InflectionTable!]!
+
+  "The language that the part of speech belongs to."
+  language: Language!
+}
+
+extend type Query {
+  "Finds a part of speech by ID."
+  partOfSpeech(id: ID!): PartOfSpeech
+}
+
+input NewPartOfSpeechInput {
+  "The language that the part of speech will be added to."
+  languageId: ID!
+
+  "The display name of the part of speech."
+  name: String!
+}
+
+input EditPartOfSpeechInput {
+  "If set, renames the part of speech."
+  name: String
+}
+
+extend type Mutation {
+  """
+  Adds a part of speech.
+
+  Requires authentication.
+  """
+  addPartOfSpeech(data: NewPartOfSpeechInput!): PartOfSpeech!
+
+  """
+  Edits a part of speech.
+
+  Requires authentication.
+  """
+  editPartOfSpeech(id: ID!, data: EditPartOfSpeechInput!): PartOfSpeech!
+
+  """
+  Deletes a part of speech. It is not possible to delete a part of speech that
+  is in use by any definition.
+
+  Requires authentication.
+  """
+  deletePartOfSpeech(id: ID!): Boolean!
+}

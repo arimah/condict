@@ -1,0 +1,210 @@
+type InflectionTable {
+  "The globally unique ID of the inflection table."
+  id: ID!
+
+  "The name of the inflection table, which is only shown in the admin UI."
+  name: String!
+
+  """
+  Describes the layout of the inflection table. Each row contains a number of
+  cells; each cell is either a header or an inflected form.
+  """
+  layout: [InflectionTableRow!]!
+
+  """
+  A raw JSON string equivalent of `layout`. Generally, you should avoid using
+  this field; prefer `layout` whenever possible.
+  """
+  layoutRaw: String!
+
+  """
+  All inflected forms contained in the table. To get a form's position in the
+  table, you must access the data through `layout`.
+  """
+  inflectedForms: [InflectedForm!]!
+
+  "The part of speech that this inflection table belongs to."
+  partOfSpeech: PartOfSpeech!
+}
+
+type InflectionTableRow {
+  "Header and data cells of the table."
+  cells: [InflectionTableCell!]!
+}
+
+interface InflectionTableCell {
+  "The column span of the cell. The value is always greater than 0."
+  columnSpan: Int!
+
+  "The row span of the cell. The value is always greater than 0."
+  rowSpan: Int!
+}
+
+type InflectionTableHeaderCell implements InflectionTableCell {
+  "The column span of the cell. The value is always greater than 0."
+  columnSpan: Int!
+
+  "The row span of the cell. The value is always greater than 0."
+  rowSpan: Int!
+
+  "The text displayed in the header cell."
+  headerText: String!
+}
+
+type InflectionTableDataCell implements InflectionTableCell {
+  "The column span of the cell. The value is always greater than 0."
+  columnSpan: Int!
+
+  "The row span of the cell. The value is always greater than 0."
+  rowSpan: Int!
+
+  "The inflected form displayed in the cell."
+  inflectedForm: InflectedForm!
+}
+
+type InflectedForm {
+  "The globally unique ID of the inflected form."
+  id: ID!
+
+  "Whether the inflected form is automatically added to the dictionary."
+  deriveLemma: Boolean!
+
+  "A pattern, such as '{~}s', which describes how to construct the inflected form."
+  inflectionPattern: String!
+
+  "The display name of the inflected form."
+  displayName: String!
+
+  """
+  If true, `displayName` is a custom, user-entered name, as opposed to being
+  derived automatically from header cells in the parent `inflectionTable`.
+
+  Note that the display name is stored pre-computed regardless of this setting;
+  the server does not compute automatic display names for each request.
+  """
+  hasCustomDisplayName: Boolean!
+
+  "The table that this form belongs to."
+  inflectionTable: InflectionTable!
+}
+
+extend type Query {
+  "Finds an inflection table by ID."
+  inflectionTable(id: ID!): InflectionTable
+
+  "Finds an inflected form by ID."
+  inflectedForm(id: ID!): InflectedForm
+}
+
+input NewInflectionTableInput {
+  "The part of speech that the inflection table will be added to."
+  partOfSpeechId: ID!
+
+  "The name of the inflection table."
+  name: String!
+
+  """
+  Describes the layout of the inflection table. Each row contains a number of
+  cells; each cell is either a header or an inflected form.
+  """
+  layout: [InflectionTableRowInput!]!
+}
+
+input EditInflectionTableInput {
+  "If set, renames the inflection table."
+  name: String
+
+  """
+  If set, updates the layout of the inflection table.
+
+  It is not possible to change this setting on a table that is used by one or
+  more definitions.
+  """
+  layout: [InflectionTableRowInput!]
+}
+
+input InflectionTableRowInput {
+  "Header and data cells of the table."
+  cells: [InflectionTableCellInput]!
+}
+
+input InflectionTableCellInput {
+  """
+  The column span of the cell. The value must be greater than 0. If omitted,
+  defaults to 1.
+  """
+  columnSpan: Int
+
+  """
+  The row span of the cell. The value must be greater than 0. If omitted,
+  defaults to 1.
+  """
+  rowSpan: Int
+
+  """
+  The text displayed in the header cell. If this field is set, the cell is a
+  header.
+  """
+  headerText: String
+
+  """
+  The inflected form displayed in the cell. If this field is set, the cell is
+  a data cell. In a new table, the cell's `id` property is ignored.
+  """
+  inflectedForm: InflectedFormInput
+}
+
+input InflectedFormInput {
+  """
+  The ID of the inflected form. In a new table, this property is ignored. When
+  editing an existing table, if set, it will update an existing form.
+  """
+  id: ID
+
+  "Whether the inflected form is automatically added to the dictionary."
+  deriveLemma: Boolean!
+
+  """
+  A pattern, such as '{~}s', which describes how to construct the inflected
+  form.
+  """
+  inflectionPattern: String!
+
+  "The display name of the inflected form."
+  displayName: String!
+
+  """
+  Determines whether the display name was entered specifically by the user. If
+  false, the display name was derived automatically from the header cells in
+  the containing table.
+
+  Note that `displayName` must be set regardless of the value of this field.
+  The server does not compute any display names.
+  """
+  hasCustomDisplayName: Boolean!
+}
+
+extend type Mutation {
+  """
+  Adds an inflection table.
+
+  Requires authentication.
+  """
+  addInflectionTable(data: NewInflectionTableInput!): InflectionTable!
+
+  """
+  Edits an inflection table. It is not possible to change `layout` on a table
+  that is used by one or more definitions.
+
+  Requires authentication.
+  """
+  editInflectionTable(id: ID!, data: EditInflectionTableInput!): InflectionTable!
+
+  """
+  Deletes an inflection table. It is not possible to delete a table that is used
+  by one or more definitions.
+
+  Requires authentication.
+  """
+  deleteInflectionTable(id: ID!): Boolean!
+}

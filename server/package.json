@@ -1,0 +1,26 @@
+{
+  "name": "@condict/server",
+  "version": "0.1.0",
+  "description": "Condict backend/server. Exposes HTTP APIs for querying and manipulating the dictionary, and Node APIs for configuring, starting and stopping a server.",
+  "main": "index.js",
+  "bin": {
+    "condict-server": "./cli.js"
+  },
+  "scripts": {
+    "start": "node cli.js"
+  },
+  "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server": "^2.1.0",
+    "better-sqlite3": "^5.0.1",
+    "chalk": "^2.4.1",
+    "command-line-args": "^5.0.2",
+    "dataloader": "^1.4.0",
+    "deepmerge": "^2.2.1",
+    "generic-pool": "^3.4.2",
+    "graphql": "^14.0.2",
+    "mysql": "^2.16.0",
+    "winston": "^3.1.0"
+  }
+}

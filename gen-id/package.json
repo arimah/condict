@@ -1,0 +1,8 @@
+{
+  "name": "@condict/gen-id",
+  "version": "0.1.0",
+  "description": "A tiny, fast utility function for generating a random string ID.",
+  "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
+  "license": "MIT",
+  "main": "index.js"
+}

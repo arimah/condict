@@ -1,0 +1,271 @@
+type Definition {
+  "The globally unique ID of the definition."
+  id: ID!
+
+  """
+  The term that the definition applies to. This value is equal to `lemma.term`
+  and is provided here for convenience.
+  """
+  term: String!
+
+  "The part of speech that the word belongs to."
+  partOfSpeech: PartOfSpeech!
+
+  "Formatted text that describes the definition."
+  description: [BlockElement!]!
+
+  """
+  A raw JSON string equivalent of `description`. Generally, you should avoid
+  using this field; prefer `description` whenever possible.
+  """
+  descriptionRaw: String!
+
+  "Inflection stems that belong to this definition."
+  stems: [DefinitionStem!]!
+
+  """
+  Inflection tables that are used by this definiton. The values are returned in
+  the order specified by the user.
+  """
+  inflectionTables: [DefinitionInflectionTable!]!
+
+  """
+  Definitions derived from inflected forms of this definition.
+
+  Note that this list only includes inflected forms set to have lemmas derived
+  automatically. To get all inflected forms of a definition, you must fetch the
+  `stems` and `inflectionTables` of the definition and "manually" inflect the
+  word.
+  """
+  derivedDefinitions: [DerivedDefinition!]!
+
+  "The lemma that the definition belongs to."
+  lemma: Lemma!
+
+  """
+  The language that the definition belongs to. This value is equal to
+  `lemma.language` and is provided here for convenience.
+  """
+  language: Language!
+}
+
+"""
+An inflection stem for a single definition. Stems are used when inflecting the
+word: inflected forms contain patterns like '{pl}es', where '{pl}' is replaced
+with the value of the stem named 'pl'.
+"""
+type DefinitionStem {
+  "The name of the stem."
+  name: String!
+
+  "The value of the stem."
+  value: String!
+
+  "The definition that the stem is attached to."
+  definition: Definition!
+}
+
+type DefinitionInflectionTable {
+  "The globally unique ID of the definition inflection table."
+  id: ID!
+
+  "An optional formatted text that describes the table."
+  caption: TableCaption
+
+  """
+  A raw JSON string equivalent of `caption`. Generally, you should avoid using
+  this field; prefer `caption` whenever possible.
+  """
+  captionRaw: String
+
+  """
+  A list of custom inflected forms, which replace forms in the table. These are
+  _generally_ irregular forms, but this is not guaranteed.
+
+  Forms are ordered first by inflected form ID.
+  """
+  customForms: [CustomInflectedForm!]!
+
+  "The inflection table used by the definition."
+  inflectionTable: InflectionTable!
+
+  "The definition that this inflection table is used in."
+  definition: Definition!
+}
+
+type TableCaption {
+  "The text content of the caption, without inline formatters."
+  text: String!
+
+  """
+  A list of inlines, which determine how to format the caption's text content.
+  Inlines are ordered primarily by `start`, secondarily by `end`. If there are
+  no inlines, this field is null.
+  """
+  inlines: [InlineElement!]
+}
+
+type CustomInflectedForm {
+  "The table that the form belongs to."
+  table: DefinitionInflectionTable!
+
+  "The inflected form that this value replaces within its table."
+  inflectedForm: InflectedForm!
+
+  "The inflected word itself; the value of the table cell."
+  value: String!
+}
+
+type DerivedDefinition {
+  """
+  The term that the definition applies to. This value is equal to `lemma.term`
+  and is provided here for convenience.
+  """
+  term: String!
+
+  "The definition that this definition was derived from."
+  derivedFrom: Definition!
+
+  "The inflected form that this definition was derived from."
+  inflectedForm: InflectedForm!
+
+  "The lemma that the definition belongs to."
+  lemma: Lemma!
+
+  """
+  The language that the definition belongs to. This value is equal to
+  `lemma.language` and `derivedFrom.language`, and is provided here for
+  convenience.
+  """
+  language: Language!
+}
+
+extend type Query {
+  "Finds a definition by ID."
+  definition(id: ID!): Definition
+
+  "Finds a definition inflection table by ID."
+  definitionInflectionTable(id: ID!): DefinitionInflectionTable
+}
+
+input NewDefinitionInput {
+  "The language that the definition will be added to."
+  languageId: ID!
+
+  """
+  The term that this definition defines.
+
+  If the lemma does not exist, it will automatically be created.
+  """
+  term: String!
+
+  "The part of speech that the definition belongs to."
+  partOfSpeechId: ID!
+
+  "Formatted text that describes the definition."
+  description: [BlockElementInput!]!
+
+  "Inflection stems that belong to this definition."
+  stems: [StemInput!]!
+
+  "Inflection tables that are used by this definiton."
+  inflectionTables: [DefinitionInflectionTableInput!]!
+}
+
+input EditDefinitionInput {
+  "If set, updates the definition term."
+  term: String
+
+  "If set, updates the definition description."
+  description: [BlockElementInput!]
+
+  "If set, updates the definition's inflection stems."
+  stems: [StemInput!]
+
+  """
+  If set, updates the definition's inflection tables. If the `id` property is
+  set on any table in this list, it will update that existing table. For each
+  table _without_ an `id`, a new definition inflection table is created.
+  """
+  inflectionTables: [DefinitionInflectionTableInput!]
+}
+
+input StemInput {
+  "The name of the stem."
+  name: String!
+
+  "The value of the stem."
+  value: String!
+}
+
+input DefinitionInflectionTableInput {
+  """
+  The ID of the definition inflection table. In a new definition, this property
+  is ignored. When editing an existing definition, if set, it will update an
+  existing defnition inflection table.
+  """
+  id: ID
+
+  "An optional formatted text that describes the table."
+  caption: TableCaptionInput
+
+  """
+  A list of custom inflected forms, which replace forms in the table. These are
+  _generally_ irregular forms, but this is not guaranteed.
+  """
+  customForms: [CustomInflectedFormInput!]!
+
+  """
+  The inflection table used by the definition. When editing an existing
+  definition, this field is ignored; you cannot set it to another table.
+  """
+  inflectionTableId: ID!
+}
+
+input TableCaptionInput {
+  "The text content of the caption, without inline formatters."
+  text: String!
+
+  """
+  A list of inlines, which determine how to format the caption's text content.
+  If there are no inlines, this field is null.
+  """
+  inlines: [InlineElementInput!]
+}
+
+input CustomInflectedFormInput {
+  "The inflected form that this value replaces within its table."
+  inflectedFormId: ID!
+
+  "The inflected word itself; the value of the table cell."
+  value: String!
+}
+
+extend type Mutation {
+  """
+  Adds a definition to the dictionary. The lemma is automatically created based
+  on the `term`: if there is a lemma with that term, the definition is added to
+  it; otherwise, a lemma is created.
+
+  Requires authentication.
+  """
+  addDefinition(data: NewDefinitionInput!): Definition!
+
+  """
+  Edits an existing definition.
+
+  When editing an existing definition, it is not possible to change its part of
+  speech, or to change the `inflectionTableId` of any inflection table used by
+  the definition.
+
+  Requires authentication.
+  """
+  editDefinition(id: ID!, data: EditDefinitionInput!): Definition!
+
+  """
+  Deletes a definition.
+
+  Requires authentication.
+  """
+  deleteDefinition(id: ID!): Boolean!
+}

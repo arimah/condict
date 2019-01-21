@@ -1,0 +1,146 @@
+enum BlockKind {
+  "A paragraph of text without any additional meaning."
+  PARAGRAPH
+
+  "A first-level heading."
+  HEADING_1
+
+  "A second-level heading."
+  HEADING_2
+
+  "An ordered list item. All consecutive ordered list items on the same level belong to the same list."
+  OLIST_ITEM
+
+  "An unordered list item. All consecutive unordered list items on the same level belong to the same list."
+  ULIST_ITEM
+}
+
+type BlockElement {
+  "The block kind."
+  kind: BlockKind!
+
+  "The indentation level of the element, starting at 0."
+  level: Int!
+
+  "The text content of the block, without inline formatters."
+  text: String!
+
+  """
+  A list of inlines, which determine how to format the block's text content.
+  Inlines are ordered primarily by `start`, secondarily by `end`. If there are
+  no inlines, this field is null.
+  """
+  inlines: [InlineElement!]
+}
+
+enum InlineKind {
+  "Bold text."
+  BOLD
+
+  "Italic text."
+  ITALIC
+
+  "Underlined text."
+  UNDERLINE
+
+  "Struck-through text."
+  STRIKETHROUGH
+
+  "Superscript text."
+  SUPERSCRIPT
+
+  "Subscript text."
+  SUBSCRIPT
+
+  "A link, which can link to an item in the dictionary or to an arbitrary URI."
+  LINK
+}
+
+interface InlineElement {
+  "The inline kind."
+  kind: InlineKind!
+
+  "The (inclusive) character offset at which the inline starts."
+  start: Int!
+
+  "The (exclusive) character offset at which the inline ends."
+  end: Int!
+}
+
+type StyleInline implements InlineElement {
+  "The inline kind."
+  kind: InlineKind!
+
+  "The (inclusive) character offset at which the inline starts."
+  start: Int!
+
+  "The (exclusive) character offset at which the inline ends."
+  end: Int!
+}
+
+type LinkInline implements InlineElement {
+  "The inline kind."
+  kind: InlineKind!
+
+  "The (inclusive) character offset at which the inline starts."
+  start: Int!
+
+  "The (exclusive) character offset at which the inline ends."
+  end: Int!
+
+  """
+  The target of the link. The link target can either be an external link, in
+  which case this field contains a fully qualified HTTP or HTTPS URL, such as
+  `https://example.com`. Internal links use the `condict://` pseudo-protocol
+  as follows:
+
+  * `condict://language/{id}` links to the start page of a language.
+  * `condict://lemma/{id}` links to a lemma.
+  * `condict://definition/{id}` links to a definition.
+  * `condict://part-of-speech/{id}` links to a part of speech.
+  """
+  linkTarget: String!
+}
+
+input BlockElementInput {
+  "The block kind."
+  kind: BlockKind!
+
+  """
+  The indentation level of the element, starting at 0. If omitted, the default
+  value of 0 is used.
+  """
+  level: Int
+
+  "The text content of the block, without inline formatters."
+  text: String!
+
+  """
+  A list of inlines, which determine how to format the block's text content.
+  If there are no inlines, this field is null.
+  """
+  inlines: [InlineElementInput!]
+}
+
+input InlineElementInput {
+  """
+  The inline kind.
+
+  If the inline kind is `LINK`, you must also set `linkTarget`. See that field
+  for more details.
+  """
+  kind: InlineKind!
+
+  "The (inclusive) character offset at which the inline starts."
+  start: Int!
+
+  "The (exclusive) character offset at which the inline ends."
+  end: Int!
+
+  """
+  If the inline is a link, contains the target of the link.
+
+  For details, see `LinkInline.linkTarget`.
+  """
+  linkTarget: String
+}

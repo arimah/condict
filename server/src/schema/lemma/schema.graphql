@@ -1,0 +1,36 @@
+"""
+A _lemma_ is a word listed in a dictionary. A lemma contains one or more
+_definitions_, which, as the name imply, actually define the lemma. The lemma
+itself only serves to group definitions.
+"""
+type Lemma {
+  "The globally unique ID of the lemma."
+  id: ID!
+
+  """
+  The term that the lemma defines; the dictionary form of the word, e.g.
+  _lizard_ or _green_.
+  """
+  term: String!
+
+  """
+  Definitions that belong to the lemma. This list contains only "direct"
+  definitions, not definitions derived from inflecting other words.
+  """
+  definitions: [Definition!]!
+
+  """
+  Definitions that are derived from inflecting another definition, e.g.
+  _lizards_ as the plural of _lizard_, or _greener_ as the comparative of
+  _green_.
+  """
+  derivedDefinitions: [DerivedDefinition!]!
+
+  "The language that the lemma belongs to."
+  language: Language!
+}
+
+extend type Query {
+  "Finds a lemma by ID. For richer lemma search, see the `Language` type."
+  lemma(id: ID): Lemma
+}

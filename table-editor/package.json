@@ -1,0 +1,62 @@
+{
+  "name": "@condict/table-editor",
+  "version": "0.1.0",
+  "description": "Table editor components for the Condict admin.",
+  "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "scripts": {
+    "clean": "rimraf lib",
+    "build": "cross-env NODE_ENV=production babel src --out-dir lib",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --config dev/webpack.config.js",
+    "prepublishOnly": "npm install && npm run clean && npm run build",
+    "lint": "eslint --config ../eslint.config.js src/ dev/src/"
+  },
+  "dependencies": {
+    "@condict/a11y-utils": "^0.1.0",
+    "@condict/admin-ui": "^0.1.4",
+    "@condict/gen-id": "^0.1.0",
+    "focus-trap-react": "^5.0.1",
+    "immutable": "^4.0.0-rc.12",
+    "memoize-one": "^5.0.0",
+    "platform": "^1.3.5"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.2.0",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "10.0.1",
+    "babel-loader": "^8.0.5",
+    "clean-webpack-plugin": "^1.0.0",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.12.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.12.3",
+    "html-webpack-plugin": "^3.2.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "rimraf": "^2.6.3",
+    "styled-components": "^4.1.3",
+    "styled-tools": "^1.6.0",
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14"
+  },
+  "peerDependencies": {
+    "prop-types": "^15",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "styled-components": "^4.1.3",
+    "styled-tools": "^1.6.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

@@ -1,0 +1,116 @@
+[
+  {
+    "cells": [
+      {"columnSpan": 2, "headerText": ""},
+      {"columnSpan": 1, "headerText": "Nominative"},
+      {"columnSpan": 1, "headerText": "Accusative"},
+      {"columnSpan": 1, "headerText": "Dative"}
+    ]
+  },
+  {
+    "cells": [
+      {"rowSpan": 2, "columnSpan": 1, "headerText": "Indefinite"},
+      {"rowSpan": 1, "columnSpan": 1, "headerText": "Singular"},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 1,
+        "inflectionPattern": "{~}",
+        "displayName": "Indefinite singular nominative",
+        "hasCustomDisplayName": false,
+        "deriveLemma": false
+      }},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 2,
+        "inflectionPattern": "{~}at",
+        "displayName": "Indefinite singular accusative",
+        "hasCustomDisplayName": false,
+        "deriveLemma": true
+      }},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 3,
+        "inflectionPattern": "{~}er",
+        "displayName": "Indefinite singular dative",
+        "hasCustomDisplayName": false,
+        "deriveLemma": true
+      }}
+    ]
+  },
+  {
+    "cells": [
+      {"rowSpan": 1, "columnSpan": 1, "headerText": "Plural"},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 4,
+        "inflectionPattern": "{Plural root}en",
+        "displayName": "Indefinite plural nominative",
+        "hasCustomDisplayName": false,
+        "deriveLemma": true
+      }},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 5,
+        "inflectionPattern": "{Plural root}ent",
+        "displayName": "Indefinite plural accusative",
+        "hasCustomDisplayName": false,
+        "deriveLemma": true
+      }},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 6,
+        "inflectionPattern": "{Plural root}er",
+        "displayName": "Indefinite plural dative",
+        "hasCustomDisplayName": false,
+        "deriveLemma": true
+      }}
+    ]
+  },
+  {
+    "cells": [
+      {"rowSpan": 2, "columnSpan": 1, "headerText": "Definite"},
+      {"rowSpan": 1, "columnSpan": 1, "headerText": "Singular"},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 7,
+        "inflectionPattern": "ar-{~}",
+        "displayName": "Definite singular nominative",
+        "hasCustomDisplayName": false,
+        "deriveLemma": true
+      }},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 8,
+        "inflectionPattern": "ar-{~}at",
+        "displayName": "Definite singular accusative",
+        "hasCustomDisplayName": false,
+        "deriveLemma": true
+      }},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 9,
+        "inflectionPattern": "a-{~}er",
+        "displayName": "Custom display name, baby!",
+        "hasCustomDisplayName": true,
+        "deriveLemma": true
+      }}
+    ]
+  },
+  {
+    "cells": [
+      {"rowSpan": 1, "columnSpan": 1, "headerText": "Plural"},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 10,
+        "inflectionPattern": "er-{Plural root}en",
+        "displayName": "Definite plural nominative",
+        "hasCustomDisplayName": false,
+        "deriveLemma": true
+      }},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 11,
+        "inflectionPattern": "er-{Plural root}ent",
+        "displayName": "Definite plural accusative",
+        "hasCustomDisplayName": false,
+        "deriveLemma": true
+      }},
+      {"rowSpan": 1, "columnSpan": 1, "inflectedForm": {
+        "id": 12,
+        "inflectionPattern": "e-{Plural root}er",
+        "displayName": "Another custom display name",
+        "hasCustomDisplayName": true,
+        "deriveLemma": false
+      }}
+    ]
+  }
+]
