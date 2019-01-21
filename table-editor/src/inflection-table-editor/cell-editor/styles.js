@@ -89,7 +89,7 @@ export const CellPopup = styled.div`
   position: absolute;
   top: 100%;
   left: -8px;
-  width: 280px;
+  max-width: 280px;
   z-index: 1;
 
   font-weight: normal;
