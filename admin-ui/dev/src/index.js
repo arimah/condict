@@ -9,17 +9,9 @@ import {
   DarkTheme,
   LightTheme,
   GlobalStyles as ComponentStyles,
-  Command,
-  CommandGroup,
-  Shortcut,
 } from '../../src';
 import Demo from './demo';
 import ComponentDemos from './components';
-
-// FIXME: remove this crap
-window.Command = Command;
-window.CommandGroup = CommandGroup;
-window.Shortcut = Shortcut;
 
 const AppStyles = createGlobalStyle`
   body {
