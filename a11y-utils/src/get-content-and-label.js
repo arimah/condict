@@ -1,8 +1,9 @@
 /**
  * Given a React element and a string label, returns an array of two elements:
  *
- * - The visible content of the control
- * - The ARIA label to be passed to `aria-label`.
+ * - The visible content of the control.
+ * - The ARIA label to be passed to `aria-label`, or undefined if there is
+ *   no label.
  *
  * Using this function allows components to render their `label` property as
  * content, unless children are present, in which case they get precedence.
@@ -18,7 +19,7 @@
  *       {content}
  *     </button>
  *   );
- * }
+ * };
  *
  * // Only `label`, which is rendered inside the button:
  * <MyButton label='Next item'/>;
@@ -32,9 +33,8 @@
  * <MyButton label='Next item'><ArrowRightIcon/></MyButton>
  * ```
  *
- *
  * @param {*} children
- * @param {string} label
+ * @param {?string} label
  * @return {Array.<*>}
  */
 export const getContentAndLabel = (children, label) => {
