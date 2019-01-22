@@ -2,7 +2,7 @@
 
 Exports the tiniest function for generating a random-enough alphanumeric ID string.
 
-## `genId()`
+## `genId`
 
 > `genId(): string`
 
