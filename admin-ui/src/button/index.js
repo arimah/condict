@@ -9,7 +9,6 @@ import * as S from './styles';
 
 const ButtonInner = (props, ref) => {
   const {
-    className,
     disabled,
     label,
     href,
@@ -17,7 +16,7 @@ const ButtonInner = (props, ref) => {
     command,
     onClick,
     children,
-    // minimal, intent and slim deliberately included here
+    // className, minimal, intent and slim deliberately included here
     ...otherProps
   } = props;
 
@@ -25,7 +24,6 @@ const ButtonInner = (props, ref) => {
 
   const buttonProps = {
     ...otherProps,
-    className: className,
     'aria-label': ariaLabel,
   };
   if (command !== null) {
