@@ -35,7 +35,7 @@ const renderOptions = (children, options) => {
   return null;
 };
 
-export const Select = props => {
+export const Select = React.forwardRef((props, ref) => {
   const {
     className,
     value,
@@ -57,6 +57,7 @@ export const Select = props => {
         disabled={disabled}
         borderRadius={borderRadius}
         onChange={onChange}
+        ref={ref}
       >
         {renderOptions(children, options)}
       </S.Select>
@@ -65,7 +66,9 @@ export const Select = props => {
       </S.Arrow>
     </S.Wrapper>
   );
-};
+});
+
+Select.displayName = 'Select';
 
 Select.propTypes = {
   className: PropTypes.string,
@@ -73,7 +76,7 @@ Select.propTypes = {
   options: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-  })),
+  }).isRequired),
   minimal: PropTypes.bool,
   disabled: PropTypes.bool,
   borderRadius: PropTypes.string,
