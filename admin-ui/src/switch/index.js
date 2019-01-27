@@ -12,11 +12,10 @@ export const Switch = props => {
     checked,
     label,
     disabled,
-    name,
     labelProps,
-    inputProps,
     children,
     onChange,
+    ...inputProps
   } = props;
 
   const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
@@ -44,7 +43,6 @@ export const Switch = props => {
         </S.Switch>
         <S.Input
           {...inputProps}
-          name={name}
           disabled={disabled}
           checked={checked}
           role='button'
@@ -64,9 +62,7 @@ Switch.propTypes = {
   checked: PropTypes.bool,
   disabled: PropTypes.bool,
   label: PropTypes.string,
-  name: PropTypes.string,
   labelProps: PropTypes.object,
-  inputProps: PropTypes.object,
   onChange: PropTypes.func,
   children: PropTypes.node,
 };
@@ -77,8 +73,6 @@ Switch.defaultProps = {
   checked: false,
   disabled: false,
   label: '',
-  name: undefined,
   labelProps: null,
-  inputProps: null,
   onChange: () => { },
 };

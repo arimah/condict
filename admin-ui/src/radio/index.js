@@ -1,12 +1,13 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
+import memoizeOne from 'memoize-one';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 import genId from '@condict/gen-id';
 
 import * as S from './styles';
 
-export const RadioGroupContext = React.createContext(null);
+export const RadioGroupContext = React.createContext({namePrefix: ''});
 
 // This component is a class exclusively for `this.context`. If that weren't
 // necessary, we could turn this into a functional stateless component.
@@ -22,14 +23,13 @@ export class Radio extends PureComponent {
       name,
       value,
       labelProps,
-      children,
+      inputRef,
       onChange,
+      children,
       ...inputProps
     } = this.props;
 
-    const actualName = this.context
-      ? `${this.context.namePrefix}-${name || ''}`
-      : name || '';
+    const actualName = `${this.context.namePrefix}${name}`;
 
     const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
 
@@ -57,6 +57,7 @@ export class Radio extends PureComponent {
             checked={checked}
             aria-label={ariaLabel}
             onChange={onChange}
+            ref={inputRef}
           />
         </S.RadioContainer>
         {renderedContent}
@@ -76,7 +77,10 @@ Radio.propTypes = {
   name: PropTypes.string,
   value: PropTypes.string,
   labelProps: PropTypes.object,
-  inputProps: PropTypes.object,
+  inputRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({current: PropTypes.any}),
+  ]),
   onChange: PropTypes.func,
   children: PropTypes.node,
 };
@@ -87,44 +91,41 @@ Radio.defaultProps = {
   checked: false,
   disabled: false,
   label: '',
-  name: undefined,
+  name: '',
   value: undefined,
   labelProps: null,
-  inputProps: null,
+  inputRef: undefined,
   onChange: () => { },
 };
 
-Radio.Group = class RadioGroup extends PureComponent {
-  constructor(props) {
-    super(props);
+const getContextValue = name => ({
+  namePrefix: name !== null ? name : `${genId()}-`,
+});
 
-    this.state = {
-      namePrefix: genId(),
-      label: props.label,
-    };
+Radio.Group = class RadioGroup extends PureComponent {
+  constructor() {
+    super();
+
+    this.getContextValue = memoizeOne(getContextValue);
   }
 
   render() {
+    const {name, children} = this.props;
+    const value = this.getContextValue(name);
+
     return (
-      <RadioGroupContext.Provider value={this.state}>
-        {this.props.children}
+      <RadioGroupContext.Provider value={value}>
+        {children}
       </RadioGroupContext.Provider>
     );
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    if (props.label !== state.label) {
-      return {label: props.label};
-    }
-    return null;
   }
 };
 
 Radio.Group.propTypes = {
-  label: PropTypes.string,
+  name: PropTypes.string,
   children: PropTypes.node,
 };
 
 Radio.Group.defaultProps = {
-  label: null,
+  name: null,
 };

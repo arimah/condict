@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import * as S from './styles';
 
-export const NumberInput = props => {
+export const NumberInput = React.forwardRef((props, ref) => {
   const {
     className,
     value,
@@ -32,9 +32,12 @@ export const NumberInput = props => {
       disabled={disabled}
       borderRadius={borderRadius}
       onChange={onChange}
+      ref={ref}
     />
   );
-};
+});
+
+NumberInput.displayName = 'NumberInput';
 
 NumberInput.propTypes = {
   className: PropTypes.string,

@@ -8,16 +8,13 @@ export class TextInput extends PureComponent {
   constructor() {
     super();
 
-    this.inputRef = React.createRef();
-  }
-
-  get input() {
-    return this.inputRef.current;
+    this.input = null;
+    this.captureInput = this.captureInput.bind(this);
   }
 
   componentDidMount() {
     if (this.props.autoSize) {
-      this.clearAutoSize = autoSizeInput(this.inputRef.current);
+      this.clearAutoSize = autoSizeInput(this.input);
     }
   }
 
@@ -27,10 +24,10 @@ export class TextInput extends PureComponent {
     if (nextProps.autoSize !== prevProps.autoSize) {
       if (prevProps.autoSize) {
         this.clearAutoSize();
-        this.inputRef.current.style.width = '';
+        this.input.style.width = '';
       }
       if (nextProps.autoSize) {
-        this.clearAutoSize = autoSizeInput(this.inputRef.current);
+        this.clearAutoSize = autoSizeInput(this.input);
       }
     }
   }
@@ -38,6 +35,19 @@ export class TextInput extends PureComponent {
   componentWillUnmount() {
     if (this.clearAutoSize) {
       this.clearAutoSize();
+    }
+  }
+
+  captureInput(elem) {
+    this.input = elem;
+
+    const {inputRef} = this.props;
+    if (inputRef) {
+      if (typeof inputRef === 'function') {
+        inputRef(elem);
+      } else {
+        inputRef.current = elem;
+      }
     }
   }
 
@@ -71,7 +81,7 @@ export class TextInput extends PureComponent {
         disabled={disabled}
         borderRadius={borderRadius}
         onChange={onChange}
-        ref={this.inputRef}
+        ref={this.captureInput}
       />
     );
   }
@@ -95,6 +105,10 @@ TextInput.propTypes = {
   autoSize: PropTypes.bool,
   disabled: PropTypes.bool,
   borderRadius: PropTypes.string,
+  inputRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({current: PropTypes.any}),
+  ]),
   onChange: PropTypes.func,
 };
 
@@ -109,5 +123,6 @@ TextInput.defaultProps = {
   autoSize: false,
   disabled: false,
   borderRadius: undefined,
+  inputRef: undefined,
   onChange: () => {},
 };

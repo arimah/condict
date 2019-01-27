@@ -15,16 +15,13 @@ export const Checkbox = props => {
     disabled,
     name,
     labelProps,
+    inputRef,
     children,
     onChange,
     ...inputProps
   } = props;
 
   const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
-
-  // 'indeterminate' is not an HTML attribute; it can only be set via JS.
-  // For that reason, styled-components does not forward it, and we have
-  // to set it ourselves.
 
   return (
     <S.Label
@@ -46,7 +43,22 @@ export const Checkbox = props => {
           checked={!!checked}
           aria-label={ariaLabel}
           onChange={onChange}
-          ref={elem => elem && (elem.indeterminate = indeterminate)}
+          ref={elem => {
+            // 'indeterminate' is not an HTML attribute; it can only be set via JS.
+            // For that reason, styled-components does not forward it, and we have
+            // to set it ourselves.
+            if (elem) {
+              elem.indeterminate = indeterminate;
+            }
+
+            if (inputRef) {
+              if (typeof inputRef === 'function') {
+                inputRef(elem);
+              } else {
+                inputRef.current = elem;
+              }
+            }
+          }}
         />
       </S.CheckmarkContainer>
       {renderedContent}
@@ -63,6 +75,10 @@ Checkbox.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
   labelProps: PropTypes.object,
+  inputRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({current: PropTypes.any}),
+  ]),
   onChange: PropTypes.func,
   children: PropTypes.node,
 };
@@ -76,5 +92,6 @@ Checkbox.defaultProps = {
   label: '',
   name: undefined,
   labelProps: null,
+  inputRef: undefined,
   onChange: () => { },
 };
