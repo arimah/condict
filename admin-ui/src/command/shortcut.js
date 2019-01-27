@@ -14,8 +14,8 @@ import platform from 'platform';
 //
 // On macOS, the "primary" modifier is Cmd, which, JS being JS, is not actually
 // mapped to `ctrlKey`, but to `metaKey` (which on Windows is the Windows key,
-// and on Linux and Unix-likes is the Meta key (which we don't care about)). In
-// addition, macOS sometimes uses Ctrl as a "secondary" modifier.
+// and on Linux and Unix-likes is the Super key (which we don't care about)).
+// In addition, macOS sometimes uses Ctrl as a "secondary" modifier.
 //
 // This is why we have a `primary` modifier instead of `ctrl`, so that we can
 // select the most appropriate modifier for the system. You can also specify
@@ -34,7 +34,7 @@ const hasPrimary = isOSX
 const hasSecondary = e => e.ctrlKey;
 
 const DefaultConfig = Object.freeze({
-  key: [],
+  keys: [],
   primary: false,
   shift: false,
   alt: false,
@@ -100,6 +100,10 @@ export class Shortcut {
   }
 
   static parse(shortcut) {
+    if (Array.isArray(shortcut)) {
+      return ShortcutGroup.parse(shortcut);
+    }
+
     const config = {};
     const keysString = shortcut.replace(modifiersPattern, (_, modifier) => {
       switch (modifier.toLowerCase()) {
@@ -107,7 +111,7 @@ export class Shortcut {
           config.primary = true;
           break;
         case 'secondary':
-          config.secondary = SECONDARY;
+          config.primary = SECONDARY;
           break;
         case 'shift':
           config.shift = true;
@@ -189,7 +193,6 @@ const buildKeyMap = (commands, getShortcut) => {
 
 export class ShortcutMap {
   constructor(commands, getShortcut) {
-    this.getShortcut = getShortcut;
     this.keyMap = buildKeyMap(commands, getShortcut);
   }
 

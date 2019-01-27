@@ -48,10 +48,11 @@ export class CommandGroup extends Component {
   handleKeyDown(e) {
     if (!this.props.disabled) {
       const cmd = this.state.keyMap.get(e);
-      if (cmd) {
+      if (cmd && !cmd.disabled) {
         e.preventDefault();
         e.stopPropagation();
         this.props.onExec(cmd);
+        return;
       }
     }
     if (this.props.onKeyDown) {
@@ -144,10 +145,10 @@ const getCommand = (name, context) => {
   while (group !== null) {
     const cmd = group.commandMap.get(name);
     if (cmd) {
-      return {
+      return Object.freeze({
         ...cmd,
-        exec: () => context.onExec(cmd),
-      };
+        exec: () => { context.onExec(cmd); },
+      });
     }
     group = group.parent;
   }
@@ -179,16 +180,20 @@ CommandConsumer.propTypes = {
 };
 
 export const withCommand = Inner => {
-  const component = React.forwardRef((props, ref) =>
-    props.command != null ? (
-      <CommandConsumer name={props.command}>
-        {command => <Inner {...props} command={command} ref={ref}/>}
+  const component = React.forwardRef(({command: name, ...otherProps}, ref) =>
+    name != null ? (
+      <CommandConsumer name={name}>
+        {command => <Inner {...otherProps} command={command} ref={ref}/>}
       </CommandConsumer>
     ) : (
-      <Inner {...props} ref={ref}/>
+      <Inner {...otherProps} command={null} ref={ref}/>
     )
   );
-  component.displayName = 'withCommand';
+  component.displayName = `withCommand(${
+    Inner.displayName ||
+    Inner.name ||
+    'Component'
+  })`;
 
   component.propTypes = {
     command: PropTypes.string,
