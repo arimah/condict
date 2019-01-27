@@ -66,7 +66,7 @@ export default class CellEditor extends PureComponent {
     // the selection to the end of the value, so the user can keep typing. The
     // default behaviour is to select the entire text, which obviously means
     // the user would type over the first character.
-    const {input} = this.inputRef.current;
+    const input = this.inputRef.current;
     input.focus();
     if (this.props.typedValue) {
       const dataLength = this.state.cell.data.text.length;
@@ -139,7 +139,7 @@ export default class CellEditor extends PureComponent {
       ),
       displayName: derivedDisplayName,
     }, this.emitInput);
-    this.displayNameRef.current.input.focus();
+    this.displayNameRef.current.focus();
   }
 
   handleKeyDown(e) {
@@ -212,7 +212,7 @@ export default class CellEditor extends PureComponent {
           onChange={this.handleTextChange}
           onFocus={this.handleInputFocus}
           onBlur={this.handleInputBlur}
-          ref={this.inputRef}
+          inputRef={this.inputRef}
         />
         {needIcons &&
           <S.CellIcons>
@@ -276,7 +276,7 @@ export default class CellEditor extends PureComponent {
                 : this.displayNameDescId
             }
             onChange={this.handleDisplayNameChange}
-            ref={this.displayNameRef}
+            inputRef={this.displayNameRef}
           />
         </S.DisplayNameLabel>
         {data.hasCustomDisplayName ? (
