@@ -147,7 +147,7 @@ const getCommand = (name, context) => {
     if (cmd) {
       return Object.freeze({
         ...cmd,
-        exec: () => { context.onExec(cmd); },
+        exec: () => { group.onExec(cmd); },
       });
     }
     group = group.parent;
