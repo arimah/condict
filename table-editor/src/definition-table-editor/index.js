@@ -25,15 +25,13 @@ const DefinitionTableEditorInner = makeTableEditor({
   canEditCell: cell => !cell.header,
 });
 
+const getStems = (term, stems) => ({term, stems});
+
 export class DefinitionTableEditor extends Component {
   constructor() {
     super();
 
-    this.getStems = memoizeOne(this.getStems);
-  }
-
-  getStems(term, stems) {
-    return {term, stems};
+    this.getStems = memoizeOne(getStems);
   }
 
   render() {
