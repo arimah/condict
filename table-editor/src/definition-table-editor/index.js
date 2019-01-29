@@ -57,3 +57,5 @@ DefinitionTableEditor.defaultProps = {
   term: '',
   stems: Map(),
 };
+
+DefinitionTableEditor.Commands = DefinitionTableEditorInner.Commands;

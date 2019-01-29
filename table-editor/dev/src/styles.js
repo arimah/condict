@@ -1,7 +1,7 @@
 import styled, {createGlobalStyle} from 'styled-components';
 import {theme} from 'styled-tools';
 
-import {TextInput} from '@condict/admin-ui';
+import {Button, TextInput} from '@condict/admin-ui';
 
 export const AppStyles = createGlobalStyle`
   body {
@@ -55,7 +55,11 @@ export const Group = styled.div`
   margin-bottom: 16px;
 
   & > :not(:first-child) {
-    margin-left: 10px;
+    margin-left: 1px;
+  }
+
+  & > :not(:last-child) {
+    margin-right: 1px;
   }
 `;
 
@@ -64,6 +68,20 @@ export const Separator = styled.span`
   height: 27px;
   vertical-align: -8px;
   border-left: 2px solid ${theme('general.borderColor')};
+
+  &:not(:first-child) {
+    margin-left: 8px;
+  }
+
+  &:not(:last-child) {
+    margin-right: 8px;
+  }
+`;
+
+export const IconButton = styled(Button)`
+  > svg {
+    vertical-align: bottom;
+  }
 `;
 
 export const TermInput = styled(TextInput)`

@@ -27,11 +27,14 @@ const makeTableEditor = config => {
 
   const TableRow = makeTableRow(config);
 
+  const editingCommands = {
+    ...canEditStructure && StructureCommands,
+    ...commands,
+  };
   const allCommands = {
     ...NavigationCommands,
     ...canSelectMultiple && MultiselectCommands,
-    ...canEditStructure && StructureCommands,
-    ...commands,
+    ...editingCommands,
   };
 
   class TableEditor extends Component {
@@ -347,6 +350,51 @@ const makeTableEditor = config => {
     disabled: false,
     onChange: () => {},
   };
+
+  class TableEditorCommands extends Component {
+    constructor() {
+      super();
+      this.handleExec = this.handleExec.bind(this);
+    }
+
+    handleExec(cmd) {
+      const {value, onChange} = this.props;
+      const nextValue = cmd.exec(value);
+      onChange(nextValue);
+    }
+
+    render() {
+      const {
+        disabled,
+        children,
+        value: _value,
+        onChange: _onChange,
+        ...otherProps
+      } = this.props;
+      return (
+        <CommandGroup
+          {...otherProps}
+          commands={editingCommands}
+          disabled={disabled}
+          onExec={this.handleExec}
+        >
+          {children}
+        </CommandGroup>
+      );
+    }
+  };
+
+  TableEditorCommands.propTypes = {
+    value: PropTypes.instanceOf(Value).isRequired,
+    disabled: PropTypes.bool,
+    onChange: PropTypes.func.isRequired,
+  };
+
+  TableEditorCommands.defaultProps = {
+    disabled: false,
+  };
+
+  TableEditor.Commands = TableEditorCommands;
 
   return TableEditor;
 };
