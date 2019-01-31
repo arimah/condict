@@ -4,6 +4,7 @@ const {ApolloServer} = require('apollo-server');
 
 const performStartupChecks = require('./startup-checks');
 const database = require('./database');
+const reindentQuery = require('./database/reindent-query');
 const schema = require('./schema');
 const model = require('./model');
 const exportDatabase = require('./utils/export');
@@ -128,6 +129,40 @@ class CondictServer {
         .then(() => resolve())
         .catch(err => reject(err));
     });
+  }
+
+  viewTableSchema(tableName) {
+    // The --view-table-schema option is not really used outside a terminal
+    // environment, so we assume we can safely print directly to stdout and
+    // stderr here.
+    const schema = database.generateSchema(this.config.database.type);
+
+    let tableFound = false;
+    for (const [name, statements] of schema) {
+      if (tableName !== null) {
+        if (name !== tableName) {
+          continue;
+        } else {
+          tableFound = true;
+        }
+      }
+
+      console.log(`-- Schema for ${name}:`);
+      console.log(
+        statements
+          .map(reindentQuery)
+          .join(';\n')
+        + ';\n'
+      );
+
+      if (tableFound) {
+        break;
+      }
+    }
+
+    if (tableName !== null && !tableFound) {
+      console.error(`Table not found: ${tableName}`);
+    }
   }
 
   async close() {

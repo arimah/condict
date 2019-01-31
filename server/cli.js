@@ -18,6 +18,8 @@ const options = [
 
   {name: 'import', type: Boolean},
   {name: 'source', type: String},
+
+  {name: 'view-table-schema', type: String},
 ];
 
 const main = async () => {
@@ -37,10 +39,13 @@ const main = async () => {
 
   try {
     if (args.export) {
-      await server.export(args['target']);
+      await server.export(args.target);
       await server.close();
     } else if (args.import) {
-      await server.import(args['source']);
+      await server.import(args.source);
+      await server.close();
+    } else if (args['view-table-schema'] !== undefined) {
+      server.viewTableSchema(args['view-table-schema']);
       await server.close();
     } else {
       process.on('SIGINT', async () => {

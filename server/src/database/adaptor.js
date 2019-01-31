@@ -2,6 +2,8 @@ const DataLoader = require('dataloader');
 
 const FieldSet = require('../model/field-set');
 
+const reindentQuery = require('./reindent-query');
+
 const getRowIdDefault = row => row.id;
 
 const notImplemented = methodName => {
@@ -96,20 +98,11 @@ class Adaptor {
       return;
     }
 
-    const sqlLines = sql.split(/\n/)
-      .filter(line => line.length > 0);
-
-    if (sqlLines.length > 0) {
-      const indent = sqlLines[0].match(/^\s*/)[0];
-      const indentRegex = new RegExp(`^${indent}`);
-
-      const reindentedSql = sqlLines
-        .map(line => line.replace(indentRegex, '  '))
-        .join('\n')
-        .trimEnd();
-      this.logger.debug(`Query:\n${reindentedSql}`);
-    } else {
+    if (/^\s*+$/.test(sql)) {
       this.logger.warn('Empty query?!');
+    } else {
+      const reindentedSql = reindentQuery(sql);
+      this.logger.debug(`Query:\n${reindentedSql}`);
     }
   }
 
