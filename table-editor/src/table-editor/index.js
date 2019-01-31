@@ -382,12 +382,13 @@ const makeTableEditor = config => {
         </CommandGroup>
       );
     }
-  };
+  }
 
   TableEditorCommands.propTypes = {
     value: PropTypes.instanceOf(Value).isRequired,
     disabled: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
+    children: PropTypes.node,
   };
 
   TableEditorCommands.defaultProps = {

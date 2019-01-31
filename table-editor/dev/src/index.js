@@ -391,7 +391,7 @@ class App extends Component {
             <EditorDemo
               value={definitionTableValue}
               onChange={this.handleDefinitionTableChange}
-              controls={({value, disabled, toggleDisabled}) =>
+              controls={({disabled, toggleDisabled}) =>
                 <S.Group>
                   <Button
                     slim
