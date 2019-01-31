@@ -3,12 +3,19 @@ const {withAuthentication} = require('../helpers');
 module.exports = {
   InflectionTable: {
     async layout(p, _args, {model: {InflectionTableLayout}}) {
-      const layout = await InflectionTableLayout.rawByTable(p.id);
-      return JSON.parse(layout);
+      const row = await InflectionTableLayout.byTable(p.id);
+      return JSON.parse(row.layout);
     },
 
-    layoutRaw: (p, _args, {model: {InflectionTableLayout}}) =>
-      InflectionTableLayout.rawByTable(p.id),
+    async layoutRaw(p, _args, {model: {InflectionTableLayout}}) {
+      const row = await InflectionTableLayout.byTable(p.id);
+      return row.layout;
+    },
+
+    async stems(p, _args, {model: {InflectionTableLayout}}) {
+      const row = await InflectionTableLayout.byTable(p.id);
+      return JSON.parse(row.stems);
+    },
 
     inflectedForms: (p, _args, {model: {InflectedForm}}) =>
       InflectedForm.allByTable(p.id),

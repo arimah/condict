@@ -18,6 +18,12 @@ type InflectionTable {
   layoutRaw: String!
 
   """
+  A list of unique stem names that appear in the inflection patterns of this
+  table. The items in the list are unsorted.
+  """
+  stems: [String!]!
+
+  """
   All inflected forms contained in the table. To get a form's position in the
   table, you must access the data through `layout`.
   """

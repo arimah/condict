@@ -40,8 +40,22 @@ const formDisplayNameValidator =
     .map(value => value.trim())
     .lengthBetween(0, 96);
 
+const collectStemNames = (pattern, stems) => {
+  // Group 1: '{{' and '}}' (escape; ignored)
+  // Group 2: The stem name, enclosed in curly brackets.
+  const stemRegex = /(\{\{|\}\})|\{([^{}]+)\}/g;
+  let m;
+  while ((m = stemRegex.exec(pattern)) !== null) {
+    // ~ is a special stem that always refers to the lemma.
+    if (m[2] && m[2] !== '~') {
+      stems.add(m[2]);
+    }
+  }
+};
+
 const buildTableLayout = async (layout, handleInflectedForm) => {
   const finalLayout = [];
+  const stems = new Set();
 
   // I would love to use .map() here, but it's not really compatible with
   // async/await, and I can't be bothered to hand-roll my own .mapAsync().
@@ -65,6 +79,9 @@ const buildTableLayout = async (layout, handleInflectedForm) => {
       } else if (cell.inflectedForm != null) {
         // This is a data cell! Let handleInflectedForm() deal with it.
         // We expect it to return the inflected form ID.
+        // All we do here is collect stem names, like `{Plural root}`,
+        // inside the inflection pattern.
+        collectStemNames(cell.inflectedForm.inflectionPattern, stems);
         layoutCell.inflectedFormId = await handleInflectedForm(
           cell.inflectedForm
         );
@@ -80,7 +97,7 @@ const buildTableLayout = async (layout, handleInflectedForm) => {
     finalLayout.push({cells});
   }
 
-  return finalLayout;
+  return {finalLayout, stems: Array.from(stems)};
 };
 
 const ensureTableIsUnused = async (db, id) => {
@@ -130,12 +147,12 @@ class InflectionTableMut extends Mutator {
 
       // Let's construct the table layout! While we walk through cells, we'll
       // simultaneously insert all the inflected forms.
-      const finalLayout = await buildTableLayout(
+      const {finalLayout, stems} = await buildTableLayout(
         layout,
         form => InflectedFormMut.insert(tableId, form)
       );
       // And insert the layout!
-      await InflectionTableLayoutMut.insert(tableId, finalLayout);
+      await InflectionTableLayoutMut.insert(tableId, finalLayout, stems);
 
       return InflectionTable.byId(tableId);
     });
@@ -180,7 +197,7 @@ class InflectionTableMut extends Mutator {
               .map(form => form.id)
           );
 
-          const finalLayout = await buildTableLayout(
+          const {finalLayout, stems} = await buildTableLayout(
             layout,
             form => {
               if (form.id) {
@@ -198,7 +215,7 @@ class InflectionTableMut extends Mutator {
               }
             }
           );
-          await InflectionTableLayoutMut.update(table.id, finalLayout);
+          await InflectionTableLayoutMut.update(table.id, finalLayout, stems);
 
           if (deletedFormIds.size > 0) {
             // Delete old forms
@@ -239,20 +256,30 @@ class InflectionTableMut extends Mutator {
 }
 
 class InflectionTableLayoutMut extends Mutator {
-  insert(tableId, layout) {
+  insert(tableId, layout, stems) {
     return this.db.exec`
-      insert into inflection_table_layouts (inflection_table_id, layout)
-      values (${tableId | 0}, ${JSON.stringify(layout)})
+      insert into inflection_table_layouts (
+        inflection_table_id,
+        layout,
+        stems
+      )
+      values (
+        ${tableId | 0},
+        ${JSON.stringify(layout)},
+        ${JSON.stringify(stems)}
+      )
     `;
   }
 
-  update(tableId, layout) {
+  update(tableId, layout, stems) {
     const {InflectionTableLayout} = this.model;
 
-    this.db.clearCache(InflectionTableLayout.rawByTableKey, tableId | 0);
+    this.db.clearCache(InflectionTableLayout.byTableKey, tableId | 0);
     return this.db.exec`
       update inflection_table_layouts
-      set layout = ${JSON.stringify(layout)}
+      set
+        layout = ${JSON.stringify(layout)},
+        stems = ${JSON.stringify(stems)}
       where inflection_table_id = ${tableId | 0}
     `;
   }

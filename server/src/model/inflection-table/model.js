@@ -88,25 +88,21 @@ class InflectionTableLayout extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.rawByTableKey = Symbol();
+    this.byTableKey = Symbol();
   }
 
-  // This model is a bit unusual in that it returns the value of a single
-  // column. I found this to be the least painful way of doing it.
-  rawByTable(tableId) {
-    return this.db
-      .batchOneToOne(
-        this.rawByTableKey,
-        tableId | 0,
-        (db, tableIds) =>
-          db.all`
-            select *
-            from inflection_table_layouts
-            where inflection_table_id in (${tableIds})
-          `,
-        row => row.inflection_table_id
-      )
-      .then(row => row.layout);
+  byTable(tableId) {
+    return this.db.batchOneToOne(
+      this.byTableKey,
+      tableId | 0,
+      (db, tableIds) =>
+        db.all`
+          select *
+          from inflection_table_layouts
+          where inflection_table_id in (${tableIds})
+        `,
+      row => row.inflection_table_id
+    );
   }
 }
 

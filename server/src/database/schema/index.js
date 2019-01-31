@@ -258,6 +258,15 @@ module.exports = [
           return JSON.stringify(value);
         },
       },
+      {
+        name: 'stems',
+        comment: "A JSON array that contains the unique stem names present in the table layout. This is calculated when the layout is updated, and is stored here primarily for performance reasons (so we don't have to walk the table and parse inflection patterns in the admin UI).",
+        type: 'json',
+        // We can export this as a JSON object, since it's a JSON column.
+        export: value => JSON.parse(value),
+        // Mustn't forget to import it as JSON though.
+        import: value => JSON.stringify(value),
+      },
     ],
     primaryKey: 'inflection_table_id',
   },
