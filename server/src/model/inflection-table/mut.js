@@ -184,6 +184,11 @@ class InflectionTableMut extends Mutator {
             layout,
             form => {
               if (form.id) {
+                if (!deletedFormIds.has(form.id | 0)) {
+                  throw new UserInputError(
+                    `Form ${form.id} does not belong to this table`
+                  );
+                }
                 // We know this form is still in the table, so let's keep it.
                 deletedFormIds.delete(form.id | 0);
                 return InflectedFormMut.update(form.id, form);
