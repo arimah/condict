@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@condict/a11y-utils": "^0.1.0",
-    "@condict/admin-ui": "^0.1.6",
+    "@condict/admin-ui": "^0.1.7",
     "@condict/gen-id": "^0.1.0",
     "focus-trap-react": "^5.0.1",
     "immutable": "^4.0.0-rc.12",

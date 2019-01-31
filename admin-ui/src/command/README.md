@@ -180,6 +180,7 @@ The returned component forwards its ref to the wrapped component.
 * [constructor](#shortcut-constructor)
 * [`Shortcut.prototype.forEach()`](#shortcutprototypeforeach)
 * [`Shortcut.prototype.toString()`](#shortcutprototypetostring)
+* [`Shortcut.prototype.toAriaString()`](#shortcutprototypetoariastring)
 * [`Shortcut.parse()`](#shortcutparse)
 * [`Shortcut.is()`](#shortcutis)
 * [`Shortcut.SECONDARY`](#shortcutsecondary)
@@ -245,6 +246,12 @@ Formats the shortcut as a string, according to the platform's conventions. Notab
 
 If the shortcut responds to multiple keys, only the first key is included in the output.
 
+### `Shortcut.prototype.toAriaString`
+
+> `toAriaString(): string`
+
+Formats the shortcut as an ARIA-compatible shortcut string. If the shortcut repsonds to multiple keys, only the first key is included in the output.
+
 ### `Shortcut.parse`
 
 > `static parse(value: string | Array<string>): Shortcut | ShortcutGroup`
@@ -283,6 +290,7 @@ When this value is passed to the `primary` field in [the constructor](#shortcut-
 * [constructor](#shortcutgroup-constructor)
 * [`ShortcutGroup.prototype.forEach()`](#shortcutgroupprototypeforeach)
 * [`ShortcutGroup.prototype.toString()`](#shortcutgroupprototypetostring)
+* [`ShortcutGroup.prototype.toAriaString()`](#shortcutgroupprototypetoariastring)
 
 ---
 
@@ -311,6 +319,12 @@ Passes each `Shortcut` in the group and its associated index into `cb`. The retu
 Formats the _first shortcut_ in the shortcut group as a string. See [`Shortcut.prototype.toString()`](#shortcutprototypetostring) for details.
 
 **Note:** The output only includes the first shortcut in the group.
+
+### `Shortcut.prototype.toAriaString`
+
+> `toAriaString(): string`
+
+Formats each shortcut in the group as an ARIA-compatible shortcut string. See [`Shortcut.prototype.toAriaString()`](#shortcutprototypetoariastring) for details.
 
 ## `ShortcutMap`
 

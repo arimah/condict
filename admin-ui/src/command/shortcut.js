@@ -54,6 +54,16 @@ const formatModifiers = isOSX
     // Windows/Linux order: Ctrl+Shift+Alt+(key)
     `${primary || secondary ? 'Ctrl+' : ''}${shift ? 'Shift+' : ''}${alt ? 'Alt+' : ''}`;
 
+const formatAriaModifiers = isOSX
+  ? (primary, secondary, shift, alt) =>
+    // Primary = Meta
+    // Secondary = Control
+    `${primary ? 'Meta+' : ''}${secondary ? 'Control+' : ''}${shift ? 'Shift+' : ''}${alt ? 'Alt+' : ''}`
+  : (primary, secondary, shift, alt) =>
+    // Primary = Control
+    // Secondary = Control
+    `${primary || secondary ? 'Control+' : ''}${shift ? 'Shift+' : ''}${alt ? 'Alt+' : ''}`;
+
 export class Shortcut {
   constructor(config) {
     config = {...DefaultConfig, ...config};
@@ -97,6 +107,18 @@ export class Shortcut {
       this.alt
     );
     return `${modifiers}${this.keys[0]}`;
+  }
+
+  toAriaString() {
+    const modifiers = formatAriaModifiers(
+      this.primary === true,
+      this.primary === SECONDARY,
+      this.shift,
+      this.alt
+    );
+    const key = this.keys[0];
+    const keyName = key === ' ' ? 'Space' : key;
+    return `${modifiers}${keyName}`;
   }
 
   static parse(shortcut) {
@@ -158,6 +180,10 @@ export class ShortcutGroup {
 
   toString() {
     return this.shortcuts[0].toString();
+  }
+
+  toAriaString() {
+    return this.shortcuts.map(s => s.toAriaString()).join(' ');
   }
 
   static parse(shortcuts) {
