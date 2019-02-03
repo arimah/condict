@@ -13,7 +13,7 @@ const Transition = property => css`
 export const Label = styled.label`
   display: inline-block;
   box-sizing: border-box;
-  color: ${ifProp('disabled', theme('general.disabledFg'))};
+  color: ${ifProp('disabled', theme('general.disabledFg'), theme('general.fg'))};
 
   ${Transition('color')}
 `;
@@ -108,11 +108,10 @@ export const Dot = styled.span`
     props.theme.general.borderColor
   };
 
-  ${Transition('left, width, background-color')}
+  ${Transition('left, background-color')}
 
   ${Label}:active & {
-    width: 15px;
-    left: ${ifProp('checked', '11px')};
+    left: ${ifProp('checked', '12px', '4px')};
   }
 `;
 
