@@ -13,7 +13,10 @@ const Transition = property => css`
 export const Label = styled.label`
   display: inline-block;
   box-sizing: border-box;
-  color: ${ifProp('disabled', theme('general.disabledFg'), theme('general.fg'))};
+  color: ${ifProp('disabled',
+    theme('general.disabledFg'),
+    theme('general.fg')
+  )};
 
   ${Transition('color')}
 `;
