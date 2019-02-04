@@ -98,7 +98,7 @@ class Adaptor {
       return;
     }
 
-    if (/^\s*+$/.test(sql)) {
+    if (/^\s*$/.test(sql)) {
       this.logger.warn('Empty query?!');
     } else {
       const reindentedSql = reindentQuery(sql);
