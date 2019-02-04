@@ -12,7 +12,7 @@ module.exports = {
     lemmaCount: p => p.lemma_count,
 
     lemmas: (p, {page, filter}, {model: {Lemma}}) =>
-      Lemma.allByLanguage(p.id, page, filter, p.lemma_count),
+      Lemma.allByLanguage(p.id, page, filter),
   },
 
   Query: {

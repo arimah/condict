@@ -49,7 +49,7 @@ class Lemma extends Model {
     return `lemmas.term_unique-${languageId}`;
   }
 
-  async allByLanguage(languageId, page, filter, totalCount) {
+  async allByLanguage(languageId, page, filter) {
     page = page || DefaultPagination;
 
     if (page.page < 0) {
@@ -66,10 +66,8 @@ class Lemma extends Model {
     // The pagination parameters make batching difficult and probably unnecessary.
     const offset = page.page * page.perPage;
     const {db} = this;
-    const nodes = await db.all`
-      select l.*
-      from lemmas l
-      where l.language_id = ${languageId | 0}
+    const condition = db.raw`
+      l.language_id = ${languageId | 0}
         ${
           filter === 'DEFINED_LEMMAS_ONLY' ? db.raw`
             and exists (
@@ -85,6 +83,16 @@ class Lemma extends Model {
             )` :
           db.raw``
         }
+    `;
+    const {total: totalCount} = await db.get`
+      select count(*) as total
+      from lemmas l
+      where ${condition}
+    `;
+    const nodes = await db.all`
+      select l.*
+      from lemmas l
+      where ${condition}
       order by l.term_display
       limit ${page.perPage} offset ${offset}
     `;
