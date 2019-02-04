@@ -13,18 +13,18 @@
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "apollo-server": "^2.1.0",
-    "better-sqlite3": "^5.0.1",
-    "chalk": "^2.4.1",
+    "apollo-server": "^2.3.3",
+    "better-sqlite3": "^5.4.0",
+    "chalk": "^2.4.2",
     "command-line-args": "^5.0.2",
     "dataloader": "^1.4.0",
     "deepmerge": "^2.2.1",
-    "generic-pool": "^3.4.2",
-    "graphql": "^14.0.2",
+    "generic-pool": "^3.6.0",
+    "graphql": "^14.1.1",
     "mysql": "^2.16.0",
-    "winston": "^3.1.0"
+    "winston": "^3.2.1"
   },
   "devDependencies": {
-    "eslint": "^5.12.1"
+    "eslint": "^5.13.0"
   }
 }
