@@ -4,6 +4,7 @@ const Mutator = require('../mutator');
 const validator = require('../validator');
 const inflectWord = require('../../utils/inflect-word');
 const MultiMap = require('../../utils/multi-map');
+const FieldSet = require('../field-set');
 
 const stemNameValidator = validator('name').lengthBetween(1, 32);
 const stemValueValidator = validator('value').lengthBetween(0, 160);
@@ -101,12 +102,13 @@ class DefinitionMut extends Mutator {
 
   async update(id, {
     term,
+    partOfSpeechId,
     description,
     stems,
     inflectionTables
   }) {
     const {db} = this;
-    const {Definition, DefinitionStem} = this.model;
+    const {Definition, DefinitionStem, PartOfSpeech} = this.model;
     const {
       LemmaMut,
       DefinitionStemMut,
@@ -122,18 +124,50 @@ class DefinitionMut extends Mutator {
     }
 
     return db.transact(async () => {
+      const newFields = new FieldSet();
+
       if (term != null && term !== definition.term) {
         const newLemmaId = await LemmaMut.ensureExists(
           definition.language_id,
           term
         );
+        newFields.set('lemma_id', newLemmaId);
+      } else {
+        // A value is needed later for word inflection.
+        term = definition.term;
+      }
+
+      if (
+        partOfSpeechId != null &&
+        (partOfSpeechId | 0) !== definition.part_of_speech_id
+      ) {
+        const partOfSpeech = await PartOfSpeech.byId(partOfSpeechId);
+        if (!partOfSpeech) {
+          throw new UserInputError(`Part of speech not found: ${partOfSpeechId}`, {
+            invalidArgs: ['partOfSpeechId']
+          });
+        }
+
+        newFields.set('part_of_speech_id', partOfSpeech.id);
+        partOfSpeechId = partOfSpeech.id;
+
+        // If the part of speech is changed, we can't keep the old inflection
+        // tables, since they belong to the wrong part of speech. If no new
+        // tables were provided, delete the old ones.
+        if (inflectionTables == null) {
+          inflectionTables = [];
+        }
+      } else {
+        // A value is needed later for word inflection.
+        partOfSpeechId = definition.part_of_speech_id;
+      }
+
+      if (newFields.size > 0) {
         await db.exec`
           update definitions
-          set lemma_id = ${newLemmaId}
+          set ${newFields}
           where id = ${definition.id}
         `;
-      } else {
-        term = definition.term;
       }
 
       if (description) {
@@ -159,7 +193,7 @@ class DefinitionMut extends Mutator {
       if (inflectionTables) {
         derivedDefinitions = await this.updateInflectionTables(
           definition.id,
-          definition.part_of_speech_id,
+          partOfSpeechId,
           term,
           stemMap,
           inflectionTables,
@@ -229,28 +263,37 @@ class DefinitionMut extends Mutator {
       stemMap,
     };
 
-    let tableIndex = 0;
+    const currentTableIds = [];
     for (const table of inflectionTables) {
-      const {derivedForms} = table.id != null && !isNewDefinition
-        ? await DefinitionInflectionTableMut.update(
-          table.id,
-          definitionData,
-          table,
-          tableIndex
-        )
-        : await DefinitionInflectionTableMut.insert(
-          definitionData,
-          partOfSpeechId,
-          table,
-          tableIndex
-        );
+      const {id: tableId, derivedForms} =
+        table.id != null && !isNewDefinition
+          ? await DefinitionInflectionTableMut.update(
+            table.id,
+            definitionData,
+            partOfSpeechId,
+            table,
+            currentTableIds.length
+          )
+          : await DefinitionInflectionTableMut.insert(
+            definitionData,
+            partOfSpeechId,
+            table,
+            currentTableIds.length
+          );
 
       // Add each form as a derived definition. So derivative.
       derivedForms.forEach((term, formId) =>
         derivedDefinitions.add(term, formId)
       );
 
-      tableIndex++;
+      currentTableIds.push(tableId);
+    }
+
+    if (!isNewDefinition) {
+      await DefinitionInflectionTableMut.deleteOld(
+        definitionId,
+        currentTableIds
+      );
     }
 
     return derivedDefinitions;
@@ -353,20 +396,11 @@ class DefinitionInflectionTableMut extends Mutator {
     index
   ) {
     const {db} = this;
-    const {InflectionTable} = this.model;
 
-    const inflectionTable = await InflectionTable.byId(inflectionTableId);
-    if (!inflectionTable) {
-      throw new UserInputError(`Inflection table not found: ${inflectionTableId}`, {
-        invalidArgs: ['inflectionTableId']
-      });
-    }
-    if (inflectionTable.part_of_speech_id !== partOfSpeechId) {
-      throw new UserInputError(
-        `Inflection table ${inflectionTable.id} belongs to the wrong part of speech`,
-        {invalidArgs: ['inflectedFormId']}
-      );
-    }
+    const inflectionTable = await this.validateInflectionTableId(
+      inflectionTableId,
+      partOfSpeechId
+    );
 
     const {insertId: tableId} = await db.exec`
       insert into definition_inflection_tables (
@@ -397,6 +431,7 @@ class DefinitionInflectionTableMut extends Mutator {
   async update(
     id,
     {id: definitionId, term, stemMap},
+    partOfSpeechId,
     {caption, customForms},
     index
   ) {
@@ -415,6 +450,11 @@ class DefinitionInflectionTableMut extends Mutator {
         {invalidArgs: ['id']}
       );
     }
+
+    await this.validateInflectionTableId(
+      table.inflection_table_id,
+      partOfSpeechId
+    );
 
     await db.exec`
       update definition_inflection_tables
@@ -441,7 +481,25 @@ class DefinitionInflectionTableMut extends Mutator {
       customForms
     );
 
-    return {derivedForms};
+    return {id, derivedForms};
+  }
+
+  async validateInflectionTableId(inflectionTableId, partOfSpeechId) {
+    const {InflectionTable} = this.model;
+
+    const inflectionTable = await InflectionTable.byId(inflectionTableId);
+    if (!inflectionTable) {
+      throw new UserInputError(`Inflection table not found: ${inflectionTableId}`, {
+        invalidArgs: ['inflectionTableId']
+      });
+    }
+    if (inflectionTable.part_of_speech_id !== partOfSpeechId) {
+      throw new UserInputError(
+        `Inflection table ${inflectionTable.id} belongs to the wrong part of speech`,
+        {invalidArgs: ['inflectionTableId']}
+      );
+    }
+    return inflectionTable;
   }
 
   async deriveAllForms(
@@ -496,6 +554,19 @@ class DefinitionInflectionTableMut extends Mutator {
     }
 
     return derivedForms;
+  }
+
+  deleteOld(definitionId, currentIds) {
+    const {db} = this;
+    return db.exec`
+      delete from definition_inflection_tables
+      where definition_id = ${definitionId}
+        and ${
+          currentIds.length > 0
+            ? db.raw`id not in (${currentIds})`
+            : '1'
+        }
+    `;
   }
 }
 

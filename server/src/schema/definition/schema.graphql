@@ -214,6 +214,16 @@ input EditDefinitionInput {
   "If set, updates the definition term."
   term: String
 
+  """
+  If set, updates the part of speech.
+
+  If this field is set to a value other than the definition's current part of
+  speech, and `inflectionTables` is _not_ set, then the definition's inflection
+  tables will all be deleted. In other words, changing the part of speech will
+  delete inflection tables unless you specify new ones.
+  """
+  partOfSpeechId: ID
+
   "If set, updates the definition description."
   description: [BlockElementInput!]
 
@@ -299,10 +309,6 @@ extend type Mutation {
 
   """
   Edits an existing definition.
-
-  When editing an existing definition, it is not possible to change its part of
-  speech, or to change the `inflectionTableId` of any inflection table used by
-  the definition.
 
   Requires authentication.
   """
