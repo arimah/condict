@@ -66,7 +66,7 @@ class Lemma extends Model {
     // The pagination parameters make batching difficult and probably unnecessary.
     const offset = page.page * page.perPage;
     const {db} = this;
-    const values = await db.all`
+    const nodes = await db.all`
       select l.*
       from lemmas l
       where l.language_id = ${languageId | 0}
@@ -88,7 +88,7 @@ class Lemma extends Model {
       order by l.term_display
       limit ${page.perPage} offset ${offset}
     `;
-    return createConnection(page, totalCount, values);
+    return createConnection(page, totalCount, nodes);
   }
 }
 

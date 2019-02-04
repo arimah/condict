@@ -1,3 +1,4 @@
+"The kind of a block element."
 enum BlockKind {
   "A paragraph of text without any additional meaning."
   PARAGRAPH
@@ -8,13 +9,23 @@ enum BlockKind {
   "A second-level heading."
   HEADING_2
 
-  "An ordered list item. All consecutive ordered list items on the same level belong to the same list."
+  """
+  An ordered list item. All consecutive ordered list items on the same level
+  belong to the same list.
+  """
   OLIST_ITEM
 
-  "An unordered list item. All consecutive unordered list items on the same level belong to the same list."
+  """
+  An unordered list item. All consecutive unordered list items on the same
+  level belong to the same list.
+  """
   ULIST_ITEM
 }
 
+"""
+A block element. Block elements make up the top-level nodes of formatted text.
+These include paragraphs, headings and list items.
+"""
 type BlockElement {
   "The block kind."
   kind: BlockKind!
@@ -33,29 +44,41 @@ type BlockElement {
   inlines: [InlineElement!]
 }
 
+"The kind of an inline element."
 enum InlineKind {
-  "Bold text."
+  "Bold text. The inline element is a `StyleInline`."
   BOLD
 
-  "Italic text."
+  "Italic text. The inline element is `StyleInline`."
   ITALIC
 
-  "Underlined text."
+  "Underlined text. The inline element is `StyleInline`."
   UNDERLINE
 
-  "Struck-through text."
+  "Struck-through text. The inline element is `StyleInline`."
   STRIKETHROUGH
 
-  "Superscript text."
+  "Superscript text. The inline element is `StyleInline`."
   SUPERSCRIPT
 
-  "Subscript text."
+  "Subscript text. The inline element is `StyleInline`."
   SUBSCRIPT
 
-  "A link, which can link to an item in the dictionary or to an arbitrary URI."
+  """
+  A link, which can link to an item in the dictionary or to an arbitrary URI.
+  The inline element is a `LinkInline`.
+  """
   LINK
 }
 
+"""
+An inline element. These appear as the children of block elements. Inlines have
+no text of their own; instead, they refer to character offsets inside the text
+content of the block.
+
+The character offets of an inline element are true Unicode character offsets,
+not byte offsets or UTF-16 code unit offsets.
+"""
 interface InlineElement {
   "The inline kind."
   kind: InlineKind!
@@ -67,6 +90,7 @@ interface InlineElement {
   end: Int!
 }
 
+"An `InlineElement` that applies a single style to its text."
 type StyleInline implements InlineElement {
   "The inline kind."
   kind: InlineKind!
@@ -78,6 +102,10 @@ type StyleInline implements InlineElement {
   end: Int!
 }
 
+"""
+An `InlineElement` that represents a link, either to an item in the dictionary,
+or to an arbitrary external URI.
+"""
 type LinkInline implements InlineElement {
   "The inline kind."
   kind: InlineKind!
@@ -102,6 +130,7 @@ type LinkInline implements InlineElement {
   linkTarget: String!
 }
 
+"Input type for a block element."
 input BlockElementInput {
   "The block kind."
   kind: BlockKind!
@@ -122,6 +151,7 @@ input BlockElementInput {
   inlines: [InlineElementInput!]
 }
 
+"Input type for an inline element."
 input InlineElementInput {
   """
   The inline kind.

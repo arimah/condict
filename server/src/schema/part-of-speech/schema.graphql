@@ -1,3 +1,9 @@
+"""
+A part of speech is associated with each word in the dictionary. In addition to
+providing a way to group words, a part of speech can define any number of
+inflection tables, which describe how to inflect words in that part of speech.
+See `InflectionTable` for more.
+"""
 type PartOfSpeech {
   "The globally unique ID of the part of speech."
   id: ID!
@@ -17,6 +23,7 @@ extend type Query {
   partOfSpeech(id: ID!): PartOfSpeech
 }
 
+"Input type for a new part of speech."
 input NewPartOfSpeechInput {
   "The language that the part of speech will be added to."
   languageId: ID!
@@ -25,6 +32,7 @@ input NewPartOfSpeechInput {
   name: String!
 }
 
+"Input type for editing an existing part of speech."
 input EditPartOfSpeechInput {
   "If set, renames the part of speech."
   name: String

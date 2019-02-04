@@ -4,12 +4,12 @@ module.exports = {
     (p, args, context, info) =>
       resolver(p, args, context, info),
 
-  createConnection: (pageParams, totalCount, values) => ({
+  createConnection: (pageParams, totalCount, nodes) => ({
     meta: {
       page: pageParams.page,
       perPage: pageParams.perPage,
       totalCount,
     },
-    values,
+    nodes,
   }),
 };

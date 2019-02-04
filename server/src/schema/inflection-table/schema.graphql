@@ -1,3 +1,17 @@
+"""
+An inflection table defines how to inflect words that belong to the table's part
+of speech. The table is a true 2-dimensional table, not merely a list of forms.
+As such, it can contain any number of rows and columns, and some cells may be
+headers. Cells can span multiple rows and columns.
+
+There are two ways to access the contents of an inflection table:
+
+* The `layout` field preserves information about the table's cells, and is used
+  to construct the table in its entirety.
+* The `inflectedForms` field provides only the table's inflected forms, which
+  do not on their own contain any layout information. It is not possible using
+  this field alone to determine which inflected form goes where.
+"""
 type InflectionTable {
   "The globally unique ID of the inflection table."
   id: ID!
@@ -33,11 +47,21 @@ type InflectionTable {
   partOfSpeech: PartOfSpeech!
 }
 
+"""
+A single row in an inflection table.
+
+This is a record type to allow future extensions without breaking backwards
+compatibility.
+"""
 type InflectionTableRow {
   "Header and data cells of the table."
   cells: [InflectionTableCell!]!
 }
 
+"""
+A single cell in an inflection table. All inflection table cells have a column
+span and a row span, both of which are guaranteed to be greater than zero.
+"""
 interface InflectionTableCell {
   "The column span of the cell. The value is always greater than 0."
   columnSpan: Int!
@@ -46,6 +70,10 @@ interface InflectionTableCell {
   rowSpan: Int!
 }
 
+"""
+A header cell in an inflection table. Header cells contain only a bit of text,
+with no formatting.
+"""
 type InflectionTableHeaderCell implements InflectionTableCell {
   "The column span of the cell. The value is always greater than 0."
   columnSpan: Int!
@@ -57,6 +85,10 @@ type InflectionTableHeaderCell implements InflectionTableCell {
   headerText: String!
 }
 
+"""
+An cell in an inflection table that contains an inflected form. See the related
+type `InflectedForm` for details.
+"""
 type InflectionTableDataCell implements InflectionTableCell {
   "The column span of the cell. The value is always greater than 0."
   columnSpan: Int!
@@ -68,6 +100,27 @@ type InflectionTableDataCell implements InflectionTableCell {
   inflectedForm: InflectedForm!
 }
 
+"""
+A single inflected form. Each form belongs to exactly one table.
+
+An inflected form has an _inflection pattern_, which describes how to construct
+the form when applied to a word. Inflection patterns contain placeholders inside
+curly brackets, such as `{Plural root}`, which are replaced by the definition's
+stems. See `Definition.stems` and `DefinitionStem` for more. The placeholder
+`{~}` always refers to the definition's lemma form.
+
+In addition to this, the `deriveLemma` field determines whether the inflected
+form, once computed for a word, is added to the dictionary as its own lemma.
+This enables the dictionary to list e.g. "birds" as the plural of "bird". This
+feature can be disabled or enabled for each individual form.
+
+Finally, every inflected form has a name. Usually inflected form names are
+derived from the inflection table's header cells, but the user can also enter
+a custom name. The `hasCustomDisplayName` field indicates whether the name was
+derived automatically. The display name is used for derived definitions, so the
+dictionary can show "birds" as the _plural_ of "bird", not merely a generic
+_inflected form of_.
+"""
 type InflectedForm {
   "The globally unique ID of the inflected form."
   id: ID!
@@ -102,6 +155,7 @@ extend type Query {
   inflectedForm(id: ID!): InflectedForm
 }
 
+"Input type for a new inflection table."
 input NewInflectionTableInput {
   "The part of speech that the inflection table will be added to."
   partOfSpeechId: ID!
@@ -116,6 +170,10 @@ input NewInflectionTableInput {
   layout: [InflectionTableRowInput!]!
 }
 
+"""
+Input type for editing an existing inflection table. It is not possible to move
+an inflection table to another part of speech.
+"""
 input EditInflectionTableInput {
   "If set, renames the inflection table."
   name: String
@@ -129,11 +187,19 @@ input EditInflectionTableInput {
   layout: [InflectionTableRowInput!]
 }
 
+"""
+Input type for an inflection table row. This type is used for both new and
+existing tables.
+"""
 input InflectionTableRowInput {
   "Header and data cells of the table."
   cells: [InflectionTableCellInput]!
 }
 
+"""
+Input type for an inflection table cell. This type combines header cells and
+inflected forms, and is used for both new and existing tables.
+"""
 input InflectionTableCellInput {
   """
   The column span of the cell. The value must be greater than 0. If omitted,
@@ -160,6 +226,10 @@ input InflectionTableCellInput {
   inflectedForm: InflectedFormInput
 }
 
+"""
+Input type for an inflected form. This type is used for both new and existing
+forms.
+"""
 input InflectedFormInput {
   """
   The ID of the inflected form. In a new table, this property is ignored. When
@@ -171,7 +241,7 @@ input InflectedFormInput {
   deriveLemma: Boolean!
 
   """
-  A pattern, such as '{~}s', which describes how to construct the inflected
+  A pattern, such as `{~}s`, which describes how to construct the inflected
   form.
   """
   inflectionPattern: String!

@@ -2,6 +2,9 @@
 A _lemma_ is a word listed in a dictionary. A lemma contains one or more
 _definitions_, which, as the name imply, actually define the lemma. The lemma
 itself only serves to group definitions.
+
+Lemmas are managed automatically. The dictionary's lemmas are edited indirectly
+by changing the definitions contained in them.
 """
 type Lemma {
   "The globally unique ID of the lemma."

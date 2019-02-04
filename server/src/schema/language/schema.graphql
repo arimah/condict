@@ -1,3 +1,4 @@
+"Determines how to filter lemmas."
 enum LemmaFilter {
   "All lemmas are included in the result."
   ALL_LEMMAS
@@ -10,11 +11,24 @@ enum LemmaFilter {
 
   """
   Include only lemmas that have at least one derived definition (that is, where
-  `Lemma.definitions` is not the empty list).
+  `Lemma.derivedDefinitions` is not the empty list).
   """
   DERIVED_LEMMAS_ONLY
 }
 
+"""
+The language is the root of the dictionary. Everything else in the dictionary
+belongs, directly or indirectly, to a language. A dictionary can contain any
+number of languages.
+
+A language contains:
+
+* Parts of speech (see `PartOfSpeech`), which words can be associated with.
+* Lemmas (see `Lemma`), which are basically the words of the dictionary. Each
+  lemma can contain any number of definitions (see `Definition`).
+
+In addition, every language has a (unique) name and a URL name.
+"""
 type Language {
   "The globally unique ID of the language."
   id: ID!
@@ -45,12 +59,13 @@ type Language {
   ): LemmaConnection!
 }
 
+"Contains results from the `Language.lemmas` field."
 type LemmaConnection {
   "Metadata about the connection, related to pagination."
   meta: ConnectionMeta!
 
   "The lemmas in this batch."
-  values: [Lemma!]!
+  nodes: [Lemma!]!
 }
 
 extend type Query {
@@ -64,6 +79,7 @@ extend type Query {
   language(id: ID, urlName: String): Language
 }
 
+"Input type for a new language."
 input NewLanguageInput {
   "The display name of the language."
   name: String!
@@ -75,6 +91,7 @@ input NewLanguageInput {
   urlName: String!
 }
 
+"Input type for editing an existing language."
 input EditLanguageInput {
   "If set, updates the display name of the language."
   name: String

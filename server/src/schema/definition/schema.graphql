@@ -1,3 +1,12 @@
+"""
+As its name suggests, a definition defines a lemma. A definition has a part of
+speech, a description, and, optionally, some inflection tables.
+
+A definition's description contains free-form formatted text. Paragraphs, list
+items, headings and other things.
+
+A definition's inflection tables must belong to the definition's part of speech.
+"""
 type Definition {
   "The globally unique ID of the definition."
   id: ID!
@@ -51,8 +60,8 @@ type Definition {
 
 """
 An inflection stem for a single definition. Stems are used when inflecting the
-word: inflected forms contain patterns like '{pl}es', where '{pl}' is replaced
-with the value of the stem named 'pl'.
+word: inflected forms contain patterns like `{pl}es`, where `{pl}` is replaced
+with the value of the stem named `pl`.
 """
 type DefinitionStem {
   "The name of the stem."
@@ -65,6 +74,14 @@ type DefinitionStem {
   definition: Definition!
 }
 
+"""
+An inflection table attached to a single definition. In addition to containing
+an table, this type contains an otional caption and any number of custom forms
+(chiefly for defining irregular forms).
+
+Note that a definition can have multiple instances of the same inflection table.
+Some words inflect differently depending on usage; Condict supports this.
+"""
 type DefinitionInflectionTable {
   "The globally unique ID of the definition inflection table."
   id: ID!
@@ -82,7 +99,7 @@ type DefinitionInflectionTable {
   A list of custom inflected forms, which replace forms in the table. These are
   _generally_ irregular forms, but this is not guaranteed.
 
-  Forms are ordered first by inflected form ID.
+  Forms are ordered by inflected form ID.
   """
   customForms: [CustomInflectedForm!]!
 
@@ -93,6 +110,10 @@ type DefinitionInflectionTable {
   definition: Definition!
 }
 
+"""
+A single paragraph of formatted text, which is used as a caption for inflection
+tables attached to a definition.
+"""
 type TableCaption {
   "The text content of the caption, without inline formatters."
   text: String!
@@ -105,6 +126,10 @@ type TableCaption {
   inlines: [InlineElement!]
 }
 
+"""
+A custom inflected form, typically an irregular form. It overrides a single cell
+in a definition inflection table.
+"""
 type CustomInflectedForm {
   "The table that the form belongs to."
   table: DefinitionInflectionTable!
@@ -116,6 +141,17 @@ type CustomInflectedForm {
   value: String!
 }
 
+"""
+A _derived_ definition is an inflected form of a word. When a regular definition
+is given an inflection table, each form whose `InflectedForm.deriveLemma` value
+is true will be added as a derived definition.
+
+This enables the dictionary to show words like this:
+
+> **birds**
+>
+> 1. _plural of_ bird
+"""
 type DerivedDefinition {
   """
   The term that the definition applies to. This value is equal to `lemma.term`
@@ -148,6 +184,7 @@ extend type Query {
   definitionInflectionTable(id: ID!): DefinitionInflectionTable
 }
 
+"Input type for adding new definitions."
 input NewDefinitionInput {
   "The language that the definition will be added to."
   languageId: ID!
@@ -155,7 +192,7 @@ input NewDefinitionInput {
   """
   The term that this definition defines.
 
-  If the lemma does not exist, it will automatically be created.
+  If there is no lemma for this term, it will automatically be created.
   """
   term: String!
 
@@ -172,6 +209,7 @@ input NewDefinitionInput {
   inflectionTables: [DefinitionInflectionTableInput!]!
 }
 
+"Input type for editing an existing definition. The ID is a separate argument."
 input EditDefinitionInput {
   "If set, updates the definition term."
   term: String
@@ -190,6 +228,7 @@ input EditDefinitionInput {
   inflectionTables: [DefinitionInflectionTableInput!]
 }
 
+"Input type for a definition inflection stem."
 input StemInput {
   "The name of the stem."
   name: String!
@@ -198,6 +237,10 @@ input StemInput {
   value: String!
 }
 
+"""
+Input type for a definition's inflection table. This type is used both for new
+and existing tables.
+"""
 input DefinitionInflectionTableInput {
   """
   The ID of the definition inflection table. In a new definition, this property
@@ -222,6 +265,9 @@ input DefinitionInflectionTableInput {
   inflectionTableId: ID!
 }
 
+"""
+Input type for a table caption, which is a single paragraph of formatted text.
+"""
 input TableCaptionInput {
   "The text content of the caption, without inline formatters."
   text: String!
