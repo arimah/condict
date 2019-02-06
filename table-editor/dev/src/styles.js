@@ -6,7 +6,8 @@ import {Button, TextInput} from '@condict/admin-ui';
 export const AppStyles = createGlobalStyle`
   body {
     font-size: 11pt;
-    font-family: 'Inter UI', sans-serif;
+    font-family: 'Inter', sans-serif;
+    font-feature-settings: 'cv08', 'calt' off;
     background-color: ${theme('general.activeBg')};
     color: ${theme('general.fg')};
 
