@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import {theme} from 'styled-tools';
 
 export const List = styled.div`
-  margin: 20px;
+  margin: 16px;
 `;
 
 export const Row = styled.div`
@@ -25,7 +25,7 @@ export const ErrorContainer = styled.div`
 `;
 
 export const ErrorMessage = styled.div`
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-weight: bold;
 `;
 
@@ -36,8 +36,8 @@ export const ErrorStack = styled.pre`
 
 export const Interactive = styled.div`
   display: flex;
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin-top: 8px;
+  margin-bottom: 16px;
   flex-direction: row;
 `;
 
@@ -47,11 +47,11 @@ export const InteractiveContents = styled.div.attrs({
 })`
   display: flex;
   flex: 1 0 auto;
-  padding: 20px;
+  padding: 24px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 7px;
+  border-radius: 8px;
   background-color: ${theme('general.bg')};
 
   > * {
@@ -67,7 +67,7 @@ export const InteractiveControls = styled.div.attrs({
   role: 'group',
   'aria-label': 'Interactive example settings',
 })`
-  padding: 20px;
+  padding: 16px;
   flex: 0 0 180px;
 `;
 

@@ -1,8 +1,6 @@
 import styled, {createGlobalStyle} from 'styled-components';
 import {theme} from 'styled-tools';
 
-import {Button, TextInput} from '@condict/admin-ui';
-
 export const AppStyles = createGlobalStyle`
   body {
     font-size: 11pt;
@@ -46,45 +44,8 @@ export const AppStyles = createGlobalStyle`
   }
 `;
 
-export const EditorContainer = styled.div`
-  padding: 24px;
-  border-radius: 8px;
-  background-color: ${theme('general.bg')};
-`;
-
-export const Group = styled.div`
-  margin-bottom: 16px;
-
-  & > :not(:first-child) {
-    margin-left: 1px;
-  }
-
+export const Group = styled.p`
   & > :not(:last-child) {
-    margin-right: 1px;
+    margin-right: 16px;
   }
-`;
-
-export const Separator = styled.span`
-  display: inline-block;
-  height: 27px;
-  vertical-align: -8px;
-  border-left: 2px solid ${theme('general.borderColor')};
-
-  &:not(:first-child) {
-    margin-left: 8px;
-  }
-
-  &:not(:last-child) {
-    margin-right: 8px;
-  }
-`;
-
-export const IconButton = styled(Button)`
-  > svg {
-    vertical-align: bottom;
-  }
-`;
-
-export const TermInput = styled(TextInput)`
-  width: 400px;
 `;

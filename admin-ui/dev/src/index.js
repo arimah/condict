@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import styled, {createGlobalStyle, ThemeProvider} from 'styled-components';
-import {theme} from 'styled-tools';
+import {ThemeProvider} from 'styled-components';
 
 import {
   Button,
@@ -13,54 +12,7 @@ import {
 import Demo from './demo';
 import ComponentDemos from './components';
 
-const AppStyles = createGlobalStyle`
-  body {
-    font-size: 11pt;
-    font-family: 'Inter', sans-serif;
-    font-feature-settings: 'cv08', 'calt' off;
-    background-color: ${theme('general.activeBg')};
-    color: ${theme('general.fg')};
-
-    transition-property: color, background-color;
-    transition-timing-function: linear;
-    transition-duration: ${theme('timing.short')};
-  }
-
-  #app-root {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 900px;
-  }
-
-  h1 {
-    margin-top: 10px;
-    margin-bottom: 20px;
-    font-size: 2rem;
-  }
-
-  h2 {
-    margin-top: 40px;
-    margin-bottom: 15px;
-    font-size: 1.5rem;
-  }
-
-  h3 {
-    margin-top: 30px;
-    margin-bottom: 10px;
-    font-size: 1.25rem;
-  }
-
-  p {
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-`;
-
-const Group = styled.p`
-  & > :not(:last-child) {
-    margin-right: 16px;
-  }
-`;
+import * as S from './styles';
 
 const InitialSettings = {
   darkTheme: false,
@@ -191,7 +143,7 @@ class App extends Component {
         <>
           <h1>Admin UI component test page</h1>
 
-          <Group>
+          <S.Group>
             <Switch
               intent='secondary'
               checked={settings.darkTheme}
@@ -204,7 +156,7 @@ class App extends Component {
               label='Reset all components'
               onClick={this.handleResetAll}
             />
-          </Group>
+          </S.Group>
 
           {ComponentDemos.map(demo =>
             <Demo
@@ -218,7 +170,7 @@ class App extends Component {
             />
           )}
 
-          <AppStyles/>
+          <S.AppStyles/>
           <ComponentStyles/>
         </>
       </ThemeProvider>
