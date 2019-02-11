@@ -1,19 +1,17 @@
-const {UserInputError} = require('apollo-server');
+const {validatePageParams, createConnection} = require('../../schema/helpers');
 
 const Model = require('../model');
-const {createConnection} = require('../../schema/helpers');
-
-const DefaultPagination = Object.freeze({
-  page: 0,
-  perPage: 50,
-});
-const MaxPerPage = 200;
 
 class Lemma extends Model {
   constructor(db, model) {
     super(db, model);
 
     this.byIdKey = Symbol();
+    this.defaultPagination = Object.freeze({
+      page: 0,
+      perPage: 50,
+    });
+    this.maxPerPage = 200;
   }
 
   byId(id) {
@@ -50,18 +48,7 @@ class Lemma extends Model {
   }
 
   async allByLanguage(languageId, page, filter) {
-    page = page || DefaultPagination;
-
-    if (page.page < 0) {
-      throw new UserInputError(`Page number must be greater than zero; got ${page.page}`, {
-        invalidArgs: ['page']
-      });
-    }
-    if (page.perPage < 1 || page.perPage > MaxPerPage) {
-      throw new UserInputError(`perPage must be between 1 and ${MaxPerPage}; got ${page.perPage}`, {
-        invalidArgs: ['page']
-      });
-    }
+    page = validatePageParams(page || this.defaultPagination, this.maxPerPage);
 
     // The pagination parameters make batching difficult and probably unnecessary.
     const offset = page.page * page.perPage;

@@ -7,11 +7,14 @@ const merge = require('deepmerge');
 const allTypeDefs = [
   gql`
     # Make sure the Query and Mutation types are available for extension.
+
+    "The root query type."
     type Query
 
+    "The root mutation type."
     type Mutation
 
-    # General-purpose metadata type for paginated content.
+    "Contains metadata about a paginated collection."
     type ConnectionMeta {
       "The 0-based page number. This value is always greater than or equal to 0."
       page: Int!
@@ -35,7 +38,7 @@ const allTypeDefs = [
       hasPrev: Boolean!
     }
 
-    # Input type for pagination parameters.
+    "Input type for pagination parameters."
     input PageParams {
       "The 0-based page number. This value cannot be less than 0."
       page: Int!

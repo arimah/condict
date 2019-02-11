@@ -45,8 +45,11 @@ type Definition {
   automatically. To get all inflected forms of a definition, you must fetch the
   `stems` and `inflectionTables` of the definition and "manually" inflect the
   word.
+
+  Since there may be many derived definitions, this field is paginated. If
+  provided, `page.perPage` cannot exceed 200.
   """
-  derivedDefinitions: [DerivedDefinition!]!
+  derivedDefinitions(page: PageParams): DerivedDefinitionConnection!
 
   "The lemma that the definition belongs to."
   lemma: Lemma!
@@ -139,6 +142,15 @@ type CustomInflectedForm {
 
   "The inflected word itself; the value of the table cell."
   value: String!
+}
+
+"Contains paginated results from the `Definition.derivedDefinitions` field."
+type DerivedDefinitionConnection {
+  "Metadata about the connection, related to pagination."
+  meta: ConnectionMeta!
+
+  "The derived definitions in this batch."
+  nodes: [DerivedDefinition!]!
 }
 
 """

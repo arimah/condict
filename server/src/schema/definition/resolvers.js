@@ -17,8 +17,8 @@ module.exports = {
     inflectionTables: (p, _args, {model: {DefinitionInflectionTable}}) =>
       DefinitionInflectionTable.allByDefinition(p.id),
 
-    derivedDefinitions: (p, _args, {model: {DerivedDefinition}}) =>
-      DerivedDefinition.allByDerivedFrom(p.id),
+    derivedDefinitions: (p, {page}, {model: {DerivedDefinition}}) =>
+      DerivedDefinition.allByDerivedFrom(p.id, page),
 
     lemma: (p, _args, {model: {Lemma}}) =>
       Lemma.byId(p.lemma_id),

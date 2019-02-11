@@ -59,7 +59,7 @@ type Language {
   ): LemmaConnection!
 }
 
-"Contains results from the `Language.lemmas` field."
+"Contains paginated results from the `Language.lemmas` field."
 type LemmaConnection {
   "Metadata about the connection, related to pagination."
   meta: ConnectionMeta!

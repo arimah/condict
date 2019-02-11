@@ -1,3 +1,5 @@
+const {validatePageParams, createConnection} = require('../../schema/helpers');
+
 const Model = require('../model');
 
 class Definition extends Model {
@@ -157,7 +159,11 @@ class DerivedDefinition extends Model {
     super(db, model);
 
     this.allByLemmaKey = Symbol();
-    this.allByDerivedFromKey = Symbol();
+    this.defaultPagination = Object.freeze({
+      page: 0,
+      perPage: 50,
+    });
+    this.maxPerPage = 200;
   }
 
   allByLemma(lemmaId) {
@@ -179,23 +185,32 @@ class DerivedDefinition extends Model {
     );
   }
 
-  allByDerivedFrom(definitionId) {
-    return this.db.batchOneToMany(
-      this.allByDerivedFromKey,
-      definitionId | 0,
-      (db, definitionIds) =>
-        db.all`
-          select
-            dd.*,
-            l.term_display as term,
-            l.language_id
-          from derived_definitions dd
-          inner join lemmas l on l.id = dd.lemma_id
-          where dd.original_definition_id in (${definitionIds})
-          order by l.term_display, dd.inflected_form_id
-        `,
-      row => row.original_definition_id
-    );
+  async allByDerivedFrom(definitionId, page) {
+    page = validatePageParams(page || this.defaultPagination, this.maxPerPage);
+
+    // The pagination parameters make batching difficult and probably unnecessary.
+    const offset = page.page * page.perPage;
+    const {db} = this;
+    const condition = db.raw`
+      dd.original_definition_id = ${definitionId | 0}
+    `;
+    const {total: totalCount} = await db.get`
+      select count(*) as total
+      from derived_definitions dd
+      where ${condition}
+    `;
+    const nodes = await db.all`
+      select
+        dd.*,
+        l.term_display as term,
+        l.language_id
+      from derived_definitions dd
+      inner join lemmas l on l.id = dd.lemma_id
+      where ${condition}
+      order by l.term_display, dd.inflected_form_id
+      limit ${page.perPage} offset ${offset}
+    `;
+    return createConnection(page, totalCount, nodes);
   }
 }
 
