@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@condict/a11y-utils": "^0.1.0",
-    "@condict/admin-ui": "^0.1.8",
+    "@condict/admin-ui": "^0.1.9",
     "@condict/gen-id": "^0.1.0",
     "focus-trap-react": "^5.0.1",
     "immutable": "^4.0.0-rc.12",
@@ -37,8 +37,8 @@
     "eslint-plugin-react": "^7.12.3",
     "html-webpack-plugin": "^3.2.0",
     "prop-types": "^15.6.2",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "rimraf": "^2.6.3",
     "styled-components": "^4.1.3",
     "styled-tools": "^1.6.0",
@@ -48,8 +48,8 @@
   },
   "peerDependencies": {
     "prop-types": "^15",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "styled-components": "^4.1.3",
     "styled-tools": "^1.6.0"
   },
