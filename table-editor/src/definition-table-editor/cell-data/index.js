@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 
 import StemsContext from '../stems-context';
@@ -32,16 +32,13 @@ CellData.propTypes = {
 
 export default CellData;
 
-class InflectedForm extends PureComponent {
-  render() {
-    const {pattern} = this.props;
-    const {term, stems} = this.context;
+const InflectedForm = React.memo(props => {
+  const {pattern} = props;
+  const {term, stems} = useContext(StemsContext);
 
-    return inflectWord(pattern, term, stems);
-  }
-}
-
-InflectedForm.contextType = StemsContext;
+  return inflectWord(pattern, term, stems);
+});
+InflectedForm.displayName = 'InflectedForm';
 
 InflectedForm.propTypes = {
   pattern: PropTypes.string,
