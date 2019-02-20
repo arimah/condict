@@ -3,22 +3,24 @@ import PropTypes from 'prop-types';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 
-import {withCommand} from '../command';
+import {useCommand} from '../command';
 
 import * as S from './styles';
 
-const ButtonInner = (props, ref) => {
+export const Button = React.forwardRef((props, ref) => {
   const {
     disabled,
     label,
     href,
     type,
-    command,
+    command: commandName,
     onClick,
     children,
     // className, minimal, intent and slim deliberately included here
     ...otherProps
   } = props;
+
+  const command = useCommand(commandName);
 
   const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
 
@@ -56,10 +58,8 @@ const ButtonInner = (props, ref) => {
       </S.Button>
     );
   }
-};
-ButtonInner.displayName = 'Button';
-
-export const Button = withCommand(React.forwardRef(ButtonInner));
+});
+Button.displayName = 'Button';
 
 Button.propTypes = {
   className: PropTypes.string,

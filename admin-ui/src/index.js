@@ -6,7 +6,7 @@ export {Radio} from './radio';
 export {Select} from './select';
 export {Switch} from './switch';
 
-export {CommandGroup, CommandConsumer, withCommand} from './command';
+export {CommandGroup, CommandConsumer, useCommand} from './command';
 export {Shortcut, ShortcutGroup, ShortcutMap} from './command/shortcut';
 export {Shortcuts} from './command/shortcuts';
 

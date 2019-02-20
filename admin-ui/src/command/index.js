@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useContext, useMemo} from 'react';
 import PropTypes from 'prop-types';
 import memoizeOne from 'memoize-one';
 
@@ -179,29 +179,11 @@ CommandConsumer.propTypes = {
   children: PropTypes.func.isRequired,
 };
 
-export const withCommand = Inner => {
-  const component = React.forwardRef(({command: name, ...otherProps}, ref) =>
-    name != null ? (
-      <CommandConsumer name={name}>
-        {command => <Inner {...otherProps} command={command} ref={ref}/>}
-      </CommandConsumer>
-    ) : (
-      <Inner {...otherProps} command={null} ref={ref}/>
-    )
+export const useCommand = name => {
+  const context = useContext(Context);
+  const command = useMemo(
+    () => name != null ? getCommand(name, context) : null,
+    [name, context]
   );
-  component.displayName = `withCommand(${
-    Inner.displayName ||
-    Inner.name ||
-    'Component'
-  })`;
-
-  component.propTypes = {
-    command: PropTypes.string,
-  };
-
-  component.defaultProps = {
-    command: null,
-  };
-
-  return component;
+  return command;
 };

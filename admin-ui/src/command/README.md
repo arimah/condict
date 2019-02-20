@@ -3,7 +3,7 @@
 * [Examples](#examples)
 * [`<CommandGroup>`](#commandgroup)
 * [`<CommandConsumer>`](#commandconsumer)
-* [`withCommand()`](#withcommand)
+* [`useCommand()`](#usecommand)
 * [`Shortcut`](#shortcut)
 * [`ShortcutGroup`](#shortcutgroup)
 * [`ShortcutMap`](#shortcutmap)
@@ -19,7 +19,7 @@ A _command_ is a reusable action. Every command is identified by a name, and has
 
 A [`<CommandGroup>`](#commandgroup) defines and groups related commands.
 
-Commands can be attached to any component using a [`<CommandConsumer>`](#commandconsumer), or using the helper function [`withCommand()`](#withcommand). The following components have built-in support for commands (via the `command` prop, which takes a command name):
+Commands can be attached to any component using a [`<CommandConsumer>`](#commandconsumer), or using the hook [`useCommand()`](#usecommand). The following components have built-in support for commands (via the `command` prop, which takes a command name):
 
 * [Button](../button)
 
@@ -68,10 +68,10 @@ import {CommandGroup, Shortcuts} from '@condict/admin-ui';
 </CommandGroup>
 ```
 
-Bind components to some commands using a [`<CommandConsumer>`](#commandconsumer) or [`withCommand()`](#withcommand):
+Bind components to some commands using a [`<CommandConsumer>`](#commandconsumer) or the hook [`useCommand()`](#usecommand):
 
 ```jsx
-import {CommandConsumer, withCommand} from '@condict/admin-ui';
+import {CommandConsumer, useCommand} from '@condict/admin-ui';
 
 // Bind to a single command using CommandConsumer:
 <CommandConsumer name='undo'>
@@ -84,8 +84,12 @@ import {CommandConsumer, withCommand} from '@condict/admin-ui';
   }
 </CommandConsumer>
 
-// Use withCommand to create a new component with command support:
-const MyCommandButton = withCommand(MyButton);
+// Use useCommand to create a new component with command support:
+const MyCommandButton = props => {
+  const command = useCommand(props.command);
+
+  return ...;
+};
 <MyCommandButton command='toUpper'>
   Convert to upper case
 </MyCommandButton>
@@ -161,19 +165,15 @@ The command object passed to `children` has the following properties:
 
 If the command's defining group has an `onExec` prop, then the bound command's `exec` function will delegate to the `onExec` function. Basically, you never have to worry about calling `onExec` yourself.
 
-## `withCommand`
+## `useCommand`
 
-> `withCommand(Inner: Component): Component`
+> `useCommand(name: ?string): command | null`
 
-`withCommand()` is a [higher-order component][hoc] that translates a command name to a command object.
+`useCommand()` is a [hook][hook] that translates a command name to a command object.
 
-The returned component accepts a `command` prop: if set to a non-null value, the command name is resolved to a command object, which is passed to the wrapped component under the name `command`. Note that if the command can't be found, the wrapped component receives `command={null}`.
+Given a command name, it attempts to resolve the name to a command object, which it returns. If the command cannot be found, or if the name is null or undefined, the hook returns null.
 
-All other props are forwarded to the wrapped component.
-
-The returned component forwards its ref to the wrapped component.
-
-**Note:** The returned component implements its behaviour using [`<CommandConsumer>`](#commandconsumer). If the command name is null, the `<CommandConsumer>` is skipped altogether, and the inner component is rendered on its own. This means the inner component will be remounted if the `command` prop changes between null and non-null. If you don't want this behaviour, you are better off using `<CommandConsumer>` directly.
+The command object has the same structure as the command passed to [`<CommandConsumer>`](#commandconsumer).
 
 ## `Shortcut`
 
@@ -349,9 +349,6 @@ Constructs a new `ShortcutMap` with the specified values. When given one of the 
 
 Finds a value whose shortcut can handle the keyboard event. If there is no matching value, returns null.
 
-[hoc]: https://reactjs.org/docs/higher-order-components.html
-[key]: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
-
 ## `Shortcuts`
 
 An object that defines various common shortcuts. The following shortcuts are defined:
@@ -362,3 +359,6 @@ An object that defines various common shortcuts. The following shortcuts are def
 | `redo` | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> | <kbd>Ctrl</kbd>+<kbd>Y</kbd> | <kbd>⇧ Shift</kbd>+<kbd>⌘ Command</kbd>+<kbd>Z</kbd> |
 
 These keyboard shortcuts are largely standardised, and should not be used for other meanings.
+
+[hook]: https://reactjs.org/docs/hooks-intro.html
+[key]: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
