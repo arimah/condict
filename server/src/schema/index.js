@@ -43,7 +43,10 @@ const allTypeDefs = [
       "The 0-based page number. This value cannot be less than 0."
       page: Int!
 
-      "The total number of items per page. This value cannot be less than 1. Each field defines its own upper limit."
+      """
+      The total number of items per page. This value cannot be less than 1. Each
+      field defines its own upper limit.
+      """
       perPage: Int!
     }
   `,
