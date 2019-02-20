@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {PureComponent, useContext} from 'react';
 import PropTypes from 'prop-types';
 import memoizeOne from 'memoize-one';
 
@@ -9,64 +9,58 @@ import * as S from './styles';
 
 export const RadioGroupContext = React.createContext({namePrefix: ''});
 
-// This component is a class exclusively for `this.context`. If that weren't
-// necessary, we could turn this into a functional stateless component.
+export const Radio = props => {
+  const {
+    className,
+    intent,
+    checked,
+    label,
+    disabled,
+    name,
+    value,
+    labelProps,
+    inputRef,
+    onChange,
+    children,
+    ...inputProps
+  } = props;
+  const radioGroup = useContext(RadioGroupContext);
 
-export class Radio extends PureComponent {
-  render() {
-    const {
-      className,
-      intent,
-      checked,
-      label,
-      disabled,
-      name,
-      value,
-      labelProps,
-      inputRef,
-      onChange,
-      children,
-      ...inputProps
-    } = this.props;
+  const actualName = `${radioGroup.namePrefix}${name}`;
 
-    const actualName = `${this.context.namePrefix}${name}`;
+  const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
 
-    const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
-
-    return (
-      <S.Label
-        {...labelProps}
-        className={className}
+  return (
+    <S.Label
+      {...labelProps}
+      className={className}
+      disabled={disabled}
+    >
+      <S.RadioContainer
+        intent={intent}
+        checked={checked}
         disabled={disabled}
       >
-        <S.RadioContainer
+        <S.RadioDot
           intent={intent}
           checked={checked}
           disabled={disabled}
-        >
-          <S.RadioDot
-            intent={intent}
-            checked={checked}
-            disabled={disabled}
-          />
-          <S.Input
-            {...inputProps}
-            name={actualName}
-            value={value}
-            disabled={disabled}
-            checked={checked}
-            aria-label={ariaLabel}
-            onChange={onChange}
-            ref={inputRef}
-          />
-        </S.RadioContainer>
-        {renderedContent}
-      </S.Label>
-    );
-  }
-}
-
-Radio.contextType = RadioGroupContext;
+        />
+        <S.Input
+          {...inputProps}
+          name={actualName}
+          value={value}
+          disabled={disabled}
+          checked={checked}
+          aria-label={ariaLabel}
+          onChange={onChange}
+          ref={inputRef}
+        />
+      </S.RadioContainer>
+      {renderedContent}
+    </S.Label>
+  );
+};
 
 Radio.propTypes = {
   className: PropTypes.string,
