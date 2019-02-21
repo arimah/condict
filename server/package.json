@@ -2,7 +2,7 @@
   "name": "@condict/server",
   "version": "0.1.0",
   "description": "Condict backend/server. Exposes HTTP APIs for querying and manipulating the dictionary, and Node APIs for configuring, starting and stopping a server.",
-  "repository": "https://github.com/arimah/condict.git",
+  "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
   "main": "index.js",

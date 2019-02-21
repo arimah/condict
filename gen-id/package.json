@@ -2,7 +2,7 @@
   "name": "@condict/gen-id",
   "version": "0.1.0",
   "description": "A tiny, fast utility function for generating a random string ID.",
-  "repository": "https://github.com/arimah/condict.git",
+  "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
   "main": "index.js"

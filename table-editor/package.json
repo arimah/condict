@@ -2,7 +2,7 @@
   "name": "@condict/table-editor",
   "version": "0.1.0",
   "description": "Table editor components for the Condict admin.",
-  "repository": "https://github.com/arimah/condict.git",
+  "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
   "main": "lib/index.js",
