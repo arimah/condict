@@ -2,6 +2,7 @@
   "name": "@condict/admin-ui",
   "version": "0.1.9",
   "description": "Shared UI components for the Condict admin.",
+  "repository": "https://github.com/arimah/condict.git",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
   "main": "lib/index.js",

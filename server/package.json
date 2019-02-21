@@ -2,6 +2,9 @@
   "name": "@condict/server",
   "version": "0.1.0",
   "description": "Condict backend/server. Exposes HTTP APIs for querying and manipulating the dictionary, and Node APIs for configuring, starting and stopping a server.",
+  "repository": "https://github.com/arimah/condict.git",
+  "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
+  "license": "MIT",
   "main": "index.js",
   "bin": {
     "condict-server": "./cli.js"
@@ -10,8 +13,6 @@
     "start": "node cli.js",
     "lint": "eslint --config ../eslint-node.config.js src/ cli.js index.js"
   },
-  "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
-  "license": "MIT",
   "dependencies": {
     "apollo-server": "^2.3.3",
     "better-sqlite3": "^5.4.0",
