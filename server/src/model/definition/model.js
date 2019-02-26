@@ -6,8 +6,8 @@ class Definition extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.byIdKey = Symbol();
-    this.allByLemmaKey = Symbol();
+    this.byIdKey = Symbol('Definition.byId');
+    this.allByLemmaKey = Symbol('Definition.allByLemma');
   }
 
   byId(id) {
@@ -49,7 +49,7 @@ class DefinitionDescription extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.rawByDefinitionKey = Symbol();
+    this.rawByDefinitionKey = Symbol('DefinitionDescription.rawByDefinition');
   }
 
   // This model is a bit unusual in that it returns the value of a single
@@ -75,7 +75,7 @@ class DefinitionStem extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.allByDefinitionKey = Symbol();
+    this.allByDefinitionKey = Symbol('DefinitionStem.allByDefinition');
   }
 
   allByDefinition(definitionId) {
@@ -98,8 +98,8 @@ class DefinitionInflectionTable extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.byIdKey = Symbol();
-    this.allByDefinitionKey = Symbol();
+    this.byIdKey = Symbol('DefinitionInflectionTable.byId');
+    this.allByDefinitionKey = Symbol('DefinitionInflectionTable.allByDefinition');
   }
 
   byId(id) {
@@ -135,7 +135,7 @@ class CustomInflectedForm extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.allByTableKey = Symbol();
+    this.allByTableKey = Symbol('CustomInflectedForm.allByTable');
   }
 
   allByTable(tableId) {
@@ -158,7 +158,7 @@ class DerivedDefinition extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.allByLemmaKey = Symbol();
+    this.allByLemmaKey = Symbol('DerivedDefinition.allByLemma');
     this.defaultPagination = Object.freeze({
       page: 0,
       perPage: 50,

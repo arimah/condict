@@ -4,8 +4,8 @@ class InflectionTable extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.byIdKey = Symbol();
-    this.allByPartOfSpeechKey = Symbol();
+    this.byIdKey = Symbol('InflectionTable.byId');
+    this.allByPartOfSpeechKey = Symbol('InflectionTable.allByPartOfSpeech');
   }
 
   byId(id) {
@@ -41,8 +41,8 @@ class InflectedForm extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.byIdKey = Symbol();
-    this.allByTableKey = Symbol();
+    this.byIdKey = Symbol('InflectedForm.byId');
+    this.allByTableKey = Symbol('InflectedForm.allByTable');
   }
 
   byId(id) {
@@ -88,7 +88,7 @@ class InflectionTableLayout extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.byTableKey = Symbol();
+    this.byTableKey = Symbol('InflectionTableLayout.byTable');
   }
 
   byTable(tableId) {

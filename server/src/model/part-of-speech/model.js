@@ -4,8 +4,8 @@ class PartOfSpeech extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.byIdKey = Symbol();
-    this.allByLanguageKey = Symbol();
+    this.byIdKey = Symbol('PartOfSpeech.byId');
+    this.allByLanguageKey = Symbol('PartOfSpeech.allByLanguage');
   }
 
   byId(id) {

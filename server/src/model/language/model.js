@@ -4,7 +4,7 @@ class Language extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.byIdKey = Symbol();
+    this.byIdKey = Symbol('Language.byId');
   }
 
   all() {

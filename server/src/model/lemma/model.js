@@ -6,7 +6,7 @@ class Lemma extends Model {
   constructor(db, model) {
     super(db, model);
 
-    this.byIdKey = Symbol();
+    this.byIdKey = Symbol('Lemma.byId');
     this.defaultPagination = Object.freeze({
       page: 0,
       perPage: 50,
