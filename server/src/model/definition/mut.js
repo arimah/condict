@@ -354,6 +354,10 @@ class DefinitionDescriptionMut extends Mutator {
 
 class DefinitionStemMut extends Mutator {
   insert(definitionId, stems) {
+    if (stems.length === 0) {
+      return;
+    }
+
     const {db} = this;
 
     const values = stems.map(s =>
