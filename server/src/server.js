@@ -148,12 +148,7 @@ class CondictServer {
       }
 
       console.log(`-- Schema for ${name}:`);
-      console.log(
-        statements
-          .map(reindentQuery)
-          .join(';\n')
-        + ';\n'
-      );
+      console.log(statements.map(reindentQuery).join(';\n') + ';\n');
 
       if (tableFound) {
         break;
@@ -165,7 +160,7 @@ class CondictServer {
     }
   }
 
-  async close() {
+  close() {
     if (this.httpServer) {
       this.logger.info('Stopping HTTP server...');
       this.httpServer.close();
