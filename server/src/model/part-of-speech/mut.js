@@ -60,12 +60,7 @@ class PartOfSpeechMut extends Mutator {
     const {db} = this;
     const {PartOfSpeech} = this.model;
 
-    const partOfSpeech = await PartOfSpeech.byId(id);
-    if (partOfSpeech === null) {
-      throw new UserInputError(`Part of speech not found: ${id}`, {
-        invalidArgs: ['id']
-      });
-    }
+    const partOfSpeech = await PartOfSpeech.byIdRequired(id);
 
     if (name != null) {
       const newName =

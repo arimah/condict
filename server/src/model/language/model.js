@@ -1,3 +1,5 @@
+const {UserInputError} = require('apollo-server');
+
 const Model = require('../model');
 
 class Language extends Model {
@@ -25,6 +27,16 @@ class Language extends Model {
         where id in (${ids})
       `
     );
+  }
+
+  async byIdRequired(id, paramName = 'id') {
+    const language = await this.byId(id);
+    if (!language) {
+      throw new UserInputError(`Language not found: ${id}`, {
+        invalidArgs: [paramName],
+      });
+    }
+    return language;
   }
 
   byName(name) {

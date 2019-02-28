@@ -52,19 +52,11 @@ class DefinitionMut extends Mutator {
       DerivedDefinitionMut
     } = this.mut;
 
-    const language = await Language.byId(languageId);
-    if (!language) {
-      throw new UserInputError(`Language not found: ${languageId}`, {
-        invalidArgs: ['languageId']
-      });
-    }
-
-    const partOfSpeech = await PartOfSpeech.byId(partOfSpeechId);
-    if (!partOfSpeech) {
-      throw new UserInputError(`Part of speech not found: ${partOfSpeechId}`, {
-        invalidArgs: ['partOfSpeechId']
-      });
-    }
+    const language = await Language.byIdRequired(languageId, 'languageId');
+    const partOfSpeech = await PartOfSpeech.byIdRequired(
+      partOfSpeechId,
+      'partOfSpeechId'
+    );
 
     const finalStems = buildStems(stems);
     const stemMap = new Map(
@@ -116,12 +108,7 @@ class DefinitionMut extends Mutator {
       DerivedDefinitionMut
     } = this.mut;
 
-    const definition = await Definition.byId(id);
-    if (!definition) {
-      throw new UserInputError(`Definition not found: ${id}`, {
-        invalidArgs: ['id']
-      });
-    }
+    const definition = await Definition.byIdRequired(id);
 
     return db.transact(async () => {
       const newFields = new FieldSet();
@@ -141,12 +128,10 @@ class DefinitionMut extends Mutator {
         partOfSpeechId != null &&
         (partOfSpeechId | 0) !== definition.part_of_speech_id
       ) {
-        const partOfSpeech = await PartOfSpeech.byId(partOfSpeechId);
-        if (!partOfSpeech) {
-          throw new UserInputError(`Part of speech not found: ${partOfSpeechId}`, {
-            invalidArgs: ['partOfSpeechId']
-          });
-        }
+        const partOfSpeech = await PartOfSpeech.byIdRequired(
+          partOfSpeechId,
+          'partOfSpeechId'
+        );
 
         newFields.set('part_of_speech_id', partOfSpeech.id);
         partOfSpeechId = partOfSpeech.id;
@@ -438,12 +423,7 @@ class DefinitionInflectionTableMut extends Mutator {
     const {db} = this;
     const {DefinitionInflectionTable} = this.model;
 
-    const table = await DefinitionInflectionTable.byId(id);
-    if (!table) {
-      throw new UserInputError(`Definition inflection table not found: ${id}`, {
-        invalidArgs: ['id']
-      });
-    }
+    const table = await DefinitionInflectionTable.byIdRequired(id);
     if (table.definition_id !== definitionId) {
       throw new UserInputError(
         `Definition inflection table ${id} belongs to the wrong definition`,
@@ -487,12 +467,10 @@ class DefinitionInflectionTableMut extends Mutator {
   async validateInflectionTableId(inflectionTableId, partOfSpeechId) {
     const {InflectionTable} = this.model;
 
-    const inflectionTable = await InflectionTable.byId(inflectionTableId);
-    if (!inflectionTable) {
-      throw new UserInputError(`Inflection table not found: ${inflectionTableId}`, {
-        invalidArgs: ['inflectionTableId']
-      });
-    }
+    const inflectionTable = await InflectionTable.byIdRequired(
+      inflectionTableId,
+      'inflectionTableId'
+    );
     if (inflectionTable.part_of_speech_id !== partOfSpeechId) {
       throw new UserInputError(
         `Inflection table ${inflectionTable.id} belongs to the wrong part of speech`,
@@ -519,12 +497,10 @@ class DefinitionInflectionTableMut extends Mutator {
     );
 
     for (const form of customForms) {
-      const inflectedForm = await InflectedForm.byId(form.inflectedFormId);
-      if (!inflectedForm) {
-        throw new UserInputError(`Inflected form not found: ${form.inflectedFormId}`, {
-          invalidArgs: ['inflectedFormId']
-        });
-      }
+      const inflectedForm = await InflectedForm.byIdRequired(
+        form.inflectedFormId,
+        'inflectedFormId'
+      );
       if (inflectedForm.inflection_table_id !== inflectionTableId) {
         throw new UserInputError(
           `Inflected form ${form.inflectedFormId} belongs to the wrong table`,

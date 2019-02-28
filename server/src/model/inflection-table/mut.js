@@ -127,12 +127,10 @@ class InflectionTableMut extends Mutator {
     const {PartOfSpeech, InflectionTable} = this.model;
     const {InflectionTableLayoutMut, InflectedFormMut} = this.mut;
 
-    const partOfSpeech = await PartOfSpeech.byId(partOfSpeechId);
-    if (partOfSpeech == null) {
-      throw new UserInputError(`Part of speech not found: ${partOfSpeechId}`, {
-        invalidArgs: ['partOfSpeechId'],
-      });
-    }
+    const partOfSpeech = await PartOfSpeech.byIdRequired(
+      partOfSpeechId,
+      'partOfSpeechId'
+    );
 
     name = await nameValidator(db, null, partOfSpeech.id).validate(name);
 
@@ -166,12 +164,7 @@ class InflectionTableMut extends Mutator {
     const {InflectionTable, InflectedForm} = this.model;
     const {InflectionTableLayoutMut, InflectedFormMut} = this.mut;
 
-    const table = await InflectionTable.byId(id);
-    if (table == null) {
-      throw new UserInputError(`Inflection table not found: ${id}`, {
-        invalidArgs: ['id'],
-      });
-    }
+    const table = await InflectionTable.byIdRequired(id);
 
     // Layout edits are prohibited if the table is in use by one or
     // more definitions.
@@ -312,10 +305,7 @@ class InflectedFormMut extends Mutator {
     const {db} = this;
     const {InflectedForm} = this.model;
 
-    const existingForm = await InflectedForm.byId(id);
-    if (!existingForm) {
-      throw new UserInputError(`Inflected form not found: ${id}`);
-    }
+    const existingForm = await InflectedForm.byIdRequired(id);
 
     const [
       deriveLemma,

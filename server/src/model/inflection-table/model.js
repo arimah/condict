@@ -1,3 +1,5 @@
+const {UserInputError} = require('apollo-server');
+
 const Model = require('../model');
 
 class InflectionTable extends Model {
@@ -19,6 +21,16 @@ class InflectionTable extends Model {
           where id in (${ids})
         `
     );
+  }
+
+  async byIdRequired(id, paramName = 'id') {
+    const inflectionTable = await this.byId(id);
+    if (!inflectionTable) {
+      throw new UserInputError(`Inflection table not found: ${id}`, {
+        invalidArgs: [paramName],
+      });
+    }
+    return inflectionTable;
   }
 
   allByPartOfSpeech(partOfSpeechId) {
@@ -56,6 +68,16 @@ class InflectedForm extends Model {
           where id in (${ids})
         `
     );
+  }
+
+  async byIdRequired(id, paramName = 'id') {
+    const inflectedForm = await this.byId(id);
+    if (!inflectedForm) {
+      throw new UserInputError(`Inflected form not found: ${id}`, {
+        invalidArgs: [paramName],
+      });
+    }
+    return inflectedForm;
   }
 
   allByTable(tableId) {

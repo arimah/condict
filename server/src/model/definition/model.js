@@ -1,3 +1,5 @@
+const {UserInputError} = require('apollo-server');
+
 const {validatePageParams, createConnection} = require('../../schema/helpers');
 
 const Model = require('../model');
@@ -24,6 +26,16 @@ class Definition extends Model {
           where d.id in (${ids})
         `
     );
+  }
+
+  async byIdRequired(id, paramName = 'id') {
+    const definition = await this.byId(id);
+    if (!definition) {
+      throw new UserInputError(`Definition not found: ${id}`, {
+        invalidArgs: [paramName],
+      });
+    }
+    return definition;
   }
 
   allByLemma(lemmaId) {
@@ -113,6 +125,16 @@ class DefinitionInflectionTable extends Model {
           where id in (${ids})
         `
     );
+  }
+
+  async byIdRequired(id, paramName = 'id') {
+    const definitionInflectionTable = await this.byId(id);
+    if (!definitionInflectionTable) {
+      throw new UserInputError(`Definition inflection table not found: ${id}`, {
+        invalidArgs: [paramName],
+      });
+    }
+    return definitionInflectionTable;
   }
 
   allByDefinition(definitionId) {

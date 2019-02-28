@@ -1,3 +1,5 @@
+const {UserInputError} = require('apollo-server');
+
 const Model = require('../model');
 
 class PartOfSpeech extends Model {
@@ -19,6 +21,16 @@ class PartOfSpeech extends Model {
           where id in (${ids})
         `
     );
+  }
+
+  async byIdRequired(id, paramName = 'id') {
+    const partOfSpeech = await this.byId(id);
+    if (!partOfSpeech) {
+      throw new UserInputError(`Part of speech not found: ${id}`, {
+        invalidArgs: [paramName],
+      });
+    }
+    return partOfSpeech;
   }
 
   allByLanguage(languageId) {

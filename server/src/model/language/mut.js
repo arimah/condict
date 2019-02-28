@@ -1,5 +1,3 @@
-const {UserInputError} = require('apollo-server');
-
 const Mutator = require('../mutator');
 const validator = require('../validator');
 const FieldSet = require('../field-set');
@@ -48,12 +46,7 @@ class LanguageMut extends Mutator {
     const {db} = this;
     const {Language} = this.model;
 
-    const language = await Language.byId(id);
-    if (!language) {
-      throw new UserInputError(`Language not found: ${id}`, {
-        invalidArgs: ['id']
-      });
-    }
+    const language = await Language.byIdRequired(id);
 
     const newFields = new FieldSet();
     if (name != null) {
