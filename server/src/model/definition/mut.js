@@ -16,11 +16,14 @@ const stemValueValidator = validator('value').lengthBetween(0, 160);
 
 const formValueValidator = validator('value').lengthBetween(0, 160);
 
-const buildStems = stems =>
+const validateStems = stems =>
   stems.map(stem => ({
     name: stemNameValidator.validate(stem.name),
     value: stemValueValidator.validate(stem.value),
   }));
+const buildStemMap = stems => new Map(
+  stems.map(stem => [stem.name, stem.value])
+);
 
 const deriveForms = (term, stems, derivableForms) => {
   // Mapping from inflected form ID to term.
@@ -63,10 +66,8 @@ class DefinitionMut extends Mutator {
       'partOfSpeechId'
     );
 
-    const finalStems = buildStems(stems);
-    const stemMap = new Map(
-      finalStems.map(stem => [stem.name, stem.value])
-    );
+    const finalStems = validateStems(stems);
+    const stemMap = buildStemMap(finalStems);
 
     return db.transact(async () => {
       const lemmaId = await LemmaMut.ensureExists(language.id, term);
@@ -105,12 +106,11 @@ class DefinitionMut extends Mutator {
     inflectionTables
   }) {
     const {db} = this;
-    const {Definition, DefinitionStem, PartOfSpeech} = this.model;
+    const {Definition, PartOfSpeech} = this.model;
     const {
       LemmaMut,
       DefinitionStemMut,
-      DefinitionDescriptionMut,
-      DerivedDefinitionMut
+      DefinitionDescriptionMut
     } = this.mut;
 
     const definition = await Definition.byIdRequired(id);
@@ -164,49 +164,18 @@ class DefinitionMut extends Mutator {
         await DefinitionDescriptionMut.update(definition.id, description);
       }
 
-      let stemMap;
-      if (stems) {
-        const finalStems = buildStems(stems);
-        stemMap = new Map(
-          finalStems.map(stem => [stem.name, stem.value])
-        );
-        await DefinitionStemMut.deleteAll(definition.id);
-        await DefinitionStemMut.insert(definition.id, finalStems);
-      } else {
-        const currentStems = await DefinitionStem.allByDefinition(definition.id);
-        stemMap = new Map(
-          currentStems.map(stem => [stem.name, stem.value])
-        );
-      }
+      const stemMap = await DefinitionStemMut.update(definition.id, stems);
 
-      let derivedDefinitions;
-      if (inflectionTables) {
-        derivedDefinitions = await this.updateInflectionTables(
-          definition.id,
-          partOfSpeechId,
-          term,
-          stemMap,
-          inflectionTables,
-          false
-        );
-      } else if (term !== definition.term || stems) {
+      await this.updateInflectionTablesAndForms(
+        definition,
+        partOfSpeechId,
+        term,
+        stemMap,
+        inflectionTables,
         // If the term or stems have changed, we have to rederive all forms
         // for this definition.
-        derivedDefinitions = await this.rederiveAllForms(
-          definition.id,
-          term,
-          stemMap
-        );
-      }
-
-      if (derivedDefinitions) {
-        await DerivedDefinitionMut.deleteAll(definition.id);
-        await DerivedDefinitionMut.insertAll(
-          definition.language_id,
-          definition.id,
-          derivedDefinitions
-        );
-      }
+        term !== definition.term || !!stems
+      );
 
       // If the derived definitions or term have changed, we may have orphaned
       // one or more lemmas, so we have to delete them too.
@@ -233,6 +202,44 @@ class DefinitionMut extends Mutator {
     `;
     await LemmaMut.deleteEmpty(definition.language_id);
     return true;
+  }
+
+  async updateInflectionTablesAndForms(
+    definition,
+    partOfSpeechId,
+    term,
+    stemMap,
+    inflectionTables,
+    newFormsNeeded
+  ) {
+    const {DerivedDefinitionMut} = this.mut;
+
+    let derivedDefinitions;
+    if (inflectionTables) {
+      derivedDefinitions = await this.updateInflectionTables(
+        definition.id,
+        partOfSpeechId,
+        term,
+        stemMap,
+        inflectionTables,
+        false
+      );
+    } else if (newFormsNeeded) {
+      derivedDefinitions = await this.rederiveAllForms(
+        definition.id,
+        term,
+        stemMap
+      );
+    }
+
+    if (derivedDefinitions) {
+      await DerivedDefinitionMut.deleteAll(definition.id);
+      await DerivedDefinitionMut.insertAll(
+        definition.language_id,
+        definition.id,
+        derivedDefinitions
+      );
+    }
   }
 
   async updateInflectionTables(
@@ -295,33 +302,14 @@ class DefinitionMut extends Mutator {
 
     const derivedDefinitions = new MultiMap();
 
-    const inflectionTables = await db.all`
+    const definitionTables = await db.all`
       select id, inflection_table_id
       from definition_inflection_tables
       where definition_id = ${definitionId}
     `;
-    const inflectionTableIds = inflectionTables.map(row => row.id);
+    const customForms = this.fetchAllCustomForms(definitionTables);
 
-    const customForms = (await db.all`
-        select
-          df.definition_inflection_table_id as parentId,
-          df.inflected_form as value,
-          dit.inflection_table_id as inflectionTableId
-        from definition_forms df
-        inner join definition_inflection_tables dit
-          on dit.id = df.definition_inflection_table_id
-        where df.definition_inflection_table_id in (${inflectionTableIds})
-      `)
-      .reduce((map, row) => {
-        if (!map.has(row.parentId)) {
-          map.set(row.parentId, [row]);
-        } else {
-          map.get(row.parentId).push(row);
-        }
-        return map;
-      }, new Map());
-
-    for (const table of inflectionTables) {
+    for (const table of definitionTables) {
       const derivedForms = await DefinitionInflectionTableMut.deriveAllForms(
         table.id,
         term,
@@ -337,6 +325,36 @@ class DefinitionMut extends Mutator {
     }
 
     return derivedDefinitions;
+  }
+
+  async fetchAllCustomForms(definitionTables) {
+    const {db} = this;
+
+    const allCustomForms = await db.all`
+      select
+        df.definition_inflection_table_id as parent_id,
+        df.inflected_form as value,
+        dit.inflection_table_id as inflection_table_id
+      from definition_forms df
+      inner join definition_inflection_tables dit
+        on dit.id = df.definition_inflection_table_id
+      where df.definition_inflection_table_id in (${
+        definitionTables.map(t => t.id)
+      })
+    `;
+
+    return allCustomForms.reduce((map, row) => {
+      const form = {
+        value: row.value,
+        inflectionTableId: form.inflection_table_id,
+      };
+      if (!map.has(row.parent_id)) {
+        map.set(row.parent_id, [form]);
+      } else {
+        map.get(row.parent_id).push(form);
+      }
+      return map;
+    }, new Map());
   }
 }
 
@@ -376,6 +394,23 @@ class DefinitionStemMut extends Mutator {
       insert into definition_stems (definition_id, name, value)
       values ${values}
     `;
+  }
+
+  async update(definitionId, stems) {
+    const {DefinitionStem} = this.model;
+
+    let stemMap;
+    if (stems) {
+      const finalStems = validateStems(stems);
+      stemMap = buildStemMap(finalStems);
+      await this.deleteAll(definitionId);
+      await this.insert(definitionId, finalStems);
+    } else {
+      const currentStems = await DefinitionStem.allByDefinition(definitionId);
+      stemMap = buildStemMap(currentStems);
+    }
+
+    return stemMap;
   }
 
   deleteAll(definitionId) {
