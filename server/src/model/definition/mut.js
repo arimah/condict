@@ -1,9 +1,14 @@
 const {UserInputError} = require('apollo-server');
 
-const Mutator = require('../mutator');
-const validator = require('../validator');
 const inflectWord = require('../../utils/inflect-word');
 const MultiMap = require('../../utils/multi-map');
+const {
+  validateDescription,
+  validateTableCaption,
+} = require('../../rich-text/validate');
+
+const Mutator = require('../mutator');
+const validator = require('../validator');
 const FieldSet = require('../field-set');
 
 const stemNameValidator = validator('name').lengthBetween(1, 32);
@@ -337,6 +342,8 @@ class DefinitionMut extends Mutator {
 
 class DefinitionDescriptionMut extends Mutator {
   insert(definitionId, description) {
+    description = validateDescription(description, () => {});
+
     return this.db.exec`
       insert into definition_descriptions (definition_id, description)
       values (${definitionId}, ${JSON.stringify(description)})
@@ -344,6 +351,8 @@ class DefinitionDescriptionMut extends Mutator {
   }
 
   update(definitionId, description) {
+    description = validateDescription(description, () => {});
+
     return this.db.exec`
       update definition_descriptions
       set description = ${JSON.stringify(description)}
@@ -390,6 +399,7 @@ class DefinitionInflectionTableMut extends Mutator {
       inflectionTableId,
       partOfSpeechId
     );
+    caption = caption ? validateTableCaption(caption) : null;
 
     const {insertId: tableId} = await db.exec`
       insert into definition_inflection_tables (
@@ -439,6 +449,8 @@ class DefinitionInflectionTableMut extends Mutator {
       table.inflection_table_id,
       partOfSpeechId
     );
+
+    caption = caption ? validateTableCaption(caption) : null;
 
     await db.exec`
       update definition_inflection_tables

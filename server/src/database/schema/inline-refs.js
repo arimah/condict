@@ -1,3 +1,8 @@
+const {
+  isCondictLink,
+  parseCondictLink,
+} = require('../../rich-text/condict-link');
+
 // Columns that can be referenced by inline elements (inside formatted text).
 const inlineElementReferences = [
   {
@@ -18,9 +23,6 @@ const inlineElementReferences = [
   },
 ];
 
-const linkTargetRegex =
-  /^condict:\/\/(language|lemma|definition|part-of-speech)\/([0-9]+)$/;
-
 const linkTargetTable = {
   language: 'languages',
   lemma: 'lemmas',
@@ -32,16 +34,16 @@ const updateInlineReferences = (inlines, newIds) => {
   if (!inlines) {
     return;
   }
+
   inlines.forEach(inline => {
     if (inline.kind !== 'LINK') {
       return;
     }
 
-    const m = linkTargetRegex.exec(inline.linkTarget);
-    if (m) {
-      const table = linkTargetTable[m[1]];
-      const id = m[2] | 0;
-      inline.linkTarget = `condict://${m[1]}/${newIds[table].get(id)}`;
+    if (isCondictLink(inline.linkTarget)) {
+      const link = parseCondictLink(inline.linkTarget);
+      const table = linkTargetTable[link.type];
+      inline.linkTarget = `condict://${link.type}/${newIds[table].get(link.id)}`;
     }
   });
 };
