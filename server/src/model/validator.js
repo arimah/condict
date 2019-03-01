@@ -14,7 +14,7 @@ const ensureLengthBetween = (
   message
 ) => {
   if (value.length < minLength || value.length > maxLength) {
-    throw new UserInputError(`${paramName}: ${message(value)}`, {
+    throw new UserInputError(`${paramName}: ${message(value, minLength, maxLength)}`, {
       invalidArgs: [paramName],
     });
   }
@@ -99,7 +99,7 @@ class AsyncValidator {
       this.paramName,
       async value => {
         value = await this.validate(value);
-        return await mapper(value);
+        return mapper(value);
       },
     );
   }
