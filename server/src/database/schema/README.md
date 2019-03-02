@@ -97,7 +97,7 @@ A reference to a foreign key.
 | --- | --- | --- |
 | `table` | `string` | The name of the referenced table. |
 | `column` | `string` | The name of the referenced column. |
-| `onDelete` | `'restrict' | 'cascade'` | Optional. Determines how to handle deletions of the referenced row. `'cascade'` means this row is deleted when the referenced row is. `'restrict'` means the referenced row cannot be deleted if it is referenced by this foreign key. If omitted, the default is `'restrict'`. This property is ignored on foreign key references inside [`contentReferences`](#columnschema). |
+| `onDelete` | `'restrict' \| 'cascade'` | Optional. Determines how to handle deletions of the referenced row. `'cascade'` means this row is deleted when the referenced row is. `'restrict'` means the referenced row cannot be deleted if it is referenced by this foreign key. If omitted, the default is `'restrict'`. This property is ignored on foreign key references inside [`contentReferences`](#columnschema). |
 
 ## `NewIdMap`
 
