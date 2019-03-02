@@ -1,39 +1,18 @@
 const Mutator = require('../mutator');
-const validator = require('../validator');
 const FieldSet = require('../field-set');
 
-const nameValidator = (db, currentId) =>
-  validator('name')
-    .map(value => value.trim())
-    .lengthBetween(1, 96)
-    .unique(currentId, name =>
-      db.get`
-        select id
-        from languages
-        where name = ${name}
-      `
-    );
-
-const urlNameValidator = (db, currentId) =>
-  validator('urlName')
-    .map(value => value.toLowerCase().trim())
-    .lengthBetween(1, 32)
-    .matches(/^[a-z0-9-]+$/, () => 'can only contain a-z, 0-9 and -')
-    .unique(currentId, urlName =>
-      db.get`
-        select id
-        from languages
-        where url_name = ${urlName}
-      `
-    );
+const {
+  validateName,
+  validateUrlName,
+} = require('./validators');
 
 class LanguageMut extends Mutator {
   async insert({name, urlName}) {
     const {db} = this;
     const {Language} = this.model;
 
-    name = await nameValidator(db, null).validate(name);
-    urlName = await urlNameValidator(db, null).validate(urlName);
+    name = await validateName(db, null, name);
+    urlName = await validateUrlName(db, null, urlName);
 
     const {insertId} = await db.exec`
       insert into languages (name, url_name)
@@ -52,14 +31,14 @@ class LanguageMut extends Mutator {
     if (name != null) {
       newFields.set(
         'name',
-        await nameValidator(db, language.id).validate(name)
+        await validateName(db, language.id, name)
       );
     }
 
     if (urlName != null) {
       newFields.set(
         'url_name',
-        await urlNameValidator(db, language.id).validate(urlName)
+        await validateUrlName(db, language.id, urlName)
       );
     }
 

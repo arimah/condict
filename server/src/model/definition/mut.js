@@ -1,6 +1,5 @@
 const {UserInputError} = require('apollo-server');
 
-const inflectWord = require('../../utils/inflect-word');
 const MultiMap = require('../../utils/multi-map');
 const {
   validateDescription,
@@ -8,39 +7,17 @@ const {
 } = require('../../rich-text/validate');
 
 const Mutator = require('../mutator');
-const validator = require('../validator');
 const FieldSet = require('../field-set');
 
-const stemNameValidator = validator('name').lengthBetween(1, 32);
-const stemValueValidator = validator('value').lengthBetween(0, 160);
+const {
+  validateStems,
+  validateFormValue,
+} = require('./validators');
+const deriveForms = require('./derive-forms');
 
-const formValueValidator = validator('value').lengthBetween(0, 160);
-
-const validateStems = stems =>
-  stems.map(stem => ({
-    name: stemNameValidator.validate(stem.name),
-    value: stemValueValidator.validate(stem.value),
-  }));
 const buildStemMap = stems => new Map(
   stems.map(stem => [stem.name, stem.value])
 );
-
-const deriveForms = (term, stems, derivableForms) => {
-  // Mapping from inflected form ID to term.
-  const derivedForms = new Map();
-
-  // Find all the forms contained in the table, and derive forms for them!
-  for (const form of derivableForms) {
-    const inflectedWord = inflectWord(
-      term,
-      stems,
-      form.inflection_pattern
-    );
-    derivedForms.set(form.id, inflectedWord);
-  }
-
-  return derivedForms;
-};
 
 class DefinitionMut extends Mutator {
   async insert({
@@ -307,7 +284,7 @@ class DefinitionMut extends Mutator {
       from definition_inflection_tables
       where definition_id = ${definitionId}
     `;
-    const customForms = this.fetchAllCustomForms(definitionTables);
+    const customForms = await this.fetchAllCustomForms(definitionTables);
 
     for (const table of definitionTables) {
       const derivedForms = await DefinitionInflectionTableMut.deriveAllForms(
@@ -564,7 +541,7 @@ class DefinitionInflectionTableMut extends Mutator {
         derivedForms.set(inflectedForm.id, form.value);
       }
 
-      const value = formValueValidator.validate(form.value);
+      const value = validateFormValue(form.value);
 
       await db.exec`
         insert into definition_forms (

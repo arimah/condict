@@ -1,16 +1,12 @@
 const Mutator = require('../mutator');
-const validator = require('../validator');
 
-const termValidator =
-  validator('term')
-    .map(value => value.trim())
-    .lengthBetween(1, 160);
+const {validateTerm} = require('./validators');
 
 class LemmaMut extends Mutator {
   async ensureExists(languageId, term) {
     const {db} = this;
 
-    term = termValidator.validate(term);
+    term = validateTerm(term);
 
     const result = await db.get`
       select id
