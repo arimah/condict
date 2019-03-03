@@ -73,7 +73,7 @@ class Adaptor {
         if (value instanceof FieldSet) {
           sql += handleValue(value.toPlainObject());
         } else {
-          sql += handleValue(values[i]);
+          sql += handleValue(value);
         }
       }
     }
