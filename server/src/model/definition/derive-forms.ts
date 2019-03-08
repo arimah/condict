@@ -6,7 +6,7 @@ const deriveForms = (
   term: string,
   stems: Map<string, string>,
   derivableForms: InflectedFormRow[]
-) => {
+): Map<number, string> => {
   // Mapping from inflected form ID to term.
   const derivedForms = new Map<number, string>();
 

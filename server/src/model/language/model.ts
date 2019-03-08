@@ -1,5 +1,7 @@
 import {UserInputError} from 'apollo-server';
 
+import {Awaitable} from '../../database/adaptor';
+
 import Model from '../model';
 
 export interface LanguageRow {
@@ -12,7 +14,7 @@ export interface LanguageRow {
 class Language extends Model {
   public readonly byIdKey = 'Language.byId';
 
-  public all() {
+  public all(): Awaitable<LanguageRow[]> {
     return this.db.all<LanguageRow>`
       select *
       from languages
@@ -20,7 +22,7 @@ class Language extends Model {
     `;
   }
 
-  public byId(id: number) {
+  public byId(id: number): Promise<LanguageRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -33,7 +35,10 @@ class Language extends Model {
     );
   }
 
-  public async byIdRequired(id: number, paramName: string = 'id') {
+  public async byIdRequired(
+    id: number,
+    paramName: string = 'id'
+  ): Promise<LanguageRow> {
     const language = await this.byId(id);
     if (!language) {
       throw new UserInputError(`Language not found: ${id}`, {
@@ -43,7 +48,7 @@ class Language extends Model {
     return language;
   }
 
-  public byName(name: string) {
+  public byName(name: string): Awaitable<LanguageRow | null> {
     return this.db.get<LanguageRow>`
       select *
       from languages
@@ -51,7 +56,7 @@ class Language extends Model {
     `;
   }
 
-  public byUrlName(urlName: string) {
+  public byUrlName(urlName: string): Awaitable<LanguageRow | null> {
     return this.db.get<LanguageRow>`
       select *
       from languages

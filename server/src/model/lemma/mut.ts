@@ -3,7 +3,7 @@ import Mutator from '../mutator';
 import {validateTerm} from './validators';
 
 class LemmaMut extends Mutator {
-  public async ensureExists(languageId: number, term: string) {
+  public async ensureExists(languageId: number, term: string): Promise<number> {
     const {db} = this;
 
     term = validateTerm(term);
@@ -26,7 +26,7 @@ class LemmaMut extends Mutator {
     return insertId;
   }
 
-  public async deleteEmpty(languageId: number) {
+  public async deleteEmpty(languageId: number): Promise<void> {
     const {db} = this;
     const {Lemma} = this.model;
 
@@ -51,8 +51,8 @@ class LemmaMut extends Mutator {
     }
   }
 
-  private updateLemmaCount(languageId: number) {
-    return this.db.exec`
+  private async updateLemmaCount(languageId: number): Promise<void> {
+    await this.db.exec`
       update languages
       set lemma_count = (
         select count(*)

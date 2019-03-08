@@ -13,6 +13,11 @@ export interface InflectionTableCellJson {
   inflectedFormId?: number;
 }
 
+export interface TableLayoutResult {
+  finalLayout: InflectionTableRowJson[];
+  stems: string[];
+}
+
 // Collects stem names that are present in an inflection pattern.
 const collectStemNames = (pattern: string, stems: Set<string>) => {
   // Group 1: '{{' and '}}' (escape; ignored)
@@ -30,7 +35,7 @@ const collectStemNames = (pattern: string, stems: Set<string>) => {
 const buildTableLayout = async (
   layout: InflectionTableRowInput[],
   handleInflectedForm: (form: InflectedFormInput) => number | PromiseLike<number>
-) => {
+): Promise<TableLayoutResult> => {
   const finalLayout: InflectionTableRowJson[] = [];
   const stems = new Set<string>();
 

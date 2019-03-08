@@ -1,7 +1,7 @@
 import {UserInputError} from 'apollo-server';
 
 import {validatePageParams, createConnection} from '../../schema/helpers';
-import {PageParams} from '../../schema/types';
+import {PageParams, Connection} from '../../schema/types';
 
 import Model from '../model';
 
@@ -51,7 +51,7 @@ class Definition extends Model {
   public readonly byIdKey = 'Definition.byId';
   public readonly allByLemmaKey = 'Definition.allByLemma';
 
-  public byId(id: number) {
+  public byId(id: number): Promise<DefinitionRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -68,7 +68,10 @@ class Definition extends Model {
     );
   }
 
-  public async byIdRequired(id: number, paramName: string = 'id') {
+  public async byIdRequired(
+    id: number,
+    paramName: string = 'id'
+  ): Promise<DefinitionRow> {
     const definition = await this.byId(id);
     if (!definition) {
       throw new UserInputError(`Definition not found: ${id}`, {
@@ -78,7 +81,7 @@ class Definition extends Model {
     return definition;
   }
 
-  public allByLemma(lemmaId: number) {
+  public allByLemma(lemmaId: number): Promise<DefinitionRow[]> {
     return this.db.batchOneToMany(
       this.allByLemmaKey,
       lemmaId,
@@ -100,7 +103,7 @@ class Definition extends Model {
 class DefinitionDescription extends Model {
   public readonly rawByDefinitionKey = 'DefinitionDescription.rawByDefinition';
 
-  public rawByDefinition(definitionId: number) {
+  public rawByDefinition(definitionId: number): Promise<string> {
     return this.db
       .batchOneToOne(
         this.rawByDefinitionKey,
@@ -122,7 +125,7 @@ class DefinitionDescription extends Model {
 class DefinitionStem extends Model {
   public readonly allByDefinitionKey = 'DefinitionStem.allByDefinition';
 
-  public allByDefinition(definitionId: number) {
+  public allByDefinition(definitionId: number): Promise<DefinitionStemRow[]> {
     return this.db.batchOneToMany(
       this.allByDefinitionKey,
       definitionId,
@@ -142,7 +145,7 @@ class DefinitionInflectionTable extends Model {
   public readonly byIdKey = 'DefinitionInflectionTable.byId';
   public readonly allByDefinitionKey = 'DefinitionInflectionTable.allByDefinition';
 
-  public byId(id: number) {
+  public byId(id: number): Promise<DefinitionInflectionTableRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -156,7 +159,10 @@ class DefinitionInflectionTable extends Model {
     );
   }
 
-  public async byIdRequired(id: number, paramName: string = 'id') {
+  public async byIdRequired(
+    id: number,
+    paramName: string = 'id'
+  ): Promise<DefinitionInflectionTableRow> {
     const table = await this.byId(id);
     if (!table) {
       throw new UserInputError(`Definition inflection table not found: ${id}`, {
@@ -166,7 +172,9 @@ class DefinitionInflectionTable extends Model {
     return table;
   }
 
-  public allByDefinition(definitionId: number) {
+  public allByDefinition(
+    definitionId: number
+  ): Promise<DefinitionInflectionTableRow[]> {
     return this.db.batchOneToMany(
       this.allByDefinitionKey,
       definitionId,
@@ -185,7 +193,7 @@ class DefinitionInflectionTable extends Model {
 class CustomInflectedForm extends Model {
   public readonly allByTableKey = 'CustomInflectedForm.allByTable';
 
-  public allByTable(tableId: number) {
+  public allByTable(tableId: number): Promise<CustomInflectedFormRow[]> {
     return this.db.batchOneToMany(
       this.allByTableKey,
       tableId,
@@ -209,7 +217,7 @@ class DerivedDefinition extends Model {
   };
   public readonly maxPerPage = 200;
 
-  public allByLemma(lemmaId: number) {
+  public allByLemma(lemmaId: number): Promise<DerivedDefinitionRow[]> {
     return this.db.batchOneToMany(
       this.allByLemmaKey,
       lemmaId,
@@ -228,7 +236,10 @@ class DerivedDefinition extends Model {
     );
   }
 
-  public async allByDerivedFrom(definitionId: number, page?: PageParams | null) {
+  public async allByDerivedFrom(
+    definitionId: number,
+    page?: PageParams | null
+  ): Promise<Connection<DerivedDefinitionRow>> {
     page = validatePageParams(page || this.defaultPagination, this.maxPerPage);
 
     // The pagination parameters make batching difficult and probably unnecessary.

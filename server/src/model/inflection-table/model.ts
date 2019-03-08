@@ -1,5 +1,7 @@
 import {UserInputError} from 'apollo-server';
 
+import {Awaitable} from '../../database/adaptor';
+
 import Model from '../model';
 
 export interface InflectionTableRow {
@@ -31,7 +33,7 @@ class InflectionTable extends Model {
   public readonly byIdKey = 'InflectionTable.byId';
   public readonly allByPartOfSpeechKey = 'InflectionTable.allByPartOfSpeechKey';
 
-  public byId(id: number) {
+  public byId(id: number): Promise<InflectionTableRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -45,7 +47,10 @@ class InflectionTable extends Model {
     );
   }
 
-  public async byIdRequired(id: number, paramName: string = 'id') {
+  public async byIdRequired(
+    id: number,
+    paramName: string = 'id'
+  ): Promise<InflectionTableRow> {
     const inflectionTable = await this.byId(id);
     if (!inflectionTable) {
       throw new UserInputError(`Inflection table not found: ${id}`, {
@@ -55,7 +60,9 @@ class InflectionTable extends Model {
     return inflectionTable;
   }
 
-  public allByPartOfSpeech(partOfSpeechId: number) {
+  public allByPartOfSpeech(
+    partOfSpeechId: number
+  ): Promise<InflectionTableRow[]> {
     return this.db.batchOneToMany(
       this.allByPartOfSpeechKey,
       partOfSpeechId,
@@ -75,7 +82,7 @@ class InflectedForm extends Model {
   public readonly byIdKey = 'InflectedForm.byId';
   public readonly allByTableKey = 'InflectedForm.allByTable';
 
-  public byId(id: number) {
+  public byId(id: number): Promise<InflectedFormRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -89,7 +96,10 @@ class InflectedForm extends Model {
     );
   }
 
-  public async byIdRequired(id: number, paramName: string = 'id') {
+  public async byIdRequired(
+    id: number,
+    paramName: string = 'id'
+  ): Promise<InflectedFormRow> {
     const inflectedForm = await this.byId(id);
     if (!inflectedForm) {
       throw new UserInputError(`Inflected form not found: ${id}`, {
@@ -99,7 +109,7 @@ class InflectedForm extends Model {
     return inflectedForm;
   }
 
-  public allByTable(tableId: number) {
+  public allByTable(tableId: number): Promise<InflectedFormRow[]> {
     return this.db.batchOneToMany(
       this.allByTableKey,
       tableId,
@@ -114,7 +124,7 @@ class InflectedForm extends Model {
     );
   }
 
-  public allDerivableByTable(tableId: number) {
+  public allDerivableByTable(tableId: number): Awaitable<InflectedFormRow[]> {
     return this.db.all<InflectedFormRow>`
       select i.*
       from inflected_forms i
@@ -128,7 +138,7 @@ class InflectedForm extends Model {
 class InflectionTableLayout extends Model {
   public readonly byTableKey = 'InflectionTableLayout.byTable';
 
-  public byTable(tableId: number) {
+  public byTable(tableId: number): Promise<InflectionTableLayoutRow | null> {
     return this.db.batchOneToOne(
       this.byTableKey,
       tableId,

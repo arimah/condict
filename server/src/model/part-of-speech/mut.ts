@@ -1,5 +1,6 @@
 import Mutator from '../mutator';
 
+import {PartOfSpeechRow} from './model';
 import {validateName} from './validators';
 import ensurePartOfSpeechIsUnused from './ensure-unused';
 
@@ -13,7 +14,9 @@ export interface EditPartOfSpeechInput {
 }
 
 class PartOfSpeechMut extends Mutator {
-  public async insert({languageId, name}: NewPartOfSpeechInput) {
+  public async insert(
+    {languageId, name}: NewPartOfSpeechInput
+  ): Promise<PartOfSpeechRow> {
     const {db} = this;
     const {PartOfSpeech, Language} = this.model;
 
@@ -25,10 +28,13 @@ class PartOfSpeechMut extends Mutator {
       insert into parts_of_speech (language_id, name)
       values (${language.id}, ${name})
     `;
-    return PartOfSpeech.byId(insertId);
+    return PartOfSpeech.byIdRequired(insertId);
   }
 
-  public async update(id: number, {name}: EditPartOfSpeechInput) {
+  public async update(
+    id: number,
+    {name}: EditPartOfSpeechInput
+  ): Promise<PartOfSpeechRow> {
     const {db} = this;
     const {PartOfSpeech} = this.model;
 
@@ -50,10 +56,10 @@ class PartOfSpeechMut extends Mutator {
       db.clearCache(PartOfSpeech.byIdKey, partOfSpeech.id);
     }
 
-    return PartOfSpeech.byId(partOfSpeech.id);
+    return PartOfSpeech.byIdRequired(partOfSpeech.id);
   }
 
-  public async delete(id: number) {
+  public async delete(id: number): Promise<boolean> {
     const {db} = this;
 
     await ensurePartOfSpeechIsUnused(db, id);

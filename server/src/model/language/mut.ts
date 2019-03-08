@@ -15,7 +15,9 @@ export interface EditLanguageInput {
 }
 
 class LanguageMut extends Mutator {
-  public async insert({name, urlName}: NewLanguageInput) {
+  public async insert(
+    {name, urlName}: NewLanguageInput
+  ): Promise<LanguageRow> {
     const {db} = this;
     const {Language} = this.model;
 
@@ -26,10 +28,13 @@ class LanguageMut extends Mutator {
       insert into languages (name, url_name)
       values (${name}, ${urlName})
     `;
-    return Language.byId(insertId);
+    return Language.byIdRequired(insertId);
   }
 
-  public async update(id: number, {name, urlName}: EditLanguageInput) {
+  public async update(
+    id: number,
+    {name, urlName}: EditLanguageInput
+  ): Promise<LanguageRow> {
     const {db} = this;
     const {Language} = this.model;
 
@@ -58,7 +63,7 @@ class LanguageMut extends Mutator {
       `;
       db.clearCache(Language.byIdKey, language.id);
     }
-    return Language.byId(id);
+    return Language.byIdRequired(id);
   }
 }
 

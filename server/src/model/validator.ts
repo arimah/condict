@@ -10,17 +10,18 @@ const validator = <T>(paramName: string): Validator<T, T> => {
     prev: (value: A) => B,
     next: (paramName: string, value: B) => C
   ): Validator<A, C> => {
-    const validate = (value: A) => next(paramName, prev(value));
+    const validate = (value: A): C => next(paramName, prev(value));
     return {
-      do: <D>(step: (paramName: string, value: C) => D) => chain(validate, step),
+      do: <D>(step: (paramName: string, value: C) => D) =>
+        chain(validate, step),
       validate,
     };
   };
 
-  const validate = (v: T) => v;
   return {
-    do: <U>(step: (paramName: string, value: T) => U) => chain(validate, step),
-    validate,
+    do: <U>(step: (paramName: string, value: T) => U) =>
+      chain(v => v, step),
+    validate: v => v,
   };
 };
 

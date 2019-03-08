@@ -47,7 +47,7 @@ class InflectionTableMut extends Mutator {
     partOfSpeechId,
     name,
     layout
-  }: NewInflectionTableInput) {
+  }: NewInflectionTableInput): Promise<InflectionTableRow> {
     const {db} = this;
     const {PartOfSpeech, InflectionTable} = this.model;
     const {InflectionTableLayoutMut, InflectedFormMut} = this.mut;
@@ -77,14 +77,14 @@ class InflectionTableMut extends Mutator {
       // And insert the layout!
       await InflectionTableLayoutMut.insert(tableId, finalLayout, stems);
 
-      return InflectionTable.byId(tableId);
+      return InflectionTable.byIdRequired(tableId);
     });
   }
 
   public async update(id: number, {
     name,
     layout
-  }: EditInflectionTableInput) {
+  }: EditInflectionTableInput): Promise<InflectionTableRow> {
     const {db} = this;
     const {InflectionTable, InflectedForm} = this.model;
     const {InflectionTableLayoutMut, InflectedFormMut} = this.mut;
@@ -155,10 +155,10 @@ class InflectionTableMut extends Mutator {
       });
       db.clearCache(InflectionTable.byIdKey, table.id);
     }
-    return InflectionTable.byId(table.id);
+    return InflectionTable.byIdRequired(table.id);
   }
 
-  public async delete(id: number) {
+  public async delete(id: number): Promise<boolean> {
     const {db} = this;
 
     // The table cannot be deleted while it is in use by one or
@@ -174,12 +174,12 @@ class InflectionTableMut extends Mutator {
 }
 
 class InflectionTableLayoutMut extends Mutator {
-  public insert(
+  public async insert(
     tableId: number,
     layout: InflectionTableRowJson[],
     stems: string[]
-  ) {
-    return this.db.exec`
+  ): Promise<void> {
+    await this.db.exec`
       insert into inflection_table_layouts (
         inflection_table_id,
         layout,
@@ -193,15 +193,15 @@ class InflectionTableLayoutMut extends Mutator {
     `;
   }
 
-  public update(
+  public async update(
     tableId: number,
     layout: InflectionTableRowJson[],
     stems: string[]
-  ) {
+  ): Promise<void> {
     const {InflectionTableLayout} = this.model;
 
     this.db.clearCache(InflectionTableLayout.byTableKey, tableId);
-    return this.db.exec`
+    await this.db.exec`
       update inflection_table_layouts
       set
         layout = ${JSON.stringify(layout)},
@@ -212,7 +212,10 @@ class InflectionTableLayoutMut extends Mutator {
 }
 
 class InflectedFormMut extends Mutator {
-  public async insert(tableId: number, form: InflectedFormInput) {
+  public async insert(
+    tableId: number,
+    form: InflectedFormInput
+  ): Promise<number> {
     const {db} = this;
 
     const fieldValues = [
@@ -233,10 +236,10 @@ class InflectedFormMut extends Mutator {
       values (${tableId}, ${fieldValues})
     `;
 
-    return insertId as number;
+    return insertId;
   }
 
-  public async update(id: number, form: InflectedFormInput) {
+  public async update(id: number, form: InflectedFormInput): Promise<number> {
     const {db} = this;
     const {InflectedForm} = this.model;
 

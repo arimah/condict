@@ -9,6 +9,7 @@ import {
 
 import Mutator from '../mutator';
 import FieldSet from '../field-set';
+import {InflectionTableRow} from '../inflection-table/model';
 
 import {DefinitionRow} from './model';
 import {
@@ -74,7 +75,7 @@ class DefinitionMut extends Mutator {
     description,
     stems,
     inflectionTables
-  }: NewDefinitionInput) {
+  }: NewDefinitionInput): Promise<DefinitionRow> {
     const {db} = this;
     const {Language, Definition, PartOfSpeech} = this.model;
     const {
@@ -118,7 +119,7 @@ class DefinitionMut extends Mutator {
         derivedDefinitions
       );
 
-      return Definition.byId(definitionId);
+      return Definition.byIdRequired(definitionId);
     });
   }
 
@@ -128,7 +129,7 @@ class DefinitionMut extends Mutator {
     description,
     stems,
     inflectionTables
-  }: EditDefinitionInput) {
+  }: EditDefinitionInput): Promise<DefinitionRow> {
     const {db} = this;
     const {Definition, PartOfSpeech} = this.model;
     const {
@@ -207,11 +208,11 @@ class DefinitionMut extends Mutator {
       await LemmaMut.deleteEmpty(definition.language_id);
 
       db.clearCache(Definition.byIdKey, definition.id);
-      return Definition.byId(definition.id);
+      return Definition.byIdRequired(definition.id);
     });
   }
 
-  public async delete(id: number) {
+  public async delete(id: number): Promise<boolean> {
     const {Definition} = this.model;
     const {LemmaMut} = this.mut;
 
@@ -236,7 +237,7 @@ class DefinitionMut extends Mutator {
     stemMap: Map<string, string>,
     inflectionTables: DefinitionInflectionTableInput[] | undefined | null,
     newFormsNeeded: boolean
-  ) {
+  ): Promise<void> {
     const {DerivedDefinitionMut} = this.mut;
 
     let derivedDefinitions: MultiMap<string, number> | null = null;
@@ -274,7 +275,7 @@ class DefinitionMut extends Mutator {
     stemMap: Map<string, string>,
     inflectionTables: DefinitionInflectionTableInput[],
     isNewDefinition: boolean
-  ) {
+  ): Promise<MultiMap<string, number>> {
     const {DefinitionInflectionTableMut} = this.mut;
 
     const derivedDefinitions = new MultiMap<string, number>();
@@ -330,7 +331,7 @@ class DefinitionMut extends Mutator {
     definitionId: number,
     term: string,
     stemMap: Map<string, string>
-  ) {
+  ): Promise<MultiMap<string, number>> {
     interface Row {
       id: number;
       inflection_table_id: number;
@@ -346,7 +347,9 @@ class DefinitionMut extends Mutator {
       from definition_inflection_tables
       where definition_id = ${definitionId}
     `;
-    const customForms = await this.fetchAllCustomForms(definitionTables);
+    const customForms = await this.fetchAllCustomForms(
+      definitionTables.map(t => t.id)
+    );
 
     for (const table of definitionTables) {
       const derivedForms = await DefinitionInflectionTableMut.deriveAllForms(
@@ -366,7 +369,9 @@ class DefinitionMut extends Mutator {
     return derivedDefinitions;
   }
 
-  private async fetchAllCustomForms(definitionTables: {id: number}[]) {
+  private async fetchAllCustomForms(
+    definitionTableIds: number[]
+  ): Promise<Map<number, CustomInflectedFormInput[]>> {
     interface Row {
       parent_id: number;
       inflected_form_id: number;
@@ -383,9 +388,7 @@ class DefinitionMut extends Mutator {
       from definition_forms df
       inner join definition_inflection_tables dit
         on dit.id = df.definition_inflection_table_id
-      where df.definition_inflection_table_id in (${
-        definitionTables.map(t => t.id)
-      })
+      where df.definition_inflection_table_id in (${definitionTableIds})
     `;
 
     return allCustomForms.reduce((map, row) => {
@@ -405,13 +408,18 @@ class DefinitionMut extends Mutator {
   }
 }
 
+interface DefinitionInflectionTableResult {
+  id: number;
+  derivedForms: Map<number, string>;
+}
+
 class DefinitionInflectionTableMut extends Mutator {
   public async insert(
     {id: definitionId, term, stemMap}: DefinitionData,
     partOfSpeechId: number,
     {inflectionTableId, caption, customForms}: DefinitionInflectionTableInput,
     index: number
-  ) {
+  ): Promise<DefinitionInflectionTableResult> {
     const {db} = this;
 
     const inflectionTable = await this.validateInflectionTableId(
@@ -452,7 +460,7 @@ class DefinitionInflectionTableMut extends Mutator {
     partOfSpeechId: number,
     {caption, customForms}: DefinitionInflectionTableInput,
     index: number
-  ) {
+  ): Promise<DefinitionInflectionTableResult> {
     const {db} = this;
     const {DefinitionInflectionTable} = this.model;
 
@@ -502,7 +510,7 @@ class DefinitionInflectionTableMut extends Mutator {
   private async validateInflectionTableId(
     inflectionTableId: number,
     partOfSpeechId: number
-  ) {
+  ): Promise<InflectionTableRow> {
     const {InflectionTable} = this.model;
 
     const inflectionTable = await InflectionTable.byIdRequired(
@@ -524,7 +532,7 @@ class DefinitionInflectionTableMut extends Mutator {
     stemMap: Map<string, string>,
     inflectionTableId: number,
     customForms: CustomInflectedFormInput[]
-  ) {
+  ): Promise<Map<number, string>> {
     const {db} = this;
     const {InflectedForm} = this.model;
 
@@ -570,9 +578,12 @@ class DefinitionInflectionTableMut extends Mutator {
     return derivedForms;
   }
 
-  public deleteOld(definitionId: number, currentIds: number[]) {
+  public async deleteOld(
+    definitionId: number,
+    currentIds: number[]
+  ): Promise<void> {
     const {db} = this;
-    return db.exec`
+    await db.exec`
       delete from definition_inflection_tables
       where definition_id = ${definitionId}
         ${
@@ -585,19 +596,25 @@ class DefinitionInflectionTableMut extends Mutator {
 }
 
 class DefinitionDescriptionMut extends Mutator {
-  public insert(definitionId: number, description: BlockElementInput[]) {
+  public async insert(
+    definitionId: number,
+    description: BlockElementInput[]
+  ): Promise<void> {
     const finalDescription = validateDescription(description, () => {});
 
-    return this.db.exec`
+    await this.db.exec`
       insert into definition_descriptions (definition_id, description)
       values (${definitionId}, ${JSON.stringify(finalDescription)})
     `;
   }
 
-  public update(definitionId: number, description: BlockElementInput[]) {
+  public async update(
+    definitionId: number,
+    description: BlockElementInput[]
+  ): Promise<void> {
     const finalDescription = validateDescription(description, () => {});
 
-    return this.db.exec`
+    await this.db.exec`
       update definition_descriptions
       set description = ${JSON.stringify(finalDescription)}
       where definition_id = ${definitionId}
@@ -606,14 +623,17 @@ class DefinitionDescriptionMut extends Mutator {
 }
 
 class DefinitionStemMut extends Mutator {
-  public insert(definitionId: number, stems: StemInput[]) {
+  public async insert(
+    definitionId: number,
+    stems: StemInput[]
+  ): Promise<void> {
     if (stems.length === 0) {
       return;
     }
 
     const {db} = this;
 
-    return db.exec`
+    await db.exec`
       insert into definition_stems (definition_id, name, value)
       values ${stems.map(s =>
         db.raw`(${definitionId}, ${s.name}, ${s.value})`
@@ -624,7 +644,7 @@ class DefinitionStemMut extends Mutator {
   public async update(
     definitionId: number,
     stems: StemInput[] | undefined | null
-  ) {
+  ): Promise<Map<string, string>> {
     const {DefinitionStem} = this.model;
 
     let stemMap: Map<string, string>;
@@ -641,7 +661,7 @@ class DefinitionStemMut extends Mutator {
     return stemMap;
   }
 
-  public async deleteAll(definitionId: number) {
+  public async deleteAll(definitionId: number): Promise<void> {
     await this.db.exec`
       delete from definition_stems
       where definition_id = ${definitionId}
@@ -654,7 +674,7 @@ class DerivedDefinitionMut extends Mutator {
     languageId: number,
     originalDefinitionId: number,
     derivedDefinitions: MultiMap<string, number>
-  ) {
+  ): Promise<void> {
     for (const [term, inflectedFormId] of derivedDefinitions) {
       if (!term) {
         // Can't add an empty term – just skip these.
@@ -674,7 +694,7 @@ class DerivedDefinitionMut extends Mutator {
     term: string,
     originalDefinitionId: number,
     inflectedFormId: number
-  ) {
+  ): Promise<void> {
     const {LemmaMut} = this.mut;
 
     const lemmaId = await LemmaMut.ensureExists(languageId, term);
@@ -689,7 +709,7 @@ class DerivedDefinitionMut extends Mutator {
     `;
   }
 
-  public async deleteAll(originalDefinitionId: number) {
+  public async deleteAll(originalDefinitionId: number): Promise<void> {
     await this.db.exec`
       delete from derived_definitions
       where original_definition_id = ${originalDefinitionId}

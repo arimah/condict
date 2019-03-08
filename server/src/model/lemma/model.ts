@@ -1,5 +1,5 @@
 import {validatePageParams, createConnection} from '../../schema/helpers';
-import {PageParams} from '../../schema/types';
+import {PageParams, Connection} from '../../schema/types';
 
 import Model from '../model';
 
@@ -24,7 +24,7 @@ class Lemma extends Model {
   };
   public readonly maxPerPage = 500;
 
-  public byId(id: number) {
+  public byId(id: number): Promise<LemmaRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -38,7 +38,7 @@ class Lemma extends Model {
     );
   }
 
-  public byTerm(languageId: number, term: string) {
+  public byTerm(languageId: number, term: string): Promise<LemmaRow | null> {
     return this.db.batchOneToOne(
       this.byTermKey(languageId),
       term,
@@ -54,7 +54,7 @@ class Lemma extends Model {
     );
   }
 
-  public byTermKey(languageId: number) {
+  public byTermKey(languageId: number): string {
     return `Lemma.byTerm(${languageId})`;
   }
 
@@ -62,7 +62,7 @@ class Lemma extends Model {
     languageId: number,
     page: PageParams | undefined | null,
     filter: LemmaFilter
-  ) {
+  ): Promise<Connection<LemmaRow>> {
     page = validatePageParams(page || this.defaultPagination, this.maxPerPage);
 
     // The pagination parameters make batching difficult and probably unnecessary.

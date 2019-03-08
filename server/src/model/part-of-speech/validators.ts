@@ -10,7 +10,7 @@ export const validateName = (
   currentId: number | null,
   languageId: number,
   value: string
-) =>
+): Promise<string> =>
   validator<string>('name')
     .do(map(value => value.trim()))
     .do(lengthBetween(1, NameSize))

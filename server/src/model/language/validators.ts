@@ -10,7 +10,7 @@ export const validateName = (
   db: Adaptor,
   currentId: number | null,
   value: string
-) =>
+): Promise<string> =>
   validator<string>('name')
     .do(map(name => name.trim()))
     .do(lengthBetween(1, NameSize))
@@ -28,7 +28,7 @@ export const validateUrlName = (
   db: Adaptor,
   currentId: number | null,
   value: string
-) =>
+): Promise<string> =>
   validator<string>('urlName')
     .do(map(urlName => urlName.toLowerCase().trim()))
     .do(lengthBetween(1, UrlNameSize))

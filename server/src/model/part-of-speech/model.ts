@@ -12,7 +12,7 @@ class PartOfSpeech extends Model {
   public readonly byIdKey = 'PartOfSpeech.byId';
   public readonly allByLanguageKey = 'PartOfSpeech.allByLanguage';
 
-  public byId(id: number) {
+  public byId(id: number): Promise<PartOfSpeechRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -26,7 +26,10 @@ class PartOfSpeech extends Model {
     );
   }
 
-  public async byIdRequired(id: number, paramName: string = 'id') {
+  public async byIdRequired(
+    id: number,
+    paramName: string = 'id'
+  ): Promise<PartOfSpeechRow> {
     const partOfSpeech = await this.byId(id);
     if (!partOfSpeech) {
       throw new UserInputError(`Part of speech not found: ${id}`, {
@@ -36,7 +39,7 @@ class PartOfSpeech extends Model {
     return partOfSpeech;
   }
 
-  public allByLanguage(languageId: number) {
+  public allByLanguage(languageId: number): Promise<PartOfSpeechRow[]> {
     return this.db.batchOneToMany(
       this.allByLanguageKey,
       languageId,
