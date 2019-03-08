@@ -7,7 +7,7 @@ import reindentQuery from './reindent-query';
 
 interface DataLoaders {
   [k: string]: DataLoader<any, any>;
-};
+}
 
 export type Sql = TemplateStringsArray | string;
 
@@ -16,7 +16,7 @@ export type Awaitable<T> = Promise<T> | T;
 export interface ExecResult {
   insertId: number;
   affectedRows: number;
-};
+}
 
 // TODO: Document
 

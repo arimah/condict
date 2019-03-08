@@ -7,11 +7,11 @@ type Level = 'error' | 'warn' | 'info' | 'debug';
 export interface LogFile {
   path: string;
   level?: Level;
-};
+}
 
 export interface LoggerOptions {
   files?: LogFile[];
-};
+}
 
 const levels: Record<Level, number> = {
   error: 0,

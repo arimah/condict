@@ -4,7 +4,7 @@ module.exports = {
     "es6": true
   },
   "extends": [
-    // "eslint:recommended"
+    "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
   ],
   "parser": "@typescript-eslint/parser",
@@ -59,6 +59,10 @@ module.exports = {
     ],
 
     // This is for the server. Logging is fine.
-    "no-console": "off"
+    "no-console": "off",
+
+    // The following rules interfere with various TypeScript features.
+    "no-undef": "off", // Taken care of by the type system.
+    "no-dupe-class-members": "off", // Doesn't work well with overloading.
   }
 };

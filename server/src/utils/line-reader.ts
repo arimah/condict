@@ -4,7 +4,7 @@ interface Pending {
   resolve: (s: string | null) => void;
   reject: (reason: any) => void;
   requireLine: boolean;
-};
+}
 
 export default class LineReader {
   private readonly stream: NodeJS.ReadableStream;

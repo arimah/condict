@@ -122,7 +122,7 @@ export interface ColumnSchema {
   export?: ImportExportFunction;
   /** A function that transforms the column value before it is imported. */
   import?: ImportExportFunction;
-};
+}
 
 /** The type of a column. */
 export const enum ColumnType {
@@ -159,7 +159,7 @@ export const enum ColumnType {
    * this type. The exact implementation of enum types varies between drivers.
    */
   ENUM = 'enum',
-};
+}
 
 /** The collation of a text column. */
 export const enum Collation {

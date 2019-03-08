@@ -291,7 +291,7 @@ class DefinitionMut extends Mutator {
       interface Result {
         id: number;
         derivedForms: Map<number, string>;
-      };
+      }
       const {id: tableId, derivedForms}: Result = await (
         table.id != null && !isNewDefinition
           ? DefinitionInflectionTableMut.update(
@@ -335,7 +335,7 @@ class DefinitionMut extends Mutator {
     interface Row {
       id: number;
       inflection_table_id: number;
-    };
+    }
 
     const {db} = this;
     const {DefinitionInflectionTableMut} = this.mut;

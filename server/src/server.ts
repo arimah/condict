@@ -21,7 +21,7 @@ export interface ServerConfig {
     type: string;
   };
   log: LoggerOptions;
-};
+}
 
 // Generates a short, pseudo-random request ID.
 // Exclusively for use in logs, so you can identify
