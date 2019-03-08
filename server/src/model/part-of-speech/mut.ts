@@ -1,17 +1,12 @@
 import Mutator from '../mutator';
 
-import {PartOfSpeechRow} from './model';
+import {
+  PartOfSpeechRow,
+  NewPartOfSpeechInput,
+  EditPartOfSpeechInput,
+} from './types';
 import {validateName} from './validators';
 import ensurePartOfSpeechIsUnused from './ensure-unused';
-
-export interface NewPartOfSpeechInput {
-  languageId: string;
-  name: string;
-}
-
-export interface EditPartOfSpeechInput {
-  name?: string | null;
-}
 
 class PartOfSpeechMut extends Mutator {
   public async insert(

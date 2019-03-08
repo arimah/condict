@@ -1,8 +1,8 @@
-import {PartOfSpeechRow} from '../../model/part-of-speech/model';
 import {
+  PartOfSpeechRow,
   NewPartOfSpeechInput,
   EditPartOfSpeechInput,
-} from '../../model/part-of-speech/mut';
+} from '../../model/part-of-speech/types';
 
 import {Resolvers, Mutators, IdArg} from '../types';
 import {mutator} from '../helpers';

@@ -1,14 +1,10 @@
 import {
   InflectionTableRow,
   InflectedFormRow,
-} from '../../model/inflection-table/model';
-import {
   NewInflectionTableInput,
   EditInflectionTableInput,
-} from '../../model/inflection-table/mut';
-import {
   InflectionTableCellJson,
-} from '../../model/inflection-table/build-table-layout';
+} from '../../model/inflection-table/types';
 
 import {Resolvers, Mutators, IdArg} from '../types';
 import {mutator} from '../helpers';

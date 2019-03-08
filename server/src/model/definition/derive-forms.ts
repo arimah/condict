@@ -1,6 +1,6 @@
 import inflectWord from '../../utils/inflect-word';
 
-import {InflectedFormRow} from '../inflection-table/model';
+import {InflectedFormRow} from '../inflection-table/types';
 
 const deriveForms = (
   term: string,

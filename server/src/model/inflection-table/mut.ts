@@ -4,43 +4,19 @@ import Mutator from '../mutator';
 import FieldSet from '../field-set';
 
 import {
+  InflectionTableRow,
+  NewInflectionTableInput,
+  EditInflectionTableInput,
+  InflectedFormInput,
+  InflectionTableRowJson,
+} from './types';
+import {
   validateName,
   validateFormInflectionPattern,
   validateFormDisplayName,
 } from './validators';
-import buildTableLayout, {InflectionTableRowJson} from './build-table-layout';
+import buildTableLayout from './build-table-layout';
 import ensureTableIsUnused from './ensure-unused';
-import {InflectionTableRow} from './model';
-
-export interface NewInflectionTableInput {
-  partOfSpeechId: string;
-  name: string;
-  layout: InflectionTableRowInput[];
-}
-
-export interface EditInflectionTableInput {
-  name?: string | null;
-  layout?: InflectionTableRowInput[] | null;
-}
-
-export interface InflectionTableRowInput {
-  cells: InflectionTableCellInput[];
-}
-
-export interface InflectionTableCellInput {
-  columnSpan?: number | null;
-  rowSpan?: number | null;
-  headerText?: string | null;
-  inflectedForm?: InflectedFormInput | null;
-}
-
-export interface InflectedFormInput {
-  id?: string | null;
-  deriveLemma: boolean;
-  inflectionPattern: string;
-  displayName: string;
-  hasCustomDisplayName: boolean;
-}
 
 class InflectionTableMut extends Mutator {
   public async insert({

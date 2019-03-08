@@ -5,47 +5,14 @@ import {PageParams, Connection} from '../../schema/types';
 
 import Model from '../model';
 
-export interface DefinitionRow {
-  id: number;
-  lemma_id: number;
-  language_id: number;
-  part_of_speech_id: number;
-  term: string;
-}
-
-export interface DefinitionDescriptionRow {
-  definition_id: number;
-  /** JSON-serialized data */
-  description: string;
-}
-
-export interface DefinitionStemRow {
-  definition_id: number;
-  name: string;
-  value: string;
-}
-
-export interface DefinitionInflectionTableRow {
-  id: number;
-  definition_id: number;
-  inflection_table_id: number;
-  sort_order: number;
-  caption: string;
-}
-
-export interface CustomInflectedFormRow {
-  definition_inflection_table_id: number;
-  inflected_form_id: number;
-  inflected_form: string;
-}
-
-export interface DerivedDefinitionRow {
-  lemma_id: number;
-  original_definition_id: number;
-  inflected_form_id: number;
-  term: string;
-  language_id: number;
-}
+import {
+  DefinitionRow,
+  DefinitionDescriptionRow,
+  DefinitionStemRow,
+  DefinitionInflectionTableRow,
+  CustomInflectedFormRow,
+  DerivedDefinitionRow,
+} from './types';
 
 class Definition extends Model {
   public readonly byIdKey = 'Definition.byId';

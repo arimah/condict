@@ -1,6 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
-import {TableCaptionInput} from '../model/definition/mut';
+import {TableCaptionInput} from '../model/definition/types';
 
 import {
   BlockElementInput,

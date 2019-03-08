@@ -1,18 +1,12 @@
 import Mutator from '../mutator';
 import FieldSet from '../field-set';
 
-import {LanguageRow} from './model';
+import {
+  LanguageRow,
+  NewLanguageInput,
+  EditLanguageInput,
+} from './types';
 import {validateName, validateUrlName} from './validators';
-
-export interface NewLanguageInput {
-  name: string;
-  urlName: string;
-}
-
-export interface EditLanguageInput {
-  name?: string | null;
-  urlName?: string | null;
-}
 
 class LanguageMut extends Mutator {
   public async insert(

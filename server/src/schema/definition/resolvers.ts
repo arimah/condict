@@ -4,11 +4,9 @@ import {
   DefinitionInflectionTableRow,
   CustomInflectedFormRow,
   DerivedDefinitionRow,
-} from '../../model/definition/model';
-import {
   NewDefinitionInput,
   EditDefinitionInput,
-} from '../../model/definition/mut';
+} from '../../model/definition/types';
 
 import {Resolvers, Mutators, IdArg, PageArg} from '../types';
 import {mutator} from '../helpers';

@@ -1,4 +1,4 @@
-import {LemmaRow} from '../../model/lemma/model';
+import {LemmaRow} from '../../model/lemma/types';
 
 import {Resolvers, IdArg} from '../types';
 

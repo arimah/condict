@@ -2,32 +2,12 @@ import {UserInputError} from 'apollo-server';
 
 import {Awaitable} from '../../database/adaptor';
 
+import {
+  InflectionTableRow,
+  InflectedFormRow,
+  InflectionTableLayoutRow,
+} from './types';
 import Model from '../model';
-
-export interface InflectionTableRow {
-  id: number;
-  part_of_speech_id: number;
-  name: string;
-}
-
-export interface InflectedFormRow {
-  id: number;
-  inflection_table_id: number;
-  /** Boolean */
-  derive_lemma: number;
-  /** Boolean */
-  custom_display_name: number;
-  inflection_pattern: string;
-  display_name: string;
-}
-
-export interface InflectionTableLayoutRow {
-  inflection_table_id: number;
-  /** JSON-serialized data */
-  layout: string;
-  /** JSON-serialized data */
-  stems: string;
-}
 
 class InflectionTable extends Model {
   public readonly byIdKey = 'InflectionTable.byId';

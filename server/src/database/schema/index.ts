@@ -1,4 +1,4 @@
-import {InflectionTableRowJson} from '../../model/inflection-table/build-table-layout';
+import {InflectionTableRowJson} from '../../model/inflection-table/types';
 import {BlockElement} from '../../rich-text/types';
 
 import {TableSchema, ColumnSchema, ColumnType, Collation} from './types';

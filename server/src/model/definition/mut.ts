@@ -1,7 +1,7 @@
 import {UserInputError} from 'apollo-server';
 
 import MultiMap from '../../utils/multi-map';
-import {BlockElementInput, InlineElementInput} from '../../rich-text/types';
+import {BlockElementInput} from '../../rich-text/types';
 import {
   validateDescription,
   validateTableCaption,
@@ -9,53 +9,21 @@ import {
 
 import Mutator from '../mutator';
 import FieldSet from '../field-set';
-import {InflectionTableRow} from '../inflection-table/model';
+import {InflectionTableRow} from '../inflection-table/types';
 
-import {DefinitionRow} from './model';
+import {
+  DefinitionRow,
+  NewDefinitionInput,
+  EditDefinitionInput,
+  StemInput,
+  DefinitionInflectionTableInput,
+  CustomInflectedFormInput,
+} from './types';
 import {
   validateStems,
   validateFormValue,
 } from './validators';
 import deriveForms from './derive-forms';
-
-export interface NewDefinitionInput {
-  languageId: string;
-  term: string;
-  partOfSpeechId: string;
-  description: BlockElementInput[];
-  stems: StemInput[];
-  inflectionTables: DefinitionInflectionTableInput[];
-}
-
-export interface EditDefinitionInput {
-  term?: string | null;
-  partOfSpeechId?: string | null;
-  description?: BlockElementInput[] | null;
-  stems?: StemInput[] | null;
-  inflectionTables?: DefinitionInflectionTableInput[] | null;
-}
-
-export interface StemInput {
-  name: string;
-  value: string;
-}
-
-export interface DefinitionInflectionTableInput {
-  id?: string | null;
-  caption?: TableCaptionInput | null;
-  customForms: CustomInflectedFormInput[];
-  inflectionTableId: string;
-}
-
-export interface TableCaptionInput {
-  text: string;
-  inlines?: InlineElementInput[] | null;
-}
-
-export interface CustomInflectedFormInput {
-  inflectedFormId: string;
-  value: string;
-}
 
 interface DefinitionData {
   id: number;

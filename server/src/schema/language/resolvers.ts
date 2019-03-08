@@ -1,11 +1,11 @@
 import {UserInputError} from 'apollo-server';
 
-import {LanguageRow} from '../../model/language/model';
-import {LemmaFilter} from '../../model/lemma/model';
 import {
+  LanguageRow,
   NewLanguageInput,
   EditLanguageInput,
-} from '../../model/language/mut';
+} from '../../model/language/types';
+import {LemmaFilter} from '../../model/lemma/types';
 
 import {Resolvers, Mutators, PageArg} from '../types';
 import {mutator} from '../helpers';

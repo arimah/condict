@@ -1,20 +1,8 @@
 import {validatePageParams, createConnection} from '../../schema/helpers';
 import {PageParams, Connection} from '../../schema/types';
 
+import {LemmaRow, LemmaFilter} from './types';
 import Model from '../model';
-
-export interface LemmaRow {
-  id: number;
-  language_id: number;
-  term_unique: string;
-  term_display: string;
-}
-
-export const enum LemmaFilter {
-  ALL_LEMMAS = 'ALL_LEMMAS',
-  DEFINED_LEMMAS_ONLY = 'DEFINED_LEMMAS_ONLY',
-  DERIVED_LEMMAS_ONLY = 'DERIVED_LEMMAS_ONLY',
-}
 
 class Lemma extends Model {
   public readonly byIdKey = 'Lemma.byId';

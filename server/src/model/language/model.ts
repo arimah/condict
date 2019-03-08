@@ -2,14 +2,8 @@ import {UserInputError} from 'apollo-server';
 
 import {Awaitable} from '../../database/adaptor';
 
+import {LanguageRow} from './types';
 import Model from '../model';
-
-export interface LanguageRow {
-  id: number;
-  lemma_count: number;
-  name: string;
-  url_name: string;
-}
 
 class Language extends Model {
   public readonly byIdKey = 'Language.byId';

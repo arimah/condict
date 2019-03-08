@@ -2,11 +2,7 @@ import {UserInputError} from 'apollo-server';
 
 import Model from '../model';
 
-export interface PartOfSpeechRow {
-  id: number;
-  language_id: number;
-  name: string;
-}
+import {PartOfSpeechRow} from './types';
 
 class PartOfSpeech extends Model {
   public readonly byIdKey = 'PartOfSpeech.byId';

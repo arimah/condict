@@ -1,17 +1,11 @@
 import {UserInputError} from 'apollo-server';
 
-import {InflectionTableRowInput, InflectedFormInput} from './mut';
-
-export interface InflectionTableRowJson {
-  cells: InflectionTableCellJson[];
-}
-
-export interface InflectionTableCellJson {
-  rowSpan?: number;
-  columnSpan?: number;
-  headerText?: string;
-  inflectedFormId?: number;
-}
+import {
+  InflectionTableRowInput,
+  InflectedFormInput,
+  InflectionTableRowJson,
+  InflectionTableCellJson,
+} from './types';
 
 export interface TableLayoutResult {
   finalLayout: InflectionTableRowJson[];
