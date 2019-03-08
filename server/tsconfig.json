@@ -1,21 +1,7 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "esnext",
-    "allowJs": false,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "noImplicitReturns": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictPropertyInitialization": true,
     "rootDir": "src",
-    "outDir": "dist",
-    "declaration": true
-  },
-  "exclude": [
-    "node_modules"
-  ]
+    "outDir": "dist"
+  }
 }
