@@ -13,7 +13,7 @@
     "start": "node dist/cli.js",
     "check": "tsc --noEmit",
     "clean": "rimraf dist",
-    "copyGraphql": "copyfiles --up 1 src-ts/schema/*/*.graphql dist/",
+    "copyGraphql": "copyfiles --up 1 src/schema/*/*.graphql dist/",
     "compile": "tsc",
     "build": "npm run clean && npm run compile && npm run copyGraphql",
     "prepublishOnly": "npm install && npm run build",
