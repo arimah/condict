@@ -1,28 +1,22 @@
 import {UserInputError} from 'apollo-server';
 
-import {TableCaptionInput} from '../model/definition/types';
-
 import {
   BlockElementInput,
   BlockKind,
   InlineElementInput,
   InlineKind,
+  TableCaptionInput,
+  CondictLink,
+  BlockElementJson,
+  InlineElementJson,
+  TableCaptionJson,
 } from './types';
 import {
   isCondictLink,
   parseCondictLink,
-  CondictLink,
 } from './condict-link';
 
 export type LinkRefCollector = (target: CondictLink) => void;
-
-// The input types are mostly compatible with the output types, but we declare
-// them as separate types so they can be changed in the future if necessary.
-export type BlockElementJson = BlockElementInput;
-
-export type InlineElementJson = InlineElementInput;
-
-export type TableCaptionJson = TableCaptionInput;
 
 // GraphQL validates types, including values of BlockKind and InlineKind types.
 // Rather than repeat the schema here to double-check, we let GraphQL do its

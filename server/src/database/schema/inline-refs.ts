@@ -1,5 +1,9 @@
-import {InlineKind, InlineElement} from '../../rich-text/types';
-import {CondictLinkTarget, isCondictLink, parseCondictLink} from '../../rich-text/condict-link';
+import {
+  InlineKind,
+  InlineElement,
+  CondictLinkTarget,
+} from '../../rich-text/types';
+import {isCondictLink, parseCondictLink} from '../../rich-text/condict-link';
 
 import {ForeignKeyRef, NewIdMap} from './types';
 

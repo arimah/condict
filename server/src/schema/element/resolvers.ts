@@ -1,5 +1,8 @@
-import {InlineKind} from '../../rich-text/types';
-import {BlockElementJson, InlineElementJson} from '../../rich-text/validate';
+import {
+  InlineKind,
+  BlockElementJson,
+  InlineElementJson,
+} from '../../rich-text/types';
 
 import {Resolvers} from '../types';
 

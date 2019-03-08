@@ -1,4 +1,8 @@
-import {BlockElementInput, InlineElementInput} from '../../rich-text/types';
+import {
+  BlockElementInput,
+  InlineElementInput,
+  TableCaptionInput,
+} from '../../rich-text/types';
 
 export interface DefinitionRow {
   id: number;
@@ -69,11 +73,6 @@ export interface DefinitionInflectionTableInput {
   caption?: TableCaptionInput | null;
   customForms: CustomInflectedFormInput[];
   inflectionTableId: string;
-}
-
-export interface TableCaptionInput {
-  text: string;
-  inlines?: InlineElementInput[] | null;
 }
 
 export interface CustomInflectedFormInput {
