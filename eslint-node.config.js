@@ -4,14 +4,16 @@ module.exports = {
     "es6": true
   },
   "extends": [
-    "eslint:recommended"
+    // "eslint:recommended"
+    "plugin:@typescript-eslint/recommended",
   ],
-  "parserOptions": {
-    "ecmaVersion": 2018,
-    "sourceType": "module"
-  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+  ],
   "rules": {
-    "indent": [
+    "indent": "off", // Compatibility problems with TypeScript
+    "@typescript-eslint/indent": [
       "error",
       2,
       {
@@ -21,10 +23,18 @@ module.exports = {
         "ignoredNodes": ["TemplateLiteral *"]
       }
     ],
+
+    // I like Haskell.
+    "@typescript-eslint/explicit-function-return-type": "off",
+
+    // Good idea in theory, not really workable in practice.
+    "@typescript-eslint/no-explicit-any": "off",
+
     "linebreak-style": [
       "error",
       "unix"
     ],
+
     "quotes": [
       "error",
       "single",
@@ -33,17 +43,21 @@ module.exports = {
         "allowTemplateLiterals": true
       }
     ],
+
     "semi": [
       "error",
       "always"
     ],
-    "no-unused-vars": [
+
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
       "error",
       {
         "varsIgnorePattern": "^_",
         "argsIgnorePattern": "^_"
       }
     ],
+
     // This is for the server. Logging is fine.
     "no-console": "off"
   }

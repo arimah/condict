@@ -5,16 +5,28 @@
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
-  "main": "index.js",
+  "main": "dist/index.js",
   "bin": {
-    "condict-server": "./cli.js"
+    "condict-server": "./dist/cli.js"
   },
   "scripts": {
-    "start": "node cli.js",
-    "lint": "eslint --config ../eslint-node.config.js src/ cli.js index.js"
+    "start": "node dist/cli.js",
+    "check": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "copyGraphql": "copyfiles --up 1 src-ts/schema/*/*.graphql dist/",
+    "compile": "tsc",
+    "build": "npm run clean && npm run compile && npm run copyGraphql",
+    "prepublishOnly": "npm install && npm run build",
+    "lint": "eslint --config ../eslint-node.config.js --ext .ts src/"
   },
   "dependencies": {
-    "apollo-server": "^2.3.3",
+    "@types/better-sqlite3": "^5.2.2",
+    "@types/command-line-args": "^5.0.0",
+    "@types/generic-pool": "^3.1.9",
+    "@types/graphql": "^14.0.7",
+    "@types/mysql": "^2.15.5",
+    "@types/node": "^10.12.29",
+    "apollo-server": "^2.4.8",
     "better-sqlite3": "^5.4.0",
     "chalk": "^2.4.2",
     "command-line-args": "^5.0.2",
@@ -26,6 +38,11 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "eslint": "^5.13.0"
+    "@typescript-eslint/eslint-plugin": "^1.4.2",
+    "@typescript-eslint/parser": "^1.4.2",
+    "copyfiles": "^2.1.0",
+    "eslint": "^5.13.0",
+    "rimraf": "^2.6.3",
+    "typescript": "^3.3.3333"
   }
 }
