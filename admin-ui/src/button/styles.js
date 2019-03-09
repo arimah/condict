@@ -13,6 +13,7 @@ export const ButtonStyle = css`
   text-align: center;
   border: none;
   border-radius: ${ifProp('slim', '4px', '7px')};
+  position: relative;
 
   transition-duration: ${theme('timing.short')};
   transition-timing-function: ease-in-out;
@@ -70,3 +71,14 @@ export const Link = styled.a`
 Link.defaultProps = {
   theme: LightTheme,
 };
+
+export const ShimmerWrapper = styled.span`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: ${ifProp('slim', '4px', '7px')};
+`;

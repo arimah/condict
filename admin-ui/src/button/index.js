@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import {useCommand} from '../command';
+import {useShimmer, Shimmer} from '../shimmer';
 
 import * as S from './styles';
 
@@ -21,6 +22,7 @@ export const Button = React.forwardRef((props, ref) => {
   } = props;
 
   const command = useCommand(commandName);
+  const shimmer = useShimmer();
 
   const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
 
@@ -39,11 +41,19 @@ export const Button = React.forwardRef((props, ref) => {
   if (href != null) {
     return (
       <S.Link
-        href={href}
         role='button'
         {...buttonProps}
+        onMouseEnter={shimmer.events.enter}
+        onMouseLeave={shimmer.events.leave}
+        onMouseMove={shimmer.events.move}
+        href={href}
         ref={ref}
       >
+        {!props.minimal && !props.disabled &&
+          <S.ShimmerWrapper slim={props.slim}>
+            <Shimmer state={shimmer.state}/>
+          </S.ShimmerWrapper>
+        }
         {renderedContent}
       </S.Link>
     );
@@ -51,9 +61,16 @@ export const Button = React.forwardRef((props, ref) => {
     return (
       <S.Button
         {...buttonProps}
+        onMouseEnter={shimmer.events.enter}
+        onMouseLeave={shimmer.events.leave}
+        onMouseMove={shimmer.events.move}
         type={type}
         ref={ref}
       >
+        {!props.minimal && !props.disabled &&
+          <S.ShimmerWrapper slim={props.slim}>
+            <Shimmer state={shimmer.state}/>
+          </S.ShimmerWrapper>}
         {renderedContent}
       </S.Button>
     );
