@@ -52,13 +52,7 @@ export const validateInline = (
   inputInline: InlineElementInput,
   collectLinkReference?: LinkRefCollector
 ): InlineElementJson => {
-  const result: InlineElementJson = {
-    kind: inputInline.kind,
-    start: inputInline.start,
-    end: inputInline.end,
-  };
-
-  if (result.kind === InlineKind.LINK) {
+  if (inputInline.kind === InlineKind.LINK) {
     if (!collectLinkReference) {
       throw new UserInputError('Links are not permitted in this context');
     }
@@ -66,14 +60,24 @@ export const validateInline = (
       throw new UserInputError('Missing linkTarget on an inline of type LINK');
     }
 
-    result.linkTarget = inputInline.linkTarget;
-    if (isCondictLink(result.linkTarget)) {
-      const link = parseCondictLink(result.linkTarget);
+    const linkTarget = inputInline.linkTarget;
+    if (isCondictLink(linkTarget)) {
+      const link = parseCondictLink(linkTarget);
       collectLinkReference(link);
     }
+    return {
+      kind: InlineKind.LINK,
+      start: inputInline.start,
+      end: inputInline.end,
+      linkTarget,
+    };
   }
 
-  return result;
+  return {
+    kind: inputInline.kind,
+    start: inputInline.start,
+    end: inputInline.end,
+  };
 };
 
 export const validateBlock = (
@@ -89,7 +93,7 @@ export const validateBlock = (
     result.level = inputBlock.level;
   }
 
-  let inlines: InlineElementInput[] | null = null;
+  let inlines: InlineElementJson[] | null = null;
   if (inputBlock.inlines && inputBlock.inlines.length > 0) {
     inlines = inputBlock.inlines
       // Validate each inline,
@@ -132,7 +136,7 @@ export const validateTableCaption = (
     text: inputCaption.text,
   };
 
-  let inlines: InlineElementInput[] | null = null;
+  let inlines: InlineElementJson[] | null = null;
   if (inputCaption.inlines && inputCaption.inlines.length > 0) {
     inlines = inputCaption.inlines
       // Validate each inline,

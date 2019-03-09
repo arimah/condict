@@ -23,8 +23,6 @@ const InlineElement: Resolvers<InlineElementJson> = {
         return 'StyleInline';
       case InlineKind.LINK:
         return 'LinkInline';
-      default:
-        throw new Error(`Invalid inline element kind: ${p.kind}`);
     }
   }
 };

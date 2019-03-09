@@ -1,5 +1,5 @@
 import {InflectionTableRowJson} from '../../model/inflection-table/types';
-import {BlockElement} from '../../rich-text/types';
+import {BlockElementJson} from '../../rich-text/types';
 
 import {TableSchema, ColumnSchema, ColumnType, Collation} from './types';
 import {inlineElementReferences, updateInlineReferences} from './inline-refs';
@@ -374,12 +374,12 @@ const tables: TableSchema[] = [
         comment: 'The definition text itself. See app documentation for details.',
         type: ColumnType.JSON,
         export(value, newIds) {
-          const blocks = JSON.parse(value) as BlockElement[];
+          const blocks = JSON.parse(value) as BlockElementJson[];
           blocks.forEach(block => updateInlineReferences(block.inlines, newIds));
           return blocks;
         },
         import(blocks, newIds) {
-          (blocks as BlockElement[]).forEach(block =>
+          (blocks as BlockElementJson[]).forEach(block =>
             updateInlineReferences(block.inlines, newIds)
           );
           return JSON.stringify(blocks);

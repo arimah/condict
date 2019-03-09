@@ -9,11 +9,11 @@ export const enum BlockKind {
   ULIST_ITEM = 'ULIST_ITEM',
 }
 
-export interface BlockElement {
+export interface BlockElementJson {
   kind: BlockKind;
-  level: number;
+  level?: number;
   text: string;
-  inlines?: InlineElement[] | null;
+  inlines?: InlineElementJson[];
 }
 
 export const enum InlineKind {
@@ -26,19 +26,24 @@ export const enum InlineKind {
   LINK = 'LINK',
 }
 
-export type InlineElement = StyleInline | LinkInline;
+export type InlineElementJson = StyleInlineJson | LinkInlineJson;
 
-export interface StyleInline {
+export interface StyleInlineJson {
   kind: Exclude<InlineKind, InlineKind.LINK>;
   start: number;
   end: number;
 }
 
-export interface LinkInline {
+export interface LinkInlineJson {
   kind: InlineKind.LINK;
   start: number;
   end: number;
   linkTarget: string;
+}
+
+export interface TableCaptionJson {
+  text: string;
+  inlines?: InlineElementJson[];
 }
 
 export interface BlockElementInput {
@@ -71,12 +76,3 @@ export interface CondictLink {
   type: CondictLinkTarget;
   id: number;
 }
-
-// The input types are exactly compatible with the output types, but we declare
-// them as separate types so they can be changed in the future if necessary.
-
-export type BlockElementJson = BlockElementInput;
-
-export type InlineElementJson = InlineElementInput;
-
-export type TableCaptionJson = TableCaptionInput;

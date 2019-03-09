@@ -1,6 +1,5 @@
 import {
   BlockElementInput,
-  InlineElementInput,
   TableCaptionInput,
 } from '../../rich-text/types';
 

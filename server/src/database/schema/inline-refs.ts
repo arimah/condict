@@ -1,6 +1,6 @@
 import {
   InlineKind,
-  InlineElement,
+  InlineElementJson,
   CondictLinkTarget,
 } from '../../rich-text/types';
 import {isCondictLink, parseCondictLink} from '../../rich-text/condict-link';
@@ -35,7 +35,7 @@ const linkTargetTable: Record<CondictLinkTarget, string> = {
 };
 
 export const updateInlineReferences = (
-  inlines: InlineElement[] | undefined | null,
+  inlines: InlineElementJson[] | undefined,
   newIds: NewIdMap
 ) => {
   if (!inlines) {
