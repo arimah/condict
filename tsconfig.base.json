@@ -11,6 +11,7 @@
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "strictPropertyInitialization": true,
-    "declaration": true
+    "declaration": true,
+    "sourceMap": true
   }
 }
