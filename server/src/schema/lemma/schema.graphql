@@ -35,5 +35,5 @@ type Lemma {
 
 extend type Query {
   "Finds a lemma by ID. For richer lemma search, see the `Language` type."
-  lemma(id: ID): Lemma
+  lemma(id: ID!): Lemma
 }
