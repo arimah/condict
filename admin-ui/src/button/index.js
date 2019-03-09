@@ -49,7 +49,7 @@ export const Button = React.forwardRef((props, ref) => {
         href={href}
         ref={ref}
       >
-        {!props.minimal && !props.disabled &&
+        {!props.minimal && !buttonProps.disabled &&
           <S.ShimmerWrapper slim={props.slim}>
             <Shimmer state={shimmer.state}/>
           </S.ShimmerWrapper>
@@ -67,7 +67,7 @@ export const Button = React.forwardRef((props, ref) => {
         type={type}
         ref={ref}
       >
-        {!props.minimal && !props.disabled &&
+        {!props.minimal && !buttonProps.disabled &&
           <S.ShimmerWrapper slim={props.slim}>
             <Shimmer state={shimmer.state}/>
           </S.ShimmerWrapper>}
