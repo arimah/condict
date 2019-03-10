@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 import * as S from './styles';
@@ -29,27 +29,40 @@ const InitialState = Object.freeze({
   visible: false,
 });
 
-export const useShimmer = () => {
+export const useShimmer = (elemRef) => {
   const [state, setState] = useState(InitialState);
-  const events = useMemo(() => {
+
+  // Normally we would rely entirely on React's event handling to magic things
+  // for us. Unfortunately, React attaches event handlers globally, and for
+  // mouse events, that has unpleasant performance implications. In this case,
+  // given that there will be *relatively* few (no more than ~100s, certainly)
+  // buttons and other hoverable elements, it feels acceptable to attach the
+  // event handlers directly to the element.
+  useEffect(() => {
+    const elem = elemRef.current;
+
     const enterAndMove = e => setState({
       visible: true,
-      x: e.nativeEvent.offsetX,
-      y: e.nativeEvent.offsetY,
+      x: e.offsetX,
+      y: e.offsetY,
     });
+    const leave = e => setState({
+      visible: false,
+      // Make sure to retain the position, so it doesn't flop about
+      // while fading out.
+      x: state.x,
+      y: state.y,
+    });
+    elem.addEventListener('mouseenter', enterAndMove);
+    elem.addEventListener('mousemove', enterAndMove);
+    elem.addEventListener('mouseleave', leave);
 
-    return {
-      enter: enterAndMove,
-      move: enterAndMove,
-      leave: e => setState({
-        visible: false,
-        // Make sure to retain the position, so it doesn't flop about
-        // while fading out.
-        x: state.x,
-        y: state.y,
-      }),
+    return () => {
+      elem.removeEventListener('mouseenter', enterAndMove);
+      elem.removeEventListener('mousemove', enterAndMove);
+      elem.removeEventListener('mouseleave', leave);
     };
-  }, []);
+  }, [elemRef.current]);
 
-  return {state, events};
+  return state;
 };

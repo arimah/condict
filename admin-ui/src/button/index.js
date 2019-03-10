@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
@@ -22,7 +22,8 @@ export const Button = React.forwardRef((props, ref) => {
   } = props;
 
   const command = useCommand(commandName);
-  const shimmer = useShimmer();
+  const buttonRef = useRef(null);
+  const shimmer = useShimmer(buttonRef);
 
   const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
 
@@ -38,20 +39,25 @@ export const Button = React.forwardRef((props, ref) => {
     buttonProps.onClick = onClick;
   }
 
+  const captureRef = elem => {
+    buttonRef.current = elem;
+    if (typeof ref === 'function') {
+      ref(elem);
+    } else if (ref) {
+      ref.current = elem;
+    }
+  };
   if (href != null) {
     return (
       <S.Link
         role='button'
         {...buttonProps}
-        onMouseEnter={shimmer.events.enter}
-        onMouseLeave={shimmer.events.leave}
-        onMouseMove={shimmer.events.move}
         href={href}
-        ref={ref}
+        ref={captureRef}
       >
         {!props.minimal && !buttonProps.disabled &&
           <S.ShimmerWrapper slim={props.slim}>
-            <Shimmer state={shimmer.state}/>
+            <Shimmer state={shimmer}/>
           </S.ShimmerWrapper>
         }
         {renderedContent}
@@ -61,15 +67,12 @@ export const Button = React.forwardRef((props, ref) => {
     return (
       <S.Button
         {...buttonProps}
-        onMouseEnter={shimmer.events.enter}
-        onMouseLeave={shimmer.events.leave}
-        onMouseMove={shimmer.events.move}
         type={type}
-        ref={ref}
+        ref={captureRef}
       >
         {!props.minimal && !buttonProps.disabled &&
           <S.ShimmerWrapper slim={props.slim}>
-            <Shimmer state={shimmer.state}/>
+            <Shimmer state={shimmer}/>
           </S.ShimmerWrapper>}
         {renderedContent}
       </S.Button>
