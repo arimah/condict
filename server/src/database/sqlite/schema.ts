@@ -4,7 +4,8 @@ import {
   ColumnType,
   Collation,
   IndexedColumn,
-  ForeignKeyRef
+  ForeignKeyRef,
+  isFKColumn,
 } from '../schema/types';
 
 import {FindColumn} from '../types';
@@ -19,7 +20,7 @@ import {FindColumn} from '../types';
 
 const escapeId = (id: string) => `"${id}"`;
 
-const escapeValue = (value: any) => {
+const escapeValue = (value: boolean | number | string | null) => {
   switch (typeof value) {
     case 'boolean': return value ? '1' : '0';
     case 'number': return String(value);
@@ -41,7 +42,7 @@ const resolveBaseType = (
   column: ColumnSchema,
   findColumn: FindColumn
 ): string => {
-  if (column.references) {
+  if (isFKColumn(column)) {
     const referencedColumn = findColumn(column.references);
     return resolveBaseType(referencedColumn, findColumn);
   }
@@ -63,8 +64,6 @@ const resolveBaseType = (
       const values = column.values.map(v => escapeValue(v)).join(',');
       return `text check(${escapeId(column.name)} in (${values}))`;
     }
-    default:
-      throw new Error(`Column type missing: ${column.name}`);
   }
 };
 
@@ -77,11 +76,20 @@ const resolveColumnType = (
   if (!column.allowNull) {
     columnType += ' not null';
   }
-  if (column.collate) {
-    columnType += ` collate ${getCollation(column.collate)}`;
-  }
-  if (column.default) {
-    columnType += ` default ${escapeValue(column.default)}`;
+  if (!isFKColumn(column)) {
+    switch (column.type) {
+      case ColumnType.BOOLEAN:
+      case ColumnType.UNSIGNED_INT:
+      case ColumnType.VARCHAR:
+      case ColumnType.ENUM:
+        if (column.default !== undefined) {
+          columnType += `default ${escapeValue(column.default)}`;
+        }
+        if (column.type === ColumnType.VARCHAR && column.collate) {
+          columnType += ` collate ${getCollation(column.collate)}`;
+        }
+        break;
+    }
   }
 
   return columnType;
@@ -121,7 +129,7 @@ const generateCreateTable = (
 ): string[] => {
   const foreignKeys: string[] = [];
   const columns = table.columns.map(column => {
-    if (column.references) {
+    if (isFKColumn(column)) {
       foreignKeys.push(foreignKey(column, column.references));
     }
 

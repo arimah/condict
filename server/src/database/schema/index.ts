@@ -190,13 +190,13 @@ const tables: TableSchema[] = [
         name: 'derive_lemma',
         comment: 'Determines whether the inflected form, once computed for a definition, should be added as a separate lemma.',
         type: ColumnType.BOOLEAN,
-        default: 1,
+        default: true,
       },
       {
         name: 'custom_display_name',
         comment: 'Determines whether the `display_name` was entered specifically by the user, or derived automatically from the header cells in the containing table.',
         type: ColumnType.BOOLEAN,
-        default: 0,
+        default: false,
       },
       {
         name: 'inflection_pattern',

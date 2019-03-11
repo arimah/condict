@@ -8,7 +8,13 @@ import Adaptor from './adaptor';
 import fileFacts from './dump-file-facts';
 import getNewIdMap from './get-new-id-map';
 import schema, {schemaVersion} from './schema';
-import {TableSchema, ForeignKeyRef, NewIdMap} from './schema/types';
+import {
+  TableSchema,
+  FKColumnSchema,
+  ForeignKeyRef,
+  NewIdMap,
+  isFKColumn,
+} from './schema/types';
 
 // The entire importer is built around a few central assumptions:
 //
@@ -42,7 +48,7 @@ const verifyHeader = async (logger: Logger, lines: LineReader) => {
 const getColumnImporters = (table: TableSchema) =>
   table.columns
     .filter(c =>
-      c.references && c.references.column === 'id' ||
+      isFKColumn(c) && c.references.column === 'id' ||
       c.import
     )
     .map(c => {
@@ -55,7 +61,7 @@ const getColumnImporters = (table: TableSchema) =>
           row[c.name] = importFn(row[c.name], newIds);
         };
       } else {
-        const ref = c.references as ForeignKeyRef;
+        const ref = (c as FKColumnSchema).references;
         return (row: any, newIds: NewIdMap) => {
           const newId = newIds[ref.table].get(row[c.name]);
           row[c.name] = newId;

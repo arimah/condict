@@ -61,7 +61,16 @@ export type IndexedColumn = string | string[];
  */
 export type ImportExportFunction = (value: any, newIds: NewIdMap) => any;
 
-export interface ColumnSchema {
+export type ColumnSchema
+  = IdColumnSchema
+  | BooleanColumnSchema
+  | IntegerColumnSchema
+  | VarcharColumnSchema
+  | EnumColumnSchema
+  | JsonColumnSchema
+  | FKColumnSchema;
+
+export interface BaseColumnSchema {
   /** The name of the column. */
   name: string;
   /**
@@ -69,47 +78,96 @@ export interface ColumnSchema {
    * in {@link TableSchema}.
    */
   comment: string;
-  /**
-   * The type of the column. If the column references a foreign key (`references`
-   * is set), then the type is taken from the referenced column, and this
-   * property is optional. Otherwise the type is required.
-   */
-  type?: ColumnType;
   /** If true, null values are permitted in the column. */
   allowNull?: boolean;
-  /**
-   * The size of the column, whose meaning varies according to its type. For
-   * integer columns, it is the size of the column in bits. For variable-size
-   * character columns, it is the maximum size of the column in Unicode code
-   * points. See more under {@link ColumnType}.
-   */
-  size?: number;
-  /**
-   * On columns of a character type, defines the collation of the column. See
-   * more under {@link Collation}.
-   */
-  collate?: Collation;
-  /**
-   * On columns of an enum type, contains the valid values of the enumeration.
-   * Each value must be unique.
-   */
-  values?: string[];
+  /** A function that transforms the column value before it is exported. */
+  export?: ImportExportFunction;
+  /** A function that transforms the column value before it is imported. */
+  import?: ImportExportFunction;
+}
+
+/**
+ * A column that is defined by the table. Such a column must have a type.
+ */
+export interface OwnColumnSchema extends BaseColumnSchema {
+  /** The type of the column. */
+  type: ColumnType;
+}
+
+export interface IdColumnSchema extends OwnColumnSchema {
+  /** The type of the column. */
+  type: ColumnType.ID;
   /*
    * If true, the column value increments automatically. This property is only
    * relevant on columns of type 'id'.
    */
   autoIncrement?: boolean;
+}
+
+export interface BooleanColumnSchema extends OwnColumnSchema {
+  /** The type of the column. */
+  type: ColumnType.BOOLEAN;
   /**
    * The default value of the column, if applicable. If omitted, the column has
    * no default value, the exact meaning of which varies between database engines.
    * Most columns have no default value.
    */
-  default?: any;
+  default?: boolean | null;
+}
+
+export interface IntegerColumnSchema extends OwnColumnSchema {
+  /** The type of the column. */
+  type: ColumnType.UNSIGNED_INT;
   /**
-   * The foreign key referenced by the column. If omitted, the column is not a
-   * foreign key.
+   * The size of the column in bits. The database engine guarantees at least
+   * this capacity.
    */
-  references?: ForeignKeyRef;
+  size: number;
+  /**
+   * The default value of the column, if applicable. If omitted, the column has
+   * no default value, the exact meaning of which varies between database engines.
+   * Most columns have no default value.
+   */
+  default?: number | null;
+}
+
+export interface VarcharColumnSchema extends OwnColumnSchema {
+  /** The type of the column. */
+  type: ColumnType.VARCHAR;
+  /**
+   * The size of the column, which is the maximum number of Unicode code points
+   * that can be stored in the column.
+   */
+  size: number;
+  /**
+   * The collation of the column. See more under {@link Collation}.
+   */
+  collate?: Collation;
+  /**
+   * The default value of the column, if applicable. If omitted, the column has
+   * no default value, the exact meaning of which varies between database engines.
+   * Most columns have no default value.
+   */
+  default?: string | null;
+}
+
+export interface EnumColumnSchema extends OwnColumnSchema {
+  /** The type of the column. */
+  type: ColumnType.ENUM;
+  /** The valid values of the enumeration. Each value must be unique. */
+  values: string[];
+  /**
+   * The default value of the column, if applicable. If omitted, the column has
+   * no default value, the exact meaning of which varies between database engines.
+   * Most columns have no default value.
+   */
+  default?: string | null;
+}
+
+/** A column containing JSON data. */
+export interface JsonColumnSchema extends OwnColumnSchema {
+  /** The type of the column. */
+  type: ColumnType.JSON;
   /**
    * Foreign keys referenced by some part of the content of the column. This is
    * used for JSON columns that may contain IDs of foreign columns. For example,
@@ -118,11 +176,20 @@ export interface ColumnSchema {
    * column.
    */
   contentReferences?: ForeignKeyRef[];
-  /** A function that transforms the column value before it is exported. */
-  export?: ImportExportFunction;
-  /** A function that transforms the column value before it is imported. */
-  import?: ImportExportFunction;
 }
+
+/** A column that references another row's `id` column. */
+export interface FKColumnSchema extends BaseColumnSchema {
+  /**
+   * The foreign key referenced by the column. If omitted, the column is not a
+   * foreign key.
+   */
+  references: ForeignKeyRef;
+}
+
+export const isFKColumn = (def: ColumnSchema): def is FKColumnSchema => {
+  return (def as FKColumnSchema).references != null;
+};
 
 /** The type of a column. */
 export const enum ColumnType {
@@ -180,8 +247,11 @@ export const enum Collation {
 export interface ForeignKeyRef {
   /** The name of the referenced table. */
   table: string;
-  /** The name of the referenced column. */
-  column: string;
+  /**
+   * The name of the referenced column. At present, it is only possible to
+   * reference a primary key named `id`.
+   */
+  column: 'id';
   /**
    * Determines how to handle deletions of the referenced row. 'cascade' means
    * this row is deleted when the referenced row is. 'restrict' means the

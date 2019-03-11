@@ -6,7 +6,8 @@ import {
   ColumnType,
   Collation,
   IndexedColumn,
-  ForeignKeyRef
+  ForeignKeyRef,
+  isFKColumn,
 } from '../schema/types';
 
 import {FindColumn} from '../types';
@@ -33,7 +34,7 @@ const resolveBaseType = (
   column: ColumnSchema,
   findColumn: FindColumn
 ): string => {
-  if (column.references) {
+  if (isFKColumn(column)) {
     const referencedColumn = findColumn(column.references);
     return resolveBaseType(referencedColumn, findColumn);
   }
@@ -53,8 +54,6 @@ const resolveBaseType = (
       return `enum(${column.values.map(v => escape(v)).join(',')})`;
     case ColumnType.JSON:
       return 'json';
-    default:
-      throw new Error(`Column type missing: ${column.name}`);
   }
 };
 
@@ -67,14 +66,25 @@ const resolveColumnType = (
   if (!column.allowNull) {
     columnType += ' not null';
   }
-  if (column.collate) {
-    columnType += ` collate ${getCollation(column.collate)}`;
-  }
-  if (column.default) {
-    columnType += ` default ${escape(column.default)}`;
-  }
-  if (column.autoIncrement) {
-    columnType += ' auto_increment';
+  if (!isFKColumn(column)) {
+    switch (column.type) {
+      case ColumnType.ID:
+        if (column.autoIncrement) {
+          columnType += ' auto_increment';
+        }
+        break;
+      case ColumnType.BOOLEAN:
+      case ColumnType.UNSIGNED_INT:
+      case ColumnType.VARCHAR:
+      case ColumnType.ENUM:
+        if (column.default !== undefined) {
+          columnType += `default ${escape(column.default)}`;
+        }
+        if (column.type === ColumnType.VARCHAR && column.collate) {
+          columnType += ` collate ${getCollation(column.collate)}`;
+        }
+        break;
+    }
   }
 
   return columnType;
@@ -114,7 +124,7 @@ const generateCreateTable = (
 ): string => {
   const foreignKeys: string[] = [];
   const columns = table.columns.map(column => {
-    if (column.references) {
+    if (isFKColumn(column)) {
       foreignKeys.push(foreignKey(column, column.references));
     }
 
