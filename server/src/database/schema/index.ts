@@ -61,6 +61,7 @@ const tables: TableSchema[] = [
         comment: 'The total number of lemmas in the language. Cached for performance.',
         type: ColumnType.UNSIGNED_INT,
         size: 32,
+        default: 0,
       },
       {
         name: 'name',
