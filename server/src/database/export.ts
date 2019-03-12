@@ -9,7 +9,6 @@ import schema, {schemaVersion} from './schema';
 import {
   TableSchema,
   FKColumnSchema,
-  ForeignKeyRef,
   NewIdMap,
   isFKColumn,
 } from './schema/types';
