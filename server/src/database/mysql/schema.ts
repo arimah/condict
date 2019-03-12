@@ -78,7 +78,7 @@ const resolveColumnType = (
       case ColumnType.VARCHAR:
       case ColumnType.ENUM:
         if (column.default !== undefined) {
-          columnType += `default ${escape(column.default)}`;
+          columnType += ` default ${escape(column.default)}`;
         }
         if (column.type === ColumnType.VARCHAR && column.collate) {
           columnType += ` collate ${getCollation(column.collate)}`;
