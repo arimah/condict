@@ -128,6 +128,66 @@ type LinkInline implements InlineElement {
   * `condict://part-of-speech/{id}` links to a part of speech.
   """
   linkTarget: String!
+
+  """
+  If the link leads to an item in the dictionary, contains that item. Otherwise,
+  this field is null.
+  """
+  internalLinkTarget: InternalLinkTarget
+}
+
+"Contains the item that an internal link points to."
+interface InternalLinkTarget {
+  "The ID of the item that the link points to."
+  id: ID!
+}
+
+"Contains the language that a language link points to."
+type LanguageLinkTarget implements InternalLinkTarget {
+  "The ID of the language that the link points to."
+  id: ID!
+
+  """
+  The language pointed to by the link. If the language has been removed since
+  the link was created, this field is null.
+  """
+  language: Language
+}
+
+"Contains the lemma that a lemma link points to."
+type LemmaLinkTarget implements InternalLinkTarget {
+  "The ID of the lemma that the link points to."
+  id: ID!
+
+  """
+  The lemma pointed to by the link. If the lemma has been removed since the
+  link was created, this field is null.
+  """
+  lemma: Lemma
+}
+
+"Contains the definition that a definition link points to."
+type DefinitionLinkTarget implements InternalLinkTarget {
+  "The ID of the definition that the link points to."
+  id: ID!
+
+  """
+  The definition pointed to by the link. If the definition has been removed
+  since the link was created, this field is null.
+  """
+  definition: Definition
+}
+
+"Contains the part of speech that a part of speech link points to."
+type PartOfSpeechLinkTarget implements InternalLinkTarget {
+  "The ID of the part of speech that the link points to."
+  id: ID!
+
+  """
+  The part of speech pointed to by the link. If the part of speech has been
+  removed since the link was created, this field is null.
+  """
+  partOfSpeech: PartOfSpeech
 }
 
 "Input type for a block element."

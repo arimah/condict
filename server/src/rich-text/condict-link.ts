@@ -6,7 +6,7 @@
 // * condict://definition/{id} links to a definition.
 // * condict://part-of-speech/{id} links to a part of speech.
 
-import {CondictLink, CondictLinkTarget} from './types';
+import {CondictLink, CondictLinkType} from './types';
 
 const linkTargetRegex =
   /^condict:\/\/(language|lemma|definition|part-of-speech)\/([0-9]+)$/;
@@ -20,8 +20,8 @@ export const parseCondictLink = (target: string): CondictLink => {
   }
 
   // The regex should never match anything that isn't
-  // a valid CondictLinkTarget.
-  const type = match[1] as CondictLinkTarget;
+  // a valid CondictLinkType.
+  const type = match[1] as CondictLinkType;
   const id = +match[2];
 
   return {type, id};

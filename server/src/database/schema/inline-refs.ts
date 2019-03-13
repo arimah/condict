@@ -1,7 +1,7 @@
 import {
   InlineKind,
   InlineElementJson,
-  CondictLinkTarget,
+  CondictLinkType,
 } from '../../rich-text/types';
 import {isCondictLink, parseCondictLink} from '../../rich-text/condict-link';
 
@@ -27,7 +27,7 @@ export const inlineElementReferences: ForeignKeyRef[] = [
   },
 ];
 
-const linkTargetTable: Record<CondictLinkTarget, string> = {
+const linkTargetTable: Record<CondictLinkType, string> = {
   language: 'languages',
   lemma: 'lemmas',
   definition: 'definitions',

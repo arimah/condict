@@ -65,7 +65,7 @@ export interface TableCaptionInput {
   inlines?: InlineElementInput[] | null;
 }
 
-export const enum CondictLinkTarget {
+export const enum CondictLinkType {
   LANGUAGE = 'language',
   LEMMA = 'lemma',
   DEFINITION = 'definition',
@@ -73,6 +73,6 @@ export const enum CondictLinkTarget {
 }
 
 export interface CondictLink {
-  type: CondictLinkTarget;
+  type: CondictLinkType;
   id: number;
 }
