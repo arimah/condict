@@ -41,7 +41,7 @@ const EmptyParagraph: BlockElementJson = {
 // actually unimportant as long as they don't overlap, but sorting in this
 // manner takes care of everything neatly.
 //
-// Partially overlapping inlines are not permitted, but no atttempt is made
+// Partially overlapping inlines are not permitted, but no attempt is made
 // to detect them.
 const compareInlines = (
   a: InlineElementInput,

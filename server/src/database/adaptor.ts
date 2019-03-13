@@ -5,21 +5,36 @@ import FieldSet from '../model/field-set';
 
 import reindentQuery from './reindent-query';
 
+export type Sql = TemplateStringsArray | string;
+
+/**
+ * Represents a generic awaitable value of type T. That is, either a promise
+ * that resolves to a T, or just a plain T.
+ */
+export type Awaitable<T> = Promise<T> | T;
+
+/**
+ * Contains the result of a command execution.
+ */
+export interface ExecResult {
+  /**
+   * The ID of the last inserted row. If the command passed to `exec` did not
+   * insert any rows, the value of this field is unspecified.
+   */
+  insertId: number;
+  /** The total number of rows affected by the command. */
+  affectedRows: number;
+}
+
 interface DataLoaders {
   [k: string]: DataLoader<any, any>;
 }
 
-export type Sql = TemplateStringsArray | string;
-
-export type Awaitable<T> = Promise<T> | T;
-
-export interface ExecResult {
-  insertId: number;
-  affectedRows: number;
-}
-
-// TODO: Document
-
+/**
+ * Encapsulates a database connection, which supports queries, commands and
+ * batching of queries. When a request is finished using the connection, it
+ * should be returned to its pool using the `release` method.
+ */
 abstract class Adaptor {
   private readonly logger: Logger;
   private readonly dataLoaders: DataLoaders = {};
@@ -53,12 +68,44 @@ abstract class Adaptor {
    */
   public abstract all<Row>(parts: Sql, ...values: any[]): Awaitable<Row[]>;
 
+  /**
+   * Executes an SQL command and returns information about its result. This
+   * method can be called directly or used as a template string tag.
+   *
+   * To perform a SELECT, use `get` or `all`.
+   * @param parts An SQL string, or a template strings array.
+   * @param values When invoked with a template strings array, contains the
+   *        values of embedded expressions.
+   * @return Details about the result of the command.
+   */
   public abstract exec(parts: Sql, ...values: any[]): Awaitable<ExecResult>;
 
+  /**
+   * Treats the specified string as raw SQL, enabling it to be inserted into
+   * queries and commands without being escaped. This method can be called
+   * directly or used as a template string tag.
+   * @param parts An SQL string, or a template strings array.
+   * @param values When invoked with a template strings array, contains the
+   *        values of embedded expressions.
+   * @return A value that can be embedded into future queries and commands
+   *         without being subject to escaping.
+   */
+  public abstract raw(parts: Sql, ...values: any[]): any;
+
+  /**
+   * Begins a transaction on this connection. Nested transactions are not
+   * supported.
+   */
   public abstract beginTransaction(): Awaitable<void>;
 
+  /**
+   * Commits the current transasction.
+   */
   public abstract commit(): Awaitable<void>;
 
+  /**
+   * Rolls back the current transaction.
+   */
   public abstract rollBack(): Awaitable<void>;
 
   /**
@@ -67,11 +114,49 @@ abstract class Adaptor {
    */
   public abstract release(): void;
 
+  /**
+   * Determines whether the specified table exists. If the database engine has
+   * support for multiple schemas, this function always looks up tables in the
+   * currently selected schema.
+   * @param name The table name to look up.
+   * @return A value indicating whether the table exists, or a promise of such
+   *         a value.
+   */
   public abstract tableExists(name: string): Awaitable<boolean>;
 
-  public abstract raw(parts: Sql, ...values: any[]): any;
+  /**
+   * Runs the specified callback inside a transaction. The return value of the
+   * callback is used as the return value of this method. Nested transactions
+   * are not supported.
+   * @param callback The callback to call inside a transaction.
+   * @return A promise that resolves to the return value of the callback.
+   */
+  public async transact<R>(callback: () => Awaitable<R>): Promise<R> {
+    await this.beginTransaction();
+    let result: R;
+    try {
+      result = await callback();
+      await this.commit();
+    } catch (e) {
+      await this.rollBack();
+      throw e;
+    }
+    return result;
+  }
 
-  public formatSql(
+  /**
+   * Formats a string or template string arguments into an SQL string. This
+   * method is intended to be used in conjunction with `get`, `all`, `exec`
+   * and `raw` to format their arguments.
+   *
+   * Note: This method CANNOT be called as a template string tag.
+   * @param parts An SQL string, or a template strings array.
+   * @param values Contains the values of embedded expressions, if the `parts`
+   *        parameter contains a template strings array. Otherwise, this value
+   *        is ignored.
+   * @return The formatted SQL.
+   */
+  protected formatSql(
     parts: Sql,
     values: any[],
     handleValue: (value: any) => string
@@ -101,19 +186,11 @@ abstract class Adaptor {
     return sql;
   }
 
-  public async transact<R>(callback: () => Awaitable<R>): Promise<R> {
-    await this.beginTransaction();
-    let result: R;
-    try {
-      result = await callback();
-      await this.commit();
-    } catch (e) {
-      await this.rollBack();
-      throw e;
-    }
-    return result;
-  }
-
+  /**
+   * Logs the execution of a query. If `this.logQueries` is false, the query
+   * is not logged.
+   * @param sql The query to log.
+   */
   protected logQuery(sql: string) {
     if (!this.logQueries) {
       return;
@@ -127,6 +204,25 @@ abstract class Adaptor {
     }
   }
 
+  /**
+   * Batches a query; that is, combines multiple queries (from the same tick
+   * of the event loop) into a single lookup. The query is expected to match
+   * at most one row per input ID.
+   * @param batchKey The key to associate with this batch. All queries with
+   *        the same key are batched together.
+   * @param id The ID to look up. This does not have to be the row's primary
+   *        key; it can be any primitive value.
+   * @param fetcher A function that receives all IDs of the batch and returns
+   *        an awaitable value with all matching rows. Each ID can match at
+   *        most one row.
+   * @param getRowId A function that extracts a result row's ID.
+   * @param extraArg An extra argument to pass into the `fetcher` callback,
+   *        if required. If this method is called multiple times with the
+   *        same `batchKey` but a different `extraArg`, only the value from
+   *        the very first call is used.
+   * @return A promise that resolves to the row matching `id`, or null if no
+   *         row matches.
+   */
   public batchOneToOne<K extends string | number, Row, E = undefined>(
     batchKey: string,
     id: K,
@@ -153,6 +249,25 @@ abstract class Adaptor {
     return dataLoader.load(id);
   }
 
+  /**
+   * Batches a query; that is, combines multiple queries (from the same tick
+   * of the event loop) into a single lookup. The query can match any number
+   * of rows per input ID.
+   * @param batchKey The key to associate with this batch. All queries with
+   *        the same key are batched together.
+   * @param id The ID to look up. This does not have to be the row's primary
+   *        key; it can be any primitive value.
+   * @param fetcher A function that receives all IDs of the batch and returns
+   *        an awaitable value with all matching rows. Each ID can match any
+   *        number of rows.
+   * @param getRowId A function that extractcs a result row's ID.
+   * @param extraArg An extra argument to pass into the `fetcher` callback,
+   *        if required. If this method is called multiple times with the
+   *        same `batchKey` but a different `extraArg`, only the value from
+   *        the very first call is used.
+   * @return A promise that resolves to the rows matching `id`. If none were
+   *         found, the array will be empty.
+   */
   public batchOneToMany<K extends string | number, Row, E = undefined>(
     batchKey: string,
     id: K,
@@ -191,6 +306,12 @@ abstract class Adaptor {
     return dataLoader.load(id);
   }
 
+  /**
+   * Clear the batch cache associated with the specified batch key and ID. The
+   * cache is local to the request.
+   * @param batchKey The key to clear cache for.
+   * @param id The ID to clear cache for.
+   */
   public clearCache<K extends string | number>(batchKey: string, id: K) {
     if (this.dataLoaders[batchKey]) {
       this.dataLoaders[batchKey].clear(id);
