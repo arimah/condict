@@ -587,7 +587,7 @@ class CustomFormMut extends Mutator {
     return allCustomForms;
   }
 
-  public async deleteAll(tableId: number) {
+  public async deleteAll(tableId: number): Promise<void> {
     await this.db.exec`
       delete from definition_forms
       where definition_inflection_table_id = ${tableId}
