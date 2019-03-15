@@ -325,7 +325,7 @@ class DefinitionMut extends Mutator {
         term,
         stemMap,
         table.inflection_table_id,
-        customForms.get(table.id) || []
+        customForms.get(table.id) || new Map()
       );
 
       // Add each form as a derived definition. So derivative.
@@ -339,7 +339,7 @@ class DefinitionMut extends Mutator {
 
   private async fetchAllCustomForms(
     definitionTableIds: number[]
-  ): Promise<Map<number, CustomInflectedFormInput[]>> {
+  ): Promise<Map<number, Map<number, string>>> {
     interface Row {
       parent_id: number;
       inflected_form_id: number;
@@ -360,19 +360,14 @@ class DefinitionMut extends Mutator {
     `;
 
     return allCustomForms.reduce((map, row) => {
-      const form: CustomInflectedFormInput = {
-        inflectedFormId: String(row.inflected_form_id),
-        value: row.value,
-      };
-
-      const forms = map.get(row.parent_id);
-      if (forms) {
-        forms.push(form);
-      } else {
-        map.set(row.parent_id, [form]);
+      let forms = map.get(row.parent_id);
+      if (!forms) {
+        forms = new Map();
+        map.set(row.parent_id, forms);
       }
+      forms.set(row.inflected_form_id, row.value);
       return map;
-    }, new Map<number, CustomInflectedFormInput[]>());
+    }, new Map<number, Map<number, string>>());
   }
 }
 
@@ -383,18 +378,19 @@ interface DefinitionInflectionTableResult {
 
 class DefinitionInflectionTableMut extends Mutator {
   public async insert(
-    {id: definitionId, term, stemMap}: DefinitionData,
+    definition: DefinitionData,
     partOfSpeechId: number,
     {inflectionTableId, caption, customForms}: DefinitionInflectionTableInput,
     index: number
   ): Promise<DefinitionInflectionTableResult> {
     const {db} = this;
+    const {CustomFormMut} = this.mut;
 
     const inflectionTable = await this.validateInflectionTableId(
       +inflectionTableId,
       partOfSpeechId
     );
-    const finalCaption = caption ? validateTableCaption(caption) : null;
+    const finalCaption = validateTableCaption(caption);
 
     const {insertId: tableId} = await db.exec`
       insert into definition_inflection_tables (
@@ -404,19 +400,25 @@ class DefinitionInflectionTableMut extends Mutator {
         caption
       )
       values (
-        ${definitionId},
+        ${definition.id},
         ${inflectionTable.id},
         ${index},
-        ${finalCaption ? JSON.stringify(finalCaption) : null}
+        ${finalCaption && JSON.stringify(finalCaption)}
       )
     `;
 
-    const derivedForms = await this.deriveAllForms(
+    const customFormMap = await CustomFormMut.insert(
       tableId,
-      term,
-      stemMap,
       inflectionTable.id,
       customForms
+    );
+
+    const derivedForms = await this.deriveAllForms(
+      tableId,
+      definition.term,
+      definition.stemMap,
+      inflectionTable.id,
+      customFormMap
     );
 
     return {id: tableId, derivedForms};
@@ -424,16 +426,17 @@ class DefinitionInflectionTableMut extends Mutator {
 
   public async update(
     id: number,
-    {id: definitionId, term, stemMap}: DefinitionData,
+    definition: DefinitionData,
     partOfSpeechId: number,
     {caption, customForms}: DefinitionInflectionTableInput,
     index: number
   ): Promise<DefinitionInflectionTableResult> {
     const {db} = this;
     const {DefinitionInflectionTable} = this.model;
+    const {CustomFormMut} = this.mut;
 
     const table = await DefinitionInflectionTable.byIdRequired(id);
-    if (table.definition_id !== definitionId) {
+    if (table.definition_id !== definition.id) {
       throw new UserInputError(
         `Definition inflection table ${id} belongs to the wrong definition`,
         {invalidArgs: ['id']}
@@ -445,31 +448,33 @@ class DefinitionInflectionTableMut extends Mutator {
       partOfSpeechId
     );
 
-    const finalCaption = caption ? validateTableCaption(caption) : null;
+    const finalCaption = validateTableCaption(caption);
 
     await db.exec`
       update definition_inflection_tables
       set
-        caption = ${finalCaption ? JSON.stringify(finalCaption) : null},
+        caption = ${finalCaption && JSON.stringify(finalCaption)},
         sort_order = ${index}
       where id = ${table.id}
     `;
     db.clearCache(DefinitionInflectionTable.byIdKey, table.id);
 
-    // We could compute a derived_forms delta, but it's kind of messy.
+    // We could compute a custom forms delta, but it's kind of messy.
     // It's much easier to just delete all old forms and insert the new.
     // This all happens inside a transaction anyway.
-    await db.exec`
-      delete from definition_forms
-      where definition_inflection_table_id = ${id}
-    `;
+    await CustomFormMut.deleteAll(id);
+    const customFormMap = await CustomFormMut.insert(
+      id,
+      table.inflection_table_id,
+      customForms
+    );
 
     const derivedForms = await this.deriveAllForms(
       table.id,
-      term,
-      stemMap,
+      definition.term,
+      definition.stemMap,
       table.inflection_table_id,
-      customForms
+      customFormMap
     );
 
     return {id, derivedForms};
@@ -495,13 +500,12 @@ class DefinitionInflectionTableMut extends Mutator {
   }
 
   public async deriveAllForms(
-    definitionInflectionTableId: number,
+    tableId: number,
     term: string,
     stemMap: Map<string, string>,
     inflectionTableId: number,
-    customForms: CustomInflectedFormInput[]
+    customForms: Map<number, string>
   ): Promise<Map<number, string>> {
-    const {db} = this;
     const {InflectedForm} = this.model;
 
     const derivedForms = deriveForms(
@@ -510,38 +514,11 @@ class DefinitionInflectionTableMut extends Mutator {
       await InflectedForm.allDerivableByTable(inflectionTableId)
     );
 
-    for (const form of customForms) {
-      const inflectedForm = await InflectedForm.byIdRequired(
-        +form.inflectedFormId,
-        'inflectedFormId'
-      );
-      if (inflectedForm.inflection_table_id !== inflectionTableId) {
-        throw new UserInputError(
-          `Inflected form ${inflectedForm.id} belongs to the wrong table`,
-          {invalidArgs: ['inflectedFormId']}
-        );
+    customForms.forEach((formValue, formId) => {
+      if (derivedForms.has(formId)) {
+        derivedForms.set(formId, formValue);
       }
-
-      // If there is a derived form, override it with this custom form!
-      if (derivedForms.has(inflectedForm.id)) {
-        derivedForms.set(inflectedForm.id, form.value);
-      }
-
-      const value = validateFormValue(form.value);
-
-      await db.exec`
-        insert into definition_forms (
-          definition_inflection_table_id,
-          inflected_form_id,
-          inflected_form
-        )
-        values (
-          ${definitionInflectionTableId},
-          ${inflectedForm.id},
-          ${value}
-        )
-      `;
-    }
+    });
 
     return derivedForms;
   }
@@ -559,6 +536,61 @@ class DefinitionInflectionTableMut extends Mutator {
             ? db.raw`and id not in (${currentIds})`
             : ''
         }
+    `;
+  }
+}
+
+class CustomFormMut extends Mutator {
+  public async insert(
+    definitionTableId: number,
+    inflectionTableId: number,
+    customForms: CustomInflectedFormInput[]
+  ): Promise<Map<number, string>> {
+    const {db} = this;
+    const {InflectedForm} = this.model;
+
+    const allCustomForms = new Map<number, string>(
+      await Promise.all(
+        customForms.map(async form => {
+          const inflectedForm = await InflectedForm.byIdRequired(
+            +form.inflectedFormId,
+            'inflectedFormId'
+          );
+          if (inflectedForm.inflection_table_id !== inflectionTableId) {
+            throw new UserInputError(
+              `Inflected form ${inflectedForm.id} belongs to the wrong table`,
+              {invalidArgs: ['inflectedFormId']}
+            );
+          }
+
+          const value = validateFormValue(form.value);
+          return [inflectedForm.id, value] as [number, string];
+        })
+      )
+    );
+
+    if (allCustomForms.size > 0) {
+      await db.exec`
+        insert into definition_forms (
+          definition_inflection_table_id,
+          inflected_form_id,
+          inflected_form
+        )
+        values ${
+          Array.from(allCustomForms).map(([id, value]) =>
+            db.raw`(${definitionTableId}, ${id}, ${value})`
+          )
+        }
+      `;
+    }
+
+    return allCustomForms;
+  }
+
+  public async deleteAll(tableId: number) {
+    await this.db.exec`
+      delete from definition_forms
+      where definition_inflection_table_id = ${tableId}
     `;
   }
 }
@@ -687,8 +719,9 @@ class DerivedDefinitionMut extends Mutator {
 
 export default {
   DefinitionMut,
-  DefinitionDescriptionMut,
   DefinitionStemMut,
+  DefinitionDescriptionMut,
   DefinitionInflectionTableMut,
   DerivedDefinitionMut,
+  CustomFormMut,
 };

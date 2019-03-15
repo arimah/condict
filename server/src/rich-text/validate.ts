@@ -130,8 +130,12 @@ export const validateDescription = (
 };
 
 export const validateTableCaption = (
-  inputCaption: TableCaptionInput
-): TableCaptionJson => {
+  inputCaption?: TableCaptionInput | null
+): TableCaptionJson | null => {
+  if (!inputCaption) {
+    return null;
+  }
+
   const result: TableCaptionJson = {
     text: inputCaption.text,
   };
