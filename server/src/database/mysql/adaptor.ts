@@ -88,7 +88,7 @@ export default class MysqlAdaptor extends Adaptor {
 
   public rollBack(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.connection.commit(err => {
+      this.connection.rollback(err => {
         if (err) {
           reject(err);
         } else {
