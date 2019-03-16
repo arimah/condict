@@ -299,6 +299,7 @@ abstract class Adaptor {
         }, new Map<K, Row[]>());
         return ids.map(id => rowsById.get(id) || []);
       });
+      this.dataLoaders[batchKey] = dataLoader;
     } else {
       dataLoader = this.dataLoaders[batchKey] as DataLoader<K, Row[]>;
     }
