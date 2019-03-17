@@ -27,9 +27,9 @@ const main = async () => {
 
   let config: ServerConfig;
   try {
-    config = parseConfig(args.config || '.env');
+    config = parseConfig(args.config || 'config.json');
   } catch (e) {
-    console.error(`Failed to read config from .env: ${e}`);
+    console.error(`Failed to read config from ${args.config || 'config.json'}: ${e}`);
     process.exitCode = 1;
     return;
   }
