@@ -4,6 +4,7 @@ import {validateDescription} from '../../rich-text/validate';
 
 import Mutator from '../mutator';
 import FieldSet from '../field-set';
+import {validateTerm} from '../lemma/validators';
 
 import {
   DefinitionRow,
@@ -39,9 +40,10 @@ class DefinitionMut extends Mutator {
       +partOfSpeechId,
       'partOfSpeechId'
     );
+    const validTerm = validateTerm(term);
 
     return db.transact(async () => {
-      const lemmaId = await LemmaMut.ensureExists(language.id, term);
+      const lemmaId = await LemmaMut.ensureExists(language.id, validTerm);
 
       const {insertId: definitionId} = await db.exec`
         insert into definitions (lemma_id, language_id, part_of_speech_id)
@@ -147,12 +149,13 @@ class DefinitionMut extends Mutator {
     const {LemmaMut} = this.mut;
 
     if (term != null && term !== definition.term) {
+      const validTerm = validateTerm(term);
       const newLemmaId = await LemmaMut.ensureExists(
         definition.language_id,
-        term
+        validTerm
       );
       newFields.set('lemma_id', newLemmaId);
-      return term;
+      return validTerm.value;
     } else {
       return definition.term;
     }

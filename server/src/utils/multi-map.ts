@@ -4,11 +4,11 @@
  * key are not stored in a particular order.
  */
 export default class MultiMap<K, V> {
-  private map: Map<K, Set<V>> = new Map();
+  private collection: Map<K, Set<V>> = new Map();
 
   /** Gets the total number of keys stored in the map. */
   public get keyCount(): number {
-    return this.map.size;
+    return this.collection.size;
   }
 
   /**
@@ -16,7 +16,7 @@ export default class MultiMap<K, V> {
    * @param key The key to look up.
    */
   public sizeOf(key: K): number {
-    const values = this.map.get(key);
+    const values = this.collection.get(key);
     if (values) {
       return values.size;
     }
@@ -29,7 +29,7 @@ export default class MultiMap<K, V> {
    */
   public getTotalSize(): number {
     let total = 0;
-    for (const [_, values] of this.map) {
+    for (const [_, values] of this.collection) {
       total += values.size;
     }
     return total;
@@ -41,7 +41,7 @@ export default class MultiMap<K, V> {
    * @return The values under the specified key, or null if the key is empty.
    */
   public get(key: K): Set<V> | null {
-    return this.map.get(key) || null;
+    return this.collection.get(key) || null;
   }
 
   /**
@@ -50,9 +50,9 @@ export default class MultiMap<K, V> {
    * @param value The value to add.
    */
   public add(key: K, value: V): this {
-    const values = this.map.get(key);
+    const values = this.collection.get(key);
     if (!values) {
-      this.map.set(key, new Set().add(value));
+      this.collection.set(key, new Set().add(value));
     } else {
       values.add(value);
     }
@@ -65,11 +65,11 @@ export default class MultiMap<K, V> {
    * @param value The value to delete.
    */
   public delete(key: K, value: V): this {
-    const values = this.map.get(key);
+    const values = this.collection.get(key);
     if (values) {
       values.delete(value);
       if (values.size === 0) {
-        this.map.delete(key);
+        this.collection.delete(key);
       }
     }
     return this;
@@ -80,7 +80,7 @@ export default class MultiMap<K, V> {
    * @param key The key to clear.
    */
   public deleteAll(key: K): this {
-    this.map.delete(key);
+    this.collection.delete(key);
     return this;
   }
 
@@ -88,15 +88,50 @@ export default class MultiMap<K, V> {
    * Deletes all values from the map.
    */
   public clear(): this {
-    this.map.clear();
+    this.collection.clear();
     return this;
+  }
+
+  /**
+   * Filters the entries of the map according to the specified predicate.
+   * @param f The predicate function, which receives each key and value.
+   *        If it returns true, the entry is kept; otherwise, it is discarded.
+   * @return A new multi map containing entries that match the predicate.
+   */
+  public filter(f: (key: K, value: V) => boolean): MultiMap<K, V> {
+    const result = new MultiMap<K, V>();
+
+    for (const [key, value] of this) {
+      if (f(key, value)) {
+        result.add(key, value);
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Projects the keys and value of the map according to the specified callback.
+   * @param f The function to call for each key and value in the map. The return
+   *        value is a tuple containing the new key and new value.
+   * @return The new multi map.
+   */
+  public map<K2, V2>(f: (key: K, value: V) => [K2, V2]): MultiMap<K2, V2> {
+    const result = new MultiMap<K2, V2>();
+
+    for (const [key, value] of this) {
+      const [newKey, newValue] = f(key, value);
+      result.add(newKey, newValue);
+    }
+
+    return result;
   }
 
   /**
    * Returns an iterator that traverses the keys of the map.
    */
   public keys(): IterableIterator<K> {
-    return this.map.keys();
+    return this.collection.keys();
   }
 
   /**
@@ -104,7 +139,7 @@ export default class MultiMap<K, V> {
    * value of each key is enumerated separately.
    */
   public *entries(): IterableIterator<[K, V]> {
-    for (const [key, values] of this.map) {
+    for (const [key, values] of this.collection) {
       for (const value of values) {
         yield [key, value];
       }
@@ -117,7 +152,7 @@ export default class MultiMap<K, V> {
    * @param cb A callback that receives each value under each key.
    */
   public forEach(cb: (key: K, value: V) => void) {
-    for (const [key, values] of this.map) {
+    for (const [key, values] of this.collection) {
       for (const value of values) {
         cb(key, value);
       }
