@@ -48,10 +48,6 @@ export const useShimmer = (elemRef) => {
     });
     const leave = e => setState({
       visible: false,
-      // Make sure to retain the position, so it doesn't flop about
-      // while fading out.
-      x: state.x,
-      y: state.y,
     });
     elem.addEventListener('mouseenter', enterAndMove);
     elem.addEventListener('mousemove', enterAndMove);

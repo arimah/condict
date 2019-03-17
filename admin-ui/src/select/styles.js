@@ -22,7 +22,7 @@ export const Select = styled.select`
   background-color: ${theme('general.bg')};
   color: ${theme('general.fg')};
 
-  ${Transition('border-color, color')}
+  ${Transition('border-color, color, background-color')}
 
   ${ifProp('minimal',
     css`
@@ -35,6 +35,10 @@ export const Select = styled.select`
       border-style: solid;
     `
   )}
+
+  &:hover {
+    background-color: ${theme('general.hoverBg')};
+  }
 
   &:focus {
     ${theme('focus.style')}

@@ -47,6 +47,14 @@ export const CheckmarkContainer = styled.span`
     theme('general.borderColor')
   )};
 
+  ${Label}:hover & {
+    border-color: ${ifProp('checked', intentVar('hoverAltBg'))};
+    background-color: ${ifProp('checked',
+      intentVar('hoverAltBg'),
+      theme('general.hoverBg')
+    )};
+  }
+
   ${Label}:active & {
     border-color: ${ifProp('checked', intentVar('activeAltBg'))};
     background-color: ${ifProp('checked',

@@ -6,14 +6,15 @@ export const Shimmer = styled.span`
   position: absolute;
   pointer-events: none;
 
-  margin-top: -90px;
-  margin-left: -90px;
-  width: 180px;
-  height: 180px;
+  margin-top: -140px;
+  margin-left: -140px;
+  width: 280px;
+  height: 280px;
   background: radial-gradient(
     circle at center,
-    rgba(255, 255, 255, 0.15) 25px,
-    rgba(255, 255, 255, 0) 90px
+    rgba(255, 255, 255, 0.175) 25px,
+    rgba(255, 255, 255, 0.05) 70px,
+    rgba(255, 255, 255, 0) 140px
   );
 
   opacity: ${ifProp('visible', '1', '0')};

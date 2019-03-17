@@ -72,6 +72,14 @@ export const Switch = styled.span`
 
   ${Transition('border-color, background-color')}
 
+  ${Label}:hover & {
+    border-color: ${ifProp('checked', intentVar('hoverAltBg'))};
+    background-color: ${ifProp('checked',
+      intentVar('hoverAltBg'),
+      theme('general.hoverBg')
+    )};
+  }
+
   ${Label}:active & {
     border-color: ${ifProp('checked', intentVar('activeAltBg'))};
     background-color: ${ifProp('checked',

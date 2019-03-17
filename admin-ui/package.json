@@ -1,6 +1,6 @@
 {
   "name": "@condict/admin-ui",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Shared UI components for the Condict admin.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",

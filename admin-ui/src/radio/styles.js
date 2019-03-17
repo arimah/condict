@@ -38,9 +38,18 @@ export const RadioContainer = styled.span`
     theme('general.borderColor')
   )};
 
-  ${Transition('border-color')}
+  ${Transition('border-color, background-color')}
+
+  ${Label}:hover & {
+    border-color: ${ifProp('checked', intentVar('hoverAltBg'))};
+    background-color: ${ifProp('checked',
+      intentVar('hoverBg'),
+      theme('general.hoverBg')
+    )};
+  }
 
   ${Label}:active & {
+    border-color: ${ifProp('checked', intentVar('activeAltBg'))};
     background-color: ${ifProp('checked',
       intentVar('bg'),
       theme('general.activeBg')
@@ -94,6 +103,14 @@ export const RadioDot = styled.span`
     intentVar('altBg')
   )};
   opacity: ${ifProp('checked', '1', '0')};
+
+  ${Label}:hover & {
+    background-color: ${intentVar('hoverAltBg')};
+  }
+
+  ${Label}:active & {
+    background-color: ${intentVar('activeAltBg')};
+  }
 
   ${Transition('opacity, background-color')}
 `;

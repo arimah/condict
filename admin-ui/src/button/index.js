@@ -73,7 +73,8 @@ export const Button = React.forwardRef((props, ref) => {
         {!props.minimal && !buttonProps.disabled &&
           <S.ShimmerWrapper slim={props.slim}>
             <Shimmer state={shimmer}/>
-          </S.ShimmerWrapper>}
+          </S.ShimmerWrapper>
+        }
         {renderedContent}
       </S.Button>
     );

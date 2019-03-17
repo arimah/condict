@@ -30,6 +30,10 @@ export const ButtonStyle = css`
       color: ${intentVar('fg')};
       background-color: transparent;
 
+      &:hover {
+        background-color: ${intentVar('hoverBg')};
+      }
+
       &:active {
         background-color: ${intentVar('bg')};
       }
@@ -42,6 +46,10 @@ export const ButtonStyle = css`
     css`
       color: ${intentVar('altFg')};
       background-color: ${intentVar('altBg')};
+
+      &:hover {
+        background-color: ${intentVar('hoverAltBg')};
+      }
 
       &:active {
         background-color: ${intentVar('activeAltBg')};
