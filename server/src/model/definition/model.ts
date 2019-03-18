@@ -17,6 +17,11 @@ import {
 class Definition extends Model {
   public readonly byIdKey = 'Definition.byId';
   public readonly allByLemmaKey = 'Definition.allByLemma';
+  public readonly defaultPagination: Readonly<PageParams> = {
+    page: 0,
+    perPage: 50,
+  };
+  public readonly maxPerPage = 200;
 
   public byId(id: number): Promise<DefinitionRow | null> {
     return this.db.batchOneToOne(
@@ -64,6 +69,54 @@ class Definition extends Model {
         `,
       row => row.lemma_id
     );
+  }
+
+  public async anyUsesInflectionTable(tableId: number): Promise<boolean> {
+    interface Row { used: number }
+
+    const {used} = await this.db.get<Row>`
+      select exists (
+        select 1
+        from inflection_tables i
+        inner join definition_inflection_tables dit
+          on dit.inflection_table_id = i.id
+        where i.id = ${tableId}
+      ) as used
+    ` as Row;
+    return used === 1;
+  }
+
+  public async allByInflectionTable(
+    tableId: number,
+    page?: PageParams | null
+  ): Promise<Connection<DefinitionRow>> {
+    page = validatePageParams(page || this.defaultPagination, this.maxPerPage);
+
+    // The pagination parameters make batching difficult and probably unnecessary.
+    const offset = page.page * page.perPage;
+    const {db} = this;
+    const condition = db.raw`
+      dit.inflection_table_id = ${tableId}
+    `;
+    const {total: totalCount} = await db.get`
+      select count(distinct dit.definition_id) as total
+      from definition_inflection_tables dit
+      where ${condition}
+    ` as {total: number};
+    const nodes = await db.all<DefinitionRow>`
+      select
+        d.*,
+        l.term_display as term
+      from definition_inflection_tables dit
+      inner join definitions d on d.id = dit.definition_id
+      inner join lemmas l on l.id = d.lemma_id
+      inner join inflection_tables i on i.id = dit.inflection_table_id
+      where i.id = ${tableId}
+      group by d.id
+      order by l.term_display, d.id
+      limit ${page.perPage} offset ${offset}
+    `;
+    return createConnection(page, totalCount, nodes);
   }
 }
 

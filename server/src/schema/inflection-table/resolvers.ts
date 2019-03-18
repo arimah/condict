@@ -6,7 +6,7 @@ import {
   InflectionTableCellJson,
 } from '../../model/inflection-table/types';
 
-import {Resolvers, Mutators, IdArg} from '../types';
+import {Resolvers, Mutators, IdArg, PageArg} from '../types';
 import {mutator} from '../helpers';
 
 const InflectionTable: Resolvers<InflectionTableRow> = {
@@ -30,6 +30,12 @@ const InflectionTable: Resolvers<InflectionTableRow> = {
 
   partOfSpeech: (p, _args, {model: {PartOfSpeech}}) =>
     PartOfSpeech.byId(p.part_of_speech_id),
+
+  isInUse: (p, _args, {model: {Definition}}) =>
+    Definition.anyUsesInflectionTable(p.id),
+
+  usedByDefinitions: (p, {page}: PageArg, {model: {Definition}}) =>
+    Definition.allByInflectionTable(p.id, page),
 };
 
 const InflectionTableCell: Resolvers<InflectionTableCellJson> = {

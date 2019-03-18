@@ -45,6 +45,34 @@ type InflectionTable {
 
   "The part of speech that this inflection table belongs to."
   partOfSpeech: PartOfSpeech!
+
+  """
+  Indicates whether the inflection table is currently used by any definitions.
+
+  To get the definitions that use this table, see the `usedByDefinitions` field.
+  """
+  isInUse: Boolean!
+
+  """
+  Gets the definitions that use this table.
+
+  Definitions are ordered by term first, by ID second. If any definitions belong
+  to the same lemma, they will appear in the same relative order as they would
+  on the `Lemma.definitions` field.
+
+  Since the table may be used by many definitions, this field always paginated.
+  If provided, `page.perPage` cannot exceed 200.
+  """
+  usedByDefinitions(page: PageParams): InflectionTableDefinitionConnection!
+}
+
+"Contains paginated results from the `InflectionTable.usedByDefinitions` field."
+type InflectionTableDefinitionConnection {
+  "Metadata about the connection, related to pagination."
+  meta: ConnectionMeta!
+
+  "The definitions in this batch."
+  nodes: [Definition!]!
 }
 
 """
