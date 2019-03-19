@@ -54,11 +54,13 @@ export default class InflectionTableValue extends Value {
       const cells = [];
       row.cells.forEach(cell => {
         const {data} = cell;
-        const convertedCell = {
-          rowSpan: cell.rowSpan,
-          columnSpan: cell.columnSpan,
-          header: cell.header,
-        };
+        const convertedCell = {};
+        if (cell.rowSpan > 1) {
+          convertedCell.rowSpan = cell.rowSpan;
+        }
+        if (cell.columnSpan > 1) {
+          convertedCell.columnSpan = cell.columnSpan;
+        }
         if (cell.header) {
           convertedCell.headerText = data.text;
         } else {
