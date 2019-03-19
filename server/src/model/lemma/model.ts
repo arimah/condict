@@ -1,4 +1,4 @@
-import {validatePageParams, createConnection} from '../../schema/helpers';
+import {validatePageParams} from '../../schema/helpers';
 import {PageParams, Connection} from '../../schema/types';
 
 import {LemmaRow, LemmaFilter} from './types';
@@ -51,10 +51,6 @@ class Lemma extends Model {
     page: PageParams | undefined | null,
     filter: LemmaFilter
   ): Promise<Connection<LemmaRow>> {
-    page = validatePageParams(page || this.defaultPagination, this.maxPerPage);
-
-    // The pagination parameters make batching difficult and probably unnecessary.
-    const offset = page.page * page.perPage;
     const {db} = this;
     const condition = db.raw`
       l.language_id = ${languageId | 0}
@@ -74,19 +70,24 @@ class Lemma extends Model {
           db.raw``
         }
     `;
-    const {total: totalCount} = await db.get`
-      select count(*) as total
-      from lemmas l
-      where ${condition}
-    ` as {total: number};
-    const nodes = await db.all<LemmaRow>`
-      select l.*
-      from lemmas l
-      where ${condition}
-      order by l.term_display
-      limit ${page.perPage} offset ${offset}
-    `;
-    return createConnection(page, totalCount, nodes);
+    return this.db.paginate(
+      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      async db => {
+        const {total} = await db.get`
+          select count(*) as total
+          from lemmas l
+          where ${condition}
+        ` as {total: number};
+        return total;
+      },
+      (db, limit, offset) => db.all<LemmaRow>`
+        select l.*
+        from lemmas l
+        where ${condition}
+        order by l.term_display
+        limit ${limit} offset ${offset}
+      `
+    );
   }
 }
 

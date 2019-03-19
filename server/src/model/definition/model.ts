@@ -1,6 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
-import {validatePageParams, createConnection} from '../../schema/helpers';
+import {validatePageParams} from '../../schema/helpers';
 import {PageParams, Connection} from '../../schema/types';
 
 import Model from '../model';
@@ -77,46 +77,86 @@ class Definition extends Model {
     const {used} = await this.db.get<Row>`
       select exists (
         select 1
-        from inflection_tables i
-        inner join definition_inflection_tables dit
-          on dit.inflection_table_id = i.id
-        where i.id = ${tableId}
+        from definition_inflection_tables
+        where dit.inflection_table_id = ${tableId}
       ) as used
     ` as Row;
     return used === 1;
   }
 
-  public async allByInflectionTable(
+  public allByInflectionTable(
     tableId: number,
     page?: PageParams | null
   ): Promise<Connection<DefinitionRow>> {
-    page = validatePageParams(page || this.defaultPagination, this.maxPerPage);
-
-    // The pagination parameters make batching difficult and probably unnecessary.
-    const offset = page.page * page.perPage;
-    const {db} = this;
-    const condition = db.raw`
+    const condition = this.db.raw`
       dit.inflection_table_id = ${tableId}
     `;
-    const {total: totalCount} = await db.get`
-      select count(distinct dit.definition_id) as total
-      from definition_inflection_tables dit
-      where ${condition}
-    ` as {total: number};
-    const nodes = await db.all<DefinitionRow>`
-      select
-        d.*,
-        l.term_display as term
-      from definition_inflection_tables dit
-      inner join definitions d on d.id = dit.definition_id
-      inner join lemmas l on l.id = d.lemma_id
-      inner join inflection_tables i on i.id = dit.inflection_table_id
-      where i.id = ${tableId}
-      group by d.id
-      order by l.term_display, d.id
-      limit ${page.perPage} offset ${offset}
+    return this.db.paginate(
+      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      async db => {
+        const {total} = await db.get`
+          select count(distinct dit.definition_id) as total
+          from definition_inflection_tables dit
+          where ${condition}
+        ` as {total: number};
+        return total;
+      },
+      (db, limit, offset) => db.all<DefinitionRow>`
+        select
+          d.*,
+          l.term_display as term
+        from definition_inflection_tables dit
+        inner join definitions d on d.id = dit.definition_id
+        inner join lemmas l on l.id = d.lemma_id
+        where ${condition}
+        group by d.id
+        order by l.term_display, d.id
+        limit ${limit} offset ${offset}
+      `
+    );
+  }
+
+  public async anyUsesPartOfSpeech(partOfSpeechId: number): Promise<boolean> {
+    interface Row { used: number }
+
+    const {used} = await this.db.get<Row>`
+      select exists (
+        select 1
+        from definitions
+        where part_of_speech_id = ${partOfSpeechId}
+      ) as used
+    ` as Row;
+    return used === 1;
+  }
+
+  public allByPartOfSpeech(
+    partOfSpeechId: number,
+    page?: PageParams | null
+  ): Promise<Connection<DefinitionRow>> {
+    const condition = this.db.raw`
+      d.part_of_speech_id = ${partOfSpeechId}
     `;
-    return createConnection(page, totalCount, nodes);
+    return this.db.paginate(
+      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      async db => {
+        const {total} = await db.get`
+          select count(*) as total
+          from definitions d
+          where ${condition}
+        ` as {total: number};
+        return total;
+      },
+      (db, limit, offset) => db.all<DefinitionRow>`
+        select
+          d.*,
+          l.term_display as term
+        from definitions d
+        inner join lemmas l on l.id = d.lemma_id
+        where ${condition}
+        order by l.term_display, d.id
+        limit ${limit} offset ${offset}
+      `
+    );
   }
 }
 
@@ -260,31 +300,31 @@ class DerivedDefinition extends Model {
     definitionId: number,
     page?: PageParams | null
   ): Promise<Connection<DerivedDefinitionRow>> {
-    page = validatePageParams(page || this.defaultPagination, this.maxPerPage);
-
-    // The pagination parameters make batching difficult and probably unnecessary.
-    const offset = page.page * page.perPage;
-    const {db} = this;
-    const condition = db.raw`
+    const condition = this.db.raw`
       dd.original_definition_id = ${definitionId}
     `;
-    const {total: totalCount} = await db.get`
-      select count(*) as total
-      from derived_definitions dd
-      where ${condition}
-    ` as {total: number};
-    const nodes = await db.all<DerivedDefinitionRow>`
-      select
-        dd.*,
-        l.term_display as term,
-        l.language_id
-      from derived_definitions dd
-      inner join lemmas l on l.id = dd.lemma_id
-      where ${condition}
-      order by l.term_display, dd.inflected_form_id
-      limit ${page.perPage} offset ${offset}
-    `;
-    return createConnection(page, totalCount, nodes);
+    return this.db.paginate(
+      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      async db => {
+        const {total} = await db.get`
+          select count(*) as total
+          from derived_definitions dd
+          where ${condition}
+        ` as {total: number};
+        return total;
+      },
+      (db, limit, offset) => db.all<DerivedDefinitionRow>`
+        select
+          dd.*,
+          l.term_display as term,
+          l.language_id
+        from derived_definitions dd
+        inner join lemmas l on l.id = dd.lemma_id
+        where ${condition}
+        order by l.term_display, dd.inflected_form_id
+        limit ${limit} offset ${offset}
+      `
+    );
   }
 }
 

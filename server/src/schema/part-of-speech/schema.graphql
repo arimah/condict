@@ -16,6 +16,35 @@ type PartOfSpeech {
 
   "The language that the part of speech belongs to."
   language: Language!
+
+  """
+  Indicates whether the part of speech is currently used by any definitions.
+
+  To get the definitions that use this part of speech, see the `usedByDefinitions`
+  field.
+  """
+  isInUse: Boolean!
+
+  """
+  Gets the definitions that use this part of speech.
+
+  Definitions are ordered by term first, by ID second. If any definitions belong
+  to the same lemma, they will appear in the same relative order as they would
+  on the `Lemma.definitions` field.
+
+  Since the part of speech may be used by many definitions, this field always
+  paginated. If provided, `page.perPage` cannot exceed 200.
+  """
+  usedByDefinitions(page: PageParams): PartOfSpeechDefinitionConnection!
+}
+
+"Contains paginated results from the `PartOfSpeech.usedByDefinitions` field."
+type PartOfSpeechDefinitionConnection {
+  "Metadata about the connection, related to pagination."
+  meta: ConnectionMeta!
+
+  "The definitions in this batch."
+  nodes: [Definition!]!
 }
 
 extend type Query {

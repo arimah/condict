@@ -2,6 +2,8 @@ import DataLoader from 'dataloader';
 import {Logger} from 'winston';
 
 import FieldSet from '../model/field-set';
+import {Connection, PageParams} from '../schema/types';
+import {createConnection} from '../schema/helpers';
 
 import reindentQuery from './reindent-query';
 
@@ -123,6 +125,32 @@ abstract class Adaptor {
    *         a value.
    */
   public abstract tableExists(name: string): Awaitable<boolean>;
+
+  /**
+   * Paginates a resource, creating a connection value that is compatible with
+   * the GraphQL schema.
+   * @param page Determines which page to fetch and how many items to fetch
+   *        from that page.
+   * @param getTotal A callback that returns a promise that resolves to the
+   *        total number of matching items.
+   * @param getNodes A callback that returns an awaitable value that resolves
+   *        to the nodes in the current page. It takes the database connection,
+   *        the limit (number of nodes per page), and the start offset.
+   * @return A connection value that contains the nodes of the current page as
+   *         well as metadata about the connection.
+   */
+  public async paginate<Row>(
+    page: PageParams,
+    getTotal: (db: this) => Awaitable<number>,
+    getNodes: (db: this, limit: number, offset: number) => Awaitable<Row[]>
+  ): Promise<Connection<Row>> {
+    const offset = page.page * page.perPage;
+    const [total, nodes] = await Promise.all([
+      getTotal(this),
+      getNodes(this, page.perPage, offset),
+    ]);
+    return createConnection(page, total, nodes);
+  }
 
   /**
    * Runs the specified callback inside a transaction. The return value of the

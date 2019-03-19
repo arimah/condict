@@ -4,7 +4,7 @@ import {
   EditPartOfSpeechInput,
 } from '../../model/part-of-speech/types';
 
-import {Resolvers, Mutators, IdArg} from '../types';
+import {Resolvers, Mutators, IdArg, PageArg} from '../types';
 import {mutator} from '../helpers';
 
 const PartOfSpeech: Resolvers<PartOfSpeechRow> = {
@@ -13,6 +13,12 @@ const PartOfSpeech: Resolvers<PartOfSpeechRow> = {
 
   language: (p, _args, {model: {Language}}) =>
     Language.byId(p.language_id),
+
+  isInUse: (p, _args, {model: {Definition}}) =>
+    Definition.anyUsesPartOfSpeech(p.id),
+
+  usedByDefinitions: (p, {page}: PageArg, {model: {Definition}}) =>
+    Definition.allByPartOfSpeech(p.id, page),
 };
 
 const Query: Resolvers<unknown> = {
