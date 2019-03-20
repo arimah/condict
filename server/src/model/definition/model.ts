@@ -78,7 +78,7 @@ class Definition extends Model {
       select exists (
         select 1
         from definition_inflection_tables
-        where dit.inflection_table_id = ${tableId}
+        where inflection_table_id = ${tableId}
       ) as used
     ` as Row;
     return used === 1;
