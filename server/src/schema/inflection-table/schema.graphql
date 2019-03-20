@@ -63,16 +63,7 @@ type InflectionTable {
   Since the table may be used by many definitions, this field always paginated.
   If provided, `page.perPage` cannot exceed 200.
   """
-  usedByDefinitions(page: PageParams): InflectionTableDefinitionConnection!
-}
-
-"Contains paginated results from the `InflectionTable.usedByDefinitions` field."
-type InflectionTableDefinitionConnection {
-  "Metadata about the connection, related to pagination."
-  meta: ConnectionMeta!
-
-  "The definitions in this batch."
-  nodes: [Definition!]!
+  usedByDefinitions(page: PageParams): DefinitionConnection!
 }
 
 """

@@ -62,6 +62,20 @@ type Definition {
 }
 
 """
+Contains paginated results from one of the following fields:
+
+* `InflectionTable.usedByDefinitions`
+* `PartOfSpeech.usedByDefinitions`
+"""
+type DefinitionConnection {
+  "Metadata about the connection, related to pagination."
+  meta: ConnectionMeta!
+
+  "The definitions in this batch."
+  nodes: [Definition!]!
+}
+
+"""
 An inflection stem for a single definition. Stems are used when inflecting the
 word: inflected forms contain patterns like `{pl}es`, where `{pl}` is replaced
 with the value of the stem named `pl`.
