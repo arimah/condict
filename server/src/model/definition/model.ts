@@ -72,15 +72,13 @@ class Definition extends Model {
   }
 
   public async anyUsesInflectionTable(tableId: number): Promise<boolean> {
-    interface Row { used: number }
-
-    const {used} = await this.db.get<Row>`
+    const {used} = await this.db.getRequired<{used: number}>`
       select exists (
         select 1
         from definition_inflection_tables
         where inflection_table_id = ${tableId}
       ) as used
-    ` as Row;
+    `;
     return used === 1;
   }
 
@@ -94,11 +92,11 @@ class Definition extends Model {
     return this.db.paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
       async db => {
-        const {total} = await db.get`
+        const {total} = await db.getRequired<{total: number}>`
           select count(distinct dit.definition_id) as total
           from definition_inflection_tables dit
           where ${condition}
-        ` as {total: number};
+        `;
         return total;
       },
       (db, limit, offset) => db.all<DefinitionRow>`
@@ -117,15 +115,13 @@ class Definition extends Model {
   }
 
   public async anyUsesPartOfSpeech(partOfSpeechId: number): Promise<boolean> {
-    interface Row { used: number }
-
-    const {used} = await this.db.get<Row>`
+    const {used} = await this.db.getRequired<{used: number}>`
       select exists (
         select 1
         from definitions
         where part_of_speech_id = ${partOfSpeechId}
       ) as used
-    ` as Row;
+    `;
     return used === 1;
   }
 
@@ -139,11 +135,11 @@ class Definition extends Model {
     return this.db.paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
       async db => {
-        const {total} = await db.get`
+        const {total} = await db.getRequired<{total: number}>`
           select count(*) as total
           from definitions d
           where ${condition}
-        ` as {total: number};
+        `;
         return total;
       },
       (db, limit, offset) => db.all<DefinitionRow>`
@@ -306,11 +302,11 @@ class DerivedDefinition extends Model {
     return this.db.paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
       async db => {
-        const {total} = await db.get`
+        const {total} = await db.getRequired<{total: number}>`
           select count(*) as total
           from derived_definitions dd
           where ${condition}
-        ` as {total: number};
+        `;
         return total;
       },
       (db, limit, offset) => db.all<DerivedDefinitionRow>`

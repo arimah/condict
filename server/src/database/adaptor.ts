@@ -60,6 +60,17 @@ abstract class Adaptor {
   public abstract get<Row>(parts: Sql, ...values: any[]): Awaitable<Row | null>;
 
   /**
+   * Fetches the first row that matches a query. If the query does not return
+   * any rows, an error is thrown. This method can be called directly or used
+   * as a tempate string tag.
+   * @param parts An SQL string, or a template strings array.
+   * @param values When invoked with a template strings array, contains the
+   *        values of embedded expressions.
+   * @return The found row or a promise that resolves to the row.
+   */
+  public abstract getRequired<Row>(parts: Sql, ...values: any[]): Awaitable<Row>;
+
+  /**
    * Fetches all rows that match a query. This method can be called directly
    * or used as a template string tag.
    * @param parts An SQL string, or a template strings array.

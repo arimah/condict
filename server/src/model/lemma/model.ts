@@ -73,11 +73,11 @@ class Lemma extends Model {
     return this.db.paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
       async db => {
-        const {total} = await db.get`
+        const {total} = await db.getRequired<{total: number}>`
           select count(*) as total
           from lemmas l
           where ${condition}
-        ` as {total: number};
+        `;
         return total;
       },
       (db, limit, offset) => db.all<LemmaRow>`

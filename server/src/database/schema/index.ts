@@ -87,7 +87,7 @@ const tables: TableSchema[] = [
         name_taken: number;
         url_name_taken: number;
       }
-      const result = await db.get<Status>`
+      const result = await db.getRequired<Status>`
         select
           exists (
             select 1
@@ -99,7 +99,7 @@ const tables: TableSchema[] = [
             from languages
             where url_name = ${row.url_name}
           ) as url_name_taken
-      ` as Status;
+      `;
       if (result.name_taken === 1) {
         throw new Error(
           `Cannot continue import: there is already a language named '${row.name}'`

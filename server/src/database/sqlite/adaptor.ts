@@ -75,6 +75,17 @@ export default class SqliteAdaptor extends Adaptor {
     return this.connection.prepare(sql).get(params) as Row || null;
   }
 
+  public getRequired<Row>(parts: Sql, ...values: any[]): Row {
+    const params: any[] = [];
+    const sql = this.formatSql(parts, values, formatValue(params));
+    this.logQuery(sql);
+    const row = this.connection.prepare(sql).get(params) as Row || null;
+    if (row === null) {
+      throw new Error('No rows found');
+    }
+    return row;
+  }
+
   public all<Row>(parts: Sql, ...values: any[]): Row[] {
     const params: any[] = [];
     const sql = this.formatSql(parts, values, formatValue(params));

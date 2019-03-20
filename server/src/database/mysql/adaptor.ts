@@ -33,6 +33,19 @@ export default class MysqlAdaptor extends Adaptor {
     );
   }
 
+  public getRequired<Row>(parts: Sql, ...values: any[]): Promise<Row> {
+    const sql = this.formatSql(parts, values, v => escape(v));
+    return this.query<Row[], Row>(
+      sql,
+      results => {
+        if (results.length === 0) {
+          throw new Error('No rows found');
+        }
+        return results[0];
+      }
+    );
+  }
+
   public all<Row>(parts: Sql, ...values: any[]): Promise<Row[]> {
     const sql = this.formatSql(parts, values, v => escape(v));
     return this.query<Row[]>(sql, results => results);
