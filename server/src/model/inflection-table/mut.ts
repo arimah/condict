@@ -16,7 +16,6 @@ import {
   validateFormDisplayName,
 } from './validators';
 import buildTableLayout from './build-table-layout';
-import ensureTableIsUnused from './ensure-unused';
 
 class InflectionTableMut extends Mutator {
   public async insert({
@@ -70,7 +69,7 @@ class InflectionTableMut extends Mutator {
     // Layout edits are prohibited if the table is in use by one or
     // more definitions.
     if (layout != null) {
-      await ensureTableIsUnused(db, table.id);
+      await this.ensureUnused(table.id);
     }
 
     const newFields = new FieldSet<InflectionTableRow>();
@@ -139,13 +138,22 @@ class InflectionTableMut extends Mutator {
 
     // The table cannot be deleted while it is in use by one or
     // more definitions.
-    await ensureTableIsUnused(db, id);
+    await this.ensureUnused(id);
 
     const {affectedRows} = await db.exec`
       delete from inflection_tables
       where id = ${id}
     `;
     return affectedRows > 0;
+  }
+
+  private async ensureUnused(id: number) {
+    const {Definition} = this.model;
+    if (await Definition.anyUsesInflectionTable(id)) {
+      throw new UserInputError(
+        `Operation not permitted on table ${id} because it is used by one or more lemmas`
+      );
+    }
   }
 }
 

@@ -1,3 +1,5 @@
+import {UserInputError} from 'apollo-server';
+
 import Mutator from '../mutator';
 
 import {
@@ -6,7 +8,6 @@ import {
   EditPartOfSpeechInput,
 } from './types';
 import {validateName} from './validators';
-import ensurePartOfSpeechIsUnused from './ensure-unused';
 
 class PartOfSpeechMut extends Mutator {
   public async insert(
@@ -57,13 +58,22 @@ class PartOfSpeechMut extends Mutator {
   public async delete(id: number): Promise<boolean> {
     const {db} = this;
 
-    await ensurePartOfSpeechIsUnused(db, id);
+    await this.ensureUnused(id);
 
     const {affectedRows} = await db.exec`
       delete from parts_of_speech
       where id = ${id}
     `;
     return affectedRows > 0;
+  }
+
+  private async ensureUnused(id: number) {
+    const {Definition} = this.model;
+    if (await Definition.anyUsesPartOfSpeech(id)) {
+      throw new UserInputError(
+        `Part of speech ${id} cannot be deleted because it is used by one or more lemmas`
+      );
+    }
   }
 }
 
