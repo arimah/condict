@@ -31,7 +31,7 @@ const InlineElement: Resolvers<InlineElementJson> = {
       case InlineKind.LINK:
         return 'LinkInline';
     }
-  }
+  },
 };
 
 const LinkInline: Resolvers<LinkInlineJson> = {
@@ -51,7 +51,7 @@ const InternalLinkTarget: Resolvers<CondictLink> = {
       case CondictLinkType.PART_OF_SPEECH:
         return 'PartOfSpeechLinkTarget';
     }
-  }
+  },
 };
 
 const LanguageLinkTarget: Resolvers<CondictLink> = {

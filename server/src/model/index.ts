@@ -79,7 +79,7 @@ const ModelResolverPrototype: ModelResolver = (() => {
         );
         Object.defineProperty(this, name, {value});
         return value;
-      }
+      },
     });
   }
 
@@ -101,7 +101,7 @@ const MutatorResolverPrototype: MutatorResolver = (() => {
         );
         Object.defineProperty(this, name, {value});
         return value;
-      }
+      },
     });
   }
 

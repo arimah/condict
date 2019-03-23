@@ -37,14 +37,14 @@ const tables: TableSchema[] = [
         comment: 'The metadata key.',
         type: ColumnType.VARCHAR,
         size: 32,
-        collate: Collation.BINARY
+        collate: Collation.BINARY,
       },
       {
         name: 'value',
         comment: 'The metadata value.',
         type: ColumnType.VARCHAR,
         size: 32,
-        collate: Collation.BINARY
+        collate: Collation.BINARY,
       },
     ],
     primaryKey: 'name',
@@ -80,7 +80,7 @@ const tables: TableSchema[] = [
     primaryKey: 'id',
     unique: [
       'name',
-      'url_name'
+      'url_name',
     ],
     async preImport(db, row) {
       interface Status {
@@ -353,7 +353,7 @@ const tables: TableSchema[] = [
     index: [
       'lemma_id',
       'language_id',
-      'part_of_speech_id'
+      'part_of_speech_id',
     ],
   },
 
@@ -542,7 +542,7 @@ const tables: TableSchema[] = [
       'original_definition_id',
       'inflected_form_id',
     ],
-  }
+  },
 ];
 
 export default tables;

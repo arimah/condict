@@ -36,7 +36,7 @@ class Language extends Model {
     const language = await this.byId(id);
     if (!language) {
       throw new UserInputError(`Language not found: ${id}`, {
-        invalidArgs: [paramName]
+        invalidArgs: [paramName],
       });
     }
     return language;

@@ -42,7 +42,7 @@ const Query: Resolvers<unknown> = {
       return Language.byUrlName(args.urlName);
     }
     throw new UserInputError(`You must specify one of 'id' or 'urlName'`, {
-      invalidArgs: ['id', 'urlName']
+      invalidArgs: ['id', 'urlName'],
     });
   },
 };

@@ -150,7 +150,7 @@ const generateCreateTable = (
     ...columns,
     ...uniqueIndexes,
     ...indexes,
-    ...foreignKeys
+    ...foreignKeys,
   ];
   // The line breaks and indentation inside the create table statement exist
   // exclusively to aid in debugging

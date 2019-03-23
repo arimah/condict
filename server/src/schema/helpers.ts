@@ -75,5 +75,5 @@ export const createConnection = <T>(
     perPage: pageParams.perPage,
     totalCount,
   },
-  nodes
+  nodes,
 });

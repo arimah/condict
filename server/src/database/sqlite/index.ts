@@ -2,7 +2,7 @@ import Sqlite from 'better-sqlite3';
 import {
   createPool as createGenericPool,
   Pool,
-  Factory
+  Factory,
 } from 'generic-pool';
 import {Logger} from 'winston';
 

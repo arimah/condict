@@ -21,7 +21,7 @@ class InflectionTableMut extends Mutator {
   public async insert({
     partOfSpeechId,
     name,
-    layout
+    layout,
   }: NewInflectionTableInput): Promise<InflectionTableRow> {
     const {db} = this;
     const {PartOfSpeech, InflectionTable} = this.model;
@@ -58,7 +58,7 @@ class InflectionTableMut extends Mutator {
 
   public async update(id: number, {
     name,
-    layout
+    layout,
   }: EditInflectionTableInput): Promise<InflectionTableRow> {
     const {db} = this;
     const {InflectionTable, InflectedForm} = this.model;
@@ -231,7 +231,7 @@ class InflectedFormMut extends Mutator {
 
     const [
       inflectionPattern,
-      displayName
+      displayName,
     ] = [
       validateFormInflectionPattern(form.inflectionPattern),
       validateFormDisplayName(form.displayName),

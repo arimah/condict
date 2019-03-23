@@ -57,12 +57,12 @@ export const lengthBetween = <T extends {length: number}>(
 
 export const matches = (
   regex: RegExp,
-  message: (value: string) => string,
+  message: (value: string) => string
 ) =>
   (paramName: string, value: string) => {
     if (!regex.test(value)) {
       throw new UserInputError(`${paramName}: ${message(value)}`, {
-        invalidArgs: [paramName]
+        invalidArgs: [paramName],
       });
     }
     return value;

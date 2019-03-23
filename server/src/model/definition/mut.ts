@@ -24,7 +24,7 @@ class DefinitionMut extends Mutator {
     partOfSpeechId,
     description,
     stems,
-    inflectionTables
+    inflectionTables,
   }: NewDefinitionInput): Promise<DefinitionRow> {
     const {db} = this;
     const {Language, Definition, PartOfSpeech} = this.model;
@@ -32,7 +32,7 @@ class DefinitionMut extends Mutator {
       LemmaMut,
       DefinitionDescriptionMut,
       DefinitionStemMut,
-      DerivedDefinitionMut
+      DerivedDefinitionMut,
     } = this.mut;
 
     const language = await Language.byIdRequired(+languageId, 'languageId');
@@ -76,14 +76,14 @@ class DefinitionMut extends Mutator {
     partOfSpeechId,
     description,
     stems,
-    inflectionTables
+    inflectionTables,
   }: EditDefinitionInput): Promise<DefinitionRow> {
     const {db} = this;
     const {Definition} = this.model;
     const {
       LemmaMut,
       DefinitionStemMut,
-      DefinitionDescriptionMut
+      DefinitionDescriptionMut,
     } = this.mut;
 
     const definition = await Definition.byIdRequired(id);

@@ -160,7 +160,7 @@ const generateCreateTable = (
 
   const allParts = [
     ...columns,
-    ...foreignKeys
+    ...foreignKeys,
   ];
   // The line breaks and indentation inside the create table statement exist
   // exclusively to aid in debugging

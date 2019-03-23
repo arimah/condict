@@ -17,7 +17,7 @@
     "compile": "tsc",
     "build": "npm run clean && npm run compile && npm run copyGraphql",
     "prepublishOnly": "npm install && npm run build",
-    "lint": "eslint --config ../eslint-node.config.js --ext .ts src/"
+    "lint": "eslint --ext .ts src/"
   },
   "dependencies": {
     "@types/better-sqlite3": "^5.2.2",

@@ -44,7 +44,7 @@ const InflectionTableCell: Resolvers<InflectionTableCellJson> = {
       return 'InflectionTableDataCell';
     }
     return 'InflectionTableHeaderCell';
-  }
+  },
 };
 
 // We don't store columnSpan and rowSpan when their value is 1, so have to
@@ -111,7 +111,7 @@ const Mutation: Mutators<unknown> = {
 
   deleteInflectionTable: mutator(
     (_root, {id}: IdArg, {mut: {InflectionTableMut}}) =>
-      InflectionTableMut.delete(+id),
+      InflectionTableMut.delete(+id)
   ),
 };
 
