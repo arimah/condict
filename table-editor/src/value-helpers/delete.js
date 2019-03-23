@@ -85,7 +85,7 @@ export const deleteSelectedRows = value => {
           selection.minRow,
           selection.maxRow,
           layoutCell.row,
-          layoutCell.rowSpan,
+          layoutCell.rowSpan
         );
 
         const newCell = value.rows

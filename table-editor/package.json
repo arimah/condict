@@ -11,7 +11,7 @@
     "build": "cross-env NODE_ENV=production babel src --out-dir lib",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config dev/webpack.config.js",
     "prepublishOnly": "npm install && npm run clean && npm run build",
-    "lint": "eslint --config ../eslint-web.config.js src/ dev/src/"
+    "lint": "eslint src/ dev/src/"
   },
   "dependencies": {
     "@condict/a11y-utils": "^0.1.0",

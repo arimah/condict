@@ -38,10 +38,12 @@ module.exports = {
         "ignoredNodes": ["TemplateLiteral *"]
       }
     ],
+
     "linebreak-style": [
       "error",
       "unix"
     ],
+
     "quotes": [
       "error",
       "single",
@@ -50,10 +52,23 @@ module.exports = {
         "allowTemplateLiterals": true
       }
     ],
+
     "semi": [
       "error",
       "always"
     ],
+
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never"
+      }
+    ],
+
     "no-unused-vars": [
       "error",
       {
@@ -61,10 +76,12 @@ module.exports = {
         "argsIgnorePattern": "^_"
       }
     ],
+
     "jsx-quotes": [
       "error",
       "prefer-single"
     ],
+
     "jsx-a11y/label-has-associated-control": [
       "error",
       {
@@ -75,6 +92,7 @@ module.exports = {
         ]
       }
     ],
+
     // This rule is deprecated and should not be used.
     "jsx-a11y/label-has-for": "off"
   }

@@ -98,7 +98,7 @@ export default class CellEditor extends PureComponent {
     const {value} = e.target;
     const {cell} = this.state;
     this.setState({
-      cell: cell.set('data', cell.data.set('text', value))
+      cell: cell.set('data', cell.data.set('text', value)),
     }, this.emitInput);
   }
 

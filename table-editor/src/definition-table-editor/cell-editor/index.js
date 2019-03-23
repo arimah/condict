@@ -78,14 +78,14 @@ export default class CellEditor extends Component {
     const {value} = e.target;
     const {cell} = this.state;
     this.setState({
-      cell: cell.set('data', cell.data.set('customForm', value))
+      cell: cell.set('data', cell.data.set('customForm', value)),
     }, this.emitInput);
   }
 
   handleRevertClick() {
     const {cell} = this.state;
     this.setState({
-      cell: cell.set('data', cell.data.set('customForm', null))
+      cell: cell.set('data', cell.data.set('customForm', null)),
     }, () => {
       this.props.onDone(this.state.cell);
     });

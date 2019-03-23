@@ -46,7 +46,7 @@ export const useShimmer = (elemRef) => {
       x: e.offsetX,
       y: e.offsetY,
     });
-    const leave = e => setState({
+    const leave = () => setState({
       visible: false,
     });
     elem.addEventListener('mouseenter', enterAndMove);

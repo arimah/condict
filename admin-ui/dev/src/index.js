@@ -122,7 +122,7 @@ class App extends Component {
     const state = this.state.settings[demoName];
     this.changeSetting(demoName, {
       ...state,
-      ...partialState
+      ...partialState,
     });
   }
 

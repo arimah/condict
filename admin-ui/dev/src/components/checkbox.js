@@ -15,7 +15,7 @@ export default Object.freeze({
   initialState: {
     intent: 'primary',
     disabled: false,
-    checked: [true, false, false]
+    checked: [true, false, false],
   },
   controls: (state, setState, toggleState) => [
     <label>
