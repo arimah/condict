@@ -255,17 +255,45 @@ abstract class Adaptor {
    *        an awaitable value with all matching rows. Each ID can match at
    *        most one row.
    * @param getRowId A function that extracts a result row's ID.
-   * @param extraArg An extra argument to pass into the `fetcher` callback,
-   *        if required. If this method is called multiple times with the
-   *        same `batchKey` but a different `extraArg`, only the value from
-   *        the very first call is used.
    * @return A promise that resolves to the row matching `id`, or null if no
    *         row matches.
    */
-  public batchOneToOne<K extends string | number, Row, E = undefined>(
+  public batchOneToOne<K extends string | number, Row>(
+    batchKey: string,
+    id: K,
+    fetcher: (db: this, ids: K[]) => Awaitable<Row[]>,
+    getRowId: (row: Row) => K
+  ): Promise<Row | null>;
+  /**
+   * Batches a query; that is, combines multiple queries (from the same tick
+   * of the event loop) into a single lookup. The query is expected to match
+   * at most one row per input ID.
+   * @param batchKey The key to associate with this batch. All queries with
+   *        the same key are batched together.
+   * @param id The ID to look up. This does not have to be the row's primary
+   *        key; it can be any primitive value.
+   * @param fetcher A function that receives all IDs of the batch and returns
+   *        an awaitable value with all matching rows. Each ID can match at
+   *        most one row.
+   * @param getRowId A function that extracts a result row's ID.
+   * @param extraArg An extra argument to pass into the `fetcher` callback.
+   *        If this method is called multiple times with the same `batchKey`
+   *        but a different `extraArg`, only the value from the very first
+   *        call is used.
+   * @return A promise that resolves to the row matching `id`, or null if no
+   *         row matches.
+   */
+  public batchOneToOne<K extends string | number, Row, E>(
     batchKey: string,
     id: K,
     fetcher: (db: this, ids: K[], extraArg: E) => Awaitable<Row[]>,
+    getRowId: (row: Row) => K,
+    extraArg: E
+  ): Promise<Row | null>;
+  public batchOneToOne<K extends string | number, Row, E = undefined>(
+    batchKey: string,
+    id: K,
+    fetcher: (db: this, ids: K[], extraArg?: E) => Awaitable<Row[]>,
     getRowId: (row: Row) => K,
     extraArg?: E
   ): Promise<Row | null> {
@@ -273,7 +301,7 @@ abstract class Adaptor {
 
     if (!this.dataLoaders[batchKey]) {
       dataLoader = new DataLoader<K, Row | null>(async ids => {
-        const rows = await fetcher(this, ids, extraArg as E);
+        const rows = await fetcher(this, ids, extraArg);
         const rowsById = rows.reduce((acc, row) => {
           acc.set(getRowId(row), row);
           return acc;
@@ -300,13 +328,41 @@ abstract class Adaptor {
    *        an awaitable value with all matching rows. Each ID can match any
    *        number of rows.
    * @param getRowId A function that extractcs a result row's ID.
-   * @param extraArg An extra argument to pass into the `fetcher` callback,
-   *        if required. If this method is called multiple times with the
-   *        same `batchKey` but a different `extraArg`, only the value from
-   *        the very first call is used.
    * @return A promise that resolves to the rows matching `id`. If none were
    *         found, the array will be empty.
    */
+  public batchOneToMany<K extends string | number, Row>(
+    batchKey: string,
+    id: K,
+    fetcher: (db: this, ids: K[]) => Awaitable<Row[]>,
+    getRowId: (row: Row) => K
+  ): Promise<Row[]>;
+  /**
+   * Batches a query; that is, combines multiple queries (from the same tick
+   * of the event loop) into a single lookup. The query can match any number
+   * of rows per input ID.
+   * @param batchKey The key to associate with this batch. All queries with
+   *        the same key are batched together.
+   * @param id The ID to look up. This does not have to be the row's primary
+   *        key; it can be any primitive value.
+   * @param fetcher A function that receives all IDs of the batch and returns
+   *        an awaitable value with all matching rows. Each ID can match any
+   *        number of rows.
+   * @param getRowId A function that extractcs a result row's ID.
+   * @param extraArg An extra argument to pass into the `fetcher` callback,
+   *        If this method is called multiple times with the same `batchKey`
+   *        but a different `extraArg`, only the value from the very first
+   *        call is used.
+   * @return A promise that resolves to the rows matching `id`. If none were
+   *         found, the array will be empty.
+   */
+  public batchOneToMany<K extends string | number, Row, E>(
+    batchKey: string,
+    id: K,
+    fetcher: (db: this, ids: K[], extraArg: E) => Awaitable<Row[]>,
+    getRowId: (row: Row) => K,
+    extraArg: E
+  ): Promise<Row[]>;
   public batchOneToMany<K extends string | number, Row, E = undefined>(
     batchKey: string,
     id: K,
