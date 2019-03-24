@@ -5,10 +5,10 @@ import {
 } from '../../rich-text/types';
 import {isCondictLink, parseCondictLink} from '../../rich-text/condict-link';
 
-import {ForeignKeyRef, NewIdMap} from './types';
+import {ForeignKeyContentRef, NewIdMap} from './types';
 
 // Columns that can be referenced by inline elements (inside formatted text).
-export const inlineElementReferences: ForeignKeyRef[] = [
+export const inlineElementReferences: ForeignKeyContentRef[] = [
   {
     table: 'languages',
     column: 'id',

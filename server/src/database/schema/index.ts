@@ -1,7 +1,13 @@
 import {InflectionTableRowJson} from '../../model/inflection-table/types';
 import {BlockElementJson} from '../../rich-text/types';
 
-import {TableSchema, ColumnSchema, ColumnType, Collation} from './types';
+import {
+  TableSchema,
+  ColumnSchema,
+  ColumnType,
+  Collation,
+  ReferenceAction,
+} from './types';
 import {inlineElementReferences, updateInlineReferences} from './inline-refs';
 
 export const schemaVersion = 1;
@@ -124,7 +130,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'languages',
           column: 'id',
-          onDelete: 'cascade',
+          onDelete: ReferenceAction.CASCADE,
         },
       },
       {
@@ -154,7 +160,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'parts_of_speech',
           column: 'id',
-          onDelete: 'cascade',
+          onDelete: ReferenceAction.CASCADE,
         },
       },
       {
@@ -184,7 +190,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'inflection_tables',
           column: 'id',
-          onDelete: 'cascade',
+          onDelete: ReferenceAction.CASCADE,
         },
       },
       {
@@ -228,7 +234,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'inflection_tables',
           column: 'id',
-          onDelete: 'cascade',
+          onDelete: ReferenceAction.CASCADE,
         },
       },
       {
@@ -291,7 +297,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'languages',
           column: 'id',
-          onDelete: 'cascade',
+          onDelete: ReferenceAction.CASCADE,
         },
       },
       {
@@ -329,6 +335,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'lemmas',
           column: 'id',
+          onDelete: ReferenceAction.RESTRICT,
         },
       },
       {
@@ -337,7 +344,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'languages',
           column: 'id',
-          onDelete: 'cascade',
+          onDelete: ReferenceAction.CASCADE,
         },
       },
       {
@@ -346,6 +353,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'parts_of_speech',
           column: 'id',
+          onDelete: ReferenceAction.RESTRICT,
         },
       },
     ],
@@ -367,7 +375,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'definitions',
           column: 'id',
-          onDelete: 'cascade',
+          onDelete: ReferenceAction.CASCADE,
         },
       },
       {
@@ -403,7 +411,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'definitions',
           column: 'id',
-          onDelete: 'cascade',
+          onDelete: ReferenceAction.CASCADE,
         },
       },
       {
@@ -436,7 +444,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'definitions',
           column: 'id',
-          onDelete: 'cascade',
+          onDelete: ReferenceAction.CASCADE,
         },
       },
       {
@@ -445,6 +453,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'inflection_tables',
           column: 'id',
+          onDelete: ReferenceAction.RESTRICT,
         },
       },
       {
@@ -481,7 +490,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'definition_inflection_tables',
           column: 'id',
-          onDelete: 'cascade',
+          onDelete: ReferenceAction.CASCADE,
         },
       },
       {
@@ -490,6 +499,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'inflected_forms',
           column: 'id',
+          onDelete: ReferenceAction.RESTRICT,
         },
       },
       {
@@ -516,6 +526,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'lemmas',
           column: 'id',
+          onDelete: ReferenceAction.RESTRICT,
         },
       },
       {
@@ -524,7 +535,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'definitions',
           column: 'id',
-          onDelete: 'cascade',
+          onDelete: ReferenceAction.CASCADE,
         },
       },
       {
@@ -533,6 +544,7 @@ const tables: TableSchema[] = [
         references: {
           table: 'inflected_forms',
           column: 'id',
+          onDelete: ReferenceAction.RESTRICT,
         },
       },
     ],

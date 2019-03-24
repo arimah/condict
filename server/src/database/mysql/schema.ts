@@ -7,6 +7,7 @@ import {
   Collation,
   IndexedColumn,
   ForeignKeyRef,
+  ReferenceAction,
   isFKColumn,
 } from '../schema/types';
 
@@ -100,8 +101,13 @@ const foreignKey = (
   const foreignName = `${escapeId(table)}(${escapeId(column)})`;
 
   let definition = `foreign key (${ownName}) references ${foreignName}`;
-  if (reference.onDelete) {
-    definition += ` on delete ${reference.onDelete}`;
+  switch (reference.onDelete) {
+    case ReferenceAction.CASCADE:
+      definition += ` on delete cascade`;
+      break;
+    case ReferenceAction.RESTRICT:
+      definition += ` on delete restrict`;
+      break;
   }
   return definition;
 };

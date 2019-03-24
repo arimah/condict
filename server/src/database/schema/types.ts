@@ -175,7 +175,7 @@ export interface JsonColumnSchema extends OwnColumnSchema {
    * ID. This property must list *all* tables that could be referenced by the
    * column.
    */
-  contentReferences?: ForeignKeyRef[];
+  contentReferences?: ForeignKeyContentRef[];
 }
 
 /** A column that references another row's `id` column. */
@@ -253,13 +253,37 @@ export interface ForeignKeyRef {
    */
   column: 'id';
   /**
-   * Determines how to handle deletions of the referenced row. 'cascade' means
-   * this row is deleted when the referenced row is. 'restrict' means the
-   * referenced row cannot be deleted if it is referenced by this foreign key.
-   * If omitted, the default is 'restrict'. This property is ignored on foreign
-   * key references inside `contentReferences`.
+   * Determines how to handle deletions of the referenced row. See the type
+   * documentation for details.
    */
-  onDelete?: 'restrict' | 'cascade';
+  onDelete: ReferenceAction;
+}
+
+/**
+ * Determines how to handle changes (updates, deletes) to the row referenced by
+ * a foreign key.
+ */
+export const enum ReferenceAction {
+  /** The referenced row cannot be changed while this column references it. */
+  RESTRICT = 'restrict',
+  /** The referencing row is changed alongside the referenced row. */
+  CASCADE = 'cascade',
+}
+
+/**
+ * A reference to a foreign key, inside a JSON object. Unlike a regular foreign
+ * key reference, a content reference is not checked by the database engine, so
+ * there is no way to update the content in response to changes in the row that
+ * is referenced.
+ */
+export interface ForeignKeyContentRef {
+  /** The name of the referenced table. */
+  table: string;
+  /**
+   * The name of the referenced column. At present, it is only possible to
+   * reference a primary key named `id`.
+   */
+  column: 'id';
 }
 
 /**
