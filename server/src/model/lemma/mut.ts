@@ -35,6 +35,10 @@ class LemmaMut extends Mutator {
 
     const {db} = this;
 
+    if (terms.length === 0) {
+      return new Map();
+    }
+
     const result = await db.all<Row>`
       select
         id,
