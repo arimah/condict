@@ -11,6 +11,7 @@ import LanguageResolvers from './language/resolvers';
 import LemmaResolvers from './lemma/resolvers';
 import PartOfSpeechResolvers from './part-of-speech/resolvers';
 import RootResolvers from './root/resolvers';
+import TagResolvers from './tag/resolvers';
 
 // I have no idea if it's even slightly possible to get TypeScript to generate
 // a meaningful type for allResolvers. We will just forcefully cast it.
@@ -22,6 +23,7 @@ const allResolvers = merge.all([
   LemmaResolvers,
   PartOfSpeechResolvers,
   RootResolvers,
+  TagResolvers,
 ]) as IResolvers<any, any>;
 
 // GraphQL schema type definitions are read from the schema.graphql file

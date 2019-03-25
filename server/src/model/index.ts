@@ -7,12 +7,14 @@ import InflectionTableModel from './inflection-table/model';
 import LanguageModel from './language/model';
 import LemmaModel from './lemma/model';
 import PartOfSpeechModel from './part-of-speech/model';
+import TagModel from './tag/model';
 
 import DefinitionMut from './definition/mut';
 import InflectionTableMut from './inflection-table/mut';
 import LanguageMut from './language/mut';
 import LemmaMut from './lemma/mut';
 import PartOfSpeechMut from './part-of-speech/mut';
+import TagMut from './tag/mut';
 
 // This transforms a property like `x: typeof Foo` into `x: Foo`, that is,
 // `x` becomes an *instance* of Foo rather than the *constructor* of Foo.
@@ -28,14 +30,16 @@ export type ModelResolver
   & PrototypesOf<typeof InflectionTableModel>
   & PrototypesOf<typeof LanguageModel>
   & PrototypesOf<typeof LemmaModel>
-  & PrototypesOf<typeof PartOfSpeechModel>;
+  & PrototypesOf<typeof PartOfSpeechModel>
+  & PrototypesOf<typeof TagModel>;
 
 export type MutatorResolver
   = PrototypesOf<typeof DefinitionMut>
   & PrototypesOf<typeof InflectionTableMut>
   & PrototypesOf<typeof LanguageMut>
   & PrototypesOf<typeof LemmaMut>
-  & PrototypesOf<typeof PartOfSpeechMut>;
+  & PrototypesOf<typeof PartOfSpeechMut>
+  & PrototypesOf<typeof TagMut>;
 
 export interface Resolvers {
   model: ModelResolver;
@@ -48,6 +52,7 @@ const AllModels = {
   ...LanguageModel,
   ...LemmaModel,
   ...PartOfSpeechModel,
+  ...TagModel,
 };
 
 const AllMutators = {
@@ -56,6 +61,7 @@ const AllMutators = {
   ...LanguageMut,
   ...LemmaMut,
   ...PartOfSpeechMut,
+  ...TagMut,
 };
 
 // These prototypes are intended to be used with Object.create to construct

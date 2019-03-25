@@ -287,6 +287,24 @@ const tables: TableSchema[] = [
   },
 
   {
+    name: 'tags',
+    comment: 'The tags that exist in the dictionary. Tags may be attached to any number of definitions (see `definition_tags`), and are not specific to any language (that is, they are global). Tags names are stored separately to avoid duplicating textual data.',
+    columns: [
+      id,
+      {
+        name: 'name',
+        comment: 'The name of the tag.',
+        type: ColumnType.VARCHAR,
+        size: 64,
+      },
+    ],
+    primaryKey: 'id',
+    unique: [
+      'name',
+    ],
+  },
+
+  {
     name: 'lemmas',
     comment: 'The lemmas of the dictionary; the words that are listed and looked up. Each lemma may have zero or more regular definitions (see `definitions`) and zero or more derived definitions (see `derived_definitions`), but must have at least one of either kind.',
     columns: [
@@ -514,6 +532,32 @@ const tables: TableSchema[] = [
       'definition_inflection_table_id',
       'inflected_form_id',
     ],
+  },
+
+  {
+    name: 'definition_tags',
+    comment: 'Tags attached to individual definitions. A definition can have any number of tags.',
+    columns: [
+      {
+        name: 'definition_id',
+        comment: 'The definition this tag is attached to.',
+        references: {
+          table: 'definitions',
+          column: 'id',
+          onDelete: ReferenceAction.CASCADE,
+        },
+      },
+      {
+        name: 'tag_id',
+        comment: 'The tag used by the definition.',
+        references: {
+          table: 'tags',
+          column: 'id',
+          onDelete: ReferenceAction.RESTRICT,
+        },
+      },
+    ],
+    primaryKey: ['definition_id', 'tag_id'],
   },
 
   {

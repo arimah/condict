@@ -1,0 +1,36 @@
+"""
+Represents a generic tag. Tags with the same name have the same ID, and all
+tags are shared between languages. Tags can be attached to definitions, and
+are mainly used for thematic grouping ("colour", "emotion", "food", etc.).
+"""
+type Tag {
+  "The ID of the tag."
+  id: ID!
+
+  "The name of the tag."
+  name: String!
+}
+
+"Contains paginated results from the `Query.tags` field."
+type TagConnection {
+  "Metadata about the connection, related to pagination."
+  meta: ConnectionMeta!
+
+  "The tags in this batch."
+  nodes: [Tag!]!
+}
+
+extend type Query {
+  """
+  The tags that exist in the dictionary. Since a dictionary may contain many
+  tags, this field is always paginated. If provided, `page.perPage` cannot
+  exceed 200.
+  """
+  tags(page: PageParams): TagConnection!
+
+  """
+  Finds a tag by ID or name. You must specify either `id` or `name`. If you
+  specify both, only `id` will be used.
+  """
+  tag(id: ID, name: String): Tag
+}
