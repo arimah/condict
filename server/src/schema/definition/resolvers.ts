@@ -29,6 +29,9 @@ const Definition: Resolvers<DefinitionRow> = {
   inflectionTables: (p, _args, {model: {DefinitionInflectionTable}}) =>
     DefinitionInflectionTable.allByDefinition(p.id),
 
+  tags: (p, _args, {model: {Tag}}) =>
+    Tag.allByDefinition(p.id),
+
   derivedDefinitions: (p, {page}: PageArg, {model: {DerivedDefinition}}) =>
     DerivedDefinition.allByDerivedFrom(p.id, page),
 

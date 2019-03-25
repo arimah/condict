@@ -38,6 +38,9 @@ type Definition {
   """
   inflectionTables: [DefinitionInflectionTable!]!
 
+  "Tags associated with this definition."
+  tags: [Tag!]!
+
   """
   Definitions derived from inflected forms of this definition.
 
@@ -233,6 +236,9 @@ input NewDefinitionInput {
 
   "Inflection tables that are used by this definiton."
   inflectionTables: [DefinitionInflectionTableInput!]!
+
+  "Tags associated with this definition."
+  tags: [String!]!
 }
 
 "Input type for editing an existing definition. The ID is a separate argument."
@@ -262,6 +268,9 @@ input EditDefinitionInput {
   table _without_ an `id`, a new definition inflection table is created.
   """
   inflectionTables: [DefinitionInflectionTableInput!]
+
+  "If set, updates the definition's tags."
+  tags: [String!]
 }
 
 "Input type for a definition inflection stem."

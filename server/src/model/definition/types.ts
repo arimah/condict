@@ -52,6 +52,7 @@ export interface NewDefinitionInput {
   description: BlockElementInput[];
   stems: StemInput[];
   inflectionTables: DefinitionInflectionTableInput[];
+  tags: string[];
 }
 
 export interface EditDefinitionInput {
@@ -60,6 +61,7 @@ export interface EditDefinitionInput {
   description?: BlockElementInput[] | null;
   stems?: StemInput[] | null;
   inflectionTables?: DefinitionInflectionTableInput[] | null;
+  tags?: string[] | null;
 }
 
 export interface StemInput {

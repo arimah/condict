@@ -24,6 +24,9 @@ const Language: Resolvers<LanguageRow> = {
 
   lemmas: (p, {page, filter}: LemmasArgs, {model: {Lemma}}) =>
     Lemma.allByLanguage(p.id, page, filter || LemmaFilter.ALL_LEMMAS),
+
+  tags: (p, {page}: PageArg, {model: {Tag}}) =>
+    Tag.allByLanguage(p.id, page),
 };
 
 interface LanguageArgs {

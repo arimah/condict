@@ -15,6 +15,7 @@ import {
 import DefinitionStemMut from './stem-mut';
 import DefinitionInflectionTableMut, {DefinitionData} from './table-mut';
 import CustomFormMut from './custom-form-mut';
+import DefinitionTagMut from './tag-mut';
 import DerivedDefinitionMut from './derived-mut';
 
 class DefinitionMut extends Mutator {
@@ -25,6 +26,7 @@ class DefinitionMut extends Mutator {
     description,
     stems,
     inflectionTables,
+    tags,
   }: NewDefinitionInput): Promise<DefinitionRow> {
     const {db} = this;
     const {Language, Definition, PartOfSpeech} = this.model;
@@ -32,6 +34,7 @@ class DefinitionMut extends Mutator {
       LemmaMut,
       DefinitionDescriptionMut,
       DefinitionStemMut,
+      DefinitionTagMut,
       DerivedDefinitionMut,
     } = this.mut;
 
@@ -61,6 +64,11 @@ class DefinitionMut extends Mutator {
         true
       );
 
+      await DefinitionTagMut.insertAll(
+        definitionId,
+        tags
+      );
+
       await DerivedDefinitionMut.insertAll(
         language.id,
         definitionId,
@@ -77,6 +85,7 @@ class DefinitionMut extends Mutator {
     description,
     stems,
     inflectionTables,
+    tags,
   }: EditDefinitionInput): Promise<DefinitionRow> {
     const {db} = this;
     const {Definition} = this.model;
@@ -84,6 +93,7 @@ class DefinitionMut extends Mutator {
       LemmaMut,
       DefinitionStemMut,
       DefinitionDescriptionMut,
+      DefinitionTagMut,
     } = this.mut;
 
     const definition = await Definition.byIdRequired(id);
@@ -131,6 +141,10 @@ class DefinitionMut extends Mutator {
         // for this definition.
         term !== definition.term || stems != null
       );
+
+      if (tags) {
+        await DefinitionTagMut.update(definition.id, tags);
+      }
 
       // If the derived definitions or term have changed, we may have orphaned
       // one or more lemmas, so we have to delete them too.
@@ -407,6 +421,7 @@ export default {
   DefinitionStemMut,
   DefinitionDescriptionMut,
   DefinitionInflectionTableMut,
+  DefinitionTagMut,
   DerivedDefinitionMut,
   CustomFormMut,
 };
