@@ -19,7 +19,7 @@ export default class DerivedDefinitionMut extends Mutator {
 
     const validDerivedDefinitions = derivedDefinitions
       // We can't add empty terms as lemmas, so just skip them.
-      .filter(term => term !== '')
+      .filter(term => /\S/.test(term))
       .map((term, inflectedFormId) => {
         const validTerm = validateTerm(term);
         return [validTerm.value, inflectedFormId];
