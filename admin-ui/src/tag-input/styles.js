@@ -115,7 +115,8 @@ export const DeleteMarker = styled(DeleteIcon)`
 
   ${Transition('opacity')}
 
-  ${Tag}:hover & {
+  ${Tag}:hover &,
+  ${Tag}:active & {
     opacity: 1;
   }
 `;
