@@ -5,6 +5,7 @@ import NumberInputDemo from './number-input';
 import RadioDemo from './radio';
 import SelectDemo from './select';
 import SwitchDemo from './switch';
+import TagInputDemo from './tag-input';
 import TextInputDemo from './text-input';
 
 export default [
@@ -15,5 +16,6 @@ export default [
   RadioDemo,
   SelectDemo,
   SwitchDemo,
+  TagInputDemo,
   TextInputDemo,
 ].sort((a, b) => a.name.localeCompare(b.name, 'en'));

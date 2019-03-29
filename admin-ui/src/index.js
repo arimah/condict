@@ -5,6 +5,7 @@ export {TextInput, NumberInput} from './input';
 export {Radio} from './radio';
 export {Select} from './select';
 export {Switch} from './switch';
+export {TagInput} from './tag-input';
 
 export {CommandGroup, CommandConsumer, useCommand} from './command';
 export {Shortcut, ShortcutGroup, ShortcutMap} from './command/shortcut';
