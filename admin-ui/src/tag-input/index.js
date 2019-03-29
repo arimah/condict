@@ -229,8 +229,11 @@ export class TagInput extends Component {
     // the focus event on the tag or input box will take care of that.
     // On the other hand, if focus has left the component, we need to set
     // inputFocused to false, as we know that can't be true anymore.
+    // Additionally, when the component is left, we commit the current
+    // value of the text input.
     if (!this.hasFocus && this.state.inputFocused) {
       this.setState({inputFocused: false});
+      this.commitTags(false);
     }
   }
 
