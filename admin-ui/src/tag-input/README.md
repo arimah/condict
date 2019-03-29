@@ -49,6 +49,6 @@ Any tag that is edited through the tag input undergoes normalization. The follow
 * All consecutive white space is collapsed into a single space (`' '`, U+0020).
 * Leading and trailing white space is removed.
 
-Example: `foo   bar ` becomes the tag `foo bar`.
+Example: <code>foo&nbsp;&nbsp;&nbsp;bar&nbsp;</code> becomes the tag `foo bar`.
 
 Additionally, the tag input ensures no tag contains the characters `,` or `;`, as they are used to separate tags. If text is pasted into the tag input containing either these characters, multiple tags are added.
