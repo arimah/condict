@@ -312,8 +312,17 @@ export class TagInput extends Component {
     const nextTags = tags.slice(0);
     const editedTag = nextTags[index];
     nextTags.splice(index, 1);
+
+    // If the input contains anything, commit that value (it can be edited
+    // again later).
+    const newTag = normalizeTag(input.value);
+    if (newTag) {
+      nextTags.push(newTag);
+    }
+
     input.value = editedTag;
     input.setSelectionRange(editedTag.length, editedTag.length, 'forward');
+
     this.setSelectedTag(null);
     this.setTags(nextTags);
   }
