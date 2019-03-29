@@ -17,7 +17,6 @@ export const Main = styled.span`
   flex-direction: row;
   flex-wrap: wrap;
   cursor: ${ifNotProp('disabled', 'text')};
-  width: 400px;
   border-radius: 3px;
   border-color: ${theme('general.borderColor')};
   background-color: ${theme('general.bg')};

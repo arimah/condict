@@ -6,6 +6,8 @@ The `<TagInput>` component is partially controlled: the `tags` prop determines w
 
 A `<TagInput>` contains multiple interactive components; it should not be wrapped in a `<label>`. Instead, use the `aria-label` or `aria-labelledby` prop to associate accessible labels with the tag input.
 
+A `<TagInput>` has no inherent width. You should restrict its width by styling it, setting the `width` or `max-width` CSS property.
+
 Tag inputs do _not_ forward refs to any underlying element.
 
 ## Examples

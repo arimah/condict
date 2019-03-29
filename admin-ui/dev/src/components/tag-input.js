@@ -1,7 +1,12 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
+import styled from 'styled-components';
 
 import {TagInput, Checkbox} from '../../../src';
+
+const TagInputWithWidth = styled(TagInput)`
+  width: 400px;
+`;
 
 export default Object.freeze({
   name: 'TagInput',
@@ -29,7 +34,7 @@ export default Object.freeze({
   ],
   // eslint-disable-next-line react/prop-types, react/display-name
   contents: ({disabled, minimal, tags}, setState) =>
-    <TagInput
+    <TagInputWithWidth
       disabled={disabled}
       minimal={minimal}
       tags={tags}
