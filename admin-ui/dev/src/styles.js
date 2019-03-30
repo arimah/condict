@@ -1,12 +1,15 @@
 import styled, {createGlobalStyle} from 'styled-components';
-import {theme} from 'styled-tools';
+import {ifProp, theme} from 'styled-tools';
 
 export const AppStyles = createGlobalStyle`
   body {
     font-size: 11pt;
     font-family: 'Inter', sans-serif;
     font-feature-settings: 'cv08', 'calt' off;
-    background-color: ${theme('general.activeBg')};
+    background-color: ${ifProp(theme('dark'),
+      theme('general.hoverBg'),
+      theme('general.activeBg')
+    )};
     color: ${theme('general.fg')};
 
     transition-property: color, background-color;
