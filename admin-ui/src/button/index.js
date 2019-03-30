@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import {useCommand} from '../command';
-import {useShimmer, Shimmer} from '../shimmer';
 
 import * as S from './styles';
 
@@ -23,7 +22,6 @@ export const Button = React.forwardRef((props, ref) => {
 
   const command = useCommand(commandName);
   const buttonRef = useRef(null);
-  const shimmer = useShimmer(buttonRef);
 
   const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
 
@@ -55,11 +53,6 @@ export const Button = React.forwardRef((props, ref) => {
         href={href}
         ref={captureRef}
       >
-        {!props.minimal && !buttonProps.disabled &&
-          <S.ShimmerWrapper slim={props.slim}>
-            <Shimmer state={shimmer}/>
-          </S.ShimmerWrapper>
-        }
         {renderedContent}
       </S.Link>
     );
@@ -70,11 +63,6 @@ export const Button = React.forwardRef((props, ref) => {
         type={type}
         ref={captureRef}
       >
-        {!props.minimal && !buttonProps.disabled &&
-          <S.ShimmerWrapper slim={props.slim}>
-            <Shimmer state={shimmer}/>
-          </S.ShimmerWrapper>
-        }
         {renderedContent}
       </S.Button>
     );
