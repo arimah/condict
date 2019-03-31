@@ -46,7 +46,7 @@ import {NonIdealState, Button} from '@condict/admin-ui';
 | `minimal` | boolean | `false` | If true, applies minimal styling to the element. Basically, it removes the border and drop shadow. |
 | `image` | node | `undefined` | An image to show above the title. This can be any React renderable, but obviously something that results in an image is preferred. The image is horizontally centered. |
 | `title` | node | none; required | The title to give the non-ideal state. The title is rendered inside a heading tag, whose level is determined by the `headingLevel` prop. The text is horizontally centered. |
-| `headingLevel` | 2, 3, 4, 5, 6 | `2` | The level of the heading that contains the title. This prop does not affect the visual appearance of the title; its only purpose is to ensure the document has a meaningful hierarchy. The default level is 2, meaning the title is rendered as an `<h2>`. Level 1 headings should not be used for this component. |
+| `headingLevel` | one of `2`, `3`, `4`, `5`, `6` | `2` | The level of the heading that contains the title. This prop does not affect the visual appearance of the title; its only purpose is to ensure the document has a meaningful hierarchy. The default level is 2, meaning the title is rendered as an `<h2>`. Level 1 headings should not be used for this component. |
 | `description` | node | `undefined` | A (slightly) more detailed description of the non-ideal state, which is rendered inside a `<p>`. The description is horizontally centered if it's narrower than the outer wrapper; otherwise, the text is left-aligned. |
 | `action` | node | `undefined` | An action, typically in the form of a single button, that lets the user amend the non-ideal state. The action is horizontally centered. |
 
