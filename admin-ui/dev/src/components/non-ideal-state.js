@@ -67,8 +67,8 @@ export default Object.freeze({
 
 const ConlangFlag = () =>
   <svg
-    width={94}
-    height={58}
+    width={141}
+    height={87}
     viewBox='0 0 468 290'
     preserveAspectRatio='xMidYMid meet'
   >
