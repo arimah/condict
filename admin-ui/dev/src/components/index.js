@@ -1,6 +1,7 @@
 import ButtonDemo from './button';
 import CheckboxDemo from './checkbox';
 import CommandDemo from './command';
+import NonIdealStateDemo from './non-ideal-state';
 import NumberInputDemo from './number-input';
 import RadioDemo from './radio';
 import SelectDemo from './select';
@@ -12,6 +13,7 @@ export default [
   ButtonDemo,
   CheckboxDemo,
   CommandDemo,
+  NonIdealStateDemo,
   NumberInputDemo,
   RadioDemo,
   SelectDemo,

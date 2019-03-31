@@ -1,6 +1,7 @@
 export {Button} from './button';
 export {Checkbox} from './checkbox';
 export {GlobalStyles} from './global-styles';
+export {NonIdealState} from './non-ideal-state';
 export {TextInput, NumberInput} from './input';
 export {Radio} from './radio';
 export {Select} from './select';
