@@ -4,7 +4,7 @@ A spinner, also known as a _throbber_, is used to show that some content is load
 
 It is a non-interactive, non-focusable, purely visual component that is ignored by screen readers. An accessible UI should set `aria-busy` on the component or section that is loading.
 
-By default, the spinner is rendered as an inline `<span>`. If you need a block-level spinner, you must style the component. The colour of the spinner is determined by the CSS `color`, which can be set to style the spinner.
+By default, the spinner is rendered as a block-level `<span>`. If you need an inline spinner, you must style the component. The colour of the spinner is determined by the CSS `color`, which can be set to style the spinner.
 
 ## Examples
 
@@ -17,7 +17,7 @@ import {Spinner} from '@condict/admin-ui';
 
 // A styled spinner with a custom size.
 const PurpleSpinner = styled(Spinner)`
-  display: block;
+  display: inline-block;
   margin: 32px;
   color: rebeccapurple;
 `;
