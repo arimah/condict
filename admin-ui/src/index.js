@@ -5,6 +5,7 @@ export {NonIdealState} from './non-ideal-state';
 export {TextInput, NumberInput} from './input';
 export {Radio} from './radio';
 export {Select} from './select';
+export {Spinner} from './spinner';
 export {Switch} from './switch';
 export {TagInput} from './tag-input';
 
