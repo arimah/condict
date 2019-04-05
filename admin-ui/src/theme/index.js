@@ -35,6 +35,13 @@ const DefaultTiming = Object.freeze({
   short: '100ms',
 });
 
+const DefaultShadow = Object.freeze({
+  color: 'rgba(0, 0, 0, 0.175)',
+  elevation1: '0 2px 5px rgba(0, 0, 0, 0.175)',
+  elevation2: '0 3px 8px rgba(0, 0, 0, 0.175)',
+  elevation3: '0 4px 10px rgba(0, 0, 0, 0.175)',
+});
+
 const DefaultTheme = Object.freeze({
   [ThemeSymbol]: true,
   dark: false,
@@ -45,6 +52,7 @@ const DefaultTheme = Object.freeze({
   focus: DefaultFocus,
   selection: DefaultSelection,
   timing: DefaultTiming,
+  shadow: DefaultShadow,
 });
 
 export const isTheme = theme => theme != null && theme[ThemeSymbol] === true;

@@ -56,7 +56,7 @@ export const CellPopup = styled.div`
   border-radius: 3px;
   background-color: ${theme('primary.bg')};
   color: ${theme('general.fg')};
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: ${theme('shadow.elevation2')};
 
   ::after {
     content: '';

@@ -18,7 +18,7 @@ export const Main = styled.div`
     css`
       padding: 14px 22px;
       border: 2px solid ${theme('general.borderColor')};
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.175);
+      box-shadow: ${theme('shadow.elevation1')};
     `
   )}
 `;

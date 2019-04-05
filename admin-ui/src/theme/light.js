@@ -95,6 +95,13 @@ const LightTheme = createTheme({
     altBg: selectionColor(Saturation.high, 80),
     borderColor: selectionColor(Saturation.high, 65),
   },
+
+  shadow: {
+    color: 'rgba(0, 0, 0, 0.175)',
+    elevation1: '0 2px 5px rgba(0, 0, 0, 0.175)',
+    elevation2: '0 3px 8px rgba(0, 0, 0, 0.175)',
+    elevation3: '0 4px 10px rgba(0, 0, 0, 0.175)',
+  },
 });
 
 export default LightTheme;

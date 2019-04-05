@@ -95,6 +95,13 @@ const DarkTheme = createTheme({
     altBg: selectionColor(Saturation.high, 35),
     borderColor: selectionColor(Saturation.high, 45),
   },
+
+  shadow: {
+    color: 'rgba(0, 0, 0, 0.35)',
+    elevation1: '0 2px 5px rgba(0, 0, 0, 0.35)',
+    elevation2: '0 3px 8px rgba(0, 0, 0, 0.35)',
+    elevation3: '0 4px 10px rgba(0, 0, 0, 0.35)',
+  },
 });
 
 export default DarkTheme;
