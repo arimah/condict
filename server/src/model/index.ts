@@ -22,7 +22,7 @@ import TagMut from './tag/mut';
 // It's not clear to me that this is specifically designed to work in TS,
 // but it does, so I'll take it!
 type PrototypesOf<T> = {
-  [P in keyof T]: T[P] extends Function ? T[P]['prototype'] : never;
+  readonly [P in keyof T]: T[P] extends Function ? T[P]['prototype'] : never;
 };
 
 export type ModelResolver = PrototypesOf<
