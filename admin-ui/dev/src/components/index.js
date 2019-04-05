@@ -3,6 +3,7 @@ import CheckboxDemo from './checkbox';
 import CommandDemo from './command';
 import NonIdealStateDemo from './non-ideal-state';
 import NumberInputDemo from './number-input';
+import PagesDemo from './pages';
 import RadioDemo from './radio';
 import SelectDemo from './select';
 import SpinnerDemo from './spinner';
@@ -16,6 +17,7 @@ export default [
   CommandDemo,
   NonIdealStateDemo,
   NumberInputDemo,
+  PagesDemo,
   RadioDemo,
   SelectDemo,
   SpinnerDemo,

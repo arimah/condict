@@ -3,6 +3,7 @@ export {Checkbox} from './checkbox';
 export {GlobalStyles} from './global-styles';
 export {NonIdealState} from './non-ideal-state';
 export {TextInput, NumberInput} from './input';
+export {Pages} from './pages';
 export {Radio} from './radio';
 export {Select} from './select';
 export {Spinner} from './spinner';
