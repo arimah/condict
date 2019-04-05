@@ -16,14 +16,25 @@ export default class DerivedDefinitionMut extends Mutator {
     // white space. When we insert our derived definitions, we must ensure
     // we use the normalized values, so build a map from validated term
     // to inflected form ID.
+    //
+    // If validation fails for any given derived definition, we simply
+    // ignore it. This can happen if the term is empty (in which case we
+    // don't want it in the dictionary anyway), or if it's too long (in
+    // which case we *can't* add it without risking truncation). Generally
+    // it's preferable to add what we can.
 
     const validDerivedDefinitions = derivedDefinitions
-      // We can't add empty terms as lemmas, so just skip them.
-      .filter(term => /\S/.test(term))
       .map((term, inflectedFormId) => {
-        const validTerm = validateTerm(term);
-        return [validTerm.value, inflectedFormId];
-      });
+        try {
+          const validTerm = validateTerm(term);
+          return [validTerm.value, inflectedFormId];
+        } catch (e) {
+          // Add invalid terms to '', which we know isn't valid.
+          // We'll filter it out later.
+          return ['', 0];
+        }
+      })
+      .filter(Boolean);
 
     const termToLemmaId = await LemmaMut.ensureAllExist(
       languageId,
