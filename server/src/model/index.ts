@@ -25,21 +25,23 @@ type PrototypesOf<T> = {
   [P in keyof T]: T[P] extends Function ? T[P]['prototype'] : never;
 };
 
-export type ModelResolver
-  = PrototypesOf<typeof DefinitionModel>
-  & PrototypesOf<typeof InflectionTableModel>
-  & PrototypesOf<typeof LanguageModel>
-  & PrototypesOf<typeof LemmaModel>
-  & PrototypesOf<typeof PartOfSpeechModel>
-  & PrototypesOf<typeof TagModel>;
+export type ModelResolver = PrototypesOf<
+  typeof DefinitionModel &
+  typeof InflectionTableModel &
+  typeof LanguageModel &
+  typeof LemmaModel &
+  typeof PartOfSpeechModel &
+  typeof TagModel
+>;
 
-export type MutatorResolver
-  = PrototypesOf<typeof DefinitionMut>
-  & PrototypesOf<typeof InflectionTableMut>
-  & PrototypesOf<typeof LanguageMut>
-  & PrototypesOf<typeof LemmaMut>
-  & PrototypesOf<typeof PartOfSpeechMut>
-  & PrototypesOf<typeof TagMut>;
+export type MutatorResolver = PrototypesOf<
+  typeof DefinitionMut &
+  typeof InflectionTableMut &
+  typeof LanguageMut &
+  typeof LemmaMut &
+  typeof PartOfSpeechMut &
+  typeof TagMut
+>;
 
 export interface Resolvers {
   model: ModelResolver;
