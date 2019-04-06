@@ -141,3 +141,7 @@ export const Input = styled.input.attrs({
     color: ${theme('general.disabledFg')};
   }
 `;
+
+Input.defaultProps = {
+  theme: LightTheme,
+};

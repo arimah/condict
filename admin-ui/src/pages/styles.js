@@ -1,6 +1,7 @@
 import styled, {css} from 'styled-components';
 import {ifProp, theme} from 'styled-tools';
 
+import LightTheme from '../theme/light';
 import {Button} from '../button';
 
 export const Main = styled.nav`
@@ -12,6 +13,10 @@ export const Main = styled.nav`
     theme('general.fg')
   )};
 `;
+
+Main.defaultProps = {
+  theme: LightTheme,
+};
 
 // This list and its items are necessary for assisitive technologies to read
 // the pages correctly.

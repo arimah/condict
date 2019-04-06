@@ -1,6 +1,8 @@
 import styled, {css} from 'styled-components';
 import {ifProp, theme} from 'styled-tools';
 
+import LightTheme from '../theme/light';
+
 export const Main = styled.div`
   display: flex;
   flex-direction: column;
@@ -22,6 +24,10 @@ export const Main = styled.div`
     `
   )}
 `;
+
+Main.defaultProps = {
+  theme: LightTheme,
+};
 
 export const Image = styled.div`
   margin-top: 8px;
