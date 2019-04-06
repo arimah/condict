@@ -5,11 +5,12 @@ import {PageParams, Connection} from '../../schema/types';
 
 import Model from '../model';
 
-import {TagRow, DefinitionTagRow} from './types';
+import {TagRow, DefinitionTagRow, LemmaTagRow} from './types';
 
 class Tag extends Model {
   public readonly byIdKey = 'Tag.byId';
   public readonly byNameKey = 'Tag.byName';
+  public readonly allByLemmaKey = 'Tags.allByLemma';
   public readonly allByDefinitionKey = 'Tags.allByDefinition';
   public readonly defaultPagination: Readonly<PageParams> = {
     page: 0,
@@ -105,6 +106,26 @@ class Tag extends Model {
           where name in (${names})
         `,
       row => row.name
+    );
+  }
+
+  public async allByLemma(lemmaId: number): Promise<TagRow[]> {
+    return this.db.batchOneToMany(
+      this.allByLemmaKey,
+      lemmaId,
+      (db, lemmaIds) =>
+        db.all<LemmaTagRow>`
+          select
+            t.*,
+            d.lemma_id
+          from definition_tags dt
+          inner join tags t on t.id = dt.tag_id
+          inner join definitions d on d.id = dt.definition_id
+          where d.lemma_id in (${lemmaIds})
+          group by d.lemma_id, t.id
+          order by d.lemma_id, t.name
+        `,
+      row => row.lemma_id
     );
   }
 

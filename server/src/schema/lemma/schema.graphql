@@ -29,6 +29,9 @@ type Lemma {
   """
   derivedDefinitions: [DerivedDefinition!]!
 
+  "Combined set of all tags associated with all definitions in the lemma."
+  tags: [Tag!]!
+
   "The language that the lemma belongs to."
   language: Language!
 }

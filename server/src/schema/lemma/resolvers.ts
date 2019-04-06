@@ -13,6 +13,8 @@ const Lemma: Resolvers<LemmaRow> = {
   derivedDefinitions: (p, _args, {model: {DerivedDefinition}}) =>
     DerivedDefinition.allByLemma(p.id),
 
+  tags: (p, _args, {model: {Tag}}) => Tag.allByLemma(p.id),
+
   language: (p, _args, {model: {Language}}) =>
     Language.byId(p.language_id),
 };
