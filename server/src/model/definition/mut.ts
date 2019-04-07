@@ -275,11 +275,7 @@ class DefinitionMut extends Mutator {
 
     const currentTableIds: number[] = [];
     for (const table of inflectionTables) {
-      interface Result {
-        id: number;
-        derivedForms: Map<number, string>;
-      }
-      const {id: tableId, derivedForms}: Result = await (
+      const {id: tableId, derivedForms} = await (
         table.id != null && !isNewDefinition
           ? DefinitionInflectionTableMut.update(
             +table.id,
