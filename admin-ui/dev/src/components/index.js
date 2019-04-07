@@ -1,6 +1,7 @@
 import ButtonDemo from './button';
 import CheckboxDemo from './checkbox';
 import CommandDemo from './command';
+import ConlangFlagDemo from './conlang-flag';
 import NonIdealStateDemo from './non-ideal-state';
 import NumberInputDemo from './number-input';
 import PagesDemo from './pages';
@@ -15,6 +16,7 @@ export default [
   ButtonDemo,
   CheckboxDemo,
   CommandDemo,
+  ConlangFlagDemo,
   NonIdealStateDemo,
   NumberInputDemo,
   PagesDemo,

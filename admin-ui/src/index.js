@@ -1,5 +1,6 @@
 export {Button} from './button';
 export {Checkbox} from './checkbox';
+export {ConlangFlag} from './conlang-flag';
 export {GlobalStyles} from './global-styles';
 export {NonIdealState} from './non-ideal-state';
 export {TextInput, NumberInput} from './input';
