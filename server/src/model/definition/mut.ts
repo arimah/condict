@@ -270,6 +270,7 @@ class DefinitionMut extends Mutator {
       id: definitionId,
       term,
       stemMap,
+      partOfSpeechId,
     };
 
     const currentTableIds: number[] = [];
@@ -283,13 +284,11 @@ class DefinitionMut extends Mutator {
           ? DefinitionInflectionTableMut.update(
             +table.id,
             definitionData,
-            partOfSpeechId,
             table,
             currentTableIds.length
           )
           : DefinitionInflectionTableMut.insert(
             definitionData,
-            partOfSpeechId,
             table,
             currentTableIds.length
           )

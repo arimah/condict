@@ -17,12 +17,12 @@ export interface DefinitionData {
   id: number;
   term: string;
   stemMap: Map<string, string>;
+  partOfSpeechId: number;
 }
 
 export default class DefinitionInflectionTableMut extends Mutator {
   public async insert(
     definition: DefinitionData,
-    partOfSpeechId: number,
     {inflectionTableId, caption, customForms}: DefinitionInflectionTableInput,
     index: number
   ): Promise<DefinitionInflectionTableResult> {
@@ -31,7 +31,7 @@ export default class DefinitionInflectionTableMut extends Mutator {
 
     const inflectionTable = await this.validateInflectionTableId(
       +inflectionTableId,
-      partOfSpeechId
+      definition.partOfSpeechId
     );
     const finalCaption = validateTableCaption(caption);
 
@@ -70,7 +70,6 @@ export default class DefinitionInflectionTableMut extends Mutator {
   public async update(
     id: number,
     definition: DefinitionData,
-    partOfSpeechId: number,
     {caption, customForms}: DefinitionInflectionTableInput,
     index: number
   ): Promise<DefinitionInflectionTableResult> {
@@ -88,7 +87,7 @@ export default class DefinitionInflectionTableMut extends Mutator {
 
     await this.validateInflectionTableId(
       table.inflection_table_id,
-      partOfSpeechId
+      definition.partOfSpeechId
     );
 
     const finalCaption = validateTableCaption(caption);
