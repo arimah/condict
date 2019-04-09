@@ -17,6 +17,13 @@ const DefaultIntent = Object.freeze({
   disabledBorderColor: '#333333',
 });
 
+const DefaultLink = Object.freeze({
+  color: '#0000FF',
+  visited: '#9900FF',
+  hover: '#3333FF',
+  active: '#FFA500',
+});
+
 const DefaultFocus = Object.freeze({
   color: '#00DDFF', // 500, blue
   style: css`
@@ -49,6 +56,7 @@ const DefaultTheme = Object.freeze({
   secondary: DefaultIntent,
   danger: DefaultIntent,
   general: DefaultIntent,
+  link: DefaultLink,
   focus: DefaultFocus,
   selection: DefaultSelection,
   timing: DefaultTiming,

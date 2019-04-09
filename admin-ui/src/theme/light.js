@@ -82,6 +82,13 @@ const LightTheme = createTheme({
     disabledBorderColor: generalColor(Saturation.low, 90),
   },
 
+  link: {
+    color: 'hsl(215, 100%, 40%)',
+    visited: 'hsl(275, 60%, 45%)',
+    hover: 'hsl(215, 100%, 60%)',
+    active: 'hsl(30, 100%, 45%)',
+  },
+
   focus: {
     color: focusColor(Saturation.high, 55),
     style: css`

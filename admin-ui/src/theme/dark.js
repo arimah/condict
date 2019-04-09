@@ -82,6 +82,13 @@ const DarkTheme = createTheme({
     disabledBorderColor: generalColor(Saturation.low, 20),
   },
 
+  link: {
+    color: 'hsl(215, 100%, 75%)',
+    visited: 'hsl(275, 60%, 70%)',
+    hover: 'hsl(215, 100%, 85%)',
+    active: 'hsl(30, 100%, 70%)',
+  },
+
   focus: {
     color: focusColor(Saturation.high, 55),
     style: css`
