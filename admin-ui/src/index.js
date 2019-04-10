@@ -10,6 +10,7 @@ export {Select} from './select';
 export {Spinner} from './spinner';
 export {Switch} from './switch';
 export {TagInput} from './tag-input';
+export {BodyText} from './typography';
 
 export {CommandGroup, CommandConsumer, useCommand} from './command';
 export {Shortcut, ShortcutGroup, ShortcutMap} from './command/shortcut';

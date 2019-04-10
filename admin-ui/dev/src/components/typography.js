@@ -4,7 +4,9 @@ import styled from 'styled-components';
 
 import genId from '@condict/gen-id';
 
-const Main = styled.div`
+import {BodyText} from '../../../src';
+
+const Main = styled(BodyText)`
   max-width: 600px;
 `;
 
