@@ -21,7 +21,6 @@ export const Button = React.forwardRef((props, ref) => {
   } = props;
 
   const command = useCommand(commandName);
-  const buttonRef = useRef(null);
 
   const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
 
@@ -37,21 +36,13 @@ export const Button = React.forwardRef((props, ref) => {
     buttonProps.onClick = onClick;
   }
 
-  const captureRef = elem => {
-    buttonRef.current = elem;
-    if (typeof ref === 'function') {
-      ref(elem);
-    } else if (ref) {
-      ref.current = elem;
-    }
-  };
   if (href != null) {
     return (
       <S.Link
         role='button'
         {...buttonProps}
         href={href}
-        ref={captureRef}
+        ref={ref}
       >
         {renderedContent}
       </S.Link>
@@ -61,7 +52,7 @@ export const Button = React.forwardRef((props, ref) => {
       <S.Button
         {...buttonProps}
         type={type}
-        ref={captureRef}
+        ref={ref}
       >
         {renderedContent}
       </S.Button>
