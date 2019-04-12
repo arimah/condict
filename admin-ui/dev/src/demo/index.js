@@ -33,6 +33,8 @@ class Demo extends PureComponent {
       state,
       controls,
       contents,
+      alignX,
+      alignY,
     } = this.props;
     const {error} = this.state;
 
@@ -47,6 +49,8 @@ class Demo extends PureComponent {
             state={state}
             controls={controls}
             contents={contents}
+            alignX={alignX}
+            alignY={alignY}
             onSetState={this.handleSetState}
             onToggleState={this.handleToggleState}
           />
@@ -68,12 +72,16 @@ Demo.propTypes = {
   state: PropTypes.object.isRequired,
   controls: PropTypes.func,
   contents: PropTypes.func.isRequired,
+  alignX: PropTypes.oneOf(['center', 'stretch']),
+  alignY: PropTypes.oneOf(['center', 'stretch']),
   onSetState: PropTypes.func.isRequired,
   onToggleState: PropTypes.func.isRequired,
 };
 
 Demo.defaultProps = {
   controls: null,
+  alignX: 'center',
+  alignY: 'center',
 };
 
 const Error = ({error}) =>
@@ -99,13 +107,15 @@ const InteractiveDemo = props => {
     state,
     controls,
     contents,
+    alignX,
+    alignY,
     onSetState,
     onToggleState,
   } = props;
 
   return (
     <S.Interactive>
-      <S.InteractiveContents>
+      <S.InteractiveContents alignX={alignX} alignY={alignY}>
         {contents(state, onSetState, onToggleState)}
       </S.InteractiveContents>
       {controls &&
@@ -125,12 +135,16 @@ InteractiveDemo.propTypes = {
   state: PropTypes.object.isRequired,
   controls: PropTypes.func,
   contents: PropTypes.func.isRequired,
+  alignX: PropTypes.oneOf(['center', 'stretch']),
+  alignY: PropTypes.oneOf(['center', 'stretch']),
   onSetState: PropTypes.func.isRequired,
   onToggleState: PropTypes.func.isRequired,
 };
 
 InteractiveDemo.defaultProps = {
   controls: null,
+  alignX: 'center',
+  alignY: 'center',
 };
 
 export default Demo;

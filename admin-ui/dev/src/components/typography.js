@@ -7,7 +7,7 @@ import genId from '@condict/gen-id';
 import {BodyText} from '../../../src';
 
 const Main = styled(BodyText)`
-  max-width: 600px;
+  max-width: 50em;
 `;
 
 const randomHref = `#${genId()}`;
@@ -15,7 +15,6 @@ const randomHref = `#${genId()}`;
 export default Object.freeze({
   name: 'Typography',
   initialState: {},
-  controls: () => [],
   // eslint-disable-next-line react/prop-types, react/display-name
   contents: () =>
     <Main>

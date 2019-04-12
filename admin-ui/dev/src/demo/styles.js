@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import {theme} from 'styled-tools';
+import styled, {css} from 'styled-components';
+import {theme, switchProp} from 'styled-tools';
 
 export const List = styled.div`
   margin: 16px;
@@ -41,6 +41,8 @@ export const Interactive = styled.div`
   flex-direction: row;
 `;
 
+// Flexbox reminder: jusify-* = main axis; align-* = cross axis
+// When `flex-direction: column`, main axis = y, cross axis = x.
 export const InteractiveContents = styled.div.attrs({
   role: 'group',
   'aria-label': 'Interactive example',
@@ -49,14 +51,30 @@ export const InteractiveContents = styled.div.attrs({
   flex: 1 0 auto;
   padding: 24px;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   border-radius: 8px;
   background-color: ${theme('general.bg')};
 
-  > * {
-    flex-grow: 0;
-  }
+  ${switchProp('alignX', {
+    center: css`
+      align-items: center;
+    `,
+    stretch: css`
+      align-items: stretch;
+    `,
+  })}
+
+  ${switchProp('alignY', {
+    center: css`
+      justify-content: center;
+
+      > * {
+        flex-grow: 0;
+      }
+    `,
+    stretch: css`
+      justify-items: stretch;
+    `,
+  })}
 
   > ${List} {
     margin: 0;

@@ -165,6 +165,8 @@ class App extends Component {
               state={settings[demo.name]}
               controls={demo.controls}
               contents={demo.contents}
+              alignX={demo.alignX}
+              alignY={demo.alignY}
               onSetState={this.handleSetDemoState}
               onToggleState={this.handleToggleDemoState}
             />
