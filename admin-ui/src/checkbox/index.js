@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 
+import combineRefs from '../combine-refs';
+
 import * as S from './styles';
 
 export const Checkbox = props => {
@@ -22,6 +24,15 @@ export const Checkbox = props => {
   } = props;
 
   const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
+
+  // 'indeterminate' is not an HTML attribute; it can only be set via JS.
+  // For that reason, styled-components does not forward it, and we have
+  // to set it ourselves.
+  const setIndeterminate = elem => {
+    if (elem) {
+      elem.indeterminate = indeterminate;
+    }
+  };
 
   return (
     <S.Label
@@ -43,22 +54,7 @@ export const Checkbox = props => {
           checked={!!checked}
           aria-label={ariaLabel}
           onChange={onChange}
-          ref={elem => {
-            // 'indeterminate' is not an HTML attribute; it can only be set via JS.
-            // For that reason, styled-components does not forward it, and we have
-            // to set it ourselves.
-            if (elem) {
-              elem.indeterminate = indeterminate;
-            }
-
-            if (inputRef) {
-              if (typeof inputRef === 'function') {
-                inputRef(elem);
-              } else {
-                inputRef.current = elem;
-              }
-            }
-          }}
+          ref={combineRefs(setIndeterminate, inputRef)}
         />
       </S.CheckmarkContainer>
       {renderedContent}
