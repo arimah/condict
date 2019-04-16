@@ -1,6 +1,6 @@
 {
   "name": "@condict/a11y-utils",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Accessibility utils for Condict, primarily its admin UI components.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
@@ -13,15 +13,15 @@
     "lint": "eslint --config ../eslint-web.config.js src/"
   },
   "devDependencies": {
-    "@babel/cli": "^7.1.5",
-    "@babel/core": "^7.1.5",
-    "@babel/plugin-transform-modules-commonjs": "^7.2.0",
-    "@babel/preset-env": "^7.1.6",
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-transform-modules-commonjs": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
     "@babel/preset-react": "^7.0.0",
     "babel-eslint": "10.0.1",
     "cross-env": "^5.2.0",
-    "eslint": "^5.12.0",
-    "eslint-plugin-import": "^2.14.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-import": "^2.17.1",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.12.3",
     "rimraf": "^2.6.3"

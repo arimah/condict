@@ -20,29 +20,29 @@
     "lint": "eslint --ext .ts src/"
   },
   "dependencies": {
-    "@types/better-sqlite3": "^5.2.2",
+    "@types/better-sqlite3": "^5.2.3",
     "@types/command-line-args": "^5.0.0",
     "@types/generic-pool": "^3.1.9",
-    "@types/graphql": "^14.0.7",
+    "@types/graphql": "^14.2.0",
     "@types/mysql": "^2.15.5",
-    "@types/node": "^10.12.29",
+    "@types/node": "^10.14.4",
     "apollo-server": "^2.4.8",
     "better-sqlite3": "^5.4.0",
     "chalk": "^2.4.2",
-    "command-line-args": "^5.0.2",
+    "command-line-args": "^5.1.1",
     "dataloader": "^1.4.0",
     "deepmerge": "^2.2.1",
-    "generic-pool": "^3.6.0",
-    "graphql": "^14.1.1",
+    "generic-pool": "^3.7.1",
+    "graphql": "^14.2.1",
     "mysql": "^2.16.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.4.2",
-    "@typescript-eslint/parser": "^1.4.2",
+    "@typescript-eslint/eslint-plugin": "^1.6.0",
+    "@typescript-eslint/parser": "^1.6.0",
     "copyfiles": "^2.1.0",
-    "eslint": "^5.13.0",
+    "eslint": "^5.16.0",
     "rimraf": "^2.6.3",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.4.3"
   }
 }
