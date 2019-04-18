@@ -89,24 +89,26 @@ export default Object.freeze({
           <Item label='Save as...'/>
           <Separator/>
           <Item label='Line style'>
-            <CheckItem
-              radio
-              label='Dotted'
-              checked={state.lineStyle === 'dotted'}
-              onActivate={() => setState({lineStyle: 'dotted'})}
-            />
-            <CheckItem
-              radio
-              label='Dashed'
-              checked={state.lineStyle === 'dashed'}
-              onActivate={() => setState({lineStyle: 'dashed'})}
-            />
-            <CheckItem
-              radio
-              label='Solid'
-              checked={state.lineStyle === 'solid'}
-              onActivate={() => setState({lineStyle: 'solid'})}
-            />
+            <div role='group'>
+              <CheckItem
+                radio
+                label='Dotted'
+                checked={state.lineStyle === 'dotted'}
+                onActivate={() => setState({lineStyle: 'dotted'})}
+              />
+              <CheckItem
+                radio
+                label='Dashed'
+                checked={state.lineStyle === 'dashed'}
+                onActivate={() => setState({lineStyle: 'dashed'})}
+              />
+              <CheckItem
+                radio
+                label='Solid'
+                checked={state.lineStyle === 'solid'}
+                onActivate={() => setState({lineStyle: 'solid'})}
+              />
+            </div>
           </Item>
           <Separator/>
           <Item label='Print' icon={<PrintIcon/>} shortcut={PrintShortcut}/>
