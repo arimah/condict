@@ -13,8 +13,6 @@ const SpinAnimation = keyframes`
 export const Main = styled.span`
   display: block;
   position: relative;
-  width: ${prop('size')}px;
-  height: ${prop('size')}px;
 `;
 
 export const Slice = styled.span`
@@ -25,7 +23,7 @@ export const Slice = styled.span`
   width: 100%;
   height: 100%;
 
-  border: ${p => Math.ceil(Math.min(25, p.size / 8))}px solid transparent;
+  border: 1px solid transparent;
   border-top-color: currentColor;
   border-radius: 50%;
 

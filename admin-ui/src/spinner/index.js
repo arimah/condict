@@ -6,11 +6,19 @@ import * as S from './styles';
 export const Spinner = React.forwardRef((props, ref) => {
   const {className, size} = props;
 
+  const sliceStyle = {
+    borderWidth: Math.ceil(Math.min(25, size / 8)),
+  };
+
   return (
-    <S.Main className={className} size={size} ref={ref}>
-      <S.Slice size={size} number={0}/>
-      <S.Slice size={size} number={1}/>
-      <S.Slice size={size} number={2}/>
+    <S.Main
+      className={className}
+      style={{width: size, height: size}}
+      ref={ref}
+    >
+      <S.Slice style={sliceStyle} number={0}/>
+      <S.Slice style={sliceStyle} number={1}/>
+      <S.Slice style={sliceStyle} number={2}/>
     </S.Main>
   );
 });
