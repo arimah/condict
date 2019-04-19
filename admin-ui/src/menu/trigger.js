@@ -8,7 +8,7 @@ import combineRefs from '../combine-refs';
 import MenuManager from './manager';
 
 const MenuTrigger = props => {
-  const {menu, children} = props;
+  const {menu, onToggle, children} = props;
 
   const [menuId] = useState(genId);
   const menuRef = useRef();
@@ -16,10 +16,12 @@ const MenuTrigger = props => {
   const managerRef = useRef();
   const openMenu = useCallback(() => {
     managerRef.current.open(menuRef.current);
-  });
+    onToggle(true);
+  }, [onToggle]);
   const handleClose = useCallback(() => {
     childRef.current.focus();
-  });
+    onToggle(false);
+  }, [onToggle]);
 
   const menuWithExtra = React.cloneElement(menu, {
     id: menuId,
@@ -43,7 +45,12 @@ const MenuTrigger = props => {
 
 MenuTrigger.propTypes = {
   menu: PropTypes.element.isRequired,
+  onToggle: PropTypes.func,
   children: PropTypes.element.isRequired,
+};
+
+MenuTrigger.defaultProps = {
+  onToggle: () => { },
 };
 
 export default MenuTrigger;
