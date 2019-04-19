@@ -24,6 +24,7 @@ const CheckItem = React.forwardRef((props, ref) => {
 
   const command = useCommand(commandName);
   const effectiveDisabled = command ? command.disabled : disabled;
+  const effectiveShortcut = command ? command.shortcut : shortcut;
 
   const [ownId] = useState(genId);
   const ownRef = useRef();
@@ -42,11 +43,18 @@ const CheckItem = React.forwardRef((props, ref) => {
       role={radio ? 'menuitemradio' : 'menuitemcheckbox'}
       aria-checked={String(checked)}
       aria-disabled={String(effectiveDisabled)}
+      aria-keyshortcuts={
+        effectiveShortcut
+          ? effectiveShortcut.toAriaString()
+          : undefined
+      }
       ref={combineRefs(ref, ownRef)}
     >
       <S.ItemIcon>{icon}</S.ItemIcon>
       <S.ItemLabel>{label}</S.ItemLabel>
-      <S.ItemShortcut>{shortcut && String(shortcut)}</S.ItemShortcut>
+      <S.ItemShortcut>
+        {effectiveShortcut && String(effectiveShortcut)}
+      </S.ItemShortcut>
       <S.ItemCheck checked={checked} radio={radio}>
         {checked && (radio ? <S.RadioDot/> : <S.CheckMark/>)}
       </S.ItemCheck>

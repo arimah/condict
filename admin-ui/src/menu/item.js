@@ -25,6 +25,7 @@ const Item = React.forwardRef((props, ref) => {
 
   const command = useCommand(commandName);
   const effectiveDisabled = command ? command.disabled : disabled;
+  const effectiveShortcut = command ? command.shortcut : shortcut;
 
   const [ownId] = useState(genId);
   const ownRef = useRef();
@@ -45,11 +46,18 @@ const Item = React.forwardRef((props, ref) => {
       aria-disabled={String(effectiveDisabled)}
       aria-owns={children ? `${ownId}-menu` : undefined}
       aria-haspopup={children ? 'menu' : undefined}
+      aria-keyshortcuts={
+        effectiveShortcut
+          ? effectiveShortcut.toAriaString()
+          : undefined
+      }
       ref={combineRefs(ref, ownRef)}
     >
       <S.ItemIcon>{icon}</S.ItemIcon>
       <S.ItemLabel>{label}</S.ItemLabel>
-      <S.ItemShortcut>{shortcut && String(shortcut)}</S.ItemShortcut>
+      <S.ItemShortcut>
+        {effectiveShortcut && String(effectiveShortcut)}
+      </S.ItemShortcut>
       <S.ItemSubmenu>
         {children != null && <ChevronRightIcon/>}
       </S.ItemSubmenu>
