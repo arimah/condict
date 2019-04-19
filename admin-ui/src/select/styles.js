@@ -48,6 +48,7 @@ export const Select = styled.select`
 
   &:disabled {
     border-color: ${theme('general.disabledBorderColor')};
+    background-color: ${theme('general.bg')};
     color: ${theme('general.disabledFg')};
   }
 `;
