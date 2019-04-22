@@ -17,9 +17,9 @@ const Item = React.forwardRef((props, ref) => {
     label,
     icon,
     shortcut,
+    disabled,
     command: commandName,
     children,
-    disabled,
     onActivate,
   } = props;
 
@@ -79,23 +79,23 @@ Item.displayName = 'Item';
 
 Item.propTypes = {
   label: PropTypes.string.isRequired,
-  icon: PropTypes.element,
+  icon: PropTypes.node,
   shortcut: PropTypes.oneOfType([
     PropTypes.instanceOf(Shortcut),
     PropTypes.instanceOf(ShortcutGroup),
   ]),
-  command: PropTypes.string,
-  children: PropTypes.any,
   disabled: PropTypes.bool,
+  command: PropTypes.string,
+  children: PropTypes.node,
   onActivate: PropTypes.func,
 };
 
 Item.defaultProps = {
   icon: null,
   shortcut: null,
-  command: null,
-  children: null,
   disabled: false,
+  command: null,
+  children: undefined,
   onActivate: () => { },
 };
 

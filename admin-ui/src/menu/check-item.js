@@ -15,10 +15,10 @@ const CheckItem = React.forwardRef((props, ref) => {
     label,
     icon,
     shortcut,
-    command: commandName,
     checked,
     radio,
     disabled,
+    command: commandName,
     onActivate,
   } = props;
 
@@ -65,15 +65,15 @@ CheckItem.displayName = 'CheckItem';
 
 CheckItem.propTypes = {
   label: PropTypes.string.isRequired,
-  icon: PropTypes.element,
+  icon: PropTypes.node,
   shortcut: PropTypes.oneOfType([
     PropTypes.instanceOf(Shortcut),
     PropTypes.instanceOf(ShortcutGroup),
   ]),
   checked: PropTypes.bool,
   radio: PropTypes.bool,
-  command: PropTypes.string,
   disabled: PropTypes.bool,
+  command: PropTypes.string,
   onActivate: PropTypes.func,
 };
 
@@ -82,8 +82,8 @@ CheckItem.defaultProps = {
   shortcut: null,
   checked: false,
   radio: false,
-  command: null,
   disabled: false,
+  command: null,
   onActivate: () => { },
 };
 

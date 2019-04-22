@@ -12,7 +12,7 @@ import Separator from './separator';
 export const Menu = React.forwardRef((props, ref) => {
   const {children, ...otherProps} = props;
   const stack = useContext(StackContext);
-  if (process.env.NODE_ENV === 'development' && !stack) {
+  if (!stack) {
     throw new Error('Menu must be mounted inside a MenuManager!');
   }
   return (

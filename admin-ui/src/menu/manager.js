@@ -172,13 +172,10 @@ export class MenuStack {
   activateCurrent(fromKeyboard) {
     const {currentFocus} = this;
     if (currentFocus && !currentFocus.disabled) {
-      if (currentFocus.onActivate) {
-        nextTick(currentFocus.onActivate);
-      }
-
       if (currentFocus.submenu) {
         return this.openSubmenu(currentFocus, fromKeyboard);
       } else {
+        nextTick(currentFocus.onActivate);
         return this.closeAll();
       }
     }
@@ -445,7 +442,7 @@ export default class MenuManager extends Component {
 
 MenuManager.propTypes = {
   onClose: PropTypes.func,
-  children: PropTypes.any,
+  children: PropTypes.node,
 };
 
 MenuManager.defaultProps = {

@@ -22,6 +22,8 @@ A [`<CommandGroup>`](#commandgroup) defines and groups related commands.
 Commands can be attached to any component using a [`<CommandConsumer>`](#commandconsumer), or using the hook [`useCommand()`](#usecommand). The following components have built-in support for commands (via the `command` prop, which takes a command name):
 
 * [Button](../button)
+* [Menu.Item](../menu#menuitem)
+* [Menu.CheckItem](../menu#menucheckitem)
 
 ## Examples
 
