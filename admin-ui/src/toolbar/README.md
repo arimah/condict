@@ -12,7 +12,7 @@
 
 ---
 
-The [`<Toolbar>`](#toolbar) component implements a generic toolbar. It defines various interactive components that should be used inside the toolbar. For the purposes of tab navigation, the toolbar is a single focusable element, and focus within the toolbar is managed by arrow keys.
+The [`<Toolbar>`](#toolbar-1) component implements a generic toolbar. It defines various interactive components that should be used inside the toolbar. For the purposes of tab navigation, the toolbar is a single focusable element, and focus within the toolbar is managed by arrow keys.
 
 ## Examples
 
