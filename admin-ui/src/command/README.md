@@ -24,6 +24,8 @@ Commands can be attached to any component using a [`<CommandConsumer>`](#command
 * [Button](../button)
 * [Menu.Item](../menu#menuitem)
 * [Menu.CheckItem](../menu#menucheckitem)
+* [Toolbar.Button](../toolbar#toolbarbutton)
+* [Toolbar.RadioButton](../toolbar#toolbarradiobutton)
 
 ## Examples
 
