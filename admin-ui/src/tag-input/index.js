@@ -29,10 +29,10 @@ const isEmptySelectionAtStart = input =>
   input.selectionStart === 0 &&
   input.selectionEnd === 0;
 
-const KeyboardCommands = new ShortcutMap(
+const KeyboardMap = new ShortcutMap(
   [
     {
-      shortcut: Shortcut.parse(['Enter', 'Shift+Enter', 'Primary+Enter']),
+      key: Shortcut.parse(['Enter', 'Shift+Enter', 'Primary+Enter']),
       exec: tagInput => {
         if (tagInput.state.selectedTag === null) {
           tagInput.commitTags(false);
@@ -41,7 +41,7 @@ const KeyboardCommands = new ShortcutMap(
       },
     },
     {
-      shortcut: Shortcut.parse(['Backspace', 'Shift+Backspace', 'Primary+Backspace']),
+      key: Shortcut.parse(['Backspace', 'Shift+Backspace', 'Primary+Backspace']),
       exec: tagInput => {
         const {selectedTag} = tagInput.state;
         const input = tagInput.input.current;
@@ -62,7 +62,7 @@ const KeyboardCommands = new ShortcutMap(
       },
     },
     {
-      shortcut: Shortcut.parse('F2'),
+      key: Shortcut.parse('F2'),
       exec: tagInput => {
         const {selectedTag} = tagInput.state;
         if (selectedTag !== null) {
@@ -72,7 +72,7 @@ const KeyboardCommands = new ShortcutMap(
       },
     },
     {
-      shortcut: Shortcut.parse(['Delete', 'Shift+Delete', 'Primary+Delete']),
+      key: Shortcut.parse(['Delete', 'Shift+Delete', 'Primary+Delete']),
       exec: tagInput => {
         const {selectedTag} = tagInput.state;
         if (selectedTag !== null) {
@@ -82,7 +82,7 @@ const KeyboardCommands = new ShortcutMap(
       },
     },
     {
-      shortcut: Shortcut.parse('ArrowLeft ArrowUp'),
+      key: Shortcut.parse('ArrowLeft ArrowUp'),
       exec: tagInput => {
         // The up and left arrows only move the selection into the last tag
         // if the text box has an empty selection at the start. Otherwise it
@@ -96,7 +96,7 @@ const KeyboardCommands = new ShortcutMap(
       },
     },
     {
-      shortcut: Shortcut.parse('ArrowRight ArrowDown'),
+      key: Shortcut.parse('ArrowRight ArrowDown'),
       exec: tagInput => {
         // The down and right arrows only operate specially when a tag is
         // selected. Otherwise, they become normal edit commands inside the
@@ -109,7 +109,7 @@ const KeyboardCommands = new ShortcutMap(
       },
     },
     {
-      shortcut: Shortcut.parse('Home'),
+      key: Shortcut.parse('Home'),
       exec: tagInput => {
         const {selectedTag} = tagInput.state;
         const input = tagInput.input.current;
@@ -120,7 +120,7 @@ const KeyboardCommands = new ShortcutMap(
       },
     },
     {
-      shortcut: Shortcut.parse('End'),
+      key: Shortcut.parse('End'),
       exec: tagInput => {
         const {tags} = tagInput.props;
         const {selectedTag} = tagInput.state;
@@ -133,7 +133,7 @@ const KeyboardCommands = new ShortcutMap(
       },
     },
   ],
-  cmd => cmd.shortcut
+  cmd => cmd.key
 );
 
 export class TagInput extends Component {
@@ -249,7 +249,7 @@ export class TagInput extends Component {
   }
 
   handleKeyDown(e) {
-    const command = KeyboardCommands.get(e);
+    const command = KeyboardMap.get(e);
     if (command && command.exec(this)) {
       e.preventDefault();
     }
