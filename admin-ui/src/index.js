@@ -13,6 +13,7 @@ export {Select} from './select';
 export {Spinner} from './spinner';
 export {Switch} from './switch';
 export {TagInput} from './tag-input';
+export {Toolbar} from './toolbar';
 export {BodyText} from './typography';
 
 export {CommandGroup, CommandConsumer, useCommand} from './command';

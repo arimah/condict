@@ -86,8 +86,8 @@ Item.propTypes = {
   ]),
   disabled: PropTypes.bool,
   command: PropTypes.string,
-  children: PropTypes.node,
   onActivate: PropTypes.func,
+  children: PropTypes.node,
 };
 
 Item.defaultProps = {

@@ -156,8 +156,8 @@ The `<Menu.Item>` component forwards its ref to the outer element (a `<div>`).
 | `shortcut` | [Shortcut][] or [ShortcutGroup][] | `null` | The shortcut associated with the menu item. This value is used for display and accessibility only; it does not attach any behaviour. If the menu item has a [command][], this prop is ignored. |
 | `disabled` | boolean | `false` | If true, the menu item is disabled. If the menu item has a [command][], this prop is ignored. |
 | `command` | string | `null` | Attaches the named [command][] to the menu item. The command overrides the `disabled`, `shortcut` and `onActivate` props. |
-| `children` | node | `undefined` | If present, contains the items of a submenu attached to this menu item. Note that this prop takes the _items_ of the submenu, not a `<Menu>` element. It takes the same children as the [`<Menu>`](#menu) component. Menu items with submenus should not have a shortcut. |
 | `onActivate` | function | no-op | Event handler function for when the menu item is activated. It receives no arguments, and the return value is ignored. If the menu item has a [command][], this prop is ignored. This function is not invoked on items with submenus. |
+| `children` | node | `undefined` | If present, contains the items of a submenu attached to this menu item. Note that this prop takes the _items_ of the submenu, not a `<Menu>` element. It takes the same children as the [`<Menu>`](#menu) component. Menu items with submenus should not have a shortcut. |
 
 Other props are _not_ forwarded to any underlying element.
 

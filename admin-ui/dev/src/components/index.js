@@ -12,6 +12,7 @@ import SpinnerDemo from './spinner';
 import SwitchDemo from './switch';
 import TagInputDemo from './tag-input';
 import TextInputDemo from './text-input';
+import ToolbarDemo from './toolbar';
 import TypographyDemo from './typography';
 
 export default [
@@ -29,5 +30,6 @@ export default [
   SwitchDemo,
   TagInputDemo,
   TextInputDemo,
+  ToolbarDemo,
   TypographyDemo,
 ].sort((a, b) => a.name.localeCompare(b.name, 'en'));
