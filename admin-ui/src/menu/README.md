@@ -1,7 +1,5 @@
 # Menus
 
-The heart of a menu is the [`<Menu>`](#menu) component, which contains any number of menu items and nested submenus. In order to work, a menu must be the descendant of a [`<MenuManager>`](#menumanager). Lastly, the [`<MenuTrigger>`](#menutrigger) component helps to manage individual menus and their triggers.
-
 * [Examples](#examples)
 * [`<Menu>`](#menu)
 * [`<Menu.Item>`](#menuitem)
@@ -9,6 +7,10 @@ The heart of a menu is the [`<Menu>`](#menu) component, which contains any numbe
 * [`<Menu.Separator>`](#menuseparator)
 * [`<MenuManager>`](#menumanager)
 * [`<MenuTrigger>`](#menutrigger)
+
+---
+
+The heart of a menu is the [`<Menu>`](#menu) component, which contains any number of menu items and nested submenus. In order to work, a menu must be the descendant of a [`<MenuManager>`](#menumanager). Lastly, the [`<MenuTrigger>`](#menutrigger) component helps to manage individual menus and their triggers.
 
 Working with menus can be a bit fiddly. Read the documentation carefully to ensure correct implementation.
 
