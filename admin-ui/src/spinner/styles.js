@@ -1,5 +1,4 @@
 import styled, {keyframes} from 'styled-components';
-import {prop} from 'styled-tools';
 
 const SpinAnimation = keyframes`
   0% {
