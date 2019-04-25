@@ -3,11 +3,17 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {ThemeProvider} from 'styled-components';
 import {Map, Stack} from 'immutable';
+import InsertRowAboveIcon from 'mdi-react/TableRowPlusBeforeIcon';
+import InsertRowBelowIcon from 'mdi-react/TableRowPlusAfterIcon';
+import DeleteRowIcon from 'mdi-react/TableRowRemoveIcon';
+import InsertColumnBeforeIcon from 'mdi-react/TableColumnPlusBeforeIcon';
+import InsertColumnAfterIcon from 'mdi-react/TableColumnPlusAfterIcon';
+import DeleteColumnIcon from 'mdi-react/TableColumnRemoveIcon';
 
 import {
   Button,
-  Checkbox,
   Switch,
+  Toolbar,
   CommandGroup,
   Shortcuts,
   DarkTheme,
@@ -26,14 +32,6 @@ import InflectionTableData from './inflection-table-data.json';
 import StemsInput from './stems-input';
 
 import * as S from './styles';
-import {
-  InsertRowAboveIcon,
-  InsertRowBelowIcon,
-  DeleteRowIcon,
-  InsertColumnBeforeIcon,
-  InsertColumnAfterIcon,
-  DeleteColumnIcon,
-} from './icons';
 
 const InitialInflectionTableValue = InflectionTableValue.from(
   InflectionTableData
@@ -119,8 +117,8 @@ class EditorDemo extends Component {
     onChange(value.redo());
   }
 
-  handleToggleDisabled(e) {
-    this.setState({disabled: e.target.checked});
+  handleToggleDisabled() {
+    this.setState({disabled: !this.state.disabled});
   }
 
   handleSetValue(nextValue) {
@@ -276,81 +274,64 @@ class App extends Component {
               onChange={this.handleInflectionTableChange}
               controls={({disabled, value, setValue, toggleDisabled}) =>
                 <InflectionTableEditor.Commands
-                  as={S.Group}
+                  as={S.ToolbarWrapper}
                   disabled={disabled}
                   value={value.value}
                   onChange={setValue}
                 >
-                  <>
-                    <S.IconButton
-                      slim
-                      intent='secondary'
-                      label='Insert row above'
-                      command='insertRowAbove'
-                    >
-                      <InsertRowAboveIcon size={17}/>
-                    </S.IconButton>
-                    <S.IconButton
-                      slim
-                      intent='secondary'
-                      label='Insert row below'
-                      command='insertRowBelow'
-                    >
-                      <InsertRowBelowIcon size={17}/>
-                    </S.IconButton>
-                    <S.IconButton
-                      slim
-                      intent='secondary'
-                      label='Delete selected row(s)'
-                      command='deleteSelectedRows'
-                    >
-                      <DeleteRowIcon size={17}/>
-                    </S.IconButton>
-                    <S.Separator/>
-                    <S.IconButton
-                      slim
-                      intent='secondary'
-                      label='Insert column before'
-                      command='insertColumnBefore'
-                    >
-                      <InsertColumnBeforeIcon size={17}/>
-                    </S.IconButton>
-                    <S.IconButton
-                      slim
-                      intent='secondary'
-                      label='Insert column after'
-                      command='insertColumnAfter'
-                    >
-                      <InsertColumnAfterIcon size={17}/>
-                    </S.IconButton>
-                    <S.IconButton
-                      slim
-                      intent='secondary'
-                      label='Delete selected column(s)'
-                      command='deleteSelectedColumns'
-                    >
-                      <DeleteColumnIcon size={17}/>
-                    </S.IconButton>
-                    <S.Separator/>
-                    <Button
-                      slim
-                      intent='secondary'
-                      label='Undo'
-                      command='undo'
-                    />
-                    <Button
-                      slim
-                      intent='secondary'
-                      label='Redo'
-                      command='redo'
-                    />
-                    <S.Separator/>
-                    <Checkbox
-                      label='Disabled'
-                      checked={disabled}
-                      onChange={toggleDisabled}
-                    />
-                  </>
+                  <Toolbar>
+                    <Toolbar.Group name='Edit row'>
+                      <Toolbar.Button
+                        label='Insert row above'
+                        command='insertRowAbove'
+                      >
+                        <InsertRowAboveIcon/>
+                      </Toolbar.Button>
+                      <Toolbar.Button
+                        label='Insert row below'
+                        command='insertRowBelow'
+                      >
+                        <InsertRowBelowIcon/>
+                      </Toolbar.Button>
+                      <Toolbar.Button
+                        label='Delete selected row(s)'
+                        command='deleteSelectedRows'
+                      >
+                        <DeleteRowIcon/>
+                      </Toolbar.Button>
+                    </Toolbar.Group>
+                    <Toolbar.Group name='Edit column'>
+                      <Toolbar.Button
+                        label='Insert column before'
+                        command='insertColumnBefore'
+                      >
+                        <InsertColumnBeforeIcon/>
+                      </Toolbar.Button>
+                      <Toolbar.Button
+                        label='Insert column after'
+                        command='insertColumnAfter'
+                      >
+                        <InsertColumnAfterIcon/>
+                      </Toolbar.Button>
+                      <Toolbar.Button
+                        label='Delete selected column(s)'
+                        command='deleteSelectedRows'
+                      >
+                        <DeleteColumnIcon/>
+                      </Toolbar.Button>
+                    </Toolbar.Group>
+                    <Toolbar.Group>
+                      <Toolbar.Button label='Undo' command='undo'/>
+                      <Toolbar.Button label='Redo' command='redo'/>
+                    </Toolbar.Group>
+                    <Toolbar.Group>
+                      <Toolbar.Button
+                        label='Disabled'
+                        checked={disabled}
+                        onClick={toggleDisabled}
+                      />
+                    </Toolbar.Group>
+                  </Toolbar>
                 </InflectionTableEditor.Commands>
               }
             >
@@ -392,26 +373,21 @@ class App extends Component {
               value={definitionTableValue}
               onChange={this.handleDefinitionTableChange}
               controls={({disabled, toggleDisabled}) =>
-                <S.Group>
-                  <Button
-                    slim
-                    intent='secondary'
-                    label='Undo'
-                    command='undo'
-                  />
-                  <Button
-                    slim
-                    intent='secondary'
-                    label='Redo'
-                    command='redo'
-                  />
-                  <S.Separator/>
-                  <Checkbox
-                    label='Disabled'
-                    checked={disabled}
-                    onChange={toggleDisabled}
-                  />
-                </S.Group>
+                <S.ToolbarWrapper>
+                  <Toolbar>
+                    <Toolbar.Group>
+                      <Toolbar.Button label='Undo' command='undo'/>
+                      <Toolbar.Button label='Redo' command='redo'/>
+                    </Toolbar.Group>
+                    <Toolbar.Group>
+                      <Toolbar.Button
+                        label='Disabled'
+                        checked={disabled}
+                        onClick={toggleDisabled}
+                      />
+                    </Toolbar.Group>
+                  </Toolbar>
+                </S.ToolbarWrapper>
               }
             >
               {(value, disabled, onChange) =>
