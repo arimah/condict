@@ -58,6 +58,17 @@ export const GlobalStyles = createGlobalStyle`
     text-transform: uppercase;
   }
 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    strong, b {
+      font-weight: 900;
+    }
+  }
+
   p {
     margin-top: 8px;
     margin-bottom: 8px;

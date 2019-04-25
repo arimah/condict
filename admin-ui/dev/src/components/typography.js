@@ -22,9 +22,9 @@ export default Object.freeze({
       <p>Short paragraph between headings.</p>
       <h2>Heading level 2</h2>
       <p>Short paragraph between headings.</p>
-      <h3>Heading level 3</h3>
+      <h3>Heading <em>level</em> 3</h3>
       <p>Short paragraph between headings.</p>
-      <h4>Heading level 4</h4>
+      <h4>Heading <strong>level</strong> 4</h4>
       <p>Short paragraph between headings.</p>
       <h5>Heading level 5</h5>
       <p>Short paragraph between headings.</p>
