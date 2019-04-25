@@ -12,6 +12,8 @@ import RadioButton, {RadioGroup} from './radio-button';
 import Select from './select';
 import * as S from './styles';
 
+const DOCUMENT_POSITION_PRECEDING = 2;
+
 const KeyboardMap = new ShortcutMap(
   [
     {
@@ -54,6 +56,37 @@ const KeyboardMap = new ShortcutMap(
   cmd => cmd.key
 );
 
+const getValidFocus = (descendants, currentFocus) => {
+  if (
+    !currentFocus ||
+    !currentFocus.current ||
+    !descendants.findManagedRef(currentFocus.current)
+  ) {
+    // Either there is on current focus, or the current focus is not a child
+    // of this toolbar. Focus the first element.
+    return descendants.getFirstEnabled();
+  } else if (currentFocus.current.disabled) {
+    // The current focus has become disabled. Move focus to the another
+    // element. We try to first to find the previous toolbar item, which
+    // *may* wrap around the end - e.g. if there are no previous enabled
+    // items. If the previous item comes *after* the current item (which
+    // we find out by comparing document order), move to the *next* item
+    // instead. This prevents needless wrapping and in most cases should
+    // keep the new focus as close as possible to the previous.
+    let nextFocus = descendants.getPrevious(currentFocus);
+    const relativePos =
+      nextFocus &&
+      nextFocus.current.compareDocumentPosition(currentFocus.current);
+    if (nextFocus && (relativePos & DOCUMENT_POSITION_PRECEDING) !== 0) {
+      // currentFocus comes before nextFocus; use the next focusable instead.
+      nextFocus = descendants.getNext(currentFocus);
+    }
+
+    return nextFocus;
+  }
+  return currentFocus;
+};
+
 export const Toolbar = React.forwardRef((props, ref) => {
   const {className, children} = props;
 
@@ -67,13 +100,21 @@ export const Toolbar = React.forwardRef((props, ref) => {
     currentFocus,
   }), [currentFocus]);
 
-  // On mount, once we've collected all the children, find the first one and
-  // move focus (or nonnegative tab index) to it. This means the toolbar will
-  // re-render immediately after first render, but I can't find a better
-  // solution to this problem that *doesn't* result in hideous logic.
+  // After rendering, ensure the current item is one of the enabled children
+  // of the toolbar. If you press a Redo button that then becomes disabled
+  // because the redo stack is empty, we have to move the focus to something
+  // else, otherwise the toolbar itself becomes unfocusable.
+  // If the toolbar layout changes, focus may be on a former child of the
+  // toolbar, which is also unacceptable.
+  // Also, on mount, once we've collected all the children, we need to make
+  // the first one focusable.
   useEffect(() => {
-    setCurrentFocus(descendants.getFirstEnabled());
-  }, []);
+    const nextFocus = getValidFocus(descendants, currentFocus);
+    // Avoid infinite update loops.
+    if (nextFocus !== currentFocus) {
+      setCurrentFocus(nextFocus);
+    }
+  });
 
   return (
     <Context.Provider value={contextValue}>
