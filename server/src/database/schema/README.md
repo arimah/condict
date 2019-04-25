@@ -1,6 +1,6 @@
 # Database schema
 
-This folder houses the database schema. [index.js](./index.js) exports an array of `TableSchema[]`, which are defined in [types.js](./types.js).
+This folder houses the database schema. [index.js](./index.js) exports an array of `TableSchema[]`, which is defined in [types.ts](./types.ts).
 
 Some general notes about the database design:
 
