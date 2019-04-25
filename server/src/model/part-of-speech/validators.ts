@@ -1,6 +1,6 @@
 import Adaptor from '../../database/adaptor';
 
-import validator, {map, lengthBetween, unique} from '../validator';
+import validator, {lengthBetween, unique} from '../validator';
 import sizeOfColumn from '../size-of-column';
 
 const NameSize = sizeOfColumn('parts_of_speech', 'name');
@@ -12,7 +12,7 @@ export const validateName = (
   value: string
 ): Promise<string> =>
   validator<string>('name')
-    .do(map(value => value.trim()))
+    .do(value => value.trim())
     .do(lengthBetween(1, NameSize))
     .do(unique(
       currentId,

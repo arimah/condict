@@ -1,6 +1,6 @@
 import Adaptor from '../../database/adaptor';
 
-import validator, {map, lengthBetween, unique} from '../validator';
+import validator, {lengthBetween, unique} from '../validator';
 import sizeOfColumn from '../size-of-column';
 
 const TableNameSize = sizeOfColumn('inflection_tables', 'name');
@@ -14,7 +14,7 @@ export const validateName = (
   value: string
 ): Promise<string> =>
   validator<string>('name')
-    .do(map(value => value.trim()))
+    .do(value => value.trim())
     .do(lengthBetween(1, TableNameSize))
     .do(unique(
       currentId,
@@ -33,12 +33,12 @@ export const validateName = (
 
 export const validateFormInflectionPattern =
   validator<string>('inflectionPattern')
-    .do(map(value => value.trim()))
+    .do(value => value.trim())
     .do(lengthBetween(0, InflectionPatternSize))
     .validate;
 
 export const validateFormDisplayName =
   validator<string>('displayName')
-    .do(map(value => value.trim()))
+    .do(value => value.trim())
     .do(lengthBetween(0,  DisplayNameSize))
     .validate;

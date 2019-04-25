@@ -1,6 +1,6 @@
 import Adaptor from '../../database/adaptor';
 
-import validator, {map, lengthBetween, matches, unique} from '../validator';
+import validator, {lengthBetween, matches, unique} from '../validator';
 import sizeOfColumn from '../size-of-column';
 
 const NameSize = sizeOfColumn('languages', 'name');
@@ -12,7 +12,7 @@ export const validateName = (
   value: string
 ): Promise<string> =>
   validator<string>('name')
-    .do(map(name => name.trim()))
+    .do(name => name.trim())
     .do(lengthBetween(1, NameSize))
     .do(unique(currentId, async name => {
       const row = await db.get<{id: number}>`
@@ -30,7 +30,7 @@ export const validateUrlName = (
   value: string
 ): Promise<string> =>
   validator<string>('urlName')
-    .do(map(urlName => urlName.toLowerCase().trim()))
+    .do(urlName => urlName.toLowerCase().trim())
     .do(lengthBetween(1, UrlNameSize))
     .do(matches(/^[a-z0-9-]+$/, () => 'can only contain a-z, 0-9 and -'))
     .do(unique(currentId, async urlName => {

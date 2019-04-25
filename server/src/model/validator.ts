@@ -1,35 +1,31 @@
 import {UserInputError} from 'apollo-server';
 
 export interface Validator<I, R> {
-  do<U>(step: (paramName: string, value: R) => U): Validator<I, U>;
+  do<U>(step: (value: R, paramName: string) => U): Validator<I, U>;
   validate(value: I): R;
 }
 
 const validator = <T>(paramName: string): Validator<T, T> => {
   const chain = <A, B, C>(
     prev: (value: A) => B,
-    next: (paramName: string, value: B) => C
+    next: (value: B, paramName: string) => C
   ): Validator<A, C> => {
-    const validate = (value: A): C => next(paramName, prev(value));
+    const validate = (value: A): C => next(prev(value), paramName);
     return {
-      do: <D>(step: (paramName: string, value: C) => D) =>
+      do: <D>(step: (value: C, paramName: string) => D) =>
         chain(validate, step),
       validate,
     };
   };
 
   return {
-    do: <U>(step: (paramName: string, value: T) => U) =>
+    do: <U>(step: (value: T, paramName: string) => U) =>
       chain(v => v, step),
     validate: v => v,
   };
 };
 
 export default validator;
-
-export const map = <T, U>(f: (value: T) => U) =>
-  (_paramName: string, value: T) =>
-    f(value);
 
 export type LengthBetweenMessage<T> = (
   value: T,
@@ -46,7 +42,7 @@ export const lengthBetween = <T extends {length: number}>(
   maxLength: number,
   message: LengthBetweenMessage<T> = defaultLengthBetweenMessage
 ) =>
-  (paramName: string, value: T) => {
+  (value: T, paramName: string) => {
     if (value.length < minLength || value.length > maxLength) {
       throw new UserInputError(`${paramName}: ${message(value, minLength, maxLength)}`, {
         invalidArgs: [paramName],
@@ -59,7 +55,7 @@ export const matches = (
   regex: RegExp,
   message: (value: string) => string
 ) =>
-  (paramName: string, value: string) => {
+  (value: string, paramName: string) => {
     if (!regex.test(value)) {
       throw new UserInputError(`${paramName}: ${message(value)}`, {
         invalidArgs: [paramName],
@@ -76,7 +72,7 @@ export const unique = <T, K>(
   getExistingId: (value: T) => Promise<K | null>,
   message: (value: T) => string = defaultUniqueMessage
 ) =>
-  async (paramName: string, value: T) => {
+  async (value: T, paramName: string) => {
     const existingId = await getExistingId(value);
     if (existingId !== null && existingId !== currentId) {
       throw new UserInputError(`${paramName}: ${message(value)}`, {
