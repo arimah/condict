@@ -39,6 +39,12 @@ module.exports = {
               '@babel/preset-env',
               '@babel/preset-react',
             ],
+            plugins: [
+              ['babel-plugin-styled-components', {
+                fileName: false, // It's almost always "styles"
+                minify: false,
+              }],
+            ],
           },
         },
       },
