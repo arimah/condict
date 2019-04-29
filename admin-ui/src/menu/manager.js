@@ -203,7 +203,7 @@ export class MenuStack {
 
 // The time, in milliseconds, that the mouse has to stay still before menu
 // items are automatically opened/closed.
-const INTENT_TIME = 400;
+const INTENT_TIME = 350;
 
 const KeyboardMap = new ShortcutMap(
   [
