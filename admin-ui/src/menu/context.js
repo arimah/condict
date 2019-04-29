@@ -23,10 +23,11 @@ class MenuItem {
   }
 }
 
-export const useNearestMenu = (ref, submenuRef, disabled, onActivate) => {
+export const useNearestMenu = (ref, submenuRef, label, disabled, onActivate) => {
   const context = useContext(MenuContext);
 
   const [item] = useState(() => new MenuItem(ref, submenuRef));
+  item.label = label;
   item.disabled = disabled;
   item.onActivate = onActivate;
 

@@ -136,6 +136,11 @@ export default class DescendantCollection {
     return null;
   }
 
+  filter(pred) {
+    this.ensureSorted();
+    return this.itemRefList.filter(pred);
+  }
+
   findManagedRef(elem) {
     const {getElem, itemRefList: items} = this;
     return items.find(ref => getElem(ref) === elem);

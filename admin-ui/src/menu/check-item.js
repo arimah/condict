@@ -31,6 +31,7 @@ const CheckItem = React.forwardRef((props, ref) => {
   const {hasFocus} = useNearestMenu(
     ownRef,
     null,
+    label,
     effectiveDisabled,
     command ? command.exec : onActivate
   );

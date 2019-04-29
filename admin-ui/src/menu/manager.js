@@ -56,9 +56,13 @@ import {StackContext} from './context';
 |*|
 |*|  10. Pressing Tab or Shift+Tab inside a menu has no effect.
 |*|
+|*|  11. Typing a character moves focus to the first menu item matching that
+|*|      character, if there is any. If the focus is already on a matching item,
+|*|      it moves to the next, wrapping around the end as necessary.
+|*|
 |*| Some miscellaneous additional interactions:
 |*|
-|*|  11. If the page loses focus, the entire menu tree closes. This emulates
+|*|  12. If the page loses focus, the entire menu tree closes. This emulates
 |*|      native menu behaviour.
 |*|
 |*| Finally, when the top-level menu closes, focus returns to the menu trigger
@@ -83,10 +87,14 @@ class OpenMenu {
     this.parentItem = parentItem;
   }
 
-  findItem(elem) {
+  elemToItem(elem) {
     return this.menu.items.itemRefList.find(
       item => item.self.contains(elem)
     ) || null;
+  }
+
+  filterItems(pred) {
+    return this.menu.items.filter(pred);
   }
 }
 
@@ -135,7 +143,7 @@ export class MenuStack {
       .withCurrentFocus(null);
   }
 
-  openSubmenu(parentItem, fromKeyboard) {
+  openSubmenu(parentItem) {
     // First, let's find which menu the item belongs to.
     const {openMenus} = this;
     const parentMenuIndex = openMenus.findIndex(
@@ -158,22 +166,14 @@ export class MenuStack {
     newOpenMenus.push(new OpenMenu(parentItem.submenu, parentItem));
     let newStack = this.withOpenMenus(newOpenMenus);
 
-    if (fromKeyboard) {
-      newStack = newStack.withCurrentFocus(
-        parentItem.submenu.items.getFirst()
-      );
-    } else {
-      newStack = newStack.withCurrentFocus(null);
-    }
-
     return newStack;
   }
 
-  activateCurrent(fromKeyboard) {
+  activateCurrent() {
     const {currentFocus} = this;
     if (currentFocus && !currentFocus.disabled) {
       if (currentFocus.submenu) {
-        return this.openSubmenu(currentFocus, fromKeyboard);
+        return this.openSubmenu(currentFocus);
       } else {
         nextTick(currentFocus.onActivate);
         return this.closeAll();
@@ -231,10 +231,11 @@ const KeyboardMap = new ShortcutMap(
     },
     {
       key: Shortcut.parse('ArrowRight'),
-      exec: stack => {
+      exec: (stack, manager) => {
         const {currentFocus} = stack;
         if (currentFocus && currentFocus.submenu && !currentFocus.disabled) {
-          return stack.openSubmenu(currentFocus, true);
+          manager.firstNeedsFocus = true;
+          return stack.openSubmenu(currentFocus);
         }
         return stack;
       },
@@ -252,7 +253,10 @@ const KeyboardMap = new ShortcutMap(
     },
     {
       key: Shortcut.parse('Enter'),
-      exec: stack => stack.activateCurrent(true),
+      exec: (stack, manager) => {
+        manager.firstNeedsFocus = true;
+        return stack.activateCurrent();
+      },
     },
   ],
   cmd => cmd.key
@@ -273,9 +277,11 @@ export default class MenuManager extends Component {
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleWindowBlur = this.handleWindowBlur.bind(this);
 
     this.lastMouseTarget = null;
+    this.firstNeedsFocus = false;
   }
 
   open(rootMenu) {
@@ -294,6 +300,16 @@ export default class MenuManager extends Component {
     if (prevStack.openMenus !== nextStack.openMenus) {
       if (nextStack.openMenus.length > 0) {
         this.attachEvents();
+
+        if (this.firstNeedsFocus) {
+          const {openMenus} = nextStack;
+          const deepestMenu = openMenus[openMenus.length - 1];
+          this.setState({
+            stack: nextStack
+              .withCurrentFocus(deepestMenu.menu.items.getFirst()),
+          });
+          this.firstNeedsFocus = false;
+        }
       } else {
         this.detachEvents();
 
@@ -314,6 +330,7 @@ export default class MenuManager extends Component {
     document.body.addEventListener('mousedown', this.handleMouseDown);
     document.body.addEventListener('click', this.handleClick);
     document.body.addEventListener('keydown', this.handleKeyDown);
+    document.body.addEventListener('keypress', this.handleKeyPress);
     window.addEventListener('blur', this.handleWindowBlur);
   }
 
@@ -322,6 +339,7 @@ export default class MenuManager extends Component {
     document.body.removeEventListener('mousedown', this.handleMouseDown);
     document.body.removeEventListener('click', this.handleClick);
     document.body.removeEventListener('keydown', this.handleKeyDown);
+    document.body.removeEventListener('keypress', this.handleKeyPress);
     window.removeEventListener('blur', this.handleWindowBlur);
   }
 
@@ -348,14 +366,14 @@ export default class MenuManager extends Component {
     const currentMenu = openMenus.find(m => m.menu.contains(e.target));
     if (currentMenu) {
       // We are somewhere inside the menu tree, so we need to Do Some Things™.
-      const currentItem = currentMenu.findItem(e.target);
+      const currentItem = currentMenu.elemToItem(e.target);
 
       // Even if we aren't on top of an item (e.g. the mouse is on a separator
       // or the menu's padding area), we need wait a bit, as any open submenus
       // need to be closed after a delay.
       this.awaitIntent(stack => {
         if (currentItem && currentItem.submenu && !currentItem.disabled) {
-          return stack.openSubmenu(currentItem, false);
+          return stack.openSubmenu(currentItem);
         } else {
           return stack.closeUpTo(currentMenu);
         }
@@ -398,22 +416,63 @@ export default class MenuManager extends Component {
   handleClick() {
     const {stack} = this.state;
     this.cancelIntent();
-    this.setState({stack: stack.activateCurrent(false)});
+    this.setState({stack: stack.activateCurrent()});
   }
 
   handleKeyDown(e) {
     // The event must not escape the menu system.
     // TODO: left/right arrows for menu bars.
-    e.preventDefault();
     e.stopPropagation();
 
     let {stack} = this.state;
 
     const command = KeyboardMap.get(e);
     if (command) {
-      stack = command.exec(stack);
+      // Only prevent default if the key combination was captured. Otherwise,
+      // the keypress event is not emitted, as preventing default cancels the
+      // input.
+      e.preventDefault();
+      stack = command.exec(stack, this);
     }
     this.setState({stack});
+  }
+
+  handleKeyPress(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const typedText = e.key.trim().toLowerCase();
+    if (typedText) {
+      const {stack} = this.state;
+      const {currentFocus, openMenus} = stack;
+      const deepestMenu = openMenus[openMenus.length - 1];
+
+      // Find items whose label starts with the typed text.
+      const matchingItems = deepestMenu.filterItems(
+        item => item.label.toLowerCase().startsWith(typedText)
+      );
+
+      if (matchingItems.length === 1) {
+        // If there is exactly one matching item, it becomes activated.
+        this.firstNeedsFocus = true;
+        this.setState({
+          stack: stack
+            .withCurrentFocus(matchingItems[0])
+            .activateCurrent(),
+        });
+      } else if (matchingItems.length > 1) {
+        // If there are multiple matching items, then continue after the
+        // current item. That way you can cycle through items by typing
+        // the same letter repeatedly.
+        const currentIndex = matchingItems.indexOf(currentFocus);
+        // If the current focus is not in the list, -1 + 1 = 0, so we end
+        // up selecting the first item.
+        const nextIndex = (currentIndex + 1) % matchingItems.length;
+        this.setState({
+          stack: stack.withCurrentFocus(matchingItems[nextIndex]),
+        });
+      }
+    }
   }
 
   handleWindowBlur() {

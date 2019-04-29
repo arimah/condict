@@ -65,13 +65,6 @@ const getFocusedItem = (stack, menu) => {
   return null;
 };
 
-const isSubmenuOfOpenMenu = (stack, menu) => {
-  const parent =
-    menu.props.parentRef &&
-    menu.props.parentRef.current;
-  return stack.openMenus.some(m => m.menu.contains(parent));
-};
-
 const getSubmenuPlacement = ownPlacement => {
   // The basic idea: keep growing in the same horizontal direction.
   switch (ownPlacement) {
@@ -167,10 +160,7 @@ class ManagedMenu extends Component {
     );
 
     // Menu trees can get large and complex, so we should only mount children
-    // when they are needed. We need children when the menu is open (obviously)
-    // *and* when this is a submenu whose parent is open, because if the menu
-    // is opened by keyboard, we need to focus the first menu item immediately.
-    const needChildren = open || isSubmenuOfOpenMenu(stack, this);
+    // when they are needed. We only need children when the menu is open.
 
     return ReactDOM.createPortal(
       // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
@@ -183,7 +173,7 @@ class ManagedMenu extends Component {
         style={{zIndex: 100 + depth}}
         ref={this.menuRef}
       >
-        {needChildren &&
+        {open &&
           <MenuContext.Provider value={contextValue}>
             {children}
           </MenuContext.Provider>

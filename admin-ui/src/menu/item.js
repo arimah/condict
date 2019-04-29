@@ -33,6 +33,7 @@ const Item = React.forwardRef((props, ref) => {
   const {hasFocus, submenuPlacement} = useNearestMenu(
     ownRef,
     submenuRef,
+    label,
     effectiveDisabled,
     command ? command.exec : onActivate
   );
