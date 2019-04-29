@@ -308,7 +308,6 @@ export default class MenuManager extends Component {
             stack: nextStack
               .withCurrentFocus(deepestMenu.menu.items.getFirst()),
           });
-          this.firstNeedsFocus = false;
         }
       } else {
         this.detachEvents();
@@ -317,6 +316,7 @@ export default class MenuManager extends Component {
           this.props.onClose();
         }
       }
+      this.firstNeedsFocus = false;
     }
   }
 
