@@ -69,13 +69,19 @@ const MoreOptionsMenu = React.forwardRef(
         label='Subscript'
         icon={<SubscriptIcon/>}
         checked={state.subscript}
-        onActivate={() => toggleState('subscript')}
+        onActivate={() => setState({
+          subscript: !state.subscript,
+          superscript: false,
+        })}
       />
       <Menu.CheckItem
         label='Superscript'
         icon={<SuperscriptIcon/>}
         checked={state.superscript}
-        onActivate={() => toggleState('superscript')}
+        onActivate={() => setState({
+          superscript: !state.superscript,
+          subscript: false,
+        })}
       />
       <Menu.Separator/>
       <Menu.Item label='Block formatting'>
@@ -133,8 +139,10 @@ export default Object.freeze({
   // eslint-disable-next-line react/prop-types, react/display-name
   contents: (state, setState, toggleState) =>
     <Toolbar>
-      <Button label='Undo' shortcut={Shortcuts.undo}/>
-      <Button disabled label='Redo' shortcut={Shortcuts.redo}/>
+      <Group>
+        <Button label='Undo' shortcut={Shortcuts.undo}/>
+        <Button disabled label='Redo' shortcut={Shortcuts.redo}/>
+      </Group>
       <Group name='Text formatting'>
         <Button
           label='Bold'

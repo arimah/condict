@@ -48,7 +48,7 @@ export const InteractiveContents = styled.div.attrs({
   'aria-label': 'Interactive example',
 })`
   display: flex;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   padding: 24px;
   flex-direction: column;
   border-radius: 8px;

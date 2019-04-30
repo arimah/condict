@@ -27,8 +27,8 @@ export const Group = styled.div.attrs({
   flex-direction: row;
   flex-wrap: wrap;
 
-  &:not(:first-child) {
-    margin-left: 16px;
+  &:not(:last-child) {
+    margin-right: 16px;
   }
 `;
 
