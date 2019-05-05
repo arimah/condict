@@ -134,6 +134,13 @@ class ManagedMenu extends Component {
   }
 
   updatePlacement() {
+    // Since this runs inside requestAnimationFrame, the component could
+    // have become unmounted by the time we get here. If there is no
+    // menu or no parent, we can't place the element, so just bail out.
+    if (!this.menuRef.current || !this.props.parentRef.current) {
+      return;
+    }
+
     if (isMenuOpen(this.props.stack, this)) {
       const menu = this.menuRef.current;
       const {parentRef, placement} = this.props;
