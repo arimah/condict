@@ -187,3 +187,11 @@ export const Separator = styled.div.attrs({
 Separator.defaultProps = {
   theme: LightTheme,
 };
+
+export const PhantomFadeTime = 200;
+
+export const PhantomContainer = styled.div`
+  position: fixed;
+  pointer-events: none;
+  transition: opacity ${PhantomFadeTime}ms ease-in;
+`;

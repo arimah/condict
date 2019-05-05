@@ -35,7 +35,14 @@ const Item = React.forwardRef((props, ref) => {
     submenuRef,
     label,
     effectiveDisabled,
-    command ? command.exec : onActivate
+    command ? command.exec : onActivate,
+    () =>
+      <PhantomItem
+        label={label}
+        icon={icon}
+        shortcut={effectiveShortcut}
+        hasSubmenu={!!children}
+      />
   );
 
   return <>
@@ -98,6 +105,28 @@ Item.defaultProps = {
   command: null,
   children: undefined,
   onActivate: () => { },
+};
+
+const PhantomItem = ({icon, label, shortcut, hasSubmenu}) =>
+  <S.Item aria-hidden='true'>
+    <S.ItemIcon>{icon}</S.ItemIcon>
+    <S.ItemLabel>{label}</S.ItemLabel>
+    <S.ItemShortcut>
+      {shortcut && String(shortcut)}
+    </S.ItemShortcut>
+    <S.ItemSubmenu>
+      {hasSubmenu && <ChevronRightIcon/>}
+    </S.ItemSubmenu>
+  </S.Item>;
+
+PhantomItem.propTypes = {
+  label: PropTypes.string.isRequired,
+  icon: PropTypes.node,
+  shortcut: PropTypes.oneOfType([
+    PropTypes.instanceOf(Shortcut),
+    PropTypes.instanceOf(ShortcutGroup),
+  ]),
+  hasSubmenu: PropTypes.bool.isRequired,
 };
 
 export default Item;

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import {Shortcut, ShortcutMap} from '../command/shortcut';
 
 import {StackContext} from './context';
+import PhantomItem from './phantom-item';
+import {PhantomFadeTime} from './styles';
 
 /*\
 |*| Mouse interactions inside menus can get a bit complex. The basic rules are
@@ -169,13 +171,14 @@ export class MenuStack {
     return newStack;
   }
 
-  activateCurrent() {
+  activateCurrent(manager) {
     const {currentFocus} = this;
     if (currentFocus && !currentFocus.disabled) {
       if (currentFocus.submenu) {
         return this.openSubmenu(currentFocus);
       } else {
         nextTick(currentFocus.onActivate);
+        manager.addPhantom(currentFocus);
         return this.closeAll();
       }
     }
@@ -255,7 +258,7 @@ const KeyboardMap = new ShortcutMap(
       key: Shortcut.parse('Enter'),
       exec: (stack, manager) => {
         manager.firstNeedsFocus = true;
-        return stack.activateCurrent();
+        return stack.activateCurrent(manager);
       },
     },
     {
@@ -273,6 +276,7 @@ export default class MenuManager extends Component {
 
     this.state = {
       stack: new MenuStack(),
+      phantomProps: null,
     };
 
     this.awaitIntent = this.awaitIntent.bind(this);
@@ -296,6 +300,25 @@ export default class MenuManager extends Component {
         stack: stack.openRoot(rootMenu),
       });
     }
+  }
+
+  addPhantom(item) {
+    const rect = item.self.getBoundingClientRect();
+    const phantomProps = {
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+      renderItem: item.renderPhantom,
+    };
+    this.setState({phantomProps});
+
+    // Remove the phantom when it's phaded out.
+    window.setTimeout(() => {
+      if (this.state.phantomProps === phantomProps) {
+        this.setState({phantomProps: null});
+      }
+    }, PhantomFadeTime);
   }
 
   componentDidUpdate(_prevProps, prevState) {
@@ -421,7 +444,7 @@ export default class MenuManager extends Component {
   handleClick() {
     const {stack} = this.state;
     this.cancelIntent();
-    this.setState({stack: stack.activateCurrent()});
+    this.setState({stack: stack.activateCurrent(this)});
   }
 
   handleKeyDown(e) {
@@ -463,7 +486,7 @@ export default class MenuManager extends Component {
         this.setState({
           stack: stack
             .withCurrentFocus(matchingItems[0])
-            .activateCurrent(),
+            .activateCurrent(this),
         });
       } else if (matchingItems.length > 1) {
         // If there are multiple matching items, then continue after the
@@ -494,13 +517,14 @@ export default class MenuManager extends Component {
 
   render() {
     const {children} = this.props;
-    const {stack} = this.state;
+    const {stack, phantomProps} = this.state;
 
-    return (
+    return <>
       <StackContext.Provider value={stack}>
         {children}
       </StackContext.Provider>
-    );
+      {phantomProps && <PhantomItem {...phantomProps}/>}
+    </>;
   }
 }
 

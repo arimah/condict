@@ -33,7 +33,15 @@ const CheckItem = React.forwardRef((props, ref) => {
     null,
     label,
     effectiveDisabled,
-    command ? command.exec : onActivate
+    command ? command.exec : onActivate,
+    () =>
+      <PhantomItem
+        label={label}
+        icon={icon}
+        shortcut={effectiveShortcut}
+        checked={checked}
+        radio={radio}
+      />
   );
 
   return (
@@ -86,6 +94,29 @@ CheckItem.defaultProps = {
   disabled: false,
   command: null,
   onActivate: () => { },
+};
+
+const PhantomItem = ({icon, label, shortcut, checked, radio}) =>
+  <S.Item aria-hidden='true'>
+    <S.ItemIcon>{icon}</S.ItemIcon>
+    <S.ItemLabel>{label}</S.ItemLabel>
+    <S.ItemShortcut>
+      {shortcut && String(shortcut)}
+    </S.ItemShortcut>
+    <S.ItemCheck checked={checked} radio={radio}>
+      {checked && (radio ? <S.RadioDot/> : <S.CheckMark/>)}
+    </S.ItemCheck>
+  </S.Item>;
+
+PhantomItem.propTypes = {
+  label: PropTypes.string.isRequired,
+  icon: PropTypes.node,
+  shortcut: PropTypes.oneOfType([
+    PropTypes.instanceOf(Shortcut),
+    PropTypes.instanceOf(ShortcutGroup),
+  ]),
+  checked: PropTypes.bool.isRequired,
+  radio: PropTypes.bool.isRequired,
 };
 
 export default CheckItem;
