@@ -258,6 +258,11 @@ const KeyboardMap = new ShortcutMap(
         return stack.activateCurrent();
       },
     },
+    {
+      key: Shortcut.parse(['Tab', 'Shift+Tab']),
+      // Do nothing; we just need to cancel tab events.
+      exec: stack => stack,
+    },
   ],
   cmd => cmd.key
 );
