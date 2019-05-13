@@ -59,6 +59,7 @@ const readNextLine = () => {
           console.log(chalk.yellow('No more results to show.'));
         } else {
           showResults(lastResults);
+          lastResults = [];
         }
         break;
       default:
