@@ -3,11 +3,13 @@
     "pulmonic_consonants.json",
     "non-pulmonic_consonants.json",
     "affricates.json",
-    "vowels.json"
+    "vowels.json",
+    "diacritics.json"
   ],
   "synonyms": "synonyms.json",
   "variables": {
     "g": "ɡ",
+    "placeholder": "\u25CC",
     "voiceless": "\u0325",
     "voicelessAbove": "\u030A",
     "ejective": "\u02BC",

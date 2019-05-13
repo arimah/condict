@@ -85,5 +85,8 @@
   ],
   "affricate": [
     {"term": "consonant"}
+  ],
+  "diacritic": [
+    {"term": "modifier"}
   ]
 }

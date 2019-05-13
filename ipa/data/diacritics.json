@@ -1,0 +1,490 @@
+[
+  {
+    "input": "\u0329",
+    "display": "{placeholder}\u0329",
+    "name": "Syllabic",
+    "group": "diacritics",
+    "terms": {
+      ",": 40,
+      "below": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u030D",
+    "display": "{placeholder}\u030D",
+    "name": "Syllabic",
+    "group": "diacritics",
+    "terms": {
+      "'": 75,
+      "above": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u032F",
+    "display": "{placeholder}\u032F",
+    "name": "Non-syllabic",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u0311",
+    "display": "{placeholder}\u0311",
+    "name": "Non-syllabic",
+    "group": "diacritics",
+    "terms": {
+      "above": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "ʰ",
+    "display": "{placeholder}ʰ",
+    "name": "Aspirated",
+    "group": "diacritics",
+    "terms": {
+      "h": 50,
+      "^h": 90,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "ⁿ",
+    "display": "{placeholder}ⁿ",
+    "name": "Nasal release",
+    "group": "diacritics",
+    "terms": {
+      "n": 50,
+      "^n": 90,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "ᶿ",
+    "display": "{placeholder}ᶿ",
+    "name": "Voiceless dental fricative release",
+    "group": "diacritics",
+    "terms": {
+      "th": 50,
+      "^th": 90,
+      "voiceless": 15,
+      "dental": 15,
+      "fricative": 15,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "ᵊ",
+    "display": "{placeholder}ᵊ",
+    "name": "Mid central vowel release",
+    "group": "diacritics",
+    "terms": {
+      "e": 50,
+      "^e": 90,
+      "mid": 15,
+      "central": 15,
+      "vowel": 15,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "ˡ",
+    "display": "{placeholder}ˡ",
+    "name": "Lateral release",
+    "group": "diacritics",
+    "terms": {
+      "l": 50,
+      "^l": 90,
+      "lateral": 15,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "ˣ",
+    "display": "{placeholder}ˣ",
+    "name": "Voiceless velar fricative release",
+    "group": "diacritics",
+    "terms": {
+      "x": 50,
+      "^x": 90,
+      "voiceless": 15,
+      "velar": 15,
+      "fricative": 15,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u031A",
+    "display": "{placeholder}\u031A",
+    "name": "No audible release",
+    "group": "diacritics",
+    "terms": {
+      "¬": 60,
+      "^¬": 90,
+      "above": 20,
+      "unreleased": 20,
+      "applosive": 20,
+      "stop": 15,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "{voiceless}",
+    "display": "{placeholder}{voiceless}",
+    "name": "Voiceless",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "voiceless": 30,
+      "devoiced": 30,
+      "unvoiced": 30,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "{voicelessAbove}",
+    "display": "{placeholder}{voicelessAbove}",
+    "name": "Voiceless",
+    "group": "diacritics",
+    "terms": {
+      "above": 20,
+      "voiceless": 30,
+      "devoiced": 30,
+      "unvoiced": 30,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u032C",
+    "display": "{placeholder}\u032C",
+    "name": "Voiced",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "voiced": 30,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u0324",
+    "display": "{placeholder}\u0324",
+    "name": "Breathy voiced",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "voiced": 15,
+      "murmur": 20,
+      "whispery": 20,
+      "soughing": 20,
+      "susurration": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u0330",
+    "display": "{placeholder}\u0330",
+    "name": "Creaky voiced",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "voiced": 15,
+      "fry": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u032A",
+    "display": "{placeholder}\u032A",
+    "name": "Dental",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "dental": 30,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u0346",
+    "display": "{placeholder}\u0346",
+    "name": "Dental",
+    "group": "diacritics",
+    "terms": {
+      "above": 20,
+      "dental": 30,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u033A",
+    "display": "{placeholder}\u033A",
+    "name": "Apical",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "apical": 30,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u031F",
+    "display": "{placeholder}\u031F",
+    "name": "Advanced",
+    "group": "diacritics",
+    "terms": {
+      "+": 75,
+      "below": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u02D6",
+    "display": "{placeholder}\u02D6",
+    "name": "Advanced",
+    "group": "diacritics",
+    "terms": {
+      "+": 70,
+      "after": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u0320",
+    "display": "{placeholder}\u0320",
+    "name": "Retracted",
+    "group": "diacritics",
+    "terms": {
+      "-": 75,
+      "below": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u02D7",
+    "display": "{placeholder}\u02D7",
+    "name": "Retracted",
+    "group": "diacritics",
+    "terms": {
+      "-": 70,
+      "after": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "{trema}",
+    "display": "{placeholder}{trema}",
+    "name": "Centralized",
+    "group": "diacritics",
+    "terms": {
+      "\"": 40,
+      "above": 20,
+      "centralised": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u033D",
+    "display": "{placeholder}\u033D",
+    "name": "Mid-centralized",
+    "group": "diacritics",
+    "terms": {
+      "x": 30,
+      "above": 20,
+      "mid-centralised": 20,
+      "centralised": 10,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u033C",
+    "display": "{placeholder}\u033C",
+    "name": "Linguolabial",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "apicolabial": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u033A",
+    "display": "{placeholder}\u033A",
+    "name": "Linguolabial",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "apicolabial": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u033B",
+    "display": "{placeholder}\u033B",
+    "name": "Laminal",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u031D",
+    "display": "{placeholder}\u031D",
+    "name": "Raised",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u02D4",
+    "display": "{placeholder}\u02D4",
+    "name": "Raised",
+    "group": "diacritics",
+    "terms": {
+      "after": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u031E",
+    "display": "{placeholder}\u031E",
+    "name": "Lowered",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u02D5",
+    "display": "{placeholder}\u02D5",
+    "name": "Lowered",
+    "group": "diacritics",
+    "terms": {
+      "after": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u0339",
+    "display": "{placeholder}\u0339",
+    "name": "More rounded",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "rounded": 15,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u031C",
+    "display": "{placeholder}\u031C",
+    "name": "Less rounded",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "rounded": 15,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "ʷ",
+    "display": "{placeholder}ʷ",
+    "name": "Labialized",
+    "group": "diacritics",
+    "terms": {
+      "w": 50,
+      "^w": 90,
+      "labialised": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "ˠ",
+    "display": "{placeholder}ˠ",
+    "name": "Velarized",
+    "group": "diacritics",
+    "terms": {
+      "y": 30,
+      "^y": 50,
+      "gh": 50,
+      "^gh": 90,
+      "velarised": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "ʲ",
+    "display": "{placeholder}ʲ",
+    "name": "Palatalized",
+    "group": "diacritics",
+    "terms": {
+      "j": 50,
+      "^j": 90,
+      "palatalised": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "ˤ",
+    "display": "{placeholder}ˤ",
+    "name": "Pharyngealized",
+    "group": "diacritics",
+    "terms": {
+      "?": 40,
+      "^?": 80,
+      "pharyngealised": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u0318",
+    "display": "{placeholder}\u0318",
+    "name": "Advanced tongue root",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u0319",
+    "display": "{placeholder}\u0319",
+    "name": "Retracted tongue root",
+    "group": "diacritics",
+    "terms": {
+      "below": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u0303",
+    "display": "{placeholder}\u0303",
+    "name": "Nasalized",
+    "group": "diacritics",
+    "terms": {
+      "~": 90,
+      "above": 20,
+      "nasalised": 20,
+      "diacritic": 20
+    }
+  },
+  {
+    "input": "\u02DE",
+    "display": "{placeholder}\u02DE",
+    "name": "Rhotic",
+    "group": "diacritics",
+    "terms": {
+      "rhotacized": 20,
+      "rhotacised": 20,
+      "rhoticity": 20,
+      "after": 20,
+      "diacritic": 20
+    }
+  }
+]
