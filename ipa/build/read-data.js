@@ -48,7 +48,7 @@ const normalizeChar = variables => char => {
 
   result.input = replaceVariables(char.input, variables);
   result.display = char.display
-    ? replaceVariables(char.display)
+    ? replaceVariables(char.display, variables)
     : result.input;
   result.base = char.base
     ? replaceVariables(char.base, variables)
