@@ -1,0 +1,661 @@
+[
+  {
+    "input": "m",
+    "name": "Bilabial nasal",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "m{voiceless}",
+    "name": "Voiceless bilabial nasal",
+    "base": "m",
+    "terms": {
+      "devoiced": 20
+    }
+  },
+  {
+    "input": "ɱ",
+    "name": "Labiodental nasal",
+    "base": "m",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "n",
+    "name": "Alveolar nasal",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15,
+      "voiced": 20
+    }
+  },
+  {
+    "input": "n{voiceless}",
+    "name": "Voiceless alveolar nasal",
+    "base": "n",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15,
+      "devoiced": 20
+    }
+  },
+  {
+    "input": "ɳ",
+    "name": "Retroflex nasal",
+    "base": "n",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ɳ{voicelessAbove}",
+    "name": "Voiceless retroflex nasal",
+    "base": "n",
+    "terms": {
+      "devoiced": 20
+    }
+  },
+  {
+    "input": "ɲ",
+    "name": "Palatal nasal",
+    "base": "n",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ɲ{voicelessAbove}",
+    "name": "Voiceless palatal nasal",
+    "base": "n",
+    "terms": {
+      "devoiced": 20
+    }
+  },
+  {
+    "input": "ŋ",
+    "name": "Velar nasal",
+    "base": "n",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ŋ{voicelessAbove}",
+    "name": "Voiceless velar nasal",
+    "base": "n",
+    "terms": {
+      "devoiced": 20
+    }
+  },
+  {
+    "input": "ɴ",
+    "name": "Uvular nasal",
+    "base": "n",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "p",
+    "name": "Voiceless bilabial stop"
+  },
+  {
+    "input": "b",
+    "name": "Voiced bilabial stop"
+  },
+  {
+    "input": "t",
+    "name": "Voiceless alveolar stop",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15
+    }
+  },
+  {
+    "input": "d",
+    "name": "Voiced alveolar stop",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15
+    }
+  },
+  {
+    "input": "ʈ",
+    "name": "Voiceless retroflex stop",
+    "base": "t"
+  },
+  {
+    "input": "ɖ",
+    "name": "Voiced retroflex stop",
+    "base": "d"
+  },
+  {
+    "input": "c",
+    "name": "Voiceless palatal stop"
+  },
+  {
+    "input": "ɟ",
+    "name": "Voiced palatal stop",
+    "base": "j"
+  },
+  {
+    "input": "k",
+    "name": "Voiceless velar stop"
+  },
+  {
+    "input": "ɡ",
+    "name": "Voiced velar stop",
+    "terms": {
+      "g": 100
+    }
+  },
+  {
+    "input": "q",
+    "name": "Voiceless uvular stop"
+  },
+  {
+    "input": "ɢ",
+    "name": "Voiced uvular stop",
+    "base": "{g}",
+    "terms": {
+      "g": 90
+    }
+  },
+  {
+    "input": "ʡ",
+    "name": "Epiglottal stop",
+    "group": "glottalStopLike",
+    "terms": {
+      "?": 75,
+      "voiceless": 20,
+      "voiced": 10
+    }
+  },
+  {
+    "input": "ʔ",
+    "name": "Glottal stop",
+    "group": "glottalStopLike",
+    "terms": {
+      "?": 100,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "s",
+    "name": "Voiceless alveolar sibilant",
+    "terms": {
+      "dental": 15
+    }
+  },
+  {
+    "input": "z",
+    "name": "Voiced alveolar sibilant",
+    "terms": {
+      "dental": 15
+    }
+  },
+  {
+    "input": "ʃ",
+    "name": "Voiceless postalveolar sibilant",
+    "base": "s",
+    "terms": {
+      "sh": 100
+    }
+  },
+  {
+    "input": "ʒ",
+    "name": "Voiced postalveolar sibilant",
+    "base": "z",
+    "terms": {
+      "zh": 100
+    }
+  },
+  {
+    "input": "ʂ",
+    "name": "Voiceless retroflex sibilant",
+    "base": "s",
+    "terms": {
+      "sh": 80
+    }
+  },
+  {
+    "input": "ʐ",
+    "name": "Voiced retroflex sibilant",
+    "base": "z",
+    "terms": {
+      "zh": 80
+    }
+  },
+  {
+    "input": "ɕ",
+    "name": "Voiceless palatal sibilant",
+    "base": "c",
+    "terms": {
+      "s": 50,
+      "ch": 75
+    }
+  },
+  {
+    "input": "ʑ",
+    "name": "Voiced palatal sibilant",
+    "base": "z"
+  },
+  {
+    "input": "ɸ",
+    "name": "Voiceless bilabial fricative",
+    "base": "f",
+    "terms": {
+      "ph": 90
+    }
+  },
+  {
+    "input": "β",
+    "name": "Voiced bilabial fricative",
+    "base": "b",
+    "terms": {
+      "v": 50,
+      "bh": 90
+    }
+  },
+  {
+    "input": "f",
+    "name": "Voiceless labiodental fricative"
+  },
+  {
+    "input": "v",
+    "name": "Voiced labiodental fricative"
+  },
+  {
+    "input": "θ",
+    "name": "Voiceless dental fricative",
+    "base": "t",
+    "terms": {
+      "th": 100
+    }
+  },
+  {
+    "input": "ð",
+    "name": "Voiced dental fricative",
+    "base": "d",
+    "terms": {
+      "dh": 100,
+      "th": 80
+    }
+  },
+  {
+    "input": "ç",
+    "name": "Voiceless palatal fricative",
+    "base": "c"
+  },
+  {
+    "input": "ʝ",
+    "name": "Voiced palatal fricative",
+    "base": "j"
+  },
+  {
+    "input": "x",
+    "name": "Voiceless velar fricative"
+  },
+  {
+    "input": "ɣ",
+    "name": "Voiced velar fricative",
+    "base": "{g}",
+    "terms": {
+      "g": 90,
+      "gh": 90,
+      "y": 50
+    }
+  },
+  {
+    "input": "χ",
+    "name": "Voiceless uvular fricative",
+    "base": "x",
+    "terms": {
+      "kh": 50,
+      "xh": 80
+    }
+  },
+  {
+    "input": "ʁ",
+    "name": "Voiced uvular fricative",
+    "base": "r"
+  },
+  {
+    "input": "ħ",
+    "name": "Voiceless pharyngeal fricative",
+    "base": "h"
+  },
+  {
+    "input": "ʕ",
+    "name": "Voiced pharyngeal fricative",
+    "group": "glottalStopLike",
+    "terms": {
+      "?": 50
+    }
+  },
+  {
+    "input": "h",
+    "name": "Voiceless glottal fricative"
+  },
+  {
+    "input": "ɦ",
+    "name": "Voiced glottal fricative",
+    "base": "h",
+    "terms": {
+      "h": 95
+    }
+  },
+  {
+    "input": "ʋ{voiceless}",
+    "name": "Voiceless labiodental approximant",
+    "base": "v",
+    "terms": {
+      "f": 50
+    }
+  },
+  {
+    "input": "ʋ",
+    "name": "Labiodental approximant",
+    "base": "v",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ɹ{voiceless}",
+    "name": "Voiceless alveolar approximant",
+    "base": "r",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15
+    }
+  },
+  {
+    "input": "ɹ",
+    "name": "Alveolar approximant",
+    "base": "r",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15,
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ɻ{voicelessAbove}",
+    "name": "Voiceless retroflex approximant",
+    "base": "r"
+  },
+  {
+    "input": "ɻ",
+    "name": "Retroflex approximant",
+    "base": "r",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "j{voicelessAbove}",
+    "name": "Voiceless palatal approximant",
+    "base": "j"
+  },
+  {
+    "input": "j",
+    "name": "Palatal approximant",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ɰ{voicelessAbove}",
+    "name": "Voiceless velar approximant",
+    "base": "u"
+  },
+  {
+    "input": "ɰ",
+    "name": "Velar approximant",
+    "base": "u",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ⱱ",
+    "name": "Labiodental flap",
+    "base": "v",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ɾ{voiceless}",
+    "name": "Voiceless labiodental flap",
+    "base": "r"
+  },
+  {
+    "input": "ɾ",
+    "name": "Labiodental flap",
+    "base": "r",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ɽ{voicelessAbove}",
+    "name": "Voiceless retroflex flap",
+    "base": "r"
+  },
+  {
+    "input": "ɽ",
+    "name": "Retroflex flap",
+    "base": "r",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ʙ{voiceless}",
+    "name": "Voiceless bilabial trill",
+    "base": "b"
+  },
+  {
+    "input": "ʙ",
+    "name": "Bilabial trill",
+    "base": "b",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "r{voiceless}",
+    "name": "Voiceless alveolar trill",
+    "base": "r",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15
+    }
+  },
+  {
+    "input": "r",
+    "name": "Alveolar trill",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15,
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ʀ{voiceless}",
+    "name": "Voiceless uvular trill",
+    "base": "r"
+  },
+  {
+    "input": "ʀ",
+    "name": "Uvular trill",
+    "base": "r",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ʜ",
+    "name": "Voiceless epiglottal trill",
+    "base": "h"
+  },
+  {
+    "input": "ʢ",
+    "name": "Voiced epiglottal trill",
+    "group": "glottalStopLike",
+    "terms": {
+      "?": 50
+    }
+  },
+  {
+    "input": "ɬ",
+    "name": "Voiceless alveolar lateral fricative",
+    "base": "l",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15
+    }
+  },
+  {
+    "input": "ɮ",
+    "name": "Voiced alveolar lateral fricative",
+    "base": "l",
+    "terms": {
+      "lzh": 90,
+      "dental": 15,
+      "postalveolar": 15
+    }
+  },
+  {
+    "input": "l{voiceless}",
+    "name": "Voiceless alveolar lateral approximant",
+    "base": "l",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15
+    }
+  },
+  {
+    "input": "l",
+    "name": "Alveolar lateral approximant",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15,
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ɭ{voicelessAbove}",
+    "name": "Voiceless retroflex lateral approximant",
+    "base": "l"
+  },
+  {
+    "input": "ɭ",
+    "name": "Retroflex lateral approximant",
+    "base": "l",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ʎ{voiceless}",
+    "name": "Voiceless palatal lateral approximant",
+    "base": "l",
+    "terms": {
+      "y": 25
+    }
+  },
+  {
+    "input": "ʎ",
+    "name": "Palatal lateral approximant",
+    "base": "l",
+    "terms": {
+      "ly": 80,
+      "y": 25,
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ʟ{voiceless}",
+    "name": "Voiceless velar lateral approximant",
+    "base": "l"
+  },
+  {
+    "input": "ʟ",
+    "name": "Velar lateral approximant",
+    "base": "l",
+    "terms": {
+      "voiced": 20
+    }
+  },
+  {
+    "input": "ɺ",
+    "name": "Alveolar lateral flap",
+    "base": "r",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15,
+      "voiced": 20
+    }
+  },
+  {
+    "input": "w",
+    "name": "Voiced labio-velar approximant",
+    "terms": {
+      "labial": 20
+    }
+  },
+  {
+    "input": "ʍ",
+    "name": "Voiceless labio-velar approximant",
+    "base": "w",
+    "terms": {
+      "m": 30,
+      "hw": 80,
+      "wh": 90,
+      "labial": 20
+    }
+  },
+  {
+    "input": "ɥ",
+    "name": "Labio-palatal approximant",
+    "base": "h",
+    "terms": {
+      "labialized": 20,
+      "labialised": 20,
+      "labial": 20
+    }
+  },
+  {
+    "input": "ɥ{voicelessAbove}",
+    "name": "Voiceless labio-palatal approximant",
+    "base": "h",
+    "terms": {
+      "labialized": 20,
+      "labialised": 20,
+      "labial": 20
+    }
+  },
+  {
+    "input": "ɫ",
+    "name": "Velarized alveolar lateral approximant",
+    "base": "l",
+    "terms": {
+      "dark": 30,
+      "velarised": 20
+    }
+  },
+  {
+    "input": "ɧ",
+    "name": "Sj-sound",
+    "base": "h",
+    "terms": {
+      "sj": 100,
+      "consonant": 20
+    }
+  }
+]

@@ -1,0 +1,181 @@
+[
+  {
+    "input": "i",
+    "name": "Close front unrounded vowel"
+  },
+  {
+    "input": "y",
+    "name": "Close front rounded vowel"
+  },
+  {
+    "input": "ɨ",
+    "name": "Close central unrounded vowel",
+    "base": "i",
+    "terms": {
+      "i-": 100
+    }
+  },
+  {
+    "input": "ʉ",
+    "name": "Close central rounded vowel",
+    "base": "u",
+    "terms": {
+      "u-": 100
+    }
+  },
+  {
+    "input": "ɯ",
+    "name": "Close back unrounded vowel",
+    "base": "u",
+    "terms": {
+      "uu": 100
+    }
+  },
+  {
+    "input": "u",
+    "name": "Close back rounded vowel"
+  },
+  {
+    "input": "ɪ",
+    "name": "Near-close front unrounded vowel",
+    "base": "i"
+  },
+  {
+    "input": "ʏ",
+    "name": "Near-close front rounded vowel",
+    "base": "y"
+  },
+  {
+    "input": "ʊ",
+    "name": "Near-close back rounded vowel",
+    "base": "u"
+  },
+  {
+    "input": "e",
+    "name": "Close-mid front unrounded vowel"
+  },
+  {
+    "input": "ø",
+    "name": "Close-mid front rounded vowel",
+    "base": "o"
+  },
+  {
+    "input": "ɘ",
+    "name": "Close-mid central unrounded vowel",
+    "base": "e"
+  },
+  {
+    "input": "ɵ",
+    "name": "Close-mid central rounded vowel",
+    "base": "o"
+  },
+  {
+    "input": "ɤ",
+    "name": "Close-mid back unrounded vowel",
+    "base": "u",
+    "terms": {
+      "y": 75
+    }
+  },
+  {
+    "input": "o",
+    "name": "Close-mid back rounded vowel"
+  },
+  {
+    "input": "ə",
+    "name": "Mid central vowel",
+    "base": "e",
+    "terms": {
+      "schwa": 100
+    }
+  },
+  {
+    "input": "ɛ",
+    "name": "Open-mid front unrounded vowel",
+    "base": "e"
+  },
+  {
+    "input": "œ",
+    "name": "Open-mid front rounded vowel",
+    "base": "o",
+    "terms": {
+      "oe": 90
+    }
+  },
+  {
+    "input": "ɜ",
+    "name": "Open-mid central unrounded vowel",
+    "base": "e"
+  },
+  {
+    "input": "ɞ",
+    "name": "Open-mid central rounded vowel",
+    "base": "e",
+    "terms": {
+      "e": 80,
+      "o": 80
+    }
+  },
+  {
+    "input": "ʌ",
+    "name": "Open-mid back unrounded vowel",
+    "base": "u",
+    "terms": {
+      "v": 50
+    }
+  },
+  {
+    "input": "ɔ",
+    "name": "Open-mid back rounded vowel",
+    "base": "o",
+    "terms": {
+      "c": 50
+    }
+  },
+  {
+    "input": "æ",
+    "name": "Near-open front unrounded vowel",
+    "base": "a",
+    "terms": {
+      "ae": 100
+    }
+  },
+  {
+    "input": "ɐ",
+    "name": "Near-open central vowel",
+    "base": "a"
+  },
+  {
+    "input": "a",
+    "name": "Open front unrounded vowel"
+  },
+  {
+    "input": "ɶ",
+    "name": "Open front rounded vowel",
+    "base": "o",
+    "terms": {
+      "ae": 80,
+      "oe": 80
+    }
+  },
+  {
+    "input": "ä",
+    "name": "Open central unrounded vowel",
+    "base": "a"
+  },
+  {
+    "input": "ɒ{trema}",
+    "name": "Open central rounded vowel",
+    "base": "a"
+  },
+  {
+    "input": "ɑ",
+    "name": "Open back unrounded vowel",
+    "base": "a"
+  },
+  {
+    "input": "ɒ",
+    "name": "Open back rounded vowel",
+    "base": "a"
+  }
+]

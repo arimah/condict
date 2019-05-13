@@ -1,0 +1,16 @@
+{
+  "characters": [
+    "pulmonic_consonants.json",
+    "non-pulmonic_consonants.json",
+    "affricates.json",
+    "vowels.json"
+  ],
+  "synonyms": "synonyms.json",
+  "variables": {
+    "g": "ɡ",
+    "voiceless": "\u0325",
+    "voicelessAbove": "\u030A",
+    "ejective": "\u02BC",
+    "trema": "\u0308"
+  }
+}

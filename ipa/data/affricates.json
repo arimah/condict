@@ -1,0 +1,134 @@
+[
+  {
+    "input": "ts",
+    "name": "Voiceless alveolar affricate",
+    "base": "t"
+  },
+  {
+    "input": "dz",
+    "name": "Voiced alveolar affricate",
+    "base": "d"
+  },
+  {
+    "input": "tʃ",
+    "name": "Voiceless postalveolar affricate",
+    "base": "t",
+    "terms": {
+      "tsh": 100,
+      "palatal": 20,
+      "alveolar": 20
+    }
+  },
+  {
+    "input": "dʒ",
+    "name": "Voiced postalveolar affricate",
+    "base": "d",
+    "terms": {
+      "dzh": 100,
+      "palatal": 20,
+      "alveolar": 20
+    }
+  },
+  {
+    "input": "ʈʂ",
+    "name": "Voiceless retroflex affricate",
+    "base": "t",
+    "terms": {
+      "tsh": 90
+    }
+  },
+  {
+    "input": "ɖʐ",
+    "name": "Voiced retroflex affricate",
+    "base": "d",
+    "terms": {
+      "dzh": 90
+    }
+  },
+  {
+    "input": "tɕ",
+    "name": "Voiceless palatal affricate",
+    "base": "t",
+    "terms": {
+      "tch": 90
+    }
+  },
+  {
+    "input": "dʑ",
+    "name": "Voiced palatal affricate",
+    "base": "d",
+    "terms": {
+      "dzh": 80
+    }
+  },
+  {
+    "input": "tɬ",
+    "name": "Voiceless alveolar lateral affricate",
+    "base": "t",
+    "terms": {
+      "tl": 90
+    }
+  },
+  {
+    "input": "dɮ",
+    "name": "Voiced alveolar lateral affricate",
+    "base": "d",
+    "terms": {
+      "dlzh": 100
+    }
+  },
+  {
+    "input": "ts{ejective}",
+    "name": "Alveolar ejective affricate",
+    "base": "t",
+    "terms": {
+      "ts'": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "tʃ{ejective}",
+    "name": "Postalveolar ejective affricate",
+    "base": "t",
+    "terms": {
+      "tsh'": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "ʈʂ{ejective}",
+    "name": "Retroflex ejective affricate",
+    "base": "t",
+    "terms": {
+      "tsh'": 80,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "kx{ejective}",
+    "name": "Velar ejective affricate",
+    "base": "k",
+    "terms": {
+      "kx'": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "qχ{ejective}",
+    "name": "Uvular ejective affricate",
+    "base": "q",
+    "terms": {
+      "qxh'": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "tɬ{ejective}",
+    "name": "Alveolar lateral ejective affricate",
+    "base": "t",
+    "terms": {
+      "tl'": 90,
+      "voiceless": 20
+    }
+  }
+]

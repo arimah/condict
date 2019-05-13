@@ -1,0 +1,89 @@
+{
+  "voiceless": [
+    {"term": "devoiced", "scoreDelta": -5},
+    {"term": "unvoiced"}
+  ],
+  "devoiced": [
+    {"term": "unvoiced"},
+    {"term": "voiceless", "scoreDelta": -5}
+  ],
+  "unvoiced": [
+    {"term": "voiceless"},
+    {"term": "devoiced"}
+  ],
+  "bilabial": [
+    {"term": "labial"}
+  ],
+  "labiodental": [
+    {"term": "labial"}
+  ],
+  "dental": [
+    {"term": "coronal"}
+  ],
+  "alveolar": [
+    {"term": "coronal"}
+  ],
+  "postalveolar": [
+    {"term": "coronal"}
+  ],
+  "retroflex": [
+    {"term": "coronal"}
+  ],
+  "palatal": [
+    {"term": "coronal"},
+    {"term": "dorsal"}
+  ],
+  "velar": [
+    {"term": "dorsal"}
+  ],
+  "uvular": [
+    {"term": "dorsal"}
+  ],
+  "pharyngeal": [
+    {"term": "laryngeal"}
+  ],
+  "epiglottal": [
+    {"term": "laryngeal"}
+  ],
+  "glottal": [
+    {"term": "laryngeal"}
+  ],
+  "nasal": [
+    {"term": "consonant"}
+  ],
+  "tap": [
+    {"term": "flap"},
+    {"term": "consonant"}
+  ],
+  "flap": [
+    {"term": "tap"},
+    {"term": "consonant"}
+  ],
+  "stop": [
+    {"term": "plosive"},
+    {"term": "consonant"}
+  ],
+  "sibilant": [
+    {"term": "fricative", "scoreDelta": -5},
+    {"term": "consonant"}
+  ],
+  "fricative": [
+    {"term": "consonant"}
+  ],
+  "trill": [
+    {"term": "consonant"}
+  ],
+  "approximant": [
+    {"term": "glide"},
+    {"term": "consonant"}
+  ],
+  "click": [
+    {"term": "consonant"}
+  ],
+  "implosive": [
+    {"term": "consonant"}
+  ],
+  "affricate": [
+    {"term": "consonant"}
+  ]
+}

@@ -1,0 +1,302 @@
+[
+  {
+    "input": "p{ejective}",
+    "name": "Bilabial ejective",
+    "base": "p",
+    "terms": {
+      "p'": 90,
+      "voiceless": 20,
+      "consonant": 20
+    }
+  },
+  {
+    "input": "t{ejective}",
+    "name": "Alveolar ejective",
+    "base": "t",
+    "terms": {
+      "t'": 90,
+      "dental": 15,
+      "postalveolar": 15,
+      "voiceless": 20,
+      "consonant": 20
+    }
+  },
+  {
+    "input": "ʈ{ejective}",
+    "name": "Retroflex ejective",
+    "base": "t",
+    "terms": {
+      "t'": 80,
+      "voiceless": 20,
+      "consonant": 20
+    }
+  },
+  {
+    "input": "c{ejective}",
+    "name": "Palatal ejective",
+    "base": "c",
+    "terms": {
+      "c'": 90,
+      "voiceless": 20,
+      "consonant": 20
+    }
+  },
+  {
+    "input": "k{ejective}",
+    "name": "Velar ejective",
+    "base": "k",
+    "terms": {
+      "k'": 90,
+      "voiceless": 20,
+      "consonant": 20
+    }
+  },
+  {
+    "input": "q{ejective}",
+    "name": "Uvular ejective",
+    "base": "q",
+    "terms": {
+      "q'": 90,
+      "voiceless": 20,
+      "consonant": 20
+    }
+  },
+  {
+    "input": "ʡ{ejective}",
+    "name": "Epiglottal ejective",
+    "group": "glottalStopLike",
+    "terms": {
+      "?'": 90,
+      "voiceless": 20,
+      "consonant": 20
+    }
+  },
+  {
+    "input": "ɸ{ejective}",
+    "name": "Bilabial ejective fricative",
+    "base": "f",
+    "terms": {
+      "f'": 80,
+      "ph'": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "f{ejective}",
+    "name": "Labiodental ejective fricative",
+    "base": "f",
+    "terms": {
+      "f'": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "θ{ejective}",
+    "name": "Dental ejective fricative",
+    "base": "t",
+    "terms": {
+      "th'": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "s{ejective}",
+    "name": "Alveolar ejective fricative",
+    "base": "s",
+    "terms": {
+      "s'": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "ʃ{ejective}",
+    "name": "Postalveolar ejective fricative",
+    "base": "s",
+    "terms": {
+      "sh'": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "ʂ{ejective}",
+    "name": "Retroflex ejective fricative",
+    "base": "s",
+    "terms": {
+      "sh'": 80,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "ɕ{ejective}",
+    "name": "Palatal ejective fricative",
+    "base": "c",
+    "terms": {
+      "c'": 80,
+      "s'": 50,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "x{ejective}",
+    "name": "Velar ejective fricative",
+    "base": "x",
+    "terms": {
+      "x'": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "χ{ejective}",
+    "name": "Uvular ejective fricative",
+    "base": "x",
+    "terms": {
+      "xh'": 80,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "ɬ{ejective}",
+    "name": "Alveolar lateral ejective fricative",
+    "base": "l",
+    "terms": {
+      "l'": 80,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "ʘ",
+    "name": "Tenuis bilabial click",
+    "group": "clicks",
+    "terms": {
+      "o": 15,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "ǀ",
+    "name": "Tenuis dental click",
+    "group": "clicks",
+    "terms": {
+      "|": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "ǃ",
+    "name": "Tenuis alveolar click",
+    "group": "clicks",
+    "terms": {
+      "!": 90,
+      "postalveolar": 15,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "‼",
+    "name": "Tenuis retroflex click",
+    "group": "clicks",
+    "terms": {
+      "!!": 90,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "ǂ",
+    "name": "Tenuis palatal click",
+    "group": "clicks",
+    "terms": {
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "ǁ",
+    "name": "Tenuis alveolar lateral click",
+    "group": "clicks",
+    "terms": {
+      "||": 90,
+      "dental": 15,
+      "postalveolar": 15,
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "ɓ",
+    "name": "Voiced bilabial implosive",
+    "base": "b"
+  },
+  {
+    "input": "ɓ{voiceless}",
+    "name": "Voiceless bilabial implosive",
+    "base": "b"
+  },
+  {
+    "input": "ɗ",
+    "name": "Voiced alveolar implosive",
+    "base": "d",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15
+    }
+  },
+  {
+    "input": "ɗ{voiceless}",
+    "name": "Voiced alveolar implosive",
+    "base": "d",
+    "terms": {
+      "dental": 15,
+      "postalveolar": 15
+    }
+  },
+  {
+    "input": "ᶑ",
+    "name": "Voiced retroflex implosive",
+    "base": "d"
+  },
+  {
+    "input": "ᶑ{voicelessAbove}",
+    "name": "Voiced retroflex implosive",
+    "base": "d"
+  },
+  {
+    "input": "ʄ",
+    "name": "Voiced palatal implosive",
+    "base": "j"
+  },
+  {
+    "input": "ʄ{voicelessAbove}",
+    "name": "Voiced palatal implosive",
+    "base": "j"
+  },
+  {
+    "input": "ɠ",
+    "name": "Voiced velar implosive",
+    "base": "{g}",
+    "terms": {
+      "g": 85
+    }
+  },
+  {
+    "input": "ɠ{voicelessAbove}",
+    "name": "Voiced velar implosive",
+    "base": "{g}",
+    "terms": {
+      "g": 85
+    }
+  },
+  {
+    "input": "ʛ",
+    "name": "Voiced uvular implosive",
+    "base": "{g}",
+    "terms": {
+      "g": 85
+    }
+  },
+  {
+    "input": "ʛ{voiceless}",
+    "name": "Voiced uvular implosive",
+    "base": "{g}",
+    "terms": {
+      "g": 85
+    }
+  }
+]
