@@ -138,6 +138,7 @@
     "name": "Voiceless",
     "group": "diacritics",
     "terms": {
+      "°": 80,
       "below": 20,
       "voiceless": 30,
       "devoiced": 30,
@@ -151,6 +152,7 @@
     "name": "Voiceless",
     "group": "diacritics",
     "terms": {
+      "°": 70,
       "above": 20,
       "voiceless": 30,
       "devoiced": 30,
@@ -190,6 +192,7 @@
     "name": "Creaky voiced",
     "group": "diacritics",
     "terms": {
+      "~": 60,
       "below": 20,
       "voiced": 15,
       "fry": 20,
@@ -376,6 +379,7 @@
     "name": "More rounded",
     "group": "diacritics",
     "terms": {
+      ")": 70,
       "below": 20,
       "rounded": 15,
       "diacritic": 20
@@ -387,6 +391,7 @@
     "name": "Less rounded",
     "group": "diacritics",
     "terms": {
+      "(": 70,
       "below": 20,
       "rounded": 15,
       "diacritic": 20
@@ -448,6 +453,9 @@
     "name": "Advanced tongue root",
     "group": "diacritics",
     "terms": {
+      "<": 50,
+      "-:": 80,
+      "-|": 80,
       "below": 20,
       "diacritic": 20
     }
@@ -458,6 +466,9 @@
     "name": "Retracted tongue root",
     "group": "diacritics",
     "terms": {
+      ">": 50,
+      ":-": 80,
+      "|-": 80,
       "below": 20,
       "diacritic": 20
     }
