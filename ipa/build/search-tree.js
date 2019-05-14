@@ -37,13 +37,9 @@ const compactTree = tree => {
 };
 
 const treeToPlainObject = (tree, chars) => {
-  const result = {};
-
-  if (tree.path.length === 1) {
-    result.key = tree.path;
-  } else {
-    result.path = tree.path;
-  }
+  const result = {
+    path: tree.path,
+  };
 
   if (tree.leaves.length > 0) {
     result.leaves = tree.leaves;
@@ -53,8 +49,8 @@ const treeToPlainObject = (tree, chars) => {
     result.branches = Array.from(tree.branches.values())
       .map(branch => treeToPlainObject(branch, chars));
     result.branches.sort((a, b) =>
-      a.key < b.key ? -1 :
-      a.key > b.key ? 1 :
+      a.path < b.path ? -1 :
+      a.path > b.path ? 1 :
       0
     );
   }

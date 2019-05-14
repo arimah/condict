@@ -5,19 +5,14 @@ const {chars: Chars, searchTree: SearchTable} = IpaData;
 // The first level of the search tree has a much larger number of branches
 // than any other level, so a hash map helps improve performance.
 const SearchTableRoot = new Map(
-  SearchTable.map(branch => [
-    branch.path ? branch.path[0] : branch.key,
-    branch,
-  ])
+  SearchTable.map(branch => [branch.path, branch])
 );
 
 // TODO: Normalize terms further - remove extraneous characters etc.?
 const normalizeTerm = term => term.toLowerCase();
 
 const collectLeaves = (matches, tree, matchLength, treeDepth, gapSize) => {
-  const treeTermLength =
-    treeDepth +
-    (tree.path ? tree.path.length - 1 : 0);
+  const treeTermLength = treeDepth + tree.path.length - 1;
 
   if (tree.leaves) {
     tree.leaves.forEach(([char, score]) => {
@@ -63,11 +58,16 @@ const traversePath = (path, term, treeOffset, termOffset, gapSize) => {
 const searchTree = (matches, tree, term, treeOffset, termOffset, gapSize) => {
   const startTreeOffset = treeOffset;
 
-  // If this tree has a path, the rest of the term must match at the
-  // beginning of that path. If the path is "oiceless" but the rest of
-  // the term is "oiced", that is not a match. On the other hand, "oice"
-  // *is* a (parial) match, and then we can collect this branch's leaves.
-  if (tree.path) {
+  // If this tree has a multi-character path, we must traverse it as we
+  // would a set of single-branch trees. Example:
+  //
+  //   query:     vicelss
+  //   tree:      v
+  //               oice
+  //                   less
+  //   matches:
+  //              v icel ss
+  if (tree.path.length > 1) {
     [treeOffset, termOffset, gapSize] = traversePath(
       tree.path,
       term,
@@ -93,9 +93,7 @@ const searchTree = (matches, tree, term, treeOffset, termOffset, gapSize) => {
     // subtree for matches!
     let hasMatch = false;
     tree.branches.forEach(br => {
-      const branchIsMatch = br.path
-        ? br.path[0] === term[termOffset]
-        : br.key === term[termOffset];
+      const branchIsMatch = br.path[0] === term[termOffset];
       const isMatch = searchTree(
         matches,
         br,
