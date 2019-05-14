@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const readline = require('readline');
+const {performance} = require('perf_hooks');
 
 const chalk = require('chalk');
 
@@ -21,8 +22,7 @@ const printAll = () => {
   });
 };
 
-let full = false;
-const showResults = (results) => {
+const showResults = (results, full) => {
   if (full) {
     console.log(
       results.map(([char, score]) =>
@@ -34,42 +34,89 @@ const showResults = (results) => {
   }
 };
 
-let lastResults = null;
-const readNextLine = () => {
-  rl.question('ipa> ', query => {
-    if (!query) {
-      return rl.close();
-    }
+const topResultsCount = 20;
 
-    switch (query) {
-      case ':full':
-        full = !full;
-        console.log(chalk.yellow(
-          full ? 'Full result format' : 'Compact result format'
-        ));
-        break;
-      case ':list':
-        printAll();
-        break;
-      case ':all':
-      case ':more':
-        if (!lastResults) {
-          console.log(chalk.yellow('No previous result to expand.'));
-        } else if (lastResults.length <= 10) {
-          console.log(chalk.yellow('No more results to show.'));
-        } else {
-          showResults(lastResults);
-          lastResults = [];
+const main = () => {
+  console.log(chalk.yellow(
+    'Type a query to search for IPA characters.\n\n' +
+    'Some special commands are also available:\n' +
+    `${chalk.cyan(':more')}  Show all results for previous query\n` +
+    `${chalk.cyan(':all')}   Switch between all and top ${topResultsCount} results\n` +
+    `${chalk.cyan(':full')}  Switch between compact and full result format\n` +
+    `${chalk.cyan(':list')}  List all available IPA characters\n`
+  ));
+
+  let lastResults = null;
+  let full = false;
+  let showAll = false;
+  let moreUseCount = 0;
+
+  const readNextLine = () => {
+    rl.question('ipa> ', query => {
+      if (!query) {
+        return rl.close();
+      }
+
+      switch (query) {
+        case ':full':
+          full = !full;
+          console.log(chalk.yellow(
+            full ? 'Full result format' : 'Compact result format'
+          ));
+          lastResults = null;
+          break;
+        case ':list':
+          printAll();
+          lastResults = null;
+          break;
+        case ':all':
+          showAll = !showAll;
+          console.log(chalk.yellow(
+            showAll
+              ? 'Showing all results'
+              : `Showing top ${topResultsCount} results`
+          ));
+          break;
+        case ':more':
+          moreUseCount += 1;
+          if (!lastResults) {
+            console.log(chalk.yellow('No previous result to expand.'));
+          } else if (lastResults.length <= topResultsCount) {
+            console.log(chalk.yellow('No more results to show.'));
+          } else {
+            showResults(lastResults, full);
+            lastResults = [];
+          }
+          if (moreUseCount === 5) {
+            console.log(chalk.yellow('(Use :all to always show all results)'));
+          }
+          break;
+        default: {
+          const queryStart = performance.now();
+          lastResults = ipa.search(query);
+          const queryTime = (performance.now() - queryStart).toPrecision(3);
+          showResults(
+            showAll ? lastResults : lastResults.slice(0, topResultsCount),
+            full
+          );
+
+          const {length: count} = lastResults;
+          if (count > topResultsCount && moreUseCount <= 3) {
+            console.log(chalk.yellow(
+              `(${count} results in ${queryTime} ms - use :more to see all)`
+            ));
+          } else {
+            console.log(chalk.yellow(
+              `(${count} result${count === 1 ? '' : 's'} in ${queryTime} ms)`
+            ));
+          }
+          break;
         }
-        break;
-      default:
-        lastResults = ipa.search(query);
-        showResults(lastResults.slice(0, 10));
-        break;
-    }
+      }
 
-    readNextLine();
-  });
+      readNextLine();
+    });
+  };
+  readNextLine();
 };
-readNextLine();
-
+main();
