@@ -88,5 +88,8 @@
   ],
   "diacritic": [
     {"term": "modifier"}
+  ],
+  "suprasegmental": [
+    {"term": "modifier"}
   ]
 }

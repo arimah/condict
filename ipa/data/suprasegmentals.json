@@ -1,0 +1,277 @@
+[
+  {
+    "input": "ˈ",
+    "display": "ˈ{placeholder}",
+    "name": "Primary stress",
+    "group": "suprasegmentals",
+    "terms": {
+      "'": 100,
+      "\"": 90,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "ˌ",
+    "display": "ˌ{placeholder}",
+    "name": "Secondary stress",
+    "group": "suprasegmentals",
+    "terms": {
+      "'": 90,
+      ",": 90,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "ː",
+    "display": "{placeholder}ː",
+    "name": "Long",
+    "group": "suprasegmentals",
+    "terms": {
+      ":": 100,
+      "long": 90,
+      "geminated": 40,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "ˑ",
+    "display": "{placeholder}ˑ",
+    "name": "Half-long",
+    "group": "suprasegmentals",
+    "terms": {
+      ":": 75,
+      "half-long": 80,
+      "long": 65,
+      "half-geminated": 40,
+      "geminated": 30,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "\u0306",
+    "display": "{placeholder}\u0306",
+    "name": "Extra-short",
+    "group": "suprasegmentals",
+    "terms": {
+      "short": 70,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "‿",
+    "display": "{placeholder}‿{placeholder}",
+    "name": "Linking",
+    "group": "suprasegmentals",
+    "terms": {
+      "tie": 80,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": ".",
+    "name": "Syllable break",
+    "group": "suprasegmentals",
+    "terms": {
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "|",
+    "name": "Minor break",
+    "group": "suprasegmentals",
+    "terms": {
+      "foot": 50,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "‖",
+    "name": "Major break",
+    "group": "suprasegmentals",
+    "terms": {
+      "||": 100,
+      "intonation": 50,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "↗",
+    "name": "Global rise",
+    "group": "suprasegmentals",
+    "terms": {
+      "tone": 20,
+      "up": 40,
+      "rising":  40,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "↘",
+    "name": "Global fall",
+    "group": "suprasegmentals",
+    "terms": {
+      "tone": 20,
+      "down": 40,
+      "falling": 40,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "\u030B",
+    "display": "{placeholder}\u030B",
+    "name": "Extra high tone",
+    "group": "tone",
+    "terms": {
+      "´´": 90,
+      "top": 20,
+      "above": 20,
+      "diacritic": 20,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "\u0301",
+    "display": "{placeholder}\u0301",
+    "name": "High tone",
+    "group": "tone",
+    "terms": {
+      "´": 90,
+      "above": 20,
+      "diacritic": 20,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "\u0304",
+    "display": "{placeholder}\u0304",
+    "name": "Mid tone",
+    "group": "tone",
+    "terms": {
+      "--": 90,
+      "above": 20,
+      "diacritic": 20,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "\u0300",
+    "display": "{placeholder}\u0300",
+    "name": "Low tone",
+    "group": "tone",
+    "terms": {
+      "`": 90,
+      "above": 20,
+      "diacritic": 20,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "\u030F",
+    "display": "{placeholder}\u030F",
+    "name": "Extra low tone",
+    "group": "tone",
+    "terms": {
+      "``": 90,
+      "bottom": 20,
+      "above": 20,
+      "diacritic": 20,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "˥",
+    "display": "{placeholder}˥",
+    "name": "Extra high tone",
+    "group": "tone",
+    "terms": {
+      "´´": 80,
+      "top": 20,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "˦",
+    "display": "{placeholder}˦",
+    "name": "High tone",
+    "group": "tone",
+    "terms": {
+      "´": 80,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "˧",
+    "display": "{placeholder}˧",
+    "name": "Mid tone",
+    "group": "tone",
+    "terms": {
+      "--": 80,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "˨",
+    "display": "{placeholder}˨",
+    "name": "Low tone",
+    "group": "tone",
+    "terms": {
+      "`": 80,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "˩",
+    "display": "{placeholder}˩",
+    "name": "Extra low tone",
+    "group": "tone",
+    "terms": {
+      "``": 80,
+      "bottom": 20,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "ꜛ",
+    "display": "ꜛ{placeholder}",
+    "name": "Upstep",
+    "group": "tone",
+    "terms": {
+      "tone": 20,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "ꜜ",
+    "display": "ꜜ{placeholder}",
+    "name": "Downstep",
+    "group": "tone",
+    "terms": {
+      "tone": 20,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "\u030C",
+    "display": "{placeholder}\u030C",
+    "name": "Rising tone",
+    "group": "tone",
+    "terms": {
+      "ˇ": 90,
+      "above": 20,
+      "diacritic": 20,
+      "suprasegmental": 20
+    }
+  },
+  {
+    "input": "\u0302",
+    "display": "{placeholder}\u0302",
+    "name": "Falling tone",
+    "group": "tone",
+    "terms": {
+      "^": 90,
+      "above": 20,
+      "diacritic": 20,
+      "suprasegmental": 20
+    }
+  }
+]

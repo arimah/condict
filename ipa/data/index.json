@@ -4,7 +4,8 @@
     "non-pulmonic_consonants.json",
     "affricates.json",
     "vowels.json",
-    "diacritics.json"
+    "diacritics.json",
+    "suprasegmentals.json"
   ],
   "synonyms": "synonyms.json",
   "variables": {
