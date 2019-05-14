@@ -37,11 +37,11 @@ const compactTree = tree => {
 };
 
 const treeToPlainObject = (tree, chars) => {
-  const result = {
-    key: tree.path[0],
-  };
+  const result = {};
 
-  if (tree.path.length > 1) {
+  if (tree.path.length === 1) {
+    result.key = tree.path;
+  } else {
     result.path = tree.path;
   }
 

@@ -5,7 +5,10 @@ const {chars: Chars, searchTree: SearchTable} = IpaData;
 // The first level of the search tree has a much larger number of branches
 // than any other level, so a hash map helps improve performance.
 const SearchTableRoot = new Map(
-  SearchTable.map(branch => [branch.key, branch])
+  SearchTable.map(branch => [
+    branch.path ? branch.path[0] : branch.key,
+    branch,
+  ])
 );
 
 // TODO: Normalize terms further - remove extraneous characters etc.?
@@ -90,7 +93,9 @@ const searchTree = (matches, tree, term, treeOffset, termOffset, gapSize) => {
     // subtree for matches!
     let hasMatch = false;
     tree.branches.forEach(br => {
-      const branchIsMatch = br.key === term[termOffset];
+      const branchIsMatch = br.path
+        ? br.path[0] === term[termOffset]
+        : br.key === term[termOffset];
       const isMatch = searchTree(
         matches,
         br,
