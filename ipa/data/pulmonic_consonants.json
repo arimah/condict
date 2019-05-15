@@ -78,6 +78,7 @@
     "name": "Velar nasal",
     "base": "n",
     "terms": {
+      "ng": 80,
       "voiced": 20
     }
   },
@@ -86,6 +87,7 @@
     "name": "Voiceless velar nasal",
     "base": "n",
     "terms": {
+      "ng": 70,
       "devoiced": 20
     }
   },
