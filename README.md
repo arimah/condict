@@ -1,8 +1,8 @@
 # Condict
 
-Condict is a piece of dictionary software primarily intended for [constructed languages][conlang]. Or at least, that's what this is intended to become. For the time being, it's very much a work-in-progress, with no functioning frontend.
+Condict is a piece of dictionary software primarily designed for [constructed languages][conlang]. Or at least, that's what this is intended to become. For the time being, it's very much a work-in-progress, with no functioning frontend.
 
-Here are some of the features that are planned for Condict:
+Here are some of the features that are planned for Condict (some of which are already implemented):
 
 * **Multiple languages** with interlinking – useful for world building!
 * **Inflection rules,** in the form of inflection tables, which you can associate with a part of speech, and attach to any word you add to the dictionary.
@@ -11,7 +11,7 @@ Here are some of the features that are planned for Condict:
   - Including showing derived terms under any dictionary word. Under _snow_, you'd be able to find _snowman_.
 * **Search and filtering options,** naturally.
 * **Sample texts,** with [interlinear glosses][interlinear], which get automatically linked to and shown under the words used therein.
-* **Tags,** mainly intended for thematic grouping, such as _food_, _colours_, _emotions_.
+* **Tags,** mainly for thematic grouping, such as _food_, _colours_, _emotions_.
 * And more in the future!
 
 Special care has been taken to ensure Condict adheres as closely as possible to current best accessibility practices, to make the software usable by the widest possible audience.
