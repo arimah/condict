@@ -1,0 +1,17 @@
+{
+  "name": "@condict/babel-preset-react",
+  "version": "0.1.0",
+  "description": "A Babel preset for React-based Condict packages.",
+  "main": "index.js",
+  "repository": "github:arimah/condict",
+  "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/preset-react": "^7.0.0",
+    "@condict/babel-preset": "^0.1.0",
+    "babel-plugin-styled-components": "^1.10.0"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.4.3"
+  }
+}

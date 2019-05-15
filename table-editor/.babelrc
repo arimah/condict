@@ -1,11 +1,5 @@
 {
   "presets": [
-    "@babel/preset-react"
-  ],
-  "plugins": [
-    "@babel/plugin-transform-modules-commonjs",
-    ["babel-plugin-styled-components", {
-      "fileName": false
-    }]
+    "@condict/babel-preset-react"
   ]
 }
