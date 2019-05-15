@@ -139,6 +139,9 @@
     "group": "diacritics",
     "terms": {
       "°": 80,
+      "_°": 80,
+      "*": 75,
+      "_*": 75,
       "below": 20,
       "voiceless": 30,
       "devoiced": 30,
@@ -153,6 +156,7 @@
     "group": "diacritics",
     "terms": {
       "°": 70,
+      "*": 65,
       "above": 20,
       "voiceless": 30,
       "devoiced": 30,
