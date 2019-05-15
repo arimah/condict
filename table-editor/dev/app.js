@@ -26,7 +26,7 @@ import {
   InflectionTableValue,
   DefinitionTableEditor,
   DefinitionTableValue,
-} from '../../src';
+} from '../src';
 
 import InflectionTableData from './inflection-table-data.json';
 import StemsInput from './stems-input';

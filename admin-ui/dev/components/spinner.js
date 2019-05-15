@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {Spinner, NumberInput} from '../../../src';
+import {Spinner, NumberInput} from '../../src';
 
 const BlockSpinner = styled(Spinner)`
   display: block;

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
 
-import {NumberInput, Checkbox} from '../../../src';
+import {NumberInput, Checkbox} from '../../src';
 
 export default Object.freeze({
   name: 'NumberInput',

@@ -8,7 +8,7 @@ import {
   DarkTheme,
   LightTheme,
   GlobalStyles as ComponentStyles,
-} from '../../src';
+} from '../src';
 import Demo from './demo';
 import ComponentDemos from './components';
 

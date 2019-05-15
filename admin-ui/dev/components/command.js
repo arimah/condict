@@ -10,7 +10,7 @@ import {
   Button,
   Checkbox,
   LightTheme,
-} from '../../../src';
+} from '../../src';
 
 const Group = styled.div`
   padding: 16px;

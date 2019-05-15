@@ -12,7 +12,7 @@ import IndentMoreIcon from 'mdi-react/FormatIndentIncreaseIcon';
 import IndentLessIcon from 'mdi-react/FormatIndentDecreaseIcon';
 import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
 
-import {Toolbar, Menu, Placement, Shortcut, Shortcuts} from '../../../src';
+import {Toolbar, Menu, Placement, Shortcut, Shortcuts} from '../../src';
 
 const {
   Button,

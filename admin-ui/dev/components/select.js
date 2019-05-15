@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
 
-import {Select, Checkbox} from '../../../src';
+import {Select, Checkbox} from '../../src';
 
 const Options = [
   {value: 'a', name: 'Option A'},

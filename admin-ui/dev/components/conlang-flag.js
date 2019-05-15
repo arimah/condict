@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
 
-import {ConlangFlag} from '../../../src';
+import {ConlangFlag} from '../../src';
 
 export default Object.freeze({
   name: 'ConlangFlag',

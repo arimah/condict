@@ -14,7 +14,7 @@ import {
   Placement,
   Select,
   Checkbox,
-} from '../../../src';
+} from '../../src';
 
 const {Item, CheckItem, Separator} = Menu;
 

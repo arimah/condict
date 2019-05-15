@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {TextInput, Checkbox, Select} from '../../../src';
+import {TextInput, Checkbox, Select} from '../../src';
 
 const MaxWidthTextInput = styled(TextInput)`
   min-width: 100px;

@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {TagInput, Checkbox} from '../../../src';
+import {TagInput, Checkbox} from '../../src';
 
 const TagInputWithWidth = styled(TagInput)`
   width: 400px;

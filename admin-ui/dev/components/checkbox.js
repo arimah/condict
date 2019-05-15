@@ -2,7 +2,7 @@
 import React from 'react';
 
 import Demo from '../demo';
-import {Checkbox, Select} from '../../../src';
+import {Checkbox, Select} from '../../src';
 
 const Intents = [
   {value: 'primary', name: 'primary'},

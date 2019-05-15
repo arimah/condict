@@ -7,7 +7,7 @@ import {
   Button,
   Checkbox,
   Select,
-} from '../../../src';
+} from '../../src';
 
 const HeadingLevels = [
   {value: '2', name: '2'},

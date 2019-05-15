@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
 
-import {Button, Checkbox, Select} from '../../../src';
 import Demo from '../demo';
+import {Switch, Select, Checkbox} from '../../src';
 
 const Intents = [
   {value: 'primary', name: 'primary'},
@@ -11,12 +11,11 @@ const Intents = [
 ];
 
 export default Object.freeze({
-  name: 'Button',
+  name: 'Switch',
   initialState: {
+    checked: false,
     intent: 'primary',
     disabled: false,
-    minimal: false,
-    slim: false,
   },
   controls: (state, setState, toggleState) => [
     <label>
@@ -31,35 +30,26 @@ export default Object.freeze({
       label='Disabled'
       onChange={() => toggleState('disabled')}
     />,
-    <Checkbox
-      checked={state.minimal}
-      label='Minimal'
-      onChange={() => toggleState('minimal')}
-    />,
-    <Checkbox
-      checked={state.slim}
-      label='Slim'
-      onChange={() => toggleState('slim')}
-    />,
   ],
   // eslint-disable-next-line react/prop-types, react/display-name
-  contents: ({intent, disabled, minimal, slim}) =>
+  contents: ({intent, checked, disabled}, _setState, toggleState) =>
     <Demo.List>
       <Demo.Row>
-        <Button
+        <Switch
           intent={intent}
+          checked={checked}
           disabled={disabled}
-          minimal={minimal}
-          slim={slim}
-          label='Regular button'
+          label='First option'
+          onChange={() => toggleState('checked')}
         />
-        <Button
+      </Demo.Row>
+      <Demo.Row>
+        <Switch
           intent={intent}
+          checked={!checked}
           disabled={disabled}
-          minimal={minimal}
-          slim={slim}
-          label='Link button'
-          href='#'
+          label='Second option'
+          onChange={() => toggleState('checked')}
         />
       </Demo.Row>
     </Demo.List>,
