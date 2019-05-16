@@ -130,28 +130,25 @@ const search = query => {
       .map(normalizeTerm)
   ));
 
-  const allMatches = terms
-    .map(term => {
-      const matches = new Map();
-      return findMatches(matches, term) ? matches : null;
-    })
-    .reduce((previous, current) => {
-      const newScores = new Map();
-      if (!current) {
-        return newScores;
-      }
+  const allMatches = terms.reduce((allMatches, term) => {
+    const termMatches = new Map();
+    if (!findMatches(termMatches, term) || !allMatches) {
+      return termMatches;
+    }
 
-      if (!previous) {
-        return current;
+    allMatches.forEach((score, char) => {
+      if (termMatches.has(char)) {
+        allMatches.set(char, score + allMatches.get(score));
+      } else {
+        allMatches.delete(char);
       }
+    });
+    return allMatches;
+  }, null);
 
-      previous.forEach((score, char) => {
-        if (current.has(char)) {
-          newScores.set(char, score + current.get(char));
-        }
-      });
-      return newScores;
-    }, null);
+  if (!allMatches) {
+    return [];
+  }
 
   return Array.from(allMatches)
     .map(([char, score]) => [Chars[char], score])
