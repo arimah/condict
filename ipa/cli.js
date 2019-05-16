@@ -110,6 +110,18 @@ const main = () => {
               `(${count} result${count === 1 ? '' : 's'} in ${queryTime} ms)`
             ));
           }
+
+          const nanScores = lastResults.filter(
+            ([_, score]) => Number.isNaN(score)
+          );
+          if (nanScores.length > 0) {
+            console.warn(chalk.red(
+              `Warning: Found ${
+                nanScores.length
+              } result${nanScores.length > 1 ? 's' : ''} with a score of NaN!`
+            ));
+            showResults(nanScores, true);
+          }
           break;
         }
       }
