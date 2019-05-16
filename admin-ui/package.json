@@ -11,7 +11,7 @@
     "build": "cross-env NODE_ENV=production babel src --out-dir lib",
     "dev": "cross-env NODE_ENV=development node dev/server.js",
     "prepublishOnly": "npm install && npm run clean && npm run build",
-    "lint": "eslint src/ dev/src/"
+    "lint": "eslint src/ dev/"
   },
   "dependencies": {
     "@condict/a11y-utils": "^0.1.2",
