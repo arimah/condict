@@ -138,7 +138,7 @@ const search = query => {
 
     allMatches.forEach((score, char) => {
       if (termMatches.has(char)) {
-        allMatches.set(char, score + allMatches.get(char));
+        allMatches.set(char, score + termMatches.get(char));
       } else {
         allMatches.delete(char);
       }
