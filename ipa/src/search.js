@@ -17,7 +17,7 @@ const collectLeaves = (matches, tree, matchLength, treeDepth, gapSize) => {
   if (tree.leaves) {
     tree.leaves.forEach(([char, score]) => {
       const finalScore = Math.max(
-        score * (matchLength / treeTermLength) - gapSize,
+        score * (matchLength / (treeTermLength + 2 * gapSize)),
         matches.get(char) || 0
       );
       matches.set(char, finalScore);

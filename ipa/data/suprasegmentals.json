@@ -102,7 +102,7 @@
     "terms": {
       "tone": 20,
       "up": 40,
-      "rising":  40,
+      "rising":  25,
       "suprasegmental": 20
     }
   },
@@ -113,7 +113,7 @@
     "terms": {
       "tone": 20,
       "down": 40,
-      "falling": 40,
+      "falling": 25,
       "suprasegmental": 20
     }
   },
@@ -258,6 +258,7 @@
     "group": "tone",
     "terms": {
       "ˇ": 90,
+      "rising": 30,
       "above": 20,
       "diacritic": 20,
       "suprasegmental": 20
@@ -270,6 +271,7 @@
     "group": "tone",
     "terms": {
       "^": 90,
+      "falling": 30,
       "above": 20,
       "diacritic": 20,
       "suprasegmental": 20
