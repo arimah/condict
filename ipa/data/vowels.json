@@ -57,7 +57,10 @@
   {
     "input": "ø",
     "name": "Close-mid front rounded vowel",
-    "base": "o"
+    "base": "o",
+    "terms": {
+      "o/": 100
+    }
   },
   {
     "input": "ɘ",
@@ -67,7 +70,10 @@
   {
     "input": "ɵ",
     "name": "Close-mid central rounded vowel",
-    "base": "o"
+    "base": "o",
+    "terms": {
+      "o-": 100
+    }
   },
   {
     "input": "ɤ",
@@ -86,6 +92,7 @@
     "name": "Mid central vowel",
     "base": "e",
     "terms": {
+      "@": 100,
       "schwa": 100
     }
   },
@@ -105,7 +112,10 @@
   {
     "input": "ɜ",
     "name": "Open-mid central unrounded vowel",
-    "base": "e"
+    "base": "e",
+    "terms": {
+      "3": 90
+    }
   },
   {
     "input": "ɞ",
@@ -166,7 +176,10 @@
   {
     "input": "ɒ{trema}",
     "name": "Open central rounded vowel",
-    "base": "a"
+    "base": "a",
+    "terms": {
+      "a\"": 85
+    }
   },
   {
     "input": "ɑ",

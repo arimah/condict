@@ -19,6 +19,7 @@
     "name": "Labiodental nasal",
     "base": "m",
     "terms": {
+      "mg": 90,
       "voiced": 20
     }
   },
@@ -62,6 +63,7 @@
     "name": "Palatal nasal",
     "base": "n",
     "terms": {
+      "nj": 90,
       "voiced": 20
     }
   },
@@ -70,6 +72,7 @@
     "name": "Voiceless palatal nasal",
     "base": "n",
     "terms": {
+      "nj": 80,
       "devoiced": 20
     }
   },
@@ -78,7 +81,7 @@
     "name": "Velar nasal",
     "base": "n",
     "terms": {
-      "ng": 80,
+      "ng": 90,
       "voiced": 20
     }
   },
@@ -87,7 +90,7 @@
     "name": "Voiceless velar nasal",
     "base": "n",
     "terms": {
-      "ng": 70,
+      "ng": 80,
       "devoiced": 20
     }
   },
@@ -140,7 +143,11 @@
   {
     "input": "ɟ",
     "name": "Voiced palatal stop",
-    "base": "j"
+    "base": "j",
+    "terms": {
+      "j\\": 95,
+      "j-": 90
+    }
   },
   {
     "input": "k",
@@ -274,6 +281,7 @@
     "name": "Voiceless dental fricative",
     "base": "t",
     "terms": {
+      "þ": 100,
       "th": 100
     }
   },
@@ -289,7 +297,10 @@
   {
     "input": "ç",
     "name": "Voiceless palatal fricative",
-    "base": "c"
+    "base": "c",
+    "terms": {
+      "c,": 100
+    }
   },
   {
     "input": "ʝ",
@@ -327,7 +338,10 @@
   {
     "input": "ħ",
     "name": "Voiceless pharyngeal fricative",
-    "base": "h"
+    "base": "h",
+    "terms": {
+      "h-": 90
+    }
   },
   {
     "input": "ʕ",
@@ -518,6 +532,7 @@
     "name": "Voiceless alveolar lateral fricative",
     "base": "l",
     "terms": {
+      "l-": 85,
       "dental": 15,
       "postalveolar": 15
     }
@@ -647,6 +662,7 @@
     "name": "Velarized alveolar lateral approximant",
     "base": "l",
     "terms": {
+      "l~": 100,
       "dark": 30,
       "velarised": 20
     }

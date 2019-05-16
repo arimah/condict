@@ -27,6 +27,8 @@
     "name": "Non-syllabic",
     "group": "diacritics",
     "terms": {
+      "(": 60,
+      ")": 60,
       "below": 20,
       "diacritic": 20
     }
@@ -37,6 +39,8 @@
     "name": "Non-syllabic",
     "group": "diacritics",
     "terms": {
+      "(": 50,
+      ")": 50,
       "above": 20,
       "diacritic": 20
     }
@@ -209,6 +213,8 @@
     "name": "Dental",
     "group": "diacritics",
     "terms": {
+      "[": 90,
+      "]": 50,
       "below": 20,
       "dental": 30,
       "diacritic": 20
@@ -220,6 +226,8 @@
     "name": "Dental",
     "group": "diacritics",
     "terms": {
+      "[": 80,
+      "]": 40,
       "above": 20,
       "dental": 30,
       "diacritic": 20
@@ -231,6 +239,8 @@
     "name": "Apical",
     "group": "diacritics",
     "terms": {
+      "]": 90,
+      "[": 50,
       "below": 20,
       "apical": 30,
       "diacritic": 20
@@ -311,6 +321,8 @@
     "name": "Linguolabial",
     "group": "diacritics",
     "terms": {
+      "{": 90,
+      "}": 90,
       "below": 20,
       "apicolabial": 20,
       "diacritic": 20
@@ -322,6 +334,8 @@
     "name": "Linguolabial",
     "group": "diacritics",
     "terms": {
+      "]": 75,
+      "[": 35,
       "below": 20,
       "apicolabial": 20,
       "diacritic": 20
@@ -458,8 +472,6 @@
     "group": "diacritics",
     "terms": {
       "<": 50,
-      "-:": 80,
-      "-|": 80,
       "below": 20,
       "diacritic": 20
     }
@@ -471,8 +483,6 @@
     "group": "diacritics",
     "terms": {
       ">": 50,
-      ":-": 80,
-      "|-": 80,
       "below": 20,
       "diacritic": 20
     }
