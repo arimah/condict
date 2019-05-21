@@ -35,29 +35,14 @@ CondictDevServer({
 
 The module exports a function, `CondictDevServer`, which takes an object of options. The available options are:
 
-> `entry: string | string[]`
-
-Defines the dev server's entry point. This correspond's to Webpack's `entry` option. This should be an absolute path.
-
-> `contentBase: string` (optional)
-
-The directory to serve static content, such as image assets, from. Defaults to `false`, which disables static content serving altogether.
-
-> `title: string` (optional)
-
-The title of the dev server page. This value replaces the placeholder `@@title@@` within the HTML template. Defaults to "Condict dev server".
-
-> `template: string` (optional)
-
-The path to an HTML file that is used as the dev server template. Optional; the default template is [`src/index.html`](./src/index.html). The placeholder `@@title@@` is replaced by the value of the `title` option.
-
-> `port: number` (optional)
-
-The port number that the dev server listens on. Defaults to the environment variable `WEBPACK_PORT` when present, or `3000` otherwise.
-
-> `host: string` (optional)
-
-The hostname that the dev server listens to. Defaults to the environment variable `WEBPACK_HOST` when present, or `'localhost'` otherwise.
+| Name | Type | Description|
+| --- | --- | --- |
+| `entry` | string or string[] | Defines the dev server's entry point. This correspond's to Webpack's `entry` option. This should be an absolute path. |
+| `contentBase` | string | Optional. The directory from which to serve static content, such as image assets. Defaults to `false`, which disables static content serving altogether. |
+| `title` | string | Optional. The title of the dev server page. This value replaces the placeholder `@@title@@` within the HTML template. Defaults to "Condict dev server". |
+| `template` | string | Optional. The path to an HTML file that is used as the dev server template. The default template is [`src/index.html`](./src/index.html). The placeholder `@@title@@` is replaced by the value of the `title` option. |
+| `port` | number | Optional. The port number that the dev server listens on. Defaults to the environment variable `WEBPACK_PORT` when present, or `3000` otherwise. |
+| `host` | string | Optional. The hostname that the dev server listens to. Defaults to the environment variable `WEBPACK_HOST` when present, or `'localhost'` otherwise. |
 
 [webpack-dev-server]: https://webpack.js.org/configuration/dev-server/
 [babel-preset]: ../babel-preset-react
