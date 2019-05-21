@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import FocusTrap from 'focus-trap-react';
 
-import {Checkbox} from '@condict/admin-ui';
+import {Checkbox} from '@condict/ui';
 import {SROnly} from '@condict/a11y-utils';
 import genId from '@condict/gen-id';
 

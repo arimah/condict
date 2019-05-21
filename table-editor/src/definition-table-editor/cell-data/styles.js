@@ -1,7 +1,7 @@
 import styled, {css} from 'styled-components';
 import {ifProp, theme} from 'styled-tools';
 
-import {LightTheme} from '@condict/admin-ui';
+import {LightTheme} from '@condict/ui';
 
 export const CellData = styled.div`
   flex: 1 0 auto;

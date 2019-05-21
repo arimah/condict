@@ -10,6 +10,7 @@
   "synonyms": "synonyms.json",
   "variables": {
     "g": "ɡ",
+    "?": "ʔ",
     "placeholder": "\u25CC",
     "voiceless": "\u0325",
     "voicelessAbove": "\u030A",

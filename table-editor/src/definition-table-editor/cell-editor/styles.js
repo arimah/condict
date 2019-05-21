@@ -5,7 +5,7 @@ import {
   Button,
   TextInput,
   LightTheme,
-} from '@condict/admin-ui';
+} from '@condict/ui';
 
 export const CellEditor = styled.div`
   position: absolute;

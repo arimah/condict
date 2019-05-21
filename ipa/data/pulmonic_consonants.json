@@ -175,7 +175,7 @@
   {
     "input": "ʡ",
     "name": "Epiglottal stop",
-    "group": "glottalStopLike",
+    "base": "{?}",
     "terms": {
       "?": 75,
       "voiceless": 20,
@@ -185,7 +185,6 @@
   {
     "input": "ʔ",
     "name": "Glottal stop",
-    "group": "glottalStopLike",
     "terms": {
       "?": 100,
       "voiceless": 20
@@ -346,7 +345,7 @@
   {
     "input": "ʕ",
     "name": "Voiced pharyngeal fricative",
-    "group": "glottalStopLike",
+    "base": "{?}",
     "terms": {
       "?": 50
     }
@@ -522,7 +521,7 @@
   {
     "input": "ʢ",
     "name": "Voiced epiglottal trill",
-    "group": "glottalStopLike",
+    "base": "{?}",
     "terms": {
       "?": 50
     }

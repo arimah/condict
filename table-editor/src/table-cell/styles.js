@@ -1,7 +1,7 @@
 import styled, {css} from 'styled-components';
 import {theme, ifProp} from 'styled-tools';
 
-import {LightTheme} from '@condict/admin-ui';
+import {LightTheme} from '@condict/ui';
 
 import {Table} from '../table-editor/styles';
 

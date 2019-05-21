@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Map} from 'immutable';
 
-import {Button} from '@condict/admin-ui';
+import {Button} from '@condict/ui';
 
 import * as S from './styles';
 

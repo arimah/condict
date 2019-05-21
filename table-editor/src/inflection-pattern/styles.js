@@ -5,7 +5,7 @@ import {
   makeColorFn,
   Saturation,
   LightTheme,
-} from '@condict/admin-ui';
+} from '@condict/ui';
 
 export const stemColor = makeColorFn(291, {
   high: 70,

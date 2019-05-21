@@ -19,7 +19,7 @@ import {
   DarkTheme,
   LightTheme,
   GlobalStyles as ComponentStyles,
-} from '@condict/admin-ui';
+} from '@condict/ui';
 
 import {
   InflectionTableEditor,

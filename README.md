@@ -27,9 +27,9 @@ The name _Condict_ is a [portmanteau][] of "conlang dictionary", while _conlang_
 The eventual goal of Condict is to be distributable as a standalone Electron app, as well as separate server and admin area components for websites. Each folder in the repo is its own package:
 
 * [a11y-utils/](./a11y-utils): Various small utility functions and React components for accessibility features.
-* [admin-ui/](./admin-ui): UI components for the admin interface.
 * [gen-id/](./gen-id): A microscopic package which exports a single function that generates a random-enough ID string.
 * [server/](./server): The storage backend.
 * [table-editor/](./table-editor): UI components for editing inflection tables. Separate package because of its size and complexity.
+* [ui/](./ui): Mostly-general-purpose reusable UI components.
 
 TODO: documentation.

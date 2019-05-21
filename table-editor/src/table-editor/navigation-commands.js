@@ -1,4 +1,4 @@
-import {Shortcut, ShortcutGroup} from '@condict/admin-ui';
+import {Shortcut, ShortcutGroup} from '@condict/ui';
 
 import moveFocus, {
   MOVE_FIRST,

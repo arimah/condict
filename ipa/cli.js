@@ -17,6 +17,7 @@ const printAll = () => {
     if (group.base) {
       console.log(`${chalk.green(group.base.display)}  ${members}`);
     } else {
+      console.log(chalk.cyan(group.name));
       console.log(members);
     }
   });

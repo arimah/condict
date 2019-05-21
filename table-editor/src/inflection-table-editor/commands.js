@@ -1,4 +1,4 @@
-import {Shortcut} from '@condict/admin-ui';
+import {Shortcut} from '@condict/ui';
 
 import clearSelectedCells from './clear-selected';
 import toggleSelectedCellsDeriveLemma from './toggle-derive-lemma';

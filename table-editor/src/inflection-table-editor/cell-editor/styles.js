@@ -1,11 +1,7 @@
 import styled, {css} from 'styled-components';
 import {theme, ifProp} from 'styled-tools';
 
-import {
-  Button,
-  TextInput,
-  LightTheme,
-} from '@condict/admin-ui';
+import {Button, TextInput, LightTheme} from '@condict/ui';
 
 export const CellEditor = styled.div`
   position: absolute;

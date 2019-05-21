@@ -4,7 +4,7 @@ import {is as immutableIs} from 'immutable';
 
 import {SROnly} from '@condict/a11y-utils';
 import genId from '@condict/gen-id';
-import {CommandGroup} from '@condict/admin-ui';
+import {CommandGroup} from '@condict/ui';
 
 import {mapToArray} from '../immutable-utils';
 import makeTableRow from '../table-row';

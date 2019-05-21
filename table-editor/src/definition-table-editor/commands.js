@@ -1,4 +1,4 @@
-import {Shortcut} from '@condict/admin-ui';
+import {Shortcut} from '@condict/ui';
 
 import deleteSelectedForms from './delete-selected';
 

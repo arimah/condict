@@ -1,7 +1,7 @@
 import styled, {createGlobalStyle} from 'styled-components';
 import {ifProp, theme} from 'styled-tools';
 
-import {TextInput} from '@condict/admin-ui';
+import {TextInput} from '@condict/ui';
 
 export const AppStyles = createGlobalStyle`
   body {

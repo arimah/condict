@@ -3,7 +3,7 @@
     "input": "\u0329",
     "display": "{placeholder}\u0329",
     "name": "Syllabic",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       ",": 40,
       "below": 20,
@@ -14,7 +14,7 @@
     "input": "\u030D",
     "display": "{placeholder}\u030D",
     "name": "Syllabic",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "'": 75,
       "above": 20,
@@ -25,7 +25,7 @@
     "input": "\u032F",
     "display": "{placeholder}\u032F",
     "name": "Non-syllabic",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "(": 60,
       ")": 60,
@@ -37,7 +37,7 @@
     "input": "\u0311",
     "display": "{placeholder}\u0311",
     "name": "Non-syllabic",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "(": 50,
       ")": 50,
@@ -49,7 +49,7 @@
     "input": "ʰ",
     "display": "{placeholder}ʰ",
     "name": "Aspirated",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "h": 50,
       "^h": 90,
@@ -60,7 +60,7 @@
     "input": "ⁿ",
     "display": "{placeholder}ⁿ",
     "name": "Nasal release",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "n": 50,
       "^n": 90,
@@ -71,7 +71,7 @@
     "input": "ᶿ",
     "display": "{placeholder}ᶿ",
     "name": "Voiceless dental fricative release",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "th": 50,
       "^th": 90,
@@ -85,7 +85,7 @@
     "input": "ᵊ",
     "display": "{placeholder}ᵊ",
     "name": "Mid central vowel release",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "e": 50,
       "^e": 90,
@@ -99,7 +99,7 @@
     "input": "ˡ",
     "display": "{placeholder}ˡ",
     "name": "Lateral release",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "l": 50,
       "^l": 90,
@@ -111,7 +111,7 @@
     "input": "ˣ",
     "display": "{placeholder}ˣ",
     "name": "Voiceless velar fricative release",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "x": 50,
       "^x": 90,
@@ -125,7 +125,7 @@
     "input": "\u031A",
     "display": "{placeholder}\u031A",
     "name": "No audible release",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "¬": 60,
       "^¬": 90,
@@ -140,7 +140,7 @@
     "input": "{voiceless}",
     "display": "{placeholder}{voiceless}",
     "name": "Voiceless",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "°": 80,
       "_°": 80,
@@ -157,7 +157,7 @@
     "input": "{voicelessAbove}",
     "display": "{placeholder}{voicelessAbove}",
     "name": "Voiceless",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "°": 70,
       "*": 65,
@@ -172,7 +172,7 @@
     "input": "\u032C",
     "display": "{placeholder}\u032C",
     "name": "Voiced",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "below": 20,
       "voiced": 30,
@@ -183,7 +183,7 @@
     "input": "\u0324",
     "display": "{placeholder}\u0324",
     "name": "Breathy voiced",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "below": 20,
       "voiced": 15,
@@ -198,7 +198,7 @@
     "input": "\u0330",
     "display": "{placeholder}\u0330",
     "name": "Creaky voiced",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "~": 60,
       "below": 20,
@@ -211,7 +211,7 @@
     "input": "\u032A",
     "display": "{placeholder}\u032A",
     "name": "Dental",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "[": 90,
       "]": 50,
@@ -224,7 +224,7 @@
     "input": "\u0346",
     "display": "{placeholder}\u0346",
     "name": "Dental",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "[": 80,
       "]": 40,
@@ -237,7 +237,7 @@
     "input": "\u033A",
     "display": "{placeholder}\u033A",
     "name": "Apical",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "]": 90,
       "[": 50,
@@ -250,7 +250,7 @@
     "input": "\u031F",
     "display": "{placeholder}\u031F",
     "name": "Advanced",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "+": 75,
       "below": 20,
@@ -261,7 +261,7 @@
     "input": "\u02D6",
     "display": "{placeholder}\u02D6",
     "name": "Advanced",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "+": 70,
       "after": 20,
@@ -272,7 +272,7 @@
     "input": "\u0320",
     "display": "{placeholder}\u0320",
     "name": "Retracted",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "-": 75,
       "below": 20,
@@ -283,7 +283,7 @@
     "input": "\u02D7",
     "display": "{placeholder}\u02D7",
     "name": "Retracted",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "-": 70,
       "after": 20,
@@ -294,7 +294,7 @@
     "input": "{trema}",
     "display": "{placeholder}{trema}",
     "name": "Centralized",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "\"": 40,
       "above": 20,
@@ -306,7 +306,7 @@
     "input": "\u033D",
     "display": "{placeholder}\u033D",
     "name": "Mid-centralized",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "x": 30,
       "above": 20,
@@ -319,7 +319,7 @@
     "input": "\u033C",
     "display": "{placeholder}\u033C",
     "name": "Linguolabial",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "{": 90,
       "}": 90,
@@ -332,7 +332,7 @@
     "input": "\u033A",
     "display": "{placeholder}\u033A",
     "name": "Linguolabial",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "]": 75,
       "[": 35,
@@ -345,7 +345,7 @@
     "input": "\u033B",
     "display": "{placeholder}\u033B",
     "name": "Laminal",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "below": 20,
       "diacritic": 20
@@ -355,7 +355,7 @@
     "input": "\u031D",
     "display": "{placeholder}\u031D",
     "name": "Raised",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "below": 20,
       "diacritic": 20
@@ -365,7 +365,7 @@
     "input": "\u02D4",
     "display": "{placeholder}\u02D4",
     "name": "Raised",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "after": 20,
       "diacritic": 20
@@ -375,7 +375,7 @@
     "input": "\u031E",
     "display": "{placeholder}\u031E",
     "name": "Lowered",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "below": 20,
       "diacritic": 20
@@ -385,7 +385,7 @@
     "input": "\u02D5",
     "display": "{placeholder}\u02D5",
     "name": "Lowered",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "after": 20,
       "diacritic": 20
@@ -395,7 +395,7 @@
     "input": "\u0339",
     "display": "{placeholder}\u0339",
     "name": "More rounded",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       ")": 70,
       "below": 20,
@@ -407,7 +407,7 @@
     "input": "\u031C",
     "display": "{placeholder}\u031C",
     "name": "Less rounded",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "(": 70,
       "below": 20,
@@ -419,7 +419,7 @@
     "input": "ʷ",
     "display": "{placeholder}ʷ",
     "name": "Labialized",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "w": 50,
       "^w": 90,
@@ -431,7 +431,7 @@
     "input": "ˠ",
     "display": "{placeholder}ˠ",
     "name": "Velarized",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "y": 30,
       "^y": 50,
@@ -445,7 +445,7 @@
     "input": "ʲ",
     "display": "{placeholder}ʲ",
     "name": "Palatalized",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "j": 50,
       "^j": 90,
@@ -457,7 +457,7 @@
     "input": "ˤ",
     "display": "{placeholder}ˤ",
     "name": "Pharyngealized",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "?": 40,
       "^?": 80,
@@ -469,7 +469,7 @@
     "input": "\u0318",
     "display": "{placeholder}\u0318",
     "name": "Advanced tongue root",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "<": 50,
       "below": 20,
@@ -480,7 +480,7 @@
     "input": "\u0319",
     "display": "{placeholder}\u0319",
     "name": "Retracted tongue root",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       ">": 50,
       "below": 20,
@@ -491,7 +491,7 @@
     "input": "\u0303",
     "display": "{placeholder}\u0303",
     "name": "Nasalized",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "~": 90,
       "above": 20,
@@ -503,7 +503,7 @@
     "input": "\u02DE",
     "display": "{placeholder}\u02DE",
     "name": "Rhotic",
-    "group": "diacritics",
+    "group": "Diacritics",
     "terms": {
       "rhotacized": 20,
       "rhotacised": 20,

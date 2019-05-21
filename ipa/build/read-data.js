@@ -34,7 +34,7 @@ const readSynonyms = file => {
 };
 
 const replaceVariables = (value, variables) =>
-  value.replace(/\{([a-zA-Z0-9]+)\}/g, (_, name) => {
+  value.replace(/\{([^{}]+)\}/g, (_, name) => {
     if (!variables.has(name)) {
       throw new Error(`Unknown variable: {${name}}`);
     }

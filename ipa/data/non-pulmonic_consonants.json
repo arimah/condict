@@ -64,7 +64,7 @@
   {
     "input": "ʡ{ejective}",
     "name": "Epiglottal ejective",
-    "group": "glottalStopLike",
+    "base": "{?}",
     "terms": {
       "?'": 90,
       "voiceless": 20,
@@ -166,7 +166,7 @@
   {
     "input": "ʘ",
     "name": "Tenuis bilabial click",
-    "group": "clicks",
+    "group": "Clicks",
     "terms": {
       "o": 15,
       "voiceless": 20
@@ -175,7 +175,7 @@
   {
     "input": "ǀ",
     "name": "Tenuis dental click",
-    "group": "clicks",
+    "group": "Clicks",
     "terms": {
       "|": 90,
       "voiceless": 20
@@ -184,7 +184,7 @@
   {
     "input": "ǃ",
     "name": "Tenuis alveolar click",
-    "group": "clicks",
+    "group": "Clicks",
     "terms": {
       "!": 90,
       "postalveolar": 15,
@@ -194,7 +194,7 @@
   {
     "input": "‼",
     "name": "Tenuis retroflex click",
-    "group": "clicks",
+    "group": "Clicks",
     "terms": {
       "!!": 90,
       "voiceless": 20
@@ -203,7 +203,7 @@
   {
     "input": "ǂ",
     "name": "Tenuis palatal click",
-    "group": "clicks",
+    "group": "Clicks",
     "terms": {
       "voiceless": 20
     }
@@ -211,7 +211,7 @@
   {
     "input": "ǁ",
     "name": "Tenuis alveolar lateral click",
-    "group": "clicks",
+    "group": "Clicks",
     "terms": {
       "||": 90,
       "dental": 15,

@@ -5,7 +5,10 @@ module.exports = chars => {
   for (const char of chars) {
     let group = groups.get(char.group);
     if (!group) {
-      group = {members: []};
+      group = {
+        name: char.group,
+        members: [],
+      };
       groups.set(char.group, group);
     }
     if (char.group === char.input) {

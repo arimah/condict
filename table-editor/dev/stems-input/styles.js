@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import {TextInput} from '@condict/admin-ui';
+import {TextInput} from '@condict/ui';
 
 export const List = styled.ul`
   margin-top: 8px;

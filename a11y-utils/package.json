@@ -1,7 +1,7 @@
 {
   "name": "@condict/a11y-utils",
   "version": "0.1.2",
-  "description": "Accessibility utils for Condict, primarily its admin UI components.",
+  "description": "Accessibility utils for Condict, primarily its UI components.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
