@@ -3,6 +3,7 @@ const readline = require('readline');
 const {performance} = require('perf_hooks');
 
 const chalk = require('chalk');
+const {red, yellow, green, cyan} = chalk;
 
 const ipa = require('./lib');
 
@@ -15,19 +16,26 @@ const printAll = () => {
   ipa.getGroups().forEach(group => {
     const members = group.members.map(m => m.display).join('  ');
     if (group.base) {
-      console.log(`${chalk.green(group.base.display)}  ${members}`);
+      console.log(`${green(group.base.display)}  ${members}`);
     } else {
-      console.log(chalk.cyan(group.name));
+      console.log(cyan(group.name));
       console.log(members);
     }
   });
 };
 
+const formatTerms = match =>
+  match.terms
+    .map(t => `${cyan(t.score.toPrecision(3))} "${t.query}" ~ ${green(t.term)}`)
+    .join(', ');
+
 const showResults = (results, full) => {
   if (full) {
     console.log(
-      results.map(([char, score]) =>
-        `${chalk.cyan(score.toPrecision(4))} ${chalk.green(char.display)} ${char.name}`
+      results.map(([char, match]) =>
+        `${cyan(
+          match.totalScore.toPrecision(4)
+        )} ${green(char.display)} ${char.name} (${formatTerms(match)})`
       ).join('\n')
     );
   } else {
@@ -38,13 +46,13 @@ const showResults = (results, full) => {
 const topResultsCount = 20;
 
 const main = () => {
-  console.log(chalk.yellow(
+  console.log(yellow(
     'Type a query to search for IPA characters.\n\n' +
     'Some special commands are also available:\n' +
-    `${chalk.cyan(':more')}  Show all results for previous query\n` +
-    `${chalk.cyan(':all')}   Switch between all and top ${topResultsCount} results\n` +
-    `${chalk.cyan(':full')}  Switch between compact and full result format\n` +
-    `${chalk.cyan(':list')}  List all available IPA characters\n`
+    `${cyan(':more')}  Show all results for previous query\n` +
+    `${cyan(':all')}   Switch between all and top ${topResultsCount} results\n` +
+    `${cyan(':full')}  Switch between compact and full result format\n` +
+    `${cyan(':list')}  List all available IPA characters\n`
   ));
 
   let lastResults = null;
@@ -61,7 +69,7 @@ const main = () => {
       switch (query) {
         case ':full':
           full = !full;
-          console.log(chalk.yellow(
+          console.log(yellow(
             full ? 'Full result format' : 'Compact result format'
           ));
           lastResults = null;
@@ -72,7 +80,7 @@ const main = () => {
           break;
         case ':all':
           showAll = !showAll;
-          console.log(chalk.yellow(
+          console.log(yellow(
             showAll
               ? 'Showing all results'
               : `Showing top ${topResultsCount} results`
@@ -81,15 +89,15 @@ const main = () => {
         case ':more':
           moreUseCount += 1;
           if (!lastResults) {
-            console.log(chalk.yellow('No previous result to expand.'));
+            console.log(yellow('No previous result to expand.'));
           } else if (lastResults.length <= topResultsCount) {
-            console.log(chalk.yellow('No more results to show.'));
+            console.log(yellow('No more results to show.'));
           } else {
             showResults(lastResults, full);
             lastResults = [];
           }
           if (moreUseCount === 5) {
-            console.log(chalk.yellow('(Use :all to always show all results)'));
+            console.log(yellow('(Use :all to always show all results)'));
           }
           break;
         default: {
@@ -102,21 +110,21 @@ const main = () => {
           );
 
           const {length: count} = lastResults;
-          if (count > topResultsCount && moreUseCount <= 3) {
-            console.log(chalk.yellow(
+          if (!showAll && count > topResultsCount && moreUseCount <= 3) {
+            console.log(yellow(
               `(${count} results in ${queryTime} ms - use :more to see all)`
             ));
           } else {
-            console.log(chalk.yellow(
+            console.log(yellow(
               `(${count} result${count === 1 ? '' : 's'} in ${queryTime} ms)`
             ));
           }
 
           const nanScores = lastResults.filter(
-            ([_, score]) => Number.isNaN(score)
+            ([_, {totalScore}]) => Number.isNaN(totalScore)
           );
           if (nanScores.length > 0) {
-            console.warn(chalk.red(
+            console.warn(red(
               `Warning: Found ${
                 nanScores.length
               } result${nanScores.length > 1 ? 's' : ''} with a score of NaN!`

@@ -14,9 +14,7 @@
     "name": "Voiceless postalveolar affricate",
     "base": "t",
     "terms": {
-      "tsh": 100,
-      "palatal": 20,
-      "alveolar": 20
+      "tsh": 100
     }
   },
   {
@@ -24,9 +22,7 @@
     "name": "Voiced postalveolar affricate",
     "base": "d",
     "terms": {
-      "dzh": 100,
-      "palatal": 20,
-      "alveolar": 20
+      "dzh": 100
     }
   },
   {

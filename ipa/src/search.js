@@ -11,29 +11,28 @@ const SearchTableRoot = new Map(
 // TODO: Normalize terms further - remove extraneous characters etc.?
 const normalizeTerm = term => term.toLowerCase();
 
-const collectLeaves = (matches, tree, matchLength, treeDepth, gapSize) => {
+const collectLeaves = (addMatch, tree, query, treeDepth, gapSize) => {
   const treeTermLength = treeDepth + tree.path.length - 1;
 
   if (tree.leaves) {
-    tree.leaves.forEach(([char, score]) => {
-      const finalScore = Math.max(
-        score * (matchLength / (treeTermLength + 2 * gapSize)),
-        matches.get(char) || 0
-      );
-      matches.set(char, finalScore);
-    });
+    for (let i = 0; i < tree.leaves.length; i++) {
+      const [char, score] = tree.leaves[i];
+      const finalScore = score * (query.length / (treeTermLength + 2 * gapSize));
+      addMatch(char, tree.term, query, finalScore);
+    }
   }
 
   if (tree.branches) {
-    tree.branches.forEach(branch => {
+    for (let i = 0; i < tree.branches.length; i++) {
+      const branch = tree.branches[i];
       collectLeaves(
-        matches,
+        addMatch,
         branch,
-        matchLength,
+        query,
         treeTermLength + 1,
         gapSize
       );
-    });
+    }
   }
 };
 
@@ -55,7 +54,7 @@ const traversePath = (path, term, treeOffset, termOffset, gapSize) => {
   return [treeOffset, termOffset, gapSize];
 };
 
-const searchTree = (matches, tree, term, treeOffset, termOffset, gapSize) => {
+const searchTree = (addMatch, tree, term, treeOffset, termOffset, gapSize) => {
   const startTreeOffset = treeOffset;
 
   // If this tree has a multi-character path, we must traverse it as we
@@ -81,9 +80,9 @@ const searchTree = (matches, tree, term, treeOffset, termOffset, gapSize) => {
   // the search tree, so we collect all leaves as matches.
   if (termOffset === term.length) {
     collectLeaves(
-      matches,
+      addMatch,
       tree,
-      term.length,
+      term,
       startTreeOffset,
       gapSize
     );
@@ -95,7 +94,7 @@ const searchTree = (matches, tree, term, treeOffset, termOffset, gapSize) => {
     tree.branches.forEach(br => {
       const branchIsMatch = br.path[0] === term[termOffset];
       const isMatch = searchTree(
-        matches,
+        addMatch,
         br,
         term,
         treeOffset + 1,
@@ -111,12 +110,12 @@ const searchTree = (matches, tree, term, treeOffset, termOffset, gapSize) => {
   return false;
 };
 
-const findMatches = (matches, term) => {
+const findMatches = (addMatch, term) => {
   const rootTree = SearchTableRoot.get(term[0]);
   if (rootTree) {
     // We start at position 1 because we've already successfully matched
     // the first letter.
-    return searchTree(matches, rootTree, term, 1, 1, 0);
+    return searchTree(addMatch, rootTree, term, 1, 1, 0);
   }
   // No match
   return false;
@@ -130,31 +129,68 @@ const search = query => {
       .map(normalizeTerm)
   ));
 
-  const allMatches = terms.reduce((allMatches, term) => {
-    const termMatches = new Map();
-    if (!findMatches(termMatches, term) || !allMatches) {
-      return termMatches;
+  const allMatches = new Map();
+  const addFirstTermMatch = (char, term, query, score) => {
+    const termMatch = {term, query, score};
+
+    const match = allMatches.get(char);
+    if (match) {
+      match.totalScore += score;
+      match.terms.push(termMatch);
+      match.matchingQueryWords.add(query);
+    } else {
+      allMatches.set(char, {
+        totalScore: score,
+        terms: [termMatch],
+        matchingQueryWords: new Set().add(query),
+      });
+    }
+  };
+  const addSubsequentTermMatch = (char, term, query, score) => {
+    const match = allMatches.get(char);
+    if (!match) {
+      return;
     }
 
-    allMatches.forEach((score, char) => {
-      if (termMatches.has(char)) {
-        allMatches.set(char, score + termMatches.get(char));
-      } else {
-        allMatches.delete(char);
-      }
-    });
-    return allMatches;
-  }, null);
+    const existingTerm = match.terms.find(t => t.term === term);
+    if (existingTerm) {
+      if (existingTerm.score < score) {
+        match.totalScore -= existingTerm.score;
+        match.totalScore += score;
 
-  if (!allMatches) {
-    return [];
+        existingTerm.score = score;
+        existingTerm.query = query;
+      }
+    } else {
+      match.totalScore += score;
+      match.terms.push({term, query, score});
+      match.matchingQueryWords.add(query);
+    }
+  };
+
+  for (let i = 0; i < terms.length; i++) {
+    const term = terms[i];
+    const addMatch = i === 0 ? addFirstTermMatch : addSubsequentTermMatch;
+    if (!findMatches(addMatch, term)) {
+      // If a word in the search string didn't match anything, we can return
+      // an empty result right away.
+      return [];
+    }
   }
 
   return Array.from(allMatches)
-    .map(([char, score]) => [Chars[char], score])
+    // Each word in the query must match *something* in each character,
+    // and the number of matching terms must be at least as big as the
+    // number of query words.
+    .filter(([_, match]) =>
+      match.matchingQueryWords.size === terms.length &&
+      match.terms.length >= terms.length
+    )
+    // Resolve each character index and remove the the 'matchingQueryWords' property.
+    .map(([char, {totalScore, terms}]) => [Chars[char], {totalScore, terms}])
     // Sort by score primarily, by input string secondarily.
     .sort((a, b) =>
-      b[1] - a[1] ||
+      b[1].totalScore - a[1].totalScore ||
       a[0].input.localeCompare(b[0].input)
     );
 };
