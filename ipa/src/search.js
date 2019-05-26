@@ -11,13 +11,12 @@ const SearchTableRoot = new Map(
 // TODO: Normalize terms further - remove extraneous characters etc.?
 const normalizeTerm = term => term.toLowerCase();
 
-const collectLeaves = (addMatch, tree, query, treeDepth, gapSize) => {
-  const treeTermLength = treeDepth + tree.path.length - 1;
-
+const collectLeaves = (addMatch, tree, query, gapSize) => {
   if (tree.leaves) {
+    const treeTermScore = query.length / (tree.term.length + 2 * gapSize);
     for (let i = 0; i < tree.leaves.length; i++) {
       const [char, score] = tree.leaves[i];
-      const finalScore = score * (query.length / (treeTermLength + 2 * gapSize));
+      const finalScore = score * treeTermScore;
       addMatch(char, tree.term, query, finalScore);
     }
   }
@@ -29,7 +28,6 @@ const collectLeaves = (addMatch, tree, query, treeDepth, gapSize) => {
         addMatch,
         branch,
         query,
-        treeTermLength + 1,
         gapSize
       );
     }
@@ -55,8 +53,6 @@ const traversePath = (path, term, treeOffset, termOffset, gapSize) => {
 };
 
 const searchTree = (addMatch, tree, term, treeOffset, termOffset, gapSize) => {
-  const startTreeOffset = treeOffset;
-
   // If this tree has a multi-character path, we must traverse it as we
   // would a set of single-branch trees. Example:
   //
@@ -83,7 +79,6 @@ const searchTree = (addMatch, tree, term, treeOffset, termOffset, gapSize) => {
       addMatch,
       tree,
       term,
-      startTreeOffset,
       gapSize
     );
     return true;
