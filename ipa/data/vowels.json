@@ -10,7 +10,7 @@
   {
     "input": "ɨ",
     "name": "Close central unrounded vowel",
-    "base": "i",
+    "group": "i",
     "terms": {
       "i-": 100
     }
@@ -18,7 +18,7 @@
   {
     "input": "ʉ",
     "name": "Close central rounded vowel",
-    "base": "u",
+    "group": "u",
     "terms": {
       "u-": 100
     }
@@ -26,7 +26,7 @@
   {
     "input": "ɯ",
     "name": "Close back unrounded vowel",
-    "base": "u",
+    "group": "u",
     "terms": {
       "uu": 100
     }
@@ -57,7 +57,7 @@
   {
     "input": "ø",
     "name": "Close-mid front rounded vowel",
-    "base": "o",
+    "group": "o",
     "terms": {
       "o/": 100
     }
@@ -70,7 +70,7 @@
   {
     "input": "ɵ",
     "name": "Close-mid central rounded vowel",
-    "base": "o",
+    "group": "o",
     "terms": {
       "o-": 100
     }
@@ -104,9 +104,9 @@
   {
     "input": "œ",
     "name": "Open-mid front rounded vowel",
-    "base": "o",
+    "group": "o",
     "terms": {
-      "oe": 90
+      "oe": 100
     }
   },
   {
@@ -122,8 +122,8 @@
     "name": "Open-mid central rounded vowel",
     "base": "e",
     "terms": {
-      "e": 80,
-      "o": 80
+      "o3": 100,
+      "e": 80
     }
   },
   {
@@ -145,7 +145,7 @@
   {
     "input": "æ",
     "name": "Near-open front unrounded vowel",
-    "base": "a",
+    "group": "a",
     "terms": {
       "ae": 100
     }
@@ -162,23 +162,26 @@
   {
     "input": "ɶ",
     "name": "Open front rounded vowel",
-    "base": "o",
+    "group": "o",
     "terms": {
       "ae": 80,
-      "oe": 80
+      "oe": 95
     }
   },
   {
     "input": "ä",
     "name": "Open central unrounded vowel",
-    "base": "a"
+    "group": "a",
+    "terms": {
+      "a\"": 100
+    }
   },
   {
     "input": "ɒ{trema}",
     "name": "Open central rounded vowel",
-    "base": "a",
+    "group": "a",
     "terms": {
-      "a\"": 85
+      "a\"": 90
     }
   },
   {

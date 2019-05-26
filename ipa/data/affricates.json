@@ -2,17 +2,17 @@
   {
     "input": "ts",
     "name": "Voiceless alveolar affricate",
-    "base": "t"
+    "group": "t"
   },
   {
     "input": "dz",
     "name": "Voiced alveolar affricate",
-    "base": "d"
+    "group": "d"
   },
   {
     "input": "tʃ",
     "name": "Voiceless postalveolar affricate",
-    "base": "t",
+    "group": "t",
     "terms": {
       "tsh": 100
     }
@@ -20,7 +20,7 @@
   {
     "input": "dʒ",
     "name": "Voiced postalveolar affricate",
-    "base": "d",
+    "group": "d",
     "terms": {
       "dzh": 100
     }
@@ -28,7 +28,7 @@
   {
     "input": "ʈʂ",
     "name": "Voiceless retroflex affricate",
-    "base": "t",
+    "group": "t",
     "terms": {
       "tsh": 90
     }
@@ -36,7 +36,7 @@
   {
     "input": "ɖʐ",
     "name": "Voiced retroflex affricate",
-    "base": "d",
+    "group": "d",
     "terms": {
       "dzh": 90
     }
@@ -44,7 +44,7 @@
   {
     "input": "tɕ",
     "name": "Voiceless palatal affricate",
-    "base": "t",
+    "group": "t",
     "terms": {
       "tch": 90
     }
@@ -52,7 +52,7 @@
   {
     "input": "dʑ",
     "name": "Voiced palatal affricate",
-    "base": "d",
+    "group": "d",
     "terms": {
       "dzh": 80
     }
@@ -60,7 +60,7 @@
   {
     "input": "tɬ",
     "name": "Voiceless alveolar lateral affricate",
-    "base": "t",
+    "group": "t",
     "terms": {
       "tl": 90
     }
@@ -68,7 +68,7 @@
   {
     "input": "dɮ",
     "name": "Voiced alveolar lateral affricate",
-    "base": "d",
+    "group": "d",
     "terms": {
       "dlzh": 100
     }
@@ -76,7 +76,7 @@
   {
     "input": "ts{ejective}",
     "name": "Alveolar ejective affricate",
-    "base": "t",
+    "group": "t",
     "terms": {
       "ts'": 90,
       "voiceless": 20
@@ -85,7 +85,7 @@
   {
     "input": "tʃ{ejective}",
     "name": "Postalveolar ejective affricate",
-    "base": "t",
+    "group": "t",
     "terms": {
       "tsh'": 90,
       "voiceless": 20
@@ -94,7 +94,7 @@
   {
     "input": "ʈʂ{ejective}",
     "name": "Retroflex ejective affricate",
-    "base": "t",
+    "group": "t",
     "terms": {
       "tsh'": 80,
       "voiceless": 20
@@ -103,27 +103,27 @@
   {
     "input": "kx{ejective}",
     "name": "Velar ejective affricate",
-    "base": "k",
+    "group": "k",
     "terms": {
-      "kx'": 90,
+      "kx'": 100,
       "voiceless": 20
     }
   },
   {
     "input": "qχ{ejective}",
     "name": "Uvular ejective affricate",
-    "base": "q",
+    "group": "q",
     "terms": {
-      "qxh'": 90,
+      "qxh'": 100,
       "voiceless": 20
     }
   },
   {
     "input": "tɬ{ejective}",
     "name": "Alveolar lateral ejective affricate",
-    "base": "t",
+    "group": "t",
     "terms": {
-      "tl'": 90,
+      "tl'": 100,
       "voiceless": 20
     }
   }

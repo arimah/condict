@@ -298,7 +298,6 @@
     "terms": {
       "\"": 40,
       "above": 20,
-      "centralised": 20,
       "diacritic": 20
     }
   },
@@ -310,8 +309,6 @@
     "terms": {
       "x": 30,
       "above": 20,
-      "mid-centralised": 20,
-      "centralised": 10,
       "diacritic": 20
     }
   },
@@ -423,7 +420,6 @@
     "terms": {
       "w": 50,
       "^w": 90,
-      "labialised": 20,
       "diacritic": 20
     }
   },
@@ -437,7 +433,6 @@
       "^y": 50,
       "gh": 50,
       "^gh": 90,
-      "velarised": 20,
       "diacritic": 20
     }
   },
@@ -449,7 +444,6 @@
     "terms": {
       "j": 50,
       "^j": 90,
-      "palatalised": 20,
       "diacritic": 20
     }
   },
@@ -461,7 +455,6 @@
     "terms": {
       "?": 40,
       "^?": 80,
-      "pharyngealised": 20,
       "diacritic": 20
     }
   },
@@ -495,7 +488,6 @@
     "terms": {
       "~": 90,
       "above": 20,
-      "nasalised": 20,
       "diacritic": 20
     }
   },
@@ -506,7 +498,6 @@
     "group": "Diacritics",
     "terms": {
       "rhotacized": 20,
-      "rhotacised": 20,
       "rhoticity": 20,
       "after": 20,
       "diacritic": 20

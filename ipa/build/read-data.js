@@ -53,7 +53,9 @@ const normalizeChar = variables => char => {
   result.base = char.base
     ? replaceVariables(char.base, variables)
     : null;
-  result.group = char.group || result.base || result.input;
+  result.group = char.group
+    ? replaceVariables(char.group, variables)
+    : result.base || result.input;
 
   result.terms = Object.entries(char.terms || [])
     .map(([term, score]) => [
@@ -101,20 +103,6 @@ const readChars = (file, synonyms, variables) => {
         const term = word.toLowerCase();
         // Add the word itself as a term.
         addTerm(terms, term, 20);
-
-        // If the term contains '-', we add each part *after* the '-'. This
-        // ensures we can still match on the other parts separately. This is
-        // particularly important for vowels, where you want "open-mid" to be
-        // able to match against "open mid" and "mid open". Secondary parts
-        // have a lower score, so if you search "mid", you will still get
-        // "mid central vowel" before "open-mid" anything.
-        if (term.includes('-')) {
-          term.split(/-/).forEach((part, index) => {
-            if (index > 0) {
-              addTerm(terms, part, 10);
-            }
-          });
-        }
       });
 
       terms = addSynonyms(terms, synonyms);

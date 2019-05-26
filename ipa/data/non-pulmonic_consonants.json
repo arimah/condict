@@ -2,9 +2,9 @@
   {
     "input": "p{ejective}",
     "name": "Bilabial ejective",
-    "base": "p",
+    "group": "p",
     "terms": {
-      "p'": 90,
+      "p'": 100,
       "voiceless": 20,
       "consonant": 20
     }
@@ -12,9 +12,9 @@
   {
     "input": "t{ejective}",
     "name": "Alveolar ejective",
-    "base": "t",
+    "group": "t",
     "terms": {
-      "t'": 90,
+      "t'": 100,
       "dental": 15,
       "postalveolar": 15,
       "voiceless": 20,
@@ -24,9 +24,9 @@
   {
     "input": "ʈ{ejective}",
     "name": "Retroflex ejective",
-    "base": "t",
+    "group": "t",
     "terms": {
-      "t'": 80,
+      "t'": 90,
       "voiceless": 20,
       "consonant": 20
     }
@@ -34,9 +34,9 @@
   {
     "input": "c{ejective}",
     "name": "Palatal ejective",
-    "base": "c",
+    "group": "c",
     "terms": {
-      "c'": 90,
+      "c'": 100,
       "voiceless": 20,
       "consonant": 20
     }
@@ -44,9 +44,9 @@
   {
     "input": "k{ejective}",
     "name": "Velar ejective",
-    "base": "k",
+    "group": "k",
     "terms": {
-      "k'": 90,
+      "k'": 100,
       "voiceless": 20,
       "consonant": 20
     }
@@ -54,9 +54,9 @@
   {
     "input": "q{ejective}",
     "name": "Uvular ejective",
-    "base": "q",
+    "group": "q",
     "terms": {
-      "q'": 90,
+      "q'": 100,
       "voiceless": 20,
       "consonant": 20
     }
@@ -64,9 +64,9 @@
   {
     "input": "ʡ{ejective}",
     "name": "Epiglottal ejective",
-    "base": "{?}",
+    "group": "{?}",
     "terms": {
-      "?'": 90,
+      "?'": 100,
       "voiceless": 20,
       "consonant": 20
     }
@@ -74,26 +74,26 @@
   {
     "input": "ɸ{ejective}",
     "name": "Bilabial ejective fricative",
-    "base": "f",
+    "group": "f",
     "terms": {
-      "f'": 80,
-      "ph'": 90,
+      "f'": 90,
+      "ph'": 100,
       "voiceless": 20
     }
   },
   {
     "input": "f{ejective}",
     "name": "Labiodental ejective fricative",
-    "base": "f",
+    "group": "f",
     "terms": {
-      "f'": 90,
+      "f'": 100,
       "voiceless": 20
     }
   },
   {
     "input": "θ{ejective}",
     "name": "Dental ejective fricative",
-    "base": "t",
+    "group": "t",
     "terms": {
       "th'": 90,
       "voiceless": 20
@@ -102,64 +102,64 @@
   {
     "input": "s{ejective}",
     "name": "Alveolar ejective fricative",
-    "base": "s",
+    "group": "s",
     "terms": {
-      "s'": 90,
+      "s'": 100,
       "voiceless": 20
     }
   },
   {
     "input": "ʃ{ejective}",
     "name": "Postalveolar ejective fricative",
-    "base": "s",
+    "group": "s",
     "terms": {
-      "sh'": 90,
+      "sh'": 100,
       "voiceless": 20
     }
   },
   {
     "input": "ʂ{ejective}",
     "name": "Retroflex ejective fricative",
-    "base": "s",
+    "group": "s",
     "terms": {
-      "sh'": 80,
+      "sh'": 90,
       "voiceless": 20
     }
   },
   {
     "input": "ɕ{ejective}",
     "name": "Palatal ejective fricative",
-    "base": "c",
+    "group": "c",
     "terms": {
-      "c'": 80,
-      "s'": 50,
+      "ch'": 100,
+      "sh'": 50,
       "voiceless": 20
     }
   },
   {
     "input": "x{ejective}",
     "name": "Velar ejective fricative",
-    "base": "x",
+    "group": "x",
     "terms": {
-      "x'": 90,
+      "x'": 100,
       "voiceless": 20
     }
   },
   {
     "input": "χ{ejective}",
     "name": "Uvular ejective fricative",
-    "base": "x",
+    "group": "x",
     "terms": {
-      "xh'": 80,
+      "xh'": 100,
       "voiceless": 20
     }
   },
   {
     "input": "ɬ{ejective}",
     "name": "Alveolar lateral ejective fricative",
-    "base": "l",
+    "group": "l",
     "terms": {
-      "l'": 80,
+      "l'": 100,
       "voiceless": 20
     }
   },

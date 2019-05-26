@@ -17,28 +17,6 @@
   "labiodental": [
     {"term": "labial"}
   ],
-  "dental": [
-    {"term": "coronal"}
-  ],
-  "alveolar": [
-    {"term": "coronal"}
-  ],
-  "postalveolar": [
-    {"term": "coronal"}
-  ],
-  "retroflex": [
-    {"term": "coronal"}
-  ],
-  "palatal": [
-    {"term": "coronal"},
-    {"term": "dorsal"}
-  ],
-  "velar": [
-    {"term": "dorsal"}
-  ],
-  "uvular": [
-    {"term": "dorsal"}
-  ],
   "pharyngeal": [
     {"term": "laryngeal"}
   ],

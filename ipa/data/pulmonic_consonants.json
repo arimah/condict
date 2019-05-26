@@ -9,7 +9,7 @@
   {
     "input": "m{voiceless}",
     "name": "Voiceless bilabial nasal",
-    "base": "m",
+    "group": "m",
     "terms": {
       "devoiced": 20
     }
@@ -17,9 +17,9 @@
   {
     "input": "ɱ",
     "name": "Labiodental nasal",
-    "base": "m",
+    "group": "m",
     "terms": {
-      "mg": 90,
+      "mg": 100,
       "voiced": 20
     }
   },
@@ -35,7 +35,7 @@
   {
     "input": "n{voiceless}",
     "name": "Voiceless alveolar nasal",
-    "base": "n",
+    "group": "n",
     "terms": {
       "dental": 15,
       "postalveolar": 15,
@@ -61,36 +61,36 @@
   {
     "input": "ɲ",
     "name": "Palatal nasal",
-    "base": "n",
+    "group": "n",
     "terms": {
-      "nj": 90,
+      "nj": 100,
       "voiced": 20
     }
   },
   {
     "input": "ɲ{voicelessAbove}",
     "name": "Voiceless palatal nasal",
-    "base": "n",
+    "group": "n",
     "terms": {
-      "nj": 80,
+      "nj": 90,
       "devoiced": 20
     }
   },
   {
     "input": "ŋ",
     "name": "Velar nasal",
-    "base": "n",
+    "group": "n",
     "terms": {
-      "ng": 90,
+      "ng": 100,
       "voiced": 20
     }
   },
   {
     "input": "ŋ{voicelessAbove}",
     "name": "Voiceless velar nasal",
-    "base": "n",
+    "group": "n",
     "terms": {
-      "ng": 80,
+      "ng": 90,
       "devoiced": 20
     }
   },
@@ -143,10 +143,10 @@
   {
     "input": "ɟ",
     "name": "Voiced palatal stop",
-    "base": "j",
+    "group": "j",
     "terms": {
-      "j\\": 95,
-      "j-": 90
+      "j\\": 100,
+      "j-": 100
     }
   },
   {
@@ -175,9 +175,9 @@
   {
     "input": "ʡ",
     "name": "Epiglottal stop",
-    "base": "{?}",
+    "group": "{?}",
     "terms": {
-      "?": 75,
+      "?-": 100,
       "voiceless": 20,
       "voiced": 10
     }
@@ -207,7 +207,7 @@
   {
     "input": "ʃ",
     "name": "Voiceless postalveolar sibilant",
-    "base": "s",
+    "group": "s",
     "terms": {
       "sh": 100
     }
@@ -215,7 +215,7 @@
   {
     "input": "ʒ",
     "name": "Voiced postalveolar sibilant",
-    "base": "z",
+    "group": "z",
     "terms": {
       "zh": 100
     }
@@ -223,48 +223,52 @@
   {
     "input": "ʂ",
     "name": "Voiceless retroflex sibilant",
-    "base": "s",
+    "group": "s",
     "terms": {
-      "sh": 80
+      "sh": 90
     }
   },
   {
     "input": "ʐ",
     "name": "Voiced retroflex sibilant",
-    "base": "z",
+    "group": "z",
     "terms": {
-      "zh": 80
+      "zh": 85
     }
   },
   {
     "input": "ɕ",
     "name": "Voiceless palatal sibilant",
-    "base": "c",
+    "group": "c",
     "terms": {
-      "s": 50,
-      "ch": 75
+      "ch": 100,
+      "s": 50
     }
   },
   {
     "input": "ʑ",
     "name": "Voiced palatal sibilant",
-    "base": "z"
+    "group": "z",
+    "terms": {
+      "zh": 80
+    }
   },
   {
     "input": "ɸ",
     "name": "Voiceless bilabial fricative",
-    "base": "f",
+    "group": "f",
     "terms": {
-      "ph": 90
+      "ph": 100,
+      "f": 80
     }
   },
   {
     "input": "β",
     "name": "Voiced bilabial fricative",
-    "base": "b",
+    "group": "b",
     "terms": {
-      "v": 50,
-      "bh": 90
+      "bh": 100,
+      "v": 50
     }
   },
   {
@@ -278,7 +282,7 @@
   {
     "input": "θ",
     "name": "Voiceless dental fricative",
-    "base": "t",
+    "group": "t",
     "terms": {
       "þ": 100,
       "th": 100
@@ -287,7 +291,7 @@
   {
     "input": "ð",
     "name": "Voiced dental fricative",
-    "base": "d",
+    "group": "d",
     "terms": {
       "dh": 100,
       "th": 80
@@ -296,7 +300,7 @@
   {
     "input": "ç",
     "name": "Voiceless palatal fricative",
-    "base": "c",
+    "group": "c",
     "terms": {
       "c,": 100
     }
@@ -313,20 +317,19 @@
   {
     "input": "ɣ",
     "name": "Voiced velar fricative",
-    "base": "{g}",
+    "group": "{g}",
     "terms": {
-      "g": 90,
-      "gh": 90,
+      "gh": 100,
       "y": 50
     }
   },
   {
     "input": "χ",
     "name": "Voiceless uvular fricative",
-    "base": "x",
+    "group": "x",
     "terms": {
-      "kh": 50,
-      "xh": 80
+      "kh": 90,
+      "xh": 100
     }
   },
   {
@@ -337,9 +340,9 @@
   {
     "input": "ħ",
     "name": "Voiceless pharyngeal fricative",
-    "base": "h",
+    "group": "h",
     "terms": {
-      "h-": 90
+      "h-": 100
     }
   },
   {
@@ -413,7 +416,7 @@
   {
     "input": "j{voicelessAbove}",
     "name": "Voiceless palatal approximant",
-    "base": "j"
+    "group": "j"
   },
   {
     "input": "j",
@@ -485,7 +488,7 @@
   {
     "input": "r{voiceless}",
     "name": "Voiceless alveolar trill",
-    "base": "r",
+    "group": "r",
     "terms": {
       "dental": 15,
       "postalveolar": 15
@@ -523,15 +526,15 @@
     "name": "Voiced epiglottal trill",
     "base": "{?}",
     "terms": {
-      "?": 50
+      "?-": 90
     }
   },
   {
     "input": "ɬ",
     "name": "Voiceless alveolar lateral fricative",
-    "base": "l",
+    "group": "l",
     "terms": {
-      "l-": 85,
+      "l-": 100,
       "dental": 15,
       "postalveolar": 15
     }
@@ -539,9 +542,9 @@
   {
     "input": "ɮ",
     "name": "Voiced alveolar lateral fricative",
-    "base": "l",
+    "group": "l",
     "terms": {
-      "lzh": 90,
+      "lzh": 100,
       "dental": 15,
       "postalveolar": 15
     }
@@ -549,7 +552,7 @@
   {
     "input": "l{voiceless}",
     "name": "Voiceless alveolar lateral approximant",
-    "base": "l",
+    "group": "l",
     "terms": {
       "dental": 15,
       "postalveolar": 15
@@ -588,9 +591,9 @@
   {
     "input": "ʎ",
     "name": "Palatal lateral approximant",
-    "base": "l",
+    "group": "l",
     "terms": {
-      "ly": 80,
+      "ly": 100,
       "y": 25,
       "voiced": 20
     }
@@ -628,11 +631,11 @@
   {
     "input": "ʍ",
     "name": "Voiceless labio-velar approximant",
-    "base": "w",
+    "group": "w",
     "terms": {
+      "wh": 100,
+      "hw": 90,
       "m": 30,
-      "hw": 80,
-      "wh": 90,
       "labial": 20
     }
   },
@@ -642,7 +645,6 @@
     "base": "h",
     "terms": {
       "labialized": 20,
-      "labialised": 20,
       "labial": 20
     }
   },
@@ -652,18 +654,16 @@
     "base": "h",
     "terms": {
       "labialized": 20,
-      "labialised": 20,
       "labial": 20
     }
   },
   {
     "input": "ɫ",
     "name": "Velarized alveolar lateral approximant",
-    "base": "l",
+    "group": "l",
     "terms": {
       "l~": 100,
-      "dark": 30,
-      "velarised": 20
+      "dark": 30
     }
   },
   {
