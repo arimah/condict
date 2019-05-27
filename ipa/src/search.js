@@ -147,6 +147,8 @@ const search = query => {
       return;
     }
 
+    match.matchingQueryWords.add(query);
+
     const existingTerm = match.terms.find(t => t.term === term);
     if (existingTerm) {
       if (existingTerm.score < score) {
@@ -159,7 +161,6 @@ const search = query => {
     } else {
       match.totalScore += score;
       match.terms.push({term, query, score});
-      match.matchingQueryWords.add(query);
     }
   };
 
