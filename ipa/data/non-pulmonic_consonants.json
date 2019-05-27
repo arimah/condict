@@ -240,7 +240,7 @@
   },
   {
     "input": "ɗ{voiceless}",
-    "name": "Voiced alveolar implosive",
+    "name": "Voiceless alveolar implosive",
     "base": "d",
     "terms": {
       "dental": 15,
@@ -254,7 +254,7 @@
   },
   {
     "input": "ᶑ{voicelessAbove}",
-    "name": "Voiced retroflex implosive",
+    "name": "Voiceless retroflex implosive",
     "base": "d"
   },
   {
@@ -264,7 +264,7 @@
   },
   {
     "input": "ʄ{voicelessAbove}",
-    "name": "Voiced palatal implosive",
+    "name": "Voiceless palatal implosive",
     "base": "j"
   },
   {
@@ -277,7 +277,7 @@
   },
   {
     "input": "ɠ{voicelessAbove}",
-    "name": "Voiced velar implosive",
+    "name": "Voiceless velar implosive",
     "base": "{g}",
     "terms": {
       "g": 85
@@ -293,7 +293,7 @@
   },
   {
     "input": "ʛ{voiceless}",
-    "name": "Voiced uvular implosive",
+    "name": "Voiceless uvular implosive",
     "base": "{g}",
     "terms": {
       "g": 85

@@ -1,16 +1,4 @@
 {
-  "voiceless": [
-    {"term": "devoiced", "scoreDelta": -5},
-    {"term": "unvoiced"}
-  ],
-  "devoiced": [
-    {"term": "unvoiced"},
-    {"term": "voiceless", "scoreDelta": -5}
-  ],
-  "unvoiced": [
-    {"term": "voiceless"},
-    {"term": "devoiced"}
-  ],
   "bilabial": [
     {"term": "labial"}
   ],

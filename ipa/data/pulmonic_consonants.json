@@ -9,10 +9,7 @@
   {
     "input": "m{voiceless}",
     "name": "Voiceless bilabial nasal",
-    "group": "m",
-    "terms": {
-      "devoiced": 20
-    }
+    "group": "m"
   },
   {
     "input": "ɱ",
@@ -38,8 +35,7 @@
     "group": "n",
     "terms": {
       "dental": 15,
-      "postalveolar": 15,
-      "devoiced": 20
+      "postalveolar": 15
     }
   },
   {
@@ -53,10 +49,7 @@
   {
     "input": "ɳ{voicelessAbove}",
     "name": "Voiceless retroflex nasal",
-    "base": "n",
-    "terms": {
-      "devoiced": 20
-    }
+    "base": "n"
   },
   {
     "input": "ɲ",
@@ -72,8 +65,7 @@
     "name": "Voiceless palatal nasal",
     "group": "n",
     "terms": {
-      "nj": 90,
-      "devoiced": 20
+      "nj": 90
     }
   },
   {
@@ -90,8 +82,7 @@
     "name": "Voiceless velar nasal",
     "group": "n",
     "terms": {
-      "ng": 90,
-      "devoiced": 20
+      "ng": 90
     }
   },
   {

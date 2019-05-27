@@ -148,8 +148,6 @@
       "_*": 75,
       "below": 20,
       "voiceless": 30,
-      "devoiced": 30,
-      "unvoiced": 30,
       "diacritic": 20
     }
   },
@@ -163,8 +161,6 @@
       "*": 65,
       "above": 20,
       "voiceless": 30,
-      "devoiced": 30,
-      "unvoiced": 30,
       "diacritic": 20
     }
   },
