@@ -116,6 +116,13 @@ const findMatches = (addMatch, term) => {
   return false;
 };
 
+const updateQueryWordScore = (match, query, score) => {
+  const prevScore = match.queryWordScores.get(query) || 0;
+  const nextScore = Math.max(prevScore, score);
+  match.queryWordScores.set(query, nextScore);
+  match.totalScore += nextScore - prevScore;
+};
+
 const search = query => {
   const terms = Array.from(new Set(
     query.trim()
@@ -130,14 +137,13 @@ const search = query => {
 
     const match = allMatches.get(char);
     if (match) {
-      match.totalScore += score;
       match.terms.push(termMatch);
-      match.matchingQueryWords.add(query);
+      updateQueryWordScore(match, query, score);
     } else {
       allMatches.set(char, {
         totalScore: score,
         terms: [termMatch],
-        matchingQueryWords: new Set().add(query),
+        queryWordScores: new Map().set(query, score),
       });
     }
   };
@@ -147,19 +153,15 @@ const search = query => {
       return;
     }
 
-    match.matchingQueryWords.add(query);
+    updateQueryWordScore(match, query, score);
 
     const existingTerm = match.terms.find(t => t.term === term);
     if (existingTerm) {
       if (existingTerm.score < score) {
-        match.totalScore -= existingTerm.score;
-        match.totalScore += score;
-
         existingTerm.score = score;
         existingTerm.query = query;
       }
     } else {
-      match.totalScore += score;
       match.terms.push({term, query, score});
     }
   };
@@ -179,10 +181,10 @@ const search = query => {
     // and the number of matching terms must be at least as big as the
     // number of query words.
     .filter(([_, match]) =>
-      match.matchingQueryWords.size === terms.length &&
+      match.queryWordScores.size === terms.length &&
       match.terms.length >= terms.length
     )
-    // Resolve each character index and remove the the 'matchingQueryWords' property.
+    // Resolve each character index and remove the the 'queryWordScores' property.
     .map(([char, {totalScore, terms}]) => [Chars[char], {totalScore, terms}])
     // Sort by score primarily, by input string secondarily.
     .sort((a, b) =>
