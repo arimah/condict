@@ -5,8 +5,19 @@
     "group": "p",
     "terms": {
       "p'": 100,
-      "voiceless": 20,
-      "consonant": 20
+      "voiceless": 20
+    }
+  },
+  {
+    "input": "t{dental}{ejective}",
+    "name": "Dental ejective",
+    "group": "t",
+    "terms": {
+      "t['": 100,
+      "t]'": 100,
+      "t'[": 100,
+      "t']": 100,
+      "voiceless": 20
     }
   },
   {
@@ -15,10 +26,7 @@
     "group": "t",
     "terms": {
       "t'": 100,
-      "dental": 15,
-      "postalveolar": 15,
-      "voiceless": 20,
-      "consonant": 20
+      "voiceless": 20
     }
   },
   {
@@ -27,8 +35,7 @@
     "group": "t",
     "terms": {
       "t'": 90,
-      "voiceless": 20,
-      "consonant": 20
+      "voiceless": 20
     }
   },
   {
@@ -37,8 +44,7 @@
     "group": "c",
     "terms": {
       "c'": 100,
-      "voiceless": 20,
-      "consonant": 20
+      "voiceless": 20
     }
   },
   {
@@ -47,8 +53,7 @@
     "group": "k",
     "terms": {
       "k'": 100,
-      "voiceless": 20,
-      "consonant": 20
+      "voiceless": 20
     }
   },
   {
@@ -57,8 +62,7 @@
     "group": "q",
     "terms": {
       "q'": 100,
-      "voiceless": 20,
-      "consonant": 20
+      "voiceless": 20
     }
   },
   {
@@ -67,8 +71,7 @@
     "group": "{?}",
     "terms": {
       "?'": 100,
-      "voiceless": 20,
-      "consonant": 20
+      "voiceless": 20
     }
   },
   {
@@ -214,8 +217,6 @@
     "group": "Clicks",
     "terms": {
       "||": 90,
-      "dental": 15,
-      "postalveolar": 15,
       "voiceless": 20
     }
   },
@@ -230,22 +231,23 @@
     "base": "b"
   },
   {
+    "input": "ɗ{dental}",
+    "name": "Voiced dental implosive",
+    "group": "d",
+    "terms": {
+      "d[": 90,
+      "d]": 90
+    }
+  },
+  {
     "input": "ɗ",
     "name": "Voiced alveolar implosive",
-    "base": "d",
-    "terms": {
-      "dental": 15,
-      "postalveolar": 15
-    }
+    "base": "d"
   },
   {
     "input": "ɗ{voiceless}",
     "name": "Voiceless alveolar implosive",
-    "base": "d",
-    "terms": {
-      "dental": 15,
-      "postalveolar": 15
-    }
+    "base": "d"
   },
   {
     "input": "ᶑ",

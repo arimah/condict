@@ -204,8 +204,8 @@
     }
   },
   {
-    "input": "\u032A",
-    "display": "{placeholder}\u032A",
+    "input": "{dental}",
+    "display": "{placeholder}{dental}",
     "name": "Dental",
     "group": "Diacritics",
     "terms": {

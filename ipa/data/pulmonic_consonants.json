@@ -21,22 +21,26 @@
     }
   },
   {
+    "input": "n{dental}",
+    "name": "Dental nasal",
+    "group": "n",
+    "terms": {
+      "n[": 100,
+      "n]": 100,
+      "voiced": 20
+    }
+  },
+  {
     "input": "n",
     "name": "Alveolar nasal",
     "terms": {
-      "dental": 15,
-      "postalveolar": 15,
       "voiced": 20
     }
   },
   {
     "input": "n{voiceless}",
     "name": "Voiceless alveolar nasal",
-    "group": "n",
-    "terms": {
-      "dental": 15,
-      "postalveolar": 15
-    }
+    "group": "n"
   },
   {
     "input": "ɳ",
@@ -102,20 +106,30 @@
     "name": "Voiced bilabial stop"
   },
   {
-    "input": "t",
-    "name": "Voiceless alveolar stop",
+    "input": "t{dental}",
+    "name": "Voiceless dental stop",
+    "group": "t",
     "terms": {
-      "dental": 15,
-      "postalveolar": 15
+      "t[": 100,
+      "t]": 100
     }
   },
   {
-    "input": "d",
-    "name": "Voiced alveolar stop",
+    "input": "d{dental}",
+    "name": "Voiced dental stop",
+    "group": "d",
     "terms": {
-      "dental": 15,
-      "postalveolar": 15
+      "d[": 100,
+      "d]": 100
     }
+  },
+  {
+    "input": "t",
+    "name": "Voiceless alveolar stop"
+  },
+  {
+    "input": "d",
+    "name": "Voiced alveolar stop"
   },
   {
     "input": "ʈ",
@@ -182,18 +196,30 @@
     }
   },
   {
-    "input": "s",
-    "name": "Voiceless alveolar sibilant",
+    "input": "s{dental}",
+    "name": "Voiceless dental sibilant",
+    "group": "s",
     "terms": {
-      "dental": 15
+      "s[": 100,
+      "s]": 100
     }
   },
   {
-    "input": "z",
-    "name": "Voiced alveolar sibilant",
+    "input": "z{dental}",
+    "name": "Voiced dental sibilant",
+    "group": "z",
     "terms": {
-      "dental": 15
+      "z[": 100,
+      "z]": 100
     }
+  },
+  {
+    "input": "s",
+    "name": "Voiceless alveolar sibilant"
+  },
+  {
+    "input": "z",
+    "name": "Voiced alveolar sibilant"
   },
   {
     "input": "ʃ",
@@ -375,19 +401,13 @@
   {
     "input": "ɹ{voiceless}",
     "name": "Voiceless alveolar approximant",
-    "base": "r",
-    "terms": {
-      "dental": 15,
-      "postalveolar": 15
-    }
+    "base": "r"
   },
   {
     "input": "ɹ",
     "name": "Alveolar approximant",
     "base": "r",
     "terms": {
-      "dental": 15,
-      "postalveolar": 15,
       "voiced": 20
     }
   },
@@ -479,18 +499,12 @@
   {
     "input": "r{voiceless}",
     "name": "Voiceless alveolar trill",
-    "group": "r",
-    "terms": {
-      "dental": 15,
-      "postalveolar": 15
-    }
+    "group": "r"
   },
   {
     "input": "r",
     "name": "Alveolar trill",
     "terms": {
-      "dental": 15,
-      "postalveolar": 15,
       "voiced": 20
     }
   },
@@ -525,9 +539,7 @@
     "name": "Voiceless alveolar lateral fricative",
     "group": "l",
     "terms": {
-      "l-": 100,
-      "dental": 15,
-      "postalveolar": 15
+      "l-": 100
     }
   },
   {
@@ -535,26 +547,18 @@
     "name": "Voiced alveolar lateral fricative",
     "group": "l",
     "terms": {
-      "lzh": 100,
-      "dental": 15,
-      "postalveolar": 15
+      "lzh": 100
     }
   },
   {
     "input": "l{voiceless}",
     "name": "Voiceless alveolar lateral approximant",
-    "group": "l",
-    "terms": {
-      "dental": 15,
-      "postalveolar": 15
-    }
+    "group": "l"
   },
   {
     "input": "l",
     "name": "Alveolar lateral approximant",
     "terms": {
-      "dental": 15,
-      "postalveolar": 15,
       "voiced": 20
     }
   },
@@ -607,8 +611,6 @@
     "name": "Alveolar lateral flap",
     "base": "r",
     "terms": {
-      "dental": 15,
-      "postalveolar": 15,
       "voiced": 20
     }
   },

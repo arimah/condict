@@ -1,4 +1,7 @@
 {
+  "voiceless": [
+    {"term": "unvoiced"}
+  ],
   "bilabial": [
     {"term": "labial"}
   ],
@@ -41,6 +44,9 @@
   ],
   "approximant": [
     {"term": "glide"},
+    {"term": "consonant"}
+  ],
+  "ejective": [
     {"term": "consonant"}
   ],
   "click": [
