@@ -284,6 +284,7 @@
     "name": "Voiced bilabial fricative",
     "group": "b",
     "terms": {
+      "ß": 100,
       "bh": 100,
       "v": 50
     }
