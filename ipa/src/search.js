@@ -34,9 +34,9 @@ const collectLeaves = (addMatch, tree, query, gapSize) => {
   }
 };
 
-const traversePath = (path, term, treeOffset, termOffset, gapSize) => {
+const traversePath = (path, term, termOffset, gapSize) => {
   const pathLength = path.length;
-  for (let i = 1; i < pathLength; i++, treeOffset++) {
+  for (let i = 1; i < pathLength; i++) {
     if (termOffset === term.length) {
       break;
     }
@@ -49,10 +49,10 @@ const traversePath = (path, term, treeOffset, termOffset, gapSize) => {
       gapSize += 1;
     }
   }
-  return [treeOffset, termOffset, gapSize];
+  return [termOffset, gapSize];
 };
 
-const searchTree = (addMatch, tree, term, treeOffset, termOffset, gapSize) => {
+const searchTree = (addMatch, tree, term, termOffset, gapSize) => {
   // If this tree has a multi-character path, we must traverse it as we
   // would a set of single-branch trees. Example:
   //
@@ -63,10 +63,9 @@ const searchTree = (addMatch, tree, term, treeOffset, termOffset, gapSize) => {
   //   matches:
   //              v icel ss
   if (tree.path.length > 1) {
-    [treeOffset, termOffset, gapSize] = traversePath(
+    [termOffset, gapSize] = traversePath(
       tree.path,
       term,
-      treeOffset,
       termOffset,
       gapSize
     );
@@ -92,7 +91,6 @@ const searchTree = (addMatch, tree, term, treeOffset, termOffset, gapSize) => {
         addMatch,
         br,
         term,
-        treeOffset + 1,
         termOffset + branchIsMatch,
         gapSize + !branchIsMatch
       );
@@ -110,7 +108,7 @@ const findMatches = (addMatch, term) => {
   if (rootTree) {
     // We start at position 1 because we've already successfully matched
     // the first letter.
-    return searchTree(addMatch, rootTree, term, 1, 1, 0);
+    return searchTree(addMatch, rootTree, term, 1, 0);
   }
   // No match
   return false;
