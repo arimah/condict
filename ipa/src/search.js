@@ -8,8 +8,8 @@ const SearchTableRoot = new Map(
   SearchTable.map(branch => [branch.path, branch])
 );
 
-// TODO: Normalize terms further - remove extraneous characters etc.?
-const normalizeTerm = term => term.toLowerCase();
+// TODO: Normalize query words further - remove extraneous characters etc.?
+const normalizeQueryWord = q => q.toLowerCase();
 
 const collectLeaves = (addMatch, tree, query, gapSize) => {
   if (tree.leaves) {
@@ -34,25 +34,25 @@ const collectLeaves = (addMatch, tree, query, gapSize) => {
   }
 };
 
-const traversePath = (path, term, termOffset, gapSize) => {
+const traversePath = (path, query, queryOffset, gapSize) => {
   const pathLength = path.length;
   for (let i = 1; i < pathLength; i++) {
-    if (termOffset === term.length) {
+    if (queryOffset === query.length) {
       break;
     }
 
-    if (term[termOffset] === path[i]) {
+    if (query[queryOffset] === path[i]) {
       // The letters are the same - it's a match!
-      termOffset += 1;
+      queryOffset += 1;
     } else {
       // No match - skip a letter.
       gapSize += 1;
     }
   }
-  return [termOffset, gapSize];
+  return [queryOffset, gapSize];
 };
 
-const searchTree = (addMatch, tree, term, termOffset, gapSize) => {
+const searchTree = (addMatch, tree, query, queryOffset, gapSize) => {
   // If this tree has a multi-character path, we must traverse it as we
   // would a set of single-branch trees. Example:
   //
@@ -63,35 +63,35 @@ const searchTree = (addMatch, tree, term, termOffset, gapSize) => {
   //   matches:
   //              v icel ss
   if (tree.path.length > 1) {
-    [termOffset, gapSize] = traversePath(
+    [queryOffset, gapSize] = traversePath(
       tree.path,
-      term,
-      termOffset,
+      query,
+      queryOffset,
       gapSize
     );
   }
 
-  // If we're at the end of the term, we've successfully matched part of
+  // If we're at the end of the query, we've successfully matched part of
   // the search tree, so we collect all leaves as matches.
-  if (termOffset === term.length) {
+  if (queryOffset === query.length) {
     collectLeaves(
       addMatch,
       tree,
-      term,
+      query,
       gapSize
     );
     return true;
   } else if (tree.branches) {
-    // We still have unconsumed search term characters - search the
+    // We still have unconsumed search query characters - search the
     // subtree for matches!
     let hasMatch = false;
     tree.branches.forEach(br => {
-      const branchIsMatch = br.path[0] === term[termOffset];
+      const branchIsMatch = br.path[0] === query[queryOffset];
       const isMatch = searchTree(
         addMatch,
         br,
-        term,
-        termOffset + branchIsMatch,
+        query,
+        queryOffset + branchIsMatch,
         gapSize + !branchIsMatch
       );
       hasMatch = hasMatch || isMatch;
@@ -103,12 +103,12 @@ const searchTree = (addMatch, tree, term, termOffset, gapSize) => {
   return false;
 };
 
-const findMatches = (addMatch, term) => {
-  const rootTree = SearchTableRoot.get(term[0]);
+const findMatches = (addMatch, query) => {
+  const rootTree = SearchTableRoot.get(query[0]);
   if (rootTree) {
     // We start at position 1 because we've already successfully matched
     // the first letter.
-    return searchTree(addMatch, rootTree, term, 1, 0);
+    return searchTree(addMatch, rootTree, query, 1, 0);
   }
   // No match
   return false;
@@ -122,15 +122,15 @@ const updateQueryWordScore = (match, query, score) => {
 };
 
 const search = query => {
-  const terms = Array.from(new Set(
+  const queryWords = Array.from(new Set(
     query.trim()
       .split(/\s+/)
       .filter(Boolean)
-      .map(normalizeTerm)
+      .map(normalizeQueryWord)
   ));
 
   const allMatches = new Map();
-  const addFirstTermMatch = (char, term, query, score) => {
+  const addFirstQueryWordMatch = (char, term, query, score) => {
     const termMatch = {term, query, score};
 
     const match = allMatches.get(char);
@@ -145,7 +145,7 @@ const search = query => {
       });
     }
   };
-  const addSubsequentTermMatch = (char, term, query, score) => {
+  const addSubsequentQueryWordMatch = (char, term, query, score) => {
     const match = allMatches.get(char);
     if (!match) {
       return;
@@ -164,10 +164,12 @@ const search = query => {
     }
   };
 
-  for (let i = 0; i < terms.length; i++) {
-    const term = terms[i];
-    const addMatch = i === 0 ? addFirstTermMatch : addSubsequentTermMatch;
-    if (!findMatches(addMatch, term)) {
+  for (let i = 0; i < queryWords.length; i++) {
+    const queryWord = queryWords[i];
+    const addMatch = i === 0
+      ? addFirstQueryWordMatch
+      : addSubsequentQueryWordMatch;
+    if (!findMatches(addMatch, queryWord)) {
       // If a word in the search string didn't match anything, we can return
       // an empty result right away.
       return [];
@@ -179,8 +181,8 @@ const search = query => {
     // and the number of matching terms must be at least as big as the
     // number of query words.
     .filter(([_, match]) =>
-      match.queryWordScores.size === terms.length &&
-      match.terms.length >= terms.length
+      match.queryWordScores.size === queryWords.length &&
+      match.terms.length >= queryWords.length
     )
     // Resolve each character index and remove the the 'queryWordScores' property.
     .map(([char, {totalScore, terms}]) => [Chars[char], {totalScore, terms}])
