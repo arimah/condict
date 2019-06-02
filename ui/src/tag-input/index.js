@@ -433,10 +433,7 @@ export class TagInput extends Component {
         <SROnly id={this.tagDescId}>
           {this.getTagDescription()}
         </SROnly>
-        <SROnly
-          aria-live={this.hasFocus ? 'polite' : 'off'}
-          aria-relevant='additions text'
-        >
+        <SROnly aria-live={this.hasFocus ? 'polite' : 'off'}>
           <span key={announcement.key}>
             {announcement.text}
           </span>
