@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import MdiDeleteIcon from 'mdi-react/DeleteIcon';
 
 import {TextInput} from '@condict/ui';
 
@@ -22,4 +23,10 @@ export const NameInput = styled(TextInput)`
 
 export const ValueInput = styled(TextInput)`
   width: 300px;
+`;
+
+export const DeleteIcon = styled(MdiDeleteIcon).attrs({
+  size: 18,
+})`
+  margin: -4px -2px;
 `;

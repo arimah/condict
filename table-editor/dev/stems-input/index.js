@@ -63,10 +63,11 @@ export default class StemsInput extends Component {
         <Button
           intent='danger'
           slim
-          label='Delete'
+          minimal
+          label='Delete stem'
           onClick={() => this.handleDeleteStem(index)}
         >
-          X
+          <S.DeleteIcon/>
         </Button>
       </S.Item>
     );
