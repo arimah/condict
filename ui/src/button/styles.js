@@ -7,20 +7,19 @@ import LightTheme from '../theme/light';
 export const ButtonStyle = css`
   display: inline-block;
   box-sizing: border-box;
-  padding: ${ifProp('slim', '6px 8px', '8px 16px')};
+  padding: ${ifProp('slim', '4px 6px', '6px 14px')};
   font: inherit;
   font-weight: normal;
   text-align: center;
-  border: none;
+  border: 2px solid;
   border-radius: ${ifProp('slim', '4px', '7px')};
   position: relative;
 
   transition-duration: ${theme('timing.short')};
   transition-timing-function: ease-in-out;
-  transition-property: color, background-color;
+  transition-property: color, border-color, background-color;
 
   &:focus {
-    padding: ${ifProp('slim', '4px 6px', '6px 14px')};
     border: 2px solid ${theme('focus.color')};
     ${theme('focus.style')}
   }
@@ -28,6 +27,7 @@ export const ButtonStyle = css`
   ${ifProp('minimal',
     css`
       color: ${intentVar('fg')};
+      border-color: transparent;
       background-color: transparent;
 
       &:hover {
@@ -45,6 +45,7 @@ export const ButtonStyle = css`
     `,
     css`
       color: ${intentVar('altFg')};
+      border-color: ${intentVar('borderColor')};
       background-color: ${intentVar('altBg')};
 
       &:hover {
@@ -57,6 +58,7 @@ export const ButtonStyle = css`
 
       &:disabled {
         color: ${intentVar('disabledAltFg')};
+        border-color: ${intentVar('disabledBorderColor')};
         background-color: ${intentVar('disabledAltBg')};
       }
     `

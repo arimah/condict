@@ -28,7 +28,7 @@ const DarkTheme = createTheme({
     disabledAltFg: '#000000',
     disabledAltBg: primaryColor(Saturation.low, 30),
     borderColor: primaryColor(Saturation.high, 65),
-    disabledBorderColor: primaryColor(Saturation.low, 35),
+    disabledBorderColor: primaryColor(Saturation.low, 30),
   },
 
   secondary: {
@@ -44,8 +44,8 @@ const DarkTheme = createTheme({
     activeAltBg: secondaryColor(Saturation.high, 80),
     disabledAltFg: '#000000',
     disabledAltBg: secondaryColor(Saturation.low, 30),
-    borderColor: secondaryColor(Saturation.high, 90),
-    disabledBorderColor: secondaryColor(Saturation.low, 35),
+    borderColor: secondaryColor(Saturation.high, 85),
+    disabledBorderColor: secondaryColor(Saturation.low, 30),
   },
 
   danger: {

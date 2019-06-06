@@ -36,25 +36,16 @@ export const Page = styled(Button).attrs({
   intent: 'secondary',
 })`
   display: block;
+  padding: 6px 4px;
   min-width: 36px;
 
-  ${ifProp('current',
-    css`
-      padding: 6px 4px;
-      border: 2px solid ${theme('general.borderColor')};
+  ${ifProp('current', css`
+    border-color: ${theme('general.borderColor')};
 
-      &:disabled {
-        border-color: ${theme('general.disabledBorderColor')};
-      }
-    `,
-    css`
-      padding: 8px 6px;
-    `
-  )}
-
-  &:focus {
-    padding: 6px 4px;
-  }
+    &:disabled {
+      border-color: ${theme('general.disabledBorderColor')};
+    }
+  `)}
 
   ${ifProp('loading', css`
     && {
