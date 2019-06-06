@@ -13,7 +13,8 @@ const Intents = [
 export default Object.freeze({
   name: 'Switch',
   initialState: {
-    checked: false,
+    checked1: false,
+    checked2: true,
     intent: 'primary',
     disabled: false,
   },
@@ -32,24 +33,24 @@ export default Object.freeze({
     />,
   ],
   // eslint-disable-next-line react/prop-types, react/display-name
-  contents: ({intent, checked, disabled}, _setState, toggleState) =>
+  contents: (state, _setState, toggleState) =>
     <Demo.List>
       <Demo.Row>
         <Switch
-          intent={intent}
-          checked={checked}
-          disabled={disabled}
+          intent={state.intent}
+          checked={state.checked1}
+          disabled={state.disabled}
           label='First option'
-          onChange={() => toggleState('checked')}
+          onChange={() => toggleState('checked1')}
         />
       </Demo.Row>
       <Demo.Row>
         <Switch
-          intent={intent}
-          checked={!checked}
-          disabled={disabled}
+          intent={state.intent}
+          checked={state.checked2}
+          disabled={state.disabled}
           label='Second option'
-          onChange={() => toggleState('checked')}
+          onChange={() => toggleState('checked2')}
         />
       </Demo.Row>
     </Demo.List>,
