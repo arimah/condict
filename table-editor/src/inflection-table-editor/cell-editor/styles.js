@@ -91,10 +91,10 @@ export const CellPopup = styled.div`
   font-weight: normal;
   white-space: nowrap;
 
-  border: 2px solid ${theme('primary.borderColor')};
+  border: 2px solid ${theme('general.borderColor')};
   border-radius: 3px;
-  background-color: ${theme('primary.bg')};
-  color: ${theme('general.fg')};
+  background-color: ${theme('general.altBg')};
+  color: ${theme('general.altFg')};
   box-shadow: ${theme('shadow.elevation2')};
 
   ::after {
@@ -106,9 +106,9 @@ export const CellPopup = styled.div`
     width: 11px;
     height: 11px;
 
-    border-top: 2px solid ${theme('primary.borderColor')};
-    border-right: 2px solid ${theme('primary.borderColor')};
-    background-color: ${theme('primary.bg')};
+    border-top: 2px solid ${theme('general.borderColor')};
+    border-right: 2px solid ${theme('general.borderColor')};
+    background-color: ${theme('general.altBg')};
     transform: rotate(-45deg);
   }
 `;
@@ -126,7 +126,7 @@ export const CellSettingsGroup = styled.div`
 export const CellSettingsSeparator = styled.div`
   margin-top: 10px;
   margin-bottom: 10px;
-  border-top: 1px solid ${theme('primary.borderColor')};
+  border-top: 1px solid ${theme('general.borderColor')};
 `;
 
 CellSettingsSeparator.defaultProps = {
@@ -144,14 +144,18 @@ export const DisplayNameInput = styled(TextInput)`
   width: 260px;
 `;
 
-export const DeriveDisplayNameButton = styled(Button)`
+export const DeriveDisplayNameButton = styled(Button).attrs({
+  slim: true,
+  intent: 'secondary',
+})`
   display: block;
   width: 260px;
 `;
 
+DeriveDisplayNameButton.defaultProps = null;
+
 export const DisplayNameDesc = styled.div`
   white-space: normal;
-  color: ${theme('primary.fg')};
 `;
 
 DisplayNameDesc.defaultProps = {

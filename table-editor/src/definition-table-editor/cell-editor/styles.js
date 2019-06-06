@@ -52,10 +52,10 @@ export const CellPopup = styled.div`
 
   font-weight: normal;
 
-  border: 2px solid ${theme('primary.borderColor')};
+  border: 2px solid ${theme('general.borderColor')};
   border-radius: 3px;
-  background-color: ${theme('primary.bg')};
-  color: ${theme('general.fg')};
+  background-color: ${theme('general.altBg')};
+  color: ${theme('general.altFg')};
   box-shadow: ${theme('shadow.elevation2')};
 
   ::after {
@@ -67,9 +67,9 @@ export const CellPopup = styled.div`
     width: 11px;
     height: 11px;
 
-    border-top: 2px solid ${theme('primary.borderColor')};
-    border-right: 2px solid ${theme('primary.borderColor')};
-    background-color: ${theme('primary.bg')};
+    border-top: 2px solid ${theme('general.borderColor')};
+    border-right: 2px solid ${theme('general.borderColor')};
+    background-color: ${theme('general.altBg')};
     transform: rotate(-45deg);
   }
 `;
@@ -78,7 +78,12 @@ CellPopup.defaultProps = {
   theme: LightTheme,
 };
 
-export const RevertButton = styled(Button)`
+export const RevertButton = styled(Button).attrs({
+  slim: true,
+  intent: 'secondary',
+})`
   display: block;
   width: 180px;
 `;
+
+RevertButton.defaultProps = null;

@@ -281,7 +281,6 @@ export default class CellEditor extends PureComponent {
         </S.DisplayNameLabel>
         {data.hasCustomDisplayName ? (
           <S.DeriveDisplayNameButton
-            slim
             label='Use automatic name'
             onClick={this.handleDeriveDisplayNameClick}
           />

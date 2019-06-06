@@ -315,7 +315,7 @@ class App extends Component {
                       </Toolbar.Button>
                       <Toolbar.Button
                         label='Delete selected column(s)'
-                        command='deleteSelectedRows'
+                        command='deleteSelectedColumns'
                       >
                         <DeleteColumnIcon/>
                       </Toolbar.Button>
