@@ -24,12 +24,7 @@ const collectLeaves = (addMatch, tree, query, gapSize) => {
   if (tree.branches) {
     for (let i = 0; i < tree.branches.length; i++) {
       const branch = tree.branches[i];
-      collectLeaves(
-        addMatch,
-        branch,
-        query,
-        gapSize
-      );
+      collectLeaves(addMatch, branch, query, gapSize);
     }
   }
 };
@@ -74,12 +69,7 @@ const searchTree = (addMatch, tree, query, queryOffset, gapSize) => {
   // If we're at the end of the query, we've successfully matched part of
   // the search tree, so we collect all leaves as matches.
   if (queryOffset === query.length) {
-    collectLeaves(
-      addMatch,
-      tree,
-      query,
-      gapSize
-    );
+    collectLeaves(addMatch, tree, query, gapSize);
     return true;
   } else if (tree.branches) {
     // We still have unconsumed search query characters - search the
