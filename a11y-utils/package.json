@@ -1,6 +1,6 @@
 {
   "name": "@condict/a11y-utils",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Accessibility utils for Condict, primarily its UI components.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
@@ -25,6 +25,6 @@
     "rimraf": "^2.6.3"
   },
   "peerDependencies": {
-    "styled-components": "^4.1.1"
+    "styled-components": "^5.0.0-beta.0"
   }
 }
