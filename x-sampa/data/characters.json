@@ -1,0 +1,362 @@
+{
+  " ": " ",
+  "a": "a",
+  "A": "ɑ",
+  "b": {"ipa": "b", "diacritics": ["below", "above"]},
+  "b_<": {"ipa": "ɓ", "diacritics": ["below", "above"]},
+  "B": {"ipa": "β", "diacritics": ["below", "after"]},
+  "B\\": "ʙ",
+  "c": "c",
+  "C": {"ipa": "ç", "diacritics": ["above", "after"]},
+  "d": {"ipa": "d", "diacritics": ["below", "after"]},
+  "d`": {"ipa": "ɖ", "diacritics": ["after", "below"]},
+  "d_<": {"ipa": "ɗ", "diacritics": ["below", "above"]},
+  "D": {"ipa": "ð", "diacritics": ["below", "after"]},
+  "e": "e",
+  "E": "ɛ",
+  "f": {"ipa": "f", "diacritics": ["below", "after"]},
+  "F": {"ipa": "ɱ", "diacritics": ["above", "after"]},
+  "g": {"ipa": "ɡ", "diacritics": ["above", "after"]},
+  "g_<": {"ipa": "ɠ", "diacritics": ["after", "above"]},
+  "G": {"ipa": "ɣ", "diacritics": ["above", "after"]},
+  "G\\": "ɢ",
+  "G\\_<": {"ipa": "ʛ", "diacritics": ["below", "above"]},
+  "h": {"ipa": "h", "diacritics": ["below", "above"]},
+  "h\\": {"ipa": "ɦ", "diacritics": ["below", "after"]},
+  "H": {"ipa": "ɥ", "diacritics": ["above", "after"]},
+  "H\\": "ʜ",
+  "i": "i",
+  "i\\": "ɨ",
+  "I": "ɪ",
+  "I\\": "ᵻ",
+  "j": {"ipa": "j", "diacritics": ["above", "after"]},
+  "j\\": {"ipa": "ʝ", "diacritics": ["above", "after"]},
+  "J": {"ipa": "ɲ", "diacritics": ["above", "below"]},
+  "J\\": {"ipa": "ɟ", "diacritics": ["above", "after"]},
+  "J\\_<": {"ipa": "ʄ", "diacritics": ["after"]},
+  "k": {"ipa": "k", "diacritics": ["below", "above"]},
+  "K": {"ipa": "ɬ", "diacritics": ["below", "after"]},
+  "K\\": {"ipa": "ɮ", "diacritics": ["above", "after"]},
+  "l": {"ipa": "l", "diacritics": ["below", "after"]},
+  "l`": {"ipa": "ɭ", "diacritics": ["after"]},
+  "l\\": {"ipa": "ɺ", "diacritics": ["below", "after"]},
+  "L": {"ipa": "ʎ", "diacritics": ["below", "after"]},
+  "L\\": "ʟ",
+  "m": "m",
+  "M": "ɯ",
+  "M\\": {"ipa": "ɰ", "diacritics": ["above", "after"]},
+  "n": "n",
+  "n`": {"ipa": "ɳ", "diacritics": ["above", "after"]},
+  "N": {"ipa": "ŋ", "diacritics": ["above", "after"]},
+  "N\\": "ɴ",
+  "o": "o",
+  "O": "ɔ",
+  "O\\": "ʘ",
+  "p": {"ipa": "p", "diacritics": ["above", "below"]},
+  "p\\": {"ipa": "ɸ", "diacritics": ["after"]},
+  "P": "ʋ",
+  "q": {"ipa": "q", "diacritics": ["above", "after"]},
+  "Q": "ɒ",
+  "r": "r",
+  "r`": {"ipa": "ɽ", "diacritics": ["above", "below"]},
+  "r\\": "ɹ",
+  "r\\`": {"ipa": "ɻ", "diacritics": ["above", "after"]},
+  "R": "ʁ",
+  "R\\": "ʀ",
+  "s": "s",
+  "s`": {"ipa": "ʂ", "diacritics": ["above", "after"]},
+  "s\\": "ɕ",
+  "S": {"ipa": "ʃ", "diacritics": ["after"]},
+  "t": {"ipa": "t", "diacritics": ["below", "above"]},
+  "t`": {"ipa": "ʈ", "diacritics": ["above", "after"]},
+  "T": {"ipa": "θ", "diacritics": ["below", "after"]},
+  "u": "u",
+  "u\\": "ʉ",
+  "U": "ʊ",
+  "U\\": "ᵿ",
+  "v": "v",
+  "v\\": "ʋ",
+  "V": "ʌ",
+  "w": "w",
+  "W": "ʍ",
+  "x": "x",
+  "x\\": {"ipa": "ɧ", "diacritics": ["after"]},
+  "X": {"ipa": "χ", "diacritics": ["above", "after"]},
+  "X\\": {"ipa": "ħ", "diacritics": ["below", "after"]},
+  "y": {"ipa": "y", "diacritics": ["above", "after"]},
+  "Y": "ʏ",
+  "z": "z",
+  "z`": {"ipa": "ʐ", "diacritics": ["above", "after"]},
+  "z\\": "ʑ",
+  "Z": {"ipa": "ʒ", "diacritics": ["above", "after"]},
+  ".": ".",
+  "\"": "ˈ",
+  "'": "ˈ",
+  "%": "ˌ",
+  ",": "ˌ",
+  ":": "ː",
+  ":\\": "ˑ",
+  "@": "ə",
+  "@\\": "ɘ",
+  "@`": "ɚ",
+  "{": "æ",
+  "}": "ʉ",
+  "1": "ɨ",
+  "2": "ø",
+  "3": "ɜ",
+  "3\\": "ɞ",
+  "4": "ɾ",
+  "5": {"ipa": "ɫ", "diacritics": ["below", "after"]},
+  "6": "ɐ",
+  "7": "ɤ",
+  "8": "ɵ",
+  "9": "œ",
+  "&": "ɶ",
+  "?": "ʔ",
+  "?\\": "ʕ",
+  "<\\": "ʢ",
+  ">\\": "ʡ",
+  "^": "ꜛ",
+  "!": "ꜜ",
+  "!\\": "ǃ",
+  "|": "|",
+  "|\\": "\u01C0",
+  "||": "\u2016",
+  "||\\": "\u01C1",
+  "=\\": "ǂ",
+  "-\\": "‿",
+  "<F>": "↘",
+  "<R>": "↗",
+  ";": {
+    "modifier": true,
+    "ipa": "ʲ"
+  },
+  "_\"": {
+    "diacritic": true,
+    "ipa": "\u0308"
+  },
+  "_+": {
+    "diacritic": true,
+    "ipa": "\u031F",
+    "placements": {
+      "below": "\u031F",
+      "after": "\u02D6"
+    }
+  },
+  "_-": {
+    "diacritic": true,
+    "ipa": "\u0320",
+    "placements": {
+      "below": "\u0320",
+      "after": "\u02D7"
+    }
+  },
+  "_/": {
+    "diacritic": true,
+    "ipa": "\u030C"
+  },
+  "_0": {
+    "diacritic": true,
+    "ipa": "\u0325",
+    "placements": {
+      "below": "\u0325",
+      "above": "\u030A"
+    }
+  },
+  "=": {
+    "diacritic": true,
+    "ipa": "\u0329",
+    "placements": {
+      "below": "\u0329",
+      "above": "\u030D"
+    }
+  },
+  "_=": {
+    "diacritic": true,
+    "ipa": "\u0329",
+    "placements": {
+      "below": "\u0329",
+      "above": "\u030D"
+    }
+  },
+  "_>": {
+    "modifier": true,
+    "ipa": "\u02BC"
+  },
+  "_?\\": {
+    "modifier": true,
+    "ipa": "ˤ"
+  },
+  "_\\": {
+    "diacritic": true,
+    "ipa": "\u0302"
+  },
+  "_^": {
+    "diacritic": true,
+    "ipa": "\u032F",
+    "placements": {
+      "below": "\u032F",
+      "above": "\u0311"
+    }
+  },
+  "_}": {
+    "diacritic": true,
+    "ipa": "\u031A"
+  },
+  "`": {
+    "modifier": true,
+    "ipa": "\u02DE"
+  },
+  "~": {
+    "diacritic": true,
+    "ipa": "\u0303"
+  },
+  "_~": {
+    "diacritic": true,
+    "ipa": "\u0303"
+  },
+  "_A": {
+    "diacritic": true,
+    "ipa": "\u0318"
+  },
+  "_a": {
+    "diacritic": true,
+    "ipa": "\u033A"
+  },
+  "_B": {
+    "diacritic": true,
+    "ipa": "\u030F",
+    "placements": {
+      "above": "\u030F",
+      "after": "˩"
+    }
+  },
+  "_c": {
+    "diacritic": true,
+    "ipa": "\u031C"
+  },
+  "_d": {
+    "diacritic": true,
+    "ipa": "\u032A"
+  },
+  "_e": {
+    "diacritic": true,
+    "ipa": "\u0334"
+  },
+  "_F": {
+    "diacritic": true,
+    "ipa": "\u0302"
+  },
+  "_G": {
+    "modifier": true,
+    "ipa": "ˠ"
+  },
+  "_H": {
+    "diacritic": true,
+    "ipa": "\u0301",
+    "placements": {
+      "above": "\u0301",
+      "after": "˦"
+    }
+  },
+  "_h": {
+    "modifier": true,
+    "ipa": "ʰ"
+  },
+  "_j": {
+    "modifier": true,
+    "ipa": "ʲ"
+  },
+  "_k": {
+    "diacritic": true,
+    "ipa": "\u0330"
+  },
+  "_L": {
+    "diacritic": true,
+    "ipa": "\u0300",
+    "placements": {
+      "above": "\u0300",
+      "after": "˨"
+    }
+  },
+  "_l": {
+    "modifier": true,
+    "ipa": "ˡ"
+  },
+  "_M": {
+    "diacritic": true,
+    "ipa": "\u0304",
+    "placements": {
+      "above": "\u0304",
+      "after": "˧"
+    }
+  },
+  "_m": {
+    "diacritic": true,
+    "ipa": "\u033B"
+  },
+  "_N": {
+    "diacritic": true,
+    "ipa": "\u033C"
+  },
+  "_n": {
+    "modifier": true,
+    "ipa": "ⁿ"
+  },
+  "_O": {
+    "diacritic": true,
+    "ipa": "\u0339"
+  },
+  "_o": {
+    "diacritic": true,
+    "ipa": "\u031E",
+    "placements": {
+      "below": "\u031E",
+      "after": "\u02D5"
+    }
+  },
+  "_q": {
+    "diacritic": true,
+    "ipa": "\u0319"
+  },
+  "_R": {
+    "diacritic": true,
+    "ipa": "\u030C"
+  },
+  "_r": {
+    "diacritic": true,
+    "ipa": "\u031D",
+    "placements": {
+      "below": "\u031D",
+      "after": "\u02D4"
+    }
+  },
+  "_T": {
+    "diacritic": true,
+    "ipa": "\u030B",
+    "placements": {
+      "above": "\u030B",
+      "after": "˥"
+    }
+  },
+  "_t": {
+    "diacritic": true,
+    "ipa": "\u0324"
+  },
+  "_v": {
+    "diacritic": true,
+    "ipa": "\u032C"
+  },
+  "_w": {
+    "modifier": true,
+    "ipa": "ʷ"
+  },
+  "_X": {
+    "diacritic": true,
+    "ipa": "\u0306"
+  },
+  "_x": {
+    "diacritic": true,
+    "ipa": "\u033D"
+  }
+}

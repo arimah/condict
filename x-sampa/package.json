@@ -1,0 +1,32 @@
+{
+  "name": "@condict/x-sampa",
+  "version": "0.1.0",
+  "description": "Utility for converting X-SAMPA (ASCII-based phonetic notation) to IPA (international phonetic alphabet).",
+  "repository": "github:arimah/condict",
+  "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "scripts": {
+    "clean": "rimraf lib",
+    "build": "npm run build:data && npm run build:main",
+    "build:data": "node build",
+    "build:main": "cross-env NODE_ENV=production babel src --out-dir lib && npm run copyData",
+    "copyData": "copyfiles --up 1 src/data.json lib/",
+    "prepublishOnly": "npm install && npm run clean && npm run build",
+    "lint": "eslint src/"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@condict/babel-preset": "^0.1.0",
+    "babel-eslint": "10.0.1",
+    "chalk": "^2.4.2",
+    "copyfiles": "^2.1.0",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-import": "^2.17.1",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.12.3",
+    "rimraf": "^2.6.3"
+  }
+}
