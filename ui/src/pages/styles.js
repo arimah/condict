@@ -47,7 +47,7 @@ export const Page = styled(Button).attrs({
     }
   `)}
 
-  ${ifProp('loading', css`
+  ${ifProp('isLoading', css`
     && {
       color: transparent;
     }

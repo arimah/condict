@@ -120,7 +120,7 @@ export const Pages = React.forwardRef((props, ref) => {
         aria-current={extraProps.current ? 'page' : undefined}
         aria-busy={extraProps.current && loading ? 'true' : undefined}
         current={extraProps.current}
-        loading={extraProps.current && loading}
+        isLoading={extraProps.current && loading}
         disabled={extraProps.disabled || disabled}
         onClick={() => onChange(p)}
       >
