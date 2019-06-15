@@ -73,7 +73,7 @@ Item.defaultProps = {
 export const ItemIcon = styled.span`
   display: block;
   flex: none;
-  padding: 2px 0 2px 4px;
+  padding: 1px 0 1px 4px;
   width: 24px;
 
   > .mdi-icon {
@@ -84,20 +84,20 @@ export const ItemIcon = styled.span`
 export const ItemLabel = styled.span`
   display: block;
   flex: 1 1 auto;
-  padding: 5px 8px;
+  padding: 4px 8px;
 `;
 
 
 export const ItemShortcut = styled.span`
   display: block;
   flex: none;
-  padding: 5px 0 5px 16px;
+  padding: 4px 0 4px 16px;
 `;
 
 export const ItemSubmenu = styled.span`
   display: block;
   flex: none;
-  padding: 2px 4px;
+  padding: 1px 4px;
   width: 24px;
 
   > .mdi-icon {
@@ -108,7 +108,7 @@ export const ItemSubmenu = styled.span`
 export const ItemCheck = styled.span`
   display: block;
   box-sizing: border-box;
-  margin: 5px 7px;
+  margin: 4px 7px;
   position: relative;
   width: 18px;
   height: 18px;
