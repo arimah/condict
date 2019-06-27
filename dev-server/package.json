@@ -1,6 +1,6 @@
 {
   "name": "@condict/dev-server",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Thin wrapper around webpack-dev-server that injects Condict-specific config.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
@@ -31,14 +31,11 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-is": "^16.8.6",
-    "styled-components": "^5.0.0-beta.0",
+    "styled-components": "^5.0.0-beta.6",
     "styled-tools": "^1.7.1"
   },
   "peerDependencies": {
     "react": "^16.8.0",
-    "react-dom": "^16.8.0",
-    "react-is": "^16.8.6",
-    "styled-components": "^5.0.0-beta.0",
-    "styled-tools": "^1.7.1"
+    "react-dom": "^16.8.0"
   }
 }
