@@ -26,7 +26,7 @@
     "@babel/core": "^7.4.3",
     "@condict/babel-preset-react": "^0.1.0",
     "@condict/dev-server": "^0.1.2",
-    "@condict/ui": "^0.2.10",
+    "@condict/ui": "^0.2.11",
     "babel-eslint": "10.0.1",
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
@@ -43,7 +43,7 @@
     "styled-tools": "^1.7.1"
   },
   "peerDependencies": {
-    "@condict/ui": "^0.2.10",
+    "@condict/ui": "^0.2.11",
     "prop-types": "^15",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",

@@ -1,21 +1,15 @@
 import styled, {css} from 'styled-components';
 import {theme, ifProp} from 'styled-tools';
 
-import {intentVar} from '../theme';
+import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
-
-const Transition = property => css`
-  transition-duration: ${theme('timing.short')};
-  transition-timing-function: ease-in-out;
-  transition-property: ${property};
-`;
 
 export const Label = styled.label`
   display: inline-block;
   box-sizing: border-box;
   color: ${ifProp('disabled', theme('general.disabledFg'), theme('general.fg'))};
 
-  ${Transition('color')}
+  ${transition('color')}
 `;
 
 Label.defaultProps = {
@@ -38,7 +32,7 @@ export const RadioContainer = styled.span`
     theme('general.borderColor')
   )};
 
-  ${Transition('border-color, background-color')}
+  ${transition('border-color, background-color')}
 
   ${Label}:hover & {
     border-color: ${ifProp('checked', intentVar('hoverAltBg'))};
@@ -112,7 +106,7 @@ export const RadioDot = styled.span`
     background-color: ${intentVar('activeAltBg')};
   }
 
-  ${Transition('opacity, background-color')}
+  ${transition('opacity, background-color')}
 `;
 
 RadioDot.defaultProps = {

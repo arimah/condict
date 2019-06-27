@@ -1,13 +1,8 @@
 import styled, {css} from 'styled-components';
 import {prop, theme, ifProp} from 'styled-tools';
 
+import {transition} from '../theme';
 import LightTheme from '../theme/light';
-
-const Transition = property => css`
-  transition-duration: ${theme('timing.short')};
-  transition-timing-function: ease-in-out;
-  transition-property: ${property};
-`;
 
 export const Input = styled.input`
   box-sizing: border-box;
@@ -17,7 +12,7 @@ export const Input = styled.input`
   background-color: ${theme('general.bg')};
   color: ${theme('general.fg')};
 
-  ${Transition('border-color, color')}
+  ${transition('border-color, color')}
 
   ${ifProp('minimal',
     css`
@@ -50,7 +45,7 @@ export const Input = styled.input`
   }
 
   &::placeholder {
-    ${Transition('color')}
+    ${transition('color')}
     color: ${theme('general.fg')};
     opacity: 0.65;
   }

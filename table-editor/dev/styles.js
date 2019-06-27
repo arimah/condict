@@ -1,7 +1,7 @@
 import styled, {createGlobalStyle} from 'styled-components';
 import {ifProp, theme} from 'styled-tools';
 
-import {TextInput} from '@condict/ui';
+import {TextInput, transition} from '@condict/ui';
 
 export const AppStyles = createGlobalStyle`
   body {
@@ -11,9 +11,7 @@ export const AppStyles = createGlobalStyle`
     )};
     color: ${theme('general.fg')};
 
-    transition-property: color, background-color;
-    transition-timing-function: linear;
-    transition-duration: ${theme('timing.short')};
+    ${transition('color, background-color')}
   }
 
   #app-root {

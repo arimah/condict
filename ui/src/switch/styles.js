@@ -1,14 +1,8 @@
 import styled, {css} from 'styled-components';
 import {theme, ifProp} from 'styled-tools';
 
-import {intentVar} from '../theme';
+import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
-
-const Transition = property => css`
-  transition-duration: ${theme('timing.short')};
-  transition-timing-function: ease-in-out;
-  transition-property: ${property};
-`;
 
 export const Label = styled.label`
   display: inline-block;
@@ -18,7 +12,7 @@ export const Label = styled.label`
     theme('general.fg')
   )};
 
-  ${Transition('color')}
+  ${transition('color')}
 `;
 
 Label.defaultProps = {
@@ -70,7 +64,7 @@ export const Switch = styled.span`
     theme('general.bg')
   )};
 
-  ${Transition('border-color, background-color')}
+  ${transition('border-color, background-color')}
 
   ${Label}:hover & {
     border-color: ${ifProp('checked', intentVar('hoverAltBg'))};
@@ -119,7 +113,7 @@ export const Dot = styled.span`
     props.theme.general.borderColor
   };
 
-  ${Transition('left, background-color')}
+  ${transition('left, background-color')}
 
   ${Label}:active & {
     left: ${ifProp('checked', '12px', '4px')};

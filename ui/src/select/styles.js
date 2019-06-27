@@ -1,13 +1,8 @@
 import styled, {css} from 'styled-components';
 import {prop, theme, ifProp} from 'styled-tools';
 
+import {transition} from '../theme';
 import LightTheme from '../theme/light';
-
-const Transition = property => css`
-  transition-duration: ${theme('timing.short')};
-  transition-timing-function: ease-in-out;
-  transition-property: ${property};
-`;
 
 export const Wrapper = styled.span`
   display: inline-block;
@@ -22,7 +17,7 @@ export const Select = styled.select`
   background-color: ${theme('general.bg')};
   color: ${theme('general.fg')};
 
-  ${Transition('border-color, color, background-color')}
+  ${transition('border-color, color, background-color')}
 
   ${ifProp('minimal',
     css`
@@ -68,7 +63,7 @@ export const Arrow = styled.svg.attrs({
   pointer-events: none;
   transform: translate(0, -50%);
 
-  ${Transition('color')}
+  ${transition('color')}
 
   color: ${ifProp('disabled',
     theme('general.disabledFg'),

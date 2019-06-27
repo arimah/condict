@@ -1,21 +1,15 @@
 import styled, {css} from 'styled-components';
 import {theme, ifProp} from 'styled-tools';
 
-import {intentVar} from '../theme';
+import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
-
-const Transition = property => css`
-  transition-duration: ${theme('timing.short')};
-  transition-timing-function: ease-in-out;
-  transition-property: ${property};
-`;
 
 export const Label = styled.label`
   display: inline-block;
   box-sizing: border-box;
   color: ${ifProp('disabled', theme('general.disabledFg'), theme('general.fg'))};
 
-  ${Transition('color')}
+  ${transition('color')}
 `;
 
 Label.defaultProps = {
@@ -36,7 +30,7 @@ export const CheckmarkContainer = styled.span`
   border-style: solid;
   border-width: 2px;
 
-  ${Transition('border-color, background-color')}
+  ${transition('border-color, background-color')}
 
   background-color: ${ifProp('checked',
     intentVar('altBg'),
@@ -111,7 +105,7 @@ export const IndeterminateMark = styled.span`
   background-color: ${theme('general.bg')};
   transform: translate(-50%, -50%);
 
-  ${Transition('opacity')}
+  ${transition('opacity')}
 
   opacity: ${ifProp('checked', '1', '0')};
 `;
@@ -132,7 +126,7 @@ export const CheckMark = styled.span`
   border-bottom: 2px solid ${theme('general.bg')};
   transform: translate(-50%, -75%) rotate(-45deg);
 
-  ${Transition('opacity')}
+  ${transition('opacity')}
 
   opacity: ${ifProp('checked', '1', '0')};
 `;

@@ -1,15 +1,10 @@
 import styled, {css} from 'styled-components';
 import {theme, ifProp, ifNotProp} from 'styled-tools';
 
+import {transition} from '../theme';
 import LightTheme from '../theme/light';
 
 import {DeleteIcon} from './icons';
-
-const Transition = property => css`
-  transition-duration: ${theme('timing.short')};
-  transition-timing-function: ease-in-out;
-  transition-property: ${property};
-`;
 
 export const Main = styled.span`
   display: inline-flex;
@@ -22,7 +17,7 @@ export const Main = styled.span`
   background-color: ${theme('general.bg')};
   color: ${theme('general.fg')};
 
-  ${Transition('border-color, color')}
+  ${transition('border-color, color')}
 
   ${ifProp('minimal',
     css`
@@ -70,7 +65,7 @@ export const Tag = styled.button.attrs({
   color: ${theme('general.altFg')};
   cursor: default;
 
-  ${Transition('background-color, border-color, color, padding')}
+  ${transition('background-color, border-color, color, padding')}
 
   ${ifProp('disabled', css`
     &&& {
@@ -112,7 +107,7 @@ export const DeleteMarker = styled(DeleteIcon)`
   margin-top: -4px;
   opacity: 0.25;
 
-  ${Transition('opacity')}
+  ${transition('opacity')}
 
   ${Tag}:hover &,
   ${Tag}:active & {

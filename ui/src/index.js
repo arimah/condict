@@ -20,7 +20,7 @@ export {CommandGroup, CommandConsumer, useCommand} from './command';
 export {Shortcut, ShortcutGroup, ShortcutMap} from './command/shortcut';
 export {Shortcuts} from './command/shortcuts';
 
-export {createTheme, extendTheme, intentVar} from './theme';
+export {createTheme, extendTheme, intentVar, transition} from './theme';
 export {
   makeColorFn,
   primaryColor,

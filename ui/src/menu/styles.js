@@ -1,13 +1,8 @@
 import styled, {css} from 'styled-components';
 import {ifProp, theme} from 'styled-tools';
 
+import {transition} from '../theme';
 import LightTheme from '../theme/light';
-
-const Transition = property => css`
-  transition-duration: ${theme('timing.short')};
-  transition-timing-function: ease-in-out;
-  transition-property: ${property};
-`;
 
 export const Menu = styled.div.attrs({
   role: 'menu',
@@ -47,7 +42,7 @@ export const Item = styled.div`
   cursor: default;
   background-color: ${theme('general.altBg')};
 
-  ${Transition('background-color, color')}
+  ${transition('background-color, color')}
 
   ${ifProp('current', css`
     background-color: ${theme('general.hoverAltBg')};

@@ -1,7 +1,7 @@
 import styled, {css} from 'styled-components';
 import {theme, ifProp} from 'styled-tools';
 
-import {intentVar} from '../theme';
+import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
 
 export const ButtonStyle = css`
@@ -15,9 +15,7 @@ export const ButtonStyle = css`
   border-radius: ${ifProp('slim', '4px', '7px')};
   position: relative;
 
-  transition-duration: ${theme('timing.short')};
-  transition-timing-function: ease-in-out;
-  transition-property: color, border-color, background-color;
+  ${transition('color, border-color, background-color')}
 
   &:focus {
     border: 2px solid ${theme('focus.color')};

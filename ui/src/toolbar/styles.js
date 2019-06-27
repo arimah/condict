@@ -1,6 +1,7 @@
 import styled, {css} from 'styled-components';
 import {ifProp, theme} from 'styled-tools';
 
+import {transition} from '../theme';
 import LightTheme from '../theme/light';
 
 export const Toolbar = styled.div.attrs({
@@ -49,9 +50,7 @@ export const Button = styled.button.attrs({
   background-color: ${theme('general.altBg')};
   color: ${theme('general.altFg')};
 
-  transition-duration: ${theme('timing.short')};
-  transition-timing-function: ease-in-out;
-  transition-property: color, background-color;
+  ${transition('color, background-color')}
 
   &:not(:first-child) {
     margin-left: 2px;

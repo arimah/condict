@@ -1,4 +1,5 @@
 import {css} from 'styled-components';
+import {theme} from 'styled-tools';
 
 const ThemeSymbol = Symbol('Condict.UI.Theme');
 
@@ -88,3 +89,10 @@ export const extendTheme = (baseTheme, newTheme) => {
 export const createTheme = theme => extendTheme(DefaultTheme, theme);
 
 export const intentVar = variable => props => props.theme[props.intent][variable];
+
+export const transition =
+  (property, duration = null, timingFunc = 'ease-in-out') => css`
+    transition-property: ${property};
+    transition-duration: ${duration || theme('timing.short')};
+    transition-timing-function: ${timingFunc};
+  `;

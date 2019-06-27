@@ -1,6 +1,8 @@
 import styled, {createGlobalStyle} from 'styled-components';
 import {ifProp, theme} from 'styled-tools';
 
+import {transition} from '../src';
+
 export const AppStyles = createGlobalStyle`
   body {
     background-color: ${ifProp(theme('dark'),
@@ -9,9 +11,7 @@ export const AppStyles = createGlobalStyle`
     )};
     color: ${theme('general.fg')};
 
-    transition-property: color, background-color;
-    transition-timing-function: linear;
-    transition-duration: ${theme('timing.short')};
+    ${transition('color, background-color')}
   }
 
   #app-root {
