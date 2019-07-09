@@ -1,98 +1,41 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import {Map} from 'immutable';
 
-import {Button} from '@condict/ui';
+import genId from '@condict/gen-id';
 
 import * as S from './styles';
 
-export default class StemsInput extends Component {
-  constructor(props) {
-    super(props);
+const StemsInput = props => {
+  const {value, stemNames, onChange} = props;
 
-    const {initialValue} = props;
-    this.state = {
-      stems: initialValue.entrySeq().toJS(),
-    };
+  const [id] = useState(genId);
 
-    this.emitStems = this.emitStems.bind(this);
-  }
-
-  emitStems() {
-    const stemsMap = Map(this.state.stems);
-    this.props.onChange(stemsMap);
-  }
-
-  handleNameChange(index, newName) {
-    const {stems} = this.state;
-    const newStems = index === stems.length
-      ? stems.concat([[newName, '']])
-      : stems.map((stem, i) => i === index ? [newName, stem[1]] : stem);
-    this.setState({stems: newStems}, this.emitStems);
-  }
-
-  handleValueChange(index, newValue) {
-    const {stems} = this.state;
-    const newStems = index === stems.length
-      ? stems.concat([['', newValue]])
-      : stems.map((stem, i) => i === index ? [stem[0], newValue] : stem);
-    this.setState({stems: newStems}, this.emitStems);
-  }
-
-  handleDeleteStem(index) {
-    const {stems} = this.state;
-    const newStems = stems.filter((_, i) => i !== index);
-    this.setState({stems: newStems}, this.emitStems);
-  }
-
-  render() {
-    const {stems} = this.state;
-
-    const stemInputs = stems.map(([name, value], index) =>
-      <S.Item key={index}>
-        <S.NameInput
-          value={name}
-          onChange={e => this.handleNameChange(index, e.target.value)}
-        />
-        {': '}
-        <S.ValueInput
-          value={value}
-          onChange={e => this.handleValueChange(index, e.target.value)}
-        />
-        {' '}
-        <Button
-          intent='danger'
-          slim
-          minimal
-          label='Delete stem'
-          onClick={() => this.handleDeleteStem(index)}
-        >
-          <S.DeleteIcon/>
-        </Button>
-      </S.Item>
-    );
-    stemInputs.push(
-      <S.Item key={stems.length}>
-        <S.NameInput
-          placeholder='New stem'
-          onChange={e => this.handleNameChange(stems.length, e.target.value)}
-        />
-        {': '}
-        <S.ValueInput
-          onChange={e => this.handleValueChange(stems.length, e.target.value)}
-        />
-      </S.Item>
-    );
-
-    return (
+  return (
+    <div role='group' aria-labelledby={`${id}-desc`}>
+      <p id={`${id}-desc`}>Stems:</p>
       <S.List>
-        {stemInputs}
+        {stemNames.map(name =>
+          <S.Item key={name}>
+            <label>
+              {name}
+              {': '}
+              <S.ValueInput
+                value={value.get(name, '')}
+                onChange={e => onChange(value.set(name, e.target.value))}
+              />
+            </label>
+          </S.Item>
+        )}
       </S.List>
-    );
-  }
-}
+    </div>
+  );
+};
 
 StemsInput.propTypes = {
-  initialValue: PropTypes.object.isRequired,
+  value: PropTypes.instanceOf(Map).isRequired,
+  stemNames: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
   onChange: PropTypes.func.isRequired,
 };
+
+export default StemsInput;

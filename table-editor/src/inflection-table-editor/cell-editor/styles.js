@@ -152,7 +152,7 @@ export const DeriveDisplayNameButton = styled(Button).attrs({
   width: 260px;
 `;
 
-DeriveDisplayNameButton.defaultProps = null;
+DeriveDisplayNameButton.defaultProps = undefined;
 
 export const DisplayNameDesc = styled.div`
   white-space: normal;

@@ -86,4 +86,4 @@ export const RevertButton = styled(Button).attrs({
   width: 180px;
 `;
 
-RevertButton.defaultProps = null;
+RevertButton.defaultProps = undefined;

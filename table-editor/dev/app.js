@@ -43,9 +43,24 @@ const InitialDefinitionTableValue = DefinitionTableValue.from(
     [12, ''],
   ])
 );
+const InitialStemNames = ['Plural root'];
 const InitialStems = Map({
   'Plural root': 'nerk',
 });
+
+// Logic taken from the server-side code.
+const collectStemNames = (pattern, stems) => {
+  // Group 1: '{{' and '}}' (escape; ignored)
+  // Group 2: The stem name, without the curly brackets
+  const stemRegex = /(\{\{|\}\})|\{([^{}]+)\}/g;
+  let m;
+  while ((m = stemRegex.exec(pattern)) !== null) {
+    // ~ is a special stem that always refers to the lemma.
+    if (m[2] && m[2] !== '~') {
+      stems.add(m[2]);
+    }
+  }
+};
 
 class ValueWithHistory {
   constructor(value, undoStack = Stack(), redoStack = Stack()) {
@@ -185,6 +200,7 @@ class App extends Component {
       darkTheme: false,
       term: 'nerku',
       stems: InitialStems,
+      stemNames: InitialStemNames,
       inflectionTableValue: new ValueWithHistory(InitialInflectionTableValue),
       definitionTableValue: new ValueWithHistory(InitialDefinitionTableValue),
     };
@@ -222,12 +238,17 @@ class App extends Component {
   handleCopyTableLayout() {
     const {inflectionTableValue, definitionTableValue} = this.state;
 
+    const stemNames = new Set();
     const inflectionTableData = inflectionTableValue.value.toJS();
     inflectionTableData.forEach(row => {
       row.cells.forEach(cell => {
-        if (cell.inflectedForm && cell.inflectedForm.id === null) {
-          cell.inflectedForm.id = this.nextFormId;
-          this.nextFormId++;
+        if (cell.inflectedForm) {
+          collectStemNames(cell.inflectedForm.inflectionPattern, stemNames);
+
+          if (cell.inflectedForm.id === null) {
+            cell.inflectedForm.id = this.nextFormId;
+            this.nextFormId++;
+          }
         }
       });
     });
@@ -237,6 +258,7 @@ class App extends Component {
     console.log('Definition table data = ', definitionTableData); // eslint-disable-line no-console
 
     this.setState({
+      stemNames: Array.from(stemNames),
       definitionTableValue: definitionTableValue.push(
         DefinitionTableValue.from(inflectionTableData, definitionTableData)
       ),
@@ -248,6 +270,7 @@ class App extends Component {
       darkTheme,
       term,
       stems,
+      stemNames,
       inflectionTableValue,
       definitionTableValue,
     } = this.state;
@@ -363,9 +386,9 @@ class App extends Component {
                 />
               </label>
             </p>
-            <p>Stems:</p>
             <StemsInput
-              initialValue={InitialStems}
+              value={stems}
+              stemNames={stemNames}
               onChange={this.handleStemsChange}
             />
 
