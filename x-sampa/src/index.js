@@ -27,19 +27,19 @@ const matchChar = (xsampa, index) => {
     for (let i = 0; i < replacements.length; i++) {
       const [input, char] = replacements[i];
       if (substringEquals(xsampa, index, input)) {
-        return [input.length, char];
+        return char;
       }
     }
   }
 
   const charData = CharData.get(nextChar);
   if (charData) {
-    return [1, charData];
+    return charData;
   }
 
   // If we couldn't match it against anything, treat it like
   // an unknown base character.
-  return [1, {ipa: nextChar, base: true}];
+  return {ipa: nextChar, base: true};
 };
 
 const placeModifier = (base, modifier) => {
@@ -85,7 +85,7 @@ const convert = xsampa => {
   let base = null;
   let modifiers = [];
   for (let i = 0; i < xsampa.length; ) {
-    const [matchLength, char] = matchChar(xsampa, i);
+    const char = matchChar(xsampa, i);
 
     if (char.base) {
       if (base !== null) {
@@ -107,7 +107,7 @@ const convert = xsampa => {
       ipa += char.ipa;
     }
 
-    i += matchLength;
+    i += char.xsLength || 1;
   }
 
   if (base !== null) {

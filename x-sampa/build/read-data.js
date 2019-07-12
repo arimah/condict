@@ -14,13 +14,16 @@ const readJson = file => {
   }
 };
 
-const normalizeChar = char => {
+const normalizeChar = (xsampa, char) => {
   // Shorthand for a base character with no ascender or descender.
   if (typeof char === 'string') {
     return {base: true, ipa: char};
   }
 
-  const result = {ipa: char.ipa};
+  const result = {
+    ipa: char.ipa,
+    xsLength: xsampa.length > 1 ? xsampa.length : undefined,
+  };
   if (char.diacritic) {
     result.diacritic = true;
     if (char.placements) {
@@ -28,6 +31,7 @@ const normalizeChar = char => {
         .reduce((placements, [place, ipa]) => {
           placements[place] = {
             ipa,
+            xsLength: result.xsLength,
             modifier: place === 'after' || undefined,
             diacritic: place !== 'after' || undefined,
           };
@@ -49,7 +53,7 @@ module.exports = () => {
 
   return new Map(
     Object.entries(data).map(([xsampa, char]) =>
-      [xsampa, normalizeChar(char)]
+      [xsampa, normalizeChar(xsampa, char)]
     )
   );
 };
