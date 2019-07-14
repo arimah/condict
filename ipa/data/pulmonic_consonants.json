@@ -465,7 +465,7 @@
   },
   {
     "input": "ɾ",
-    "name": "Labiodental flap",
+    "name": "Alveolar flap",
     "base": "r",
     "terms": {
       "voiced": 20
