@@ -19,8 +19,13 @@ module.exports = {
       {
         "SwitchCase": 1,
         "flatTernaryExpressions": true,
-        // Template literal indentation is screwy. Ignore it for now.
-        "ignoredNodes": ["TemplateLiteral *"]
+        // Template literal indentation is screwy, as is indentation inside
+        // type parameter lists. Ignore for now.
+        "ignoredNodes": [
+          "TemplateLiteral *",
+          "TSTypeParameterDeclaration *",
+          "TSTypeParameterInstantiation *",
+        ]
       }
     ],
 
