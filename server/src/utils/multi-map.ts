@@ -52,7 +52,7 @@ export default class MultiMap<K, V> {
   public add(key: K, value: V): this {
     const values = this.collection.get(key);
     if (!values) {
-      this.collection.set(key, new Set().add(value));
+      this.collection.set(key, new Set<V>().add(value));
     } else {
       values.add(value);
     }
