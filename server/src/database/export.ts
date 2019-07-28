@@ -90,7 +90,7 @@ const exportDatabase = async (
 
     // TODO: Stream rows from the database, rather than fetching every single
     // one in one go.
-    const rows = await db.all<{id: number}>`
+    const rows = await db.all<{id?: number}>`
       select *
       from ${db.raw(table.name)}
     `;
