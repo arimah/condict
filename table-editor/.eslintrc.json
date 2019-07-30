@@ -1,5 +1,0 @@
-{
-  "extends": [
-    "../eslint-web.config.js"
-  ]
-}
