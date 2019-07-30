@@ -26,6 +26,7 @@ module.exports = options => {
   const server = new WebpackDevServer(compiler, webpackConfig.devServer);
 
   server.listen(port, host, () => {
+    // eslint-disable-next-line no-console
     console.log(`Server running on ${chalk.cyan(`http://${host}:${port}`)}`);
   });
 

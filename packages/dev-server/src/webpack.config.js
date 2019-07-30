@@ -45,7 +45,7 @@ module.exports = ({entry, contentBase, title, template}) => ({
       {
         pattern: '@@title@@',
         replacement: title,
-      }
+      },
     ]),
     new webpack.HotModuleReplacementPlugin(),
   ],
