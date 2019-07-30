@@ -24,12 +24,20 @@ The name _Condict_ is a [portmanteau][] of "conlang dictionary", while _conlang_
 
 ## Code structure
 
-The eventual goal of Condict is to be distributable as a standalone Electron app, as well as separate server and admin area components for websites. Each folder in the repo is its own package:
+The eventual goal of Condict is to be distributable as a standalone Electron app, as well as separate server and admin area components for websites. Condict is made up of many packages, which are found in [packages/](./packages).
 
-* [a11y-utils/](./a11y-utils): Various small utility functions and React components for accessibility features.
-* [gen-id/](./gen-id): A microscopic package which exports a single function that generates a random-enough ID string.
-* [server/](./server): The storage backend.
-* [table-editor/](./table-editor): UI components for editing inflection tables. Separate package because of its size and complexity.
-* [ui/](./ui): Mostly-general-purpose reusable UI components.
+* [a11y-utils](./packages/a11y-utils): Various small utility functions and React components for accessibility features.
+* [babel-preset](./packages/babel-preset): Babel preset shared by all packages.
+* [babel-preset-react](./packages/babel-preset-react): Babel preset with React-specific features.
+* [dev-server](./packages/dev-server): A small wrapper around Webpack dev server, used by other packages for testing UI components.
+* [gen-id](./packages/gen-id): A microscopic package which exports a single function that generates a random-enough ID string.
+* [ipa](./packages/ipa): Utilities for searching and listing [IPA][] characters.
+* [server](./packages/server): The storage backend.
+* [table-editor](./packages/table-editor): UI components for editing inflection tables. Separate package because of its size and complexity.
+* [ui](./packages/ui): Mostly-general-purpose reusable UI components.
+* [x-sampa](./packages/x-sampa): [X-SAMPA][xsampa]-to-[IPA][] converter.
 
 TODO: documentation.
+
+[ipa]: https://en.wikipedia.org/wiki/International_Phonetic_Alphabet
+[xsampa]: https://en.wikipedia.org/wiki/X-SAMPA
