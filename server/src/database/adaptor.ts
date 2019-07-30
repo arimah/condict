@@ -18,12 +18,12 @@ export type Awaitable<T> = Promise<T> | T;
 /**
  * Contains the result of a command execution.
  */
-export interface ExecResult {
+export interface ExecResult<I extends number> {
   /**
    * The ID of the last inserted row. If the command passed to `exec` did not
    * insert any rows, the value of this field is unspecified.
    */
-  insertId: number;
+  insertId: I;
   /** The total number of rows affected by the command. */
   affectedRows: number;
 }
@@ -91,7 +91,10 @@ abstract class Adaptor {
    *        values of embedded expressions.
    * @return Details about the result of the command.
    */
-  public abstract exec(parts: Sql, ...values: any[]): Awaitable<ExecResult>;
+  public abstract exec<I extends number = number>(
+    parts: Sql,
+    ...values: any[]
+  ): Awaitable<ExecResult<I>>;
 
   /**
    * Treats the specified string as raw SQL, enabling it to be inserted into

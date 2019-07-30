@@ -93,7 +93,7 @@ export default class SqliteAdaptor extends Adaptor {
     return this.connection.prepare(sql).all(params) as Row[];
   }
 
-  public exec(parts: Sql, ...values: any[]): ExecResult {
+  public exec<I extends number = number>(parts: Sql, ...values: any[]): ExecResult<I> {
     const params: any[] = [];
     const sql = this.formatSql(parts, values, formatValue(params));
     this.logQuery(sql);
@@ -101,7 +101,7 @@ export default class SqliteAdaptor extends Adaptor {
       changes: affectedRows,
       lastInsertRowid: insertId,
     } = this.connection.prepare(sql).run(params);
-    return {insertId: insertId as number, affectedRows};
+    return {insertId: insertId as I, affectedRows};
   }
 
   public beginTransaction(): void {

@@ -51,9 +51,9 @@ export default class MysqlAdaptor extends Adaptor {
     return this.query<Row[]>(sql, results => results);
   }
 
-  public exec(parts: Sql, ...values: any[]): Promise<ExecResult> {
+  public exec<I extends number = number>(parts: Sql, ...values: any[]): Promise<ExecResult<I>> {
     const sql = this.formatSql(parts, values, v => escape(v));
-    return this.query<ExecResult>(
+    return this.query<ExecResult<I>>(
       sql,
       ({insertId, affectedRows}) => ({insertId, affectedRows})
     );
