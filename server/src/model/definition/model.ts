@@ -4,11 +4,19 @@ import {validatePageParams} from '../../schema/helpers';
 import {PageParams, Connection} from '../../schema/types';
 
 import Model from '../model';
+import {LemmaId} from '../lemma/types';
+import {PartOfSpeechId} from '../part-of-speech/types';
+import {
+  InflectionTableId,
+  InflectionTableLayoutId,
+} from '../inflection-table/types';
 
 import {
+  DefinitionId,
   DefinitionRow,
   DefinitionDescriptionRow,
   DefinitionStemRow,
+  DefinitionInflectionTableId,
   DefinitionInflectionTableRow,
   CustomInflectedFormRow,
   DerivedDefinitionRow,
@@ -23,7 +31,7 @@ class Definition extends Model {
   };
   public readonly maxPerPage = 200;
 
-  public byId(id: number): Promise<DefinitionRow | null> {
+  public byId(id: DefinitionId): Promise<DefinitionRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -41,7 +49,7 @@ class Definition extends Model {
   }
 
   public async byIdRequired(
-    id: number,
+    id: DefinitionId,
     paramName: string = 'id'
   ): Promise<DefinitionRow> {
     const definition = await this.byId(id);
@@ -53,7 +61,7 @@ class Definition extends Model {
     return definition;
   }
 
-  public allByLemma(lemmaId: number): Promise<DefinitionRow[]> {
+  public allByLemma(lemmaId: LemmaId): Promise<DefinitionRow[]> {
     return this.db.batchOneToMany(
       this.allByLemmaKey,
       lemmaId,
@@ -71,24 +79,35 @@ class Definition extends Model {
     );
   }
 
-  public async anyUsesInflectionTable(tableId: number): Promise<boolean> {
+  private async anyUsesInflectionTableCond(condition: any): Promise<boolean> {
     const {used} = await this.db.getRequired<{used: number}>`
       select exists (
         select 1
         from definition_inflection_tables
-        where inflection_table_id = ${tableId}
+        where ${condition}
       ) as used
     `;
     return used === 1;
   }
 
-  public allByInflectionTable(
-    tableId: number,
+  public anyUsesInflectionTable(tableId: InflectionTableId): Promise<boolean> {
+    return this.anyUsesInflectionTableCond(
+      this.db.raw`inflection_table_id = ${tableId}`
+    );
+  }
+
+  public anyUsesInflectionTableLayout(
+    versionId: InflectionTableLayoutId
+  ): Promise<boolean> {
+    return this.anyUsesInflectionTableCond(
+      this.db.raw`inflection_table_version_id = ${versionId}`
+    );
+  }
+
+  public allByInflectionTableCond(
+    condition: any,
     page?: PageParams | null
   ): Promise<Connection<DefinitionRow>> {
-    const condition = this.db.raw`
-      dit.inflection_table_id = ${tableId}
-    `;
     return this.db.paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
       async db => {
@@ -114,7 +133,29 @@ class Definition extends Model {
     );
   }
 
-  public async anyUsesPartOfSpeech(partOfSpeechId: number): Promise<boolean> {
+  public allByInflectionTable(
+    tableId: InflectionTableId,
+    page?: PageParams | null
+  ): Promise<Connection<DefinitionRow>> {
+    return this.allByInflectionTableCond(
+      this.db.raw`dit.inflection_table_id = ${tableId}`,
+      page
+    );
+  }
+
+  public allByInflectionTableLayout(
+    versionId: InflectionTableLayoutId,
+    page?: PageParams | null
+  ): Promise<Connection<DefinitionRow>> {
+    return this.allByInflectionTableCond(
+      this.db.raw`dit.inflection_table_version_id = ${versionId}`,
+      page
+    );
+  }
+
+  public async anyUsesPartOfSpeech(
+    partOfSpeechId: PartOfSpeechId
+  ): Promise<boolean> {
     const {used} = await this.db.getRequired<{used: number}>`
       select exists (
         select 1
@@ -126,7 +167,7 @@ class Definition extends Model {
   }
 
   public allByPartOfSpeech(
-    partOfSpeechId: number,
+    partOfSpeechId: PartOfSpeechId,
     page?: PageParams | null
   ): Promise<Connection<DefinitionRow>> {
     const condition = this.db.raw`
@@ -159,7 +200,7 @@ class Definition extends Model {
 class DefinitionDescription extends Model {
   public readonly rawByDefinitionKey = 'DefinitionDescription.rawByDefinition';
 
-  public rawByDefinition(definitionId: number): Promise<string> {
+  public rawByDefinition(definitionId: DefinitionId): Promise<string> {
     return this.db
       .batchOneToOne(
         this.rawByDefinitionKey,
@@ -181,7 +222,9 @@ class DefinitionDescription extends Model {
 class DefinitionStem extends Model {
   public readonly allByDefinitionKey = 'DefinitionStem.allByDefinition';
 
-  public allByDefinition(definitionId: number): Promise<DefinitionStemRow[]> {
+  public allByDefinition(
+    definitionId: DefinitionId
+  ): Promise<DefinitionStemRow[]> {
     return this.db.batchOneToMany(
       this.allByDefinitionKey,
       definitionId,
@@ -201,7 +244,9 @@ class DefinitionInflectionTable extends Model {
   public readonly byIdKey = 'DefinitionInflectionTable.byId';
   public readonly allByDefinitionKey = 'DefinitionInflectionTable.allByDefinition';
 
-  public byId(id: number): Promise<DefinitionInflectionTableRow | null> {
+  public byId(
+    id: DefinitionInflectionTableId
+  ): Promise<DefinitionInflectionTableRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -216,7 +261,7 @@ class DefinitionInflectionTable extends Model {
   }
 
   public async byIdRequired(
-    id: number,
+    id: DefinitionInflectionTableId,
     paramName: string = 'id'
   ): Promise<DefinitionInflectionTableRow> {
     const table = await this.byId(id);
@@ -229,7 +274,7 @@ class DefinitionInflectionTable extends Model {
   }
 
   public allByDefinition(
-    definitionId: number
+    definitionId: DefinitionId
   ): Promise<DefinitionInflectionTableRow[]> {
     return this.db.batchOneToMany(
       this.allByDefinitionKey,
@@ -249,7 +294,9 @@ class DefinitionInflectionTable extends Model {
 class CustomInflectedForm extends Model {
   public readonly allByTableKey = 'CustomInflectedForm.allByTable';
 
-  public allByTable(tableId: number): Promise<CustomInflectedFormRow[]> {
+  public allByTable(
+    tableId: DefinitionInflectionTableId
+  ): Promise<CustomInflectedFormRow[]> {
     return this.db.batchOneToMany(
       this.allByTableKey,
       tableId,
@@ -273,7 +320,7 @@ class DerivedDefinition extends Model {
   };
   public readonly maxPerPage = 200;
 
-  public allByLemma(lemmaId: number): Promise<DerivedDefinitionRow[]> {
+  public allByLemma(lemmaId: LemmaId): Promise<DerivedDefinitionRow[]> {
     return this.db.batchOneToMany(
       this.allByLemmaKey,
       lemmaId,
@@ -293,7 +340,7 @@ class DerivedDefinition extends Model {
   }
 
   public async allByDerivedFrom(
-    definitionId: number,
+    definitionId: DefinitionId,
     page?: PageParams | null
   ): Promise<Connection<DerivedDefinitionRow>> {
     const condition = this.db.raw`

@@ -1,14 +1,15 @@
 import {UserInputError} from 'apollo-server';
 
 import Model from '../model';
+import {LanguageId} from '../language/types';
 
-import {PartOfSpeechRow} from './types';
+import {PartOfSpeechId, PartOfSpeechRow} from './types';
 
 class PartOfSpeech extends Model {
   public readonly byIdKey = 'PartOfSpeech.byId';
   public readonly allByLanguageKey = 'PartOfSpeech.allByLanguage';
 
-  public byId(id: number): Promise<PartOfSpeechRow | null> {
+  public byId(id: PartOfSpeechId): Promise<PartOfSpeechRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -23,7 +24,7 @@ class PartOfSpeech extends Model {
   }
 
   public async byIdRequired(
-    id: number,
+    id: PartOfSpeechId,
     paramName: string = 'id'
   ): Promise<PartOfSpeechRow> {
     const partOfSpeech = await this.byId(id);
@@ -35,7 +36,7 @@ class PartOfSpeech extends Model {
     return partOfSpeech;
   }
 
-  public allByLanguage(languageId: number): Promise<PartOfSpeechRow[]> {
+  public allByLanguage(languageId: LanguageId): Promise<PartOfSpeechRow[]> {
     return this.db.batchOneToMany(
       this.allByLanguageKey,
       languageId,

@@ -1,7 +1,9 @@
 import {validatePageParams} from '../../schema/helpers';
 import {PageParams, Connection} from '../../schema/types';
 
-import {LemmaRow, LemmaFilter} from './types';
+import {LanguageId} from '../language/types';
+
+import {LemmaId, LemmaRow, LemmaFilter} from './types';
 import Model from '../model';
 
 class Lemma extends Model {
@@ -12,7 +14,7 @@ class Lemma extends Model {
   };
   public readonly maxPerPage = 500;
 
-  public byId(id: number): Promise<LemmaRow | null> {
+  public byId(id: LemmaId): Promise<LemmaRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -26,7 +28,7 @@ class Lemma extends Model {
     );
   }
 
-  public byTerm(languageId: number, term: string): Promise<LemmaRow | null> {
+  public byTerm(languageId: LanguageId, term: string): Promise<LemmaRow | null> {
     return this.db.batchOneToOne(
       this.byTermKey(languageId),
       term,
@@ -42,18 +44,18 @@ class Lemma extends Model {
     );
   }
 
-  public byTermKey(languageId: number): string {
+  public byTermKey(languageId: LanguageId): string {
     return `Lemma.byTerm(${languageId})`;
   }
 
   public async allByLanguage(
-    languageId: number,
+    languageId: LanguageId,
     page: PageParams | undefined | null,
     filter: LemmaFilter
   ): Promise<Connection<LemmaRow>> {
     const {db} = this;
     const condition = db.raw`
-      l.language_id = ${languageId | 0}
+      l.language_id = ${languageId}
         ${
           filter === LemmaFilter.DEFINED_LEMMAS_ONLY ? db.raw`
             and exists (

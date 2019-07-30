@@ -2,6 +2,9 @@ import Adaptor from '../../database/adaptor';
 
 import validator, {lengthBetween, unique} from '../validator';
 import sizeOfColumn from '../size-of-column';
+import {PartOfSpeechId} from '../part-of-speech/types';
+
+import {InflectionTableId} from './types';
 
 const TableNameSize = sizeOfColumn('inflection_tables', 'name');
 const InflectionPatternSize = sizeOfColumn('inflected_forms', 'inflection_pattern');
@@ -9,8 +12,8 @@ const DisplayNameSize = sizeOfColumn('inflected_forms', 'display_name');
 
 export const validateName = (
   db: Adaptor,
-  currentId: number | null,
-  partOfSpeechId: number,
+  currentId: InflectionTableId | null,
+  partOfSpeechId: PartOfSpeechId,
   value: string
 ): Promise<string> =>
   validator<string>('name')
@@ -19,7 +22,7 @@ export const validateName = (
     .do(unique(
       currentId,
       async name => {
-        const row = await db.get<{id: number}>`
+        const row = await db.get<{id: InflectionTableId}>`
           select id
           from inflection_tables
           where name = ${name}

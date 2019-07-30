@@ -1,5 +1,11 @@
+import {IdOf, InputIdOf} from '../id-of';
+
+export type LanguageId = IdOf<'Language'>;
+
+export type LanguageInputId = InputIdOf<'Language'>;
+
 export interface LanguageRow {
-  id: number;
+  id: LanguageId;
   lemma_count: number;
   name: string;
   url_name: string;

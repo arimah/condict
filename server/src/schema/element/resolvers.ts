@@ -5,6 +5,10 @@ import {
   LinkInlineJson,
   CondictLink,
   CondictLinkType,
+  LanguageLink,
+  LemmaLink,
+  DefinitionLink,
+  PartOfSpeechLink,
 } from '../../rich-text/types';
 import {
   isCondictLink,
@@ -54,22 +58,22 @@ const InternalLinkTarget: Resolvers<CondictLink> = {
   },
 };
 
-const LanguageLinkTarget: Resolvers<CondictLink> = {
+const LanguageLinkTarget: Resolvers<LanguageLink> = {
   language: (p, _args, {model: {Language}}) =>
     Language.byId(p.id),
 };
 
-const LemmaLinkTarget: Resolvers<CondictLink> = {
+const LemmaLinkTarget: Resolvers<LemmaLink> = {
   lemma: (p, _args, {model: {Lemma}}) =>
     Lemma.byId(p.id),
 };
 
-const DefinitionLinkTarget: Resolvers<CondictLink> = {
+const DefinitionLinkTarget: Resolvers<DefinitionLink> = {
   definition: (p, _args, {model: {Definition}}) =>
     Definition.byId(p.id),
 };
 
-const PartOfSpeechLinkTarget: Resolvers<CondictLink> = {
+const PartOfSpeechLinkTarget: Resolvers<PartOfSpeechLink> = {
   partOfSpeech: (p, _args, {model: {PartOfSpeech}}) =>
     PartOfSpeech.byId(p.id),
 };

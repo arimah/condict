@@ -1,4 +1,6 @@
+import {toNumberId} from '../../model/id-of';
 import {
+  PartOfSpeechInputId,
   PartOfSpeechRow,
   NewPartOfSpeechInput,
   EditPartOfSpeechInput,
@@ -22,8 +24,8 @@ const PartOfSpeech: Resolvers<PartOfSpeechRow> = {
 };
 
 const Query: Resolvers<unknown> = {
-  partOfSpeech: (_root, args: IdArg, {model: {PartOfSpeech}}) =>
-    PartOfSpeech.byId(+args.id),
+  partOfSpeech: (_root, args: IdArg<PartOfSpeechInputId>, {model: {PartOfSpeech}}) =>
+    PartOfSpeech.byId(toNumberId(args.id)),
 };
 
 interface AddPartOfSpeechArgs {
@@ -31,7 +33,7 @@ interface AddPartOfSpeechArgs {
 }
 
 interface EditPartOfSpeechArgs {
-  id: string;
+  id: PartOfSpeechInputId;
   data: EditPartOfSpeechInput;
 }
 
@@ -43,12 +45,12 @@ const Mutation: Mutators<unknown> = {
 
   editPartOfSpeech: mutator(
     (_root, {id, data}: EditPartOfSpeechArgs, {mut: {PartOfSpeechMut}}) =>
-      PartOfSpeechMut.update(+id, data)
+      PartOfSpeechMut.update(toNumberId(id), data)
   ),
 
   deletePartOfSpeech: mutator(
-    (_root, {id}: IdArg, {mut: {PartOfSpeechMut}}) =>
-      PartOfSpeechMut.delete(+id)
+    (_root, {id}: IdArg<PartOfSpeechInputId>, {mut: {PartOfSpeechMut}}) =>
+      PartOfSpeechMut.delete(toNumberId(id))
   ),
 };
 

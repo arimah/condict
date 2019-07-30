@@ -1,9 +1,10 @@
 import {validateTag} from '../tag/validators';
 
 import Mutator from '../mutator';
+import {DefinitionId} from '../definition/types';
 
 export default class DefinitionTagMut extends Mutator {
-  public async insertAll(definitionId: number, tags: string[]): Promise<void> {
+  public async insertAll(definitionId: DefinitionId, tags: string[]): Promise<void> {
     const {db} = this;
     const {TagMut} = this.mut;
 
@@ -19,7 +20,7 @@ export default class DefinitionTagMut extends Mutator {
     }
   }
 
-  public async update(definitionId: number, tags: string[]): Promise<void> {
+  public async update(definitionId: DefinitionId, tags: string[]): Promise<void> {
     const {TagMut} = this.mut;
 
     // We could compute a delta here, but it's kind of messy and complex, and
@@ -31,7 +32,7 @@ export default class DefinitionTagMut extends Mutator {
     await TagMut.deleteOrphaned();
   }
 
-  private async deleteAll(definitionId: number): Promise<void> {
+  private async deleteAll(definitionId: DefinitionId): Promise<void> {
     await this.db.exec`
       delete from definition_tags
       where definition_id = ${definitionId}

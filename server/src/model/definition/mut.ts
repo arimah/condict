@@ -4,13 +4,21 @@ import {validateDescription} from '../../rich-text/validate';
 
 import Mutator from '../mutator';
 import FieldSet from '../field-set';
+import {toNumberId} from '../id-of';
 import {validateTerm} from '../lemma/validators';
+import {PartOfSpeechId, PartOfSpeechInputId} from '../part-of-speech/types';
+import {
+  InflectedFormId,
+  InflectionTableLayoutId,
+} from '../inflection-table/types';
 
 import {
+  DefinitionId,
   DefinitionRow,
+  DefinitionInflectionTableId,
   NewDefinitionInput,
   EditDefinitionInput,
-  DefinitionInflectionTableInput,
+  EditDefinitionInflectionTableInput,
 } from './types';
 import DefinitionStemMut from './stem-mut';
 import DefinitionInflectionTableMut, {DefinitionData} from './table-mut';
@@ -38,9 +46,12 @@ class DefinitionMut extends Mutator {
       DerivedDefinitionMut,
     } = this.mut;
 
-    const language = await Language.byIdRequired(+languageId, 'languageId');
+    const language = await Language.byIdRequired(
+      toNumberId(languageId),
+      'languageId'
+    );
     const partOfSpeech = await PartOfSpeech.byIdRequired(
-      +partOfSpeechId,
+      toNumberId(partOfSpeechId),
       'partOfSpeechId'
     );
     const validTerm = validateTerm(term);
@@ -48,10 +59,11 @@ class DefinitionMut extends Mutator {
     return db.transact(async () => {
       const lemmaId = await LemmaMut.ensureExists(language.id, validTerm);
 
-      const {insertId: definitionId} = await db.exec`
+      const {insertId: definitionId} = await db.exec<DefinitionId>`
         insert into definitions (lemma_id, language_id, part_of_speech_id)
         values (${lemmaId}, ${language.id}, ${partOfSpeech.id})
       `;
+
       await DefinitionDescriptionMut.insert(definitionId, description);
       const stemMap = await DefinitionStemMut.insert(definitionId, stems);
 
@@ -64,10 +76,7 @@ class DefinitionMut extends Mutator {
         true
       );
 
-      await DefinitionTagMut.insertAll(
-        definitionId,
-        tags
-      );
+      await DefinitionTagMut.insertAll(definitionId, tags);
 
       await DerivedDefinitionMut.insertAll(
         language.id,
@@ -79,7 +88,7 @@ class DefinitionMut extends Mutator {
     });
   }
 
-  public async update(id: number, {
+  public async update(id: DefinitionId, {
     term,
     partOfSpeechId,
     description,
@@ -169,7 +178,7 @@ class DefinitionMut extends Mutator {
         validTerm
       );
       newFields.set('lemma_id', newLemmaId);
-      return validTerm.value;
+      return validTerm;
     } else {
       return definition.term;
     }
@@ -177,17 +186,17 @@ class DefinitionMut extends Mutator {
 
   private async updatePartOfSpeech(
     definition: DefinitionRow,
-    partOfSpeechId: string | undefined | null,
+    partOfSpeechId: PartOfSpeechInputId | undefined | null,
     newFields: FieldSet<DefinitionRow>
-  ): Promise<number> {
+  ): Promise<PartOfSpeechId> {
     const {PartOfSpeech} = this.model;
 
     if (
       partOfSpeechId != null &&
-      +partOfSpeechId !== definition.part_of_speech_id
+      toNumberId(partOfSpeechId) !== definition.part_of_speech_id
     ) {
       const partOfSpeech = await PartOfSpeech.byIdRequired(
-        +partOfSpeechId,
+        toNumberId(partOfSpeechId),
         'partOfSpeechId'
       );
 
@@ -198,7 +207,7 @@ class DefinitionMut extends Mutator {
     }
   }
 
-  public async delete(id: number): Promise<boolean> {
+  public async delete(id: DefinitionId): Promise<boolean> {
     const {Definition} = this.model;
     const {LemmaMut} = this.mut;
 
@@ -218,15 +227,15 @@ class DefinitionMut extends Mutator {
 
   private async updateInflectionTablesAndForms(
     definition: DefinitionRow,
-    partOfSpeechId: number,
+    partOfSpeechId: PartOfSpeechId,
     term: string,
     stemMap: Map<string, string>,
-    inflectionTables: DefinitionInflectionTableInput[] | undefined | null,
+    inflectionTables: EditDefinitionInflectionTableInput[] | undefined | null,
     newFormsNeeded: boolean
   ): Promise<void> {
-    const {DerivedDefinitionMut} = this.mut;
+    const {DerivedDefinitionMut, InflectionTableLayoutMut} = this.mut;
 
-    let derivedDefinitions: MultiMap<string, number> | null = null;
+    let derivedDefinitions: MultiMap<string, InflectedFormId> | null = null;
     if (inflectionTables) {
       derivedDefinitions = await this.updateInflectionTables(
         definition.id,
@@ -252,19 +261,27 @@ class DefinitionMut extends Mutator {
         derivedDefinitions
       );
     }
+
+    if (inflectionTables) {
+      // We my have caused any number of old layouts to become disused now,
+      // so clear them out of the database.
+      // Note: We must do this here, not at the end of updateInflectionTables,
+      // as we have to wait for new derived definitions to be inserted.
+      await InflectionTableLayoutMut.deleteObsolete();
+    }
   }
 
   private async updateInflectionTables(
-    definitionId: number,
-    partOfSpeechId: number,
+    definitionId: DefinitionId,
+    partOfSpeechId: PartOfSpeechId,
     term: string,
     stemMap: Map<string, string>,
-    inflectionTables: DefinitionInflectionTableInput[],
+    inflectionTables: EditDefinitionInflectionTableInput[],
     isNewDefinition: boolean
-  ): Promise<MultiMap<string, number>> {
+  ): Promise<MultiMap<string, InflectedFormId>> {
     const {DefinitionInflectionTableMut} = this.mut;
 
-    const derivedDefinitions = new MultiMap<string, number>();
+    const derivedDefinitions = new MultiMap<string, InflectedFormId>();
 
     const definitionData: DefinitionData = {
       id: definitionId,
@@ -273,12 +290,12 @@ class DefinitionMut extends Mutator {
       partOfSpeechId,
     };
 
-    const currentTableIds: number[] = [];
+    const currentTableIds: DefinitionInflectionTableId[] = [];
     for (const table of inflectionTables) {
       const {id: tableId, derivedForms} = await (
         table.id != null && !isNewDefinition
           ? DefinitionInflectionTableMut.update(
-            +table.id,
+            toNumberId(table.id),
             definitionData,
             table,
             currentTableIds.length
@@ -309,22 +326,22 @@ class DefinitionMut extends Mutator {
   }
 
   private async rederiveAllForms(
-    definitionId: number,
+    definitionId: DefinitionId,
     term: string,
     stemMap: Map<string, string>
-  ): Promise<MultiMap<string, number>> {
+  ): Promise<MultiMap<string, InflectedFormId>> {
     interface Row {
-      id: number;
-      inflection_table_id: number;
+      id: DefinitionInflectionTableId;
+      inflection_table_version_id: InflectionTableLayoutId;
     }
 
     const {db} = this;
     const {DefinitionInflectionTableMut} = this.mut;
 
-    const derivedDefinitions = new MultiMap<string, number>();
+    const derivedDefinitions = new MultiMap<string, InflectedFormId>();
 
     const definitionTables = await db.all<Row>`
-      select id, inflection_table_id
+      select id, inflection_table_version_id
       from definition_inflection_tables
       where definition_id = ${definitionId}
     `;
@@ -337,7 +354,7 @@ class DefinitionMut extends Mutator {
         table.id,
         term,
         stemMap,
-        table.inflection_table_id,
+        table.inflection_table_version_id,
         customForms.get(table.id) || new Map()
       );
 
@@ -351,11 +368,11 @@ class DefinitionMut extends Mutator {
   }
 
   private async fetchAllCustomForms(
-    definitionTableIds: number[]
-  ): Promise<Map<number, Map<number, string>>> {
+    definitionTableIds: DefinitionInflectionTableId[]
+  ): Promise<Map<DefinitionInflectionTableId, Map<InflectedFormId, string>>> {
     interface Row {
-      parent_id: number;
-      inflected_form_id: number;
+      parent_id: DefinitionInflectionTableId;
+      inflected_form_id: InflectedFormId;
       value: string;
     }
 
@@ -380,13 +397,13 @@ class DefinitionMut extends Mutator {
       }
       forms.set(row.inflected_form_id, row.value);
       return map;
-    }, new Map<number, Map<number, string>>());
+    }, new Map<DefinitionInflectionTableId, Map<InflectedFormId, string>>());
   }
 }
 
 class DefinitionDescriptionMut extends Mutator {
   public async insert(
-    definitionId: number,
+    definitionId: DefinitionId,
     description: BlockElementInput[]
   ): Promise<void> {
     const finalDescription = validateDescription(description, () => {});
@@ -398,7 +415,7 @@ class DefinitionDescriptionMut extends Mutator {
   }
 
   public async update(
-    definitionId: number,
+    definitionId: DefinitionId,
     description: BlockElementInput[]
   ): Promise<void> {
     const finalDescription = validateDescription(description, () => {});

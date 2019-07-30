@@ -1,3 +1,8 @@
+import {LanguageId} from '../model/language/types';
+import {LemmaId} from '../model/lemma/types';
+import {DefinitionId} from '../model/definition/types';
+import {PartOfSpeechId} from '../model/part-of-speech/types';
+
 // NOTE: The types in this file must be kept in sync with GraphQL!
 // See GraphQL for documentation comments.
 
@@ -72,7 +77,28 @@ export const enum CondictLinkType {
   PART_OF_SPEECH = 'part-of-speech',
 }
 
-export interface CondictLink {
-  type: CondictLinkType;
-  id: number;
+export type CondictLink
+  = LanguageLink
+  | LemmaLink
+  | DefinitionLink
+  | PartOfSpeechLink;
+
+export interface LanguageLink {
+  type: CondictLinkType.LANGUAGE;
+  id: LanguageId;
+}
+
+export interface LemmaLink {
+  type: CondictLinkType.LEMMA;
+  id: LemmaId;
+}
+
+export interface DefinitionLink {
+  type: CondictLinkType.DEFINITION;
+  id: DefinitionId;
+}
+
+export interface PartOfSpeechLink {
+  type: CondictLinkType.PART_OF_SPEECH;
+  id: PartOfSpeechId;
 }

@@ -1,15 +1,13 @@
-import validator, {lengthBetween} from '../validator';
+import validator, {lengthBetween, Valid} from '../validator';
 import sizeOfColumn from '../size-of-column';
 
 const TermSize = sizeOfColumn('lemmas', 'term_unique');
 
-export interface ValidTerm {
-  value: string;
-}
+export type ValidTerm = Valid<string, 'LemmaTerm'>;
 
 export const validateTerm =
   validator<string>('term')
     .do(value => value.trim())
     .do(lengthBetween(1, TermSize))
-    .do<ValidTerm>(value => ({value}))
+    .do(value => value as ValidTerm)
     .validate;

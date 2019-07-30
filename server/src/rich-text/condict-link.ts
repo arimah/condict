@@ -6,6 +6,8 @@
 // * condict://definition/{id} links to a definition.
 // * condict://part-of-speech/{id} links to a part of speech.
 
+import {InputIdOf, toNumberId} from '../model/id-of';
+
 import {CondictLink, CondictLinkType} from './types';
 
 const linkTargetRegex =
@@ -22,7 +24,7 @@ export const parseCondictLink = (target: string): CondictLink => {
   // The regex should never match anything that isn't
   // a valid CondictLinkType.
   const type = match[1] as CondictLinkType;
-  const id = +match[2];
+  const id = toNumberId(match[2] as InputIdOf<any>);
 
   return {type, id};
 };

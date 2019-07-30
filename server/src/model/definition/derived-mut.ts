@@ -1,13 +1,17 @@
 import MultiMap from '../../utils/multi-map';
 
 import Mutator from '../mutator';
-import {validateTerm} from '../lemma/validators';
+import {LanguageId} from '../language/types';
+import {InflectedFormId} from '../inflection-table/types';
+import {validateTerm, ValidTerm} from '../lemma/validators';
+
+import {DefinitionId} from './types';
 
 export default class DerivedDefinitionMut extends Mutator {
   public async insertAll(
-    languageId: number,
-    originalDefinitionId: number,
-    derivedDefinitions: MultiMap<string, number>
+    languageId: LanguageId,
+    originalDefinitionId: DefinitionId,
+    derivedDefinitions: MultiMap<string, InflectedFormId>
   ): Promise<void> {
     const {db} = this;
     const {LemmaMut} = this.mut;
@@ -27,19 +31,18 @@ export default class DerivedDefinitionMut extends Mutator {
       .map((term, inflectedFormId) => {
         try {
           const validTerm = validateTerm(term);
-          return [validTerm.value, inflectedFormId];
+          return [validTerm, inflectedFormId];
         } catch (e) {
           // Add invalid terms to '', which we know isn't valid.
           // We'll filter it out later.
-          return ['', 0];
+          return ['', 0 as InflectedFormId];
         }
       })
       .filter(Boolean);
 
     const termToLemmaId = await LemmaMut.ensureAllExist(
       languageId,
-      Array.from(validDerivedDefinitions.keys())
-        .map(value => ({value}))
+      Array.from(validDerivedDefinitions.keys()) as ValidTerm[]
     );
 
     const values: any[] = [];
@@ -65,7 +68,7 @@ export default class DerivedDefinitionMut extends Mutator {
     }
   }
 
-  public async deleteAll(originalDefinitionId: number): Promise<void> {
+  public async deleteAll(originalDefinitionId: DefinitionId): Promise<void> {
     await this.db.exec`
       delete from derived_definitions
       where original_definition_id = ${originalDefinitionId}

@@ -1,8 +1,10 @@
 import {UserInputError} from 'apollo-server';
 
 import Mutator from '../mutator';
+import {toNumberId} from '../id-of';
 
 import {
+  PartOfSpeechId,
   PartOfSpeechRow,
   NewPartOfSpeechInput,
   EditPartOfSpeechInput,
@@ -16,11 +18,11 @@ class PartOfSpeechMut extends Mutator {
     const {db} = this;
     const {PartOfSpeech, Language} = this.model;
 
-    const language = await Language.byIdRequired(+languageId);
+    const language = await Language.byIdRequired(toNumberId(languageId));
 
     name = await validateName(db, null, language.id, name);
 
-    const {insertId} = await db.exec`
+    const {insertId} = await db.exec<PartOfSpeechId>`
       insert into parts_of_speech (language_id, name)
       values (${language.id}, ${name})
     `;
@@ -28,7 +30,7 @@ class PartOfSpeechMut extends Mutator {
   }
 
   public async update(
-    id: number,
+    id: PartOfSpeechId,
     {name}: EditPartOfSpeechInput
   ): Promise<PartOfSpeechRow> {
     const {db} = this;
@@ -55,7 +57,7 @@ class PartOfSpeechMut extends Mutator {
     return PartOfSpeech.byIdRequired(partOfSpeech.id);
   }
 
-  public async delete(id: number): Promise<boolean> {
+  public async delete(id: PartOfSpeechId): Promise<boolean> {
     const {db} = this;
 
     await this.ensureUnused(id);
@@ -67,7 +69,7 @@ class PartOfSpeechMut extends Mutator {
     return affectedRows > 0;
   }
 
-  private async ensureUnused(id: number) {
+  private async ensureUnused(id: PartOfSpeechId) {
     const {Definition} = this.model;
     if (await Definition.anyUsesPartOfSpeech(id)) {
       throw new UserInputError(

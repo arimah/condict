@@ -1,12 +1,38 @@
+import {IdOf, InputIdOf} from '../id-of';
+import {PartOfSpeechId, PartOfSpeechInputId} from '../part-of-speech/types';
+
+export type InflectionTableId = IdOf<'InflectionTable'>;
+export type InflectionTableInputId = InputIdOf<'InflectionTable'>;
+export type InflectionTableLayoutId = IdOf<'InflectionTableLayout'>;
+export type InflectionTableLayoutInputId = InputIdOf<'InflectionTableLayout'>;
+export type InflectedFormId = IdOf<'InflectedForm'>;
+export type InflectedFormInputId = InputIdOf<'InflectedForm'>;
+
 export interface InflectionTableRow {
-  id: number;
-  part_of_speech_id: number;
+  id: InflectionTableId;
+  part_of_speech_id: PartOfSpeechId;
   name: string;
 }
 
+/**
+ * This type is a combination of inflection_table_versions and inflection_table_layouts,
+ * as queried by the InflectionTableLayout model.
+ */
+export interface InflectionTableLayoutRow {
+  /** The layout version ID */
+  id: InflectionTableLayoutId;
+  inflection_table_id: InflectionTableId;
+  /** Boolean */
+  is_current: number;
+  /** JSON-serialized data */
+  layout: string;
+  /** JSON-serialized data */
+  stems: string;
+}
+
 export interface InflectedFormRow {
-  id: number;
-  inflection_table_id: number;
+  id: InflectedFormId;
+  inflection_table_version_id: InflectionTableLayoutId;
   /** Boolean */
   derive_lemma: number;
   /** Boolean */
@@ -15,16 +41,8 @@ export interface InflectedFormRow {
   display_name: string;
 }
 
-export interface InflectionTableLayoutRow {
-  inflection_table_id: number;
-  /** JSON-serialized data */
-  layout: string;
-  /** JSON-serialized data */
-  stems: string;
-}
-
 export interface NewInflectionTableInput {
-  partOfSpeechId: string;
+  partOfSpeechId: PartOfSpeechInputId;
   name: string;
   layout: InflectionTableRowInput[];
 }
@@ -46,7 +64,7 @@ export interface InflectionTableCellInput {
 }
 
 export interface InflectedFormInput {
-  id?: string | null;
+  id?: InflectedFormInputId | null;
   deriveLemma: boolean;
   inflectionPattern: string;
   displayName: string;
@@ -61,6 +79,6 @@ export interface InflectionTableCellJson {
   rowSpan?: number;
   columnSpan?: number;
   headerText?: string;
-  inflectedFormId?: number;
+  inflectedFormId?: InflectedFormId;
 }
 

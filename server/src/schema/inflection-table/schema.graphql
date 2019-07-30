@@ -4,13 +4,23 @@ of speech. The table is a true 2-dimensional table, not merely a list of forms.
 As such, it can contain any number of rows and columns, and some cells may be
 headers. Cells can span multiple rows and columns.
 
-There are two ways to access the contents of an inflection table:
+To access the contents of an inflection table, query the `layout` field. Through
+it, you can read the table's rows and cells to construct the table, fetch the
+inflected forms (see `InflectedForm`) that are contained in the table, as well
+as query the definitions that use the table layout.
 
-* The `layout` field preserves information about the table's cells, and is used
-  to construct the table in its entirety.
-* The `inflectedForms` field provides only the table's inflected forms, which
-  do not on their own contain any layout information. It is not possible using
-  this field alone to determine which inflected form goes where.
+In addition to the current table layout, inflection tables record some historical
+layouts. If the layout is altered while it is in use by one or more definitions,
+the previous layout is kept, allowing existing definitions to keep using it. Old
+layouts are available through the `oldLayouts` field.
+
+Historical layouts are saved for two reasons:
+
+1. Inflected forms may be added to the dictionary (see `InflectedForm`), and
+   recalculating new forms for every definition that uses a table is costly.
+2. It is exceedingly difficult for the user to predict the effect of altering
+   an inflection table across the entire dictionary, especially if the table is
+   used by many definitions.
 """
 type InflectionTable {
   "The globally unique ID of the inflection table."
@@ -20,16 +30,77 @@ type InflectionTable {
   name: String!
 
   """
-  Describes the layout of the inflection table. Each row contains a number of
-  cells; each cell is either a header or an inflected form.
+  Describes the current layout of the inflection table.
+
+  This table may have any number of old layouts that are still in use by one or
+  more definitions. These can be accessed through `oldLayouts`.
   """
-  layout: [InflectionTableRow!]!
+  layout: InflectionTableLayout!
 
   """
-  A raw JSON string equivalent of `layout`. Generally, you should avoid using
-  this field; prefer `layout` whenever possible.
+  Gets old layouts of the inflection table that are still used by at least one
+  definition (query through the `InflectionTableLayout.usedByDefinitions` field).
+  Old layouts are ordered from oldest to newest.
+
+  Since there may be many old layouts, this field always paginated. If provided,
+  `page.perPage` cannot exceed 200.
   """
-  layoutRaw: String!
+  oldLayouts(page: PageParams): InflectionTableLayoutConnection!
+
+  "The part of speech that this inflection table belongs to."
+  partOfSpeech: PartOfSpeech!
+
+  """
+  Indicates whether any version of the inflection table is currently used by any
+  definitions.
+
+  To get the definitions that use this table, see the `usedByDefinitions` field.
+  """
+  isInUse: Boolean!
+
+  """
+  Gets the definitions that use any version of this table.
+
+  Definitions are ordered by term first, by ID second. If any definitions belong
+  to the same lemma, they will appear in the same relative order as they would
+  on the `Lemma.definitions` field.
+
+  Since the table may be used by many definitions, this field always paginated.
+  If provided, `page.perPage` cannot exceed 200.
+  """
+  usedByDefinitions(page: PageParams): DefinitionConnection!
+}
+
+"Contains paginated results from the `InflectionTable.oldLayouts` field."
+type InflectionTableLayoutConnection {
+  "Metadata about the connection, related to pagination."
+  meta: ConnectionMeta!
+
+  "The inflection table layouts in this batch."
+  nodes: [InflectionTableLayout!]!
+}
+
+type InflectionTableLayout {
+  "The globally unique ID of this inflection table layout."
+  id: ID!
+
+  """
+  Indicates whether this layout is the current layout used by the parent
+  inflection table.
+  """
+  isCurrent: Boolean!
+
+  """
+  Contains the rows of the inflection table. Each row contains a number of
+  cells; each cell is either a header or an inflected form.
+  """
+  rows: [InflectionTableRow!]!
+
+  """
+  All inflected forms contained in the table. To get a form's position in the
+  table, you must access the data through `rows`.
+  """
+  inflectedForms: [InflectedForm!]!
 
   """
   A list of unique stem names that appear in the inflection patterns of this
@@ -37,24 +108,18 @@ type InflectionTable {
   """
   stems: [String!]!
 
-  """
-  All inflected forms contained in the table. To get a form's position in the
-  table, you must access the data through `layout`.
-  """
-  inflectedForms: [InflectedForm!]!
-
-  "The part of speech that this inflection table belongs to."
-  partOfSpeech: PartOfSpeech!
+  "The inflection table that this layout belongs to."
+  inflectionTable: InflectionTable!
 
   """
-  Indicates whether the inflection table is currently used by any definitions.
+  Indicates whether this layout is used by any definitions.
 
   To get the definitions that use this table, see the `usedByDefinitions` field.
   """
   isInUse: Boolean!
 
   """
-  Gets the definitions that use this table.
+  Gets the definitions that use this layout.
 
   Definitions are ordered by term first, by ID second. If any definitions belong
   to the same lemma, they will appear in the same relative order as they would
@@ -162,13 +227,16 @@ type InflectedForm {
   """
   hasCustomDisplayName: Boolean!
 
-  "The table that this form belongs to."
-  inflectionTable: InflectionTable!
+  "The table layout that this form belongs to."
+  inflectionTableLayout: InflectionTableLayout!
 }
 
 extend type Query {
   "Finds an inflection table by ID."
   inflectionTable(id: ID!): InflectionTable
+
+  "Finds an inflection table layout by ID."
+  inflectionTableLayout(id: ID!): InflectionTableLayout
 
   "Finds an inflected form by ID."
   inflectedForm(id: ID!): InflectedForm

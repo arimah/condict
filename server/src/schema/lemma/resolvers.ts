@@ -1,4 +1,5 @@
-import {LemmaRow} from '../../model/lemma/types';
+import {toNumberId} from '../../model/id-of';
+import {LemmaInputId, LemmaRow} from '../../model/lemma/types';
 
 import {Resolvers, IdArg} from '../types';
 
@@ -20,8 +21,8 @@ const Lemma: Resolvers<LemmaRow> = {
 };
 
 const Query: Resolvers<unknown> = {
-  lemma: (_root, {id}: IdArg, {model: {Lemma}}) =>
-    Lemma.byId(+id),
+  lemma: (_root, {id}: IdArg<LemmaInputId>, {model: {Lemma}}) =>
+    Lemma.byId(toNumberId(id)),
 };
 
 export default {

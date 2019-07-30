@@ -1,7 +1,9 @@
 import {UserInputError} from 'apollo-server';
 
+import {toNumberId} from '../../model/id-of';
 import {
   LanguageRow,
+  LanguageInputId,
   NewLanguageInput,
   EditLanguageInput,
 } from '../../model/language/types';
@@ -30,7 +32,7 @@ const Language: Resolvers<LanguageRow> = {
 };
 
 interface LanguageArgs {
-  id?: string | null;
+  id?: LanguageInputId | null;
   urlName?: string | null;
 }
 
@@ -39,7 +41,7 @@ const Query: Resolvers<unknown> = {
 
   language: (_root, args: LanguageArgs, {model: {Language}}) => {
     if (args.id != null) {
-      return Language.byId(+args.id);
+      return Language.byId(toNumberId(args.id));
     }
     if (args.urlName != null) {
       return Language.byUrlName(args.urlName);
@@ -55,7 +57,7 @@ interface AddLanguageArgs {
 }
 
 interface EditLanguageArgs {
-  id: string;
+  id: LanguageInputId;
   data: EditLanguageInput;
 }
 
@@ -67,7 +69,7 @@ const Mutation: Mutators<unknown> = {
 
   editLanguage: mutator(
     (_root, {id, data}: EditLanguageArgs, {mut: {LanguageMut}}) =>
-      LanguageMut.update(+id, data)
+      LanguageMut.update(toNumberId(id), data)
   ),
 };
 

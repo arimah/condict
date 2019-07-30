@@ -3,6 +3,7 @@ import {Logger} from 'winston';
 
 import Adaptor from '../database/adaptor';
 import {ModelResolver, MutatorResolver} from '../model';
+import {InputIdOf} from '../model/id-of';
 
 export interface Context {
   db: Adaptor;
@@ -27,8 +28,8 @@ export interface Mutators<T> {
  * A resolver arguments type for a resolver that accept a single, required ID,
  * with the name `id`.
  */
-export interface IdArg {
-  id: string;
+export interface IdArg<T extends InputIdOf<any>> {
+  id: T;
 }
 
 /**

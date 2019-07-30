@@ -2,6 +2,7 @@ import Mutator from '../mutator';
 import FieldSet from '../field-set';
 
 import {
+  LanguageId,
   LanguageRow,
   NewLanguageInput,
   EditLanguageInput,
@@ -18,7 +19,7 @@ class LanguageMut extends Mutator {
     name = await validateName(db, null, name);
     urlName = await validateUrlName(db, null, urlName);
 
-    const {insertId} = await db.exec`
+    const {insertId} = await db.exec<LanguageId>`
       insert into languages (name, url_name)
       values (${name}, ${urlName})
     `;
@@ -26,7 +27,7 @@ class LanguageMut extends Mutator {
   }
 
   public async update(
-    id: number,
+    id: LanguageId,
     {name, urlName}: EditLanguageInput
   ): Promise<LanguageRow> {
     const {db} = this;

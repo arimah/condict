@@ -3,48 +3,68 @@ import {UserInputError} from 'apollo-server';
 import {validateTableCaption} from '../../rich-text/validate';
 
 import Mutator from '../mutator';
-import {InflectionTableRow} from '../inflection-table/types';
+import {toNumberId} from '../id-of';
+import {PartOfSpeechId} from '../part-of-speech/types';
+import {
+  InflectionTableId,
+  InflectionTableRow,
+  InflectionTableLayoutId,
+  InflectionTableLayoutRow,
+  InflectedFormId,
+} from '../inflection-table/types';
 
-import {DefinitionInflectionTableInput} from './types';
+import {
+  DefinitionId,
+  DefinitionInflectionTableId,
+  NewDefinitionInflectionTableInput,
+  EditDefinitionInflectionTableInput,
+} from './types';
 import deriveForms from './derive-forms';
 
 export interface DefinitionInflectionTableResult {
-  id: number;
-  derivedForms: Map<number, string>;
+  id: DefinitionInflectionTableId;
+  derivedForms: Map<InflectedFormId, string>;
 }
 
 export interface DefinitionData {
-  id: number;
+  id: DefinitionId;
   term: string;
   stemMap: Map<string, string>;
-  partOfSpeechId: number;
+  partOfSpeechId: PartOfSpeechId;
+}
+
+interface ValidateInflectionTableResult {
+  inflectionTable: InflectionTableRow;
+  currentLayout: InflectionTableLayoutRow;
 }
 
 export default class DefinitionInflectionTableMut extends Mutator {
   public async insert(
     definition: DefinitionData,
-    {inflectionTableId, caption, customForms}: DefinitionInflectionTableInput,
+    {inflectionTableId, caption, customForms}: NewDefinitionInflectionTableInput,
     index: number
   ): Promise<DefinitionInflectionTableResult> {
     const {db} = this;
     const {CustomFormMut} = this.mut;
 
-    const inflectionTable = await this.validateInflectionTableId(
-      +inflectionTableId,
+    const {inflectionTable, currentLayout} = await this.validateInflectionTableId(
+      toNumberId(inflectionTableId),
       definition.partOfSpeechId
     );
     const finalCaption = validateTableCaption(caption);
 
-    const {insertId: tableId} = await db.exec`
+    const {insertId: tableId} = await db.exec<DefinitionInflectionTableId>`
       insert into definition_inflection_tables (
         definition_id,
         inflection_table_id,
+        inflection_table_version_id,
         sort_order,
         caption
       )
       values (
         ${definition.id},
         ${inflectionTable.id},
+        ${currentLayout.id},
         ${index},
         ${finalCaption && JSON.stringify(finalCaption)}
       )
@@ -52,7 +72,7 @@ export default class DefinitionInflectionTableMut extends Mutator {
 
     const customFormMap = await CustomFormMut.insert(
       tableId,
-      inflectionTable.id,
+      currentLayout.id,
       customForms
     );
 
@@ -60,21 +80,21 @@ export default class DefinitionInflectionTableMut extends Mutator {
       tableId,
       definition.term,
       definition.stemMap,
-      inflectionTable.id,
+      currentLayout.id,
       customFormMap
     );
 
-    return {id: tableId, derivedForms};
+    return {id: tableId as DefinitionInflectionTableId, derivedForms};
   }
 
   public async update(
-    id: number,
+    id: DefinitionInflectionTableId,
     definition: DefinitionData,
-    {caption, customForms}: DefinitionInflectionTableInput,
+    {caption, customForms, upgradeTableLayout}: EditDefinitionInflectionTableInput,
     index: number
   ): Promise<DefinitionInflectionTableResult> {
     const {db} = this;
-    const {DefinitionInflectionTable} = this.model;
+    const {DefinitionInflectionTable, InflectionTableLayout} = this.model;
     const {CustomFormMut} = this.mut;
 
     const table = await DefinitionInflectionTable.byIdRequired(id);
@@ -85,10 +105,17 @@ export default class DefinitionInflectionTableMut extends Mutator {
       );
     }
 
-    await this.validateInflectionTableId(
+    const {currentLayout} = await this.validateInflectionTableId(
       table.inflection_table_id,
       definition.partOfSpeechId
     );
+
+    let tableLayout = await InflectionTableLayout.byIdRequired(
+      table.inflection_table_version_id
+    );
+    if (tableLayout.is_current === 0 && upgradeTableLayout) {
+      tableLayout = currentLayout;
+    }
 
     const finalCaption = validateTableCaption(caption);
 
@@ -96,6 +123,7 @@ export default class DefinitionInflectionTableMut extends Mutator {
       update definition_inflection_tables
       set
         caption = ${finalCaption && JSON.stringify(finalCaption)},
+        inflection_table_version_id = ${tableLayout.id},
         sort_order = ${index}
       where id = ${table.id}
     `;
@@ -107,7 +135,7 @@ export default class DefinitionInflectionTableMut extends Mutator {
     await CustomFormMut.deleteAll(id);
     const customFormMap = await CustomFormMut.insert(
       id,
-      table.inflection_table_id,
+      tableLayout.id,
       customForms
     );
 
@@ -115,7 +143,7 @@ export default class DefinitionInflectionTableMut extends Mutator {
       table.id,
       definition.term,
       definition.stemMap,
-      table.inflection_table_id,
+      tableLayout.id,
       customFormMap
     );
 
@@ -123,10 +151,10 @@ export default class DefinitionInflectionTableMut extends Mutator {
   }
 
   private async validateInflectionTableId(
-    inflectionTableId: number,
-    partOfSpeechId: number
-  ): Promise<InflectionTableRow> {
-    const {InflectionTable} = this.model;
+    inflectionTableId: InflectionTableId,
+    partOfSpeechId: PartOfSpeechId
+  ): Promise<ValidateInflectionTableResult> {
+    const {InflectionTable, InflectionTableLayout} = this.model;
 
     const inflectionTable = await InflectionTable.byIdRequired(
       inflectionTableId,
@@ -138,22 +166,26 @@ export default class DefinitionInflectionTableMut extends Mutator {
         {invalidArgs: ['inflectionTableId']}
       );
     }
-    return inflectionTable;
+
+    const currentLayout =
+      await InflectionTableLayout.currentByTableRequired(inflectionTable.id);
+
+    return {inflectionTable, currentLayout};
   }
 
   public async deriveAllForms(
-    tableId: number,
+    tableId: DefinitionInflectionTableId,
     term: string,
     stemMap: Map<string, string>,
-    inflectionTableId: number,
-    customForms: Map<number, string>
-  ): Promise<Map<number, string>> {
+    inflectionTableLayoutId: InflectionTableLayoutId,
+    customForms: Map<InflectedFormId, string>
+  ): Promise<Map<InflectedFormId, string>> {
     const {InflectedForm} = this.model;
 
     const derivedForms = deriveForms(
       term,
       stemMap,
-      await InflectedForm.allDerivableByTable(inflectionTableId)
+      await InflectedForm.allDerivableByTableLayout(inflectionTableLayoutId)
     );
 
     customForms.forEach((formValue, formId) => {
@@ -166,8 +198,8 @@ export default class DefinitionInflectionTableMut extends Mutator {
   }
 
   public async deleteOld(
-    definitionId: number,
-    currentIds: number[]
+    definitionId: DefinitionId,
+    currentIds: DefinitionInflectionTableId[]
   ): Promise<void> {
     const {db} = this;
     await db.exec`

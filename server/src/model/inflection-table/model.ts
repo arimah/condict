@@ -1,19 +1,26 @@
 import {UserInputError} from 'apollo-server';
 
 import {Awaitable} from '../../database/adaptor';
+import {validatePageParams} from '../../schema/helpers';
+import {PageParams, Connection} from '../../schema/types';
+
+import Model from '../model';
+import {PartOfSpeechId} from '../part-of-speech/types';
 
 import {
+  InflectionTableId,
   InflectionTableRow,
-  InflectedFormRow,
+  InflectionTableLayoutId,
   InflectionTableLayoutRow,
+  InflectedFormId,
+  InflectedFormRow,
 } from './types';
-import Model from '../model';
 
 class InflectionTable extends Model {
   public readonly byIdKey = 'InflectionTable.byId';
   public readonly allByPartOfSpeechKey = 'InflectionTable.allByPartOfSpeechKey';
 
-  public byId(id: number): Promise<InflectionTableRow | null> {
+  public byId(id: InflectionTableId): Promise<InflectionTableRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -28,7 +35,7 @@ class InflectionTable extends Model {
   }
 
   public async byIdRequired(
-    id: number,
+    id: InflectionTableId,
     paramName: string = 'id'
   ): Promise<InflectionTableRow> {
     const inflectionTable = await this.byId(id);
@@ -41,7 +48,7 @@ class InflectionTable extends Model {
   }
 
   public allByPartOfSpeech(
-    partOfSpeechId: number
+    partOfSpeechId: PartOfSpeechId
   ): Promise<InflectionTableRow[]> {
     return this.db.batchOneToMany(
       this.allByPartOfSpeechKey,
@@ -60,9 +67,9 @@ class InflectionTable extends Model {
 
 class InflectedForm extends Model {
   public readonly byIdKey = 'InflectedForm.byId';
-  public readonly allByTableKey = 'InflectedForm.allByTable';
+  public readonly allByTableLayoutKey = 'InflectedForm.allByTableLayout';
 
-  public byId(id: number): Promise<InflectedFormRow | null> {
+  public byId(id: InflectedFormId): Promise<InflectedFormRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -77,7 +84,7 @@ class InflectedForm extends Model {
   }
 
   public async byIdRequired(
-    id: number,
+    id: InflectedFormId,
     paramName: string = 'id'
   ): Promise<InflectedFormRow> {
     const inflectedForm = await this.byId(id);
@@ -89,46 +96,139 @@ class InflectedForm extends Model {
     return inflectedForm;
   }
 
-  public allByTable(tableId: number): Promise<InflectedFormRow[]> {
+  public allByTableLayout(
+    versionId: InflectionTableLayoutId
+  ): Promise<InflectedFormRow[]> {
     return this.db.batchOneToMany(
-      this.allByTableKey,
-      tableId,
-      (db, tableIds) =>
+      this.allByTableLayoutKey,
+      versionId,
+      (db, versionId) =>
         db.all<InflectedFormRow>`
           select *
           from inflected_forms
-          where inflection_table_id in (${tableIds})
-          order by inflection_table_id, id
+          where inflection_table_version_id in (${versionId})
+          order by inflection_table_version_id, id
         `,
-      row => row.inflection_table_id
+      row => row.inflection_table_version_id
     );
   }
 
-  public allDerivableByTable(tableId: number): Awaitable<InflectedFormRow[]> {
+  public allDerivableByTableLayout(
+    versionId: InflectionTableLayoutId
+  ): Awaitable<InflectedFormRow[]> {
     return this.db.all<InflectedFormRow>`
-      select i.*
-      from inflected_forms i
-      inner join inflection_tables t on t.id = i.inflection_table_id
-      where i.inflection_table_id = ${tableId}
-        and i.derive_lemma = 1
+      select *
+      from inflected_forms
+      where inflection_table_version_id = ${versionId}
+        and derive_lemma = 1
     `;
   }
 }
 
 class InflectionTableLayout extends Model {
-  public readonly byTableKey = 'InflectionTableLayout.byTable';
+  public readonly byIdKey = 'InflectionTableLayout.byId';
+  public readonly currentByTableKey = 'InflectionTableLayout.currentByTable';
+  public readonly defaultPagination: Readonly<PageParams> = {
+    page: 0,
+    perPage: 50,
+  };
+  public readonly maxPerPage = 200;
 
-  public byTable(tableId: number): Promise<InflectionTableLayoutRow | null> {
+  public byId(
+    id: InflectionTableLayoutId
+  ): Promise<InflectionTableLayoutRow | null> {
     return this.db.batchOneToOne(
-      this.byTableKey,
+      this.byIdKey,
+      id,
+      (db, ids) =>
+        db.all<InflectionTableLayoutRow>`
+          select
+            itv.*,
+            itl.*
+          from inflection_table_versions itv
+          inner join inflection_table_layouts itl on
+            itl.inflection_table_version_id = itv.id
+          where itv.id in (${ids})
+        `,
+      row => row.id
+    );
+  }
+
+  public async byIdRequired(
+    id: InflectionTableLayoutId,
+    paramName: string = 'id'
+  ): Promise<InflectionTableLayoutRow> {
+    const layout = await this.byId(id);
+    if (!layout) {
+      throw new UserInputError(`Inflection table layout not found: ${id}`, {
+        invalidArgs: [paramName],
+      });
+    }
+    return layout;
+  }
+
+  public currentByTable(
+    tableId: InflectionTableId
+  ): Promise<InflectionTableLayoutRow | null> {
+    return this.db.batchOneToOne(
+      this.currentByTableKey,
       tableId,
       (db, tableIds) =>
         db.all<InflectionTableLayoutRow>`
-          select *
-          from inflection_table_layouts
-          where inflection_table_id in (${tableIds})
+          select
+            itv.*,
+            itl.*
+          from inflection_table_versions itv
+          inner join inflection_table_layouts itl on
+            itl.inflection_table_version_id = itv.id
+          where itv.inflection_table_id in (${tableIds})
+            and itv.is_current = 1
         `,
       row => row.inflection_table_id
+    );
+  }
+
+  public async currentByTableRequired(
+    tableId: InflectionTableId,
+    paramName: string = 'tableId'
+  ): Promise<InflectionTableLayoutRow> {
+    const layout = await this.currentByTable(tableId);
+    if (!layout) {
+      throw new UserInputError(`Table has no current layout: ${tableId}`, {
+        invalidArgs: [paramName],
+      });
+    }
+    return layout;
+  }
+
+  public allOldByTable(
+    tableId: InflectionTableId,
+    page?: PageParams | null
+  ): Promise<Connection<InflectionTableLayoutRow>> {
+    const condition = this.db.raw`
+      itv.inflection_table_id = ${tableId} and is_current = 0
+    `;
+    return this.db.paginate(
+      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      async db => {
+        const {total} = await db.getRequired<{total: number}>`
+          select count(*) as total
+          from inflection_table_versions itv
+          where ${condition}
+        `;
+        return total;
+      },
+      (db, limit, offset) => db.all<InflectionTableLayoutRow>`
+        select
+          itv.*,
+          itl.*
+        from inflection_table_versions itv
+        inner join inflection_table_layouts itl on
+          itl.inflection_table_version_id = itv.id
+        where ${condition}
+        order by itv.id desc
+        limit ${limit} offset ${offset}
+      `
     );
   }
 }

@@ -1,8 +1,13 @@
+import {toNumberId} from '../../model/id-of';
 import {
   InflectionTableRow,
+  InflectionTableLayoutRow,
   InflectedFormRow,
+  InflectionTableInputId,
   NewInflectionTableInput,
   EditInflectionTableInput,
+  InflectionTableLayoutInputId,
+  InflectedFormInputId,
   InflectionTableCellJson,
 } from '../../model/inflection-table/types';
 
@@ -10,23 +15,11 @@ import {Resolvers, Mutators, IdArg, PageArg} from '../types';
 import {mutator} from '../helpers';
 
 const InflectionTable: Resolvers<InflectionTableRow> = {
-  async layout(p, _args, {model: {InflectionTableLayout}}) {
-    const row = await InflectionTableLayout.byTable(p.id);
-    return row ? JSON.parse(row.layout) : [];
-  },
+  layout: (p, _args, {model: {InflectionTableLayout}}) =>
+    InflectionTableLayout.currentByTable(p.id),
 
-  async layoutRaw(p, _args, {model: {InflectionTableLayout}}) {
-    const row = await InflectionTableLayout.byTable(p.id);
-    return row ? row.layout : '[]';
-  },
-
-  async stems(p, _args, {model: {InflectionTableLayout}}) {
-    const row = await InflectionTableLayout.byTable(p.id);
-    return row ? JSON.parse(row.stems) : [];
-  },
-
-  inflectedForms: (p, _args, {model: {InflectedForm}}) =>
-    InflectedForm.allByTable(p.id),
+  oldLayouts: (p, {page}: PageArg, {model: {InflectionTableLayout}}) =>
+    InflectionTableLayout.allOldByTable(p.id, page),
 
   partOfSpeech: (p, _args, {model: {PartOfSpeech}}) =>
     PartOfSpeech.byId(p.part_of_speech_id),
@@ -36,6 +29,26 @@ const InflectionTable: Resolvers<InflectionTableRow> = {
 
   usedByDefinitions: (p, {page}: PageArg, {model: {Definition}}) =>
     Definition.allByInflectionTable(p.id, page),
+};
+
+const InflectionTableLayout: Resolvers<InflectionTableLayoutRow> = {
+  isCurrent: p => p.is_current === 1,
+
+  rows: p => JSON.parse(p.layout),
+
+  inflectedForms: (p, _args, {model: {InflectedForm}}) =>
+    InflectedForm.allByTableLayout(p.id),
+
+  stems: p => JSON.parse(p.stems),
+
+  inflectionTable: (p, _args, {model: {InflectionTable}}) =>
+    InflectionTable.byId(p.inflection_table_id),
+
+  isInUse: (p, _args, {model: {Definition}}) =>
+    Definition.anyUsesInflectionTableLayout(p.id),
+
+  usedByDefinitions: (p, {page}: PageArg, {model: {Definition}}) =>
+    Definition.allByInflectionTableLayout(p.id, page),
 };
 
 const InflectionTableCell: Resolvers<InflectionTableCellJson> = {
@@ -61,8 +74,9 @@ const InflectionTableDataCell: Resolvers<InflectionTableCellJson> = {
   rowSpan: p => p.rowSpan || 1,
 
   inflectedForm: (p, _args, {model: {InflectedForm}}) =>
-    // We can never get here unless inflectedFormId is non-null
-    InflectedForm.byId(p.inflectedFormId as number),
+    p.inflectedFormId
+      ? InflectedForm.byId(p.inflectedFormId)
+      : null,
 };
 
 const InflectedForm: Resolvers<InflectedFormRow> = {
@@ -74,16 +88,31 @@ const InflectedForm: Resolvers<InflectedFormRow> = {
 
   hasCustomDisplayName: p => p.custom_display_name === 1,
 
-  inflectionTable: (p, _args, {model: {InflectionTable}}) =>
-    InflectionTable.byId(p.inflection_table_id),
+  inflectionTableLayout: (p, _args, {model: {InflectionTableLayout}}) =>
+    InflectionTableLayout.byId(p.inflection_table_version_id),
 };
 
 const Query: Resolvers<unknown> = {
-  inflectionTable: (_root, {id}: IdArg, {model: {InflectionTable}}) =>
-    InflectionTable.byId(+id),
+  inflectionTable: (
+    _root,
+    {id}: IdArg<InflectionTableInputId>,
+    {model: {InflectionTable}}
+  ) =>
+    InflectionTable.byId(toNumberId(id)),
 
-  inflectedForm: (_root, {id}: IdArg, {model: {InflectedForm}}) =>
-    InflectedForm.byId(+id),
+  inflectionTableLayout: (
+    _root,
+    {id}: IdArg<InflectionTableLayoutInputId>,
+    {model: {InflectionTableLayout}}
+  ) =>
+    InflectionTableLayout.byId(toNumberId(id)),
+
+  inflectedForm: (
+    _root,
+    {id}: IdArg<InflectedFormInputId>,
+    {model: {InflectedForm}}
+  ) =>
+    InflectedForm.byId(toNumberId(id)),
 };
 
 interface AddInflectionTableArgs {
@@ -91,7 +120,7 @@ interface AddInflectionTableArgs {
 }
 
 interface EditInflectionTableArgs {
-  id: string;
+  id: InflectionTableInputId;
   data: EditInflectionTableInput;
 }
 
@@ -104,21 +133,22 @@ const Mutation: Mutators<unknown> = {
   editInflectionTable: mutator(
     (_root, {id, data}: EditInflectionTableArgs, {mut: {InflectionTableMut}}) =>
       InflectionTableMut.update(
-        +id,
+        toNumberId(id),
         data
       )
   ),
 
   deleteInflectionTable: mutator(
-    (_root, {id}: IdArg, {mut: {InflectionTableMut}}) =>
-      InflectionTableMut.delete(+id)
+    (_root, {id}: IdArg<InflectionTableInputId>, {mut: {InflectionTableMut}}) =>
+      InflectionTableMut.delete(toNumberId(id))
   ),
 };
 
 export default {
   InflectionTable,
-  // The rows stored in inflection_tables.layout exactly corresponds to the
-  // format of InflectionTableRow, so no need to add a resolver for that!
+  InflectionTableLayout,
+  // The rows stored in inflection_table_layouts.layout exactly corresponds to
+  // the format of InflectionTableRow, so no need to add a resolver for that!
   InflectionTableCell,
   InflectionTableHeaderCell,
   InflectionTableDataCell,

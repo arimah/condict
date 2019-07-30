@@ -4,8 +4,11 @@ import {validatePageParams} from '../../schema/helpers';
 import {PageParams, Connection} from '../../schema/types';
 
 import Model from '../model';
+import {LanguageId} from '../language/types';
+import {LemmaId} from '../lemma/types';
+import {DefinitionId} from '../definition/types';
 
-import {TagRow, DefinitionTagRow, LemmaTagRow} from './types';
+import {TagId, TagRow, DefinitionTagRow, LemmaTagRow} from './types';
 
 class Tag extends Model {
   public readonly byIdKey = 'Tag.byId';
@@ -39,7 +42,7 @@ class Tag extends Model {
   }
 
   public allByLanguage(
-    languageId: number,
+    languageId: LanguageId,
     page?: PageParams | null
   ): Promise<Connection<TagRow>> {
     return this.db.paginate(
@@ -68,7 +71,7 @@ class Tag extends Model {
     );
   }
 
-  public byId(id: number): Promise<TagRow | null> {
+  public byId(id: TagId): Promise<TagRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -83,7 +86,7 @@ class Tag extends Model {
   }
 
   public async byIdRequired(
-    id: number,
+    id: TagId,
     paramName: string = 'id'
   ): Promise<TagRow> {
     const tag = await this.byId(id);
@@ -109,7 +112,7 @@ class Tag extends Model {
     );
   }
 
-  public async allByLemma(lemmaId: number): Promise<TagRow[]> {
+  public async allByLemma(lemmaId: LemmaId): Promise<TagRow[]> {
     return this.db.batchOneToMany(
       this.allByLemmaKey,
       lemmaId,
@@ -129,7 +132,7 @@ class Tag extends Model {
     );
   }
 
-  public async allByDefinition(definitionId: number): Promise<TagRow[]> {
+  public async allByDefinition(definitionId: DefinitionId): Promise<TagRow[]> {
     return this.db.batchOneToMany(
       this.allByDefinitionKey,
       definitionId,

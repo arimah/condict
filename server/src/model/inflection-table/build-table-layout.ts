@@ -1,6 +1,7 @@
 import {UserInputError} from 'apollo-server';
 
 import {
+  InflectedFormId,
   InflectionTableRowInput,
   InflectedFormInput,
   InflectionTableRowJson,
@@ -11,6 +12,8 @@ export interface TableLayoutResult {
   finalLayout: InflectionTableRowJson[];
   stems: string[];
 }
+
+type Awaitable<T> = T | PromiseLike<T>;
 
 // Collects stem names that are present in an inflection pattern.
 const collectStemNames = (pattern: string, stems: Set<string>) => {
@@ -28,7 +31,7 @@ const collectStemNames = (pattern: string, stems: Set<string>) => {
 
 const buildTableLayout = async (
   layout: InflectionTableRowInput[],
-  handleInflectedForm: (form: InflectedFormInput) => number | PromiseLike<number>
+  handleInflectedForm: (form: InflectedFormInput) => Awaitable<InflectedFormId>
 ): Promise<TableLayoutResult> => {
   const finalLayout: InflectionTableRowJson[] = [];
   const stems = new Set<string>();

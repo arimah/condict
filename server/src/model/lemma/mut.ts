@@ -1,35 +1,37 @@
 import Mutator from '../mutator';
+import {LanguageId} from '../language/types';
 
+import {LemmaId} from './types';
 import {ValidTerm} from './validators';
 
 class LemmaMut extends Mutator {
-  public async ensureExists(languageId: number, term: ValidTerm): Promise<number> {
+  public async ensureExists(languageId: LanguageId, term: ValidTerm): Promise<LemmaId> {
     const {db} = this;
 
-    const result = await db.get<{id: number}>`
+    const result = await db.get<{id: LemmaId}>`
       select id
       from lemmas
       where language_id = ${languageId}
-        and term_unique = ${term.value}
+        and term_unique = ${term}
     `;
     if (result) {
       return result.id;
     }
 
-    const {insertId} = await db.exec`
+    const {insertId} = await db.exec<LemmaId>`
       insert into lemmas (language_id, term_unique, term_display)
-      values (${languageId}, ${term.value}, ${term.value})
+      values (${languageId}, ${term}, ${term})
     `;
     await this.updateLemmaCount(languageId);
     return insertId;
   }
 
   public async ensureAllExist(
-    languageId: number,
+    languageId: LanguageId,
     terms: ValidTerm[]
-  ): Promise<Map<string, number>> {
+  ): Promise<Map<string, LemmaId>> {
     interface Row {
-      id: number;
+      id: LemmaId;
       term: string;
     }
 
@@ -45,16 +47,16 @@ class LemmaMut extends Mutator {
         term_unique as term
       from lemmas
       where language_id = ${languageId}
-        and term_unique in (${terms.map(t => t.value)})
+        and term_unique in (${terms})
     `;
-    const termToId = new Map<string, number>(
-      result.map<[string, number]>(row => [row.term, row.id])
+    const termToId = new Map<string, LemmaId>(
+      result.map<[string, LemmaId]>(row => [row.term, row.id])
     );
 
-    for (const {value: term} of terms) {
+    for (const term of terms) {
       // TODO: Can we parallelise this? Auto-increment IDs *should* be serial.
       if (!termToId.has(term)) {
-        const {insertId} = await db.exec`
+        const {insertId} = await db.exec<LemmaId>`
           insert into lemmas (language_id, term_unique, term_display)
           values (${languageId}, ${term}, ${term})
         `;
@@ -70,11 +72,11 @@ class LemmaMut extends Mutator {
     return termToId;
   }
 
-  public async deleteEmpty(languageId: number): Promise<void> {
+  public async deleteEmpty(languageId: LanguageId): Promise<void> {
     const {db} = this;
     const {Lemma} = this.model;
 
-    const emptyIds = await db.all<{id: number}>`
+    const emptyIds = await db.all<{id: LemmaId}>`
       select l.id as id
       from lemmas l
       left join definitions d on d.lemma_id = l.id
@@ -95,7 +97,7 @@ class LemmaMut extends Mutator {
     }
   }
 
-  private async updateLemmaCount(languageId: number): Promise<void> {
+  private async updateLemmaCount(languageId: LanguageId): Promise<void> {
     await this.db.exec`
       update languages
       set lemma_count = (

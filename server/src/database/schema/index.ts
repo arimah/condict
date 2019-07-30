@@ -1,4 +1,7 @@
-import {InflectionTableRowJson} from '../../model/inflection-table/types';
+import {
+  InflectedFormId,
+  InflectionTableRowJson,
+} from '../../model/inflection-table/types';
 import {BlockElementJson} from '../../rich-text/types';
 
 import {
@@ -180,8 +183,8 @@ const tables: TableSchema[] = [
   },
 
   {
-    name: 'inflected_forms',
-    comment: 'Individual cells in an inflection table, which correspond to single inflected forms. The position of a cell is determined by the layout of the inflection table.',
+    name: 'inflection_table_versions',
+    comment: "Current and historical versions of each table's layout. The actual layout data is stored in `inflection_table_layouts`.",
     columns: [
       id,
       {
@@ -189,6 +192,32 @@ const tables: TableSchema[] = [
         comment: 'The parent inflection table.',
         references: {
           table: 'inflection_tables',
+          column: 'id',
+          onDelete: ReferenceAction.CASCADE,
+        },
+      },
+      {
+        name: 'is_current',
+        comment: 'Indicates whether this is the current layout of the table.',
+        type: ColumnType.BOOLEAN,
+      },
+    ],
+    primaryKey: 'id',
+    index: [
+      'is_current',
+    ],
+  },
+
+  {
+    name: 'inflected_forms',
+    comment: 'Individual cells in an inflection table, which correspond to single inflected forms. The position of a cell is determined by the layout of the inflection table.',
+    columns: [
+      id,
+      {
+        name: 'inflection_table_version_id',
+        comment: 'The parent inflection table version.',
+        references: {
+          table: 'inflection_table_versions',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
@@ -221,6 +250,7 @@ const tables: TableSchema[] = [
     primaryKey: 'id',
     index: [
       'inflection_table_id',
+      'inflection_table_version_id',
     ],
   },
 
@@ -229,10 +259,10 @@ const tables: TableSchema[] = [
     comment: "Layouts for all inflected tables. This is a separate table for two reasons: it means we don't have to fetch a potentially large JSON object unless the layout is asked for, and it means we can actually reference `inflected_forms` in each cell so the data export/import works.",
     columns: [
       {
-        name: 'inflection_table_id',
-        comment: 'The parent inflection table.',
+        name: 'inflection_table_version_id',
+        comment: 'The parent inflection table version.',
         references: {
-          table: 'inflection_tables',
+          table: 'inflection_table_versions',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
@@ -252,7 +282,7 @@ const tables: TableSchema[] = [
           rows.forEach(({cells}) => {
             cells.forEach(cell => {
               if (cell.inflectedFormId) {
-                cell.inflectedFormId = newFormIds.get(cell.inflectedFormId);
+                cell.inflectedFormId = newFormIds.get(cell.inflectedFormId) as InflectedFormId;
               }
             });
           });
@@ -265,7 +295,7 @@ const tables: TableSchema[] = [
           rows.forEach(({cells}) => {
             cells.forEach(cell => {
               if (cell.inflectedFormId != null) {
-                cell.inflectedFormId = newFormIds.get(cell.inflectedFormId);
+                cell.inflectedFormId = newFormIds.get(cell.inflectedFormId) as InflectedFormId;
               }
             });
           });
@@ -283,7 +313,7 @@ const tables: TableSchema[] = [
         import: value => JSON.stringify(value),
       },
     ],
-    primaryKey: 'inflection_table_id',
+    primaryKey: 'inflection_table_version_id',
   },
 
   {
@@ -475,6 +505,15 @@ const tables: TableSchema[] = [
         },
       },
       {
+        name: 'inflection_table_version_id',
+        comment: 'The inflection table version that inflected forms are generated from.',
+        references: {
+          table: 'inflection_table_versions',
+          column: 'id',
+          onDelete: ReferenceAction.RESTRICT,
+        },
+      },
+      {
         name: 'sort_order',
         comment: 'The sort order of the inflection table within its definition.',
         type: ColumnType.UNSIGNED_INT,
@@ -494,6 +533,7 @@ const tables: TableSchema[] = [
     index: [
       'definition_id',
       'inflection_table_id',
+      'inflection_table_version_id',
       ['definition_id', 'sort_order'],
     ],
   },

@@ -1,11 +1,14 @@
+import {toNumberId} from '../../model/id-of';
 import {
   DefinitionRow,
   DefinitionStemRow,
   DefinitionInflectionTableRow,
   CustomInflectedFormRow,
   DerivedDefinitionRow,
+  DefinitionInputId,
   NewDefinitionInput,
   EditDefinitionInput,
+  DefinitionInflectionTableInputId,
 } from '../../model/definition/types';
 
 import {Resolvers, Mutators, IdArg, PageArg} from '../types';
@@ -58,6 +61,9 @@ const DefinitionInflectionTable: Resolvers<DefinitionInflectionTableRow> = {
   inflectionTable: (p, _args, {model: {InflectionTable}}) =>
     InflectionTable.byId(p.inflection_table_id),
 
+  inflectionTableLayout: (p, _args, {model: {InflectionTableLayout}}) =>
+    InflectionTableLayout.byId(p.inflection_table_version_id),
+
   definition: (p, _args, {model: {Definition}}) =>
     Definition.byId(p.definition_id),
 };
@@ -87,15 +93,15 @@ const DerivedDefinition: Resolvers<DerivedDefinitionRow> = {
 };
 
 const Query: Resolvers<unknown> = {
-  definition: (_root, {id}: IdArg, {model: {Definition}}) =>
-    Definition.byId(+id),
+  definition: (_root, {id}: IdArg<DefinitionInputId>, {model: {Definition}}) =>
+    Definition.byId(toNumberId(id)),
 
   definitionInflectionTable: (
     _root,
-    {id}: IdArg,
+    {id}: IdArg<DefinitionInflectionTableInputId>,
     {model: {DefinitionInflectionTable}}
   ) =>
-    DefinitionInflectionTable.byId(+id),
+    DefinitionInflectionTable.byId(toNumberId(id)),
 };
 
 interface AddDefinitionArgs {
@@ -103,7 +109,7 @@ interface AddDefinitionArgs {
 }
 
 interface EditDefinitionArgs {
-  id: string;
+  id: DefinitionInputId;
   data: EditDefinitionInput;
 }
 
@@ -115,12 +121,12 @@ const Mutation: Mutators<unknown> = {
 
   editDefinition: mutator(
     (_root, {id, data}: EditDefinitionArgs, {mut: {DefinitionMut}}) =>
-      DefinitionMut.update(+id, data)
+      DefinitionMut.update(toNumberId(id), data)
   ),
 
   deleteDefinition: mutator(
-    (_root, {id}: IdArg, {mut: {DefinitionMut}}) =>
-      DefinitionMut.delete(+id)
+    (_root, {id}: IdArg<DefinitionInputId>, {mut: {DefinitionMut}}) =>
+      DefinitionMut.delete(toNumberId(id))
   ),
 };
 

@@ -1,27 +1,32 @@
 import {UserInputError} from 'apollo-server';
 
 import Mutator from '../mutator';
+import {toNumberId} from '../id-of';
+import {
+  InflectionTableLayoutId,
+  InflectedFormId,
+} from '../inflection-table/types';
 
-import {CustomInflectedFormInput} from './types';
+import {DefinitionInflectionTableId, CustomInflectedFormInput} from './types';
 import {validateFormValue} from './validators';
 
 export default class CustomFormMut extends Mutator {
   public async insert(
-    definitionTableId: number,
-    inflectionTableId: number,
+    definitionTableId: DefinitionInflectionTableId,
+    inflectionTableLayoutId: InflectionTableLayoutId,
     customForms: CustomInflectedFormInput[]
-  ): Promise<Map<number, string>> {
+  ): Promise<Map<InflectedFormId, string>> {
     const {db} = this;
     const {InflectedForm} = this.model;
 
-    const allCustomForms = new Map<number, string>(
+    const allCustomForms = new Map<InflectedFormId, string>(
       await Promise.all(
         customForms.map(async form => {
           const inflectedForm = await InflectedForm.byIdRequired(
-            +form.inflectedFormId,
+            toNumberId(form.inflectedFormId),
             'inflectedFormId'
           );
-          if (inflectedForm.inflection_table_id !== inflectionTableId) {
+          if (inflectedForm.inflection_table_version_id !== inflectionTableLayoutId) {
             throw new UserInputError(
               `Inflected form ${inflectedForm.id} belongs to the wrong table`,
               {invalidArgs: ['inflectedFormId']}
@@ -29,7 +34,7 @@ export default class CustomFormMut extends Mutator {
           }
 
           const value = validateFormValue(form.value);
-          return [inflectedForm.id, value] as [number, string];
+          return [inflectedForm.id, value] as [InflectedFormId, string];
         })
       )
     );
@@ -52,7 +57,7 @@ export default class CustomFormMut extends Mutator {
     return allCustomForms;
   }
 
-  public async deleteAll(tableId: number): Promise<void> {
+  public async deleteAll(tableId: DefinitionInflectionTableId): Promise<void> {
     await this.db.exec`
       delete from definition_forms
       where definition_inflection_table_id = ${tableId}

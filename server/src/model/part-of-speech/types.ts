@@ -1,11 +1,17 @@
+import {IdOf, InputIdOf} from '../id-of';
+import {LanguageId, LanguageInputId} from '../language/types';
+
+export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
+export type PartOfSpeechInputId = InputIdOf<'PartOfSpeech'>;
+
 export interface PartOfSpeechRow {
-  id: number;
-  language_id: number;
+  id: PartOfSpeechId;
+  language_id: LanguageId;
   name: string;
 }
 
 export interface NewPartOfSpeechInput {
-  languageId: string;
+  languageId: LanguageInputId;
   name: string;
 }
 

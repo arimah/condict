@@ -2,7 +2,7 @@ import {UserInputError} from 'apollo-server';
 
 import {Awaitable} from '../../database/adaptor';
 
-import {LanguageRow} from './types';
+import {LanguageId, LanguageRow} from './types';
 import Model from '../model';
 
 class Language extends Model {
@@ -16,7 +16,7 @@ class Language extends Model {
     `;
   }
 
-  public byId(id: number): Promise<LanguageRow | null> {
+  public byId(id: LanguageId): Promise<LanguageRow | null> {
     return this.db.batchOneToOne(
       this.byIdKey,
       id,
@@ -30,7 +30,7 @@ class Language extends Model {
   }
 
   public async byIdRequired(
-    id: number,
+    id: LanguageId,
     paramName: string = 'id'
   ): Promise<LanguageRow> {
     const language = await this.byId(id);

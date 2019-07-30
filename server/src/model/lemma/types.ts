@@ -1,6 +1,12 @@
+import {IdOf, InputIdOf} from '../id-of';
+import {LanguageId} from '../language/types';
+
+export type LemmaId = IdOf<'Lemma'>;
+export type LemmaInputId = InputIdOf<'Lemma'>;
+
 export interface LemmaRow {
-  id: number;
-  language_id: number;
+  id: LemmaId;
+  language_id: LanguageId;
   term_unique: string;
   term_display: string;
 }

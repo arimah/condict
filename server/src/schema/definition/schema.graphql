@@ -126,6 +126,13 @@ type DefinitionInflectionTable {
   "The inflection table used by the definition."
   inflectionTable: InflectionTable!
 
+  """
+  The inflection table layout used by this definition. If the inflection table
+  has changed since the definition was added, this layout may point to an older
+  version of the table; see the `InflectionTableLayout.isCurrent` field.
+  """
+  inflectionTableLayout: InflectionTableLayout!
+
   "The definition that this inflection table is used in."
   definition: Definition!
 }
@@ -235,7 +242,7 @@ input NewDefinitionInput {
   stems: [StemInput!]!
 
   "Inflection tables that are used by this definiton."
-  inflectionTables: [DefinitionInflectionTableInput!]!
+  inflectionTables: [NewDefinitionInflectionTableInput!]!
 
   "Tags associated with this definition."
   tags: [String!]!
@@ -267,7 +274,7 @@ input EditDefinitionInput {
   set on any table in this list, it will update that existing table. For each
   table _without_ an `id`, a new definition inflection table is created.
   """
-  inflectionTables: [DefinitionInflectionTableInput!]
+  inflectionTables: [EditDefinitionInflectionTableInput!]
 
   "If set, updates the definition's tags."
   tags: [String!]
@@ -282,15 +289,26 @@ input StemInput {
   value: String!
 }
 
-"""
-Input type for a definition's inflection table. This type is used both for new
-and existing tables.
-"""
-input DefinitionInflectionTableInput {
+"Input type for a new definition's inflection table."
+input NewDefinitionInflectionTableInput {
+  "An optional formatted text that describes the table."
+  caption: TableCaptionInput
+
   """
-  The ID of the definition inflection table. In a new definition, this property
-  is ignored. When editing an existing definition, if set, it will update an
-  existing defnition inflection table.
+  A list of custom inflected forms, which replace forms in the table. These are
+  _generally_ irregular forms, but this is not guaranteed.
+  """
+  customForms: [CustomInflectedFormInput!]!
+
+  "The inflection table used by the definition."
+  inflectionTableId: ID!
+}
+
+"Input type for editing a definition's inflection table."
+input EditDefinitionInflectionTableInput {
+  """
+  The ID of the definition inflection table. If set, it will update an existing
+  definition inflection table.
   """
   id: ID
 
@@ -304,10 +322,18 @@ input DefinitionInflectionTableInput {
   customForms: [CustomInflectedFormInput!]!
 
   """
-  The inflection table used by the definition. When editing an existing
-  definition, this field is ignored; you cannot set it to another table.
+  The inflection table used by the definition. When editing an existing table
+  (`id` is not null), this property is ignored; you cannot change to another table.
   """
   inflectionTableId: ID!
+
+  """
+  If true, upgrades the inflection table's layout to the current version. If the
+  table already uses the current version, this field has no effect. When adding
+  a new table (`id` is null), this field is ignored; the latest layout version
+  is always used.
+  """
+  upgradeTableLayout: Boolean!
 }
 
 """

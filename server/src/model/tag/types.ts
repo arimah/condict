@@ -1,12 +1,19 @@
+import {IdOf, InputIdOf} from '../id-of';
+import {LemmaId} from '../lemma/types';
+import {DefinitionId} from '../definition/types';
+
+export type TagId = IdOf<'Tag'>;
+export type TagInputId = InputIdOf<'Tag'>;
+
 export interface TagRow {
-  id: number;
+  id: TagId;
   name: string;
 }
 
 export interface DefinitionTagRow extends TagRow {
-  definition_id: number;
+  definition_id: DefinitionId;
 }
 
 export interface LemmaTagRow extends TagRow {
-  lemma_id: number;
+  lemma_id: LemmaId;
 }
