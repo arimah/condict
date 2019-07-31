@@ -222,6 +222,9 @@ class App extends Component {
         inflectionTableValue: valueWithHistory.push(value),
       });
     };
+
+    window.exportInflectionTable = () =>
+      this.state.inflectionTableValue.value.toJS();
   }
 
   handleToggleDarkTheme(e) {
