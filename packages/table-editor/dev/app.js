@@ -213,6 +213,15 @@ class App extends Component {
     this.handleInflectionTableChange = this.handleInflectionTableChange.bind(this);
     this.handleDefinitionTableChange = this.handleDefinitionTableChange.bind(this);
     this.handleCopyTableLayout = this.handleCopyTableLayout.bind(this);
+
+    window.importInflectionTable = data => {
+      const value = InflectionTableValue.from(data);
+
+      const {inflectionTableValue: valueWithHistory} = this.state;
+      this.setState({
+        inflectionTableValue: valueWithHistory.push(value),
+      });
+    };
   }
 
   handleToggleDarkTheme(e) {
