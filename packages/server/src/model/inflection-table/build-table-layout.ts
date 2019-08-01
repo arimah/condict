@@ -13,8 +13,6 @@ export interface TableLayoutResult {
   stems: string[];
 }
 
-type Awaitable<T> = T | PromiseLike<T>;
-
 // Collects stem names that are present in an inflection pattern.
 const collectStemNames = (pattern: string, stems: Set<string>) => {
   // Group 1: '{{' and '}}' (escape; ignored)
@@ -31,7 +29,7 @@ const collectStemNames = (pattern: string, stems: Set<string>) => {
 
 const buildTableLayout = async (
   layout: InflectionTableRowInput[],
-  handleInflectedForm: (form: InflectedFormInput) => Awaitable<InflectedFormId>
+  handleInflectedForm: (form: InflectedFormInput) => Promise<InflectedFormId>
 ): Promise<TableLayoutResult> => {
   const finalLayout: InflectionTableRowJson[] = [];
   const stems = new Set<string>();
@@ -61,10 +59,9 @@ const buildTableLayout = async (
         // inside the inflection pattern.
         collectStemNames(cell.inflectedForm.inflectionPattern, stems);
         cellPromises.push(
-          Promise.resolve(handleInflectedForm(cell.inflectedForm))
-            .then(id => {
-              layoutCell.inflectedFormId = id;
-            })
+          handleInflectedForm(cell.inflectedForm).then(id => {
+            layoutCell.inflectedFormId = id;
+          })
         );
       } else {
         // We can't just throw an error here: if any existing cell promise is
