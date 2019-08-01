@@ -1,3 +1,7 @@
+import {ReactNode} from 'react';
+
+type ContentAndLabel = [ReactNode, string | undefined];
+
 /**
  * Given a React element and a string label, returns an array of two elements:
  *
@@ -32,12 +36,11 @@
  * // the accessible text:
  * <MyButton label='Next item'><ArrowRightIcon/></MyButton>
  * ```
- *
- * @param {*} children
- * @param {?string} label
- * @return {Array.<*>}
  */
-export const getContentAndLabel = (children, label) => {
+export const getContentAndLabel = (
+  children: ReactNode,
+  label: string | null | undefined
+): ContentAndLabel => {
   // Let the rendered content describe the control as far as possible, so
   // as to avoid bloating the DOM.
   // If there are no `children`, we use `label` as the rendered content.

@@ -1,6 +1,6 @@
 {
   "name": "@condict/ui",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "Shared UI components for Condict.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
@@ -14,7 +14,7 @@
     "lint": "eslint src/ dev/"
   },
   "dependencies": {
-    "@condict/a11y-utils": "^0.1.3",
+    "@condict/a11y-utils": "^0.1.5",
     "@condict/gen-id": "^0.1.1",
     "autosize-input": "^1.0.2",
     "mdi-react": "^5.3.0",
