@@ -1,9 +1,10 @@
 const path = require('path');
 
-const condictDevServer = require('../src');
+const CondictDevServer = require('../dist');
 
-condictDevServer({
-  entry: path.resolve(__dirname, 'app.js'),
+CondictDevServer.start({
+  entry: path.resolve(__dirname, 'app'),
+  rootDir: [__dirname, path.resolve(__dirname, '../src')],
   contentBase: __dirname,
   title: 'Condict dev server test',
 });

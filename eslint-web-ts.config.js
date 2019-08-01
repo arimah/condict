@@ -16,6 +16,11 @@ module.exports = {
     "jsx-a11y",
     "@typescript-eslint",
   ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "rules": {
     "indent": "off", // Compatibility problems with TypeScript
     "@typescript-eslint/indent": [
@@ -101,5 +106,17 @@ module.exports = {
 
     // This rule is deprecated and should not be used.
     "jsx-a11y/label-has-for": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.d.ts"],
+      "rules": {
+        // Need to allow things like `declare class X` followed by `declare namespace X`.
+        "no-redeclare": "off",
+
+        // Everything in a .d.ts file is assumed to be public.
+        "@typescript-eslint/explicit-member-accessibility": "off"
+      }
+    }
+  ]
 };
