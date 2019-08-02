@@ -1,9 +1,21 @@
 import Data from './data.json';
+import {DataFile, XsampaChar} from './types';
 
-const Replacements = new Map(Object.entries(Data.replacements));
-const CharData = new Map(Object.entries(Data.charData));
+// TODO: Figure out a way to make the `as unknown` cast unnecessary,
+// if at all possible.
+const {
+  replacements: RawReplacements,
+  charData: RawCharData,
+} = Data as unknown as DataFile;
 
-const substringEquals = (string, startIndex, substring) => {
+const Replacements = new Map(Object.entries(RawReplacements));
+const CharData = new Map(Object.entries(RawCharData));
+
+const substringEquals = (
+  string: string,
+  startIndex: number,
+  substring: string
+) => {
   if (string.length - startIndex < substring.length) {
     return false;
   }
@@ -17,7 +29,7 @@ const substringEquals = (string, startIndex, substring) => {
   return true;
 };
 
-const matchChar = (xsampa, index) => {
+const matchChar = (xsampa: string, index: number): XsampaChar => {
   const nextChar = xsampa[index];
 
   const replacements = Replacements.get(nextChar);
@@ -42,7 +54,7 @@ const matchChar = (xsampa, index) => {
   return {ipa: nextChar, base: true};
 };
 
-const placeModifier = (base, modifier) => {
+const placeModifier = (base: XsampaChar, modifier: XsampaChar): XsampaChar => {
   // If the modifier is not a diacritic or it only has a single placement,
   // there are no alternatives, so just return the modifier. Likewise, if
   // the base has no preferred placements, we always use the default.
@@ -52,8 +64,9 @@ const placeModifier = (base, modifier) => {
 
   for (let i = 0; i < base.diacritics.length; i++) {
     const place = base.diacritics[i];
-    if (modifier.placements[place]) {
-      return modifier.placements[place];
+    const placement = modifier.placements[place];
+    if (placement) {
+      return placement;
     }
   }
 
@@ -61,14 +74,19 @@ const placeModifier = (base, modifier) => {
   return modifier;
 };
 
-const flush = (base, modifiers) => {
+interface Modifier {
+  readonly originalIndex: number;
+  readonly char: XsampaChar;
+}
+
+const flush = (base: XsampaChar, modifiers: Modifier[]): string => {
   if (modifiers.length === 0) {
     return base.ipa;
   }
 
   // Diacritics come before modifiers, but preserve the original order!
   modifiers.sort((a, b) =>
-    (!a.char.diacritic - !b.char.diacritic) ||
+    (+!a.char.diacritic - +!b.char.diacritic) ||
     (a.originalIndex - b.originalIndex)
   );
   const result = base.ipa + modifiers.map(m => m.char.ipa).join('');
@@ -79,11 +97,11 @@ const flush = (base, modifiers) => {
   return result;
 };
 
-const convert = xsampa => {
+const convert = (xsampa: string): string => {
   let ipa = '';
 
-  let base = null;
-  let modifiers = [];
+  let base: XsampaChar | null = null;
+  const modifiers: Modifier[] = [];
   for (let i = 0; i < xsampa.length; ) {
     const char = matchChar(xsampa, i);
 

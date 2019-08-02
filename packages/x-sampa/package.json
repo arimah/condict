@@ -5,28 +5,29 @@
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "clean": "rimraf lib",
-    "build": "npm run build:data && npm run build:main",
+    "check": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "compile": "tsc",
+    "build": "npm run clean && npm run build:data && npm run build:main",
     "build:data": "node build",
-    "build:main": "cross-env NODE_ENV=production babel src --out-dir lib && npm run copyData",
-    "copyData": "copyfiles --up 1 src/data.json lib/",
+    "build:main": "npm run compile && npm run copyData",
+    "copyData": "copyfiles --up 1 src/data.json dist/",
     "prepublishOnly": "npm install && npm run clean && npm run build",
-    "lint": "eslint src/"
+    "lint": "eslint --ext .ts,.tsx src/"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.3",
-    "@babel/core": "^7.4.3",
-    "@condict/babel-preset": "^0.1.0",
-    "babel-eslint": "10.0.1",
+    "@typescript-eslint/eslint-plugin": "^1.12.0",
+    "@typescript-eslint/parser": "^1.12.0",
     "chalk": "^2.4.2",
     "copyfiles": "^2.1.0",
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
-    "eslint-plugin-import": "^2.17.1",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.12.3",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.6.3",
+    "typescript": "^3.5.3"
   }
 }
