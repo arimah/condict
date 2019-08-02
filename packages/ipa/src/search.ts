@@ -1,6 +1,28 @@
 import IpaData from './data.json';
+import {DataFile, IpaChar, IpaSearchNode} from './types';
 
-const {chars: Chars, searchTree: SearchTable} = IpaData;
+export type Match = [IpaChar, MatchInfo];
+
+export interface MatchInfo {
+  totalScore: number;
+  terms: TermMatch[];
+}
+
+export interface TermMatch {
+  term: string;
+  query: string;
+  score: number;
+}
+
+type MatchConsumer = (char: number, term: string, query: string, score: number) => void;
+
+interface WorkingMatch {
+  terms: TermMatch[];
+  totalScore: number;
+  queryWordScores: Map<string, number>;
+}
+
+const {chars: Chars, searchTree: SearchTable} = IpaData as DataFile;
 
 // The first level of the search tree has a much larger number of branches
 // than any other level, so a hash map helps improve performance.
@@ -9,10 +31,15 @@ const SearchTableRoot = new Map(
 );
 
 // TODO: Normalize query words further - remove extraneous characters etc.?
-const normalizeQueryWord = q => q.toLowerCase();
+const normalizeQueryWord = (q: string) => q.toLowerCase();
 
-const collectLeaves = (addMatch, tree, query, gapSize) => {
-  if (tree.leaves) {
+const collectLeaves = (
+  addMatch: MatchConsumer,
+  tree: IpaSearchNode,
+  query: string,
+  gapSize: number
+) => {
+  if (tree.leaves && tree.term) {
     const treeTermScore = query.length / (tree.term.length + 2 * gapSize);
     for (let i = 0; i < tree.leaves.length; i++) {
       const [char, score] = tree.leaves[i];
@@ -29,7 +56,12 @@ const collectLeaves = (addMatch, tree, query, gapSize) => {
   }
 };
 
-const traversePath = (path, query, queryOffset, gapSize) => {
+const traversePath = (
+  path: string,
+  query: string,
+  queryOffset: number,
+  gapSize: number
+): [number, number] => {
   const pathLength = path.length;
   for (let i = 1; i < pathLength; i++) {
     if (queryOffset === query.length) {
@@ -47,7 +79,13 @@ const traversePath = (path, query, queryOffset, gapSize) => {
   return [queryOffset, gapSize];
 };
 
-const searchTree = (addMatch, tree, query, queryOffset, gapSize) => {
+const searchTree = (
+  addMatch: MatchConsumer,
+  tree: IpaSearchNode,
+  query: string,
+  queryOffset: number,
+  gapSize: number
+): boolean => {
   // If this tree has a multi-character path, we must traverse it as we
   // would a set of single-branch trees. Example:
   //
@@ -81,8 +119,8 @@ const searchTree = (addMatch, tree, query, queryOffset, gapSize) => {
         addMatch,
         br,
         query,
-        queryOffset + branchIsMatch,
-        gapSize + !branchIsMatch
+        queryOffset + +branchIsMatch,
+        gapSize + +!branchIsMatch
       );
       hasMatch = hasMatch || isMatch;
     });
@@ -93,7 +131,7 @@ const searchTree = (addMatch, tree, query, queryOffset, gapSize) => {
   return false;
 };
 
-const findMatches = (addMatch, query) => {
+const findMatches = (addMatch: MatchConsumer, query: string) => {
   const rootTree = SearchTableRoot.get(query[0]);
   if (rootTree) {
     // We start at position 1 because we've already successfully matched
@@ -104,14 +142,14 @@ const findMatches = (addMatch, query) => {
   return false;
 };
 
-const updateQueryWordScore = (match, query, score) => {
+const updateQueryWordScore = (match: WorkingMatch, query: string, score: number) => {
   const prevScore = match.queryWordScores.get(query) || 0;
   const nextScore = Math.max(prevScore, score);
   match.queryWordScores.set(query, nextScore);
   match.totalScore += nextScore - prevScore;
 };
 
-const search = query => {
+const search = (query: string): Match[] => {
   const queryWords = Array.from(new Set(
     query.trim()
       .split(/\s+/)
@@ -119,8 +157,13 @@ const search = query => {
       .map(normalizeQueryWord)
   ));
 
-  const allMatches = new Map();
-  const addFirstQueryWordMatch = (char, term, query, score) => {
+  const allMatches = new Map<number, WorkingMatch>();
+  const addFirstQueryWordMatch: MatchConsumer = (
+    char: number,
+    term: string,
+    query: string,
+    score: number
+  ) => {
     const termMatch = {term, query, score};
 
     const match = allMatches.get(char);
@@ -135,7 +178,12 @@ const search = query => {
       });
     }
   };
-  const addSubsequentQueryWordMatch = (char, term, query, score) => {
+  const addSubsequentQueryWordMatch: MatchConsumer = (
+    char: number,
+    term: string,
+    query: string,
+    score: number
+  ) => {
     const match = allMatches.get(char);
     if (!match) {
       return;
@@ -175,9 +223,9 @@ const search = query => {
       match.terms.length >= queryWords.length
     )
     // Resolve each character index and remove the the 'queryWordScores' property.
-    .map(([char, {totalScore, terms}]) => [Chars[char], {totalScore, terms}])
+    .map<Match>(([char, {totalScore, terms}]) => [Chars[char], {totalScore, terms}])
     // Sort by score primarily, by input string secondarily.
-    .sort((a, b) =>
+    .sort((a: Match, b: Match) =>
       b[1].totalScore - a[1].totalScore ||
       a[0].input.localeCompare(b[0].input)
     );
