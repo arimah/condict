@@ -17,7 +17,11 @@ const readJson = file => {
 const normalizeChar = (xsampa, char) => {
   // Shorthand for a base character with no ascender or descender.
   if (typeof char === 'string') {
-    return {base: true, ipa: char};
+    return {
+      base: true,
+      ipa: char,
+      xsLength: xsampa.length > 1 ? xsampa.length : undefined,
+    };
   }
 
   const result = {
