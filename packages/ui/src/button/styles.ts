@@ -4,6 +4,12 @@ import {theme, ifProp} from 'styled-tools';
 import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
 
+export interface Props {
+  slim: boolean;
+  minimal: boolean;
+  intent: 'primary' | 'secondary' | 'danger';
+}
+
 export const ButtonStyle = css`
   display: inline-block;
   box-sizing: border-box;
@@ -23,7 +29,7 @@ export const ButtonStyle = css`
   }
 
   ${ifProp('minimal',
-    css`
+    css<Props>`
       color: ${intentVar('fg')};
       border-color: transparent;
       background-color: transparent;
@@ -41,7 +47,7 @@ export const ButtonStyle = css`
         background-color: transparent;
       }
     `,
-    css`
+    css<Props>`
       color: ${intentVar('altFg')};
       border-color: ${intentVar('borderColor')};
       background-color: ${intentVar('altBg')};
@@ -63,7 +69,7 @@ export const ButtonStyle = css`
   )}
 `;
 
-export const Button = styled.button`
+export const Button = styled.button<Props>`
   ${ButtonStyle}
 `;
 
@@ -71,7 +77,7 @@ Button.defaultProps = {
   theme: LightTheme,
 };
 
-export const Link = styled.a`
+export const Link = styled.a<Props>`
   /* We have to do some extra work to override link styles :( */
   &:link,
   &:hover,
