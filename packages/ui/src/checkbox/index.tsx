@@ -1,4 +1,10 @@
-import React from 'react';
+import React, {
+  ChangeEventHandler,
+  ReactNode,
+  Ref,
+  InputHTMLAttributes,
+  LabelHTMLAttributes,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
@@ -7,7 +13,26 @@ import combineRefs from '../combine-refs';
 
 import * as S from './styles';
 
-export const Checkbox = props => {
+export type Props = {
+  className: string;
+  checked: boolean;
+  indeterminate: boolean;
+  disabled: boolean;
+  label: string;
+  name: string;
+  labelProps: Omit<
+    LabelHTMLAttributes<HTMLLabelElement>,
+    'className'
+  >;
+  inputRef: Ref<HTMLInputElement>;
+  onChange: ChangeEventHandler<HTMLInputElement>;
+  children: ReactNode;
+} & S.IntentProps & Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'aria-label' | 'checked' | 'className' | 'disabled' | 'name' | 'onChange' | 'type'
+>;
+
+export const Checkbox = (props: Props) => {
   const {
     className,
     intent,
@@ -28,7 +53,7 @@ export const Checkbox = props => {
   // 'indeterminate' is not an HTML attribute; it can only be set via JS.
   // For that reason, styled-components does not forward it, and we have
   // to set it ourselves.
-  const setIndeterminate = elem => {
+  const setIndeterminate = (elem: HTMLInputElement | null) => {
     if (elem) {
       elem.indeterminate = indeterminate;
     }
@@ -60,23 +85,6 @@ export const Checkbox = props => {
       {renderedContent}
     </S.Label>
   );
-};
-
-Checkbox.propTypes = {
-  className: PropTypes.string,
-  intent: PropTypes.oneOf(['primary', 'secondary', 'danger']),
-  checked: PropTypes.bool,
-  indeterminate: PropTypes.bool,
-  disabled: PropTypes.bool,
-  label: PropTypes.string,
-  name: PropTypes.string,
-  labelProps: PropTypes.object,
-  inputRef: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({current: PropTypes.any}),
-  ]),
-  onChange: PropTypes.func,
-  children: PropTypes.node,
 };
 
 Checkbox.defaultProps = {

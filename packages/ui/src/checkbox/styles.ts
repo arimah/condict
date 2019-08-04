@@ -4,7 +4,19 @@ import {theme, ifProp} from 'styled-tools';
 import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
 
-export const Label = styled.label`
+export interface IntentProps {
+  intent: 'primary' | 'secondary' | 'danger';
+}
+
+export interface DisabledProps {
+  disabled: boolean;
+}
+
+export interface CheckedProps {
+  checked: boolean;
+}
+
+export const Label = styled.label<DisabledProps>`
   display: inline-block;
   box-sizing: border-box;
   color: ${ifProp('disabled', theme('general.disabledFg'), theme('general.fg'))};
@@ -16,7 +28,7 @@ Label.defaultProps = {
   theme: LightTheme,
 };
 
-export const CheckmarkContainer = styled.span`
+export const CheckmarkContainer = styled.span<IntentProps & CheckedProps & DisabledProps>`
   display: inline-block;
   box-sizing: border-box;
   margin-right: 5px;
@@ -95,7 +107,7 @@ Input.defaultProps = {
   theme: LightTheme,
 };
 
-export const IndeterminateMark = styled.span`
+export const IndeterminateMark = styled.span<CheckedProps>`
   display: block;
   position: absolute;
   top: 50%;
@@ -114,7 +126,7 @@ IndeterminateMark.defaultProps = {
   theme: LightTheme,
 };
 
-export const CheckMark = styled.span`
+export const CheckMark = styled.span<CheckedProps>`
   display: block;
   box-sizing: border-box;
   position: absolute;
