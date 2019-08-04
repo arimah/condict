@@ -1,16 +1,21 @@
-export const Saturation = Object.freeze({
-  high: 'high',
-  low: 'low',
-});
+export interface SaturationMap {
+  high: number;
+  low: number;
+}
 
-const DefaultSaturationMap = {
+export enum Saturation {
+  HIGH = 'high',
+  LOW = 'low',
+}
+
+const DefaultSaturationMap: SaturationMap = {
   high: 100,
   low: 25,
 };
 
 export const makeColorFn =
-  (hue, saturationMap = DefaultSaturationMap) =>
-    (sat, lum) => {
+  (hue: number, saturationMap: SaturationMap = DefaultSaturationMap) =>
+    (sat: Saturation, lum: number) => {
       const effectiveSat = saturationMap[sat];
       return `hsl(${hue}, ${effectiveSat}%, ${lum}%)`;
     };
