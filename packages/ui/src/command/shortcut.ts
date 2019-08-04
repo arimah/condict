@@ -1,3 +1,4 @@
+import {KeyboardEvent} from 'react';
 import platform from 'platform';
 
 // Keyboard shortcuts are *weird*.
@@ -24,25 +25,22 @@ import platform from 'platform';
 // You cannot combine the primary and secondary modifier. (macOS shortcuts
 // sometimes do that, but the behaviour is not portable.)
 
-const isOSX = /os\s*x/.test(platform.os.family);
-
-const SECONDARY = 'secondary';
+const isOSX: boolean =
+  platform.os != null &&
+  platform.os.family != null &&
+  /os\s*x/.test(platform.os.family);
 
 const hasPrimary = isOSX
-  ? e => e.metaKey
-  : e => e.ctrlKey;
-const hasSecondary = e => e.ctrlKey;
-
-const DefaultConfig = Object.freeze({
-  keys: [],
-  primary: false,
-  shift: false,
-  alt: false,
-});
+  ? (e: KeyboardEvent) => e.metaKey
+  : (e: KeyboardEvent) => e.ctrlKey;
+const hasSecondary = (e: KeyboardEvent) => e.ctrlKey;
 
 const modifiersPattern = /(Primary|Secondary|Shift|Alt)\s*\+\s*/gi;
 
-const formatModifiers = isOSX
+type ModifierFormatter =
+  (primary: boolean, secondary: boolean, shift: boolean, alt: boolean) => string;
+
+const formatModifiers: ModifierFormatter = isOSX
   ? (primary, secondary, shift, alt) =>
     // macOS order: Ctrl+Opt+Shift+Cmd+(key)
     // U+2325 = ⌥ Option Key
@@ -54,7 +52,7 @@ const formatModifiers = isOSX
     // Windows/Linux order: Ctrl+Shift+Alt+(key)
     `${primary || secondary ? 'Ctrl+' : ''}${shift ? 'Shift+' : ''}${alt ? 'Alt+' : ''}`;
 
-const formatAriaModifiers = isOSX
+const formatAriaModifiers: ModifierFormatter = isOSX
   ? (primary, secondary, shift, alt) =>
     // Primary = Meta
     // Secondary = Control
@@ -64,19 +62,42 @@ const formatAriaModifiers = isOSX
     // Secondary = Control
     `${primary || secondary ? 'Control+' : ''}${shift ? 'Shift+' : ''}${alt ? 'Alt+' : ''}`;
 
+export interface ShortcutConfig {
+  keys: string | string[];
+  primary: boolean | 'secondary';
+  shift: boolean;
+  alt: boolean;
+}
+
+const DefaultConfig: ShortcutConfig = Object.freeze({
+  keys: [],
+  primary: false,
+  shift: false,
+  alt: false,
+});
+
+export type ShortcutType = Shortcut | ShortcutGroup;
+
 export class Shortcut {
-  constructor(config) {
-    config = {...DefaultConfig, ...config};
-    this.keys = Array.isArray(config.keys) ? config.keys : [config.keys];
-    this.primary = config.primary;
-    this.shift = config.shift;
-    this.alt = config.alt;
+  public static readonly SECONDARY = 'secondary';
+
+  public readonly keys: string[];
+  public readonly primary: boolean | 'secondary';
+  public readonly shift: boolean;
+  public readonly alt: boolean;
+
+  public constructor(config: Partial<ShortcutConfig>) {
+    const fullConfig: ShortcutConfig = {...DefaultConfig, ...config};
+    this.keys = Array.isArray(fullConfig.keys) ? fullConfig.keys : [fullConfig.keys];
+    this.primary = fullConfig.primary;
+    this.shift = fullConfig.shift;
+    this.alt = fullConfig.alt;
   }
 
-  testModifiers(keyEvent) {
+  public testModifiers(keyEvent: KeyboardEvent) {
     return (
       (
-        this.primary === SECONDARY && hasSecondary(keyEvent) ||
+        this.primary === 'secondary' && hasSecondary(keyEvent) ||
         this.primary === hasPrimary(keyEvent)
       ) &&
       this.shift === keyEvent.shiftKey &&
@@ -84,35 +105,38 @@ export class Shortcut {
     );
   }
 
-  forEach(cb) {
+  public forEach(cb: (shortcut: Shortcut, index: number) => void) {
     cb(this, 0);
   }
 
-  equals(other) {
+  public equals(other: ShortcutType | null | undefined): boolean {
     return (
       other instanceof Shortcut &&
       this.primary === other.primary &&
       this.shift === other.shift &&
       this.alt === other.alt &&
       this.keys.length === other.keys.length &&
-      this.keys.reduce((eq, aKey, i) => eq && aKey === other.keys[i], true)
+      this.keys.reduce<boolean>(
+        (eq, aKey, i) => eq && aKey === other.keys[i],
+        true
+      )
     );
   }
 
-  toString() {
+  public toString(): string {
     const modifiers = formatModifiers(
       this.primary === true,
-      this.primary === SECONDARY,
+      this.primary === 'secondary',
       this.shift,
       this.alt
     );
     return `${modifiers}${this.keys[0]}`;
   }
 
-  toAriaString() {
+  public toAriaString(): string {
     const modifiers = formatAriaModifiers(
       this.primary === true,
-      this.primary === SECONDARY,
+      this.primary === 'secondary',
       this.shift,
       this.alt
     );
@@ -121,19 +145,22 @@ export class Shortcut {
     return `${modifiers}${keyName}`;
   }
 
-  static parse(shortcut) {
+  public static parse(shortcut: string): Shortcut;
+  public static parse(shortcut: string[]): ShortcutGroup | null;
+  public static parse(shortcut: string | string[]): ShortcutType | null {
     if (Array.isArray(shortcut)) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       return ShortcutGroup.parse(shortcut);
     }
 
-    const config = {};
+    const config: Partial<ShortcutConfig> = {};
     const keysString = shortcut.replace(modifiersPattern, (_, modifier) => {
       switch (modifier.toLowerCase()) {
         case 'primary':
           config.primary = true;
           break;
         case 'secondary':
-          config.primary = SECONDARY;
+          config.primary = 'secondary';
           break;
         case 'shift':
           config.shift = true;
@@ -148,7 +175,10 @@ export class Shortcut {
     return new Shortcut(config);
   }
 
-  static is(a, b) {
+  public static is(
+    a: ShortcutType | null | undefined,
+    b: ShortcutType | null | undefined
+  ) {
     if (a == null || b == null) {
       return a == b;
     }
@@ -156,46 +186,55 @@ export class Shortcut {
   }
 }
 
-Shortcut.SECONDARY = SECONDARY;
-
 export class ShortcutGroup {
-  constructor(shortcuts) {
+  private readonly shortcuts: Shortcut[];
+
+  public constructor(shortcuts: Shortcut[]) {
     this.shortcuts = shortcuts;
   }
 
-  forEach(cb) {
+  public forEach(cb: (shortcut: Shortcut, index: number) => void) {
     this.shortcuts.forEach(cb);
   }
 
-  equals(other) {
+  public equals(other: ShortcutType | null | undefined): boolean {
     return (
       other instanceof ShortcutGroup &&
       this.shortcuts.length === other.shortcuts.length &&
-      this.shortcuts.reduce(
+      this.shortcuts.reduce<boolean>(
         (eq, shortcut, i) => eq && shortcut.equals(other.shortcuts[i]),
         true
       )
     );
   }
 
-  toString() {
+  public toString(): string {
     return this.shortcuts[0].toString();
   }
 
-  toAriaString() {
+  public toAriaString(): string {
     return this.shortcuts.map(s => s.toAriaString()).join(' ');
   }
 
-  static parse(shortcuts) {
+  public static parse(shortcuts: string[]): ShortcutGroup | null {
     if (shortcuts.length === 0) {
       return null;
     }
-    return new ShortcutGroup(shortcuts.map(Shortcut.parse));
+    return new ShortcutGroup(shortcuts.map(s => Shortcut.parse(s)));
   }
 }
 
-const buildKeyMap = (commands, getShortcut) => {
-  const map = new Map();
+interface KeyMapEntry<C> {
+  command: C;
+  shortcut: Shortcut;
+}
+
+function buildKeyMap<C>(
+  commands: C[],
+  getShortcut: (cmd: C) => ShortcutType | null
+): Map<string, KeyMapEntry<C>[]> {
+  const map = new Map<string, KeyMapEntry<C>[]>();
+
   commands.forEach(command => {
     const outerShortcut = getShortcut(command);
     if (!outerShortcut) {
@@ -215,14 +254,19 @@ const buildKeyMap = (commands, getShortcut) => {
     });
   });
   return map;
-};
+}
 
-export class ShortcutMap {
-  constructor(commands, getShortcut) {
+export class ShortcutMap<C> {
+  private readonly keyMap: Map<string, KeyMapEntry<C>[]>;
+
+  public constructor(
+    commands: C[],
+    getShortcut: (cmd: C) => ShortcutType | null
+  ) {
     this.keyMap = buildKeyMap(commands, getShortcut);
   }
 
-  get(keyEvent) {
+  public get(keyEvent: KeyboardEvent): C | null {
     const commandsForKey = this.keyMap.get(keyEvent.key);
     if (!commandsForKey) {
       return null;

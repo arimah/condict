@@ -2,7 +2,10 @@ import platform from 'platform';
 
 import {Shortcut} from './shortcut';
 
-const isWindows = /windows/i.test(platform.os.family);
+const isWindows =
+  platform.os != null &&
+  platform.os.family != null &&
+  /windows/i.test(platform.os.family);
 
 export const Shortcuts = Object.freeze({
   undo: Shortcut.parse('Primary+Z z'),
