@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Key, ReactNode} from 'react';
 import PropTypes from 'prop-types';
 import ChevronLeft from 'mdi-react/ChevronLeftIcon';
 import ChevronRight from 'mdi-react/ChevronRightIcon';
@@ -12,7 +12,11 @@ import * as S from './styles';
 const atLeast = Math.max;
 const atMost = Math.min;
 
-const getBoundaries = (page, totalPages, context) => {
+const getBoundaries = (
+  page: number,
+  totalPages: number,
+  context: number
+): [number, number] => {
   const lastPage = totalPages - 1;
   // Initially, we display somewhat more pages than `context` alone would
   // demand. Suppose `context` is 1. In that case, we want to show enough
@@ -42,7 +46,20 @@ const getBoundaries = (page, totalPages, context) => {
   return [start, end];
 };
 
-const addStartPages = (pageNodes, getPage, start) => {
+interface ExtraPageProps {
+  label?: string;
+  current?: boolean;
+  disabled?: boolean;
+  children?: ReactNode;
+}
+
+type PageGenerator = (key: Key, page: number, extraProps?: ExtraPageProps) => ReactNode;
+
+const addStartPages = (
+  pageNodes: ReactNode[],
+  getPage: PageGenerator,
+  start: number
+) => {
   if (start > 0) {
     pageNodes.push(getPage(0, 0));
     if (start === 2) {
@@ -62,7 +79,12 @@ const addStartPages = (pageNodes, getPage, start) => {
   }
 };
 
-const addEndPages = (pageNodes, getPage, lastPage, end) => {
+const addEndPages = (
+  pageNodes: ReactNode[],
+  getPage: PageGenerator,
+  lastPage: number,
+  end: number
+) => {
   const pagesFromLast = lastPage - end;
   if (pagesFromLast > 0) {
     if (pagesFromLast === 2) {
@@ -83,7 +105,12 @@ const addEndPages = (pageNodes, getPage, lastPage, end) => {
   }
 };
 
-const addRelativeNav = (pageNodes, getPage, page, lastPage) => {
+const addRelativeNav = (
+  pageNodes: ReactNode[],
+  getPage: PageGenerator,
+  page: number,
+  lastPage: number
+) => {
   if (lastPage > 0) {
     pageNodes.unshift(getPage('prev', page - 1, {
       label: 'Previous page',
@@ -98,7 +125,21 @@ const addRelativeNav = (pageNodes, getPage, page, lastPage) => {
   }
 };
 
-export const Pages = React.forwardRef((props, ref) => {
+export interface Props {
+  className?: string;
+  page: number;
+  totalPages: number;
+  context: number;
+  label?: string;
+  loading: boolean;
+  disabled: boolean;
+  onChange: (page: number) => void;
+}
+
+export const Pages = React.forwardRef<HTMLElement, Props>((
+  props: Props,
+  ref
+) => {
   const {
     className,
     page,
@@ -113,7 +154,7 @@ export const Pages = React.forwardRef((props, ref) => {
   const lastPage = totalPages - 1;
   const [start, end] = getBoundaries(page, totalPages, context);
 
-  const getPage = (key, p, extraProps = {}) =>
+  const getPage: PageGenerator = (key, p, extraProps = {}) =>
     <S.Item key={key}>
       <S.Page
         label={extraProps.label || `Page ${p + 1} of ${totalPages}`}
@@ -133,7 +174,7 @@ export const Pages = React.forwardRef((props, ref) => {
       }
     </S.Item>;
 
-  const pageNodes = [];
+  const pageNodes: ReactNode[] = [];
   addStartPages(pageNodes, getPage, start);
   for (let p = start; p <= end; p++) {
     pageNodes.push(getPage(p, p, {current: p === page}));
@@ -156,17 +197,6 @@ export const Pages = React.forwardRef((props, ref) => {
 });
 
 Pages.displayName = 'Pages';
-
-Pages.propTypes = {
-  className: PropTypes.string,
-  page: PropTypes.number,
-  totalPages: PropTypes.number,
-  context: PropTypes.number,
-  label: PropTypes.string,
-  loading: PropTypes.bool,
-  disabled: PropTypes.bool,
-  onChange: PropTypes.func,
-};
 
 Pages.defaultProps = {
   className: '',

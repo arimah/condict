@@ -4,7 +4,16 @@ import {ifProp, theme} from 'styled-tools';
 import LightTheme from '../theme/light';
 import {Button} from '../button';
 
-export const Main = styled.nav`
+export interface DisabledProps {
+  disabled: boolean;
+}
+
+export interface PageProps {
+  current?: boolean;
+  isLoading?: boolean;
+}
+
+export const Main = styled.nav<DisabledProps>`
   margin-top: 16px;
   margin-bottom: 16px;
 
@@ -32,8 +41,12 @@ export const Item = styled.li`
 `;
 
 export const Page = styled(Button).attrs({
+  type: 'button',
+  slim: false,
   minimal: true,
   intent: 'secondary',
+  current: false as boolean,
+  isLoading: false as boolean,
 })`
   display: block;
   padding: 6px 4px;
