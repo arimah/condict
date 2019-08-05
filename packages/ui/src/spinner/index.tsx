@@ -3,7 +3,15 @@ import PropTypes from 'prop-types';
 
 import * as S from './styles';
 
-export const Spinner = React.forwardRef((props, ref) => {
+export interface Props {
+  className?: string;
+  size: number;
+}
+
+export const Spinner = React.forwardRef<HTMLSpanElement, Props>((
+  props: Props,
+  ref
+) => {
   const {className, size} = props;
 
   const sliceStyle = {
@@ -24,11 +32,6 @@ export const Spinner = React.forwardRef((props, ref) => {
 });
 
 Spinner.displayName = 'Spinner';
-
-Spinner.propTypes = {
-  className: PropTypes.string,
-  size: PropTypes.number,
-};
 
 Spinner.defaultProps = {
   className: '',

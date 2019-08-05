@@ -1,5 +1,9 @@
 import styled, {keyframes} from 'styled-components';
 
+export interface SliceProps {
+  number: number;
+}
+
 const SpinAnimation = keyframes`
   0% {
     transform: rotate(0deg);
@@ -14,7 +18,7 @@ export const Main = styled.span`
   position: relative;
 `;
 
-export const Slice = styled.span`
+export const Slice = styled.span<SliceProps>`
   box-sizing: border-box;
   position: absolute;
   top: 0;
