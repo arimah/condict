@@ -14,22 +14,17 @@ import combineRefs from '../combine-refs';
 import * as S from './styles';
 
 export type Props = {
-  className: string;
-  checked: boolean;
   indeterminate: boolean;
-  disabled: boolean;
   label: string;
-  name: string;
   labelProps: Omit<
     LabelHTMLAttributes<HTMLLabelElement>,
     'className'
   >;
   inputRef: Ref<HTMLInputElement>;
-  onChange: ChangeEventHandler<HTMLInputElement>;
   children: ReactNode;
 } & S.IntentProps & Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  'aria-label' | 'checked' | 'className' | 'disabled' | 'name' | 'onChange' | 'type'
+  'aria-label' | 'type'
 >;
 
 export const Checkbox = (props: Props) => {
@@ -40,11 +35,9 @@ export const Checkbox = (props: Props) => {
     indeterminate,
     label,
     disabled,
-    name,
     labelProps,
     inputRef,
     children,
-    onChange,
     ...inputProps
   } = props;
 
@@ -74,11 +67,9 @@ export const Checkbox = (props: Props) => {
         <S.CheckMark checked={checked}/>
         <S.Input
           {...inputProps}
-          name={name}
           disabled={disabled}
           checked={!!checked}
           aria-label={ariaLabel}
-          onChange={onChange}
           ref={combineRefs(setIndeterminate, inputRef)}
         />
       </S.CheckmarkContainer>
@@ -88,14 +79,8 @@ export const Checkbox = (props: Props) => {
 };
 
 Checkbox.defaultProps = {
-  className: '',
   intent: 'primary',
-  checked: false,
-  indeterminate: false,
-  disabled: false,
   label: '',
-  name: undefined,
   labelProps: null,
   inputRef: undefined,
-  onChange: () => { },
 };

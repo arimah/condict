@@ -9,11 +9,11 @@ export interface IntentProps {
 }
 
 export interface DisabledProps {
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 export interface CheckedProps {
-  checked: boolean;
+  checked?: boolean;
 }
 
 export const Label = styled.label<DisabledProps>`
