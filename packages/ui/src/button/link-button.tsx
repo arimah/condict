@@ -7,15 +7,12 @@ import {useCommand} from '../command';
 import * as S from './styles';
 
 export type Props = {
-  className: string;
   label: string;
   href: string;
   command?: string | null;
-  onClick?: MouseEventHandler<HTMLAnchorElement>;
-  children: ReactNode;
 } & S.Props & Omit<
   AnchorHTMLAttributes<HTMLAnchorElement>,
-  'aria-label' | 'className' | 'href' | 'onClick' | 'role' | 'type'
+  'aria-label' | 'href' | 'role' | 'type'
 >;
 
 // Links do not have a 'disabled' prop, so if the link has a ccommand that
@@ -28,11 +25,9 @@ const cancelClickEvent: MouseEventHandler = e => {
 export const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref) => {
   const {
     label,
-    href,
     command: commandName,
     onClick,
     children,
-    // className, minimal, intent and slim deliberately included here
     ...otherProps
   } = props;
 
@@ -42,15 +37,14 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref
 
   return (
     <S.Link
-      role='button'
       {...otherProps}
+      role='button'
       aria-label={ariaLabel}
       onClick={
         command !== null
           ? (command.disabled ? cancelClickEvent : command.exec)
           : onClick
       }
-      href={href}
       ref={ref}
     >
       {renderedContent}
@@ -60,11 +54,9 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref
 LinkButton.displayName = 'LinkButton';
 
 LinkButton.defaultProps = {
-  className: '',
   minimal: false,
   intent: 'primary',
   slim: false,
   label: '',
   command: undefined,
-  onClick: undefined,
 };

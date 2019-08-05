@@ -7,27 +7,22 @@ import {useCommand} from '../command';
 import * as S from './styles';
 
 export type Props = {
-  className: string;
-  disabled: boolean;
   label: string;
   type: 'button' | 'submit';
   command?: string | null;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-  children: ReactNode;
 } & S.Props & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  'className' | 'disabled' | 'type' | 'onClick' | 'aria-label'
+  'type' | 'aria-label'
 >;
 
 export const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
   const {
-    disabled,
     label,
     type,
     command: commandName,
+    disabled,
     onClick,
     children,
-    // className, minimal, intent and slim deliberately included here
     ...otherProps
   } = props;
 
@@ -51,13 +46,10 @@ export const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) =>
 Button.displayName = 'Button';
 
 Button.defaultProps = {
-  className: '',
-  disabled: false,
   minimal: false,
   intent: 'primary',
   slim: false,
   label: '',
   type: 'button',
   command: undefined,
-  onClick: undefined,
 };
