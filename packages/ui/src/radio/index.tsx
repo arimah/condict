@@ -15,7 +15,7 @@ import * as S from './styles';
 
 export type Props = {
   label: string;
-  labelProps: Omit<
+  labelProps?: Omit<
     LabelHTMLAttributes<HTMLLabelElement>,
     'className'
   >;
@@ -52,7 +52,7 @@ export const Radio = (props: Props) => {
   } = props;
   const radioGroup = useContext(RadioGroupContext);
 
-  const actualName = `${radioGroup.namePrefix}${name}`;
+  const actualName = `${radioGroup.namePrefix}${name || ''}`;
 
   const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
 
@@ -87,16 +87,8 @@ export const Radio = (props: Props) => {
 };
 
 Radio.defaultProps = {
-  className: '',
   intent: 'primary',
-  checked: false,
-  disabled: false,
   label: '',
-  name: '',
-  value: undefined,
-  labelProps: null,
-  inputRef: undefined,
-  onChange: () => { },
 };
 
 const getContextValue = (name: string | undefined | null): ContextValue => ({

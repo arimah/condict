@@ -79,5 +79,4 @@ export const Checkbox = (props: Props) => {
 Checkbox.defaultProps = {
   intent: 'primary',
   label: '',
-  inputRef: undefined,
 };
