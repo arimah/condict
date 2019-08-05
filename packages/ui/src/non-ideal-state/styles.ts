@@ -3,7 +3,11 @@ import {ifProp, theme} from 'styled-tools';
 
 import LightTheme from '../theme/light';
 
-export const Main = styled.div`
+export interface Props {
+  minimal?: boolean;
+}
+
+export const Main = styled.div<Props>`
   display: flex;
   flex-direction: column;
   align-items: center;
