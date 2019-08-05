@@ -4,7 +4,13 @@ import {prop, theme, ifProp} from 'styled-tools';
 import {transition} from '../theme';
 import LightTheme from '../theme/light';
 
-export const Input = styled.input`
+export interface Props {
+  minimal: boolean;
+  autoSize?: boolean;
+  borderRadius?: string;
+}
+
+export const Input = styled.input<Props>`
   box-sizing: border-box;
   font: inherit;
   border-radius: ${prop('borderRadius', '3px')};
