@@ -4,12 +4,17 @@ import {prop, theme, ifProp} from 'styled-tools';
 import {transition} from '../theme';
 import LightTheme from '../theme/light';
 
+export interface Props {
+  borderRadius?: number;
+  minimal: boolean;
+}
+
 export const Wrapper = styled.span`
   display: inline-block;
   position: relative;
 `;
 
-export const Select = styled.select`
+export const Select = styled.select<Props>`
   appearance: none;
   font: inherit;
   border-radius: ${prop('borderRadius', '3px')};
@@ -53,6 +58,7 @@ Select.defaultProps = {
 };
 
 export const Arrow = styled.svg.attrs({
+  disabled: false as boolean,
   width: '8',
   height: '8',
 })`

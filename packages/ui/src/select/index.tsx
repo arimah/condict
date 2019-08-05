@@ -1,9 +1,25 @@
-import React from 'react';
+import React, {ReactNode, SelectHTMLAttributes} from 'react';
 import PropTypes from 'prop-types';
 
 import * as S from './styles';
 
-const renderOptions = (children, options) => {
+export type Props = {
+  value?: string | number;
+  options?: Option[];
+} & S.Props & Omit<
+  SelectHTMLAttributes<HTMLSelectElement>,
+  'value'
+>;
+
+export interface Option {
+  value: string | number;
+  name: ReactNode;
+}
+
+const renderOptions = (
+  children: ReactNode,
+  options: Option[] | undefined
+): ReactNode => {
   if (process.env.NODE_ENV === 'development' && children && options) {
     // eslint-disable-next-line no-console
     console.warn(
@@ -35,16 +51,17 @@ const renderOptions = (children, options) => {
   return null;
 };
 
-export const Select = React.forwardRef((props, ref) => {
+export const Select = React.forwardRef<HTMLSelectElement, Props>((
+  props: Props,
+  ref
+) => {
   const {
     className,
-    value,
     options,
     minimal,
     disabled,
     borderRadius,
     children,
-    onChange,
     ...otherProps
   } = props;
 
@@ -52,11 +69,9 @@ export const Select = React.forwardRef((props, ref) => {
     <S.Wrapper className={className}>
       <S.Select
         {...otherProps}
-        value={value}
         minimal={minimal}
         disabled={disabled}
         borderRadius={borderRadius}
-        onChange={onChange}
         ref={ref}
       >
         {renderOptions(children, options)}
@@ -70,27 +85,9 @@ export const Select = React.forwardRef((props, ref) => {
 
 Select.displayName = 'Select';
 
-Select.propTypes = {
-  className: PropTypes.string,
-  value: PropTypes.string,
-  options: PropTypes.arrayOf(PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-  }).isRequired),
-  minimal: PropTypes.bool,
-  disabled: PropTypes.bool,
-  borderRadius: PropTypes.string,
-  children: PropTypes.node,
-  onChange: PropTypes.func,
-};
-
 Select.defaultProps = {
-  className: '',
-  value: '',
-  options: null,
+  options: undefined,
   minimal: false,
   disabled: false,
   borderRadius: undefined,
-  children: null,
-  onChange: () => {},
 };
