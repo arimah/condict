@@ -4,7 +4,19 @@ import {theme, ifProp} from 'styled-tools';
 import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
 
-export const Label = styled.label`
+export interface IntentProps {
+  intent: 'primary' | 'secondary' | 'danger';
+}
+
+export interface CheckedProps {
+  checked?: boolean;
+}
+
+export interface DisabledProps {
+  disabled?: boolean;
+}
+
+export const Label = styled.label<DisabledProps>`
   display: inline-block;
   box-sizing: border-box;
   color: ${ifProp('disabled',
@@ -26,7 +38,9 @@ export const SwitchContainer = styled.span`
   vertical-align: -4px;
 `;
 
-export const Input = styled.input.attrs({type: 'checkbox'})`
+export const Input = styled.input.attrs({
+  type: 'checkbox' as string,
+})`
   appearance: none;
   position: absolute;
   top: 0;
@@ -45,7 +59,7 @@ Input.defaultProps = {
   theme: LightTheme,
 };
 
-export const Switch = styled.span`
+export const Switch = styled.span<IntentProps & CheckedProps & DisabledProps>`
   display: inline-block;
   box-sizing: border-box;
   position: relative;
@@ -100,7 +114,7 @@ Switch.defaultProps = {
   theme: LightTheme,
 };
 
-export const Dot = styled.span`
+export const Dot = styled.span<CheckedProps & DisabledProps>`
   position: absolute;
   top: 2px;
   left: ${ifProp('checked', '14px', '2px')};

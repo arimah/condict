@@ -1,11 +1,22 @@
-import React from 'react';
+import React, {InputHTMLAttributes, LabelHTMLAttributes} from 'react';
 import PropTypes from 'prop-types';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import * as S from './styles';
 
-export const Switch = props => {
+export type Props = {
+  label: string;
+  labelProps?: Omit<
+    LabelHTMLAttributes<HTMLLabelElement>,
+    'className'
+  >;
+} & S.IntentProps & Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  ''
+>;
+
+export const Switch = (props: Props) => {
   const {
     className,
     intent,
@@ -14,7 +25,6 @@ export const Switch = props => {
     disabled,
     labelProps,
     children,
-    onChange,
     ...inputProps
   } = props;
 
@@ -46,9 +56,8 @@ export const Switch = props => {
           disabled={disabled}
           checked={checked}
           role='button'
-          aria-pressed={String(checked)}
+          aria-pressed={checked ? 'true' : 'false'}
           aria-label={ariaLabel}
-          onChange={onChange}
         />
       </S.SwitchContainer>
       {renderedContent}
@@ -56,23 +65,7 @@ export const Switch = props => {
   );
 };
 
-Switch.propTypes = {
-  className: PropTypes.string,
-  intent: PropTypes.oneOf(['primary', 'secondary', 'danger']),
-  checked: PropTypes.bool,
-  disabled: PropTypes.bool,
-  label: PropTypes.string,
-  labelProps: PropTypes.object,
-  onChange: PropTypes.func,
-  children: PropTypes.node,
-};
-
 Switch.defaultProps = {
-  className: '',
   intent: 'primary',
-  checked: false,
-  disabled: false,
   label: '',
-  labelProps: null,
-  onChange: () => { },
 };
