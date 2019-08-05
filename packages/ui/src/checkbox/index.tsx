@@ -1,11 +1,9 @@
 import React, {
-  ChangeEventHandler,
   ReactNode,
   Ref,
   InputHTMLAttributes,
   LabelHTMLAttributes,
 } from 'react';
-import PropTypes from 'prop-types';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 
@@ -16,11 +14,11 @@ import * as S from './styles';
 export type Props = {
   indeterminate: boolean;
   label: string;
-  labelProps: Omit<
+  labelProps?: Omit<
     LabelHTMLAttributes<HTMLLabelElement>,
     'className'
   >;
-  inputRef: Ref<HTMLInputElement>;
+  inputRef?: Ref<HTMLInputElement>;
   children: ReactNode;
 } & S.IntentProps & Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -81,6 +79,5 @@ export const Checkbox = (props: Props) => {
 Checkbox.defaultProps = {
   intent: 'primary',
   label: '',
-  labelProps: null,
   inputRef: undefined,
 };

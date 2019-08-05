@@ -4,7 +4,19 @@ import {theme, ifProp} from 'styled-tools';
 import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
 
-export const Label = styled.label`
+export interface IntentProps {
+  intent: 'primary' | 'secondary' | 'danger';
+}
+
+export interface DisabledProps {
+  disabled?: boolean;
+}
+
+export interface CheckedProps {
+  checked?: boolean;
+}
+
+export const Label = styled.label<DisabledProps>`
   display: inline-block;
   box-sizing: border-box;
   color: ${ifProp('disabled', theme('general.disabledFg'), theme('general.fg'))};
@@ -16,7 +28,7 @@ Label.defaultProps = {
   theme: LightTheme,
 };
 
-export const RadioContainer = styled.span`
+export const RadioContainer = styled.span<CheckedProps & DisabledProps & IntentProps>`
   display: inline-block;
   box-sizing: border-box;
   margin-right: 5px;
@@ -81,7 +93,7 @@ Input.defaultProps = {
   theme: LightTheme,
 };
 
-export const RadioDot = styled.span`
+export const RadioDot = styled.span<CheckedProps & DisabledProps & IntentProps>`
   display: block;
   box-sizing: border-box;
   position: absolute;

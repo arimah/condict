@@ -4,7 +4,7 @@ type ValidRef<T> =
   { bivarianceHack(instance: T | null): void }['bivarianceHack'] |
   RefObject<T>;
 
-export default <T>(...refs: Ref<T>[]): Ref<T> | null => {
+export default <T>(...refs: (Ref<T> | undefined)[]): Ref<T> => {
   const validRefs = refs.filter(Boolean) as ValidRef<T>[];
 
   switch (validRefs.length) {
