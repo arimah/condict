@@ -1,19 +1,28 @@
-import React, {Component, useState, useEffect, useRef} from 'react';
-import PropTypes from 'prop-types';
+import React, {
+  Component,
+  FocusEventHandler,
+  FormEventHandler,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  RefObject,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 
 import genId from '@condict/gen-id';
 import {SROnly} from '@condict/a11y-utils';
 
 import DescendantCollection from '../descendant-collection';
-import {Shortcut, ShortcutMap} from '../command/shortcut';
+import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
 
 import * as S from './styles';
 
 const Separators = /[,;]/;
 
-const normalizeTag = tag => tag.replace(/\s+/g, ' ').trim();
+const normalizeTag = (tag: string) => tag.replace(/\s+/g, ' ').trim();
 
-const uniqueTags = tags => {
+const uniqueTags = (tags: string[]) => {
   const seenTags = Object.create(null);
   return tags.reduce((result, tag) => {
     const lowerTag = tag.toLowerCase();
@@ -23,33 +32,43 @@ const uniqueTags = tags => {
     seenTags[lowerTag] = true;
     result.push(tag);
     return result;
-  }, []);
+  }, [] as string[]);
 };
 
-const isEmptySelectionAtStart = input =>
+const isEmptySelectionAtStart = (input: HTMLInputElement) =>
   input.selectionStart === 0 &&
   input.selectionEnd === 0;
 
-const isEmptySelectionAtEnd = input =>
+const isEmptySelectionAtEnd = (input: HTMLInputElement) =>
   input.selectionStart === input.value.length &&
   input.selectionEnd === input.value.length;
 
-const KeyboardMap = new ShortcutMap(
+interface KeyCommand {
+  key: ShortcutType | null;
+  exec: (tagInput: TagInput) => boolean;
+}
+
+const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
     {
       key: Shortcut.parse(['Enter', 'Shift+Enter', 'Primary+Enter']),
-      exec: tagInput => {
+      exec(tagInput: TagInput) {
         if (tagInput.state.selected.tag === null) {
           tagInput.commitTags(false);
           return true;
         }
+        return false;
       },
     },
     {
       key: Shortcut.parse(['Backspace', 'Shift+Backspace', 'Primary+Backspace']),
-      exec: tagInput => {
+      exec(tagInput: TagInput) {
         const {selected: {tag}} = tagInput.state;
         const input = tagInput.input.current;
+        if (!input) {
+          return false;
+        }
+
         if (tag === null) {
           const {tags} = tagInput.props;
           // If you press backspace in an empty text box, the last tag becomes
@@ -68,21 +87,23 @@ const KeyboardMap = new ShortcutMap(
           );
           return true;
         }
+        return false;
       },
     },
     {
       key: Shortcut.parse('F2'),
-      exec: tagInput => {
+      exec(tagInput: TagInput) {
         const {selected: {tag}} = tagInput.state;
         if (tag !== null) {
           tagInput.editTag(tag);
           return true;
         }
+        return false;
       },
     },
     {
       key: Shortcut.parse(['Delete', 'Shift+Delete', 'Primary+Delete']),
-      exec: tagInput => {
+      exec(tagInput: TagInput) {
         const {selected: {tag}} = tagInput.state;
         if (tag !== null) {
           tagInput.deleteTag(tag, (items, current) =>
@@ -90,63 +111,70 @@ const KeyboardMap = new ShortcutMap(
           );
           return true;
         }
+        return false;
       },
     },
     {
       key: Shortcut.parse('ArrowLeft ArrowUp'),
-      exec: tagInput => {
+      exec(tagInput: TagInput) {
         // The up and left arrows only move the selection into the last tag
         // if the text box has an empty selection at the start. Otherwise it
         // will be treated as a normal edit command.
         const {selected} = tagInput.state;
         const input = tagInput.input.current;
-        if (selected.tag !== null || isEmptySelectionAtStart(input)) {
+        if (selected.tag !== null || input && isEmptySelectionAtStart(input)) {
           tagInput.items.getPrevious(selected).elem.focus();
           return true;
         }
+        return false;
       },
     },
     {
       key: Shortcut.parse('ArrowRight ArrowDown'),
-      exec: tagInput => {
+      exec(tagInput: TagInput) {
         // The down and right arrows only move selection into the first tag
         // if the text box has an empty selection at the end. Otherwise it
         // will be treated as a normal edit command.
         const {selected} = tagInput.state;
         const input = tagInput.input.current;
-        if (selected.tag !== null || isEmptySelectionAtEnd(input)) {
+        if (selected.tag !== null || input && isEmptySelectionAtEnd(input)) {
           tagInput.items.getNext(selected).elem.focus();
           return true;
         }
+        return false;
       },
     },
     {
       key: Shortcut.parse('Home'),
-      exec: tagInput => {
+      exec(tagInput: TagInput) {
         const {selected: {tag}} = tagInput.state;
         const input = tagInput.input.current;
-        if (tag !== null || isEmptySelectionAtStart(input)) {
-          tagInput.items.getFirst().elem.focus();
+        if (tag !== null || input && isEmptySelectionAtStart(input)) {
+          tagInput.items.getFirst()!.elem.focus();
           return true;
         }
+        return false;
       },
     },
     {
       key: Shortcut.parse('End'),
-      exec: tagInput => {
+      exec(tagInput: TagInput) {
         const {tags} = tagInput.props;
         const {selected: {tag}} = tagInput.state;
         const input = tagInput.input.current;
-        if (tag !== null || isEmptySelectionAtEnd(input)) {
+        if (tag !== null || input && isEmptySelectionAtEnd(input)) {
           const lastTag = tags[tags.length - 1];
           const nextSelected = tag === lastTag
             ? tagInput.items.getLast()
-            : tagInput.items.itemRefList.find(
+            : tagInput.items.find(
               r => r.tag === lastTag
             );
-          nextSelected.elem.focus();
+          if (nextSelected) {
+            nextSelected.elem.focus();
+          }
           return true;
         }
+        return false;
       },
     },
   ],
@@ -154,17 +182,37 @@ const KeyboardMap = new ShortcutMap(
 );
 
 class TagInputChild {
-  constructor(elemRef, tag) {
+  private elemRef: RefObject<HTMLButtonElement | HTMLInputElement>;
+  public tag: string | null;
+
+  public constructor(
+    elemRef: RefObject<HTMLButtonElement | HTMLInputElement>,
+    tag: string | null
+  ) {
     this.elemRef = elemRef;
     this.tag = tag;
   }
 
-  get elem() {
+  public get elem(): HTMLButtonElement | HTMLInputElement {
+    if (this.elemRef.current === null) {
+      throw new Error('Element has been unmounted but not removed from DescendantCollection');
+    }
     return this.elemRef.current;
   }
 }
 
-const TagButton = props => {
+type Descendants = DescendantCollection<TagInputChild, HTMLButtonElement | HTMLInputElement>;
+
+interface TagButtonProps {
+  tag: string;
+  disabled: boolean | undefined;
+  isSelected: boolean;
+  parentItems: Descendants;
+  'aria-describedby': string;
+  onClick: MouseEventHandler<HTMLButtonElement>;
+}
+
+const TagButton = (props: TagButtonProps) => {
   const {
     tag,
     disabled,
@@ -174,7 +222,7 @@ const TagButton = props => {
     onClick,
   } = props;
 
-  const elemRef = useRef();
+  const elemRef = useRef<HTMLButtonElement>(null);
   const [item] = useState(() => new TagInputChild(elemRef, tag));
   parentItems.register(item);
   useEffect(() => () => parentItems.unregister(item), []);
@@ -193,43 +241,56 @@ const TagButton = props => {
   );
 };
 
-TagButton.propTypes = {
-  tag: PropTypes.string.isRequired,
-  disabled: PropTypes.bool.isRequired,
-  isSelected: PropTypes.bool.isRequired,
-  parentItems: PropTypes.instanceOf(DescendantCollection).isRequired,
-  'aria-describedby': PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-};
+export interface Props {
+  className?: string;
+  tags: string[];
+  minimal?: boolean;
+  disabled?: boolean;
+  onChange: (tags: string[]) => void;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+}
 
-export class TagInput extends Component {
-  constructor(props) {
+interface State {
+  inputFocused: boolean;
+  selected: TagInputChild;
+  announcement: {
+    key: string;
+    text: string;
+  };
+}
+
+export class TagInput extends Component<Props, State> {
+  public static defaultProps: Partial<Props> = {
+    tags: [],
+    onChange: () => { },
+  };
+
+  public input = React.createRef<HTMLInputElement>();
+  public items: Descendants = new DescendantCollection<
+    TagInputChild,
+    HTMLButtonElement | HTMLInputElement
+  >(
+    ref => ref.elem
+  );
+  private wrapper = React.createRef<HTMLSpanElement>();
+  private mainDescId = genId();
+  private tagDescId = genId();
+  private hasFocus: boolean = false;
+
+  public constructor(props: Props) {
     super(props);
 
+    const inputChild = new TagInputChild(this.input, null);
+    this.items.register(inputChild);
     this.state = {
       inputFocused: false,
-      selected: {tag: null},
+      selected: inputChild,
       announcement: {key: '', text: ''},
     };
-
-    this.handleFocus = this.handleFocus.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleTagClick = this.handleTagClick.bind(this);
-    this.handleInput = this.handleInput.bind(this);
-
-    this.wrapper = React.createRef();
-    this.input = React.createRef();
-    this.items = new DescendantCollection(ref => ref.elem);
-    this.mainDescId = genId();
-    this.tagDescId = genId();
-    this.hasFocus = false;
-
-    this.items.register(new TagInputChild(this.input, null));
   }
 
-  handleFocus(e) {
+  private handleFocus: FocusEventHandler<HTMLButtonElement | HTMLInputElement> = e => {
     this.hasFocus = true;
 
     const selected = this.items.findManagedRef(e.target);
@@ -241,14 +302,17 @@ export class TagInput extends Component {
       selected,
       inputFocused: selected.tag === null,
     });
-  }
+  };
 
-  handleBlur(e) {
+  private handleBlur: FocusEventHandler = e => {
+    if (!this.wrapper.current) {
+      return;
+    }
     // Focus remains inside the component if the related target is inside
     // the outer element.
     this.hasFocus =
       e.relatedTarget !== null &&
-      this.wrapper.current.contains(e.relatedTarget);
+      this.wrapper.current.contains(e.relatedTarget as Node);
 
     // If we still have focus, don't change the component state at all;
     // the focus event on the tag or input box will take care of that.
@@ -260,36 +324,36 @@ export class TagInput extends Component {
       this.setState({inputFocused: false});
       this.commitTags(false);
     }
-  }
+  };
 
-  handleMouseUp(e) {
+  private handleMouseUp: MouseEventHandler = e => {
     // If the user is attempting to click on the wrapper, and only then,
     // focus the text input. This should ensure the wrapper acts like a
     // label for the text input, without the accessibility problems that
     // come with a `<label>` that contains interactive content (like the
     // current tag list).
-    if (e.target === this.wrapper.current) {
+    if (e.target === this.wrapper.current && this.input.current) {
       this.input.current.focus();
     }
-  }
+  };
 
-  handleKeyDown(e) {
+  private handleKeyDown: KeyboardEventHandler = e => {
     const command = KeyboardMap.get(e);
     if (command && command.exec(this)) {
       e.preventDefault();
     }
-  }
+  };
 
-  handleTagClick(e) {
-    const child = this.items.findManagedRef(e.target);
+  private handleTagClick: MouseEventHandler = e => {
+    const child = this.items.findManagedRef(e.target as HTMLButtonElement);
     if (!child || child.tag === null) {
       return;
     }
     this.deleteTag(child.tag, items => items.getLast());
-  }
+  };
 
-  handleInput(e) {
-    const {value} = e.target;
+  private handleInput: FormEventHandler = e => {
+    const {value} = e.target as HTMLInputElement;
 
     if (Separators.test(value)) {
       // When the value changes, the last tag name stays in the text box.
@@ -302,14 +366,17 @@ export class TagInput extends Component {
       // text up to the separator will be committed.
       this.commitTags(true);
     }
-  }
+  };
 
-  commitTags(keepLast) {
+  public commitTags(keepLast: boolean) {
     const input = this.input.current;
+    if (!input) {
+      return;
+    }
     const newTags = input.value.split(Separators);
 
     if (keepLast) {
-      const lastTag = newTags.pop();
+      const lastTag = newTags.pop() as string;
 
       // To ensure the cursor doesn't jump about weirdly, offset it by
       // the number of characters that will be removed as a result of
@@ -319,9 +386,9 @@ export class TagInput extends Component {
       const {selectionStart, selectionEnd, selectionDirection} = input;
       input.value = lastTag;
       input.setSelectionRange(
-        selectionStart - removed,
-        selectionEnd - removed,
-        selectionDirection || 'none'
+        (selectionStart as number) - removed,
+        (selectionEnd as number) - removed,
+        (selectionDirection || 'none') as 'forward' | 'backward' | 'none'
       );
     } else {
       input.value = '';
@@ -348,9 +415,12 @@ export class TagInput extends Component {
     }
   }
 
-  editTag(tag) {
+  public editTag(tag: string) {
     const {tags} = this.props;
     const input = this.input.current;
+    if (!input) {
+      return;
+    }
 
     const nextTags = tags.filter(t => t !== tag);
 
@@ -371,7 +441,10 @@ export class TagInput extends Component {
     );
   }
 
-  deleteTag(tag, getNextSelected) {
+  public deleteTag(
+    tag: string,
+    getNextSelected: (items: Descendants, current: TagInputChild) => any
+  ) {
     const {tags: prevTags} = this.props;
     const nextTags = prevTags.filter(t => t !== tag);
 
@@ -386,11 +459,11 @@ export class TagInput extends Component {
     this.announce(`Tag removed: ${tag}.`);
   }
 
-  setTags(tags) {
+  private setTags(tags: string[]) {
     this.props.onChange(tags);
   }
 
-  announce(text) {
+  private announce(text: string) {
     this.setState({
       announcement: {
         key: genId(),
@@ -399,7 +472,7 @@ export class TagInput extends Component {
     });
   }
 
-  render() {
+  public render() {
     const {
       className,
       tags,
@@ -461,7 +534,7 @@ export class TagInput extends Component {
     );
   }
 
-  getMainDescription() {
+  private getMainDescription() {
     const {tags} = this.props;
     const {length} = tags;
     const tagDesc =
@@ -471,7 +544,7 @@ export class TagInput extends Component {
     return `${tagDesc} Use arrow keys to navigate tags.`;
   }
 
-  getTagDescription() {
+  private getTagDescription() {
     const {tags} = this.props;
     const {selected: {tag}} = this.state;
     if (tag !== null) {
@@ -481,23 +554,3 @@ export class TagInput extends Component {
     return '';
   }
 }
-
-TagInput.propTypes = {
-  className: PropTypes.string,
-  tags: PropTypes.arrayOf(PropTypes.string),
-  minimal: PropTypes.bool,
-  disabled: PropTypes.bool,
-  onChange: PropTypes.func,
-  'aria-label': PropTypes.string,
-  'aria-labelledby': PropTypes.string,
-};
-
-TagInput.defaultProps = {
-  className: '',
-  tags: [],
-  minimal: false,
-  disabled: false,
-  onChange: () => { },
-  'aria-label': undefined,
-  'aria-labelledby': undefined,
-};

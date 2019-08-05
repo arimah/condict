@@ -1,8 +1,19 @@
 const DOCUMENT_POSITION_PRECEDING = 2;
 const DOCUMENT_POSITION_FOLLOWING = 4;
 
-export default class DescendantCollection {
-  constructor(getElem) {
+export type Descendant = Node & {
+  disabled?: boolean;
+};
+
+export type GetElementFunc<R, E extends Descendant> = (element: R) => E;
+
+export default class DescendantCollection<R, E extends Descendant> {
+  private getElem: GetElementFunc<R, E>;
+  private itemRefList: R[];
+  private itemRefSet: Set<R>;
+  private sorted: boolean;
+
+  public constructor(getElem: GetElementFunc<R, E>) {
     this.getElem = getElem;
 
     this.itemRefList = [];
@@ -10,7 +21,7 @@ export default class DescendantCollection {
     this.sorted = true; // The empty list is sorted.
   }
 
-  register(itemRef) {
+  public register(itemRef: R) {
     if (this.itemRefSet.has(itemRef)) {
       return;
     }
@@ -20,7 +31,7 @@ export default class DescendantCollection {
     this.sorted = false;
   }
 
-  unregister(itemRef) {
+  public unregister(itemRef: R) {
     if (this.itemRefSet.has(itemRef)) {
       this.itemRefSet.delete(itemRef);
       const index = this.itemRefList.indexOf(itemRef);
@@ -28,12 +39,12 @@ export default class DescendantCollection {
     }
   }
 
-  getFirst() {
+  public getFirst(): R | null {
     this.ensureSorted();
     return this.itemRefList[0] || null;
   }
 
-  getFirstEnabled() {
+  public getFirstEnabled(): R | null {
     this.ensureSorted();
     const {getElem, itemRefList: items} = this;
     for (let i = 0; i < items.length; i++) {
@@ -44,12 +55,12 @@ export default class DescendantCollection {
     return null;
   }
 
-  getLast() {
+  public getLast(): R | null {
     this.ensureSorted();
     return this.itemRefList[this.itemRefList.length - 1] || null;
   }
 
-  getLastEnabled() {
+  public getLastEnabled(): R | null {
     this.ensureSorted();
     const {getElem, itemRefList: items} = this;
     for (let i = items.length - 1; i >= 0; i--) {
@@ -60,7 +71,7 @@ export default class DescendantCollection {
     return null;
   }
 
-  getNext(currentRef) {
+  public getNext(currentRef: R): R {
     this.ensureSorted();
     const {getElem, itemRefList: items} = this;
     const {length} = items;
@@ -76,7 +87,7 @@ export default class DescendantCollection {
     return items[nextIndex];
   }
 
-  getPrevious(currentRef) {
+  public getPrevious(currentRef: R): R {
     this.ensureSorted();
     const {getElem, itemRefList: items} = this;
     const {length} = items;
@@ -92,7 +103,7 @@ export default class DescendantCollection {
     return items[prevIndex];
   }
 
-  getNextInParent(parentElem, currentRef) {
+  public getNextInParent(parentElem: Node, currentRef: R): R | null {
     this.ensureSorted();
     const {getElem, itemRefList: items} = this;
     const {length} = items;
@@ -114,7 +125,7 @@ export default class DescendantCollection {
     return null;
   }
 
-  getPreviousInParent(parentElem, currentRef) {
+  public getPreviousInParent(parentElem: Node, currentRef: R): R | null {
     this.ensureSorted();
     const {getElem, itemRefList: items} = this;
     const {length} = items;
@@ -136,17 +147,21 @@ export default class DescendantCollection {
     return null;
   }
 
-  filter(pred) {
+  public filter(pred: (ref: R) => boolean): R[] {
     this.ensureSorted();
     return this.itemRefList.filter(pred);
   }
 
-  findManagedRef(elem) {
+  public find(pred: (ref: R) => boolean): R | undefined {
+    return this.itemRefList.find(pred);
+  }
+
+  public findManagedRef(elem: E): R | undefined {
     const {getElem, itemRefList: items} = this;
     return items.find(ref => getElem(ref) === elem);
   }
 
-  ensureSorted() {
+  private ensureSorted() {
     if (!this.sorted) {
       const {getElem, itemRefList: items} = this;
       items.sort((a, b) => {
