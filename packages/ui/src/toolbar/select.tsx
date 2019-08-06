@@ -1,12 +1,12 @@
-import React, {useRef} from 'react';
+import React, {KeyboardEventHandler, useRef} from 'react';
 import PropTypes from 'prop-types';
 
-import {Select as RegularSelect} from '../select';
+import {Select as RegularSelect, Props as SelectProps} from '../select';
 import combineRefs from '../combine-refs';
 
 import {useManagedFocus} from './focus-manager';
 
-const handleKeyDown = e => {
+const handleKeyDown: KeyboardEventHandler = e => {
   // Override the toolbar's home/end keys, so we can use them
   // to navigate the dropdown's options.
   if (e.key === 'Home' || e.key === 'End') {
@@ -14,10 +14,17 @@ const handleKeyDown = e => {
   }
 };
 
-const Select = React.forwardRef((props, ref) => {
+export type Props = {
+  label: string;
+} & Omit<SelectProps, 'minimal' | 'onKeyDown' | 'tabIndex'>;
+
+const Select = React.forwardRef<HTMLSelectElement, Props>((
+  props: Props,
+  ref
+) => {
   const {label, children, ...otherProps} = props;
 
-  const ownRef = useRef();
+  const ownRef = useRef<HTMLSelectElement>(null);
   const isCurrent = useManagedFocus(ownRef);
 
   return (
@@ -38,27 +45,8 @@ const Select = React.forwardRef((props, ref) => {
 
 Select.displayName = 'Select';
 
-Select.propTypes = {
-  className: PropTypes.string,
-  label: PropTypes.string,
-  value: PropTypes.string,
-  options: PropTypes.arrayOf(PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-  }).isRequired),
-  disabled: PropTypes.bool,
-  onChange: PropTypes.func,
-  children: PropTypes.node,
-};
-
 Select.defaultProps = {
-  className: '',
-  label: undefined,
-  value: '',
-  options: null,
-  disabled: false,
-  onChange: () => {},
-  children: null,
+  label: '',
 };
 
 export default Select;

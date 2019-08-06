@@ -1,33 +1,43 @@
-import React, {useContext, useRef} from 'react';
-import PropTypes from 'prop-types';
+import React, {ButtonHTMLAttributes, useContext, useRef} from 'react';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import {useCommand} from '../command';
-import {Shortcut, ShortcutGroup, ShortcutMap} from '../command/shortcut';
+import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
 import combineRefs from '../combine-refs';
 
-import {Context as FocusContext, useManagedFocus} from './focus-manager';
+import {Context as FocusContext, ContextValue, useManagedFocus} from './focus-manager';
 import formatTooltip from './format-tooltip';
-import Group from './group';
+import Group, {Props as GroupBaseProps} from './group';
 import * as S from './styles';
 
-const KeyboardMap = new ShortcutMap(
+interface KeyCommand {
+  key: ShortcutType | null;
+  exec(context: ContextValue, parent: HTMLDivElement): void;
+}
+
+const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
     {
       key: Shortcut.parse('ArrowUp'),
-      exec: ({descendants, currentFocus}, parent) => {
-        const prev = descendants.getPreviousInParent(parent, currentFocus);
-        if (prev) {
+      exec({descendants, currentFocus}, parent) {
+        const prev =
+          currentFocus &&
+          currentFocus.current &&
+          descendants.getPreviousInParent(parent, currentFocus);
+        if (prev && prev.current) {
           prev.current.focus();
         }
       },
     },
     {
       key: Shortcut.parse('ArrowDown'),
-      exec: ({descendants, currentFocus}, parent) => {
-        const next = descendants.getNextInParent(parent, currentFocus);
-        if (next) {
+      exec({descendants, currentFocus}, parent) {
+        const next =
+          currentFocus &&
+          currentFocus.current &&
+          descendants.getNextInParent(parent, currentFocus);
+        if (next && next.current) {
           next.current.focus();
         }
       },
@@ -36,14 +46,19 @@ const KeyboardMap = new ShortcutMap(
   cmd => cmd.key
 );
 
-export const RadioGroup = React.forwardRef((props, ref) => {
+export type GroupProps = Omit<GroupBaseProps, 'onKeyDown'>;
+
+export const RadioGroup = React.forwardRef<HTMLDivElement, GroupProps>((
+  props: GroupProps,
+  ref
+) => {
   const {
     children,
     ...otherProps
   } = props;
 
   const contextValue = useContext(FocusContext);
-  const ownRef = useRef();
+  const ownRef = useRef<HTMLDivElement>(null);
 
   return (
     <Group
@@ -51,7 +66,7 @@ export const RadioGroup = React.forwardRef((props, ref) => {
       role='radiogroup'
       onKeyDown={e => {
         const command = KeyboardMap.get(e);
-        if (command) {
+        if (command && contextValue && ownRef.current) {
           e.preventDefault();
           e.stopPropagation();
           command.exec(contextValue, ownRef.current);
@@ -63,20 +78,24 @@ export const RadioGroup = React.forwardRef((props, ref) => {
     </Group>
   );
 });
+
 RadioGroup.displayName = 'RadioGroup';
 
-RadioGroup.propTypes = {
-  name: PropTypes.string,
-  children: PropTypes.node.isRequired,
-};
+export type Props = {
+  checked: boolean;
+  label: string;
+  shortcut: ShortcutType | null;
+  command?: string | null;
+} & Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'aria-checked' | 'aria-keyshortcuts' | 'aria-label' | 'role' | 'tabIndex'
+>;
 
-RadioGroup.defaultProps = {
-  name: undefined,
-};
-
-const RadioButton = React.forwardRef((props, ref) => {
+const RadioButton = React.forwardRef<HTMLButtonElement, Props>((
+  props: Props,
+  ref
+) => {
   const {
-    className,
     checked,
     label,
     shortcut,
@@ -88,7 +107,7 @@ const RadioButton = React.forwardRef((props, ref) => {
   } = props;
 
   const command = useCommand(commandName);
-  const ownRef = useRef();
+  const ownRef = useRef<HTMLButtonElement>(null);
   const isCurrent = useManagedFocus(ownRef);
 
   const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
@@ -98,10 +117,9 @@ const RadioButton = React.forwardRef((props, ref) => {
   return (
     <S.Button
       {...otherProps}
-      className={className}
       role='radio'
       aria-label={ariaLabel}
-      aria-checked={String(checked)}
+      aria-checked={String(checked) as 'true' | 'false'}
       checked={checked}
       aria-keyshortcuts={
         effectiveShortcut
@@ -118,30 +136,13 @@ const RadioButton = React.forwardRef((props, ref) => {
     </S.Button>
   );
 });
+
 RadioButton.displayName = 'RadioButton';
 
-RadioButton.propTypes = {
-  className: PropTypes.string,
-  checked: PropTypes.bool,
-  label: PropTypes.string,
-  shortcut: PropTypes.oneOfType([
-    PropTypes.instanceOf(Shortcut),
-    PropTypes.instanceOf(ShortcutGroup),
-  ]),
-  disabled: PropTypes.bool,
-  command: PropTypes.string,
-  onClick: PropTypes.func,
-  children: PropTypes.node,
-};
-
 RadioButton.defaultProps = {
-  className: '',
   checked: false,
   label: '',
   shortcut: null,
-  disabled: false,
-  command: null,
-  onClick: null,
 };
 
 export default RadioButton;

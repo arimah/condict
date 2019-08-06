@@ -1,9 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, {HTMLAttributes, ReactNode} from 'react';
 
 import * as S from './styles';
 
-const Group = React.forwardRef((props, ref) => {
+export type Props = {
+  name?: string;
+  children: ReactNode;
+} & HTMLAttributes<HTMLDivElement>;
+
+const Group = React.forwardRef<HTMLDivElement, Props>((
+  props: Props,
+  ref
+) => {
   const {
     name,
     children,
@@ -21,11 +28,6 @@ const Group = React.forwardRef((props, ref) => {
   );
 });
 Group.displayName = 'Group';
-
-Group.propTypes = {
-  name: PropTypes.string,
-  children: PropTypes.node.isRequired,
-};
 
 Group.defaultProps = {
   name: undefined,

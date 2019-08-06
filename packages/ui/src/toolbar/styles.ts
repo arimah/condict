@@ -21,7 +21,7 @@ Toolbar.defaultProps = {
 };
 
 export const Group = styled.div.attrs({
-  role: 'group',
+  role: 'group' as string | undefined,
 })`
   display: flex;
   flex: none;
@@ -38,7 +38,8 @@ Group.defaultProps = {
 };
 
 export const Button = styled.button.attrs({
-  type: 'button',
+  type: 'button' as 'button' | 'submit' | 'reset' | undefined, // boo
+  checked: false as boolean,
 })`
   flex: none;
   padding: 6px 8px;
