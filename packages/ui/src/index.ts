@@ -1,26 +1,32 @@
-export {Button} from './button';
-export {Checkbox} from './checkbox';
-export {ConlangFlag} from './conlang-flag';
+export {Button, Props as ButtonProps} from './button';
+export {Checkbox, Props as CheckboxProps} from './checkbox';
+export {ConlangFlag, Props as ConlangFlagProps} from './conlang-flag';
 export {GlobalStyles} from './global-styles';
-export {Menu} from './menu';
+export {Menu, Props as MenuProps, MenuElement} from './menu';
 export {default as MenuTrigger} from './menu/trigger';
 export {default as MenuManager} from './menu/manager';
-export {NonIdealState} from './non-ideal-state';
-export {TextInput, NumberInput} from './input';
-export {Pages} from './pages';
-export {Radio} from './radio';
-export {Select} from './select';
-export {Spinner} from './spinner';
-export {Switch} from './switch';
-export {TagInput} from './tag-input';
-export {Toolbar} from './toolbar';
+export {NonIdealState, Props as NonIdealStateProps} from './non-ideal-state';
+export {TextInput, TextInputProps, NumberInput, NumberInputProps} from './input';
+export {Pages, Props as PagesProps} from './pages';
+export {Radio, Props as RadioProps} from './radio';
+export {Select, Props as SelectProps} from './select';
+export {Spinner, Props as SpinnerProps} from './spinner';
+export {Switch, Props as SwitchProps} from './switch';
+export {TagInput, Props as TagInputProps} from './tag-input';
+export {Toolbar, Props as ToolbarProps} from './toolbar';
 export {BodyText} from './typography';
 
-export {CommandGroup, CommandConsumer, useCommand} from './command';
+export {
+  CommandGroup,
+  Props as CommandGroupProps,
+  CommandConsumer,
+  ConsumerProps as CommandConsumerProps,
+  useCommand,
+} from './command';
 export {Shortcut, ShortcutGroup, ShortcutMap} from './command/shortcut';
 export {Shortcuts} from './command/shortcuts';
 
-export {createTheme, extendTheme, intentVar, transition} from './theme';
+export {Theme, createTheme, extendTheme, intentVar, transition} from './theme';
 export {
   makeColorFn,
   primaryColor,
