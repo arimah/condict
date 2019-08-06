@@ -1,18 +1,30 @@
-import React, {useState, useRef} from 'react';
-import PropTypes from 'prop-types';
+import React, {ReactNode, useState, useRef, useContext} from 'react';
 import ChevronRightIcon from 'mdi-react/ChevronRightIcon';
 
 import genId from '@condict/gen-id';
 
 import {useCommand} from '../command';
-import {Shortcut, ShortcutGroup} from '../command/shortcut';
+import {ShortcutType} from '../command/shortcut';
 import combineRefs from '../combine-refs';
 
 import * as S from './styles';
-import {Menu} from '.';
-import {useNearestMenu} from './context';
+import ManagedMenu from './managed-menu';
+import {StackContext, useNearestMenu} from './context';
 
-const Item = React.forwardRef((props, ref) => {
+export interface Props {
+  label: string;
+  icon: ReactNode;
+  shortcut?: ShortcutType | null;
+  disabled: boolean;
+  command?: string | null;
+  onActivate: () => void;
+  children: ReactNode;
+}
+
+const Item = React.forwardRef<HTMLDivElement, Props>((
+  props: Props,
+  ref
+) => {
   const {
     label,
     icon,
@@ -28,8 +40,8 @@ const Item = React.forwardRef((props, ref) => {
   const effectiveShortcut = command ? command.shortcut : shortcut;
 
   const [ownId] = useState(genId);
-  const ownRef = useRef();
-  const submenuRef = useRef();
+  const ownRef = useRef<HTMLDivElement>(null);
+  const submenuRef = useRef<ManagedMenu>(null);
   const {hasFocus, submenuPlacement} = useNearestMenu(
     ownRef,
     submenuRef,
@@ -44,6 +56,7 @@ const Item = React.forwardRef((props, ref) => {
         hasSubmenu={!!children}
       />
   );
+  const stack = useContext(StackContext);
 
   return <>
     <S.Item
@@ -51,7 +64,7 @@ const Item = React.forwardRef((props, ref) => {
       current={hasFocus}
       disabled={effectiveDisabled}
       role='menuitem'
-      aria-disabled={String(effectiveDisabled)}
+      aria-disabled={effectiveDisabled ? 'true' : 'false'}
       aria-owns={children ? `${ownId}-menu` : undefined}
       aria-haspopup={children ? 'menu' : undefined}
       aria-keyshortcuts={
@@ -70,44 +83,35 @@ const Item = React.forwardRef((props, ref) => {
         {children != null && <ChevronRightIcon/>}
       </S.ItemSubmenu>
     </S.Item>
-    {children &&
-      <Menu
+    {children && stack &&
+      <ManagedMenu
         id={`${ownId}-menu`}
         name={label}
+        stack={stack}
         placement={submenuPlacement}
         parentRef={ownRef}
         ref={submenuRef}
       >
         {children}
-      </Menu>
+      </ManagedMenu>
     }
   </>;
 });
 Item.displayName = 'Item';
 
-Item.propTypes = {
-  label: PropTypes.string.isRequired,
-  icon: PropTypes.node,
-  shortcut: PropTypes.oneOfType([
-    PropTypes.instanceOf(Shortcut),
-    PropTypes.instanceOf(ShortcutGroup),
-  ]),
-  disabled: PropTypes.bool,
-  command: PropTypes.string,
-  onActivate: PropTypes.func,
-  children: PropTypes.node,
-};
-
 Item.defaultProps = {
-  icon: null,
-  shortcut: null,
   disabled: false,
-  command: null,
-  children: undefined,
   onActivate: () => { },
 };
 
-const PhantomItem = ({icon, label, shortcut, hasSubmenu}) =>
+interface PhantomProps {
+  icon: ReactNode;
+  label: string;
+  shortcut?: ShortcutType | null;
+  hasSubmenu: boolean;
+}
+
+const PhantomItem = ({icon, label, shortcut, hasSubmenu}: PhantomProps) =>
   <S.Item aria-hidden='true'>
     <S.ItemIcon>{icon}</S.ItemIcon>
     <S.ItemLabel>{label}</S.ItemLabel>
@@ -118,15 +122,5 @@ const PhantomItem = ({icon, label, shortcut, hasSubmenu}) =>
       {hasSubmenu && <ChevronRightIcon/>}
     </S.ItemSubmenu>
   </S.Item>;
-
-PhantomItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  icon: PropTypes.node,
-  shortcut: PropTypes.oneOfType([
-    PropTypes.instanceOf(Shortcut),
-    PropTypes.instanceOf(ShortcutGroup),
-  ]),
-  hasSubmenu: PropTypes.bool.isRequired,
-};
 
 export default Item;

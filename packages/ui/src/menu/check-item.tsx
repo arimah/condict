@@ -1,16 +1,29 @@
-import React, {useState, useRef} from 'react';
-import PropTypes from 'prop-types';
+import React, {ReactNode, useState, useRef} from 'react';
 
 import genId from '@condict/gen-id';
 
 import {useCommand} from '../command';
-import {Shortcut, ShortcutGroup} from '../command/shortcut';
+import {ShortcutType} from '../command/shortcut';
 import combineRefs from '../combine-refs';
 
 import * as S from './styles';
 import {useNearestMenu} from './context';
 
-const CheckItem = React.forwardRef((props, ref) => {
+export interface Props {
+  label: string;
+  icon: ReactNode;
+  shortcut?: ShortcutType | null;
+  checked: boolean;
+  radio: boolean;
+  disabled: boolean;
+  command?: string | null;
+  onActivate: () => void;
+}
+
+const CheckItem = React.forwardRef<HTMLDivElement, Props>((
+  props: Props,
+  ref
+) => {
   const {
     label,
     icon,
@@ -27,7 +40,7 @@ const CheckItem = React.forwardRef((props, ref) => {
   const effectiveShortcut = command ? command.shortcut : shortcut;
 
   const [ownId] = useState(genId);
-  const ownRef = useRef();
+  const ownRef = useRef<HTMLDivElement>(null);
   const {hasFocus} = useNearestMenu(
     ownRef,
     null,
@@ -50,8 +63,8 @@ const CheckItem = React.forwardRef((props, ref) => {
       current={hasFocus}
       disabled={effectiveDisabled}
       role={radio ? 'menuitemradio' : 'menuitemcheckbox'}
-      aria-checked={String(checked)}
-      aria-disabled={String(effectiveDisabled)}
+      aria-checked={checked ? 'true' : 'false'}
+      aria-disabled={effectiveDisabled ? 'true' : 'false'}
       aria-keyshortcuts={
         effectiveShortcut
           ? effectiveShortcut.toAriaString()
@@ -70,33 +83,25 @@ const CheckItem = React.forwardRef((props, ref) => {
     </S.Item>
   );
 });
+
 CheckItem.displayName = 'CheckItem';
 
-CheckItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  icon: PropTypes.node,
-  shortcut: PropTypes.oneOfType([
-    PropTypes.instanceOf(Shortcut),
-    PropTypes.instanceOf(ShortcutGroup),
-  ]),
-  checked: PropTypes.bool,
-  radio: PropTypes.bool,
-  disabled: PropTypes.bool,
-  command: PropTypes.string,
-  onActivate: PropTypes.func,
-};
-
 CheckItem.defaultProps = {
-  icon: null,
-  shortcut: null,
   checked: false,
   radio: false,
   disabled: false,
-  command: null,
   onActivate: () => { },
 };
 
-const PhantomItem = ({icon, label, shortcut, checked, radio}) =>
+interface PhantomProps {
+  icon: ReactNode;
+  label: string;
+  shortcut?: ShortcutType | null;
+  checked: boolean;
+  radio: boolean;
+}
+
+const PhantomItem = ({icon, label, shortcut, checked, radio}: PhantomProps) =>
   <S.Item aria-hidden='true'>
     <S.ItemIcon>{icon}</S.ItemIcon>
     <S.ItemLabel>{label}</S.ItemLabel>
@@ -107,16 +112,5 @@ const PhantomItem = ({icon, label, shortcut, checked, radio}) =>
       {checked && (radio ? <S.RadioDot/> : <S.CheckMark/>)}
     </S.ItemCheck>
   </S.Item>;
-
-PhantomItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  icon: PropTypes.node,
-  shortcut: PropTypes.oneOfType([
-    PropTypes.instanceOf(Shortcut),
-    PropTypes.instanceOf(ShortcutGroup),
-  ]),
-  checked: PropTypes.bool.isRequired,
-  radio: PropTypes.bool.isRequired,
-};
 
 export default CheckItem;

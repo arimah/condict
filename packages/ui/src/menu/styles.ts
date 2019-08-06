@@ -4,11 +4,16 @@ import {ifProp, theme} from 'styled-tools';
 import {transition} from '../theme';
 import LightTheme from '../theme/light';
 
+export interface MenuProps {
+  open: boolean;
+  submenu: boolean;
+}
+
 export const Menu = styled.div.attrs({
   role: 'menu',
   // Needs to be focusable by JS.
   tabIndex: -1,
-})`
+})<MenuProps>`
   display: ${ifProp('open', 'block', 'none')};
   padding-top: 4px;
   padding-bottom: 4px;
@@ -34,7 +39,12 @@ Menu.defaultProps = {
   theme: LightTheme,
 };
 
-export const Item = styled.div`
+export interface ItemProps {
+  current?: boolean;
+  disabled?: boolean;
+}
+
+export const Item = styled.div<ItemProps>`
   display: flex;
   flex-direction: row;
   position: relative;
@@ -100,7 +110,12 @@ export const ItemSubmenu = styled.span`
   }
 `;
 
-export const ItemCheck = styled.span`
+export interface ItemCheckProps {
+  radio: boolean;
+  checked: boolean;
+}
+
+export const ItemCheck = styled.span<ItemCheckProps>`
   display: block;
   box-sizing: border-box;
   margin: 4px 7px;

@@ -1,23 +1,26 @@
-import React, {Component} from 'react';
+import React, {Component, ReactNode, RefObject} from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 import memoizeOne from 'memoize-one';
 
 import DescendantCollection from '../descendant-collection';
 import Placement, {placeElement} from '../placement';
 
 import * as S from './styles';
-import {MenuStack} from './manager';
-import {MenuContext} from './context';
+import MenuStack from './menu-stack';
+import {MenuContext, MenuContextValue, MenuItem} from './context';
 import getContainer from './container';
 
-const getMenuContextValue = (items, currentFocus, submenuPlacement) => ({
+const getMenuContextValue = (
+  items: DescendantCollection<MenuItem, HTMLElement>,
+  currentFocus: MenuItem | null,
+  submenuPlacement: Placement
+): MenuContextValue => ({
   items,
   currentFocus,
   submenuPlacement,
 });
 
-const inRaf = fn => {
+const inRaf = (fn: () => void) => {
   let updateQueued = false;
   return () => {
     if (!updateQueued) {
@@ -31,15 +34,15 @@ const inRaf = fn => {
   };
 };
 
-const getDepth = (stack, menu) => {
+const getDepth = (stack: MenuStack, menu: ManagedMenu) => {
   return stack.openMenus.findIndex(m => m.menu === menu);
 };
 
-const isMenuOpen = (stack, menu) => {
+const isMenuOpen = (stack: MenuStack, menu: ManagedMenu) => {
   return stack.openMenus.some(m => m.menu === menu);
 };
 
-const isDeepestMenu = (stack, menu) => {
+const isDeepestMenu = (stack: MenuStack, menu: ManagedMenu) => {
   const {openMenus} = stack;
   return (
     openMenus.length > 0 &&
@@ -47,7 +50,7 @@ const isDeepestMenu = (stack, menu) => {
   );
 };
 
-const getFocusedItem = (stack, menu) => {
+const getFocusedItem = (stack: MenuStack, menu: ManagedMenu) => {
   const {openMenus, currentFocus} = stack;
   // If the currently hovered item is within this menu, it always has focus,
   // even if there is an open submenu.
@@ -65,7 +68,7 @@ const getFocusedItem = (stack, menu) => {
   return null;
 };
 
-const getSubmenuPlacement = ownPlacement => {
+const getSubmenuPlacement = (ownPlacement: Placement) => {
   // The basic idea: keep growing in the same horizontal direction.
   switch (ownPlacement) {
     case Placement.BELOW_LEFT:
@@ -82,24 +85,29 @@ const getSubmenuPlacement = ownPlacement => {
   }
 };
 
-class ManagedMenu extends Component {
-  constructor(props) {
-    super(props);
+export interface Props {
+  id?: string;
+  name?: string;
+  placement: Placement;
+  parentRef: RefObject<Element>;
+  stack: MenuStack;
+  children: ReactNode;
+}
 
-    this.items = new DescendantCollection(item => item.self);
-    this.menuRef = React.createRef();
-    this.getMenuContextValue = memoizeOne(getMenuContextValue);
-    this.updatePlacement = inRaf(this.updatePlacement.bind(this));
-  }
+class ManagedMenu extends Component<Props> {
+  public readonly items = new DescendantCollection<MenuItem, HTMLElement>(item => item.self);
+  private readonly menuRef = React.createRef<HTMLDivElement>();
+  private readonly getMenuContextValue = memoizeOne(getMenuContextValue);
+  private needFocus: boolean = false;
 
-  contains(elem) {
+  public contains(elem: Node | null) {
     return (
       this.menuRef.current &&
       this.menuRef.current.contains(elem)
     );
   }
 
-  componentDidUpdate(prevProps) {
+  public componentDidUpdate(prevProps: Readonly<Props>) {
     const nextProps = this.props;
     if (prevProps.stack !== nextProps.stack) {
       const prevOpen = isMenuOpen(prevProps.stack, this);
@@ -119,31 +127,32 @@ class ManagedMenu extends Component {
     this.updatePlacement();
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     this.detachEvents();
   }
 
-  attachEvents() {
+  private attachEvents() {
     window.addEventListener('scroll', this.updatePlacement);
     window.addEventListener('resize', this.updatePlacement);
   }
 
-  detachEvents() {
+  private detachEvents() {
     window.removeEventListener('scroll', this.updatePlacement);
     window.removeEventListener('resize', this.updatePlacement);
   }
 
-  updatePlacement() {
+  private updatePlacement = inRaf(() => {
     // Since this runs inside requestAnimationFrame, the component could
     // have become unmounted by the time we get here. If there is no
     // menu or no parent, we can't place the element, so just bail out.
-    if (!this.menuRef.current || !this.props.parentRef.current) {
+    const {parentRef} = this.props;
+    if (!this.menuRef.current || !parentRef.current) {
       return;
     }
 
     if (isMenuOpen(this.props.stack, this)) {
       const menu = this.menuRef.current;
-      const {parentRef, placement} = this.props;
+      const {placement} = this.props;
 
       placeElement(menu, parentRef.current, placement);
 
@@ -152,9 +161,9 @@ class ManagedMenu extends Component {
         this.needFocus = false;
       }
     }
-  }
+  });
 
-  render() {
+  public render() {
     const {id, name, placement, stack, children} = this.props;
 
     const open = isMenuOpen(stack, this);
@@ -190,16 +199,5 @@ class ManagedMenu extends Component {
     );
   }
 }
-
-ManagedMenu.propTypes = {
-  id: PropTypes.string,
-  name: PropTypes.string,
-  placement: PropTypes.oneOf(Object.values(Placement)).isRequired,
-  parentRef: PropTypes.shape({
-    current: PropTypes.instanceOf(Element),
-  }),
-  stack: PropTypes.instanceOf(MenuStack).isRequired,
-  children: PropTypes.any.isRequired,
-};
 
 export default ManagedMenu;

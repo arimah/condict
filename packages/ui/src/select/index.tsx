@@ -86,8 +86,6 @@ export const Select = React.forwardRef<HTMLSelectElement, Props>((
 Select.displayName = 'Select';
 
 Select.defaultProps = {
-  options: undefined,
   minimal: false,
   disabled: false,
-  borderRadius: undefined,
 };

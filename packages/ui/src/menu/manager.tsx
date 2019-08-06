@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import React, {Component, MouseEvent as SyntheticMouseEvent} from 'react';
 
-import {Shortcut, ShortcutMap} from '../command/shortcut';
+import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
 
-import {StackContext} from './context';
-import PhantomItem from './phantom-item';
+import {MenuItem, StackContext} from './context';
+import ManagedMenu from './managed-menu';
+import MenuStack from './menu-stack';
+import PhantomItem, {Props as PhantomProps} from './phantom-item';
 import {PhantomFadeTime} from './styles';
 
 /*\
@@ -75,140 +76,26 @@ import {PhantomFadeTime} from './styles';
 // In development, it's impossible to debug menus if they keep closing whenever
 // the page loses focus; you can't inspect it in your dev tools that way. This
 // variable can be set to keep menus open when the page loses focus.
+declare global {
+  interface Window {
+    __CONDICT_DEV_KEEP_MENUS_OPEN__: boolean;
+  }
+}
+
 if (process.env.NODE_ENV === 'development') {
   window.__CONDICT_DEV_KEEP_MENUS_OPEN__ = false;
-}
-
-const nextTick = fn => window.setTimeout(() => fn(), 0);
-
-// Represents an open menu. The value contains the menu itself (a ManagedMenu)
-// and the item (as a MenuItem, from ./context) that opened it.
-class OpenMenu {
-  constructor(menu, parentItem) {
-    this.menu = menu;
-    this.parentItem = parentItem;
-  }
-
-  elemToItem(elem) {
-    return this.menu.items.itemRefList.find(
-      item => item.self.contains(elem)
-    ) || null;
-  }
-
-  filterItems(pred) {
-    return this.menu.items.filter(pred);
-  }
-}
-
-// Contains the current state of the menu tree. It contains the currently open
-// menus, and the currently hovered menu item. It exposes various methods for
-// manipulating the menu stack.
-//
-// It's called a "stack" because it only deals with the set of open menus
-// (which is indeed a stack), and not the whole menu tree.
-export class MenuStack {
-  constructor(
-    openMenus = [],
-    currentFocus = null
-  ) {
-    this.openMenus = openMenus;
-    this.currentFocus = currentFocus;
-  }
-
-  withCurrentFocus(currentFocus) {
-    if (this.currentFocus === currentFocus) {
-      return this;
-    }
-
-    return new MenuStack(this.openMenus, currentFocus);
-  }
-
-  withOpenMenus(openMenus) {
-    if (this.openMenus === openMenus) {
-      return this;
-    }
-
-    return new MenuStack(openMenus, this.currentFocus);
-  }
-
-  moveFocus(cb) {
-    const {openMenus, currentFocus} = this;
-    const currentMenu = openMenus[openMenus.length - 1];
-    return this.withCurrentFocus(
-      cb(currentMenu.menu.items, currentFocus)
-    );
-  }
-
-  openRoot(menu) {
-    return this
-      .withOpenMenus([new OpenMenu(menu, null)])
-      .withCurrentFocus(null);
-  }
-
-  openSubmenu(parentItem) {
-    // First, let's find which menu the item belongs to.
-    const {openMenus} = this;
-    const parentMenuIndex = openMenus.findIndex(
-      m => m.menu.contains(parentItem.self)
-    );
-    if (parentMenuIndex === -1) {
-      if (process.env.NODE_ENV === 'development') {
-        // eslint-disable-next-line no-console
-        console.error('Cannot open an item that is not in the current stack:', {
-          item: parentItem,
-          stack: this,
-        });
-      }
-      return this;
-    }
-
-    // Close every menu that's deeper in the stack than the item's parent menu,
-    // then open the new submenu underneath the parent menu.
-    const newOpenMenus = openMenus.slice(0, parentMenuIndex + 1);
-    newOpenMenus.push(new OpenMenu(parentItem.submenu, parentItem));
-    let newStack = this.withOpenMenus(newOpenMenus);
-
-    return newStack;
-  }
-
-  activateCurrent(manager) {
-    const {currentFocus} = this;
-    if (currentFocus && !currentFocus.disabled) {
-      if (currentFocus.submenu) {
-        return this.openSubmenu(currentFocus);
-      } else {
-        nextTick(currentFocus.onActivate);
-        manager.addPhantom(currentFocus);
-        return this.closeAll();
-      }
-    }
-    return this;
-  }
-
-  closeAll() {
-    return new MenuStack();
-  }
-
-  closeOne() {
-    const {openMenus} = this;
-    const currentMenu = openMenus[openMenus.length - 1];
-    return this
-      .withOpenMenus(openMenus.slice(0, -1))
-      .withCurrentFocus(currentMenu.parentItem);
-  }
-
-  closeUpTo(openMenu) {
-    const {openMenus} = this;
-    const index = openMenus.indexOf(openMenu);
-    return this.withOpenMenus(openMenus.slice(0, index + 1));
-  }
 }
 
 // The time, in milliseconds, that the mouse has to stay still before menu
 // items are automatically opened/closed.
 const INTENT_TIME = 350;
 
-const KeyboardMap = new ShortcutMap(
+interface KeyCommand {
+  key: ShortcutType | null;
+  exec(stack: MenuStack, manager: MenuManager): MenuStack;
+}
+
+const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
     {
       key: Shortcut.parse('Escape'),
@@ -234,7 +121,7 @@ const KeyboardMap = new ShortcutMap(
     },
     {
       key: Shortcut.parse('ArrowRight'),
-      exec: (stack, manager) => {
+      exec(stack, manager) {
         const {currentFocus} = stack;
         if (currentFocus && currentFocus.submenu && !currentFocus.disabled) {
           manager.firstNeedsFocus = true;
@@ -270,30 +157,26 @@ const KeyboardMap = new ShortcutMap(
   cmd => cmd.key
 );
 
-export default class MenuManager extends Component {
-  constructor(props) {
-    super(props);
+export interface Props {
+  onClose: () => void;
+}
 
-    this.state = {
-      stack: new MenuStack(),
-      phantomProps: null,
-    };
+interface State {
+  stack: MenuStack;
+  phantomProps: PhantomProps | null;
+}
 
-    this.awaitIntent = this.awaitIntent.bind(this);
-    this.cancelIntent = this.cancelIntent.bind(this);
+export default class MenuManager extends Component<Props, State> {
+  public state: State = {
+    stack: new MenuStack(),
+    phantomProps: null,
+  };
 
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.handleMouseDown = this.handleMouseDown.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleWindowBlur = this.handleWindowBlur.bind(this);
+  public firstNeedsFocus: boolean = false;
+  private lastMouseTarget: Element | null = null;
+  private intentTimeoutId: number | undefined;
 
-    this.lastMouseTarget = null;
-    this.firstNeedsFocus = false;
-  }
-
-  open(rootMenu) {
+  public open(rootMenu: ManagedMenu) {
     const {stack} = this.state;
     if (stack.openMenus.length === 0) {
       this.setState({
@@ -302,7 +185,7 @@ export default class MenuManager extends Component {
     }
   }
 
-  addPhantom(item) {
+  public addPhantom(item: MenuItem) {
     const rect = item.self.getBoundingClientRect();
     const phantomProps = {
       top: rect.top,
@@ -321,7 +204,7 @@ export default class MenuManager extends Component {
     }, PhantomFadeTime);
   }
 
-  componentDidUpdate(_prevProps, prevState) {
+  public componentDidUpdate(_prevProps: Props, prevState: State) {
     const prevStack = prevState.stack;
     const nextStack = this.state.stack;
 
@@ -371,30 +254,31 @@ export default class MenuManager extends Component {
     window.removeEventListener('blur', this.handleWindowBlur);
   }
 
-  awaitIntent(cb) {
+  awaitIntent = (cb: (stack: MenuStack) => MenuStack) => {
     this.cancelIntent();
     this.intentTimeoutId = window.setTimeout(() => {
       const stack = cb(this.state.stack);
       this.setState({stack});
     }, INTENT_TIME);
-  }
+  };
 
-  cancelIntent() {
+  cancelIntent = () => {
     if (this.intentTimeoutId) {
       window.clearTimeout(this.intentTimeoutId);
-      this.intentTimeoutId = null;
+      this.intentTimeoutId = undefined;
     }
-  }
+  };
 
-  handleMouseMove(e) {
+  private handleMouseMove = (e: SyntheticMouseEvent | MouseEvent) => {
     let {stack} = this.state;
     const {openMenus} = stack;
+    const target = e.target as Element;
 
     // Find the currently hovered menu, if any.
-    const currentMenu = openMenus.find(m => m.menu.contains(e.target));
+    const currentMenu = openMenus.find(m => m.menu.contains(target));
     if (currentMenu) {
       // We are somewhere inside the menu tree, so we need to Do Some Things™.
-      const currentItem = currentMenu.elemToItem(e.target);
+      const currentItem = currentMenu.elemToItem(target);
 
       // Even if we aren't on top of an item (e.g. the mouse is on a separator
       // or the menu's padding area), we need wait a bit, as any open submenus
@@ -424,30 +308,30 @@ export default class MenuManager extends Component {
       stack = stack.withCurrentFocus(null);
     }
 
-    this.lastMouseTarget = e.target;
+    this.lastMouseTarget = target;
     if (stack !== this.state.stack) {
       this.setState({stack});
     }
   }
 
-  handleMouseDown(e) {
+  private handleMouseDown = (e: SyntheticMouseEvent | MouseEvent) => {
     // Mousedown anywhere outside the menu tree immediately closes everything.
     const {stack} = this.state;
     const {openMenus} = stack;
-    const isInsideMenu = openMenus.some(m => m.menu.contains(e.target));
+    const isInsideMenu = openMenus.some(m => m.menu.contains(e.target as Element));
     if (!isInsideMenu) {
       this.cancelIntent();
       this.setState({stack: stack.closeAll()});
     }
-  }
+  };
 
-  handleClick() {
+  private handleClick = () => {
     const {stack} = this.state;
     this.cancelIntent();
     this.setState({stack: stack.activateCurrent(this)});
-  }
+  };
 
-  handleKeyDown(e) {
+  private handleKeyDown = (e: KeyboardEvent) => {
     // The event must not escape the menu system.
     // TODO: left/right arrows for menu bars.
     e.stopPropagation();
@@ -463,9 +347,9 @@ export default class MenuManager extends Component {
       stack = command.exec(stack, this);
     }
     this.setState({stack});
-  }
+  };
 
-  handleKeyPress(e) {
+  private handleKeyPress = (e: KeyboardEvent) => {
     e.stopPropagation();
     e.preventDefault();
 
@@ -492,7 +376,9 @@ export default class MenuManager extends Component {
         // If there are multiple matching items, then continue after the
         // current item. That way you can cycle through items by typing
         // the same letter repeatedly.
-        const currentIndex = matchingItems.indexOf(currentFocus);
+        const currentIndex = currentFocus !== null
+          ? matchingItems.indexOf(currentFocus)
+          : -1;
         // If the current focus is not in the list, -1 + 1 = 0, so we end
         // up selecting the first item.
         const nextIndex = (currentIndex + 1) % matchingItems.length;
@@ -501,9 +387,9 @@ export default class MenuManager extends Component {
         });
       }
     }
-  }
+  };
 
-  handleWindowBlur() {
+  private handleWindowBlur = () => {
     if (process.env.NODE_ENV === 'development') {
       if (window.__CONDICT_DEV_KEEP_MENUS_OPEN__) {
         return;
@@ -513,9 +399,9 @@ export default class MenuManager extends Component {
     // When the window loses focus, the entire menu tree closes immediately.
     const {stack} = this.state;
     this.setState({stack: stack.closeAll()});
-  }
+  };
 
-  render() {
+  public render() {
     const {children} = this.props;
     const {stack, phantomProps} = this.state;
 
@@ -527,12 +413,3 @@ export default class MenuManager extends Component {
     </>;
   }
 }
-
-MenuManager.propTypes = {
-  onClose: PropTypes.func,
-  children: PropTypes.node,
-};
-
-MenuManager.defaultProps = {
-  onClose: null,
-};

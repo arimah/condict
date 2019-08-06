@@ -1,13 +1,13 @@
-const Placement = Object.freeze({
-  BELOW_LEFT: 'BELOW_LEFT',
-  BELOW_RIGHT: 'BELOW_RIGHT',
-  ABOVE_LEFT: 'ABOVE_LEFT',
-  ABOVE_RIGHT: 'ABOVE_RIGHT',
-  LEFT_TOP: 'LEFT_TOP',
-  LEFT_BOTTOM: 'LEFT_BOTTOM',
-  RIGHT_TOP: 'RIGHT_TOP',
-  RIGHT_BOTTOM: 'RIGHT_BOTTOM',
-});
+const enum Placement {
+  BELOW_LEFT = 'BELOW_LEFT',
+  BELOW_RIGHT = 'BELOW_RIGHT',
+  ABOVE_LEFT = 'ABOVE_LEFT',
+  ABOVE_RIGHT = 'ABOVE_RIGHT',
+  LEFT_TOP = 'LEFT_TOP',
+  LEFT_BOTTOM = 'LEFT_BOTTOM',
+  RIGHT_TOP = 'RIGHT_TOP',
+  RIGHT_BOTTOM = 'RIGHT_BOTTOM',
+}
 
 export default Placement;
 
@@ -19,7 +19,7 @@ const getViewport = () => ({
   height: document.documentElement.clientHeight,
 });
 
-const clamp = (value, min, max) =>
+const clamp = (value: number, min: number, max: number) =>
   value < min ? min :
   value > max ? max :
   value;
@@ -50,7 +50,11 @@ const clamp = (value, min, max) =>
 // left corner of the viewport. It is not possible in that case to scroll to
 // reveal more of the element; this may change in the future.
 
-export const placeElement = (elem, parentElem, placement) => {
+export const placeElement = (
+  elem: HTMLElement | SVGElement,
+  parentElem: Element,
+  placement: Placement
+) => {
   const elemRect = elem.getBoundingClientRect();
   const parentRect = parentElem.getBoundingClientRect();
   const viewport = getViewport();

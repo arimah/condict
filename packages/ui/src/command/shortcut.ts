@@ -1,4 +1,4 @@
-import {KeyboardEvent} from 'react';
+import {KeyboardEvent as SyntheticKeyboardEvent} from 'react';
 import platform from 'platform';
 
 // Keyboard shortcuts are *weird*.
@@ -25,15 +25,17 @@ import platform from 'platform';
 // You cannot combine the primary and secondary modifier. (macOS shortcuts
 // sometimes do that, but the behaviour is not portable.)
 
+type AnyKeyboardEvent = KeyboardEvent | SyntheticKeyboardEvent;
+
 const isOSX: boolean =
   platform.os != null &&
   platform.os.family != null &&
   /os\s*x/.test(platform.os.family);
 
 const hasPrimary = isOSX
-  ? (e: KeyboardEvent) => e.metaKey
-  : (e: KeyboardEvent) => e.ctrlKey;
-const hasSecondary = (e: KeyboardEvent) => e.ctrlKey;
+  ? (e: AnyKeyboardEvent) => e.metaKey
+  : (e: AnyKeyboardEvent) => e.ctrlKey;
+const hasSecondary = (e: AnyKeyboardEvent) => e.ctrlKey;
 
 const modifiersPattern = /(Primary|Secondary|Shift|Alt)\s*\+\s*/gi;
 
@@ -94,7 +96,7 @@ export class Shortcut {
     this.alt = fullConfig.alt;
   }
 
-  public testModifiers(keyEvent: KeyboardEvent) {
+  public testModifiers(keyEvent: AnyKeyboardEvent) {
     return (
       (
         this.primary === 'secondary' && hasSecondary(keyEvent) ||
@@ -266,7 +268,7 @@ export class ShortcutMap<C> {
     this.keyMap = buildKeyMap(commands, getShortcut);
   }
 
-  public get(keyEvent: KeyboardEvent): C | null {
+  public get(keyEvent: AnyKeyboardEvent): C | null {
     const commandsForKey = this.keyMap.get(keyEvent.key);
     if (!commandsForKey) {
       return null;

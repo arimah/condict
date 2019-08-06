@@ -3,7 +3,7 @@ export interface SaturationMap {
   low: number;
 }
 
-export enum Saturation {
+export const enum Saturation {
   HIGH = 'high',
   LOW = 'low',
 }

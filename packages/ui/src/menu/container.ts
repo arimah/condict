@@ -1,4 +1,4 @@
-let container = null;
+let container: HTMLDivElement | null = null;
 
 const getContainer = () => {
   if (container === null) {

@@ -1,25 +1,50 @@
-import React, {useState, useRef, useCallback} from 'react';
-import PropTypes from 'prop-types';
+import React, {
+  Ref,
+  RefAttributes,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
 
 import genId from '@condict/gen-id';
 
 import combineRefs from '../combine-refs';
 
+import {Menu, Props as MenuProps} from '.';
 import MenuManager from './manager';
+import ManagedMenu from './managed-menu';
 
-const MenuTrigger = props => {
+export interface Props {
+  menu: JSX.Element & {
+    ref?: Ref<ManagedMenu>;
+  };
+  onToggle: (open: boolean) => void;
+  children: JSX.Element & {
+    ref?: Ref<ChildType>;
+  };
+}
+
+export interface ChildType {
+  focus: () => void;
+}
+
+const MenuTrigger = (props: Props) => {
   const {menu, onToggle, children} = props;
 
   const [menuId] = useState(genId);
-  const menuRef = useRef();
-  const childRef = useRef();
-  const managerRef = useRef();
+  const menuRef = useRef<ManagedMenu>(null);
+  const childRef = useRef<ChildType>(null);
+  const managerRef = useRef<MenuManager>(null);
   const openMenu = useCallback(() => {
-    managerRef.current.open(menuRef.current);
-    onToggle(true);
+    if (managerRef.current && menuRef.current) {
+      managerRef.current.open(menuRef.current);
+      onToggle(true);
+    }
   }, [onToggle]);
   const handleClose = useCallback(() => {
-    childRef.current.focus();
+    if (childRef.current) {
+      childRef.current.focus();
+    }
     onToggle(false);
   }, [onToggle]);
 
@@ -35,18 +60,14 @@ const MenuTrigger = props => {
     ref: combineRefs(childRef, children.ref),
   });
 
+  const x = <Menu id='rawr' parentRef={{current: null}}/>;
+
   return <>
     {childWithMenu}
     <MenuManager onClose={handleClose} ref={managerRef}>
       {menuWithExtra}
     </MenuManager>
   </>;
-};
-
-MenuTrigger.propTypes = {
-  menu: PropTypes.element.isRequired,
-  onToggle: PropTypes.func,
-  children: PropTypes.element.isRequired,
 };
 
 MenuTrigger.defaultProps = {
