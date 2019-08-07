@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import * as S from './styles';
 
 export type Props = {
-  value: string | number;
-  children: never;
-} & S.Props & Omit<
+  value?: string | number;
+  children?: never;
+} & Partial<Omit<S.Props, 'autoSize'>> & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'children' | 'value' | 'type'
 >;
@@ -16,8 +16,8 @@ export const NumberInput = React.forwardRef<HTMLInputElement, Props>((
   ref
 ) => {
   const {
-    minimal,
-    borderRadius,
+    step = 1,
+    minimal = false,
     ...otherProps
   } = props;
 
@@ -25,18 +25,11 @@ export const NumberInput = React.forwardRef<HTMLInputElement, Props>((
     <S.Input
       {...otherProps}
       type='number'
+      step={1}
       minimal={minimal}
-      borderRadius={borderRadius}
       ref={ref}
     />
   );
 });
 
 NumberInput.displayName = 'NumberInput';
-
-NumberInput.defaultProps = {
-  value: '0',
-  step: 1,
-  minimal: false,
-  borderRadius: undefined,
-};

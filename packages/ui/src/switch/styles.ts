@@ -3,9 +3,10 @@ import {theme, ifProp} from 'styled-tools';
 
 import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
+import Intent from '../intent';
 
 export interface IntentProps {
-  intent: 'primary' | 'secondary' | 'danger';
+  intent: Intent;
 }
 
 export interface CheckedProps {
@@ -114,7 +115,7 @@ Switch.defaultProps = {
   theme: LightTheme,
 };
 
-export const Dot = styled.span<CheckedProps & DisabledProps>`
+export const Dot = styled.span<CheckedProps & DisabledProps & IntentProps>`
   position: absolute;
   top: 2px;
   left: ${ifProp('checked', '14px', '2px')};

@@ -1,12 +1,19 @@
 export {Button, Props as ButtonProps} from './button';
+export {LinkButton, Props as LinkButtonProps} from './button/link-button';
 export {Checkbox, Props as CheckboxProps} from './checkbox';
 export {ConlangFlag, Props as ConlangFlagProps} from './conlang-flag';
 export {GlobalStyles} from './global-styles';
-export {Menu, Props as MenuProps, MenuElement} from './menu';
+export {Menu, Props as MenuProps, MenuElement, MenuRef, MenuType} from './menu';
 export {default as MenuTrigger} from './menu/trigger';
 export {default as MenuManager} from './menu/manager';
 export {NonIdealState, Props as NonIdealStateProps} from './non-ideal-state';
-export {TextInput, TextInputProps, NumberInput, NumberInputProps} from './input';
+export {
+  TextInput,
+  TextInputProps,
+  TextInputType,
+  NumberInput,
+  NumberInputProps,
+} from './input';
 export {Pages, Props as PagesProps} from './pages';
 export {Radio, Props as RadioProps} from './radio';
 export {Select, Props as SelectProps} from './select';
@@ -17,6 +24,9 @@ export {Toolbar, Props as ToolbarProps} from './toolbar';
 export {BodyText} from './typography';
 
 export {
+  Command,
+  CommandSpec,
+  CommandSpecMap,
   CommandGroup,
   Props as CommandGroupProps,
   CommandConsumer,
@@ -40,4 +50,5 @@ export {
 export {default as DarkTheme} from './theme/dark';
 export {default as LightTheme} from './theme/light';
 
+export {default as Intent} from './intent';
 export {default as Placement, placeElement} from './placement';

@@ -10,7 +10,7 @@
   "scripts": {
     "check": "tsc --noEmit",
     "clean": "rimraf dist",
-    "compile": "tsc",
+    "compile": "tsc -p tsconfig.build.json",
     "build": "npm run clean && npm run compile",
     "dev": "cross-env NODE_ENV=development node dev/server.js",
     "prepublishOnly": "npm install && npm run build",

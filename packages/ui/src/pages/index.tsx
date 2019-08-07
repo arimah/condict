@@ -127,12 +127,12 @@ const addRelativeNav = (
 
 export interface Props {
   className?: string;
-  page: number;
-  totalPages: number;
-  context: number;
+  page?: number;
+  totalPages?: number;
+  context?: number;
   label?: string;
-  loading: boolean;
-  disabled: boolean;
+  loading?: boolean;
+  disabled?: boolean;
   onChange: (page: number) => void;
 }
 
@@ -142,12 +142,12 @@ export const Pages = React.forwardRef<HTMLElement, Props>((
 ) => {
   const {
     className,
-    page,
-    totalPages,
-    context,
+    page = 0,
+    totalPages = 1,
+    context = 2,
     label,
-    loading,
-    disabled,
+    loading = false,
+    disabled = false,
     onChange,
   } = props;
 
@@ -197,14 +197,3 @@ export const Pages = React.forwardRef<HTMLElement, Props>((
 });
 
 Pages.displayName = 'Pages';
-
-Pages.defaultProps = {
-  className: '',
-  page: 0,
-  totalPages: 1,
-  context: 2,
-  label: undefined,
-  loading: false,
-  disabled: false,
-  onChange: () => { },
-};

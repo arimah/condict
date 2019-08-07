@@ -3,23 +3,27 @@ import React, {MouseEventHandler, ReactNode, ButtonHTMLAttributes} from 'react';
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import {useCommand} from '../command';
+import Intent from '../intent';
 
 import * as S from './styles';
 
 export type Props = {
-  label: string;
-  type: 'button' | 'submit';
+  label?: string;
+  type?: 'button' | 'submit';
   command?: string | null;
-} & S.Props & Omit<
+} & Partial<S.Props> & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'type' | 'aria-label'
 >;
 
 export const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
   const {
-    label,
-    type,
+    label = '',
+    type = 'button',
     command: commandName,
+    slim = false,
+    minimal = false,
+    intent = Intent.DANGER,
     disabled,
     onClick,
     children,
@@ -34,6 +38,9 @@ export const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) =>
     <S.Button
       {...otherProps}
       aria-label={ariaLabel}
+      slim={slim}
+      minimal={minimal}
+      intent={intent}
       disabled={command !== null ? command.disabled : disabled}
       onClick={command !== null ? command.exec : onClick}
       type={type}
@@ -43,13 +50,5 @@ export const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) =>
     </S.Button>
   );
 });
-Button.displayName = 'Button';
 
-Button.defaultProps = {
-  minimal: false,
-  intent: 'primary',
-  slim: false,
-  label: '',
-  type: 'button',
-  command: undefined,
-};
+Button.displayName = 'Button';

@@ -7,11 +7,11 @@ export type HeadingLevel = 2 | 3 | 4 | 5 | 6;
 
 export type Props = {
   className?: string;
-  image: ReactNode;
+  image?: ReactNode;
   title: ReactNode;
-  headingLevel: HeadingLevel;
-  description: ReactNode;
-  action: ReactNode;
+  headingLevel?: HeadingLevel;
+  description?: ReactNode;
+  action?: ReactNode;
 } & S.Props;
 
 type HeadingTag = 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
@@ -35,7 +35,7 @@ export const NonIdealState = React.forwardRef<HTMLDivElement, Props>((
     minimal,
     image,
     title,
-    headingLevel,
+    headingLevel = 2,
     description,
     action,
   } = props;
@@ -55,12 +55,3 @@ export const NonIdealState = React.forwardRef<HTMLDivElement, Props>((
 });
 
 NonIdealState.displayName = 'NonIdealState';
-
-NonIdealState.defaultProps = {
-  className: '',
-  minimal: false,
-  image: undefined,
-  headingLevel: 2,
-  description: undefined,
-  action: undefined,
-};

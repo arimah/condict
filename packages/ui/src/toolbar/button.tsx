@@ -3,7 +3,7 @@ import React, {ButtonHTMLAttributes, useRef} from 'react';
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import {useCommand} from '../command';
-import {Shortcut, ShortcutGroup, ShortcutType} from '../command/shortcut';
+import {ShortcutType} from '../command/shortcut';
 import combineRefs from '../combine-refs';
 
 import {useManagedFocus} from './focus-manager';
@@ -11,13 +11,13 @@ import formatTooltip from './format-tooltip';
 import * as S from './styles';
 
 export type Props = {
-  label: string;
+  label?: string;
   checked?: boolean;
-  shortcut: ShortcutType | null;
+  shortcut?: ShortcutType | null;
   command?: string | null;
 } & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  'aria-label' | 'aria-pressed' | 'aria-keyshortcuts' | 'tabIndex' | 'title'
+  'aria-label' | 'aria-pressed' | 'aria-keyshortcuts' | 'tabIndex' | 'title' | 'type'
 >;
 
 const Button = React.forwardRef<HTMLButtonElement, Props>((
@@ -26,7 +26,7 @@ const Button = React.forwardRef<HTMLButtonElement, Props>((
 ) => {
   const {
     checked,
-    label,
+    label = '',
     shortcut,
     disabled,
     command: commandName,
@@ -70,11 +70,5 @@ const Button = React.forwardRef<HTMLButtonElement, Props>((
 });
 
 Button.displayName = 'Button';
-
-Button.defaultProps = {
-  checked: undefined,
-  label: '',
-  shortcut: null,
-};
 
 export default Button;

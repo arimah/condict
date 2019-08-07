@@ -8,19 +8,20 @@ import React, {
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import combineRefs from '../combine-refs';
+import Intent from '../intent';
 
 import * as S from './styles';
 
 export type Props = {
-  indeterminate: boolean;
-  label: string;
+  indeterminate?: boolean;
+  label?: string;
   labelProps?: Omit<
     LabelHTMLAttributes<HTMLLabelElement>,
     'className'
   >;
   inputRef?: Ref<HTMLInputElement>;
-  children: ReactNode;
-} & S.IntentProps & Omit<
+  children?: ReactNode;
+} & Partial<S.IntentProps> & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'aria-label' | 'type'
 >;
@@ -28,9 +29,9 @@ export type Props = {
 export const Checkbox = (props: Props) => {
   const {
     className,
-    intent,
+    intent = Intent.PRIMARY,
     checked,
-    indeterminate,
+    indeterminate = false,
     label,
     disabled,
     labelProps,
@@ -74,9 +75,4 @@ export const Checkbox = (props: Props) => {
       {renderedContent}
     </S.Label>
   );
-};
-
-Checkbox.defaultProps = {
-  intent: 'primary',
-  label: '',
 };

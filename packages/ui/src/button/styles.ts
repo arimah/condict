@@ -3,11 +3,12 @@ import {theme, ifProp} from 'styled-tools';
 
 import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
+import Intent from '../intent';
 
 export interface Props {
   slim: boolean;
   minimal: boolean;
-  intent: 'primary' | 'secondary' | 'danger';
+  intent: Intent;
 }
 
 export const ButtonStyle = css`

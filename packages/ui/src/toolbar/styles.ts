@@ -4,6 +4,10 @@ import {ifProp, theme} from 'styled-tools';
 import {transition} from '../theme';
 import LightTheme from '../theme/light';
 
+export interface ButtonProps {
+  checked?: boolean;
+}
+
 export const Toolbar = styled.div.attrs({
   role: 'toolbar',
 })`
@@ -39,8 +43,7 @@ Group.defaultProps = {
 
 export const Button = styled.button.attrs({
   type: 'button' as 'button' | 'submit' | 'reset' | undefined, // boo
-  checked: false as boolean,
-})`
+})<ButtonProps>`
   flex: none;
   padding: 6px 8px;
   font: inherit;

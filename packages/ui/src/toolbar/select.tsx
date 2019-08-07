@@ -15,7 +15,7 @@ const handleKeyDown: KeyboardEventHandler = e => {
 };
 
 export type Props = {
-  label: string;
+  label?: string;
 } & Omit<SelectProps, 'minimal' | 'onKeyDown' | 'tabIndex'>;
 
 const Select = React.forwardRef<HTMLSelectElement, Props>((
@@ -44,9 +44,5 @@ const Select = React.forwardRef<HTMLSelectElement, Props>((
 });
 
 Select.displayName = 'Select';
-
-Select.defaultProps = {
-  label: '',
-};
 
 export default Select;

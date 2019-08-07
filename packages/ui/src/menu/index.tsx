@@ -11,8 +11,8 @@ import Separator from './separator';
 export interface Props {
   id?: string;
   name?: string;
-  placement: Placement;
-  parentRef: RefObject<Element>;
+  placement?: Placement;
+  parentRef?: RefObject<Element>;
   children: ReactNode;
 }
 
@@ -20,15 +20,35 @@ export type MenuElement = JSX.Element & {
   ref?: Ref<ManagedMenu>;
 };
 
+export type MenuRef = Ref<ManagedMenu>;
+
+export type MenuType = ManagedMenu;
+
 export const Menu = Object.assign(
   React.forwardRef<ManagedMenu, Props>((
     props: Props,
     ref
   ) => {
-    const {children, ...otherProps} = props;
+    const {
+      children,
+      placement = Placement.BELOW_LEFT,
+      parentRef,
+      ...otherProps
+    } = props;
+
+    if (!parentRef) {
+      throw new Error('Menu must be mounted with a parentRef. Use a MenuTrigger to assign it automatically.');
+    }
+
     const stack = useStack();
     return (
-      <ManagedMenu {...otherProps} stack={stack} ref={ref}>
+      <ManagedMenu
+        {...otherProps}
+        placement={placement}
+        parentRef={parentRef}
+        stack={stack}
+        ref={ref}
+      >
         {children}
       </ManagedMenu>
     );
@@ -37,10 +57,7 @@ export const Menu = Object.assign(
     Item,
     CheckItem,
     Separator,
-    defaultProps: {
-      placement: Placement.BELOW_LEFT,
-    },
   }
 );
-Menu.displayName = 'Menu';
 
+Menu.displayName = 'Menu';

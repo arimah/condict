@@ -6,7 +6,7 @@ import LightTheme from '../theme/light';
 
 export interface Props {
   borderRadius?: number;
-  minimal: boolean;
+  minimal?: boolean;
 }
 
 export const Wrapper = styled.span`
@@ -57,11 +57,14 @@ Select.defaultProps = {
   theme: LightTheme,
 };
 
+export interface DisabledProps {
+  disabled?: boolean;
+}
+
 export const Arrow = styled.svg.attrs({
-  disabled: false as boolean,
   width: '8',
   height: '8',
-})`
+})<DisabledProps>`
   display: block;
   position: absolute;
   top: 50%;

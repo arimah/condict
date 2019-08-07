@@ -3,6 +3,7 @@ import {ifProp, theme} from 'styled-tools';
 
 import LightTheme from '../theme/light';
 import {Button} from '../button';
+import Intent from '../intent';
 
 export interface DisabledProps {
   disabled: boolean;
@@ -44,10 +45,8 @@ export const Page = styled(Button).attrs({
   type: 'button',
   slim: false,
   minimal: true,
-  intent: 'secondary',
-  current: false as boolean,
-  isLoading: false as boolean,
-})`
+  intent: Intent.SECONDARY as Intent,
+})<PageProps>`
   display: block;
   padding: 6px 4px;
   min-width: 36px;

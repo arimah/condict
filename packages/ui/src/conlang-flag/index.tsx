@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export interface Props {
-  className: string;
-  width: number;
-  height: number;
+  className?: string;
+  width?: number;
+  height?: number;
 }
 
 export const ConlangFlag = React.forwardRef<SVGSVGElement, Props>((
-  {className, width, height}: Props,
+  {className, width = 94, height = 58}: Props,
   ref
 ) =>
   <svg
@@ -41,9 +41,3 @@ export const ConlangFlag = React.forwardRef<SVGSVGElement, Props>((
 );
 
 ConlangFlag.displayName = 'ConlangFlag';
-
-ConlangFlag.defaultProps = {
-  className: '',
-  width: 94,
-  height: 58,
-};

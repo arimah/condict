@@ -1,6 +1,8 @@
 import {css} from 'styled-components';
 import {theme} from 'styled-tools';
 
+import Intent from '../intent';
+
 export interface Theme {
   readonly dark: boolean;
   readonly primary: IntentTheme;
@@ -149,7 +151,7 @@ export const extendTheme = (baseTheme: Theme, newTheme: PartialTheme) => {
 export const createTheme = (theme: PartialTheme) => extendTheme(DefaultTheme, theme);
 
 export interface IntentProps {
-  intent: 'primary' | 'secondary' | 'danger' | 'general';
+  intent: Intent;
   theme: Theme;
 }
 

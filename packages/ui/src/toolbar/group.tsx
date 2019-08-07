@@ -5,7 +5,7 @@ import * as S from './styles';
 export type Props = {
   name?: string;
   children: ReactNode;
-} & HTMLAttributes<HTMLDivElement>;
+} & Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'>;
 
 const Group = React.forwardRef<HTMLDivElement, Props>((
   props: Props,
@@ -27,10 +27,7 @@ const Group = React.forwardRef<HTMLDivElement, Props>((
     </S.Group>
   );
 });
-Group.displayName = 'Group';
 
-Group.defaultProps = {
-  name: undefined,
-};
+Group.displayName = 'Group';
 
 export default Group;

@@ -3,9 +3,10 @@ import {theme, ifProp} from 'styled-tools';
 
 import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
+import Intent from '../intent';
 
 export interface IntentProps {
-  intent: 'primary' | 'secondary' | 'danger';
+  intent: Intent;
 }
 
 export interface DisabledProps {

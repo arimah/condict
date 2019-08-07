@@ -3,23 +3,25 @@ import PropTypes from 'prop-types';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 
+import Intent from '../intent';
+
 import * as S from './styles';
 
 export type Props = {
-  label: string;
+  label?: string;
   labelProps?: Omit<
     LabelHTMLAttributes<HTMLLabelElement>,
     'className'
   >;
-} & S.IntentProps & Omit<
+} & Partial<S.IntentProps> & Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  ''
+  'aria-label' | 'aria-pressed' | 'role'
 >;
 
 export const Switch = (props: Props) => {
   const {
     className,
-    intent,
+    intent = Intent.PRIMARY,
     checked,
     label,
     disabled,
@@ -63,9 +65,4 @@ export const Switch = (props: Props) => {
       {renderedContent}
     </S.Label>
   );
-};
-
-Switch.defaultProps = {
-  intent: 'primary',
-  label: '',
 };

@@ -5,14 +5,14 @@ import * as S from './styles';
 
 export interface Props {
   className?: string;
-  size: number;
+  size?: number;
 }
 
 export const Spinner = React.forwardRef<HTMLSpanElement, Props>((
   props: Props,
   ref
 ) => {
-  const {className, size} = props;
+  const {className, size = 24} = props;
 
   const sliceStyle = {
     borderWidth: Math.ceil(Math.min(25, size / 8)),
@@ -32,8 +32,3 @@ export const Spinner = React.forwardRef<HTMLSpanElement, Props>((
 });
 
 Spinner.displayName = 'Spinner';
-
-Spinner.defaultProps = {
-  className: '',
-  size: 24,
-};

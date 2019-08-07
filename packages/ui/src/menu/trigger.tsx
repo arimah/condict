@@ -10,15 +10,13 @@ import genId from '@condict/gen-id';
 
 import combineRefs from '../combine-refs';
 
-import {Menu, Props as MenuProps} from '.';
+import {Menu, Props as MenuProps, MenuElement} from '.';
 import MenuManager from './manager';
 import ManagedMenu from './managed-menu';
 
 export interface Props {
-  menu: JSX.Element & {
-    ref?: Ref<ManagedMenu>;
-  };
-  onToggle: (open: boolean) => void;
+  menu: MenuElement;
+  onToggle?: (open: boolean) => void;
   children: JSX.Element & {
     ref?: Ref<ChildType>;
   };
@@ -28,8 +26,14 @@ export interface ChildType {
   focus: () => void;
 }
 
+const DefaultOnToggle = () => { };
+
 const MenuTrigger = (props: Props) => {
-  const {menu, onToggle, children} = props;
+  const {
+    menu,
+    onToggle = DefaultOnToggle,
+    children,
+  } = props;
 
   const [menuId] = useState(genId);
   const menuRef = useRef<ManagedMenu>(null);
@@ -60,18 +64,12 @@ const MenuTrigger = (props: Props) => {
     ref: combineRefs(childRef, children.ref),
   });
 
-  const x = <Menu id='rawr' parentRef={{current: null}}/>;
-
   return <>
     {childWithMenu}
     <MenuManager onClose={handleClose} ref={managerRef}>
       {menuWithExtra}
     </MenuManager>
   </>;
-};
-
-MenuTrigger.defaultProps = {
-  onToggle: () => { },
 };
 
 export default MenuTrigger;

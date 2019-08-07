@@ -12,11 +12,11 @@ import formatTooltip from './format-tooltip';
 import * as S from './styles';
 
 export type Props = {
-  label: string;
+  label?: string;
   menu: MenuElement;
 } & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  'aria-label'
+  'aria-label' | 'tabIndex' | 'title' | 'type'
 >;
 
 const MenuButton = React.forwardRef<HTMLButtonElement, Props>((
@@ -24,7 +24,7 @@ const MenuButton = React.forwardRef<HTMLButtonElement, Props>((
   ref
 ) => {
   const {
-    label,
+    label = '',
     menu,
     children,
     ...otherProps
@@ -53,11 +53,5 @@ const MenuButton = React.forwardRef<HTMLButtonElement, Props>((
 });
 
 MenuButton.displayName = 'MenuButton';
-
-MenuButton.defaultProps = {
-  className: '',
-  disabled: false,
-  label: '',
-};
 
 export default MenuButton;

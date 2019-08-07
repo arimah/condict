@@ -11,14 +11,16 @@ import {useNearestMenu} from './context';
 
 export interface Props {
   label: string;
-  icon: ReactNode;
+  icon?: ReactNode;
   shortcut?: ShortcutType | null;
-  checked: boolean;
-  radio: boolean;
-  disabled: boolean;
+  checked?: boolean;
+  radio?: boolean;
+  disabled?: boolean;
   command?: string | null;
-  onActivate: () => void;
+  onActivate?: () => void;
 }
+
+const DefaultOnActivate = () => {};
 
 const CheckItem = React.forwardRef<HTMLDivElement, Props>((
   props: Props,
@@ -28,11 +30,11 @@ const CheckItem = React.forwardRef<HTMLDivElement, Props>((
     label,
     icon,
     shortcut,
-    checked,
-    radio,
-    disabled,
+    checked = false,
+    radio = false,
+    disabled = false,
     command: commandName,
-    onActivate,
+    onActivate = DefaultOnActivate,
   } = props;
 
   const command = useCommand(commandName);
@@ -85,13 +87,6 @@ const CheckItem = React.forwardRef<HTMLDivElement, Props>((
 });
 
 CheckItem.displayName = 'CheckItem';
-
-CheckItem.defaultProps = {
-  checked: false,
-  radio: false,
-  disabled: false,
-  onActivate: () => { },
-};
 
 interface PhantomProps {
   icon: ReactNode;

@@ -3,14 +3,15 @@ import React, {MouseEventHandler, ReactNode, AnchorHTMLAttributes} from 'react';
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import {useCommand} from '../command';
+import Intent from '../intent';
 
 import * as S from './styles';
 
 export type Props = {
-  label: string;
+  label?: string;
   href: string;
   command?: string | null;
-} & S.Props & Omit<
+} & Partial<S.Props> & Omit<
   AnchorHTMLAttributes<HTMLAnchorElement>,
   'aria-label' | 'href' | 'role' | 'type'
 >;
@@ -26,6 +27,9 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref
   const {
     label,
     command: commandName,
+    slim = false,
+    minimal = false,
+    intent = Intent.PRIMARY,
     onClick,
     children,
     ...otherProps
@@ -40,6 +44,9 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref
       {...otherProps}
       role='button'
       aria-label={ariaLabel}
+      slim={slim}
+      minimal={minimal}
+      intent={intent}
       onClick={
         command !== null
           ? (command.disabled ? cancelClickEvent : command.exec)
@@ -51,12 +58,5 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref
     </S.Link>
   );
 });
-LinkButton.displayName = 'LinkButton';
 
-LinkButton.defaultProps = {
-  minimal: false,
-  intent: 'primary',
-  slim: false,
-  label: '',
-  command: undefined,
-};
+LinkButton.displayName = 'LinkButton';

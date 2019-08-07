@@ -58,10 +58,9 @@ export const Select = React.forwardRef<HTMLSelectElement, Props>((
   const {
     className,
     options,
-    minimal,
-    disabled,
-    borderRadius,
+    disabled = false,
     children,
+    minimal = false,
     ...otherProps
   } = props;
 
@@ -71,7 +70,6 @@ export const Select = React.forwardRef<HTMLSelectElement, Props>((
         {...otherProps}
         minimal={minimal}
         disabled={disabled}
-        borderRadius={borderRadius}
         ref={ref}
       >
         {renderOptions(children, options)}
@@ -84,8 +82,3 @@ export const Select = React.forwardRef<HTMLSelectElement, Props>((
 });
 
 Select.displayName = 'Select';
-
-Select.defaultProps = {
-  minimal: false,
-  disabled: false,
-};

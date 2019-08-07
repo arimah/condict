@@ -46,7 +46,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
   cmd => cmd.key
 );
 
-export type GroupProps = Omit<GroupBaseProps, 'onKeyDown'>;
+export type GroupProps = Omit<GroupBaseProps, 'onKeyDown' | 'role'>;
 
 export const RadioGroup = React.forwardRef<HTMLDivElement, GroupProps>((
   props: GroupProps,
@@ -82,13 +82,13 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, GroupProps>((
 RadioGroup.displayName = 'RadioGroup';
 
 export type Props = {
-  checked: boolean;
-  label: string;
-  shortcut: ShortcutType | null;
+  checked?: boolean;
+  label?: string;
+  shortcut?: ShortcutType | null;
   command?: string | null;
 } & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  'aria-checked' | 'aria-keyshortcuts' | 'aria-label' | 'role' | 'tabIndex'
+  'aria-checked' | 'aria-keyshortcuts' | 'aria-label' | 'role' | 'tabIndex' | 'title'
 >;
 
 const RadioButton = React.forwardRef<HTMLButtonElement, Props>((
@@ -96,8 +96,8 @@ const RadioButton = React.forwardRef<HTMLButtonElement, Props>((
   ref
 ) => {
   const {
-    checked,
-    label,
+    checked = false,
+    label = '',
     shortcut,
     disabled,
     command: commandName,
@@ -119,7 +119,7 @@ const RadioButton = React.forwardRef<HTMLButtonElement, Props>((
       {...otherProps}
       role='radio'
       aria-label={ariaLabel}
-      aria-checked={String(checked) as 'true' | 'false'}
+      aria-checked={checked ? 'true' : 'false'}
       checked={checked}
       aria-keyshortcuts={
         effectiveShortcut
@@ -138,11 +138,5 @@ const RadioButton = React.forwardRef<HTMLButtonElement, Props>((
 });
 
 RadioButton.displayName = 'RadioButton';
-
-RadioButton.defaultProps = {
-  checked: false,
-  label: '',
-  shortcut: null,
-};
 
 export default RadioButton;

@@ -93,15 +93,16 @@ function getContextValue(
 
 export interface Props {
   commands: CommandSpecMap;
-  className: string;
-  disabled: boolean;
-  onExec: (cmd: Command) => void;
+  className?: string;
+  disabled?: boolean;
+  onExec?: (cmd: Command) => void;
   onKeyDown?: KeyboardEventHandler<HTMLElement> | null;
   children: ReactNode;
 }
 
 const EmptyKeyMap = new ShortcutMap<Command>([], () => null);
 const EmptyCommandMap = new Map<string, Command>();
+const DefaultOnExec = (cmd: Command) => cmd.exec();
 
 export function CommandGroup<
   E extends keyof JSX.IntrinsicElements | React.ComponentType<unknown> = 'div'
@@ -112,9 +113,9 @@ export function CommandGroup<
 ) {
   const {
     as,
-    disabled,
     commands,
-    onExec,
+    disabled = false,
+    onExec = DefaultOnExec,
     onKeyDown,
     children,
     // className deliberately included here
@@ -163,14 +164,6 @@ export function CommandGroup<
     </Context.Provider>
   );
 }
-
-CommandGroup.defaultProps = {
-  className: '',
-  disabled: false,
-  onExec: (cmd: Command) => cmd.exec(),
-  onKeyDown: null,
-  children: null,
-};
 
 const getCommand = (
   name: string,

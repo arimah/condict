@@ -11,17 +11,19 @@ import React, {
 import {getContentAndLabel} from '@condict/a11y-utils';
 import genId from '@condict/gen-id';
 
+import Intent from '../intent';
+
 import * as S from './styles';
 
 export type Props = {
-  label: string;
+  label?: string;
   labelProps?: Omit<
     LabelHTMLAttributes<HTMLLabelElement>,
     'className'
   >;
   inputRef?: Ref<HTMLInputElement>;
-  children: ReactNode;
-} & S.IntentProps & Omit<
+  children?: ReactNode;
+} & Partial<S.IntentProps> & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'aria-label' | 'type'
 >;
@@ -40,7 +42,7 @@ export const RadioGroupContext = React.createContext<ContextValue>({namePrefix: 
 export const Radio = (props: Props) => {
   const {
     className,
-    intent,
+    intent = Intent.PRIMARY,
     checked,
     label,
     disabled,
@@ -86,11 +88,6 @@ export const Radio = (props: Props) => {
   );
 };
 
-Radio.defaultProps = {
-  intent: 'primary',
-  label: '',
-};
-
 const getContextValue = (name: string | undefined | null): ContextValue => ({
   namePrefix: name != null ? name : `${genId()}-`,
 });
@@ -102,10 +99,6 @@ const RadioGroup = ({name, children}: GroupProps) => {
       {children}
     </RadioGroupContext.Provider>
   );
-};
-
-RadioGroup.defaultProps = {
-  name: null,
 };
 
 Radio.Group = RadioGroup;

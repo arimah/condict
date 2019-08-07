@@ -13,13 +13,15 @@ import {StackContext, useNearestMenu} from './context';
 
 export interface Props {
   label: string;
-  icon: ReactNode;
+  icon?: ReactNode;
   shortcut?: ShortcutType | null;
-  disabled: boolean;
+  disabled?: boolean;
   command?: string | null;
-  onActivate: () => void;
-  children: ReactNode;
+  onActivate?: () => void;
+  children?: ReactNode;
 }
+
+const DefaultOnActivate = () => { };
 
 const Item = React.forwardRef<HTMLDivElement, Props>((
   props: Props,
@@ -29,10 +31,10 @@ const Item = React.forwardRef<HTMLDivElement, Props>((
     label,
     icon,
     shortcut,
-    disabled,
+    disabled = false,
     command: commandName,
     children,
-    onActivate,
+    onActivate = DefaultOnActivate,
   } = props;
 
   const command = useCommand(commandName);
@@ -97,12 +99,8 @@ const Item = React.forwardRef<HTMLDivElement, Props>((
     }
   </>;
 });
-Item.displayName = 'Item';
 
-Item.defaultProps = {
-  disabled: false,
-  onActivate: () => { },
-};
+Item.displayName = 'Item';
 
 interface PhantomProps {
   icon: ReactNode;

@@ -6,21 +6,13 @@ import combineRefs from '../combine-refs';
 
 import * as S from './styles';
 
-// TextInput.propTypes = {
-//   minimal: PropTypes.bool,
-//   autoSize: PropTypes.bool,
-//   borderRadius: PropTypes.string,
-//   inputRef: PropTypes.oneOfType([
-//     PropTypes.func,
-//     PropTypes.shape({current: PropTypes.any}),
-//   ]),
-//   onChange: PropTypes.func,
-// };
+export type Type = 'email' | 'password' | 'search' | 'tel' | 'text' | 'url';
 
 export type Props = {
-  value: string;
-  type: 'email' | 'password' | 'search' | 'tel' | 'text' | 'url';
-} & S.Props & Omit<
+  value?: string;
+  type?: Type;
+  children?: never;
+} & Partial<S.Props> & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'children' | 'value' | 'type'
 >;
@@ -30,10 +22,9 @@ export const TextInput = React.forwardRef<HTMLInputElement, Props>((
   ref
 ) => {
   const {
-    type,
-    minimal,
-    autoSize,
-    borderRadius,
+    type = 'text',
+    minimal = false,
+    autoSize = false,
     ...otherProps
   } = props;
 
@@ -58,18 +49,9 @@ export const TextInput = React.forwardRef<HTMLInputElement, Props>((
       type={type}
       minimal={minimal}
       autoSize={autoSize}
-      borderRadius={borderRadius}
       ref={combineRefs(inputRef, ref)}
     />
   );
 });
 
 TextInput.displayName = 'TextInput';
-
-TextInput.defaultProps = {
-  type: 'text',
-  value: '',
-  minimal: false,
-  autoSize: false,
-  borderRadius: undefined,
-};
