@@ -2,20 +2,29 @@
 import React from 'react';
 
 import Demo from '../demo';
-import {Switch, Select, Checkbox} from '../../src';
+import {Switch, Select, Checkbox, Intent} from '../../src';
+
+import {ComponentDemo} from './types';
 
 const Intents = [
-  {value: 'primary', name: 'primary'},
-  {value: 'secondary', name: 'secondary'},
-  {value: 'danger', name: 'danger'},
+  {value: 'primary', name: Intent.PRIMARY},
+  {value: 'secondary', name: Intent.SECONDARY},
+  {value: 'danger', name: Intent.DANGER},
 ];
 
-export default Object.freeze({
+export interface State {
+  checked1: boolean;
+  checked2: boolean;
+  intent: Intent;
+  disabled: boolean;
+}
+
+const demo: ComponentDemo<State> = {
   name: 'Switch',
   initialState: {
     checked1: false,
     checked2: true,
-    intent: 'primary',
+    intent: Intent.PRIMARY,
     disabled: false,
   },
   controls: (state, setState, toggleState) => [
@@ -23,7 +32,7 @@ export default Object.freeze({
       Intent: <Select
         value={state.intent}
         options={Intents}
-        onChange={e => setState({intent: e.target.value})}
+        onChange={e => setState({intent: e.target.value as Intent})}
       />
     </label>,
     <Checkbox
@@ -54,4 +63,6 @@ export default Object.freeze({
         />
       </Demo.Row>
     </Demo.List>,
-});
+};
+
+export default demo;

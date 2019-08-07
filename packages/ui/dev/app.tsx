@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
+import React, {Component, ChangeEvent} from 'react';
 import ReactDOM from 'react-dom';
 import {ThemeProvider} from 'styled-components';
 
 import {
   Button,
   Switch,
+  Intent,
   DarkTheme,
   LightTheme,
   GlobalStyles as ComponentStyles,
@@ -14,17 +15,21 @@ import ComponentDemos from './components';
 
 import * as S from './styles';
 
-const InitialSettings = {
+interface Settings {
+  [key: string]: any;
+}
+
+const InitialSettings: Settings = {
   darkTheme: false,
 };
 
 const SettingsKey = 'uiComponentsSettings';
 
-const importSettings = settings => ComponentDemos.reduce(
+const importSettings = (settings: Settings) => ComponentDemos.reduce(
   (settings, demo) => {
     const demoState = {
       ...demo.initialState,
-      ...settings[demo.name],
+      ...settings[demo.name] as any,
     };
     return {
       ...settings,
@@ -39,7 +44,7 @@ const importSettings = settings => ComponentDemos.reduce(
   }
 );
 
-const readSettings = () => {
+const readSettings = (): Settings => {
   let settings = InitialSettings;
   try {
     const settingsJson = localStorage[SettingsKey];
@@ -53,7 +58,7 @@ const readSettings = () => {
   return importSettings(settings);
 };
 
-const exportSettings = settings => ComponentDemos.reduce(
+const exportSettings = (settings: Settings) => ComponentDemos.reduce(
   (settings, demo) =>
     demo.exportState
       ? {
@@ -64,7 +69,7 @@ const exportSettings = settings => ComponentDemos.reduce(
   settings
 );
 
-const writeSettings = settings => {
+const writeSettings = (settings: Settings) => {
   try {
     settings = exportSettings(settings);
     const settingsJson = JSON.stringify(settings);
@@ -75,40 +80,33 @@ const writeSettings = settings => {
   }
 };
 
-class App extends Component {
-  constructor() {
-    super();
+interface State {
+  settings: Settings;
+}
 
-    this.state = {
-      settings: readSettings(),
-    };
+class App extends Component<{}, State> {
+  state: State = {
+    settings: readSettings(),
+  };
 
-    this.saveSettings = this.saveSettings.bind(this);
-    this.changeSetting = this.changeSetting.bind(this);
-    this.handleToggleDarkTheme = this.handleToggleDarkTheme.bind(this);
-    this.handleResetAll = this.handleResetAll.bind(this);
-    this.handleSetDemoState = this.handleSetDemoState.bind(this);
-    this.handleToggleDemoState = this.handleToggleDemoState.bind(this);
-  }
-
-  saveSettings() {
+  private saveSettings = () => {
     writeSettings(this.state.settings);
-  }
+  };
 
-  changeSetting(key, value) {
+  private changeSetting = (key: string, value: any) => {
     const {settings} = this.state;
     const newSettings = {
       ...settings,
       [key]: value,
     };
     this.setState({settings: newSettings}, this.saveSettings);
-  }
+  };
 
-  handleToggleDarkTheme(e) {
+  private handleToggleDarkTheme = (e: ChangeEvent<HTMLInputElement>) => {
     this.changeSetting('darkTheme', e.target.checked);
-  }
+  };
 
-  handleResetAll() {
+  private handleResetAll = () => {
     const {darkTheme} = this.state.settings;
     this.setState({
       settings: {
@@ -116,26 +114,26 @@ class App extends Component {
         darkTheme,
       },
     }, this.saveSettings);
-  }
+  };
 
-  handleSetDemoState(demoName, partialState) {
+  private handleSetDemoState = (demoName: string, partialState: any) => {
     const state = this.state.settings[demoName];
     this.changeSetting(demoName, {
       ...state,
       ...partialState,
     });
-  }
+  };
 
-  handleToggleDemoState(demoName, key) {
+  private handleToggleDemoState = (demoName: string, key: string) => {
     const state = this.state.settings[demoName];
     const newState = {
       ...state,
       [key]: !state[key],
     };
     this.changeSetting(demoName, newState);
-  }
+  };
 
-  render() {
+  public render() {
     const {settings} = this.state;
 
     return (
@@ -145,13 +143,13 @@ class App extends Component {
 
           <S.Group>
             <Switch
-              intent='secondary'
+              intent={Intent.SECONDARY}
               checked={settings.darkTheme}
               label='Dark theme'
               onChange={this.handleToggleDarkTheme}
             />
             <Button
-              intent='secondary'
+              intent={Intent.SECONDARY}
               slim
               label='Reset all components'
               onClick={this.handleResetAll}

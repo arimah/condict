@@ -4,11 +4,19 @@ import styled from 'styled-components';
 
 import {TagInput, Checkbox} from '../../src';
 
+import {ComponentDemo} from './types';
+
 const TagInputWithWidth = styled(TagInput)`
   width: 400px;
 `;
 
-export default Object.freeze({
+export interface State {
+  disabled: boolean;
+  minimal: boolean;
+  tags: string[];
+}
+
+const demo: ComponentDemo<State> = {
   name: 'TagInput',
   initialState: {
     disabled: false,
@@ -40,4 +48,6 @@ export default Object.freeze({
       tags={tags}
       onChange={tags => setState({tags})}
     />,
-});
+};
+
+export default demo;

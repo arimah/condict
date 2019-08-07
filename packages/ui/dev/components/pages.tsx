@@ -3,7 +3,19 @@ import React from 'react';
 
 import {Pages, Checkbox, NumberInput} from '../../src';
 
-export default Object.freeze({
+import {ComponentDemo} from './types';
+
+export interface State {
+  disabled: boolean;
+  loading: boolean;
+  page: number;
+  totalPagesString: string;
+  totalPages: number;
+  contextString: string;
+  context: number;
+}
+
+const demo: ComponentDemo<State> = {
   name: 'Pages',
   initialState: {
     disabled: false,
@@ -33,13 +45,11 @@ export default Object.freeze({
         max={9999}
         step={1}
         onChange={e => {
+          const totalPages = e.target.valueAsNumber;
           const partialState = {
             totalPagesString: e.target.value,
+            totalPages: !Number.isNaN(totalPages) ? totalPages : state.totalPages,
           };
-          const totalPages = e.target.valueAsNumber;
-          if (!Number.isNaN(totalPages)) {
-            partialState.totalPages = totalPages;
-          }
           setState(partialState);
         }}
       />
@@ -52,13 +62,11 @@ export default Object.freeze({
         max={10}
         step={1}
         onChange={e => {
+          const context = e.target.valueAsNumber;
           const partialState = {
             contextString: e.target.value,
+            context: !Number.isNaN(context) ? context : state.context,
           };
-          const context = e.target.valueAsNumber;
-          if (!Number.isNaN(context)) {
-            partialState.context = context;
-          }
           setState(partialState);
         }}
       />
@@ -74,4 +82,6 @@ export default Object.freeze({
       context={context}
       onChange={newPage => setState({page: newPage})}
     />,
-});
+};
+
+export default demo;

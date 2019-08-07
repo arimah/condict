@@ -3,31 +3,54 @@ import PropTypes from 'prop-types';
 
 import genId from '@condict/gen-id';
 
+import {
+  ComponentDemo,
+  ControlsRenderFunc,
+  ContentRenderFunc,
+} from '../components/types';
+
 import * as S from './styles';
 
-class Demo extends PureComponent {
-  constructor() {
-    super();
+export interface Props {
+  name: string;
+  state: object;
+  controls?: ControlsRenderFunc<object>;
+  contents: ContentRenderFunc<object>;
+  alignX: 'center' | 'stretch';
+  alignY: 'center' | 'stretch';
+  onSetState: (demoName: string, partialState: object) => void;
+  onToggleState: (demoName: string, key: string) => void;
+}
 
-    this.state = {
-      error: null,
-    };
+export interface State {
+  error: Error | null;
+}
 
-    this.headingId = genId();
+class Demo extends PureComponent<Props, State> {
+  public static defaultProps = {
+    controls: undefined,
+    alignX: 'center',
+    alignY: 'center',
+  };
 
-    this.handleSetState = this.handleSetState.bind(this);
-    this.handleToggleState = this.handleToggleState.bind(this);
-  }
+  public static List = S.List;
+  public static Row = S.Row;
 
-  handleSetState(partialState) {
+  private headingId = genId();
+
+  public state: State = {
+    error: null,
+  };
+
+  private handleSetState = (partialState: object) => {
     this.props.onSetState(this.props.name, partialState);
-  }
+  };
 
-  handleToggleState(key) {
+  private handleToggleState = (key: string) => {
     this.props.onToggleState(this.props.name, key);
-  }
+  };
 
-  render() {
+  public render() {
     const {
       name,
       state,
@@ -43,7 +66,7 @@ class Demo extends PureComponent {
         <h2 id={this.headingId}>{name}</h2>
 
         {error ? (
-          <Error error={error}/>
+          <ErrorDisplay error={error}/>
         ) : (
           <InteractiveDemo
             state={state}
@@ -59,38 +82,25 @@ class Demo extends PureComponent {
     );
   }
 
-  componentDidCatch(_error, _info) {
+  public componentDidCatch(_error: Error, _info: unknown) {
   }
 
-  static getDerivedStateFromError(error) {
+  public static getDerivedStateFromError(error: Error) {
     return {error};
   }
 }
 
-Demo.propTypes = {
-  name: PropTypes.string.isRequired,
-  state: PropTypes.object.isRequired,
-  controls: PropTypes.func,
-  contents: PropTypes.func.isRequired,
-  alignX: PropTypes.oneOf(['center', 'stretch']),
-  alignY: PropTypes.oneOf(['center', 'stretch']),
-  onSetState: PropTypes.func.isRequired,
-  onToggleState: PropTypes.func.isRequired,
-};
+interface ErrorDisplayProps {
+  error: Error;
+}
 
-Demo.defaultProps = {
-  controls: null,
-  alignX: 'center',
-  alignY: 'center',
-};
-
-const Error = ({error}) =>
+const ErrorDisplay = ({error}: ErrorDisplayProps) =>
   <S.ErrorContainer>
     <S.ErrorMessage>{error.name}: {error.message}</S.ErrorMessage>
     <S.ErrorStack>{error.stack}</S.ErrorStack>
   </S.ErrorContainer>;
 
-Error.propTypes = {
+ErrorDisplay.propTypes = {
   error: PropTypes.shape({
     name: PropTypes.string,
     message: PropTypes.string,
@@ -98,11 +108,17 @@ Error.propTypes = {
   }).isRequired,
 };
 
-Demo.List = S.List;
+interface InteractiveDemoProps {
+  state: object;
+  controls?: ControlsRenderFunc<object>;
+  contents: ContentRenderFunc<object>;
+  alignX: 'center' | 'stretch';
+  alignY: 'center' | 'stretch';
+  onSetState: (partialState: object) => void;
+  onToggleState: (key: string) => void;
+}
 
-Demo.Row = S.Row;
-
-const InteractiveDemo = props => {
+const InteractiveDemo = (props: InteractiveDemoProps) => {
   const {
     state,
     controls,
@@ -129,22 +145,6 @@ const InteractiveDemo = props => {
       }
     </S.Interactive>
   );
-};
-
-InteractiveDemo.propTypes = {
-  state: PropTypes.object.isRequired,
-  controls: PropTypes.func,
-  contents: PropTypes.func.isRequired,
-  alignX: PropTypes.oneOf(['center', 'stretch']),
-  alignY: PropTypes.oneOf(['center', 'stretch']),
-  onSetState: PropTypes.func.isRequired,
-  onToggleState: PropTypes.func.isRequired,
-};
-
-InteractiveDemo.defaultProps = {
-  controls: null,
-  alignX: 'center',
-  alignY: 'center',
 };
 
 export default Demo;

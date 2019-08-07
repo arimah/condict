@@ -2,7 +2,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {TextInput, Checkbox, Select} from '../../src';
+import {TextInput, TextInputType, Checkbox, Select} from '../../src';
+
+import {ComponentDemo} from './types';
 
 const MaxWidthTextInput = styled(TextInput)`
   min-width: 100px;
@@ -18,7 +20,15 @@ const Types = [
   {value: 'url', name: 'url'},
 ];
 
-export default Object.freeze({
+export interface State {
+  type: TextInputType;
+  disabled: boolean;
+  minimal: boolean;
+  autoSize: boolean;
+  value: string;
+}
+
+const demo: ComponentDemo<State> = {
   name: 'TextInput',
   initialState: {
     type: 'text',
@@ -33,7 +43,7 @@ export default Object.freeze({
       <Select
         value={state.type}
         options={Types}
-        onChange={e => setState({type: e.target.value})}
+        onChange={e => setState({type: e.target.value as TextInputType})}
       />
     </label>,
     <Checkbox
@@ -63,4 +73,6 @@ export default Object.freeze({
       placeholder='Type here...'
       onChange={e => setState({value: e.target.value})}
     />,
-});
+};
+
+export default demo;

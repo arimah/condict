@@ -6,11 +6,15 @@ import {ifProp, theme} from 'styled-tools';
 import memoizeOne from 'memoize-one';
 
 import {
+  Command,
+  CommandSpecMap,
   CommandGroup,
   Button,
   Checkbox,
   LightTheme,
 } from '../../src';
+
+import {ComponentDemo, ToggleStateFunc} from './types';
 
 const Group = styled.div`
   padding: 16px;
@@ -23,7 +27,10 @@ const Group = styled.div`
   }
 `;
 
-const ResultDisplay = styled.div`
+const ResultDisplay = styled.div<{
+  italic?: boolean;
+  bold?: boolean;
+}>`
   font-style: ${ifProp('italic', 'italic')};
   font-weight: ${ifProp('bold', 'bold')};
 
@@ -40,16 +47,21 @@ Group.defaultProps = {
   theme: LightTheme,
 };
 
-class CommandDemo extends PureComponent {
-  constructor() {
-    super();
+interface Props {
+  state: State;
+  toggleState: ToggleStateFunc<State>;
+}
 
-    this.getOuterCommands = memoizeOne(this.getOuterCommands.bind(this));
-    this.getInnerCommands = memoizeOne(this.getInnerCommands.bind(this));
-    this.execCommand = cmd => this.props.toggleState(cmd.exec());
-  }
+export interface State {
+  outerDisabled: boolean;
+  innerDisabled: boolean;
+  italicOuter: boolean;
+  italicInner: boolean;
+  bold: boolean;
+}
 
-  getOuterCommands() {
+class CommandDemo extends PureComponent<Props> {
+  private getOuterCommands = memoizeOne((): CommandSpecMap => {
     return {
       toggleItalic: {
         shortcut: 'Primary+I i',
@@ -60,16 +72,18 @@ class CommandDemo extends PureComponent {
         exec: () => 'bold',
       },
     };
-  }
+  });
 
-  getInnerCommands() {
+  private getInnerCommands = memoizeOne((): CommandSpecMap => {
     return {
       toggleItalic: {
         shortcut: 'Primary+I i',
         exec: () => 'italicInner',
       },
     };
-  }
+  });
+
+  private execCommand = (cmd: Command) => this.props.toggleState(cmd.exec());
 
   render() {
     const {
@@ -136,18 +150,7 @@ class CommandDemo extends PureComponent {
   }
 }
 
-CommandDemo.propTypes = {
-  state: PropTypes.shape({
-    outerDisabled: PropTypes.bool.isRequired,
-    innerDisabled: PropTypes.bool.isRequired,
-    italicOuter: PropTypes.bool.isRequired,
-    italicInner: PropTypes.bool.isRequired,
-    bold: PropTypes.bool.isRequired,
-  }).isRequired,
-  toggleState: PropTypes.func.isRequired,
-};
-
-export default Object.freeze({
+const demo: ComponentDemo<State> = {
   name: 'Command',
   initialState: {
     outerDisabled: false,
@@ -169,10 +172,11 @@ export default Object.freeze({
     />,
   ],
   // eslint-disable-next-line react/display-name
-  contents: (state, setState, toggleState) =>
+  contents: (state, _setState, toggleState) =>
     <CommandDemo
       state={state}
-      setState={setState}
       toggleState={toggleState}
     />,
-});
+};
+
+export default demo;

@@ -8,6 +8,7 @@ import {
   Checkbox,
   Select,
 } from '../../src';
+import {ComponentDemo} from './types';
 
 const HeadingLevels = [
   {value: '2', name: '2'},
@@ -17,7 +18,15 @@ const HeadingLevels = [
   {value: '6', name: '6'},
 ];
 
-export default Object.freeze({
+export interface State {
+  minimal: boolean;
+  headingLevel: 2 | 3 | 4 | 5 | 6,
+  image: boolean;
+  description: boolean;
+  action: boolean;
+}
+
+const demo: ComponentDemo<State> = {
   name: 'NonIdealState',
   initialState: {
     minimal: false,
@@ -36,7 +45,7 @@ export default Object.freeze({
       Heading level: <Select
         value={String(state.headingLevel)}
         options={HeadingLevels}
-        onChange={e => setState({headingLevel: +e.target.value})}
+        onChange={e => setState({headingLevel: +e.target.value as 2 | 3 | 4 | 5 | 6})}
       />
     </label>,
     <Checkbox
@@ -69,4 +78,6 @@ export default Object.freeze({
       }
       action={action ? <Button label='Add a language'/> : undefined}
     />,
-});
+};
+
+export default demo;

@@ -3,13 +3,21 @@ import React from 'react';
 
 import {Select, Checkbox} from '../../src';
 
+import {ComponentDemo} from './types';
+
 const Options = [
   {value: 'a', name: 'Option A'},
   {value: 'b', name: 'Option B'},
   {value: 'c', name: 'Option C'},
 ];
 
-export default Object.freeze({
+export interface State {
+  disabled: boolean;
+  minimal: boolean;
+  value: string;
+}
+
+const demo: ComponentDemo<State> = {
   name: 'Select',
   initialState: {
     disabled: false,
@@ -37,4 +45,6 @@ export default Object.freeze({
       options={Options}
       onChange={e => setState({value: e.target.value})}
     />,
-});
+};
+
+export default demo;

@@ -15,7 +15,9 @@ import TextInputDemo from './text-input';
 import ToolbarDemo from './toolbar';
 import TypographyDemo from './typography';
 
-export default [
+import {ComponentDemo} from './types';
+
+const AllDemos: ComponentDemo<any>[] = [
   ButtonDemo,
   CheckboxDemo,
   CommandDemo,
@@ -32,4 +34,8 @@ export default [
   TextInputDemo,
   ToolbarDemo,
   TypographyDemo,
-].sort((a, b) => a.name.localeCompare(b.name, 'en'));
+];
+
+AllDemos.sort((a, b) => a.name.localeCompare(b.name, 'en'));
+
+export default AllDemos;

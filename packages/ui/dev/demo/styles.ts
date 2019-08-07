@@ -1,6 +1,11 @@
 import styled, {css} from 'styled-components';
 import {theme, switchProp} from 'styled-tools';
 
+export interface AlignProps {
+  alignX: 'center' | 'stretch';
+  alignY: 'center' | 'stretch';
+}
+
 export const List = styled.div`
   margin: 16px;
 `;
@@ -46,7 +51,7 @@ export const Interactive = styled.div`
 export const InteractiveContents = styled.div.attrs({
   role: 'group',
   'aria-label': 'Interactive example',
-})`
+})<AlignProps>`
   display: flex;
   flex: 1 1 auto;
   padding: 24px;

@@ -6,13 +6,15 @@ import genId from '@condict/gen-id';
 
 import {BodyText} from '../../src';
 
+import {ComponentDemo} from './types';
+
 const Main = styled(BodyText)`
   max-width: 50em;
 `;
 
 const randomHref = `#${genId()}`;
 
-export default Object.freeze({
+const demo: ComponentDemo<{}> = {
   name: 'Typography',
   initialState: {},
   // eslint-disable-next-line react/prop-types, react/display-name
@@ -60,4 +62,6 @@ export default Object.freeze({
         <a href='#visited'>Visited link (static href)</a>
       </p>
     </Main>,
-});
+};
+
+export default demo;

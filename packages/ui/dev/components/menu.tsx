@@ -15,6 +15,7 @@ import {
   Select,
   Checkbox,
 } from '../../src';
+import {ComponentDemo} from './types';
 
 const {Item, CheckItem, Separator} = Menu;
 
@@ -35,7 +36,19 @@ const SaveShortcut = Shortcut.parse('Primary+S s');
 const PrintShortcut = Shortcut.parse('Primary+P p');
 const CloseShortcut = Shortcut.parse('Primary+W w');
 
-export default Object.freeze({
+export interface State {
+  placement: Placement;
+  keepOpen: boolean;
+  // Checkable menu item states
+  lineStyle: 'dotted' | 'dashed' | 'solid';
+  printHeaders: boolean;
+  printFooters: boolean;
+  printPageNumbers: boolean;
+  printGridLines: boolean;
+  printGuides: boolean;
+}
+
+const demo: ComponentDemo<State> = {
   name: 'Menu',
   initialState: {
     placement: Placement.BELOW_LEFT,
@@ -57,7 +70,7 @@ export default Object.freeze({
       Placement: <Select
         value={state.placement}
         options={Placements}
-        onChange={e => setState({placement: e.target.value})}
+        onChange={e => setState({placement: e.target.value as Placement})}
       />
     </label>,
     <Checkbox
@@ -157,4 +170,6 @@ export default Object.freeze({
     >
       <Button label='Open menu'/>
     </MenuTrigger>,
-});
+};
+
+export default demo;

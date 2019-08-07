@@ -12,7 +12,17 @@ import IndentMoreIcon from 'mdi-react/FormatIndentIncreaseIcon';
 import IndentLessIcon from 'mdi-react/FormatIndentDecreaseIcon';
 import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
 
-import {Toolbar, Menu, Placement, Shortcut, Shortcuts} from '../../src';
+import {
+  Toolbar,
+  Menu,
+  MenuProps,
+  MenuType,
+  Placement,
+  Shortcut,
+  Shortcuts,
+} from '../../src';
+
+import {ComponentDemo, SetStateFunc, ToggleStateFunc} from './types';
 
 const {
   Button,
@@ -36,8 +46,24 @@ const BoldShortcut = Shortcut.parse('Primary+B b');
 const ItalicShortcut = Shortcut.parse('Primary+I i');
 const UnderlineShortcut = Shortcut.parse('Primary+U u');
 
+type Props = {
+  state: State;
+  setState: SetStateFunc<State>;
+  toggleState: ToggleStateFunc<State>;
+} & Omit<MenuProps, 'children'>;
+
+export interface State {
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  subscript: boolean;
+  superscript: boolean;
+  align: string;
+  blockStyle: string;
+}
+
 // eslint-disable-next-line react/display-name
-const MoreOptionsMenu = React.forwardRef(
+const MoreOptionsMenu = React.forwardRef<MenuType, Props>(
   // eslint-disable-next-line react/prop-types
   ({state, setState, toggleState, ...otherProps}, ref) =>
     <Menu {...otherProps} placement={Placement.BELOW_RIGHT} ref={ref}>
@@ -124,7 +150,7 @@ const MoreOptionsMenu = React.forwardRef(
     </Menu>
 );
 
-export default Object.freeze({
+const demo: ComponentDemo<State> = {
   name: 'Toolbar',
   initialState: {
     bold: false,
@@ -240,4 +266,6 @@ export default Object.freeze({
         <DotsVerticalIcon/>
       </MenuButton>
     </Toolbar>,
-});
+};
+
+export default demo;

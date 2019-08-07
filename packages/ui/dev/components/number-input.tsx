@@ -3,7 +3,15 @@ import React from 'react';
 
 import {NumberInput, Checkbox} from '../../src';
 
-export default Object.freeze({
+import {ComponentDemo} from './types';
+
+export interface State {
+  disabled: boolean;
+  minimal: boolean;
+  value: string;
+}
+
+const demo: ComponentDemo<State> = {
   name: 'NumberInput',
   initialState: {
     disabled: false,
@@ -32,4 +40,6 @@ export default Object.freeze({
       max={100}
       onChange={e => setState({value: e.target.value})}
     />,
-});
+};
+
+export default demo;

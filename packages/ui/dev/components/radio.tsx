@@ -2,21 +2,29 @@
 import React from 'react';
 
 import Demo from '../demo';
-import {Radio, Select, Checkbox, Button} from '../../src';
+import {Radio, Select, Checkbox, Button, Intent} from '../../src';
+
+import {ComponentDemo} from './types';
 
 const Intents = [
-  {value: 'primary', name: 'primary'},
-  {value: 'secondary', name: 'secondary'},
-  {value: 'danger', name: 'danger'},
+  {value: 'primary', name: Intent.PRIMARY},
+  {value: 'secondary', name: Intent.SECONDARY},
+  {value: 'danger', name: Intent.DANGER},
 ];
 
 const Options = ['1', '2', '3', '4'];
 
-export default Object.freeze({
+export interface State {
+  current: string | null;
+  intent: Intent;
+  disabled: boolean;
+}
+
+const demo: ComponentDemo<State> = {
   name: 'Radio',
   initialState: {
     current: '1',
-    intent: 'primary',
+    intent: Intent.PRIMARY,
     disabled: false,
   },
   controls: (state, setState, toggleState) => [
@@ -24,7 +32,7 @@ export default Object.freeze({
       Intent: <Select
         value={state.intent}
         options={Intents}
-        onChange={e => setState({intent: e.target.value})}
+        onChange={e => setState({intent: e.target.value as Intent})}
       />
     </label>,
     <Checkbox
@@ -34,7 +42,7 @@ export default Object.freeze({
     />,
     <Button
       slim
-      intent='secondary'
+      intent={Intent.SECONDARY}
       label='Deselect all'
       onClick={() => setState({current: null})}
     />,
@@ -57,4 +65,6 @@ export default Object.freeze({
         )}
       </Radio.Group>
     </Demo.List>,
-});
+};
+
+export default demo;

@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
 
+import {Checkbox, Select, Intent} from '../../src';
 import Demo from '../demo';
-import {Checkbox, Select} from '../../src';
+import {ComponentDemo} from './types';
 
 const Intents = [
   {value: 'primary', name: 'primary'},
@@ -10,10 +11,16 @@ const Intents = [
   {value: 'danger', name: 'danger'},
 ];
 
-export default Object.freeze({
+export interface State {
+  intent: Intent;
+  disabled: boolean;
+  checked: boolean[];
+}
+
+const demo: ComponentDemo<State> = {
   name: 'Checkbox',
   initialState: {
-    intent: 'primary',
+    intent: Intent.PRIMARY,
     disabled: false,
     checked: [true, false, false],
   },
@@ -22,7 +29,7 @@ export default Object.freeze({
       Intent: <Select
         value={state.intent}
         options={Intents}
-        onChange={e => setState({intent: e.target.value})}
+        onChange={e => setState({intent: e.target.value as Intent})}
       />
     </label>,
     <Checkbox
@@ -33,7 +40,7 @@ export default Object.freeze({
   ],
   // eslint-disable-next-line react/prop-types, react/display-name
   contents: ({intent, disabled, checked}, setState) => {
-    const checkedCount = checked.reduce((a, b) => a + b, 0);
+    const checkedCount = checked.reduce((a, b) => a + +b, 0);
     return (
       <Demo.List>
         <Demo.Row>
@@ -57,7 +64,7 @@ export default Object.freeze({
               checked={ch}
               label={`Option ${i + 1}`}
               onChange={() => {
-                const newChecked = [...checked];
+                const newChecked = checked.slice(0);
                 newChecked[i] = !ch;
                 setState({checked: newChecked});
               }}
@@ -67,4 +74,6 @@ export default Object.freeze({
       </Demo.List>
     );
   },
-});
+};
+
+export default demo;

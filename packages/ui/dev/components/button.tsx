@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
 
-import {Button, Checkbox, Select} from '../../src';
+import {Button, LinkButton, Checkbox, Select, Intent} from '../../src';
 import Demo from '../demo';
+import {ComponentDemo} from './types';
 
 const Intents = [
   {value: 'primary', name: 'primary'},
@@ -10,10 +11,17 @@ const Intents = [
   {value: 'danger', name: 'danger'},
 ];
 
-export default Object.freeze({
+export interface State {
+  intent: Intent;
+  disabled: boolean;
+  minimal: boolean;
+  slim: boolean;
+}
+
+const demo: ComponentDemo<State> = {
   name: 'Button',
   initialState: {
-    intent: 'primary',
+    intent: Intent.PRIMARY,
     disabled: false,
     minimal: false,
     slim: false,
@@ -23,7 +31,7 @@ export default Object.freeze({
       Intent: <Select
         value={state.intent}
         options={Intents}
-        onChange={e => setState({intent: e.target.value})}
+        onChange={e => setState({intent: e.target.value as Intent})}
       />
     </label>,
     <Checkbox
@@ -53,9 +61,8 @@ export default Object.freeze({
           slim={slim}
           label='Regular button'
         />
-        <Button
+        <LinkButton
           intent={intent}
-          disabled={disabled}
           minimal={minimal}
           slim={slim}
           label='Link button'
@@ -63,4 +70,6 @@ export default Object.freeze({
         />
       </Demo.Row>
     </Demo.List>,
-});
+};
+
+export default demo;

@@ -4,11 +4,18 @@ import styled from 'styled-components';
 
 import {Spinner, NumberInput} from '../../src';
 
+import {ComponentDemo} from './types';
+
 const BlockSpinner = styled(Spinner)`
   display: block;
 `;
 
-export default Object.freeze({
+export interface State {
+  sizeString: string;
+  size: number;
+}
+
+const demo: ComponentDemo<State> = {
   name: 'Spinner',
   initialState: {
     sizeString: '24',
@@ -23,13 +30,11 @@ export default Object.freeze({
         max={250}
         step={1}
         onChange={e => {
+          const size = e.target.valueAsNumber;
           const partialState = {
             sizeString: e.target.value,
+            size: !Number.isNaN(size) ? size : state.size,
           };
-          const size = e.target.valueAsNumber;
-          if (!Number.isNaN(size)) {
-            partialState.size = size;
-          }
           setState(partialState);
         }}
       />
@@ -37,4 +42,6 @@ export default Object.freeze({
   ],
   // eslint-disable-next-line react/prop-types, react/display-name
   contents: ({size}) => <BlockSpinner size={size}/>,
-});
+};
+
+export default demo;
