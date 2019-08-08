@@ -54,7 +54,7 @@ export default class CellEditor extends Component {
     // the selection to the end of the value, so the user can keep typing. The
     // default behaviour is to select the entire text, which obviously means
     // the user would type over the first character.
-    const {input} = this.inputRef.current;
+    const input = this.inputRef.current;
     input.focus();
     if (this.props.typedValue) {
       const dataLength = this.state.cell.data.customForm.length;

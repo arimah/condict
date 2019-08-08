@@ -3,7 +3,6 @@ import {ifProp} from 'styled-tools';
 
 import {
   makeColorFn,
-  Saturation,
   LightTheme,
 } from '@condict/ui';
 
@@ -13,10 +12,10 @@ export const stemColor = makeColorFn(291, {
 });
 
 // 'light' and 'dark' here mean for light and dark themes, respectively.
-const lightStemColor = stemColor(Saturation.high, 35);
-const disabledLightStemColor = stemColor(Saturation.low, 80);
-const darkStemColor = stemColor(Saturation.high, 65);
-const disabledDarkStemColor = stemColor(Saturation.low, 35);
+const lightStemColor = stemColor('high', 35);
+const disabledLightStemColor = stemColor('low', 80);
+const darkStemColor = stemColor('high', 65);
+const disabledDarkStemColor = stemColor('low', 35);
 
 export const InflectionStem = styled.span`
   color: ${ifProp('theme.dark',
@@ -34,10 +33,10 @@ const braceColor = makeColorFn(174, {
   low: 40,
 });
 
-const lightBraceColor = braceColor(Saturation.high, 35);
-const disabledLightBraceColor = braceColor(Saturation.low, 80);
-const darkBraceColor = braceColor(Saturation.high, 60);
-const disabledDarkBraceColor = braceColor(Saturation.low, 30);
+const lightBraceColor = braceColor('high', 35);
+const disabledLightBraceColor = braceColor('low', 80);
+const darkBraceColor = braceColor('high', 60);
+const disabledDarkBraceColor = braceColor('low', 30);
 
 export const EscapedBrace = styled.span`
   color: ${ifProp('theme.dark',

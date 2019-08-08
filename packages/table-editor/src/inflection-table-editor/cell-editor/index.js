@@ -212,7 +212,7 @@ export default class CellEditor extends PureComponent {
           onChange={this.handleTextChange}
           onFocus={this.handleInputFocus}
           onBlur={this.handleInputBlur}
-          inputRef={this.inputRef}
+          ref={this.inputRef}
         />
         {needIcons &&
           <S.CellIcons>
@@ -276,7 +276,7 @@ export default class CellEditor extends PureComponent {
                 : this.displayNameDescId
             }
             onChange={this.handleDisplayNameChange}
-            inputRef={this.displayNameRef}
+            ref={this.displayNameRef}
           />
         </S.DisplayNameLabel>
         {data.hasCustomDisplayName ? (
