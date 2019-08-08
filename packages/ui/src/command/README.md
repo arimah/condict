@@ -229,7 +229,7 @@ Constructs a new `Shortcut`. `fields` is an object with the following keys:
 
 ### `Shortcut.prototype.forEach`
 
-> `forEach(cb: (shortcut: Shortcut, index: number) => any)`
+> `forEach(cb: (shortcut: Shortcut, index: number) => void)`
 
 Passes the `Shortcut` and the value `0` into `cb`. The return value of `cb` is ignored.
 
@@ -312,7 +312,7 @@ Note that each value must be `Shortcut`, not a string. To parse an array of stri
 
 ### `ShortcutGroup.prototype.forEach`
 
-> `forEach(cb: (shortcut: Shortcut, index: number) => any)`
+> `forEach(cb: (shortcut: Shortcut, index: number) => void)`
 
 Passes each `Shortcut` in the group and its associated index into `cb`. The return value of `cb` is ignored.
 

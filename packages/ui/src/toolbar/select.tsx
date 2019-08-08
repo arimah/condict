@@ -1,0 +1,48 @@
+import React, {KeyboardEventHandler, useRef} from 'react';
+import PropTypes from 'prop-types';
+
+import {Select as RegularSelect, Props as SelectProps} from '../select';
+import combineRefs from '../combine-refs';
+
+import {useManagedFocus} from './focus-manager';
+
+const handleKeyDown: KeyboardEventHandler = e => {
+  // Override the toolbar's home/end keys, so we can use them
+  // to navigate the dropdown's options.
+  if (e.key === 'Home' || e.key === 'End') {
+    e.stopPropagation();
+  }
+};
+
+export type Props = {
+  label?: string;
+} & Omit<SelectProps, 'minimal' | 'onKeyDown' | 'tabIndex'>;
+
+const Select = React.forwardRef<HTMLSelectElement, Props>((
+  props: Props,
+  ref
+) => {
+  const {label, children, ...otherProps} = props;
+
+  const ownRef = useRef<HTMLSelectElement>(null);
+  const isCurrent = useManagedFocus(ownRef);
+
+  return (
+    <label>
+      {label}
+      <RegularSelect
+        {...otherProps}
+        minimal
+        tabIndex={isCurrent ? 0 : -1}
+        onKeyDown={handleKeyDown}
+        ref={combineRefs(ref, ownRef)}
+      >
+        {children}
+      </RegularSelect>
+    </label>
+  );
+});
+
+Select.displayName = 'Select';
+
+export default Select;
