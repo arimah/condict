@@ -23,7 +23,7 @@ export const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) =>
     command: commandName,
     slim = false,
     minimal = false,
-    intent = Intent.DANGER,
+    intent = Intent.PRIMARY,
     disabled,
     onClick,
     children,
