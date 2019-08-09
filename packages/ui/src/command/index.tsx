@@ -5,7 +5,7 @@ import React, {
   ReactNode,
   useContext,
   useMemo,
-  useCallback
+  useCallback,
 } from 'react';
 import memoizeOne from 'memoize-one';
 
@@ -40,17 +40,6 @@ export interface BoundCommand {
 }
 
 const Context = React.createContext<ContextValue | null>(null);
-
-function commandEquals(
-  a: Command,
-  b: Command
-): boolean {
-  return (
-    a.disabled === b.disabled &&
-    a.exec === b.exec &&
-    Shortcut.is(a.shortcut, b.shortcut)
-  );
-}
 
 function buildCommandMap(
   commands: CommandSpecMap,
@@ -100,8 +89,6 @@ export interface Props {
   children: ReactNode;
 }
 
-const EmptyKeyMap = new ShortcutMap<Command>([], () => null);
-const EmptyCommandMap = new Map<string, Command>();
 const DefaultOnExec = (cmd: Command) => cmd.exec();
 
 export function CommandGroup<

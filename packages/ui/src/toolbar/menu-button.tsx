@@ -1,5 +1,4 @@
-import React, {ButtonHTMLAttributes, RefObject, useState, useRef} from 'react';
-import PropTypes from 'prop-types';
+import React, {ButtonHTMLAttributes, useState, useRef} from 'react';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 

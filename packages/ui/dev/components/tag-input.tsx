@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable react/jsx-key, react/display-name */
 import React from 'react';
 import styled from 'styled-components';
 
@@ -40,7 +40,6 @@ const demo: ComponentDemo<State> = {
       onChange={() => toggleState('minimal')}
     />,
   ],
-  // eslint-disable-next-line react/prop-types, react/display-name
   contents: ({disabled, minimal, tags}, setState) =>
     <TagInputWithWidth
       disabled={disabled}

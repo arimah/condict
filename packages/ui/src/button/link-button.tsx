@@ -1,4 +1,4 @@
-import React, {MouseEventHandler, ReactNode, AnchorHTMLAttributes} from 'react';
+import React, {MouseEventHandler, AnchorHTMLAttributes} from 'react';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 

@@ -1,5 +1,4 @@
 import React, {ReactNode} from 'react';
-import PropTypes from 'prop-types';
 
 import * as S from './styles';
 
@@ -24,7 +23,7 @@ const getHeadingTag = (level: HeadingLevel): HeadingTag => {
     case 5: return 'h5';
     case 6: return 'h6';
   }
-}
+};
 
 export const NonIdealState = React.forwardRef<HTMLDivElement, Props>((
   props: Props,

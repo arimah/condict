@@ -1,10 +1,8 @@
 import React, {PureComponent} from 'react';
-import PropTypes from 'prop-types';
 
 import genId from '@condict/gen-id';
 
 import {
-  ComponentDemo,
   ControlsRenderFunc,
   ContentRenderFunc,
 } from '../components/types';
@@ -99,14 +97,6 @@ const ErrorDisplay = ({error}: ErrorDisplayProps) =>
     <S.ErrorMessage>{error.name}: {error.message}</S.ErrorMessage>
     <S.ErrorStack>{error.stack}</S.ErrorStack>
   </S.ErrorContainer>;
-
-ErrorDisplay.propTypes = {
-  error: PropTypes.shape({
-    name: PropTypes.string,
-    message: PropTypes.string,
-    stack: PropTypes.string,
-  }).isRequired,
-};
 
 interface InteractiveDemoProps {
   state: object;

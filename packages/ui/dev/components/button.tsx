@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable react/jsx-key, react/display-name */
 import React from 'react';
 
 import {Button, LinkButton, Checkbox, Select, Intent} from '../../src';
@@ -50,7 +50,6 @@ const demo: ComponentDemo<State> = {
       onChange={() => toggleState('slim')}
     />,
   ],
-  // eslint-disable-next-line react/prop-types, react/display-name
   contents: ({intent, disabled, minimal, slim}) =>
     <Demo.List>
       <Demo.Row>

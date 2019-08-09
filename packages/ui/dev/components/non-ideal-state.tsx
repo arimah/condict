@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable react/jsx-key, react/display-name */
 import React from 'react';
 
 import {
@@ -20,7 +20,7 @@ const HeadingLevels = [
 
 export interface State {
   minimal: boolean;
-  headingLevel: 2 | 3 | 4 | 5 | 6,
+  headingLevel: 2 | 3 | 4 | 5 | 6;
   image: boolean;
   description: boolean;
   action: boolean;
@@ -64,7 +64,6 @@ const demo: ComponentDemo<State> = {
       onChange={() => toggleState('action')}
     />,
   ],
-  // eslint-disable-next-line react/prop-types, react/display-name
   contents: ({minimal, headingLevel, image, description, action}) =>
     <NonIdealState
       minimal={minimal}

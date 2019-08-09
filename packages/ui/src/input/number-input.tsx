@@ -1,5 +1,4 @@
 import React, {InputHTMLAttributes} from 'react';
-import PropTypes from 'prop-types';
 
 import * as S from './styles';
 
@@ -25,7 +24,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, Props>((
     <S.Input
       {...otherProps}
       type='number'
-      step={1}
+      step={step}
       minimal={minimal}
       ref={ref}
     />

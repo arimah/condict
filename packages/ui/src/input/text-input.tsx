@@ -1,5 +1,4 @@
 import React, {InputHTMLAttributes, useRef, useEffect} from 'react';
-import PropTypes from 'prop-types';
 import autoSizeInput from 'autosize-input';
 
 import combineRefs from '../combine-refs';

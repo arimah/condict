@@ -1,5 +1,4 @@
 import React, {KeyboardEventHandler, useRef} from 'react';
-import PropTypes from 'prop-types';
 
 import {Select as RegularSelect, Props as SelectProps} from '../select';
 import combineRefs from '../combine-refs';

@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable react/jsx-key, react/display-name */
 import React from 'react';
 import FileIcon from 'mdi-react/FileOutlineIcon';
 import OpenIcon from 'mdi-react/FolderOpenIcon';
@@ -82,7 +82,6 @@ const demo: ComponentDemo<State> = {
       }}
     />,
   ],
-  // eslint-disable-next-line react/prop-types, react/display-name
   contents: (state, setState, toggleState) =>
     <MenuTrigger
       menu={

@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable react/jsx-key, react/display-name */
 import React from 'react';
 
 import Demo from '../demo';
@@ -41,7 +41,6 @@ const demo: ComponentDemo<State> = {
       onChange={() => toggleState('disabled')}
     />,
   ],
-  // eslint-disable-next-line react/prop-types, react/display-name
   contents: (state, _setState, toggleState) =>
     <Demo.List>
       <Demo.Row>

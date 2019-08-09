@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable react/jsx-key, react/display-name */
 import React from 'react';
 
 import Demo from '../demo';
@@ -47,7 +47,6 @@ const demo: ComponentDemo<State> = {
       onClick={() => setState({current: null})}
     />,
   ],
-  // eslint-disable-next-line react/prop-types, react/display-name
   contents: ({current, intent, disabled}, setState) =>
     <Demo.List>
       <Radio.Group>

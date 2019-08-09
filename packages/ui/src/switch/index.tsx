@@ -1,5 +1,4 @@
 import React, {InputHTMLAttributes, LabelHTMLAttributes} from 'react';
-import PropTypes from 'prop-types';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 

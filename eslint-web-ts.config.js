@@ -88,6 +88,8 @@ module.exports = {
     "no-undef": "off", // Taken care of by the type system.
     "no-dupe-class-members": "off", // Doesn't work well with overloading.
 
+    "react/prop-types": "off", // We have a type system.
+
     "jsx-quotes": [
       "error",
       "prefer-single"

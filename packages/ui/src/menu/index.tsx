@@ -1,8 +1,8 @@
-import React, {FunctionComponent, ReactNode, Ref, RefObject} from 'react';
+import React, {ReactNode, Ref, RefObject} from 'react';
 
 import Placement from '../placement';
 
-import {StackContext, useStack} from './context';
+import {useStack} from './context';
 import ManagedMenu from './managed-menu';
 import Item from './item';
 import CheckItem from './check-item';
@@ -25,6 +25,7 @@ export type MenuRef = Ref<ManagedMenu>;
 export type MenuType = ManagedMenu;
 
 export const Menu = Object.assign(
+  // eslint-disable-next-line react/display-name
   React.forwardRef<ManagedMenu, Props>((
     props: Props,
     ref

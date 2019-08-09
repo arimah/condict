@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable react/jsx-key, react/display-name */
 import React from 'react';
 
 import {NumberInput, Checkbox} from '../../src';
@@ -30,7 +30,6 @@ const demo: ComponentDemo<State> = {
       onChange={() => toggleState('minimal')}
     />,
   ],
-  // eslint-disable-next-line react/prop-types, react/display-name
   contents: ({disabled, minimal, value}, setState) =>
     <NumberInput
       disabled={disabled}

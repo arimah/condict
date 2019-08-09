@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable react/jsx-key, react/display-name */
 import React, {PureComponent} from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {ifProp, theme} from 'styled-tools';
 import memoizeOne from 'memoize-one';
@@ -27,10 +26,12 @@ const Group = styled.div`
   }
 `;
 
-const ResultDisplay = styled.div<{
+interface ResultDisplayProps {
   italic?: boolean;
   bold?: boolean;
-}>`
+}
+
+const ResultDisplay = styled.div<ResultDisplayProps>`
   font-style: ${ifProp('italic', 'italic')};
   font-weight: ${ifProp('bold', 'bold')};
 
@@ -85,7 +86,7 @@ class CommandDemo extends PureComponent<Props> {
 
   private execCommand = (cmd: Command) => this.props.toggleState(cmd.exec());
 
-  render() {
+  public render() {
     const {
       outerDisabled,
       innerDisabled,
@@ -171,7 +172,6 @@ const demo: ComponentDemo<State> = {
       onChange={() => toggleState('innerDisabled')}
     />,
   ],
-  // eslint-disable-next-line react/display-name
   contents: (state, _setState, toggleState) =>
     <CommandDemo
       state={state}

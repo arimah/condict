@@ -1,5 +1,4 @@
 import React, {Key, ReactNode} from 'react';
-import PropTypes from 'prop-types';
 import ChevronLeft from 'mdi-react/ChevronLeftIcon';
 import ChevronRight from 'mdi-react/ChevronRightIcon';
 

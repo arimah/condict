@@ -1,5 +1,4 @@
 import React, {ReactNode, RefObject, useState, useMemo, useEffect} from 'react';
-import PropTypes from 'prop-types';
 
 import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
 import DescendantCollection from '../descendant-collection';
@@ -103,6 +102,7 @@ export interface Props {
 }
 
 export const Toolbar = Object.assign(
+  // eslint-disable-next-line react/display-name
   React.forwardRef<HTMLDivElement, Props>((
     props: Props,
     ref

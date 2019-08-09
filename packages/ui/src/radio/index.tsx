@@ -1,7 +1,6 @@
 import React, {
   InputHTMLAttributes,
   LabelHTMLAttributes,
-  PureComponent,
   Ref,
   ReactNode,
   useContext,

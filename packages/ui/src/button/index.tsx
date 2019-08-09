@@ -1,4 +1,4 @@
-import React, {MouseEventHandler, ReactNode, ButtonHTMLAttributes} from 'react';
+import React, {ButtonHTMLAttributes} from 'react';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 

@@ -1,6 +1,5 @@
 import React, {
   Ref,
-  RefAttributes,
   useState,
   useRef,
   useCallback,
@@ -10,7 +9,7 @@ import genId from '@condict/gen-id';
 
 import combineRefs from '../combine-refs';
 
-import {Menu, Props as MenuProps, MenuElement} from '.';
+import {MenuElement} from '.';
 import MenuManager from './manager';
 import ManagedMenu from './managed-menu';
 

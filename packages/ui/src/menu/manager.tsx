@@ -231,12 +231,12 @@ export default class MenuManager extends Component<Props, State> {
     }
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     this.cancelIntent();
     this.detachEvents();
   }
 
-  attachEvents() {
+  private attachEvents() {
     document.body.addEventListener('mousemove', this.handleMouseMove);
     document.body.addEventListener('mousedown', this.handleMouseDown);
     document.body.addEventListener('click', this.handleClick);
@@ -245,7 +245,7 @@ export default class MenuManager extends Component<Props, State> {
     window.addEventListener('blur', this.handleWindowBlur);
   }
 
-  detachEvents() {
+  private detachEvents() {
     document.body.removeEventListener('mousemove', this.handleMouseMove);
     document.body.removeEventListener('mousedown', this.handleMouseDown);
     document.body.removeEventListener('click', this.handleClick);
@@ -254,7 +254,7 @@ export default class MenuManager extends Component<Props, State> {
     window.removeEventListener('blur', this.handleWindowBlur);
   }
 
-  awaitIntent = (cb: (stack: MenuStack) => MenuStack) => {
+  private awaitIntent = (cb: (stack: MenuStack) => MenuStack) => {
     this.cancelIntent();
     this.intentTimeoutId = window.setTimeout(() => {
       const stack = cb(this.state.stack);
@@ -262,7 +262,7 @@ export default class MenuManager extends Component<Props, State> {
     }, INTENT_TIME);
   };
 
-  cancelIntent = () => {
+  private cancelIntent = () => {
     if (this.intentTimeoutId) {
       window.clearTimeout(this.intentTimeoutId);
       this.intentTimeoutId = undefined;

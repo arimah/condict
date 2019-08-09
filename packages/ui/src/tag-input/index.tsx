@@ -150,6 +150,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
         const {selected: {tag}} = tagInput.state;
         const input = tagInput.input.current;
         if (tag !== null || input && isEmptySelectionAtStart(input)) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           tagInput.items.getFirst()!.elem.focus();
           return true;
         }

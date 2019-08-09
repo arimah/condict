@@ -85,7 +85,7 @@ interface State {
 }
 
 class App extends Component<{}, State> {
-  state: State = {
+  public state: State = {
     settings: readSettings(),
   };
 

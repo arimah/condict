@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable react/jsx-key, react/display-name */
 import React from 'react';
 
 import {Checkbox, Select, Intent} from '../../src';
@@ -38,7 +38,6 @@ const demo: ComponentDemo<State> = {
       onChange={() => toggleState('disabled')}
     />,
   ],
-  // eslint-disable-next-line react/prop-types, react/display-name
   contents: ({intent, disabled, checked}, setState) => {
     const checkedCount = checked.reduce((a, b) => a + +b, 0);
     return (

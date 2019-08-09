@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable react/jsx-key, react/display-name */
 import React from 'react';
 
 import {Select, Checkbox} from '../../src';
@@ -36,7 +36,6 @@ const demo: ComponentDemo<State> = {
       onChange={() => toggleState('minimal')}
     />,
   ],
-  // eslint-disable-next-line react/prop-types, react/display-name
   contents: ({disabled, minimal, value}, setState) =>
     <Select
       disabled={disabled}
