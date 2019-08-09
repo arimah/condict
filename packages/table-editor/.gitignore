@@ -2,4 +2,4 @@
 package-lock.json
 
 # Source files are compiled before publish, and are not needed otherwise
-lib/
+dist/

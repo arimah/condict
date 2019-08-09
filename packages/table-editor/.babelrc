@@ -1,5 +1,0 @@
-{
-  "presets": [
-    "@condict/babel-preset-react"
-  ]
-}

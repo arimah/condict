@@ -1,7 +1,8 @@
 const path = require('path');
 const CondictDevServer = require('@condict/dev-server');
-CondictDevServer({
-  entry: path.resolve(__dirname, 'app.js'),
+CondictDevServer.start({
+  entry: path.resolve(__dirname, 'app'),
+  rootDir: [__dirname, path.resolve(__dirname, '../src')],
   title: 'Table editor',
   port: 3040,
 });
