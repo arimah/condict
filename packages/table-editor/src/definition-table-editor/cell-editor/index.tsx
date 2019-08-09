@@ -1,5 +1,4 @@
 import React, {ChangeEvent, KeyboardEvent, PureComponent} from 'react';
-import PropTypes from 'prop-types';
 import FocusTrap from 'focus-trap-react';
 import {Options as FocusTrapOptions} from 'focus-trap';
 

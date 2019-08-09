@@ -1,7 +1,6 @@
 import {LayoutCell} from '../value/types';
 
 import Value from './value';
-import {DataFields} from './types';
 
 // The display name is derived from the cell's nearest headers. First row
 // headers, in left-to-right order, then column headers, in top-to-bottom
