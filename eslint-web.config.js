@@ -45,6 +45,9 @@ module.exports = {
     // Good idea in theory, not really workable in practice.
     "@typescript-eslint/no-explicit-any": "off",
 
+    // `type` is fine, especially for props and state.
+    "@typescript-eslint/prefer-interface": "off",
+
     "linebreak-style": [
       "error",
       "unix"
