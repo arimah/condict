@@ -3,9 +3,9 @@ import {ifProp, theme} from 'styled-tools';
 
 import {LightTheme} from '@condict/ui';
 
-export interface GroupProps {
+export type GroupProps = {
   hasBase: boolean;
-}
+};
 
 export const Group = styled.div.attrs({
   role: 'group',
@@ -25,9 +25,9 @@ export const GroupName = styled.div`
   font-size: 11pt;
 `;
 
-export interface CharacterProps {
+export type CharacterProps = {
   isBase: boolean;
-}
+};
 
 export const Character = styled.span<CharacterProps>`
   display: inline-block;

@@ -74,10 +74,10 @@ const placeModifier = (base: XsampaChar, modifier: XsampaChar): XsampaChar => {
   return modifier;
 };
 
-interface Modifier {
+type Modifier = {
   readonly originalIndex: number;
   readonly char: XsampaChar;
-}
+};
 
 const flush = (base: XsampaChar, modifiers: Modifier[]): string => {
   if (modifiers.length === 0) {

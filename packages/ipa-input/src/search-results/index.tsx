@@ -6,9 +6,9 @@ import SearchResult from './search-result';
 import {HighlightedMatch} from './highlight-matches';
 import * as S from './styles';
 
-interface NoSearchResultsProps {
+type NoSearchResultsProps = {
   query: string;
-}
+};
 
 const NoSearchResults = ({query}: NoSearchResultsProps) =>
   <>
@@ -20,9 +20,9 @@ const NoSearchResults = ({query}: NoSearchResultsProps) =>
     </S.NoResultsSuggestion>
   </>;
 
-export interface Props {
+export type Props = {
   query: string;
-}
+};
 
 const SearchResults = React.memo((props: Props) => {
   const {query} = props;

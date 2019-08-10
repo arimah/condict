@@ -3,7 +3,7 @@ import React, {Fragment} from 'react';
 import highlightMatches, {HighlightedMatch} from './highlight-matches';
 import * as S from './styles';
 
-interface Props {
+type Props = {
   char: {
     input: string;
     display: string;
@@ -16,7 +16,7 @@ interface Props {
     }[];
   };
   highlightCache: Map<string, HighlightedMatch>;
-}
+};
 
 const SearchResult = (props: Props) => {
   const {char, match, highlightCache} = props;

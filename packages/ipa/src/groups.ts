@@ -3,11 +3,11 @@ import {DataFile, IpaChar} from './types';
 
 const {chars: Chars, groups: Groups} = IpaData as DataFile;
 
-export interface ResolvedGroup {
+export type ResolvedGroup = {
   readonly name: string;
   readonly base: IpaChar | null;
   readonly members: IpaChar[];
-}
+};
 
 // Cached value for speedy reuse, as it isn't supposed to change.
 let allGroups: ResolvedGroup[] | null = null;

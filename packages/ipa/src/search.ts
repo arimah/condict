@@ -3,24 +3,24 @@ import {DataFile, IpaChar, IpaSearchNode} from './types';
 
 export type Match = [IpaChar, MatchInfo];
 
-export interface MatchInfo {
+export type MatchInfo = {
   totalScore: number;
   terms: TermMatch[];
-}
+};
 
-export interface TermMatch {
+export type TermMatch = {
   term: string;
   query: string;
   score: number;
-}
+};
 
 type MatchConsumer = (char: number, term: string, query: string, score: number) => void;
 
-interface WorkingMatch {
+type WorkingMatch = {
   terms: TermMatch[];
   totalScore: number;
   queryWordScores: Map<string, number>;
-}
+};
 
 const {chars: Chars, searchTree: SearchTable} = IpaData as DataFile;
 

@@ -14,9 +14,9 @@ import {IpaInput} from '../src';
 
 import * as S from './styles';
 
-interface State {
+type State = {
   darkTheme: boolean;
-}
+};
 
 class App extends Component<{}, State> {
   public state: State = {

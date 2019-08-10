@@ -4,13 +4,13 @@ import ipa from '@condict/ipa';
 
 import * as S from './styles';
 
-interface CharacterProps {
+type CharacterProps = {
   char: {
     display: string;
     name: string;
   };
   isBase?: boolean;
-}
+};
 
 const Character = ({char, isBase = false}: CharacterProps) =>
   <S.Character isBase={isBase} title={char.name}>

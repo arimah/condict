@@ -1,13 +1,13 @@
-export interface DataFile {
+export type DataFile = {
   readonly replacements: Replacements;
   readonly charData: XsampaChars;
-}
+};
 
-export interface Replacements {
+export type Replacements = {
   readonly [key: string]: [string, XsampaChar][];
-}
+};
 
-export interface XsampaChar {
+export type XsampaChar = {
   readonly base?: true;
   readonly diacritic?: true;
   readonly modifier?: true;
@@ -18,7 +18,7 @@ export interface XsampaChar {
   readonly diacritics?: DiacriticPlacement[];
   /** Alternative placements for diacritics. */
   readonly placements?: AlternativePlacements;
-}
+};
 
 export type DiacriticPlacement = 'above' | 'below' | 'after';
 
@@ -26,6 +26,6 @@ export type AlternativePlacements = {
   readonly [P in DiacriticPlacement]?: XsampaChar;
 };
 
-export interface XsampaChars {
+export type XsampaChars = {
   readonly [key: string]: XsampaChar;
-}
+};
