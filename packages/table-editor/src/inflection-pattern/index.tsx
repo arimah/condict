@@ -4,10 +4,10 @@ import * as S from './styles';
 
 const CurlyBrace = /\{/;
 
-export interface Props {
+export type Props = {
   pattern: string;
   disabled: boolean;
-}
+};
 
 const InflectionPattern = React.memo((props: Props) => {
   const {pattern, disabled} = props;

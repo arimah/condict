@@ -1,9 +1,9 @@
 import styled, {css} from 'styled-components';
 import {ifProp} from 'styled-tools';
 
-export interface CellIconsProps {
+export type CellIconsProps = {
   disabled: boolean;
-}
+};
 
 export const CellIcons = styled.div<CellIconsProps>`
   display: block;

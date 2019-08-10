@@ -16,9 +16,9 @@ export const CellEditor = styled.div`
   }
 `;
 
-export interface CellInputWrapperProps {
+export type CellInputWrapperProps = {
   focus: boolean;
-}
+};
 
 export const CellInputWrapper = styled.label<CellInputWrapperProps>`
   box-sizing: border-box;
@@ -43,9 +43,9 @@ CellInputWrapper.defaultProps = {
   theme: LightTheme,
 };
 
-export interface CellIconsProps {
+export type CellIconsProps = {
   disabled: boolean;
-}
+};
 
 export const CellIcons = styled.span`
   display: block;

@@ -3,9 +3,9 @@ import {ifProp, theme} from 'styled-tools';
 
 import {LightTheme} from '@condict/ui';
 
-export interface CellDataProps {
+export type CellDataProps = {
   inflected?: boolean;
-}
+};
 
 export const CellData = styled.div<CellDataProps>`
   flex: 1 0 auto;
@@ -15,9 +15,9 @@ export const CellData = styled.div<CellDataProps>`
   `)}
 `;
 
-export interface DeletedFormProps {
+export type DeletedFormProps = {
   disabled: boolean;
-}
+};
 
 export const DeletedForm = styled.span<DeletedFormProps>`
   display: inline-block;

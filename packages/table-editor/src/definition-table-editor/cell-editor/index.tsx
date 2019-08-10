@@ -17,11 +17,11 @@ import * as S from './styles';
 
 export type Props = CellEditorProps<DataFields, Value>;
 
-interface State {
+type State = {
   trapActive: boolean;
   cell: Cell<DataFields>;
   inflectedForm: string;
-}
+};
 
 export default class CellEditor extends PureComponent<Props, State> {
   public static readonly contextType = StemsContext;

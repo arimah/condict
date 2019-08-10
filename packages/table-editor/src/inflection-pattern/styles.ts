@@ -7,9 +7,9 @@ import {
   Saturation,
 } from '@condict/ui';
 
-export interface DisabledProps {
+export type DisabledProps = {
   disabled: boolean;
-}
+};
 
 const stemColor = makeColorFn(291, {
   high: 70,

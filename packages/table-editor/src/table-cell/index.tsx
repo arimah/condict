@@ -5,28 +5,28 @@ import {Cell} from '../value/types';
 
 import * as S from './styles';
 
-export interface Config<D, V extends Value<D>> {
+export type Config<D, V extends Value<D>> = {
   CellData: ComponentType<CellDataProps<D>>;
   CellEditor: ComponentType<CellEditorProps<D, V>>;
   canEditCell: (cell: Cell<D>) => boolean;
-}
+};
 
-export interface CellDataProps<D> {
+export type CellDataProps<D> = {
   cell: Cell<D>;
   editing: boolean;
   disabled: boolean;
-}
+};
 
-export interface CellEditorProps<D, V extends Value<D>> {
+export type CellEditorProps<D, V extends Value<D>> = {
   id: string;
   initialCell: Cell<D>;
   typedValue: string | null;
   tableValue: V;
   onInput: (cell: Cell<D>) => void;
   onDone: (cell: Cell<D>) => void;
-}
+};
 
-export interface Props<D, V extends Value<D>> {
+export type Props<D, V extends Value<D>> = {
   cell: Cell<D>;
   tableId: string;
   disabled: boolean;
@@ -37,7 +37,7 @@ export interface Props<D, V extends Value<D>> {
   editingTableValue: V | null;
   onEditInput: (cell: Cell<D>) => void;
   onFinishEdit: (cell: Cell<D>) => void;
-}
+};
 
 function makeTableCell<D, V extends Value<D>>(
   config: Config<D, V>

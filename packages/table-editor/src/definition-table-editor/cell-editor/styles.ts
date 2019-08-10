@@ -21,9 +21,9 @@ export const CellEditor = styled.div`
   }
 `;
 
-export interface CellInputProps {
+export type CellInputProps = {
   inflected: boolean;
-}
+};
 
 export const CellInput = styled(TextInput)<CellInputProps>`
   && {

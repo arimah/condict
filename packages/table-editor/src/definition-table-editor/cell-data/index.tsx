@@ -30,9 +30,9 @@ const CellData = ({cell, disabled}: Props) => {
 
 export default CellData;
 
-interface InflectedFormProps {
+type InflectedFormProps = {
   pattern: string;
-}
+};
 
 const InflectedForm = React.memo((props: InflectedFormProps) => {
   const {pattern} = props;

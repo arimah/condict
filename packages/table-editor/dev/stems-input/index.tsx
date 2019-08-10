@@ -5,11 +5,11 @@ import genId from '@condict/gen-id';
 
 import * as S from './styles';
 
-export interface Props {
+export type Props = {
   value: Map<string, string>;
   stemNames: string[];
   onChange: (newValue: Map<string, string>) => void;
-}
+};
 
 const StemsInput = (props: Props) => {
   const {value, stemNames, onChange} = props;

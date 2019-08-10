@@ -5,9 +5,9 @@ import genId from '@condict/gen-id';
 import {RowType} from '../value';
 import {Cell} from '../value/types';
 
-export interface StandardRow<C> {
+export type StandardRow<C> = {
   cells: C[];
-}
+};
 
 export const convertStandardTable = <C, D>(
   rows: StandardRow<C>[],

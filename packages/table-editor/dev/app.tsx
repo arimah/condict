@@ -129,7 +129,7 @@ class ValueWithHistory<T> {
   }
 }
 
-interface EditorDemoProps<T extends Value<any>> {
+type EditorDemoProps<T extends Value<any>> = {
   value: ValueWithHistory<T>;
   controls?: (data: {
     disabled: boolean;
@@ -139,11 +139,11 @@ interface EditorDemoProps<T extends Value<any>> {
   }) => ReactNode;
   onChange: (value: ValueWithHistory<T>) => void;
   children: (value: T, disabled: boolean, setValue: (value: T) => void) => ReactNode;
-}
+};
 
-interface EditorDemoState {
+type EditorDemoState = {
   disabled: boolean;
-}
+};
 
 class EditorDemo<T extends Value<any>>
   extends Component<EditorDemoProps<T>, EditorDemoState>
@@ -211,14 +211,14 @@ class EditorDemo<T extends Value<any>>
   }
 }
 
-interface State {
+type State = {
   darkTheme: boolean;
   term: string;
   stems: Map<string, string>;
   stemNames: string[];
   inflectionTableValue: ValueWithHistory<InflectionTableValue>;
   definitionTableValue: ValueWithHistory<DefinitionTableValue>;
-}
+};
 
 class App extends Component<{}, State> {
   public state: State = {

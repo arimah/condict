@@ -1,19 +1,19 @@
-export interface DataFields {
+export type DataFields = {
   text: string;
   // The below apply only to inflected forms (i.e. data cells)
   deriveLemma: boolean;
   displayName: string;
   hasCustomDisplayName: boolean;
   inflectedFormId: number | null;
-}
+};
 
 export type InflectionTableJson = InflectionTableJsonRow[];
 
-export interface InflectionTableJsonRow {
+export type InflectionTableJsonRow = {
   cells: InflectionTableJsonCell[];
-}
+};
 
-export interface InflectionTableJsonCell {
+export type InflectionTableJsonCell = {
   columnSpan?: number;
   rowSpan?: number;
   headerText?: string;
@@ -24,4 +24,4 @@ export interface InflectionTableJsonCell {
     displayName: string;
     hasCustomDisplayName: boolean;
   };
-}
+};

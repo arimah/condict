@@ -5,11 +5,11 @@ import {LightTheme} from '@condict/ui';
 
 import {Table} from '../table-editor/styles';
 
-export interface CellProps {
+export type CellProps = {
   header: boolean;
   selected: boolean;
   disabled: boolean;
-}
+};
 
 export const Cell = styled.td<CellProps>`
   position: relative;
@@ -62,11 +62,11 @@ export const CellDataWrapper = styled.div`
   align-items: center;
 `;
 
-export interface CellBorderProps {
+export type CellBorderProps = {
   disabled: boolean;
   selected: boolean;
   focused: boolean;
-}
+};
 
 export const CellBorder = styled.div<CellBorderProps>`
   position: absolute;

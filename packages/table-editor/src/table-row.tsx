@@ -7,7 +7,7 @@ import Value from './value';
 import Selection from './value/selection';
 import {Cell} from './value/types';
 
-export interface Props<D, V extends Value<D>> {
+export type Props<D, V extends Value<D>> = {
   cells: List<Cell<D>>;
   tableId: string;
   disabled: boolean;
@@ -17,7 +17,7 @@ export interface Props<D, V extends Value<D>> {
   editingTableValue: V | null;
   onEditInput: (cell: Cell<D>) => void;
   onFinishEdit: (cell: Cell<D>) => void;
-}
+};
 
 function makeTableRow<D, V extends Value<D>>(
   config: Config<D, V>

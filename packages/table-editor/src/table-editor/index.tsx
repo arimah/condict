@@ -31,19 +31,19 @@ export type Config<D, V extends Value<D>> = {
   commands: CommandSpecMap;
 } & TableCellConfig<D, V>;
 
-export interface Props<D, V extends Value<D>> {
+export type Props<D, V extends Value<D>> = {
   value: V;
   className?: string;
   disabled: boolean;
   onChange: (value: V) => void;
-}
+};
 
-export interface CommandProps<D, V extends Value<D>> {
+export type CommandProps<D, V extends Value<D>> = {
   value: V;
   disabled?: boolean;
   children: ReactNode;
   onChange: (value: V) => void;
-}
+};
 
 export type TableEditorComponent<D, V extends Value<D>> = ComponentType<Props<D, V>> & {
   Commands<E extends keyof JSX.IntrinsicElements | React.ComponentType<unknown> = 'div'>(
@@ -76,13 +76,13 @@ function makeTableEditor<D, V extends Value<D>>(
     ...editingCommands,
   };
 
-  interface State {
+  type State = {
     mouseDown: boolean;
     mouseDownCellKey: string | null;
     editing: boolean;
     editingCell: Cell<D> | null;
     editingTypedValue: string | null;
-  }
+  };
 
   class TableEditor extends Component<Props<D, V>, State> {
     public static defaultProps = {

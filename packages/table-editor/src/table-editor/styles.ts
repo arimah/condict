@@ -19,9 +19,9 @@ Table.defaultProps = {
   theme: LightTheme,
 };
 
-export interface HelperProps {
+export type HelperProps = {
   disabled: boolean;
-}
+};
 
 export const Helper = styled.div<HelperProps>`
   margin-top: 8px;

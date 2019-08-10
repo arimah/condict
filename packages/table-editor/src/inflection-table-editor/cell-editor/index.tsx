@@ -18,13 +18,13 @@ import * as S from './styles';
 
 export type Props = CellEditorProps<DataFields, Value>;
 
-interface State {
+type State = {
   trapActive: boolean;
   inputFocused: boolean;
   cell: Cell<DataFields>;
   displayName: string;
   derivedDisplayName: string;
-}
+};
 
 export default class CellEditor extends PureComponent<Props, State> {
   private readonly dialogId = genId();
