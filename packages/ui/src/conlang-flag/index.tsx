@@ -1,10 +1,10 @@
 import React from 'react';
 
-export interface Props {
+export type Props = {
   className?: string;
   width?: number;
   height?: number;
-}
+};
 
 export const ConlangFlag = React.forwardRef<SVGSVGElement, Props>((
   {className, width = 94, height = 58}: Props,

@@ -5,14 +5,14 @@ import LightTheme from '../theme/light';
 import {Button} from '../button';
 import Intent from '../intent';
 
-export interface DisabledProps {
+export type DisabledProps = {
   disabled: boolean;
-}
+};
 
-export interface PageProps {
+export type PageProps = {
   current?: boolean;
   isLoading?: boolean;
-}
+};
 
 export const Main = styled.nav<DisabledProps>`
   margin-top: 16px;

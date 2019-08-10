@@ -12,12 +12,12 @@ const Intents = [
   {value: 'danger', name: Intent.DANGER},
 ];
 
-export interface State {
+export type State = {
   checked1: boolean;
   checked2: boolean;
   intent: Intent;
   disabled: boolean;
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'Switch',

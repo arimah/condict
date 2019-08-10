@@ -36,7 +36,7 @@ const SaveShortcut = Shortcut.parse('Primary+S s');
 const PrintShortcut = Shortcut.parse('Primary+P p');
 const CloseShortcut = Shortcut.parse('Primary+W w');
 
-export interface State {
+export type State = {
   placement: Placement;
   keepOpen: boolean;
   // Checkable menu item states
@@ -46,7 +46,7 @@ export interface State {
   printPageNumbers: boolean;
   printGridLines: boolean;
   printGuides: boolean;
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'Menu',

@@ -64,12 +64,12 @@ const formatAriaModifiers: ModifierFormatter = isOSX
     // Secondary = Control
     `${primary || secondary ? 'Control+' : ''}${shift ? 'Shift+' : ''}${alt ? 'Alt+' : ''}`;
 
-export interface ShortcutConfig {
+export type ShortcutConfig = {
   keys: string | string[];
   primary: boolean | 'secondary';
   shift: boolean;
   alt: boolean;
-}
+};
 
 const DefaultConfig: ShortcutConfig = Object.freeze({
   keys: [],
@@ -226,10 +226,10 @@ export class ShortcutGroup {
   }
 }
 
-interface KeyMapEntry<C> {
+type KeyMapEntry<C> = {
   command: C;
   shortcut: Shortcut;
-}
+};
 
 function buildKeyMap<C>(
   commands: C[],

@@ -4,10 +4,10 @@ import {ifProp, theme} from 'styled-tools';
 import {transition} from '../theme';
 import LightTheme from '../theme/light';
 
-export interface MenuProps {
+export type MenuProps = {
   open: boolean;
   submenu: boolean;
-}
+};
 
 export const Menu = styled.div.attrs({
   role: 'menu',
@@ -39,10 +39,10 @@ Menu.defaultProps = {
   theme: LightTheme,
 };
 
-export interface ItemProps {
+export type ItemProps = {
   current?: boolean;
   disabled?: boolean;
-}
+};
 
 export const Item = styled.div<ItemProps>`
   display: flex;
@@ -110,10 +110,10 @@ export const ItemSubmenu = styled.span`
   }
 `;
 
-export interface ItemCheckProps {
+export type ItemCheckProps = {
   radio: boolean;
   checked: boolean;
-}
+};
 
 export const ItemCheck = styled.span<ItemCheckProps>`
   display: block;

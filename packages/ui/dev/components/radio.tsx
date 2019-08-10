@@ -14,11 +14,11 @@ const Intents = [
 
 const Options = ['1', '2', '3', '4'];
 
-export interface State {
+export type State = {
   current: string | null;
   intent: Intent;
   disabled: boolean;
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'Radio',

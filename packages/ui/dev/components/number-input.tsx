@@ -5,11 +5,11 @@ import {NumberInput, Checkbox} from '../../src';
 
 import {ComponentDemo} from './types';
 
-export interface State {
+export type State = {
   disabled: boolean;
   minimal: boolean;
   value: string;
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'NumberInput',

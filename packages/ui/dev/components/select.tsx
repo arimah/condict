@@ -11,11 +11,11 @@ const Options = [
   {value: 'c', name: 'Option C'},
 ];
 
-export interface State {
+export type State = {
   disabled: boolean;
   minimal: boolean;
   value: string;
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'Select',

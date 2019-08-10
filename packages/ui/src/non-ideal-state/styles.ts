@@ -3,9 +3,9 @@ import {ifProp, theme} from 'styled-tools';
 
 import LightTheme from '../theme/light';
 
-export interface Props {
+export type Props = {
   minimal?: boolean;
-}
+};
 
 export const Main = styled.div<Props>`
   display: flex;

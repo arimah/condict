@@ -9,7 +9,7 @@ import {
 
 import * as S from './styles';
 
-export interface Props {
+export type Props = {
   name: string;
   state: object;
   controls?: ControlsRenderFunc<object>;
@@ -18,11 +18,11 @@ export interface Props {
   alignY: 'center' | 'stretch';
   onSetState: (demoName: string, partialState: object) => void;
   onToggleState: (demoName: string, key: string) => void;
-}
+};
 
-export interface State {
+export type State = {
   error: Error | null;
-}
+};
 
 class Demo extends PureComponent<Props, State> {
   public static defaultProps = {
@@ -88,9 +88,9 @@ class Demo extends PureComponent<Props, State> {
   }
 }
 
-interface ErrorDisplayProps {
+type ErrorDisplayProps = {
   error: Error;
-}
+};
 
 const ErrorDisplay = ({error}: ErrorDisplayProps) =>
   <S.ErrorContainer>
@@ -98,7 +98,7 @@ const ErrorDisplay = ({error}: ErrorDisplayProps) =>
     <S.ErrorStack>{error.stack}</S.ErrorStack>
   </S.ErrorContainer>;
 
-interface InteractiveDemoProps {
+type InteractiveDemoProps = {
   state: object;
   controls?: ControlsRenderFunc<object>;
   contents: ContentRenderFunc<object>;
@@ -106,7 +106,7 @@ interface InteractiveDemoProps {
   alignY: 'center' | 'stretch';
   onSetState: (partialState: object) => void;
   onToggleState: (key: string) => void;
-}
+};
 
 const InteractiveDemo = (props: InteractiveDemoProps) => {
   const {

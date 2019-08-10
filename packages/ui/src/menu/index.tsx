@@ -8,13 +8,13 @@ import Item from './item';
 import CheckItem from './check-item';
 import Separator from './separator';
 
-export interface Props {
+export type Props = {
   id?: string;
   name?: string;
   placement?: Placement;
   parentRef?: RefObject<Element>;
   children: ReactNode;
-}
+};
 
 export type MenuElement = JSX.Element & {
   ref?: Ref<ManagedMenu>;

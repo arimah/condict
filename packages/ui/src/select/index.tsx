@@ -10,10 +10,10 @@ export type Props = {
   'value'
 >;
 
-export interface Option {
+export type Option = {
   value: string | number;
   name: ReactNode;
-}
+};
 
 const renderOptions = (
   children: ReactNode,

@@ -2,10 +2,10 @@ import React from 'react';
 
 import * as S from './styles';
 
-export interface Props {
+export type Props = {
   className?: string;
   size?: number;
-}
+};
 
 export const Spinner = React.forwardRef<HTMLSpanElement, Props>((
   props: Props,

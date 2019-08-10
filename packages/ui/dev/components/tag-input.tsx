@@ -10,11 +10,11 @@ const TagInputWithWidth = styled(TagInput)`
   width: 400px;
 `;
 
-export interface State {
+export type State = {
   disabled: boolean;
   minimal: boolean;
   tags: string[];
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'TagInput',

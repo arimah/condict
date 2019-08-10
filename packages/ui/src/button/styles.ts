@@ -5,11 +5,11 @@ import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
 import Intent from '../intent';
 
-export interface Props {
+export type Props = {
   slim: boolean;
   minimal: boolean;
   intent: Intent;
-}
+};
 
 export const ButtonStyle = css`
   display: inline-block;

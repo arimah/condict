@@ -1,7 +1,7 @@
-export interface SaturationMap {
+export type SaturationMap = {
   high: number;
   low: number;
-}
+};
 
 export const enum Saturation {
   HIGH = 'high',

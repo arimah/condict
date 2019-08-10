@@ -4,11 +4,11 @@ import {prop, theme, ifProp} from 'styled-tools';
 import {transition} from '../theme';
 import LightTheme from '../theme/light';
 
-export interface Props {
+export type Props = {
   minimal: boolean;
   autoSize?: boolean;
   borderRadius?: string;
-}
+};
 
 export const Input = styled.input<Props>`
   box-sizing: border-box;

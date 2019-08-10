@@ -11,7 +11,7 @@ import * as S from './styles';
 import ManagedMenu from './managed-menu';
 import {StackContext, useNearestMenu} from './context';
 
-export interface Props {
+export type Props = {
   label: string;
   icon?: ReactNode;
   shortcut?: ShortcutType | null;
@@ -19,7 +19,7 @@ export interface Props {
   command?: string | null;
   onActivate?: () => void;
   children?: ReactNode;
-}
+};
 
 const DefaultOnActivate = () => { };
 
@@ -102,12 +102,12 @@ const Item = React.forwardRef<HTMLDivElement, Props>((
 
 Item.displayName = 'Item';
 
-interface PhantomProps {
+type PhantomProps = {
   icon: ReactNode;
   label: string;
   shortcut?: ShortcutType | null;
   hasSubmenu: boolean;
-}
+};
 
 const PhantomItem = ({icon, label, shortcut, hasSubmenu}: PhantomProps) =>
   <S.Item aria-hidden='true'>

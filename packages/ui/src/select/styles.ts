@@ -4,10 +4,10 @@ import {prop, theme, ifProp} from 'styled-tools';
 import {transition} from '../theme';
 import LightTheme from '../theme/light';
 
-export interface Props {
+export type Props = {
   borderRadius?: number;
   minimal?: boolean;
-}
+};
 
 export const Wrapper = styled.span`
   display: inline-block;
@@ -57,9 +57,9 @@ Select.defaultProps = {
   theme: LightTheme,
 };
 
-export interface DisabledProps {
+export type DisabledProps = {
   disabled?: boolean;
-}
+};
 
 export const Arrow = styled.svg.attrs({
   width: '8',

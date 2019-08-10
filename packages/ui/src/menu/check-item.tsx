@@ -9,7 +9,7 @@ import combineRefs from '../combine-refs';
 import * as S from './styles';
 import {useNearestMenu} from './context';
 
-export interface Props {
+export type Props = {
   label: string;
   icon?: ReactNode;
   shortcut?: ShortcutType | null;
@@ -18,7 +18,7 @@ export interface Props {
   disabled?: boolean;
   command?: string | null;
   onActivate?: () => void;
-}
+};
 
 const DefaultOnActivate = () => {};
 
@@ -88,13 +88,13 @@ const CheckItem = React.forwardRef<HTMLDivElement, Props>((
 
 CheckItem.displayName = 'CheckItem';
 
-interface PhantomProps {
+type PhantomProps = {
   icon: ReactNode;
   label: string;
   shortcut?: ShortcutType | null;
   checked: boolean;
   radio: boolean;
-}
+};
 
 const PhantomItem = ({icon, label, shortcut, checked, radio}: PhantomProps) =>
   <S.Item aria-hidden='true'>

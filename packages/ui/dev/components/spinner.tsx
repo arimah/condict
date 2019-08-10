@@ -10,10 +10,10 @@ const BlockSpinner = styled(Spinner)`
   display: block;
 `;
 
-export interface State {
+export type State = {
   sizeString: string;
   size: number;
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'Spinner',

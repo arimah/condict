@@ -1,10 +1,10 @@
 import styled, {css} from 'styled-components';
 import {theme, switchProp} from 'styled-tools';
 
-export interface AlignProps {
+export type AlignProps = {
   alignX: 'center' | 'stretch';
   alignY: 'center' | 'stretch';
-}
+};
 
 export const List = styled.div`
   margin: 16px;

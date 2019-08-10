@@ -43,10 +43,10 @@ const isEmptySelectionAtEnd = (input: HTMLInputElement) =>
   input.selectionStart === input.value.length &&
   input.selectionEnd === input.value.length;
 
-interface KeyCommand {
+type KeyCommand = {
   key: ShortcutType | null;
   exec: (tagInput: TagInput) => boolean;
-}
+};
 
 const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
@@ -204,14 +204,14 @@ class TagInputChild {
 
 type Descendants = DescendantCollection<TagInputChild, HTMLButtonElement | HTMLInputElement>;
 
-interface TagButtonProps {
+type TagButtonProps = {
   tag: string;
   disabled: boolean | undefined;
   isSelected: boolean;
   parentItems: Descendants;
   'aria-describedby': string;
   onClick: MouseEventHandler<HTMLButtonElement>;
-}
+};
 
 const TagButton = (props: TagButtonProps) => {
   const {
@@ -242,7 +242,7 @@ const TagButton = (props: TagButtonProps) => {
   );
 };
 
-export interface Props {
+export type Props = {
   className?: string;
   tags: string[];
   minimal?: boolean;
@@ -250,16 +250,16 @@ export interface Props {
   onChange: (tags: string[]) => void;
   'aria-label'?: string;
   'aria-labelledby'?: string;
-}
+};
 
-interface State {
+type State = {
   inputFocused: boolean;
   selected: TagInputChild;
   announcement: {
     key: string;
     text: string;
   };
-}
+};
 
 export class TagInput extends Component<Props, State> {
   public static defaultProps: Partial<Props> = {

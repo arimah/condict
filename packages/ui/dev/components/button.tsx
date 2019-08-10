@@ -11,12 +11,12 @@ const Intents = [
   {value: 'danger', name: 'danger'},
 ];
 
-export interface State {
+export type State = {
   intent: Intent;
   disabled: boolean;
   minimal: boolean;
   slim: boolean;
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'Button',

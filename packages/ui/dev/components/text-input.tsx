@@ -20,13 +20,13 @@ const Types = [
   {value: 'url', name: 'url'},
 ];
 
-export interface State {
+export type State = {
   type: TextInputType;
   disabled: boolean;
   minimal: boolean;
   autoSize: boolean;
   value: string;
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'TextInput',

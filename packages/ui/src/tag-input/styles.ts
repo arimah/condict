@@ -6,11 +6,11 @@ import LightTheme from '../theme/light';
 
 import {DeleteIcon} from './icons';
 
-export interface Props {
+export type Props = {
   minimal?: boolean;
   disabled?: boolean;
   inputFocused: boolean;
-}
+};
 
 export const Main = styled.span<Props>`
   display: inline-flex;

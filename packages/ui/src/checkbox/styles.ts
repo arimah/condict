@@ -5,17 +5,17 @@ import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
 import Intent from '../intent';
 
-export interface IntentProps {
+export type IntentProps = {
   intent: Intent;
-}
+};
 
-export interface DisabledProps {
+export type DisabledProps = {
   disabled?: boolean;
-}
+};
 
-export interface CheckedProps {
+export type CheckedProps = {
   checked?: boolean;
-}
+};
 
 export const Label = styled.label<DisabledProps>`
   display: inline-block;

@@ -13,10 +13,10 @@ import * as S from './styles';
 
 const DOCUMENT_POSITION_PRECEDING = 2;
 
-interface KeyCommand {
+type KeyCommand = {
   key: ShortcutType | null;
   exec(context: ContextValue): void;
-}
+};
 
 const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
@@ -96,10 +96,10 @@ const getValidFocus = (
   return currentFocus;
 };
 
-export interface Props {
+export type Props = {
   className?: string;
   children: ReactNode;
-}
+};
 
 export const Toolbar = Object.assign(
   // eslint-disable-next-line react/display-name

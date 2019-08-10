@@ -15,9 +15,9 @@ import ComponentDemos from './components';
 
 import * as S from './styles';
 
-interface Settings {
+type Settings = {
   [key: string]: any;
-}
+};
 
 const InitialSettings: Settings = {
   darkTheme: false,
@@ -80,9 +80,9 @@ const writeSettings = (settings: Settings) => {
   }
 };
 
-interface State {
+type State = {
   settings: Settings;
-}
+};
 
 class App extends Component<{}, State> {
   public state: State = {

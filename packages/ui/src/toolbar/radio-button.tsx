@@ -11,10 +11,10 @@ import formatTooltip from './format-tooltip';
 import Group, {Props as GroupBaseProps} from './group';
 import * as S from './styles';
 
-interface KeyCommand {
+type KeyCommand = {
   key: ShortcutType | null;
   exec(context: ContextValue, parent: HTMLDivElement): void;
-}
+};
 
 const KeyboardMap = new ShortcutMap<KeyCommand>(
   [

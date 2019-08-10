@@ -90,10 +90,10 @@ if (process.env.NODE_ENV === 'development') {
 // items are automatically opened/closed.
 const INTENT_TIME = 350;
 
-interface KeyCommand {
+type KeyCommand = {
   key: ShortcutType | null;
   exec(stack: MenuStack, manager: MenuManager): MenuStack;
-}
+};
 
 const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
@@ -157,14 +157,14 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
   cmd => cmd.key
 );
 
-export interface Props {
+export type Props = {
   onClose: () => void;
-}
+};
 
-interface State {
+type State = {
   stack: MenuStack;
   phantomProps: PhantomProps | null;
-}
+};
 
 export default class MenuManager extends Component<Props, State> {
   public state: State = {

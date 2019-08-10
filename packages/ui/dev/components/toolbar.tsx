@@ -52,7 +52,7 @@ type Props = {
   toggleState: ToggleStateFunc<State>;
 } & Omit<MenuProps, 'children'>;
 
-export interface State {
+export type State = {
   bold: boolean;
   italic: boolean;
   underline: boolean;
@@ -60,7 +60,7 @@ export interface State {
   superscript: boolean;
   align: string;
   blockStyle: string;
-}
+};
 
 // eslint-disable-next-line react/display-name
 const MoreOptionsMenu = React.forwardRef<MenuType, Props>(

@@ -26,10 +26,10 @@ const Group = styled.div`
   }
 `;
 
-interface ResultDisplayProps {
+type ResultDisplayProps = {
   italic?: boolean;
   bold?: boolean;
-}
+};
 
 const ResultDisplay = styled.div<ResultDisplayProps>`
   font-style: ${ifProp('italic', 'italic')};
@@ -48,18 +48,18 @@ Group.defaultProps = {
   theme: LightTheme,
 };
 
-interface Props {
+type Props = {
   state: State;
   toggleState: ToggleStateFunc<State>;
-}
+};
 
-export interface State {
+export type State = {
   outerDisabled: boolean;
   innerDisabled: boolean;
   italicOuter: boolean;
   italicInner: boolean;
   bold: boolean;
-}
+};
 
 class CommandDemo extends PureComponent<Props> {
   private getOuterCommands = memoizeOne((): CommandSpecMap => {

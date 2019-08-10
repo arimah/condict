@@ -5,7 +5,7 @@ import {Pages, Checkbox, NumberInput} from '../../src';
 
 import {ComponentDemo} from './types';
 
-export interface State {
+export type State = {
   disabled: boolean;
   loading: boolean;
   page: number;
@@ -13,7 +13,7 @@ export interface State {
   totalPages: number;
   contextString: string;
   context: number;
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'Pages',

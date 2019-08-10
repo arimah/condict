@@ -27,14 +27,14 @@ export type Props = {
   'aria-label' | 'type'
 >;
 
-export interface GroupProps {
+export type GroupProps = {
   name?: string | null;
   children: ReactNode;
-}
+};
 
-interface ContextValue {
+type ContextValue = {
   namePrefix: string;
-}
+};
 
 export const RadioGroupContext = React.createContext<ContextValue>({namePrefix: ''});
 

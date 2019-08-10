@@ -8,11 +8,11 @@ import ManagedMenu from './managed-menu';
 
 export const StackContext = React.createContext<MenuStack | null>(null);
 
-export interface MenuContextValue {
+export type MenuContextValue = {
   items: DescendantCollection<MenuItem, HTMLElement>;
   currentFocus: MenuItem | null;
   submenuPlacement: Placement;
-}
+};
 
 export const MenuContext = React.createContext<MenuContextValue | null>(null);
 

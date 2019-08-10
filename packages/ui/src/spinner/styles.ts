@@ -1,8 +1,8 @@
 import styled, {keyframes} from 'styled-components';
 
-export interface SliceProps {
+export type SliceProps = {
   number: number;
-}
+};
 
 const SpinAnimation = keyframes`
   0% {

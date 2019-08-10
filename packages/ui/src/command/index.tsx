@@ -11,33 +11,33 @@ import memoizeOne from 'memoize-one';
 
 import {Shortcut, ShortcutGroup, ShortcutMap, ShortcutType} from './shortcut';
 
-export interface Command {
+export type Command = {
   disabled: boolean;
   exec: (...args: any[]) => any;
   shortcut: ShortcutType | null;
-}
+};
 
-export interface CommandSpec {
+export type CommandSpec = {
   disabled?: boolean;
   exec: (...args: any[]) => any;
   shortcut?: ShortcutType | string | string[] | null;
-}
+};
 
-export interface CommandSpecMap {
+export type CommandSpecMap = {
   [key: string]: CommandSpec;
-}
+};
 
-interface ContextValue {
+type ContextValue = {
   readonly commandMap: Map<string, Command>;
   readonly onExec: (cmd: Command) => void;
   readonly parent: ContextValue | null;
-}
+};
 
-export interface BoundCommand {
+export type BoundCommand = {
   readonly disabled: boolean;
   readonly exec: () => void;
   readonly shortcut: ShortcutType | null;
-}
+};
 
 const Context = React.createContext<ContextValue | null>(null);
 
@@ -80,14 +80,14 @@ function getContextValue(
   };
 }
 
-export interface Props {
+export type Props = {
   commands: CommandSpecMap;
   className?: string;
   disabled?: boolean;
   onExec?: (cmd: Command) => void;
   onKeyDown?: KeyboardEventHandler<HTMLElement> | null;
   children: ReactNode;
-}
+};
 
 const DefaultOnExec = (cmd: Command) => cmd.exec();
 
@@ -178,10 +178,10 @@ const renderChildren = (
   command: BoundCommand | null
 ) => children(command);
 
-export interface ConsumerProps {
+export type ConsumerProps = {
   name: string;
   children: (command: BoundCommand | null) => JSX.Element;
-}
+};
 
 export class CommandConsumer extends Component<ConsumerProps> {
   public static contextType = Context;

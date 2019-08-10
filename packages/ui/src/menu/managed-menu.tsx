@@ -85,14 +85,14 @@ const getSubmenuPlacement = (ownPlacement: Placement) => {
   }
 };
 
-export interface Props {
+export type Props = {
   id?: string;
   name?: string;
   placement: Placement;
   parentRef: RefObject<Element>;
   stack: MenuStack;
   children: ReactNode;
-}
+};
 
 class ManagedMenu extends Component<Props> {
   public readonly items = new DescendantCollection<MenuItem, HTMLElement>(item => item.self);

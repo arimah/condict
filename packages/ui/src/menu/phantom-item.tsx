@@ -6,13 +6,13 @@ import * as S from './styles';
 
 const nextTick = (fn: () => void) => window.setTimeout(() => fn(), 0);
 
-export interface Props {
+export type Props = {
   top: number;
   left: number;
   width: number;
   height: number;
   renderItem: () => JSX.Element;
-}
+};
 
 const PhantomWrapper = (props: Props) => {
   const {

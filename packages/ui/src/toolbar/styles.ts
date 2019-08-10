@@ -4,9 +4,9 @@ import {ifProp, theme} from 'styled-tools';
 import {transition} from '../theme';
 import LightTheme from '../theme/light';
 
-export interface ButtonProps {
+export type ButtonProps = {
   checked?: boolean;
-}
+};
 
 export const Toolbar = styled.div.attrs({
   role: 'toolbar',

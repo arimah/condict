@@ -18,13 +18,13 @@ const HeadingLevels = [
   {value: '6', name: '6'},
 ];
 
-export interface State {
+export type State = {
   minimal: boolean;
   headingLevel: 2 | 3 | 4 | 5 | 6;
   image: boolean;
   description: boolean;
   action: boolean;
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'NonIdealState',

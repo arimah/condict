@@ -13,17 +13,17 @@ import {MenuElement} from '.';
 import MenuManager from './manager';
 import ManagedMenu from './managed-menu';
 
-export interface Props {
+export type Props = {
   menu: MenuElement;
   onToggle?: (open: boolean) => void;
   children: JSX.Element & {
     ref?: Ref<ChildType>;
   };
-}
+};
 
-export interface ChildType {
+export type ChildType = {
   focus: () => void;
-}
+};
 
 const DefaultOnToggle = () => { };
 

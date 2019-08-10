@@ -9,10 +9,10 @@ export type ItemElement = Node & {
 
 export type Descendants = DescendantCollection<RefObject<ItemElement>, ItemElement>;
 
-export interface ContextValue {
+export type ContextValue = {
   descendants: Descendants;
   currentFocus: RefObject<ItemElement> | null;
-}
+};
 
 export const Context = React.createContext<ContextValue | null>(null);
 

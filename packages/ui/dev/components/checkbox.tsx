@@ -11,11 +11,11 @@ const Intents = [
   {value: 'danger', name: 'danger'},
 ];
 
-export interface State {
+export type State = {
   intent: Intent;
   disabled: boolean;
   checked: boolean[];
-}
+};
 
 const demo: ComponentDemo<State> = {
   name: 'Checkbox',

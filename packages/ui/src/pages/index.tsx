@@ -45,12 +45,12 @@ const getBoundaries = (
   return [start, end];
 };
 
-interface ExtraPageProps {
+type ExtraPageProps = {
   label?: string;
   current?: boolean;
   disabled?: boolean;
   children?: ReactNode;
-}
+};
 
 type PageGenerator = (key: Key, page: number, extraProps?: ExtraPageProps) => ReactNode;
 
@@ -124,7 +124,7 @@ const addRelativeNav = (
   }
 };
 
-export interface Props {
+export type Props = {
   className?: string;
   page?: number;
   totalPages?: number;
@@ -133,7 +133,7 @@ export interface Props {
   loading?: boolean;
   disabled?: boolean;
   onChange: (page: number) => void;
-}
+};
 
 export const Pages = React.forwardRef<HTMLElement, Props>((
   props: Props,

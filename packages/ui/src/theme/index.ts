@@ -3,7 +3,7 @@ import {theme} from 'styled-tools';
 
 import Intent from '../intent';
 
-export interface Theme {
+export type Theme = {
   readonly dark: boolean;
   readonly primary: IntentTheme;
   readonly secondary: IntentTheme;
@@ -14,9 +14,9 @@ export interface Theme {
   readonly selection: SelectionTheme;
   readonly timing: TimingTheme;
   readonly shadow: ShadowTheme;
-}
+};
 
-export interface IntentTheme {
+export type IntentTheme = {
   readonly fg: string;
   readonly bg: string;
   readonly hoverBg: string;
@@ -32,36 +32,36 @@ export interface IntentTheme {
   readonly disabledAltBg: string;
   readonly borderColor: string;
   readonly disabledBorderColor: string;
-}
+};
 
-export interface LinkTheme {
+export type LinkTheme = {
   readonly color: string;
   readonly visited: string;
   readonly hover: string;
   readonly active: string;
-}
+};
 
-export interface FocusTheme {
+export type FocusTheme = {
   readonly color: string;
   readonly style: string;
-}
+};
 
-export interface SelectionTheme {
+export type SelectionTheme = {
   readonly bg: string;
   readonly altBg: string;
   readonly borderColor: string;
-}
+};
 
-export interface TimingTheme {
+export type TimingTheme = {
   readonly short: string;
-}
+};
 
-export interface ShadowTheme {
+export type ShadowTheme = {
   readonly color: string;
   readonly elevation1: string;
   readonly elevation2: string;
   readonly elevation3: string;
-}
+};
 
 export type PartialTheme = Partial<{
   [K in keyof Theme]: Partial<Theme[K]>;
@@ -150,10 +150,10 @@ export const extendTheme = (baseTheme: Theme, newTheme: PartialTheme) => {
 
 export const createTheme = (theme: PartialTheme) => extendTheme(DefaultTheme, theme);
 
-export interface IntentProps {
+export type IntentProps = {
   intent: Intent;
   theme: Theme;
-}
+};
 
 export const intentVar =
   (variable: keyof IntentTheme) =>

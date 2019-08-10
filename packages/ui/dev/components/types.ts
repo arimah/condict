@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
 
-export interface ComponentDemo<S extends object = {}, E = S> {
+export type ComponentDemo<S extends object = {}, E = S> = {
   readonly name: string;
   readonly initialState: S;
   readonly alignX?: 'center' | 'stretch';
@@ -9,7 +9,7 @@ export interface ComponentDemo<S extends object = {}, E = S> {
   readonly exportState?: (state: S) => E;
   readonly controls?: ControlsRenderFunc<S>;
   readonly contents: ContentRenderFunc<S>;
-}
+};
 
 export type ControlsRenderFunc<S extends object> = (
   state: S,
