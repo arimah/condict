@@ -1,5 +1,5 @@
 {
   "extends": [
-    "../../eslint-web-ts.config.js"
+    "../../eslint-web.config.js"
   ]
 }
