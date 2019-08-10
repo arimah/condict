@@ -32,6 +32,7 @@ The eventual goal of Condict is to be distributable as a standalone Electron app
 * [dev-server](./packages/dev-server): A small wrapper around Webpack dev server, used by other packages for testing UI components.
 * [gen-id](./packages/gen-id): A microscopic package which exports a single function that generates a random-enough ID string.
 * [ipa](./packages/ipa): Utilities for searching and listing [IPA][] characters.
+* [ipa-input](./packages/ipa-input): A fancy textbox that searches [IPA][] characters.
 * [server](./packages/server): The storage backend.
 * [table-editor](./packages/table-editor): UI components for editing inflection tables. Separate package because of its size and complexity.
 * [ui](./packages/ui): Mostly-general-purpose reusable UI components.
