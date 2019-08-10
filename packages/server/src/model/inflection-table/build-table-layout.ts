@@ -8,10 +8,10 @@ import {
   InflectionTableCellJson,
 } from './types';
 
-export interface TableLayoutResult {
+export type TableLayoutResult = {
   finalLayout: InflectionTableRowJson[];
   stems: string[];
-}
+};
 
 // Collects stem names that are present in an inflection pattern.
 const collectStemNames = (pattern: string, stems: Set<string>) => {

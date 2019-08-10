@@ -43,10 +43,10 @@ export type MutatorResolver = PrototypesOf<
   typeof TagMut
 >;
 
-export interface Resolvers {
+export type Resolvers = {
   model: ModelResolver;
   mut: MutatorResolver;
-}
+};
 
 const AllModels = {
   ...DefinitionModel,

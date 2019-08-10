@@ -4,17 +4,17 @@ import {LanguageId, LanguageInputId} from '../language/types';
 export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
 export type PartOfSpeechInputId = InputIdOf<'PartOfSpeech'>;
 
-export interface PartOfSpeechRow {
+export type PartOfSpeechRow = {
   id: PartOfSpeechId;
   language_id: LanguageId;
   name: string;
-}
+};
 
-export interface NewPartOfSpeechInput {
+export type NewPartOfSpeechInput = {
   languageId: LanguageInputId;
   name: string;
-}
+};
 
-export interface EditPartOfSpeechInput {
+export type EditPartOfSpeechInput = {
   name?: string | null;
-}
+};

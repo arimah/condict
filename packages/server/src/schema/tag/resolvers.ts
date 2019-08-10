@@ -5,10 +5,10 @@ import {TagInputId} from '../../model/tag/types';
 
 import {Resolvers, PageArg} from '../types';
 
-interface TagArgs {
+type TagArgs = {
   id?: TagInputId | null;
   name?: string | null;
-}
+};
 
 const Query: Resolvers<unknown> = {
   tags: (_root, {page}: PageArg, {model: {Tag}}) => Tag.all(page),

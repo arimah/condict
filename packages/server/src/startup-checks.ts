@@ -7,7 +7,7 @@ import {Pool as DatabasePool} from './database/types';
 import {schemaVersion as serverSchemaVersion} from './database/schema';
 
 const getSchemaVersion = async (db: Adaptor) => {
-  interface Row { value: string }
+  type Row = { value: string };
 
   const hasSchemaInfo = await db.tableExists('schema_info');
   if (!hasSchemaInfo) {

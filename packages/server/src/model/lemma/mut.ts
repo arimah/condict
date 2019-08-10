@@ -30,10 +30,10 @@ class LemmaMut extends Mutator {
     languageId: LanguageId,
     terms: ValidTerm[]
   ): Promise<Map<string, LemmaId>> {
-    interface Row {
+    type Row = {
       id: LemmaId;
       term: string;
-    }
+    };
 
     const {db} = this;
 

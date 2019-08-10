@@ -12,9 +12,9 @@ import {LemmaFilter} from '../../model/lemma/types';
 import {Resolvers, Mutators, PageArg} from '../types';
 import {mutator} from '../helpers';
 
-interface LemmasArgs extends PageArg {
+type LemmasArgs = PageArg & {
   filter?: LemmaFilter | null;
-}
+};
 
 const Language: Resolvers<LanguageRow> = {
   urlName: p => p.url_name,
@@ -31,10 +31,10 @@ const Language: Resolvers<LanguageRow> = {
     Tag.allByLanguage(p.id, page),
 };
 
-interface LanguageArgs {
+type LanguageArgs = {
   id?: LanguageInputId | null;
   urlName?: string | null;
-}
+};
 
 const Query: Resolvers<unknown> = {
   languages: (_root, _args, {model: {Language}}) => Language.all(),
@@ -52,14 +52,14 @@ const Query: Resolvers<unknown> = {
   },
 };
 
-interface AddLanguageArgs {
+type AddLanguageArgs = {
   data: NewLanguageInput;
-}
+};
 
-interface EditLanguageArgs {
+type EditLanguageArgs = {
   id: LanguageInputId;
   data: EditLanguageInput;
-}
+};
 
 const Mutation: Mutators<unknown> = {
   addLanguage: mutator(

@@ -18,7 +18,7 @@ export type Awaitable<T> = Promise<T> | T;
 /**
  * Contains the result of a command execution.
  */
-export interface ExecResult<I extends number> {
+export type ExecResult<I extends number> = {
   /**
    * The ID of the last inserted row. If the command passed to `exec` did not
    * insert any rows, the value of this field is unspecified.
@@ -26,11 +26,11 @@ export interface ExecResult<I extends number> {
   insertId: I;
   /** The total number of rows affected by the command. */
   affectedRows: number;
-}
+};
 
-interface DataLoaders {
+type DataLoaders = {
   [k: string]: DataLoader<any, any>;
-}
+};
 
 /**
  * Encapsulates a database connection, which supports queries, commands and

@@ -5,15 +5,15 @@ import {DefinitionId} from '../definition/types';
 export type TagId = IdOf<'Tag'>;
 export type TagInputId = InputIdOf<'Tag'>;
 
-export interface TagRow {
+export type TagRow = {
   id: TagId;
   name: string;
-}
+};
 
-export interface DefinitionTagRow extends TagRow {
+export type DefinitionTagRow = TagRow & {
   definition_id: DefinitionId;
-}
+};
 
-export interface LemmaTagRow extends TagRow {
+export type LemmaTagRow = TagRow & {
   lemma_id: LemmaId;
-}
+};

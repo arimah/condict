@@ -14,12 +14,12 @@ export const enum BlockKind {
   ULIST_ITEM = 'ULIST_ITEM',
 }
 
-export interface BlockElementJson {
+export type BlockElementJson = {
   kind: BlockKind;
   level?: number;
   text: string;
   inlines?: InlineElementJson[];
-}
+};
 
 export const enum InlineKind {
   BOLD = 'BOLD',
@@ -33,42 +33,42 @@ export const enum InlineKind {
 
 export type InlineElementJson = StyleInlineJson | LinkInlineJson;
 
-export interface StyleInlineJson {
+export type StyleInlineJson = {
   kind: Exclude<InlineKind, InlineKind.LINK>;
   start: number;
   end: number;
-}
+};
 
-export interface LinkInlineJson {
+export type LinkInlineJson = {
   kind: InlineKind.LINK;
   start: number;
   end: number;
   linkTarget: string;
-}
+};
 
-export interface TableCaptionJson {
+export type TableCaptionJson = {
   text: string;
   inlines?: InlineElementJson[];
-}
+};
 
-export interface BlockElementInput {
+export type BlockElementInput = {
   kind: BlockKind;
   level?: number | null;
   text: string;
   inlines?: InlineElementInput[] | null;
-}
+};
 
-export interface InlineElementInput {
+export type InlineElementInput = {
   kind: InlineKind;
   start: number;
   end: number;
   linkTarget?: string | null;
-}
+};
 
-export interface TableCaptionInput {
+export type TableCaptionInput = {
   text: string;
   inlines?: InlineElementInput[] | null;
-}
+};
 
 export const enum CondictLinkType {
   LANGUAGE = 'language',
@@ -83,22 +83,22 @@ export type CondictLink
   | DefinitionLink
   | PartOfSpeechLink;
 
-export interface LanguageLink {
+export type LanguageLink = {
   type: CondictLinkType.LANGUAGE;
   id: LanguageId;
-}
+};
 
-export interface LemmaLink {
+export type LemmaLink = {
   type: CondictLinkType.LEMMA;
   id: LemmaId;
-}
+};
 
-export interface DefinitionLink {
+export type DefinitionLink = {
   type: CondictLinkType.DEFINITION;
   id: DefinitionId;
-}
+};
 
-export interface PartOfSpeechLink {
+export type PartOfSpeechLink = {
   type: CondictLinkType.PART_OF_SPEECH;
   id: PartOfSpeechId;
-}
+};

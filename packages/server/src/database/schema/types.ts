@@ -1,6 +1,6 @@
 import Adaptor from '../adaptor';
 
-export interface TableSchema {
+export type TableSchema = {
   /** The name of the table. */
   name: string;
   /**
@@ -40,7 +40,7 @@ export interface TableSchema {
   preImport?: (db: Adaptor, row: any) => Promise<void>;
   /** If true, the rows in this table are not exported. */
   skipExport?: boolean;
-}
+};
 
 
 /**
@@ -70,7 +70,7 @@ export type ColumnSchema
   | JsonColumnSchema
   | FKColumnSchema;
 
-export interface BaseColumnSchema {
+export type BaseColumnSchema = {
   /** The name of the column. */
   name: string;
   /**
@@ -84,17 +84,17 @@ export interface BaseColumnSchema {
   export?: ImportExportFunction;
   /** A function that transforms the column value before it is imported. */
   import?: ImportExportFunction;
-}
+};
 
 /**
  * A column that is defined by the table. Such a column must have a type.
  */
-export interface OwnColumnSchema extends BaseColumnSchema {
+export type OwnColumnSchema = BaseColumnSchema & {
   /** The type of the column. */
   type: ColumnType;
-}
+};
 
-export interface IdColumnSchema extends OwnColumnSchema {
+export type IdColumnSchema = OwnColumnSchema & {
   /** The type of the column. */
   type: ColumnType.ID;
   /*
@@ -102,9 +102,9 @@ export interface IdColumnSchema extends OwnColumnSchema {
    * relevant on columns of type 'id'.
    */
   autoIncrement?: boolean;
-}
+};
 
-export interface BooleanColumnSchema extends OwnColumnSchema {
+export type BooleanColumnSchema = OwnColumnSchema & {
   /** The type of the column. */
   type: ColumnType.BOOLEAN;
   /**
@@ -113,9 +113,9 @@ export interface BooleanColumnSchema extends OwnColumnSchema {
    * Most columns have no default value.
    */
   default?: boolean | null;
-}
+};
 
-export interface IntegerColumnSchema extends OwnColumnSchema {
+export type IntegerColumnSchema = OwnColumnSchema & {
   /** The type of the column. */
   type: ColumnType.UNSIGNED_INT;
   /**
@@ -129,9 +129,9 @@ export interface IntegerColumnSchema extends OwnColumnSchema {
    * Most columns have no default value.
    */
   default?: number | null;
-}
+};
 
-export interface VarcharColumnSchema extends OwnColumnSchema {
+export type VarcharColumnSchema = OwnColumnSchema & {
   /** The type of the column. */
   type: ColumnType.VARCHAR;
   /**
@@ -149,9 +149,9 @@ export interface VarcharColumnSchema extends OwnColumnSchema {
    * Most columns have no default value.
    */
   default?: string | null;
-}
+};
 
-export interface EnumColumnSchema extends OwnColumnSchema {
+export type EnumColumnSchema = OwnColumnSchema & {
   /** The type of the column. */
   type: ColumnType.ENUM;
   /** The valid values of the enumeration. Each value must be unique. */
@@ -162,10 +162,10 @@ export interface EnumColumnSchema extends OwnColumnSchema {
    * Most columns have no default value.
    */
   default?: string | null;
-}
+};
 
 /** A column containing JSON data. */
-export interface JsonColumnSchema extends OwnColumnSchema {
+export type JsonColumnSchema = OwnColumnSchema & {
   /** The type of the column. */
   type: ColumnType.JSON;
   /**
@@ -176,16 +176,16 @@ export interface JsonColumnSchema extends OwnColumnSchema {
    * column.
    */
   contentReferences?: ForeignKeyContentRef[];
-}
+};
 
 /** A column that references another row's `id` column. */
-export interface FKColumnSchema extends BaseColumnSchema {
+export type FKColumnSchema = BaseColumnSchema & {
   /**
    * The foreign key referenced by the column. If omitted, the column is not a
    * foreign key.
    */
   references: ForeignKeyRef;
-}
+};
 
 export const isFKColumn = (def: ColumnSchema): def is FKColumnSchema => {
   return (def as FKColumnSchema).references != null;
@@ -244,7 +244,7 @@ export const enum Collation {
 }
 
 /** A reference to a foreign key. */
-export interface ForeignKeyRef {
+export type ForeignKeyRef = {
   /** The name of the referenced table. */
   table: string;
   /**
@@ -257,7 +257,7 @@ export interface ForeignKeyRef {
    * documentation for details.
    */
   onDelete: ReferenceAction;
-}
+};
 
 /**
  * Determines how to handle changes (updates, deletes) to the row referenced by
@@ -276,7 +276,7 @@ export const enum ReferenceAction {
  * there is no way to update the content in response to changes in the row that
  * is referenced.
  */
-export interface ForeignKeyContentRef {
+export type ForeignKeyContentRef = {
   /** The name of the referenced table. */
   table: string;
   /**
@@ -284,7 +284,7 @@ export interface ForeignKeyContentRef {
    * reference a primary key named `id`.
    */
   column: 'id';
-}
+};
 
 /**
  * When the database is exported, auto-incremented IDs are not preserved. Rather
@@ -292,6 +292,6 @@ export interface ForeignKeyContentRef {
  * to their new values. This type contains a mapping from old ID to new ID, for
  * each table. The key is the table name, the value is the ID mapping.
  */
-export interface NewIdMap {
+export type NewIdMap = {
   [k: string]: Map<number, number>;
-}
+};

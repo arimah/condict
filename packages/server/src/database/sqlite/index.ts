@@ -11,9 +11,9 @@ import {Driver} from '../types';
 import SqliteAdaptor from './adaptor';
 import generateSchema from './schema';
 
-export interface SqliteOptions {
+export type SqliteOptions = {
   file: string;
-}
+};
 
 class DatabasePool {
   private readonly logger: Logger;

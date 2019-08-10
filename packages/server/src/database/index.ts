@@ -6,9 +6,9 @@ import schema from './schema';
 import {TableSchema, ForeignKeyRef} from './schema/types';
 import {Driver} from './types';
 
-interface Drivers {
+type Drivers = {
   [k: string]: Driver | undefined;
-}
+};
 
 const drivers: Drivers = {
   mysql,

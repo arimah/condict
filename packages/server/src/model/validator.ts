@@ -1,9 +1,9 @@
 import {UserInputError} from 'apollo-server';
 
-export interface Validator<I, R> {
+export type Validator<I, R> = {
   do<U>(step: (value: R, paramName: string) => U): Validator<I, U>;
   validate(value: I): R;
-}
+};
 
 const validator = <T>(paramName: string): Validator<T, T> => {
   const chain = <A, B, C>(

@@ -92,10 +92,10 @@ const tables: TableSchema[] = [
       'url_name',
     ],
     async preImport(db, row) {
-      interface Status {
+      type Status = {
         name_taken: number;
         url_name_taken: number;
-      }
+      };
       const result = await db.getRequired<Status>`
         select
           exists (

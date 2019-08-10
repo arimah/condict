@@ -4,19 +4,19 @@ export type LanguageId = IdOf<'Language'>;
 
 export type LanguageInputId = InputIdOf<'Language'>;
 
-export interface LanguageRow {
+export type LanguageRow = {
   id: LanguageId;
   lemma_count: number;
   name: string;
   url_name: string;
-}
+};
 
-export interface NewLanguageInput {
+export type NewLanguageInput = {
   name: string;
   urlName: string;
-}
+};
 
-export interface EditLanguageInput {
+export type EditLanguageInput = {
   name?: string | null;
   urlName?: string | null;
-}
+};

@@ -20,50 +20,50 @@ export type DefinitionInputId = InputIdOf<'Definition'>;
 export type DefinitionInflectionTableId = IdOf<'DefinitionInflectionTable'>;
 export type DefinitionInflectionTableInputId = InputIdOf<'DefinitionInflectionTable'>;
 
-export interface DefinitionRow {
+export type DefinitionRow = {
   id: DefinitionId;
   lemma_id: LemmaId;
   language_id: LanguageId;
   part_of_speech_id: PartOfSpeechId;
   term: string;
-}
+};
 
-export interface DefinitionDescriptionRow {
+export type DefinitionDescriptionRow = {
   definition_id: DefinitionId;
   /** JSON-serialized data */
   description: string;
-}
+};
 
-export interface DefinitionStemRow {
+export type DefinitionStemRow = {
   definition_id: DefinitionId;
   name: string;
   value: string;
-}
+};
 
-export interface DefinitionInflectionTableRow {
+export type DefinitionInflectionTableRow = {
   id: DefinitionInflectionTableId;
   definition_id: DefinitionId;
   inflection_table_id: InflectionTableId;
   inflection_table_version_id: InflectionTableLayoutId;
   sort_order: number;
   caption: string;
-}
+};
 
-export interface CustomInflectedFormRow {
+export type CustomInflectedFormRow = {
   definition_inflection_table_id: DefinitionInflectionTableId;
   inflected_form_id: InflectedFormId;
   inflected_form: string;
-}
+};
 
-export interface DerivedDefinitionRow {
+export type DerivedDefinitionRow = {
   lemma_id: LemmaId;
   original_definition_id: DefinitionId;
   inflected_form_id: InflectedFormId;
   term: string;
   language_id: LanguageId;
-}
+};
 
-export interface NewDefinitionInput {
+export type NewDefinitionInput = {
   languageId: LanguageInputId;
   term: string;
   partOfSpeechId: PartOfSpeechInputId;
@@ -71,37 +71,37 @@ export interface NewDefinitionInput {
   stems: StemInput[];
   inflectionTables: NewDefinitionInflectionTableInput[];
   tags: string[];
-}
+};
 
-export interface EditDefinitionInput {
+export type EditDefinitionInput = {
   term?: string | null;
   partOfSpeechId?: PartOfSpeechInputId | null;
   description?: BlockElementInput[] | null;
   stems?: StemInput[] | null;
   inflectionTables?: EditDefinitionInflectionTableInput[] | null;
   tags?: string[] | null;
-}
+};
 
-export interface StemInput {
+export type StemInput = {
   name: string;
   value: string;
-}
+};
 
-export interface NewDefinitionInflectionTableInput {
+export type NewDefinitionInflectionTableInput = {
   caption?: TableCaptionInput | null;
   customForms: CustomInflectedFormInput[];
   inflectionTableId: InflectionTableInputId;
-}
+};
 
-export interface EditDefinitionInflectionTableInput {
+export type EditDefinitionInflectionTableInput = {
   id?: DefinitionInflectionTableInputId | null;
   caption?: TableCaptionInput | null;
   customForms: CustomInflectedFormInput[];
   inflectionTableId: InflectionTableInputId;
   upgradeTableLayout?: boolean | null;
-}
+};
 
-export interface CustomInflectedFormInput {
+export type CustomInflectedFormInput = {
   inflectedFormId: InflectedFormInputId;
   value: string;
-}
+};

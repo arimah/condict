@@ -104,14 +104,14 @@ const Query: Resolvers<unknown> = {
     DefinitionInflectionTable.byId(toNumberId(id)),
 };
 
-interface AddDefinitionArgs {
+type AddDefinitionArgs = {
   data: NewDefinitionInput;
-}
+};
 
-interface EditDefinitionArgs {
+type EditDefinitionArgs = {
   id: DefinitionInputId;
   data: EditDefinitionInput;
-}
+};
 
 const Mutation: Mutators<unknown> = {
   addDefinition: mutator(

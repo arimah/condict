@@ -4,14 +4,14 @@ import * as Transport from 'winston-transport';
 
 type Level = 'error' | 'warn' | 'info' | 'debug';
 
-export interface LogFile {
+export type LogFile = {
   path: string;
   level?: Level;
-}
+};
 
-export interface LoggerOptions {
+export type LoggerOptions = {
   files?: LogFile[];
-}
+};
 
 const levels: Record<Level, number> = {
   error: 0,

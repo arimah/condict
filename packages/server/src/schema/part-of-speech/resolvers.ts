@@ -28,14 +28,14 @@ const Query: Resolvers<unknown> = {
     PartOfSpeech.byId(toNumberId(args.id)),
 };
 
-interface AddPartOfSpeechArgs {
+type AddPartOfSpeechArgs = {
   data: NewPartOfSpeechInput;
-}
+};
 
-interface EditPartOfSpeechArgs {
+type EditPartOfSpeechArgs = {
   id: PartOfSpeechInputId;
   data: EditPartOfSpeechInput;
-}
+};
 
 const Mutation: Mutators<unknown> = {
   addPartOfSpeech: mutator(

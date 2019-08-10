@@ -8,17 +8,17 @@ export type InflectionTableLayoutInputId = InputIdOf<'InflectionTableLayout'>;
 export type InflectedFormId = IdOf<'InflectedForm'>;
 export type InflectedFormInputId = InputIdOf<'InflectedForm'>;
 
-export interface InflectionTableRow {
+export type InflectionTableRow = {
   id: InflectionTableId;
   part_of_speech_id: PartOfSpeechId;
   name: string;
-}
+};
 
 /**
  * This type is a combination of inflection_table_versions and inflection_table_layouts,
  * as queried by the InflectionTableLayout model.
  */
-export interface InflectionTableLayoutRow {
+export type InflectionTableLayoutRow = {
   /** The layout version ID */
   id: InflectionTableLayoutId;
   inflection_table_id: InflectionTableId;
@@ -28,9 +28,9 @@ export interface InflectionTableLayoutRow {
   layout: string;
   /** JSON-serialized data */
   stems: string;
-}
+};
 
-export interface InflectedFormRow {
+export type InflectedFormRow = {
   id: InflectedFormId;
   inflection_table_version_id: InflectionTableLayoutId;
   /** Boolean */
@@ -39,46 +39,46 @@ export interface InflectedFormRow {
   custom_display_name: number;
   inflection_pattern: string;
   display_name: string;
-}
+};
 
-export interface NewInflectionTableInput {
+export type NewInflectionTableInput = {
   partOfSpeechId: PartOfSpeechInputId;
   name: string;
   layout: InflectionTableRowInput[];
-}
+};
 
-export interface EditInflectionTableInput {
+export type EditInflectionTableInput = {
   name?: string | null;
   layout?: InflectionTableRowInput[] | null;
-}
+};
 
-export interface InflectionTableRowInput {
+export type InflectionTableRowInput = {
   cells: InflectionTableCellInput[];
-}
+};
 
-export interface InflectionTableCellInput {
+export type InflectionTableCellInput = {
   columnSpan?: number | null;
   rowSpan?: number | null;
   headerText?: string | null;
   inflectedForm?: InflectedFormInput | null;
-}
+};
 
-export interface InflectedFormInput {
+export type InflectedFormInput = {
   id?: InflectedFormInputId | null;
   deriveLemma: boolean;
   inflectionPattern: string;
   displayName: string;
   hasCustomDisplayName: boolean;
-}
+};
 
-export interface InflectionTableRowJson {
+export type InflectionTableRowJson = {
   cells: InflectionTableCellJson[];
-}
+};
 
-export interface InflectionTableCellJson {
+export type InflectionTableCellJson = {
   rowSpan?: number;
   columnSpan?: number;
   headerText?: string;
   inflectedFormId?: InflectedFormId;
-}
+};
 

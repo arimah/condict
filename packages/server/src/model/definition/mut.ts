@@ -330,10 +330,10 @@ class DefinitionMut extends Mutator {
     term: string,
     stemMap: Map<string, string>
   ): Promise<MultiMap<string, InflectedFormId>> {
-    interface Row {
+    type Row = {
       id: DefinitionInflectionTableId;
       inflection_table_version_id: InflectionTableLayoutId;
-    }
+    };
 
     const {db} = this;
     const {DefinitionInflectionTableMut} = this.mut;
@@ -370,11 +370,11 @@ class DefinitionMut extends Mutator {
   private async fetchAllCustomForms(
     definitionTableIds: DefinitionInflectionTableId[]
   ): Promise<Map<DefinitionInflectionTableId, Map<InflectedFormId, string>>> {
-    interface Row {
+    type Row = {
       parent_id: DefinitionInflectionTableId;
       inflected_form_id: InflectedFormId;
       value: string;
-    }
+    };
 
     const {db} = this;
 

@@ -112,7 +112,7 @@ export default class MysqlAdaptor extends Adaptor {
   }
 
   public async tableExists(name: string): Promise<boolean> {
-    interface Row { found: number }
+    type Row = { found: number };
     const {found} = await this.get<Row>`
       select exists (
         select 1

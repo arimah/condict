@@ -115,14 +115,14 @@ const Query: Resolvers<unknown> = {
     InflectedForm.byId(toNumberId(id)),
 };
 
-interface AddInflectionTableArgs {
+type AddInflectionTableArgs = {
   data: NewInflectionTableInput;
-}
+};
 
-interface EditInflectionTableArgs {
+type EditInflectionTableArgs = {
   id: InflectionTableInputId;
   data: EditInflectionTableInput;
-}
+};
 
 const Mutation: Mutators<unknown> = {
   addInflectionTable: mutator(

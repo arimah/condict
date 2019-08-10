@@ -16,12 +16,12 @@ import schema from './schema';
 import {Context} from './schema/types';
 import createModelResolvers from './model';
 
-export interface ServerConfig {
+export type ServerConfig = {
   database: {
     type: string;
   };
   log: LoggerOptions;
-}
+};
 
 // Generates a short, pseudo-random request ID.
 // Exclusively for use in logs, so you can identify

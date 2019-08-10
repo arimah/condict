@@ -117,7 +117,7 @@ export default class SqliteAdaptor extends Adaptor {
   }
 
   public tableExists(name: string): boolean {
-    interface Row { found: number }
+    type Row = { found: number };
     const {found} = this.get<Row>`
       select exists (
         select 1

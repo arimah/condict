@@ -21,22 +21,22 @@ import {
 } from './types';
 import deriveForms from './derive-forms';
 
-export interface DefinitionInflectionTableResult {
+export type DefinitionInflectionTableResult = {
   id: DefinitionInflectionTableId;
   derivedForms: Map<InflectedFormId, string>;
-}
+};
 
-export interface DefinitionData {
+export type DefinitionData = {
   id: DefinitionId;
   term: string;
   stemMap: Map<string, string>;
   partOfSpeechId: PartOfSpeechId;
-}
+};
 
-interface ValidateInflectionTableResult {
+type ValidateInflectionTableResult = {
   inflectionTable: InflectionTableRow;
   currentLayout: InflectionTableLayoutRow;
-}
+};
 
 export default class DefinitionInflectionTableMut extends Mutator {
   public async insert(

@@ -4,12 +4,12 @@ import {LanguageId} from '../language/types';
 export type LemmaId = IdOf<'Lemma'>;
 export type LemmaInputId = InputIdOf<'Lemma'>;
 
-export interface LemmaRow {
+export type LemmaRow = {
   id: LemmaId;
   language_id: LanguageId;
   term_unique: string;
   term_display: string;
-}
+};
 
 export const enum LemmaFilter {
   ALL_LEMMAS = 'ALL_LEMMAS',
