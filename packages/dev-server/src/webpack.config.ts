@@ -3,13 +3,13 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import HtmlReplaceWebpackPlugin from 'html-replace-webpack-plugin';
 import 'html-replace-webpack-plugin';
 
-interface Options {
+type Options = {
   entry: string;
   rootDir: string | string[];
   contentBase?: string;
   title: string;
   template: string;
-}
+};
 
 export default ({
   entry,

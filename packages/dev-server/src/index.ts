@@ -6,7 +6,7 @@ import chalk from 'chalk';
 
 import getWebpackConfig from './webpack.config';
 
-interface Options {
+type Options = {
   entry: string;
   rootDir: string;
   contentBase?: string;
@@ -14,7 +14,7 @@ interface Options {
   template?: string;
   port?: number;
   host?: string;
-}
+};
 
 export function start(options: Options) {
   const {entry, rootDir} = options;
