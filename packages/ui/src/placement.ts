@@ -11,6 +11,46 @@ const enum Placement {
 
 export default Placement;
 
+export type Point = {
+  x: number;
+  y: number;
+};
+
+export type RelativeParent = Element | DOMRect | ClientRect | Point;
+
+type ParentRect = {
+  readonly left: number;
+  readonly right: number;
+  readonly top: number;
+  readonly bottom: number;
+  readonly width: number;
+  readonly height: number;
+}
+
+const isElement = (parent: RelativeParent): parent is Element =>
+  (parent as any).nodeType != undefined;
+
+const isDomRect = (parent: RelativeParent): parent is DOMRect | ClientRect =>
+  (parent as any).left != undefined && (parent as any).width != undefined;
+
+const getParentRect = (parent: RelativeParent): ParentRect => {
+  if (isElement(parent)) {
+    const elemRect = parent.getBoundingClientRect();
+    return elemRect;
+  }
+  if (isDomRect(parent)) {
+    return parent;
+  }
+  return {
+    left: parent.x,
+    right: parent.x,
+    top: parent.y,
+    bottom: parent.y,
+    width: 0,
+    height: 0,
+  };
+};
+
 const getViewport = () => ({
   top: window.scrollY,
   left: window.scrollX,
@@ -52,11 +92,11 @@ const clamp = (value: number, min: number, max: number) =>
 
 export const placeElement = (
   elem: HTMLElement | SVGElement,
-  parentElem: Element,
+  parent: RelativeParent,
   placement: Placement
 ) => {
   const elemRect = elem.getBoundingClientRect();
-  const parentRect = parentElem.getBoundingClientRect();
+  const parentRect = getParentRect(parent);
   const viewport = getViewport();
 
   // Vertical position first.

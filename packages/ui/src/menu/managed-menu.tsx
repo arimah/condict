@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import memoizeOne from 'memoize-one';
 
 import DescendantCollection from '../descendant-collection';
-import Placement, {placeElement} from '../placement';
+import Placement, {RelativeParent, placeElement} from '../placement';
 
 import * as S from './styles';
 import MenuStack from './menu-stack';
@@ -89,7 +89,7 @@ export type Props = {
   id?: string;
   name?: string;
   placement: Placement;
-  parentRef: RefObject<Element>;
+  parentRef: RefObject<RelativeParent>;
   stack: MenuStack;
   children: ReactNode;
 };

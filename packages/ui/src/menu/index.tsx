@@ -1,6 +1,6 @@
 import React, {ReactNode, Ref, RefObject} from 'react';
 
-import Placement from '../placement';
+import Placement, {RelativeParent} from '../placement';
 
 import {useStack} from './context';
 import ManagedMenu from './managed-menu';
@@ -12,7 +12,7 @@ export type Props = {
   id?: string;
   name?: string;
   placement?: Placement;
-  parentRef?: RefObject<Element>;
+  parentRef?: RefObject<RelativeParent>;
   children: ReactNode;
 };
 
