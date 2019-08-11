@@ -52,4 +52,4 @@ export {default as DarkTheme} from './theme/dark';
 export {default as LightTheme} from './theme/light';
 
 export {default as Intent} from './intent';
-export {default as Placement, placeElement} from './placement';
+export {default as Placement, RelativeParent, placeElement} from './placement';
