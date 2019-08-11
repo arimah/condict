@@ -167,6 +167,10 @@ type State = {
 };
 
 export default class MenuManager extends Component<Props, State> {
+  public static defaultProps = {
+    onClose: () => { },
+  };
+
   public state: State = {
     stack: new MenuStack(),
     phantomProps: null,
