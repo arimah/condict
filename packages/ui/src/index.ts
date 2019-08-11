@@ -5,6 +5,7 @@ export {ConlangFlag, Props as ConlangFlagProps} from './conlang-flag';
 export {GlobalStyles} from './global-styles';
 export {Menu, Props as MenuProps, MenuElement, MenuRef, MenuType} from './menu';
 export {default as MenuTrigger} from './menu/trigger';
+export {default as ContextMenuTrigger} from './menu/context-trigger';
 export {default as MenuManager} from './menu/manager';
 export {NonIdealState, Props as NonIdealStateProps} from './non-ideal-state';
 export {

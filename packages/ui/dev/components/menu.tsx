@@ -8,14 +8,20 @@ import PageNumbersIcon from 'mdi-react/Numeric1BoxMultipleOutlineIcon';
 
 import {
   Menu,
+  MenuType,
+  MenuProps,
   MenuTrigger,
+  ContextMenuTrigger,
   Button,
   Shortcut,
   Placement,
   Select,
   Checkbox,
 } from '../../src';
-import {ComponentDemo} from './types';
+
+import Demo from '../demo';
+
+import {ComponentDemo, SetStateFunc, ToggleStateFunc} from './types';
 
 const {Item, CheckItem, Separator} = Menu;
 
@@ -47,6 +53,98 @@ export type State = {
   printGridLines: boolean;
   printGuides: boolean;
 };
+
+type DemoMenuProps = {
+  state: State;
+  setState: SetStateFunc<State>;
+  toggleState: ToggleStateFunc<State>;
+} & Omit<MenuProps, 'children'>;
+
+const DemoMenu = React.forwardRef<MenuType, DemoMenuProps>((
+  {state, setState, toggleState, ...otherProps}: DemoMenuProps,
+  ref
+) =>
+  // Please never design a menu like this in real life.
+  <Menu {...otherProps} placement={state.placement} ref={ref}>
+    <Item label='New file' icon={<FileIcon/>} shortcut={NewShortcut}/>
+    <Item label='Open file...' icon={<OpenIcon/>} shortcut={OpenShortcut}/>
+    <Item label='Open recent'>
+      <Item label='1. some_random_file.txt'/>
+      <Item label='2. foobar_baz.txt'/>
+      <Item label='3. location_of_atlantis.md'/>
+      <Separator/>
+      <Item label='Clear recent'/>
+    </Item>
+    <Separator/>
+    <Item disabled label='Save' icon={<SaveIcon/>} shortcut={SaveShortcut}/>
+    <Item label='Save as...'/>
+    <Separator/>
+    <Item label='Line style'>
+      <div role='group'>
+        <CheckItem
+          radio
+          label='Dotted'
+          checked={state.lineStyle === 'dotted'}
+          onActivate={() => setState({lineStyle: 'dotted'})}
+        />
+        <CheckItem
+          radio
+          label='Dashed'
+          checked={state.lineStyle === 'dashed'}
+          onActivate={() => setState({lineStyle: 'dashed'})}
+        />
+        <CheckItem
+          radio
+          label='Solid'
+          checked={state.lineStyle === 'solid'}
+          onActivate={() => setState({lineStyle: 'solid'})}
+        />
+      </div>
+    </Item>
+    <Separator/>
+    <Item label='Print' icon={<PrintIcon/>} shortcut={PrintShortcut}/>
+    <Item label='Print options'>
+      <CheckItem
+        label='Headers'
+        checked={state.printHeaders}
+        onActivate={() => toggleState('printHeaders')}
+      />
+      <CheckItem
+        label='Footers'
+        checked={state.printFooters}
+        onActivate={() => toggleState('printFooters')}
+      />
+      <CheckItem
+        label='Page numbers'
+        icon={<PageNumbersIcon/>}
+        checked={state.printPageNumbers}
+        onActivate={() => toggleState('printPageNumbers')}
+      />
+      <Separator/>
+      <Item label='More options'>
+        <CheckItem
+          label='Grid lines'
+          checked={state.printGridLines}
+          onActivate={() => toggleState('printGridLines')}
+        />
+        <CheckItem
+          label='Guides and markers'
+          checked={state.printGuides}
+          onActivate={() => toggleState('printGuides')}
+        />
+        <Separator/>
+        <Item label='Full print options...'/>
+      </Item>
+    </Item>
+    <Item disabled label='Additional things'>
+      <Item label='If this shows up, something has gone wrong'/>
+    </Item>
+    <Separator/>
+    <Item label='Close file' shortcut={CloseShortcut}/>
+    <Separator/>
+    <Item label='Exit'/>
+  </Menu>
+);
 
 const demo: ComponentDemo<State> = {
   name: 'Menu',
@@ -83,92 +181,34 @@ const demo: ComponentDemo<State> = {
     />,
   ],
   contents: (state, setState, toggleState) =>
-    <MenuTrigger
-      menu={
-        // Please never design a menu like this in real life.
-        <Menu placement={state.placement}>
-          <Item label='New file' icon={<FileIcon/>} shortcut={NewShortcut}/>
-          <Item label='Open file...' icon={<OpenIcon/>} shortcut={OpenShortcut}/>
-          <Item label='Open recent'>
-            <Item label='1. some_random_file.txt'/>
-            <Item label='2. foobar_baz.txt'/>
-            <Item label='3. location_of_atlantis.md'/>
-            <Separator/>
-            <Item label='Clear recent'/>
-          </Item>
-          <Separator/>
-          <Item disabled label='Save' icon={<SaveIcon/>} shortcut={SaveShortcut}/>
-          <Item label='Save as...'/>
-          <Separator/>
-          <Item label='Line style'>
-            <div role='group'>
-              <CheckItem
-                radio
-                label='Dotted'
-                checked={state.lineStyle === 'dotted'}
-                onActivate={() => setState({lineStyle: 'dotted'})}
-              />
-              <CheckItem
-                radio
-                label='Dashed'
-                checked={state.lineStyle === 'dashed'}
-                onActivate={() => setState({lineStyle: 'dashed'})}
-              />
-              <CheckItem
-                radio
-                label='Solid'
-                checked={state.lineStyle === 'solid'}
-                onActivate={() => setState({lineStyle: 'solid'})}
-              />
-            </div>
-          </Item>
-          <Separator/>
-          <Item label='Print' icon={<PrintIcon/>} shortcut={PrintShortcut}/>
-          <Item label='Print options'>
-            <CheckItem
-              label='Headers'
-              checked={state.printHeaders}
-              onActivate={() => toggleState('printHeaders')}
+    <Demo.List>
+      <Demo.Row>
+        <MenuTrigger
+          menu={
+            <DemoMenu
+              state={state}
+              setState={setState}
+              toggleState={toggleState}
             />
-            <CheckItem
-              label='Footers'
-              checked={state.printFooters}
-              onActivate={() => toggleState('printFooters')}
+          }
+        >
+          <Button label='Open menu'/>
+        </MenuTrigger>
+      </Demo.Row>
+      <Demo.Row>
+        <ContextMenuTrigger
+          menu={
+            <DemoMenu
+              state={state}
+              setState={setState}
+              toggleState={toggleState}
             />
-            <CheckItem
-              label='Page numbers'
-              icon={<PageNumbersIcon/>}
-              checked={state.printPageNumbers}
-              onActivate={() => toggleState('printPageNumbers')}
-            />
-            <Separator/>
-            <Item label='More options'>
-              <CheckItem
-                label='Grid lines'
-                checked={state.printGridLines}
-                onActivate={() => toggleState('printGridLines')}
-              />
-              <CheckItem
-                label='Guides and markers'
-                checked={state.printGuides}
-                onActivate={() => toggleState('printGuides')}
-              />
-              <Separator/>
-              <Item label='Full print options...'/>
-            </Item>
-          </Item>
-          <Item disabled label='Additional things'>
-            <Item label='If this shows up, something has gone wrong'/>
-          </Item>
-          <Separator/>
-          <Item label='Close file' shortcut={CloseShortcut}/>
-          <Separator/>
-          <Item label='Exit'/>
-        </Menu>
-      }
-    >
-      <Button label='Open menu'/>
-    </MenuTrigger>,
+          }
+        >
+          <Button label='I have a context menu'/>
+        </ContextMenuTrigger>
+      </Demo.Row>
+    </Demo.List>,
 };
 
 export default demo;

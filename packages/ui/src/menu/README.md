@@ -7,6 +7,7 @@
 * [`<Menu.Separator>`](#menuseparator)
 * [`<MenuManager>`](#menumanager)
 * [`<MenuTrigger>`](#menutrigger)
+* [`<ContextMenuTrigger>`](#contextmenutrigger)
 
 ---
 
@@ -243,8 +244,30 @@ The `<MenuTrigger>` component does _not_ forward its ref to any underlying eleme
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `menu` | element | _none; required_ | Any React element (but not other renderable, such as string, array or fragment) whose ref resolves to a [`<Menu>`](#menu). Note that you _can_ use a custom component here, as long the ref is forwarded to a `<Menu>`. |
-| `onToggle` | function | no-op | A function that is called when the menu opens or closes. This can be used to track the state of the menu in the parent component. It receives a single boolean argument which is `true` if the menu just opened, `false` if it just closed. The return value is ignored. |
+| `onToggle` | function | no-op | A function that is called when the menu opens or closes. This can be used to track the state of the menu in the trigger component. It receives a single boolean argument which is `true` if the menu just opened, `false` if it just closed. The return value is ignored. |
 | `children` | element | _none; required_ | A single React element (but not other renderable) whose ref resolves to a DOM element. This becomes the menu trigger. The element must support an `onClick` event handler, along with the `aria-owns` and `aria-haspopup` props. The menu is positioned relative to the element in the ref. |
+
+Other props are _not_ forwarded to any underlying element.
+
+## `<ContextMenuTrigger>`
+
+The `<ContextMenuTrigger>` component is similar to [`<MenuTrigger>`](#menutrigger), but as its name suggests, is used to attach a context menu. Context menus are typically triggered by right-clicking or pressing the menu button on the keyboard. Using [`React.cloneElement`][cloneelement], the context menu trigger does the following:
+
+* Attaches a unique, random `id` to the menu;
+* Attaches a ref to the trigger element (any existing ref will still be called/updated);
+* Adds an `onContextMenu` prop to the trigger element, which, when called, cancels the default behaviour and opens the custom context menu (any existing `onContextMenu` handler will _not_ be called);
+* Adds the `aria-owns` prop to the trigger element; and
+* Wraps the menu in a [`<MenuManager>`](#menumanager).
+
+The menu is positioned relative to the pointer when opened by right-clicking, and relative to the trigger element when opened by keyboard. The menu's `parentRef`, if any, is overwritten by the `<ContextMenuTrigger>`.
+
+### Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `menu` | element | _none; required_ | Any React element (but not other renderable, such as string, array or fragment) whose ref resolves to a [`<Menu>`](#menu). Note that you _can_ use a custom component here, as long the ref is forwarded to a `<Menu>`. |
+| `onToggle` | function | no-op | A function that is called when the menu opens or closes. This can be used to track the state of the menu in the trigger component. It receives a single boolean argument which is `true` if the menu just opened, `false` if it just closed. The return value is ignored. |
+| `children` | element | _none; required_ | A single React element (but not other renderable) whose ref resolves to a DOM element. This becomes the menu trigger. The element must support an `onContextMenu` event handler, along with the `aria-owns` prop. The menu is positioned relative to the element in the ref when opened by keyboard. |
 
 Other props are _not_ forwarded to any underlying element.
 
