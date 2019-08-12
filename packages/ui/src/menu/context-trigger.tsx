@@ -39,7 +39,6 @@ const ContextMenuTrigger = (props: Props) => {
   const [menuId] = useState(genId);
   const menuRef = useRef<ManagedMenu>(null);
   const childRef = useRef<ChildType>(null);
-  const managerRef = useRef<MenuManager>(null);
   const menuParentRef = useRef<RelativeParent>({ x: 0, y: 0});
   const openMenu = useCallback((e: MouseEvent) => {
     e.preventDefault();
@@ -56,8 +55,8 @@ const ContextMenuTrigger = (props: Props) => {
       // Mouse button pressed or child ref empty - place relative to mouse.
       : { x: e.clientX, y: e.clientY };
 
-    if (managerRef.current && menuRef.current) {
-      managerRef.current.open(menuRef.current);
+    if (menuRef.current) {
+      menuRef.current.open();
       onToggle(true);
     }
   }, [onToggle]);
@@ -81,7 +80,7 @@ const ContextMenuTrigger = (props: Props) => {
 
   return <>
     {childWithMenu}
-    <MenuManager onClose={handleClose} ref={managerRef}>
+    <MenuManager onClose={handleClose}>
       {menuWithExtra}
     </MenuManager>
   </>;

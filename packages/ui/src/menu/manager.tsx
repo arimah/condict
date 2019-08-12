@@ -1,8 +1,9 @@
 import React, {Component, MouseEvent as SyntheticMouseEvent} from 'react';
+import memoizeOne from 'memoize-one';
 
 import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
 
-import {MenuItem, StackContext} from './context';
+import {MenuItem, ManagedTreeContext, ManagedTreeContextValue} from './context';
 import ManagedMenu from './managed-menu';
 import MenuStack from './menu-stack';
 import PhantomItem, {Props as PhantomProps} from './phantom-item';
@@ -227,6 +228,12 @@ export default class MenuManager extends Component<Props, State> {
       } else {
         this.detachEvents();
 
+        const previousRoot =
+          prevStack.openMenus[0] &&
+          prevStack.openMenus[0].menu;
+        if (previousRoot && previousRoot.props.onClose) {
+          previousRoot.props.onClose();
+        }
         if (this.props.onClose)  {
           this.props.onClose();
         }
@@ -272,6 +279,13 @@ export default class MenuManager extends Component<Props, State> {
       this.intentTimeoutId = undefined;
     }
   };
+
+  private getContextValue = memoizeOne((
+    stack: MenuStack
+  ): ManagedTreeContextValue => ({
+    stack,
+    manager: this,
+  }));
 
   private handleMouseMove = (e: SyntheticMouseEvent | MouseEvent) => {
     let {stack} = this.state;
@@ -410,9 +424,9 @@ export default class MenuManager extends Component<Props, State> {
     const {stack, phantomProps} = this.state;
 
     return <>
-      <StackContext.Provider value={stack}>
+      <ManagedTreeContext.Provider value={this.getContextValue(stack)}>
         {children}
-      </StackContext.Provider>
+      </ManagedTreeContext.Provider>
       {phantomProps && <PhantomItem {...phantomProps}/>}
     </>;
   }

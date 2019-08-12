@@ -5,8 +5,15 @@ import Placement from '../placement';
 
 import MenuStack from './menu-stack';
 import ManagedMenu from './managed-menu';
+import MenuManager from './manager';
 
-export const StackContext = React.createContext<MenuStack | null>(null);
+export type ManagedTreeContextValue = {
+  stack: MenuStack;
+  manager: MenuManager;
+};
+
+export const ManagedTreeContext =
+  React.createContext<ManagedTreeContextValue | null>(null);
 
 export type MenuContextValue = {
   items: DescendantCollection<MenuItem, HTMLElement>;
@@ -77,10 +84,10 @@ export const useNearestMenu = (
   };
 };
 
-export const useStack = (): MenuStack => {
-  const stack = useContext(StackContext);
-  if (!stack) {
+export const useManagedTree = (): ManagedTreeContextValue => {
+  const value = useContext(ManagedTreeContext);
+  if (!value) {
     throw new Error('Menu must be mounted inside a MenuManager');
   }
-  return stack;
+  return value;
 };

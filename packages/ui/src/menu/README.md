@@ -11,7 +11,7 @@
 
 ---
 
-The heart of a menu is the [`<Menu>`](#menu) component, which contains any number of menu items and nested submenus. In order to work, a menu must be the descendant of a [`<MenuManager>`](#menumanager). Lastly, the [`<MenuTrigger>`](#menutrigger) component helps to manage individual menus and their triggers.
+The heart of a menu is the [`<Menu>`](#menu) component, which contains any number of menu items and nested submenus. For finer control, a menu (or several) may be placed inside of a [`<MenuManager>`](#menumanager). Lastly, the [`<MenuTrigger>`](#menutrigger) and [`<ContextMenuTrigger>`](#contextmenutrigger) component helps to manage individual menus and their triggers.
 
 Working with menus can be a bit fiddly. Read the documentation carefully to ensure correct implementation.
 
@@ -52,7 +52,6 @@ const SettingsShortcut = Shortcut.parse(...);
 
 // A menu with submenus and a custom placement. Menu items use commands
 // to implement their functionality.
-// (This menu needs a MenuTrigger or MenuManager around it.)
 <Menu placement={Placement.RIGHT_BOTTOM}>
   <Menu.Item icon={<CutIcon/>} label='Cut' command='cut'/>
   <Menu.Item icon={<CopyIcon/>} label='Copy' command='copy'/>
@@ -70,7 +69,6 @@ const SettingsShortcut = Shortcut.parse(...);
 </Menu>
 
 // A menu with a radio group. The group has an accessible name.
-// (This menu needs a MenuTrigger or MenuManager around it.)
 <Menu>
   <div role='group' aria-label='Text alignment'>
     <Menu.CheckItem
@@ -99,7 +97,7 @@ const SettingsShortcut = Shortcut.parse(...);
 
 This component defines a menu – that is, a list of items and possibly nested submenus. This component is _not_ a menu bar; it's only the menu itself.
 
-A `<Menu>` must be the descendant of a [`<MenuManager>`](#menumanager). Attempting to mount a `<Menu>` outside of a `<MenuManager>` will cause an error to be thrown.
+A `<Menu>` may be the descendant of a [`<MenuManager>`](#menumanager), in which case that menu manager will own the menu. Mounting a `<Menu>` outside of a `<MenuManager>` will cause it to construct its own. To open a menu, take a ref to it and call the [`open()`](#menuprototypeopen) method on it, or pass it into its manager's [`open()`](#menumanagerprototypeopen) method.
 
 Menus are rendered using [portals][portal], and as such do not add any DOM elements to their parents.
 
@@ -113,9 +111,18 @@ The `<Menu>` component does not forward its ref to any underlying element.
 | `name` | string | `undefined` | The name of the menu, which is exposed to assistive technologies. |
 | `placement` | [Placement](#placement) | `Placement.BELOW_LEFT` | The placement of the menu, relative to its parent. See more under [Placement](#placement). |
 | `parentRef` | ref | `undefined` | A ref to the element, `DOMRect` or point that the menu is placed relative to. Note that this value is a ref object, like the ones returned by `React.createRef` and the `useRef` hook. When the menu is opened, this ref _must_ contain a visible HTML element, a `DOMRect` or a point (as an object with an `x` and `y` property); otherwise, the menu will not be positioned correctly. If this ref contains a `DOMRect` or a point, it will be treated as screen coordinates. |
+| `onClose` | function | `undefined` | Event handler function that is called when the menu is closed. It receives no arguments. |
 | `children` | node | _none; required_ | The items of the menu, usually some combination of [`<Menu.Item>`](#menuitem), [`<Menu.CheckItem>`](#menucheckitem) and [`<Menu.Separator>`](#menuseparator). The menu will render any elements as children, but only the three components just mentioned will be recognised as menu items. Note that they will be recognised even as indirect descendants, i.e., if nested inside other elements. |
 
 Additional props are _not_ forwarded to any underlying element.
+
+### `Menu.prototype.open`
+
+> `open()`
+
+Opens the menu. If the menu's [manager](#menumanager) already has an open menu, nothing happens.
+
+There is no corresponding `close` method. Menus can only be closed by user interaction, or by unmounting the menu manager. To be notified when the root menu closes, attach an `onClose` prop.
 
 ### Placement
 

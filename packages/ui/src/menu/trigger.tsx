@@ -38,10 +38,9 @@ const MenuTrigger = (props: Props) => {
   const [menuId] = useState(genId);
   const menuRef = useRef<ManagedMenu>(null);
   const childRef = useRef<ChildType>(null);
-  const managerRef = useRef<MenuManager>(null);
   const openMenu = useCallback(() => {
-    if (managerRef.current && menuRef.current) {
-      managerRef.current.open(menuRef.current);
+    if (menuRef.current) {
+      menuRef.current.open();
       onToggle(true);
     }
   }, [onToggle]);
@@ -66,7 +65,7 @@ const MenuTrigger = (props: Props) => {
 
   return <>
     {childWithMenu}
-    <MenuManager onClose={handleClose} ref={managerRef}>
+    <MenuManager onClose={handleClose}>
       {menuWithExtra}
     </MenuManager>
   </>;

@@ -1,9 +1,10 @@
-import React, {ReactNode, Ref, RefObject} from 'react';
+import React, {ReactNode, Ref, RefObject, useContext} from 'react';
 
 import Placement, {RelativeParent} from '../placement';
 
-import {useStack} from './context';
+import {ManagedTreeContext} from './context';
 import ManagedMenu from './managed-menu';
+import MenuManager from './manager';
 import Item from './item';
 import CheckItem from './check-item';
 import Separator from './separator';
@@ -13,6 +14,7 @@ export type Props = {
   name?: string;
   placement?: Placement;
   parentRef?: RefObject<RelativeParent>;
+  onClose?: () => void;
   children: ReactNode;
 };
 
@@ -41,18 +43,34 @@ export const Menu = Object.assign(
       throw new Error('Menu must be mounted with a parentRef. Use a MenuTrigger to assign it automatically.');
     }
 
-    const stack = useStack();
-    return (
-      <ManagedMenu
-        {...otherProps}
-        placement={placement}
-        parentRef={parentRef}
-        stack={stack}
-        ref={ref}
-      >
-        {children}
-      </ManagedMenu>
-    );
+    const tree = useContext(ManagedTreeContext);
+    if (tree) {
+      return (
+        <ManagedMenu
+          {...otherProps}
+          placement={placement}
+          parentRef={parentRef}
+          stack={tree.stack}
+          manager={tree.manager}
+          ref={ref}
+        >
+          {children}
+        </ManagedMenu>
+      );
+    } else {
+      return (
+        <MenuManager>
+          <Menu
+            {...otherProps}
+            placement={placement}
+            parentRef={parentRef}
+            ref={ref}
+          >
+            {children}
+          </Menu>
+        </MenuManager>
+      );
+    }
   }),
   {
     Item,

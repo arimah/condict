@@ -8,6 +8,7 @@ import Placement, {RelativeParent, placeElement} from '../placement';
 import * as S from './styles';
 import MenuStack from './menu-stack';
 import {MenuContext, MenuContextValue, MenuItem} from './context';
+import MenuManager from './manager';
 import getContainer from './container';
 
 const getMenuContextValue = (
@@ -91,6 +92,8 @@ export type Props = {
   placement: Placement;
   parentRef: RefObject<RelativeParent>;
   stack: MenuStack;
+  manager: MenuManager;
+  onClose?: () => void; // called by the MenuManager
   children: ReactNode;
 };
 
@@ -129,6 +132,10 @@ class ManagedMenu extends Component<Props> {
 
   public componentWillUnmount() {
     this.detachEvents();
+  }
+
+  public open() {
+    this.props.manager.open(this);
   }
 
   private attachEvents() {

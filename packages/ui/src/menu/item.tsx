@@ -1,4 +1,4 @@
-import React, {ReactNode, useState, useRef, useContext} from 'react';
+import React, {ReactNode, useState, useRef} from 'react';
 import ChevronRightIcon from 'mdi-react/ChevronRightIcon';
 
 import genId from '@condict/gen-id';
@@ -9,7 +9,7 @@ import combineRefs from '../combine-refs';
 
 import * as S from './styles';
 import ManagedMenu from './managed-menu';
-import {StackContext, useNearestMenu} from './context';
+import {useManagedTree, useNearestMenu} from './context';
 
 export type Props = {
   label: string;
@@ -58,7 +58,7 @@ const Item = React.forwardRef<HTMLDivElement, Props>((
         hasSubmenu={!!children}
       />
   );
-  const stack = useContext(StackContext);
+  const tree = useManagedTree();
 
   return <>
     <S.Item
@@ -85,11 +85,12 @@ const Item = React.forwardRef<HTMLDivElement, Props>((
         {children != null && <ChevronRightIcon/>}
       </S.ItemSubmenu>
     </S.Item>
-    {children && stack &&
+    {children &&
       <ManagedMenu
         id={`${ownId}-menu`}
         name={label}
-        stack={stack}
+        stack={tree.stack}
+        manager={tree.manager}
         placement={submenuPlacement}
         parentRef={ownRef}
         ref={submenuRef}
