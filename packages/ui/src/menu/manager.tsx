@@ -350,10 +350,6 @@ export default class MenuManager extends Component<Props, State> {
   };
 
   private handleKeyDown = (e: KeyboardEvent) => {
-    // The event must not escape the menu system.
-    // TODO: left/right arrows for menu bars.
-    e.stopPropagation();
-
     let {stack} = this.state;
 
     const command = KeyboardMap.get(e);
@@ -368,7 +364,6 @@ export default class MenuManager extends Component<Props, State> {
   };
 
   private handleKeyPress = (e: KeyboardEvent) => {
-    e.stopPropagation();
     e.preventDefault();
 
     const typedText = e.key.trim().toLowerCase();

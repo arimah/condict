@@ -9,6 +9,7 @@ import * as S from './styles';
 import MenuStack from './menu-stack';
 import {MenuContext, MenuContextValue, MenuItem} from './context';
 import MenuManager from './manager';
+import EventSink from './event-sink';
 import getContainer from './container';
 
 const getMenuContextValue = (
@@ -41,6 +42,11 @@ const getDepth = (stack: MenuStack, menu: ManagedMenu) => {
 
 const isMenuOpen = (stack: MenuStack, menu: ManagedMenu) => {
   return stack.openMenus.some(m => m.menu === menu);
+};
+
+const isRootMenu = (stack: MenuStack, menu: ManagedMenu) => {
+  const {openMenus} = stack;
+  return openMenus.length > 0 && openMenus[0].menu === menu;
 };
 
 const isDeepestMenu = (stack: MenuStack, menu: ManagedMenu) => {
@@ -185,8 +191,7 @@ class ManagedMenu extends Component<Props> {
     // Menu trees can get large and complex, so we should only mount children
     // when they are needed. We only need children when the menu is open.
 
-    return ReactDOM.createPortal(
-      // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
+    const menu =
       <S.Menu
         id={id}
         aria-label={name}
@@ -201,7 +206,14 @@ class ManagedMenu extends Component<Props> {
             {children}
           </MenuContext.Provider>
         }
-      </S.Menu>,
+      </S.Menu>;
+
+    return ReactDOM.createPortal(
+      // If this is the root menu, we must install an EventSink around it,
+      // to ensure synthetic events don't escape the menu system.
+      isRootMenu(stack, this)
+        ? <EventSink>{menu}</EventSink>
+        : menu,
       getContainer()
     );
   }
