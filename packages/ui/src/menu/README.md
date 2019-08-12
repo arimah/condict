@@ -143,7 +143,7 @@ The following picture illustrates the available placements:
 
 ## `<Menu.Item>`
 
-The `<Menu.Item>` component represents an activatable menu item. If children are passed to the component, they will be placed inside a submenu of the item. You can attach a [command][] to a menu item, which overrides the `disabled`, `shortcut` and `onActivate` props.
+The `<Menu.Item>` component represents an activatable menu item. If children are passed to the component, they will be placed inside a submenu of the item. You can attach a [command][] to a menu item, which overrides the `shortcut` and `onActivate` props. The command can also disable the menu item.
 
 When an item has a submenu, note the following:
 
@@ -162,7 +162,7 @@ The `<Menu.Item>` component forwards its ref to the outer element (a `<div>`).
 | `label` | string | _none; required_ | The text label of the menu item. |
 | `icon` | node | `null` | The icon of the menu item, shown before the label. The menu item is specifically designed to work with icons from the [mdi-react][] package; other icon sets will not be correctly styled. |
 | `shortcut` | [Shortcut][] or [ShortcutGroup][] | `null` | The shortcut associated with the menu item. This value is used for display and accessibility only; it does not attach any behaviour. If the menu item has a [command][], this prop is ignored. |
-| `disabled` | boolean | `false` | If true, the menu item is disabled. If the menu item has a [command][], this prop is ignored. |
+| `disabled` | boolean | `false` | If true, the menu item is disabled. If the menu item has a [command][], the command can also disable the menu item. |
 | `command` | string | `null` | Attaches the named [command][] to the menu item. The command overrides the `disabled`, `shortcut` and `onActivate` props. |
 | `onActivate` | function | no-op | Event handler function for when the menu item is activated. It receives no arguments, and the return value is ignored. If the menu item has a [command][], this prop is ignored. This function is not invoked on items with submenus. |
 | `children` | node | `undefined` | If present, contains the items of a submenu attached to this menu item. Note that this prop takes the _items_ of the submenu, not a `<Menu>` element. It takes the same children as the [`<Menu>`](#menu) component. Menu items with submenus should not have a shortcut. |
@@ -188,7 +188,7 @@ The `<Menu.CheckItem>` component forwards its ref to the outer element (a `<div>
 | `shortcut` | [Shortcut][] or [ShortcutGroup][] | `null` | The shortcut associated with the menu item. This value is used for display and accessibility only; it does not attach any behaviour. If the menu item has a [command][], this prop is ignored. |
 | `checked` | boolean | `false` | Determines whether the menu item is checked. |
 | `radio` | boolean | `false` | If true, the menu item is drawn as a radio button instead of a checkbox. Radio menu items should be placed inside an element with `role="group"` for accessibility. |
-| `disabled` | boolean | `false` | If true, the menu item is disabled. If the menu item has a [command][], this prop is ignored. |
+| `disabled` | boolean | `false` | If true, the menu item is disabled. If the menu item has a [command][], the command can also disable the menu item. |
 | `command` | string | `null` | Attaches the named [command][] to the menu item. The command overrides the `disabled`, `shortcut` and `onActivate` props. |
 | `onActivate` | function | no-op | Event handler function for when the menu item is activated. It receives no arguments, and the return value is ignored. If the menu item has a [command][], this prop is ignored. |
 

@@ -41,7 +41,7 @@ export const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) =>
       slim={slim}
       minimal={minimal}
       intent={intent}
-      disabled={command !== null ? command.disabled : disabled}
+      disabled={command !== null ? command.disabled || disabled : disabled}
       onClick={command !== null ? command.exec : onClick}
       type={type}
       ref={ref}

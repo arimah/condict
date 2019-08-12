@@ -4,7 +4,7 @@ A button can be rendered either as a `<button>` (using [`<Button>`](#button)) or
 
 ## `<Button>`
 
-Buttons have support for [commands][command], via the `command` prop. When a button has a command, the `disabled` and `onClick` props are set by the command.
+Buttons have support for [commands][command], via the `command` prop. When a button has a command, the `onClick` prop is set by the command. The command can also disable the button.
 
 Buttons forward their ref to the underlying element, which is a `<button>`.
 
@@ -42,7 +42,7 @@ import {Button} from '@condict/ui';
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
-| `disabled` | boolean | `false` | If true, the button is disabled. This prop has no effect on link buttons. If the button has a [command][], this prop is ignored. |
+| `disabled` | boolean | `false` | If true, the button is disabled. This prop has no effect on link buttons. If the button has a [command][], the command can also disable the button. |
 | `minimal` | boolean | `false` | If true, applies minimal styling to the button. Basically, it removes the background. |
 | `intent` | one of `'primary'`, `'secondary'`, `'danger'` | `'primary'` | Determines what intent styling to give the button. |
 | `slim` | boolean | `false` | If true, reduce the button's padding, to make it fit better alongside text inputs, selects, and similar. |

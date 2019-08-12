@@ -38,7 +38,7 @@ const CheckItem = React.forwardRef<HTMLDivElement, Props>((
   } = props;
 
   const command = useCommand(commandName);
-  const effectiveDisabled = command ? command.disabled : disabled;
+  const effectiveDisabled = command ? command.disabled || disabled : disabled;
   const effectiveShortcut = command ? command.shortcut : shortcut;
 
   const [ownId] = useState(genId);

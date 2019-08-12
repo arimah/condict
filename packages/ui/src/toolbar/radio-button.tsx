@@ -128,7 +128,7 @@ const RadioButton = React.forwardRef<HTMLButtonElement, Props>((
       }
       tabIndex={isCurrent ? 0 : -1}
       title={formatTooltip(label, effectiveShortcut)}
-      disabled={command ? command.disabled : disabled}
+      disabled={command ? command.disabled || disabled : disabled}
       onClick={command ? command.exec : onClick}
       ref={combineRefs(ref, ownRef)}
     >
