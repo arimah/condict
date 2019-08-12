@@ -41,6 +41,7 @@ const OpenShortcut = Shortcut.parse('Primary+O o');
 const SaveShortcut = Shortcut.parse('Primary+S s');
 const PrintShortcut = Shortcut.parse('Primary+P p');
 const CloseShortcut = Shortcut.parse('Primary+W w');
+const ClearRecentShortcut = Shortcut.parse('Primary+Shift+Delete');
 
 export type State = {
   placement: Placement;
@@ -73,7 +74,7 @@ const DemoMenu = React.forwardRef<MenuType, DemoMenuProps>((
       <Item label='2. foobar_baz.txt'/>
       <Item label='3. location_of_atlantis.md'/>
       <Separator/>
-      <Item label='Clear recent'/>
+      <Item label='Clear recent' shortcut={ClearRecentShortcut}/>
     </Item>
     <Separator/>
     <Item disabled label='Save' icon={<SaveIcon/>} shortcut={SaveShortcut}/>

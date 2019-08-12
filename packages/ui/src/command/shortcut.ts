@@ -64,6 +64,23 @@ const formatAriaModifiers: ModifierFormatter = isOSX
     // Secondary = Control
     `${primary || secondary ? 'Control+' : ''}${shift ? 'Shift+' : ''}${alt ? 'Alt+' : ''}`;
 
+// Translates a small number of special keys into a more palatable name.
+// Some of these choices may be questionable.
+const translateKeyName = (name: string) => {
+  switch (name) {
+    case ' ': return 'Space';
+    case 'ArrowDown': return 'Down';
+    case 'ArrowLeft': return 'Left';
+    case 'ArrowRight': return 'Right';
+    case 'ArrowUp': return 'Up';
+    case 'Backspace': return 'Back';
+    case 'Delete': return 'Del';
+    case 'Escape': return 'Esc';
+    case 'Insert': return 'Ins';
+    default: return name;
+  }
+};
+
 export type ShortcutConfig = {
   keys: string | string[];
   primary: boolean | 'secondary';
@@ -132,7 +149,7 @@ export class Shortcut {
       this.shift,
       this.alt
     );
-    return `${modifiers}${this.keys[0]}`;
+    return `${modifiers}${translateKeyName(this.keys[0])}`;
   }
 
   public toAriaString(): string {
