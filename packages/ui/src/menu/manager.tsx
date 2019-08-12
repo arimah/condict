@@ -248,20 +248,20 @@ export default class MenuManager extends Component<Props, State> {
   }
 
   private attachEvents() {
-    document.body.addEventListener('mousemove', this.handleMouseMove);
-    document.body.addEventListener('mousedown', this.handleMouseDown);
-    document.body.addEventListener('click', this.handleClick);
-    document.body.addEventListener('keydown', this.handleKeyDown);
-    document.body.addEventListener('keypress', this.handleKeyPress);
+    document.addEventListener('mousemove', this.handleMouseMove);
+    document.addEventListener('mousedown', this.handleMouseDown);
+    document.addEventListener('click', this.handleClick);
+    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('keypress', this.handleKeyPress);
     window.addEventListener('blur', this.handleWindowBlur);
   }
 
   private detachEvents() {
-    document.body.removeEventListener('mousemove', this.handleMouseMove);
-    document.body.removeEventListener('mousedown', this.handleMouseDown);
-    document.body.removeEventListener('click', this.handleClick);
-    document.body.removeEventListener('keydown', this.handleKeyDown);
-    document.body.removeEventListener('keypress', this.handleKeyPress);
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('mousedown', this.handleMouseDown);
+    document.removeEventListener('click', this.handleClick);
+    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('keypress', this.handleKeyPress);
     window.removeEventListener('blur', this.handleWindowBlur);
   }
 
