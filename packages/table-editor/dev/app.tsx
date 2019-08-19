@@ -13,6 +13,7 @@ import {
   Button,
   Switch,
   Toolbar,
+  Menu,
   CommandGroup,
   Shortcuts,
   DarkTheme,
@@ -405,6 +406,12 @@ class App extends Component<{}, State> {
                 <InflectionTableEditor
                   disabled={disabled}
                   value={value}
+                  contextMenuExtra={
+                    <>
+                      <Menu.Item label='Undo' command='undo'/>
+                      <Menu.Item label='Redo' command='redo'/>
+                    </>
+                  }
                   onChange={onChange}
                 />
               }
@@ -463,6 +470,12 @@ class App extends Component<{}, State> {
                   onChange={onChange}
                   term={term}
                   stems={stems}
+                  contextMenuExtra={
+                    <>
+                      <Menu.Item label='Undo' command='undo'/>
+                      <Menu.Item label='Redo' command='redo'/>
+                    </>
+                  }
                 />
               }
             </EditorDemo>

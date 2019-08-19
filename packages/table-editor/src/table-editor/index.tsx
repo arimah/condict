@@ -3,6 +3,7 @@ import React, {
   ComponentType,
   KeyboardEvent,
   MouseEvent as SyntheticMouseEvent,
+  MutableRefObject,
   ReactNode,
   useCallback,
 } from 'react';
@@ -10,7 +11,14 @@ import {is as immutableIs} from 'immutable';
 
 import {SROnly} from '@condict/a11y-utils';
 import genId from '@condict/gen-id';
-import {Command, CommandGroup, CommandSpecMap} from '@condict/ui';
+import {
+  Command,
+  CommandGroup,
+  CommandSpecMap,
+  Menu,
+  MenuType,
+  RelativeParent,
+} from '@condict/ui';
 
 import Value from '../value';
 import {Cell} from '../value/types';
@@ -25,6 +33,8 @@ import MultiselectCommands from './multiselect-commands';
 import StructureCommands from './structure-commands';
 
 export type Config<D, V extends Value<D>> = {
+  ContextMenu: ComponentType<ContextMenuProps<D, V>>;
+  hasContextMenu: (value: V) => boolean;
   getCellDescription: (cell: Cell<D>) => string;
   canEditStructure: boolean;
   canSelectMultiple: boolean;
@@ -35,6 +45,7 @@ export type Props<D, V extends Value<D>> = {
   value: V;
   className?: string;
   disabled: boolean;
+  contextMenuExtra?: ReactNode;
   onChange: (value: V) => void;
 };
 
@@ -45,9 +56,16 @@ export type CommandProps<D, V extends Value<D>> = {
   onChange: (value: V) => void;
 };
 
+export type ContextMenuProps<D, V extends Value<D>> = {
+  value: V;
+};
+
 export type TableEditorComponent<D, V extends Value<D>> = ComponentType<Props<D, V>> & {
   Commands<E extends keyof JSX.IntrinsicElements | React.ComponentType<unknown> = 'div'>(
-    props: CommandProps<D, V> & Omit<React.ComponentPropsWithoutRef<E>, 'value' | 'disabled' | 'children' | 'onChange' | 'onKeyDown'> & {
+    props: CommandProps<D, V> & Omit<
+      React.ComponentPropsWithoutRef<E>,
+      'value' | 'disabled' | 'children' | 'onChange' | 'onKeyDown'
+    > & {
       as?: E;
     }
   ): JSX.Element;
@@ -57,6 +75,8 @@ function makeTableEditor<D, V extends Value<D>>(
   config: Config<D, V>
 ): TableEditorComponent<D, V> {
   const {
+    ContextMenu,
+    hasContextMenu,
     getCellDescription,
     canEditStructure,
     canSelectMultiple,
@@ -82,6 +102,7 @@ function makeTableEditor<D, V extends Value<D>>(
     editing: boolean;
     editingCell: Cell<D> | null;
     editingTypedValue: string | null;
+    contextMenuOpen: boolean;
   };
 
   class TableEditor extends Component<Props<D, V>, State> {
@@ -96,10 +117,15 @@ function makeTableEditor<D, V extends Value<D>>(
       editing: false,
       editingCell: null,
       editingTypedValue: null,
+      contextMenuOpen: false,
     };
 
     private table = React.createRef<HTMLTableElement>();
     private tableId = genId();
+    private contextMenu = React.createRef<MenuType>();
+    private contextMenuParent: MutableRefObject<RelativeParent> = {
+      current: {x: 0, y: 0},
+    };
 
     private handleCommand = (cmd: Command) => {
       if (this.props.disabled || this.state.editing) {
@@ -150,14 +176,19 @@ function makeTableEditor<D, V extends Value<D>>(
 
     private handleMouseDown = (e: SyntheticMouseEvent) => {
       // If we're in the process of editing a cell, we MUST NOT cancel mouse
-      // events, as the cell editor contains interactive components.
-      if (this.state.editing) {
+      // events, as the cell editor contains interactive components. The table
+      // only cares about primary and secondary button events.
+      if (this.state.editing || !(e.button === 0 || e.button === 2)) {
         return;
       }
 
       // preventDefault mainly to prevent selection of text within the table.
-      // It just feels wrong and weird.
-      e.preventDefault();
+      // It just feels wrong and weird. Only do this on primary button mouse
+      // downs, so as not to disrupt the context menu.
+      if (e.button === 0) {
+        e.preventDefault();
+      }
+
       if (this.props.disabled) {
         return;
       }
@@ -166,15 +197,17 @@ function makeTableEditor<D, V extends Value<D>>(
       if (cellKey) {
         const {value: {selection}} = this.props;
 
-        this.setFocusedCell(cellKey, e.shiftKey);
+        if (e.button === 0 || !selection.isSelected(cellKey)) {
+          this.setFocusedCell(cellKey, e.shiftKey);
 
-        this.setState({
-          mouseDown: true,
-          mouseDownCellKey:
-            !e.shiftKey && cellKey === selection.selectionStart
-              ? cellKey
-              : null,
-        });
+          this.setState({
+            mouseDown: true,
+            mouseDownCellKey:
+              !e.shiftKey && cellKey === selection.selectionStart
+                ? cellKey
+                : null,
+          });
+        }
         document.body.addEventListener('mouseup', this.handleMouseUp, false);
       }
 
@@ -202,17 +235,56 @@ function makeTableEditor<D, V extends Value<D>>(
     };
 
     private handleMouseUp = (e: MouseEvent) => {
+      if (e.button === 0) {
+        e.preventDefault();
+      }
+
+      const {mouseDown, mouseDownCellKey} = this.state;
+      if (mouseDown) {
+        const cellKey = this.findNearestCellKey(e.target as HTMLElement);
+
+        this.setState({mouseDown: false}, () => {
+          if (
+            e.button === 0 &&
+            mouseDownCellKey !== null &&
+            mouseDownCellKey === cellKey
+          ) {
+            this.editFocusedCell();
+          }
+        });
+      }
+      document.body.removeEventListener('mouseup', this.handleMouseUp, false);
+    };
+
+    private handleContextMenu = (e: SyntheticMouseEvent) => {
+      const {value} = this.props;
+      if (this.state.editing) {
+        return;
+      }
+
       e.preventDefault();
 
-      const {mouseDownCellKey} = this.state;
-      const cellKey = this.findNearestCellKey(e.target as HTMLElement);
-
-      this.setState({mouseDown: false}, () => {
-        if (mouseDownCellKey !== null && mouseDownCellKey === cellKey) {
-          this.editFocusedCell();
+      const {contextMenu, contextMenuParent} = this;
+      if (hasContextMenu(value) && contextMenu.current) {
+        if (e.button === 0) {
+          const {selection} = this.props.value;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          contextMenuParent.current = document.getElementById(
+            `${this.tableId}-${selection.focusedCellKey}`
+          )!;
+        } else {
+          contextMenuParent.current = {x: e.clientX, y: e.clientY};
         }
-      });
-      document.body.removeEventListener('mouseup', this.handleMouseUp, false);
+        contextMenu.current.open();
+        this.setState({contextMenuOpen: true});
+      }
+    };
+
+    private handleContextMenuClose = () => {
+      if (this.table.current) {
+        this.table.current.focus();
+        this.setState({contextMenuOpen: false});
+      }
     };
 
     private handleEditInput = (value: Cell<D>) => {
@@ -295,6 +367,7 @@ function makeTableEditor<D, V extends Value<D>>(
         editing,
         editingCell,
         editingTypedValue,
+        contextMenuOpen,
       } = this.state;
       const {rows, selection, layout} = value;
       const editedLayoutCell = editingCell
@@ -321,10 +394,12 @@ function makeTableEditor<D, V extends Value<D>>(
             aria-disabled={disabled ? 'true' : 'false'}
             aria-multiselectable={canSelectMultiple ? 'true' : 'false'}
             aria-describedby={`${this.tableId}-tableHint`}
+            className={contextMenuOpen ? 'force-focus' : undefined}
             onKeyDown={this.handleKeyDown}
             onKeyPress={this.handleKeyPress}
             onMouseDown={this.handleMouseDown}
             onMouseMove={mouseDown ? this.handleMouseMove : undefined}
+            onContextMenu={this.handleContextMenu}
             ref={this.table}
           >
             <tbody>
@@ -354,6 +429,7 @@ function makeTableEditor<D, V extends Value<D>>(
             </tbody>
           </S.Table>
           {this.renderHelper()}
+          {this.renderContextMenu()}
         </CommandGroup>
       );
     }
@@ -376,6 +452,24 @@ function makeTableEditor<D, V extends Value<D>>(
             {!editing && <>Press <b>Enter</b> or <b>F2</b> to edit the current cell.</>}
           </span>
         </S.Helper>
+      );
+    }
+
+    private renderContextMenu() {
+      const {value, contextMenuExtra} = this.props;
+      return (
+        <Menu
+          id={`${this.tableId}-menu`}
+          parentRef={this.contextMenuParent}
+          onClose={this.handleContextMenuClose}
+          ref={this.contextMenu}
+        >
+          <ContextMenu value={value}/>
+          {contextMenuExtra && <>
+            <Menu.Separator/>
+            {contextMenuExtra}
+          </>}
+        </Menu>
       );
     }
 

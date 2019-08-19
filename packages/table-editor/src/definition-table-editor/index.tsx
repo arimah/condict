@@ -9,6 +9,7 @@ import CellEditor from './cell-editor';
 import commands from './commands';
 import getCellDescription from './get-cell-description';
 import StemsContext, {StemsContextValue} from './stems-context';
+import ContextMenu, {hasContextMenu} from './context-menu';
 import {DataFields} from './types';
 
 export {Value as DefinitionTableValue};
@@ -16,6 +17,8 @@ export {Value as DefinitionTableValue};
 const DefinitionTableEditorInner = makeTableEditor<DataFields, Value>({
   CellData,
   CellEditor,
+  ContextMenu,
+  hasContextMenu,
   getCellDescription,
   commands,
   canEditStructure: false,

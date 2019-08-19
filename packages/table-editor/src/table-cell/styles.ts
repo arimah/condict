@@ -42,7 +42,8 @@ export const Cell = styled.td<CellProps>`
     `
   )}
 
-  ${Table}:focus & {
+  ${Table}:focus &,
+  ${Table}.force-focus & {
     ${ifProp('selected', css`
       background-color: ${ifProp('header',
         theme('selection.altBg'),
@@ -81,7 +82,8 @@ export const CellBorder = styled.div<CellBorderProps>`
     theme('general.borderColor')
   )};
 
-  ${Table}:focus & {
+  ${Table}:focus &,
+  ${Table}.force-focus & {
     ${ifProp('focused', theme('focus.style'))}
     border-color: ${props =>
       props.focused ? props.theme.focus.color :
