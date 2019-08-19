@@ -15,7 +15,7 @@ import reduceSelected from '../value-helpers/reduce-selected';
 import Value from './value';
 import {DataFields} from './types';
 
-type Props = ContextMenuProps<DataFields, Value>;
+type Props = ContextMenuProps<Value>;
 
 type SelectionInfo = {
   canSeparateCells: boolean;

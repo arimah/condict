@@ -34,7 +34,7 @@ const getStems = (
 export type Props = {
   term?: string;
   stems?: Map<string, string>;
-} & EditorProps<DataFields, Value>;
+} & EditorProps<Value>;
 
 export const DefinitionTableEditor = Object.assign(
   (props: Props) => {

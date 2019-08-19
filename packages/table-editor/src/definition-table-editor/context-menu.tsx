@@ -5,9 +5,8 @@ import {Menu} from '@condict/ui';
 import {ContextMenuProps} from '../table-editor';
 
 import Value from './value';
-import {DataFields} from './types';
 
-type Props = ContextMenuProps<DataFields, Value>;
+type Props = ContextMenuProps<Value>;
 
 const ContextMenu = ({value}: Props) => {
   const {focusedCellKey} = value.selection;

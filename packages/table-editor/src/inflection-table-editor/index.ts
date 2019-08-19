@@ -10,7 +10,7 @@ import {DataFields} from './types';
 
 export {Value as InflectionTableValue};
 
-export type Props = EditorProps<DataFields, Value>;
+export type Props = EditorProps<Value>;
 
 export const InflectionTableEditor = makeTableEditor<DataFields, Value>({
   CellData,

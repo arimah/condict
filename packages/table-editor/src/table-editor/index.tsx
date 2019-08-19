@@ -33,7 +33,7 @@ import MultiselectCommands from './multiselect-commands';
 import StructureCommands from './structure-commands';
 
 export type Config<D, V extends Value<D>> = {
-  ContextMenu: ComponentType<ContextMenuProps<D, V>>;
+  ContextMenu: ComponentType<ContextMenuProps<V>>;
   hasContextMenu: (value: V) => boolean;
   getCellDescription: (cell: Cell<D>) => string;
   canEditStructure: boolean;
@@ -41,7 +41,7 @@ export type Config<D, V extends Value<D>> = {
   commands: CommandSpecMap;
 } & TableCellConfig<D, V>;
 
-export type Props<D, V extends Value<D>> = {
+export type Props<V extends Value<any>> = {
   value: V;
   className?: string;
   disabled: boolean;
@@ -49,20 +49,20 @@ export type Props<D, V extends Value<D>> = {
   onChange: (value: V) => void;
 };
 
-export type CommandProps<D, V extends Value<D>> = {
+export type CommandProps<V extends Value<any>> = {
   value: V;
   disabled?: boolean;
   children: ReactNode;
   onChange: (value: V) => void;
 };
 
-export type ContextMenuProps<D, V extends Value<D>> = {
+export type ContextMenuProps<V extends Value<any>> = {
   value: V;
 };
 
-export type TableEditorComponent<D, V extends Value<D>> = ComponentType<Props<D, V>> & {
+export type TableEditorComponent<V extends Value<any>> = ComponentType<Props<V>> & {
   Commands<E extends keyof JSX.IntrinsicElements | React.ComponentType<unknown> = 'div'>(
-    props: CommandProps<D, V> & Omit<
+    props: CommandProps<V> & Omit<
       React.ComponentPropsWithoutRef<E>,
       'value' | 'disabled' | 'children' | 'onChange' | 'onKeyDown'
     > & {
@@ -73,7 +73,7 @@ export type TableEditorComponent<D, V extends Value<D>> = ComponentType<Props<D,
 
 function makeTableEditor<D, V extends Value<D>>(
   config: Config<D, V>
-): TableEditorComponent<D, V> {
+): TableEditorComponent<V> {
   const {
     ContextMenu,
     hasContextMenu,
@@ -105,7 +105,7 @@ function makeTableEditor<D, V extends Value<D>>(
     contextMenuOpen: boolean;
   };
 
-  class TableEditor extends Component<Props<D, V>, State> {
+  class TableEditor extends Component<Props<V>, State> {
     public static defaultProps = {
       disabled: false,
       onChange: () => { },
@@ -474,7 +474,10 @@ function makeTableEditor<D, V extends Value<D>>(
     }
 
     public static Commands<E extends keyof JSX.IntrinsicElements | React.ComponentType<unknown> = 'div'>(
-      props: CommandProps<D, V> & Omit<React.ComponentPropsWithoutRef<E>, 'value' | 'disabled' | 'children' | 'onChange' | 'onKeyDown'> & {
+      props: CommandProps<V> & Omit<
+        React.ComponentPropsWithoutRef<E>,
+        'value' | 'disabled' | 'children' | 'onChange' | 'onKeyDown'
+      > & {
         as?: E;
       }
     ) {
