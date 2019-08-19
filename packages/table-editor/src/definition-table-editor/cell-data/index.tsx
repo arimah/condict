@@ -16,13 +16,13 @@ const CellData = ({cell, disabled}: Props) => {
   }
   if (cell.data.customForm !== null) {
     return (
-      <S.CellData>
+      <S.CellData custom disabled={disabled}>
         {cell.data.customForm || <S.DeletedForm disabled={disabled}/>}
       </S.CellData>
     );
   }
   return (
-    <S.CellData inflected>
+    <S.CellData inflected disabled={disabled}>
       <InflectedForm pattern={cell.data.text}/>
     </S.CellData>
   );

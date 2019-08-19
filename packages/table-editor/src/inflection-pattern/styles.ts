@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import {ifProp} from 'styled-tools';
 
 import {
-  makeColorFn,
   LightTheme,
   Saturation,
+  makeColorFn,
 } from '@condict/ui';
 
 export type DisabledProps = {
