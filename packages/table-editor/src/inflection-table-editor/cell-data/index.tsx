@@ -27,7 +27,7 @@ const CellData = ({cell, editing, disabled}: Props) => {
         />}
     </S.CellData>
     {needIcons &&
-      <S.CellIcons disabled={disabled}>
+      <S.CellIcons disabled={disabled} aria-hidden='true'>
         {!data.deriveLemma && <DoNotDeriveLemmaIcon/>}
         {data.hasCustomDisplayName && <CustomDisplayNameIcon/>}
       </S.CellIcons>}
