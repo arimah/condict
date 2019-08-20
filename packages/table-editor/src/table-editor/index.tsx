@@ -25,27 +25,30 @@ import {Cell} from '../value/types';
 import {mapToArray} from '../immutable-utils';
 import makeTableRow from '../table-row';
 import {Config as TableCellConfig} from '../table-cell';
+import {Messages} from '../types';
+import DefaultEditorMessages from '../messages';
 
 import * as S from './styles';
-import describeSelection from './describe-selection';
 import NavigationCommands from './navigation-commands';
 import MultiselectCommands from './multiselect-commands';
 import StructureCommands from './structure-commands';
 
-export type Config<D, V extends Value<D>> = {
-  ContextMenu: ComponentType<ContextMenuProps<V>>;
+export type Config<D, V extends Value<D>, M> = {
+  ContextMenu: ComponentType<ContextMenuProps<V, M>>;
+  DefaultMessages: M;
   hasContextMenu: (value: V) => boolean;
-  getCellDescription: (cell: Cell<D>) => string;
+  getCellDescription: (cell: Cell<D>, messages: M) => string;
   canEditStructure: boolean;
   canSelectMultiple: boolean;
   commands: CommandSpecMap;
-} & TableCellConfig<D, V>;
+} & TableCellConfig<D, V, M>;
 
-export type Props<V extends Value<any>> = {
+export type Props<V extends Value<any>, M> = {
   value: V;
   className?: string;
   disabled: boolean;
   contextMenuExtra?: ReactNode;
+  messages?: Messages & M;
   onChange: (value: V) => void;
 };
 
@@ -56,11 +59,16 @@ export type CommandProps<V extends Value<any>> = {
   onChange: (value: V) => void;
 };
 
-export type ContextMenuProps<V extends Value<any>> = {
+export type ContextMenuProps<V extends Value<any>, M> = {
   value: V;
+  messages: Messages & M;
 };
 
-export type TableEditorComponent<V extends Value<any>> = ComponentType<Props<V>> & {
+export type TableEditorComponent<V extends Value<any>, M> = ComponentType<Props<V, M>> & {
+  defaultProps: {
+    disabled: boolean;
+    onChange: (value: V) => void;
+  };
   Commands<E extends keyof JSX.IntrinsicElements | React.ComponentType<unknown> = 'div'>(
     props: CommandProps<V> & Omit<
       React.ComponentPropsWithoutRef<E>,
@@ -71,11 +79,12 @@ export type TableEditorComponent<V extends Value<any>> = ComponentType<Props<V>>
   ): JSX.Element;
 };
 
-function makeTableEditor<D, V extends Value<D>>(
-  config: Config<D, V>
-): TableEditorComponent<V> {
+function makeTableEditor<D, V extends Value<D>, M>(
+  config: Config<D, V, M>
+): TableEditorComponent<V, M> {
   const {
     ContextMenu,
+    DefaultMessages: DefaultConfigMessages,
     hasContextMenu,
     getCellDescription,
     canEditStructure,
@@ -85,6 +94,11 @@ function makeTableEditor<D, V extends Value<D>>(
   } = config;
 
   const TableRow = makeTableRow(config);
+
+  const DefaultMessages: Messages & M = {
+    ...DefaultEditorMessages,
+    ...DefaultConfigMessages,
+  };
 
   const editingCommands: CommandSpecMap = {
     ...canEditStructure && StructureCommands,
@@ -105,7 +119,7 @@ function makeTableEditor<D, V extends Value<D>>(
     contextMenuOpen: boolean;
   };
 
-  class TableEditor extends Component<Props<V>, State> {
+  class TableEditor extends Component<Props<V, M>, State> {
     public static defaultProps = {
       disabled: false,
       onChange: () => { },
@@ -361,6 +375,7 @@ function makeTableEditor<D, V extends Value<D>>(
         className,
         disabled,
         value,
+        messages = DefaultMessages,
       } = this.props;
       const {
         mouseDown,
@@ -421,6 +436,7 @@ function makeTableEditor<D, V extends Value<D>>(
                     editingCell={containsEditor ? editingCell : null}
                     editingTypedValue={containsEditor ? editingTypedValue : null}
                     editingTableValue={containsEditor ? value : null}
+                    messages={messages}
                     onEditInput={this.handleEditInput}
                     onFinishEdit={this.handleFinishEdit}
                   />
@@ -435,7 +451,7 @@ function makeTableEditor<D, V extends Value<D>>(
     }
 
     private renderHelper() {
-      const {disabled, value} = this.props;
+      const {disabled, value, messages = DefaultMessages} = this.props;
       const {selection} = value;
       const {editing} = this.state;
 
@@ -444,19 +460,20 @@ function makeTableEditor<D, V extends Value<D>>(
       return (
         <S.Helper disabled={disabled}>
           <SROnly id={`${this.tableId}-cellHint`}>
-            {describeSelection(selection)}
-            {cell && getCellDescription(cell)}
+            {selection.size > 1 ? messages.describeSelection(selection) : ''}
+            {cell && getCellDescription(cell, messages)}
           </SROnly>
           <span id={`${this.tableId}-tableHint`}>
-            {editing && <>Press <b>Enter</b> or <b>ESC</b> when done.</>}
-            {!editing && <>Press <b>Enter</b> or <b>F2</b> to edit the current cell.</>}
+            {editing
+              ? messages.cellEditorHelper()
+              : messages.tableEditorHelper()}
           </span>
         </S.Helper>
       );
     }
 
     private renderContextMenu() {
-      const {value, contextMenuExtra} = this.props;
+      const {value, contextMenuExtra, messages = DefaultMessages} = this.props;
       return (
         <Menu
           id={`${this.tableId}-menu`}
@@ -464,7 +481,7 @@ function makeTableEditor<D, V extends Value<D>>(
           onClose={this.handleContextMenuClose}
           ref={this.contextMenu}
         >
-          <ContextMenu value={value}/>
+          <ContextMenu value={value} messages={messages}/>
           {contextMenuExtra && <>
             <Menu.Separator/>
             {contextMenuExtra}

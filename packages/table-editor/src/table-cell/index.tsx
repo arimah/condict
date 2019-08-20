@@ -2,12 +2,13 @@ import React, {ComponentType} from 'react';
 
 import Value from '../value';
 import {Cell} from '../value/types';
+import {Messages} from '../types';
 
 import * as S from './styles';
 
-export type Config<D, V extends Value<D>> = {
+export type Config<D, V extends Value<D>, M> = {
   CellData: ComponentType<CellDataProps<D>>;
-  CellEditor: ComponentType<CellEditorProps<D, V>>;
+  CellEditor: ComponentType<CellEditorProps<D, V, M>>;
   canEditCell: (cell: Cell<D>) => boolean;
 };
 
@@ -17,16 +18,17 @@ export type CellDataProps<D> = {
   disabled: boolean;
 };
 
-export type CellEditorProps<D, V extends Value<D>> = {
+export type CellEditorProps<D, V extends Value<D>, M> = {
   id: string;
   initialCell: Cell<D>;
   typedValue: string | null;
   tableValue: V;
+  messages: Messages & M;
   onInput: (cell: Cell<D>) => void;
   onDone: (cell: Cell<D>) => void;
 };
 
-export type Props<D, V extends Value<D>> = {
+export type Props<D, V extends Value<D>, M> = {
   cell: Cell<D>;
   tableId: string;
   disabled: boolean;
@@ -35,13 +37,14 @@ export type Props<D, V extends Value<D>> = {
   editingCell: Cell<D> | null;
   editingTypedValue: string | null;
   editingTableValue: V | null;
+  messages: Messages & M;
   onEditInput: (cell: Cell<D>) => void;
   onFinishEdit: (cell: Cell<D>) => void;
 };
 
-function makeTableCell<D, V extends Value<D>>(
-  config: Config<D, V>
-): ComponentType<Props<D, V>> {
+function makeTableCell<D, V extends Value<D>, M>(
+  config: Config<D, V, M>
+): ComponentType<Props<D, V, M>> {
   const {
     CellData,
     CellEditor,
@@ -49,7 +52,7 @@ function makeTableCell<D, V extends Value<D>>(
   } = config;
 
   const TableCell = React.memo(
-    (props: Props<D, V>) => {
+    (props: Props<D, V, M>) => {
       const {
         cell,
         tableId,
@@ -59,6 +62,7 @@ function makeTableCell<D, V extends Value<D>>(
         editingCell,
         editingTypedValue,
         editingTableValue,
+        messages,
         onEditInput,
         onFinishEdit,
       } = props;
@@ -105,6 +109,7 @@ function makeTableCell<D, V extends Value<D>>(
               initialCell={editingCell}
               typedValue={editingTypedValue as string}
               tableValue={editingTableValue as V}
+              messages={messages}
               onInput={onEditInput}
               onDone={onFinishEdit}
             />}

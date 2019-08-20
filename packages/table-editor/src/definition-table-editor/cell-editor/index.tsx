@@ -11,11 +11,11 @@ import {Cell} from '../../value/types';
 import Value from '../value';
 import StemsContext, {StemsContextValue} from '../stems-context';
 import inflectWord from '../inflect-word';
-import {DataFields} from '../types';
+import {DataFields, Messages} from '../types';
 
 import * as S from './styles';
 
-export type Props = CellEditorProps<DataFields, Value>;
+export type Props = CellEditorProps<DataFields, Value, Messages>;
 
 type State = {
   trapActive: boolean;
@@ -54,16 +54,11 @@ export default class CellEditor extends PureComponent<Props, State> {
     };
 
     this.focusTrapOptions = {
-      onDeactivate: this.handleDeactivate.bind(this),
+      onDeactivate: this.handleDeactivate,
       returnFocusOnDeactivate: true,
       clickOutsideDeactivates: true,
       escapeDeactivates: true,
     };
-
-    this.emitInput = this.emitInput.bind(this);
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.handleRevertClick = this.handleRevertClick.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   public componentDidMount() {
@@ -132,6 +127,7 @@ export default class CellEditor extends PureComponent<Props, State> {
   };
 
   public render() {
+    const {messages} = this.props;
     const {trapActive} = this.state;
 
     const helperId = `${this.dialogId}-helper`;
@@ -143,14 +139,14 @@ export default class CellEditor extends PureComponent<Props, State> {
         <S.CellEditor
           id={this.props.id}
           role='dialog'
-          aria-label='Edit cell'
+          aria-label={messages.cellEditorTitle()}
           aria-modal='true'
           aria-describedby={helperId}
           tabIndex={-1}
           onKeyDown={this.handleKeyDown}
         >
           <SROnly id={helperId}>
-            Press enter or escape to save and return.
+            {messages.cellEditorSRHelper()}
           </SROnly>
           {this.renderCellInput()}
           {this.renderCellPopup()}
@@ -160,12 +156,13 @@ export default class CellEditor extends PureComponent<Props, State> {
   }
 
   private renderCellInput() {
+    const {messages} = this.props;
     const {cell: {data}, inflectedForm} = this.state;
 
     return (
       <S.CellInput
         value={data.customForm !== null ? data.customForm : inflectedForm}
-        aria-label='Cell value'
+        aria-label={messages.cellValueLabel()}
         aria-describedby={
           data.customForm !== null
             ? `${this.dialogId}-desc`
@@ -180,12 +177,13 @@ export default class CellEditor extends PureComponent<Props, State> {
   }
 
   private renderCellPopup() {
+    const {messages} = this.props;
     const {cell: {data}} = this.state;
 
     if (data.customForm === null) {
       return (
         <SROnly id={`${this.dialogId}-desc`}>
-          Type here to define a custom form.
+          {messages.cellDialogInputHelper()}
         </SROnly>
       );
     }
@@ -194,7 +192,7 @@ export default class CellEditor extends PureComponent<Props, State> {
       <S.CellPopup>
         <S.RevertButton
           slim
-          label='Revert to default form'
+          label={messages.useDefaultFormButton()}
           onClick={this.handleRevertClick}
         />
       </S.CellPopup>

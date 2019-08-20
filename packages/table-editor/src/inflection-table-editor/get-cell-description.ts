@@ -1,16 +1,16 @@
 import {Cell} from '../value/types';
 
-import {DataFields} from './types';
+import {DataFields, Messages} from './types';
 
-export default (cell: Cell<DataFields>) => {
+export default (cell: Cell<DataFields>, messages: Messages) => {
   let description = '';
   if (!cell.header) {
     const {data} = cell;
     if (!data.deriveLemma) {
-      description += 'Not added to the dictionary. ';
+      description += `${messages.noDerivedLemma()} `;
     }
     if (data.hasCustomDisplayName) {
-      description += 'Form has custom name. ';
+      description += `${messages.hasCustomName()} `;
     }
   }
   return description;

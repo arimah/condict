@@ -1,17 +1,17 @@
 import {Cell} from '../value/types';
 
-import {DataFields} from './types';
+import {DataFields, Messages} from './types';
 
-export default (cell: Cell<DataFields>) => {
+export default (cell: Cell<DataFields>, messages: Messages) => {
   if (!cell.header) {
     const {data} = cell;
     switch (data.customForm) {
       case null:
-        return 'Form is inflected automatically. ';
+        return `${messages.formIsInflected()} `;
       case '':
-        return 'Form has been deleted. ';
+        return `${messages.formIsDeleted()} `;
       default:
-        return 'Custom form. ';
+        return `${messages.customForm()} `;
     }
   }
   return '';

@@ -6,16 +6,18 @@ import CellEditor from './cell-editor';
 import ContextMenu from './context-menu';
 import commands from './commands';
 import getCellDescription from './get-cell-description';
-import {DataFields} from './types';
+import DefaultMessages from './messages';
+import {DataFields, Messages} from './types';
 
 export {Value as InflectionTableValue};
 
-export type Props = EditorProps<Value>;
+export type Props = EditorProps<Value, Messages>;
 
-export const InflectionTableEditor = makeTableEditor<DataFields, Value>({
+export const InflectionTableEditor = makeTableEditor<DataFields, Value, Messages>({
   CellData,
   CellEditor,
   ContextMenu,
+  DefaultMessages,
   hasContextMenu: () => true,
   getCellDescription,
   commands,

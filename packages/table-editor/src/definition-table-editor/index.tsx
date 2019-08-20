@@ -10,14 +10,16 @@ import commands from './commands';
 import getCellDescription from './get-cell-description';
 import StemsContext, {StemsContextValue} from './stems-context';
 import ContextMenu, {hasContextMenu} from './context-menu';
-import {DataFields} from './types';
+import DefaultMessages from './messages';
+import {DataFields, Messages} from './types';
 
 export {Value as DefinitionTableValue};
 
-const DefinitionTableEditorInner = makeTableEditor<DataFields, Value>({
+const DefinitionTableEditorInner = makeTableEditor<DataFields, Value, Messages>({
   CellData,
   CellEditor,
   ContextMenu,
+  DefaultMessages,
   hasContextMenu,
   getCellDescription,
   commands,
@@ -34,7 +36,7 @@ const getStems = (
 export type Props = {
   term?: string;
   stems?: Map<string, string>;
-} & EditorProps<Value>;
+} & EditorProps<Value, Messages>;
 
 export const DefinitionTableEditor = Object.assign(
   (props: Props) => {

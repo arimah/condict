@@ -6,8 +6,9 @@ import {mapToArray} from './immutable-utils';
 import Value from './value';
 import Selection from './value/selection';
 import {Cell} from './value/types';
+import {Messages} from './types';
 
-export type Props<D, V extends Value<D>> = {
+export type Props<D, V extends Value<D>, M> = {
   cells: List<Cell<D>>;
   tableId: string;
   disabled: boolean;
@@ -15,17 +16,18 @@ export type Props<D, V extends Value<D>> = {
   editingCell: Cell<D> | null;
   editingTypedValue: string | null;
   editingTableValue: V | null;
+  messages: Messages & M;
   onEditInput: (cell: Cell<D>) => void;
   onFinishEdit: (cell: Cell<D>) => void;
 };
 
-function makeTableRow<D, V extends Value<D>>(
-  config: Config<D, V>
-): ComponentType<Props<D, V>> {
+function makeTableRow<D, V extends Value<D>, M>(
+  config: Config<D, V, M>
+): ComponentType<Props<D, V, M>> {
   const TableCell = makeTableCell(config);
 
   const TableRow = React.memo(
-    (props: Props<D, V>) => {
+    (props: Props<D, V, M>) => {
       const {
         cells,
         tableId,
@@ -34,6 +36,7 @@ function makeTableRow<D, V extends Value<D>>(
         editingCell,
         editingTypedValue,
         editingTableValue,
+        messages,
         onEditInput,
         onFinishEdit,
       } = props;
@@ -63,6 +66,7 @@ function makeTableRow<D, V extends Value<D>>(
                     ? editingTableValue
                     : null
                 }
+                messages={messages}
                 onEditInput={onEditInput}
                 onFinishEdit={onFinishEdit}
               />

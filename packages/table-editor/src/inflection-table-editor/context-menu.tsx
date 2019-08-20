@@ -13,9 +13,9 @@ import {ContextMenuProps} from '../table-editor';
 import reduceSelected from '../value-helpers/reduce-selected';
 
 import Value from './value';
-import {DataFields} from './types';
+import {DataFields, Messages} from './types';
 
-type Props = ContextMenuProps<Value>;
+type Props = ContextMenuProps<Value, Messages>;
 
 type SelectionInfo = {
   canSeparateCells: boolean;
@@ -37,18 +37,7 @@ const getSelectionInfo = (value: Value) =>
     }
   );
 
-const Messages = {
-  toggleHeader: (n: number) =>
-    n === 1 ? 'Header cell' : 'Header cells',
-  toggleDeriveLemma: (n: number) =>
-    n === 1 ? 'Add form to dictionary' : 'Add forms to dictionary',
-  deleteRows: (n: number) =>
-    n === 1 ? 'Delete row' : `Delete ${n} rows`,
-  deleteColumns: (n: number) =>
-    n === 1 ? 'Delete column' : `Delete ${n} columns`,
-};
-
-const ContextMenu = ({value}: Props) => {
+const ContextMenu = ({value, messages}: Props) => {
   const {selection} = value;
   const {focusedCellKey} = selection;
   const focusedCell = value.getCell(focusedCellKey);
@@ -60,60 +49,60 @@ const ContextMenu = ({value}: Props) => {
 
   return <>
     <Menu.CheckItem
-      label={Messages.toggleHeader(selection.size)}
+      label={messages.headerCellMenu(selection.size)}
       checked={focusedCell.header}
       command='toggleHeader'
     />
     <Menu.CheckItem
-      label={Messages.toggleDeriveLemma(selection.size)}
+      label={messages.deriveLemmaMenu(selection.size)}
       checked={sel.hasDataCells && focusedCell.data.deriveLemma}
       command='toggleDeriveLemma'
       disabled={!sel.hasDataCells}
     />
     <Menu.Separator/>
     <Menu.Item
-      label='Merge cells'
+      label={messages.mergeCells()}
       icon={<MergeIcon/>}
       command='mergeSelection'
       disabled={selection.size === 1}
     />
     <Menu.Item
-      label='Separate cells'
+      label={messages.separateCells()}
       command='separateSelection'
       disabled={!sel.canSeparateCells}
     />
     <Menu.Separator/>
-    <Menu.Item label='Insert'>
+    <Menu.Item label={messages.insertSubmenu()}>
       <Menu.Item
-        label='Row above'
+        label={messages.insertRowAbove()}
         icon={<InsertRowAboveIcon/>}
         command='insertRowAbove'
       />
       <Menu.Item
-        label='Row below'
+        label={messages.insertRowBelow()}
         icon={<InsertRowBelowIcon/>}
         command='insertRowBelow'
       />
       <Menu.Separator/>
       <Menu.Item
-        label='Column before'
+        label={messages.insertColumnBefore()}
         icon={<InsertColumnBeforeIcon/>}
         command='insertColumnBefore'
       />
       <Menu.Item
-        label='Column after'
+        label={messages.insertColumnAfter()}
         icon={<InsertColumnAfterIcon/>}
         command='insertColumnAfter'
       />
     </Menu.Item>
     <Menu.Separator/>
     <Menu.Item
-      label={Messages.deleteRows(selection.maxRow - selection.minRow + 1)}
+      label={messages.deleteRows(selection.maxRow - selection.minRow + 1)}
       icon={<DeleteRowIcon/>}
       command='deleteSelectedRows'
     />
     <Menu.Item
-      label={Messages.deleteColumns(selection.maxCol - selection.minCol + 1)}
+      label={messages.deleteColumns(selection.maxCol - selection.minCol + 1)}
       icon={<DeleteColumnIcon/>}
       command='deleteSelectedColumns'
     />

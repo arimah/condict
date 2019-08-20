@@ -5,10 +5,11 @@ import {Menu} from '@condict/ui';
 import {ContextMenuProps} from '../table-editor';
 
 import Value from './value';
+import {Messages} from './types';
 
-type Props = ContextMenuProps<Value>;
+type Props = ContextMenuProps<Value, Messages>;
 
-const ContextMenu = ({value}: Props) => {
+const ContextMenu = ({value, messages}: Props) => {
   const {focusedCellKey} = value.selection;
   const focusedCell = value.getCell(focusedCellKey);
 
@@ -18,12 +19,12 @@ const ContextMenu = ({value}: Props) => {
 
   return <>
     <Menu.Item
-      label='Use default form'
+      label={messages.useDefaultFormMenu()}
       command='restoreSelectedForms'
       disabled={focusedCell.data.customForm === null}
     />
     <Menu.Item
-      label='Delete this form'
+      label={messages.deleteThisForm()}
       command='deleteSelectedForms'
       disabled={focusedCell.data.customForm === ''}
     />

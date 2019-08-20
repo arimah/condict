@@ -12,11 +12,11 @@ import Value from '../value';
 import {Cell} from '../../value/types';
 
 import getDerivedDisplayName from '../get-derived-name';
-import {DataFields} from '../types';
+import {DataFields, Messages} from '../types';
 
 import * as S from './styles';
 
-export type Props = CellEditorProps<DataFields, Value>;
+export type Props = CellEditorProps<DataFields, Value, Messages>;
 
 type State = {
   trapActive: boolean;
@@ -175,6 +175,7 @@ export default class CellEditor extends PureComponent<Props, State> {
   };
 
   public render() {
+    const {messages} = this.props;
     const {trapActive} = this.state;
 
     const helperId = `${this.dialogId}-desc`;
@@ -186,14 +187,14 @@ export default class CellEditor extends PureComponent<Props, State> {
         <S.CellEditor
           id={this.props.id}
           role='dialog'
-          aria-label='Edit cell'
+          aria-label={messages.cellEditorTitle()}
           aria-modal='true'
           aria-describedby={helperId}
           tabIndex={-1}
           onKeyDown={this.handleKeyDown}
         >
           <SROnly id={helperId}>
-            Press enter or escape to save and return.
+            {messages.cellEditorSRHelper()}
           </SROnly>
           {this.renderCellInput()}
           <S.CellPopup>
@@ -207,6 +208,7 @@ export default class CellEditor extends PureComponent<Props, State> {
   }
 
   private renderCellInput() {
+    const {messages} = this.props;
     const {inputFocused, cell} = this.state;
     const {data} = cell;
 
@@ -219,7 +221,7 @@ export default class CellEditor extends PureComponent<Props, State> {
         <S.CellInput
           minimal
           value={data.text}
-          aria-label='Cell value'
+          aria-label={messages.cellValueLabel()}
           borderRadius='0'
           onChange={this.handleTextChange}
           onFocus={this.handleInputFocus}
@@ -237,13 +239,14 @@ export default class CellEditor extends PureComponent<Props, State> {
   }
 
   private renderHeaderToggle() {
+    const {messages} = this.props;
     const {cell} = this.state;
 
     return (
       <S.CellSettingsGroup>
         <Checkbox
           checked={cell.header}
-          label='Header cell'
+          label={messages.headerCellOption()}
           onChange={this.handleHeaderChange}
         />
       </S.CellSettingsGroup>
@@ -251,6 +254,7 @@ export default class CellEditor extends PureComponent<Props, State> {
   }
 
   private renderDeriveLemmaToggle() {
+    const {messages} = this.props;
     const {cell} = this.state;
     if (cell.header) {
       return null;
@@ -260,7 +264,7 @@ export default class CellEditor extends PureComponent<Props, State> {
       <S.CellSettingsGroup>
         <Checkbox
           checked={cell.data.deriveLemma}
-          label='Add form to dictionary'
+          label={messages.deriveLemmaOption()}
           onChange={this.handleDeriveLemmaChange}
         />
       </S.CellSettingsGroup>
@@ -268,6 +272,7 @@ export default class CellEditor extends PureComponent<Props, State> {
   }
 
   private renderDisplayNameInput() {
+    const {messages} = this.props;
     const {cell, displayName} = this.state;
     if (cell.header) {
       return null;
@@ -278,7 +283,7 @@ export default class CellEditor extends PureComponent<Props, State> {
       <S.CellSettingsSeparator/>
       <S.CellSettingsGroup>
         <S.DisplayNameLabel>
-          Name of this form:
+          {messages.formNameLabel()}
           <S.DisplayNameInput
             minimal
             value={displayName}
@@ -293,12 +298,12 @@ export default class CellEditor extends PureComponent<Props, State> {
         </S.DisplayNameLabel>
         {data.hasCustomDisplayName ? (
           <S.DeriveDisplayNameButton
-            label='Use automatic name'
+            label={messages.useAutomaticNameButton()}
             onClick={this.handleDeriveDisplayNameClick}
           />
         ) : (
           <S.DisplayNameDesc id={this.displayNameDescId}>
-            The name is calculated automatically. Type here to change it.
+            {messages.automaticNameHelper()}
           </S.DisplayNameDesc>
         )}
       </S.CellSettingsGroup>
