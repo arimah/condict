@@ -10,16 +10,13 @@ import {Driver} from '../types';
 
 import SqliteAdaptor from './adaptor';
 import generateSchema from './schema';
-
-export type SqliteOptions = {
-  file: string;
-};
+import {Options, validateOptions} from './types';
 
 class DatabasePool {
   private readonly logger: Logger;
   private readonly pool: Pool<Sqlite.Database>;
 
-  public constructor(logger: Logger, options: SqliteOptions) {
+  public constructor(logger: Logger, options: Options) {
     this.logger = logger;
 
     const factory: Factory<Sqlite.Database> = {
@@ -50,10 +47,11 @@ class DatabasePool {
   }
 }
 
-const engine: Driver = {
-  createPool: (logger: Logger, options: any) =>
-    new DatabasePool(logger, options as SqliteOptions),
+const engine: Driver<Options> = {
+  createPool: (logger: Logger, options: Options) =>
+    new DatabasePool(logger, options),
   generateSchema,
+  validateOptions,
 };
 
 export default engine;

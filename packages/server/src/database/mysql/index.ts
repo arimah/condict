@@ -5,17 +5,13 @@ import {Driver} from '../types';
 
 import MysqlAdaptor from './adaptor';
 import generateSchema from './schema';
-
-export type MysqlOptions = Pick<
-  mysql.ConnectionConfig,
-  'user' | 'password' | 'database' | 'host' | 'port'
->;
+import {Options, validateOptions} from './types';
 
 class DatabasePool {
   private readonly logger: Logger;
   private readonly pool: mysql.Pool;
 
-  public constructor(logger: Logger, options: MysqlOptions) {
+  public constructor(logger: Logger, options: Options) {
     this.logger = logger;
     this.pool = mysql.createPool({
       connectionLimit: 100,
@@ -49,10 +45,11 @@ class DatabasePool {
   }
 }
 
-const engine: Driver = {
-  createPool: (logger: Logger, options: any) =>
-    new DatabasePool(logger, options as MysqlOptions),
+const engine: Driver<Options> = {
+  createPool: (logger: Logger, options: Options) =>
+    new DatabasePool(logger, options),
   generateSchema,
+  validateOptions,
 };
 
 export default engine;

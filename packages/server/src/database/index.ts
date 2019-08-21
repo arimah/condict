@@ -4,32 +4,23 @@ import mysql from './mysql';
 import sqlite from './sqlite';
 import schema from './schema';
 import {TableSchema, ForeignKeyRef} from './schema/types';
-import {Driver} from './types';
-
-type Drivers = {
-  [k: string]: Driver | undefined;
-};
+import {Driver, Drivers, DriverOptions, ConfigOptions} from './types';
 
 const drivers: Drivers = {
   mysql,
   sqlite,
 };
 
-const getDriver = (name: string) => {
-  const driver = drivers[name];
-  if (!driver) {
-    throw new Error(`Unknown database type: ${name}`);
-  }
-  return driver;
-};
-
-export const createPool = (logger: Logger, options: {type: string}) => {
-  const driver = getDriver(options.type);
+export const createPool = <D extends keyof Drivers>(
+  logger: Logger,
+  options: { type: D } & DriverOptions[D]
+) => {
+  const driver = drivers[options.type] as Driver<DriverOptions[D]>;
   return driver.createPool(logger, options);
 };
 
-export const generateSchema = (databaseType: string) => {
-  const driver = getDriver(databaseType);
+export const generateSchema = <D extends keyof Drivers>(databaseType: D) => {
+  const driver = drivers[databaseType];
 
   const allTables = new Map(
     schema.map<[string, TableSchema]>(table => [table.name, table])
@@ -48,4 +39,22 @@ export const generateSchema = (databaseType: string) => {
   };
 
   return driver.generateSchema(schema, findColumn);
+};
+
+export const validateOptions = (options: any): ConfigOptions => {
+  if (options == null || typeof options !== 'object') {
+    throw new Error('Database config must be an object.');
+  }
+  if (typeof options.type !== 'string') {
+    throw new Error("Database config must have a 'type' property which must be a string.");
+  }
+  if (!drivers.hasOwnProperty(options.type)) {
+    throw new Error(`Unknown database type: ${options.type}`);
+  }
+  const type = options.type as keyof Drivers;
+  const driver = drivers[type] as Driver<any>;
+  return {
+    type,
+    ...driver.validateOptions(options),
+  };
 };

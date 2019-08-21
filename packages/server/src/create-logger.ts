@@ -2,25 +2,16 @@ import chalk, {Chalk} from 'chalk';
 import * as winston from 'winston';
 import * as Transport from 'winston-transport';
 
-type Level = 'error' | 'warn' | 'info' | 'debug';
+import {LogLevel, LoggerOptions} from './types';
 
-export type LogFile = {
-  path: string;
-  level?: Level;
-};
-
-export type LoggerOptions = {
-  files?: LogFile[];
-};
-
-const levels: Record<Level, number> = {
+const levels: Record<LogLevel, number> = {
   error: 0,
   warn: 1,
   info: 2,
   debug: 3,
 };
 
-const levelColors: Record<Level, Chalk> = {
+const levelColors: Record<LogLevel, Chalk> = {
   error: chalk.redBright,
   warn: chalk.yellowBright,
   info: chalk.cyanBright,
@@ -32,7 +23,7 @@ const consoleFormat = winston.format.combine(
   winston.format.printf(
     info => {
       const timestamp = chalk.gray(`[${info.timestamp}]`);
-      const level = levelColors[info.level as Level](`[${info.level}]`);
+      const level = levelColors[info.level as LogLevel](`[${info.level}]`);
       return `${timestamp} ${level} ${info.message}`;
     }
   )

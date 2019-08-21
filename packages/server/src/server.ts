@@ -5,7 +5,6 @@ import {ApolloServer} from 'apollo-server';
 import {Logger} from 'winston';
 
 import performStartupChecks from './startup-checks';
-import {LoggerOptions} from './create-logger';
 import {createPool, generateSchema} from './database';
 import Adaptor from './database/adaptor';
 import {Pool as DatabasePool} from './database/types';
@@ -15,13 +14,7 @@ import importDatabase from './database/import';
 import schema from './schema';
 import {Context} from './schema/types';
 import createModelResolvers from './model';
-
-export type ServerConfig = {
-  database: {
-    type: string;
-  };
-  log: LoggerOptions;
-};
+import {ServerConfig} from './types';
 
 // Generates a short, pseudo-random request ID.
 // Exclusively for use in logs, so you can identify

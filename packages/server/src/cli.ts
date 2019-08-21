@@ -2,7 +2,8 @@ import parseCliArgs, {OptionDefinition} from 'command-line-args';
 
 import createLogger from './create-logger';
 import parseConfig from './parse-config';
-import {createServer, ServerConfig} from './server';
+import {createServer} from './server';
+import {ServerConfig} from './types';
 
 // Fall back to development if missing. Ensures we get proper console
 // logging and other nice things.
