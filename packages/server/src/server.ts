@@ -174,5 +174,5 @@ class CondictServer {
   }
 }
 
-export const createServer = (logger: Logger, config: ServerConfig) =>
+export default (logger: Logger, config: ServerConfig) =>
   new CondictServer(logger, config);
