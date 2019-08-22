@@ -79,7 +79,7 @@ class CondictServer {
     });
   }
 
-  public async start() {
+  public async start(): Promise<{url: string}> {
     const {logger, config, databasePool} = this;
     logger.info('Condict is starting!');
 
@@ -92,7 +92,7 @@ class CondictServer {
     return {url};
   }
 
-  public export(outputFile: string) {
+  public export(outputFile: string): Promise<void> {
     const {logger, config, databasePool} = this;
 
     // Mixing Node's ancient async APIs with Promises... gross.
@@ -116,7 +116,7 @@ class CondictServer {
     });
   }
 
-  public import(inputFile: string) {
+  public import(inputFile: string): Promise<void> {
     const {logger, config, databasePool} = this;
 
     // Mixing Node's ancient async APIs with Promises... gross.
@@ -157,12 +157,12 @@ class CondictServer {
       .join('\n\n');
   }
 
-  public close() {
+  public async close(): Promise<void> {
     if (this.httpServer) {
       this.logger.info('Stopping HTTP server...');
       this.httpServer.close();
     }
-    return this.databasePool.close();
+    await this.databasePool.close();
   }
 }
 
