@@ -46,7 +46,13 @@ const main = async () => {
       await server.import(args.source as string);
       await server.close();
     } else if (args['view-table-schema'] !== undefined) {
-      server.viewTableSchema(args['view-table-schema'] as string | null);
+      const tableName = args['view-table-schema'] as string | null;
+      const schema = server.getTableSchema(tableName);
+      if (schema === null) {
+        console.error(`Table not found: ${tableName}`);
+      } else {
+        console.log(schema);
+      }
       await server.close();
     } else {
       process.on('SIGINT', async () => {

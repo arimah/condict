@@ -136,33 +136,25 @@ class CondictServer {
     });
   }
 
-  public viewTableSchema(tableName: string | null) {
-    // The --view-table-schema option is not really used outside a terminal
-    // environment, so we assume we can safely print directly to stdout and
-    // stderr here.
-    const schema = generateSchema(this.config.database.type);
+  public getTableSchema(tableName: string | null): string | null {
+    let schema = generateSchema(this.config.database.type);
 
-    let tableFound = false;
-    for (const [name, statements] of schema) {
-      if (tableName !== null) {
-        if (name !== tableName) {
-          continue;
-        } else {
-          tableFound = true;
-        }
-      }
-
-      console.log(`-- Schema for ${name}:`);
-      console.log(statements.map(reindentQuery).join(';\n') + ';\n');
-
-      if (tableFound) {
-        break;
-      }
+    if (tableName !== null) {
+      schema = schema.filter(([name]) => name === tableName);
     }
 
-    if (tableName !== null && !tableFound) {
-      console.error(`Table not found: ${tableName}`);
+    if (schema.length === 0) {
+      return null;
     }
+
+    return schema
+      .map(([name, statements]) =>
+        [
+          `-- Schema for ${name}:`,
+          ...statements.map(stmt => `${reindentQuery(stmt)};`),
+        ].join('\n')
+      )
+      .join('\n\n');
   }
 
   public close() {
