@@ -64,13 +64,10 @@ export const matches = (
     return value;
   };
 
-const defaultUniqueMessage = <T>(value: T) =>
-  `value already in use: ${value}`;
-
 export const unique = <T, K>(
   currentId: K | null,
   getExistingId: (value: T) => Promise<K | null>,
-  message: (value: T) => string = defaultUniqueMessage
+  message: (value: T) => string
 ) =>
   async (value: T, paramName: string) => {
     const existingId = await getExistingId(value);
