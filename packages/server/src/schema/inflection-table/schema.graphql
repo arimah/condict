@@ -80,6 +80,11 @@ type InflectionTableLayoutConnection {
   nodes: [InflectionTableLayout!]!
 }
 
+"""
+An inflection table layout describes the rows, columns and inflected forms that
+make up an inflection table. A layout may be current or historical; see the
+documentation of `InflectionTable` for details.
+"""
 type InflectionTableLayout {
   "The globally unique ID of this inflection table layout."
   id: ID!
