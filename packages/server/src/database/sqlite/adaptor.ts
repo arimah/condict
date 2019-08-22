@@ -118,14 +118,14 @@ export default class SqliteAdaptor extends Adaptor {
 
   public tableExists(name: string): boolean {
     type Row = { found: number };
-    const {found} = this.get<Row>`
+    const {found} = this.getRequired<Row>`
       select exists (
         select 1
         from sqlite_master
         where type = 'table'
           and name = ${name}
       ) as found
-    ` as Row;
+    `;
     return found === 1;
   }
 
