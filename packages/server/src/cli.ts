@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import parseCliArgs, {OptionDefinition} from 'command-line-args';
 
 import createLogger from './create-logger';
