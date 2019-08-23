@@ -1,13 +1,13 @@
-import {toNumberId} from '../../model/id-of';
+import {PartOfSpeechRow} from '../../model/part-of-speech/types';
+
 import {
-  PartOfSpeechInputId,
-  PartOfSpeechRow,
+  PartOfSpeechId,
   NewPartOfSpeechInput,
   EditPartOfSpeechInput,
-} from '../../model/part-of-speech/types';
-
-import {Resolvers, Mutators, IdArg, PageArg} from '../types';
+} from '../types';
 import {mutator} from '../helpers';
+
+import {Resolvers, Mutators, IdArg, PageArg} from './types';
 
 const PartOfSpeech: Resolvers<PartOfSpeechRow> = {
   inflectionTables: (p, _args, {model: {InflectionTable}}) =>
@@ -24,8 +24,8 @@ const PartOfSpeech: Resolvers<PartOfSpeechRow> = {
 };
 
 const Query: Resolvers<unknown> = {
-  partOfSpeech: (_root, args: IdArg<PartOfSpeechInputId>, {model: {PartOfSpeech}}) =>
-    PartOfSpeech.byId(toNumberId(args.id)),
+  partOfSpeech: (_root, args: IdArg<PartOfSpeechId>, {model: {PartOfSpeech}}) =>
+    PartOfSpeech.byId(args.id),
 };
 
 type AddPartOfSpeechArgs = {
@@ -33,7 +33,7 @@ type AddPartOfSpeechArgs = {
 };
 
 type EditPartOfSpeechArgs = {
-  id: PartOfSpeechInputId;
+  id: PartOfSpeechId;
   data: EditPartOfSpeechInput;
 };
 
@@ -45,12 +45,12 @@ const Mutation: Mutators<unknown> = {
 
   editPartOfSpeech: mutator(
     (_root, {id, data}: EditPartOfSpeechArgs, {mut: {PartOfSpeechMut}}) =>
-      PartOfSpeechMut.update(toNumberId(id), data)
+      PartOfSpeechMut.update(id, data)
   ),
 
   deletePartOfSpeech: mutator(
-    (_root, {id}: IdArg<PartOfSpeechInputId>, {mut: {PartOfSpeechMut}}) =>
-      PartOfSpeechMut.delete(toNumberId(id))
+    (_root, {id}: IdArg<PartOfSpeechId>, {mut: {PartOfSpeechMut}}) =>
+      PartOfSpeechMut.delete(id)
   ),
 };
 

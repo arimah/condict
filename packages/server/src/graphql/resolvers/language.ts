@@ -1,16 +1,16 @@
 import {UserInputError} from 'apollo-server';
 
-import {toNumberId} from '../../model/id-of';
+import {LanguageRow} from '../../model/language/types';
+
 import {
-  LanguageRow,
-  LanguageInputId,
+  LanguageId,
+  LemmaFilter,
   NewLanguageInput,
   EditLanguageInput,
-} from '../../model/language/types';
-import {LemmaFilter} from '../../model/lemma/types';
-
-import {Resolvers, Mutators, PageArg} from '../types';
+} from '../types';
 import {mutator} from '../helpers';
+
+import {Resolvers, Mutators, PageArg} from './types';
 
 type LemmasArgs = PageArg & {
   filter?: LemmaFilter | null;
@@ -32,7 +32,7 @@ const Language: Resolvers<LanguageRow> = {
 };
 
 type LanguageArgs = {
-  id?: LanguageInputId | null;
+  id?: LanguageId | null;
   urlName?: string | null;
 };
 
@@ -41,7 +41,7 @@ const Query: Resolvers<unknown> = {
 
   language: (_root, args: LanguageArgs, {model: {Language}}) => {
     if (args.id != null) {
-      return Language.byId(toNumberId(args.id));
+      return Language.byId(args.id);
     }
     if (args.urlName != null) {
       return Language.byUrlName(args.urlName);
@@ -57,7 +57,7 @@ type AddLanguageArgs = {
 };
 
 type EditLanguageArgs = {
-  id: LanguageInputId;
+  id: LanguageId;
   data: EditLanguageInput;
 };
 
@@ -69,7 +69,7 @@ const Mutation: Mutators<unknown> = {
 
   editLanguage: mutator(
     (_root, {id, data}: EditLanguageArgs, {mut: {LanguageMut}}) =>
-      LanguageMut.update(toNumberId(id), data)
+      LanguageMut.update(id, data)
   ),
 };
 

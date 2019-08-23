@@ -1,8 +1,4 @@
-import {IdOf, InputIdOf} from '../id-of';
-import {LanguageId} from '../language/types';
-
-export type LemmaId = IdOf<'Lemma'>;
-export type LemmaInputId = InputIdOf<'Lemma'>;
+import {LemmaId, LanguageId} from '../../graphql/types';
 
 export type LemmaRow = {
   id: LemmaId;
@@ -10,9 +6,3 @@ export type LemmaRow = {
   term_unique: string;
   term_display: string;
 };
-
-export const enum LemmaFilter {
-  ALL_LEMMAS = 'ALL_LEMMAS',
-  DEFINED_LEMMAS_ONLY = 'DEFINED_LEMMAS_ONLY',
-  DERIVED_LEMMAS_ONLY = 'DERIVED_LEMMAS_ONLY',
-}

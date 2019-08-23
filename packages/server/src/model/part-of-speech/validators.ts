@@ -1,10 +1,8 @@
 import Adaptor from '../../database/adaptor';
+import {PartOfSpeechId, LanguageId} from '../../graphql/types';
 
 import validator, {lengthBetween, unique} from '../validator';
 import sizeOfColumn from '../size-of-column';
-import {LanguageId} from '../language/types';
-
-import {PartOfSpeechId} from './types';
 
 const NameSize = sizeOfColumn('parts_of_speech', 'name');
 

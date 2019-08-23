@@ -1,12 +1,9 @@
-import {IdOf, InputIdOf} from '../id-of';
-import {PartOfSpeechId, PartOfSpeechInputId} from '../part-of-speech/types';
-
-export type InflectionTableId = IdOf<'InflectionTable'>;
-export type InflectionTableInputId = InputIdOf<'InflectionTable'>;
-export type InflectionTableLayoutId = IdOf<'InflectionTableLayout'>;
-export type InflectionTableLayoutInputId = InputIdOf<'InflectionTableLayout'>;
-export type InflectedFormId = IdOf<'InflectedForm'>;
-export type InflectedFormInputId = InputIdOf<'InflectedForm'>;
+import {
+  InflectionTableId,
+  InflectionTableLayoutId,
+  InflectedFormId,
+  PartOfSpeechId,
+} from '../../graphql/types';
 
 export type InflectionTableRow = {
   id: InflectionTableId;
@@ -42,7 +39,7 @@ export type InflectedFormRow = {
 };
 
 export type NewInflectionTableInput = {
-  partOfSpeechId: PartOfSpeechInputId;
+  partOfSpeechId: PartOfSpeechId;
   name: string;
   layout: InflectionTableRowInput[];
 };
@@ -64,7 +61,7 @@ export type InflectionTableCellInput = {
 };
 
 export type InflectedFormInput = {
-  id?: InflectedFormInputId | null;
+  id?: InflectedFormId | null;
   deriveLemma: boolean;
   inflectionPattern: string;
   displayName: string;

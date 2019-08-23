@@ -1,24 +1,23 @@
 import {UserInputError} from 'apollo-server';
 
-import {validateTableCaption} from '../../rich-text/validate';
-
-import Mutator from '../mutator';
-import {toNumberId} from '../id-of';
-import {PartOfSpeechId} from '../part-of-speech/types';
-import {
-  InflectionTableId,
-  InflectionTableRow,
-  InflectionTableLayoutId,
-  InflectionTableLayoutRow,
-  InflectedFormId,
-} from '../inflection-table/types';
-
 import {
   DefinitionId,
   DefinitionInflectionTableId,
+  InflectionTableId,
+  InflectionTableLayoutId,
+  InflectedFormId,
+  PartOfSpeechId,
   NewDefinitionInflectionTableInput,
   EditDefinitionInflectionTableInput,
-} from './types';
+} from '../../graphql/types';
+import {validateTableCaption} from '../../rich-text/validate';
+
+import Mutator from '../mutator';
+import {
+  InflectionTableRow,
+  InflectionTableLayoutRow,
+} from '../inflection-table/types';
+
 import deriveForms from './derive-forms';
 
 export type DefinitionInflectionTableResult = {
@@ -48,7 +47,7 @@ export default class DefinitionInflectionTableMut extends Mutator {
     const {CustomFormMut} = this.mut;
 
     const {inflectionTable, currentLayout} = await this.validateInflectionTableId(
-      toNumberId(inflectionTableId),
+      inflectionTableId,
       definition.partOfSpeechId
     );
     const finalCaption = validateTableCaption(caption);

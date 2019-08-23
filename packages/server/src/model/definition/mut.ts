@@ -1,25 +1,22 @@
 import MultiMap from '../../utils/multi-map';
-import {BlockElementInput} from '../../rich-text/types';
 import {validateDescription} from '../../rich-text/validate';
-
-import Mutator from '../mutator';
-import FieldSet from '../field-set';
-import {toNumberId} from '../id-of';
-import {validateTerm} from '../lemma/validators';
-import {PartOfSpeechId, PartOfSpeechInputId} from '../part-of-speech/types';
-import {
-  InflectedFormId,
-  InflectionTableLayoutId,
-} from '../inflection-table/types';
-
 import {
   DefinitionId,
-  DefinitionRow,
   DefinitionInflectionTableId,
+  PartOfSpeechId,
+  InflectedFormId,
+  InflectionTableLayoutId,
+  BlockElementInput,
   NewDefinitionInput,
   EditDefinitionInput,
   EditDefinitionInflectionTableInput,
-} from './types';
+} from '../../graphql/types';
+
+import Mutator from '../mutator';
+import FieldSet from '../field-set';
+import {validateTerm} from '../lemma/validators';
+
+import {DefinitionRow} from './types';
 import DefinitionStemMut from './stem-mut';
 import DefinitionInflectionTableMut, {DefinitionData} from './table-mut';
 import CustomFormMut from './custom-form-mut';
@@ -47,11 +44,11 @@ class DefinitionMut extends Mutator {
     } = this.mut;
 
     const language = await Language.byIdRequired(
-      toNumberId(languageId),
+      languageId,
       'languageId'
     );
     const partOfSpeech = await PartOfSpeech.byIdRequired(
-      toNumberId(partOfSpeechId),
+      partOfSpeechId,
       'partOfSpeechId'
     );
     const validTerm = validateTerm(term);
@@ -186,17 +183,17 @@ class DefinitionMut extends Mutator {
 
   private async updatePartOfSpeech(
     definition: DefinitionRow,
-    partOfSpeechId: PartOfSpeechInputId | undefined | null,
+    partOfSpeechId: PartOfSpeechId | undefined | null,
     newFields: FieldSet<DefinitionRow>
   ): Promise<PartOfSpeechId> {
     const {PartOfSpeech} = this.model;
 
     if (
       partOfSpeechId != null &&
-      toNumberId(partOfSpeechId) !== definition.part_of_speech_id
+      partOfSpeechId !== definition.part_of_speech_id
     ) {
       const partOfSpeech = await PartOfSpeech.byIdRequired(
-        toNumberId(partOfSpeechId),
+        partOfSpeechId,
         'partOfSpeechId'
       );
 
@@ -295,7 +292,7 @@ class DefinitionMut extends Mutator {
       const {id: tableId, derivedForms} = await (
         table.id != null && !isNewDefinition
           ? DefinitionInflectionTableMut.update(
-            toNumberId(table.id),
+            table.id,
             definitionData,
             table,
             currentTableIds.length

@@ -1,8 +1,5 @@
-import {
-  InlineKind,
-  InlineElementJson,
-  CondictLinkType,
-} from '../../rich-text/types';
+import {InlineKind} from '../../graphql/types';
+import {InlineElementJson, CondictLinkType} from '../../rich-text/types';
 import {isCondictLink, parseCondictLink} from '../../rich-text/condict-link';
 
 import {ForeignKeyContentRef, NewIdMap} from './types';

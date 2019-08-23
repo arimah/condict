@@ -1,9 +1,8 @@
 import Adaptor from '../../database/adaptor';
+import {LanguageId} from '../../graphql/types';
 
 import validator, {lengthBetween, matches, unique} from '../validator';
 import sizeOfColumn from '../size-of-column';
-
-import {LanguageId} from './types';
 
 const NameSize = sizeOfColumn('languages', 'name');
 const UrlNameSize = sizeOfColumn('languages', 'url_name');

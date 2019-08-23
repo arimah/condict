@@ -1,12 +1,11 @@
 import {UserInputError} from 'apollo-server';
 
-import {toNumberId} from '../../model/id-of';
-import {TagInputId} from '../../model/tag/types';
+import {TagId} from '../types';
 
-import {Resolvers, PageArg} from '../types';
+import {Resolvers, PageArg} from './types';
 
 type TagArgs = {
-  id?: TagInputId | null;
+  id?: TagId | null;
   name?: string | null;
 };
 
@@ -15,7 +14,7 @@ const Query: Resolvers<unknown> = {
 
   tag(_root, args: TagArgs, {model: {Tag}}) {
     if (args.id != null) {
-      return Tag.byId(toNumberId(args.id));
+      return Tag.byId(args.id);
     }
     if (args.name != null) {
       return Tag.byName(args.name);

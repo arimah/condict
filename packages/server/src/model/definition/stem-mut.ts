@@ -1,6 +1,7 @@
+import {DefinitionId, StemInput} from '../../graphql/types';
+
 import Mutator from '../mutator';
 
-import {DefinitionId, StemInput} from './types';
 import {validateStems} from './validators';
 
 const buildStemMap = (stems: StemInput[]) => new Map<string, string>(

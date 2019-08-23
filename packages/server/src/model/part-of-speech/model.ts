@@ -1,9 +1,10 @@
 import {UserInputError} from 'apollo-server';
 
-import Model from '../model';
-import {LanguageId} from '../language/types';
+import {LanguageId, PartOfSpeechId} from '../../graphql/types';
 
-import {PartOfSpeechId, PartOfSpeechRow} from './types';
+import Model from '../model';
+
+import {PartOfSpeechRow} from './types';
 
 class PartOfSpeech extends Model {
   public readonly byIdKey = 'PartOfSpeech.byId';

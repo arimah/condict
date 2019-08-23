@@ -1,9 +1,10 @@
 import {IResolverObject, IFieldResolver} from 'apollo-server';
 import {Logger} from 'winston';
 
-import Adaptor from '../database/adaptor';
-import {ModelResolver, MutatorResolver} from '../model';
-import {InputIdOf} from '../model/id-of';
+import Adaptor from '../../database/adaptor';
+import {ModelResolver, MutatorResolver} from '../../model';
+
+import {IdOf, PageParams, ConnectionMeta} from '../types';
 
 export type Context = {
   db: Adaptor;
@@ -28,7 +29,7 @@ export type Mutators<T> = {
  * A resolver arguments type for a resolver that accept a single, required ID,
  * with the name `id`.
  */
-export type IdArg<T extends InputIdOf<any>> = {
+export type IdArg<T extends IdOf<any>> = {
   id: T;
 };
 
@@ -40,20 +41,10 @@ export type PageArg = {
   page?: PageParams | null;
 };
 
-// NOTE: The below types must be synchronised with the GraphQL schema.
-
-export type PageParams = {
-  page: number;
-  perPage: number;
-};
-
-export type ConnectionMeta = {
-  page: number;
-  perPage: number;
-  totalCount: number;
-};
+// NOTE: The below type is a generic version of various connection types from
+// the GraphQL schema. It must be synchronised with the GraphQL schema.
 
 export type Connection<T> = {
-  meta: ConnectionMeta;
+  meta: Pick<ConnectionMeta, 'page' | 'perPage' | 'totalCount'>;
   nodes: T[];
 };

@@ -6,6 +6,9 @@ import {
   InlineElementInput,
   InlineKind,
   TableCaptionInput,
+} from '../graphql/types';
+
+import {
   CondictLink,
   BlockElementJson,
   InlineElementJson,

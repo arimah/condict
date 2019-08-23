@@ -1,9 +1,4 @@
-import {IdOf, InputIdOf} from '../id-of';
-import {LemmaId} from '../lemma/types';
-import {DefinitionId} from '../definition/types';
-
-export type TagId = IdOf<'Tag'>;
-export type TagInputId = InputIdOf<'Tag'>;
+import {TagId, LemmaId, DefinitionId} from '../../graphql/types';
 
 export type TagRow = {
   id: TagId;

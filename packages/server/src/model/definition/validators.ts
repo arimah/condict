@@ -1,7 +1,7 @@
+import {StemInput} from '../../graphql/types';
+
 import validator, {lengthBetween} from '../validator';
 import sizeOfColumn from '../size-of-column';
-
-import {StemInput} from './types';
 
 const StemNameSize = sizeOfColumn('definition_stems', 'name');
 const StemValueSize = sizeOfColumn('definition_stems', 'value');

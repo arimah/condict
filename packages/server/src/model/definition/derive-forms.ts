@@ -1,6 +1,7 @@
 import inflectWord from '../../utils/inflect-word';
+import {InflectedFormId} from '../../graphql/types';
 
-import {InflectedFormId, InflectedFormRow} from '../inflection-table/types';
+import {InflectedFormRow} from '../inflection-table/types';
 
 const deriveForms = (
   term: string,

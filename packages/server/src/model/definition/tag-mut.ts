@@ -1,7 +1,8 @@
+import {DefinitionId} from '../../graphql/types';
+
 import {validateTag} from '../tag/validators';
 
 import Mutator from '../mutator';
-import {DefinitionId} from '../definition/types';
 
 export default class DefinitionTagMut extends Mutator {
   public async insertAll(definitionId: DefinitionId, tags: string[]): Promise<void> {

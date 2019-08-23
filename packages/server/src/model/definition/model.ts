@@ -1,22 +1,23 @@
 import {UserInputError} from 'apollo-server';
 
-import {validatePageParams} from '../../schema/helpers';
-import {PageParams, Connection} from '../../schema/types';
-
-import Model from '../model';
-import {LemmaId} from '../lemma/types';
-import {PartOfSpeechId} from '../part-of-speech/types';
-import {
-  InflectionTableId,
-  InflectionTableLayoutId,
-} from '../inflection-table/types';
-
 import {
   DefinitionId,
+  DefinitionInflectionTableId,
+  LemmaId,
+  PartOfSpeechId,
+  InflectionTableId,
+  InflectionTableLayoutId,
+  PageParams,
+} from '../../graphql/types';
+import {validatePageParams} from '../../graphql/helpers';
+import {Connection} from '../../graphql/resolvers/types';
+
+import Model from '../model';
+
+import {
   DefinitionRow,
   DefinitionDescriptionRow,
   DefinitionStemRow,
-  DefinitionInflectionTableId,
   DefinitionInflectionTableRow,
   CustomInflectedFormRow,
   DerivedDefinitionRow,

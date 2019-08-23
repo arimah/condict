@@ -1,12 +1,13 @@
+import {
+  LanguageId,
+  NewLanguageInput,
+  EditLanguageInput,
+} from '../../graphql/types';
+
 import Mutator from '../mutator';
 import FieldSet from '../field-set';
 
-import {
-  LanguageId,
-  LanguageRow,
-  NewLanguageInput,
-  EditLanguageInput,
-} from './types';
+import {LanguageRow} from './types';
 import {validateName, validateUrlName} from './validators';
 
 class LanguageMut extends Mutator {

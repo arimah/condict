@@ -1,18 +1,21 @@
 import {UserInputError} from 'apollo-server';
 
 import {Awaitable} from '../../database/adaptor';
-import {validatePageParams} from '../../schema/helpers';
-import {PageParams, Connection} from '../../schema/types';
+import {validatePageParams} from '../../graphql/helpers';
+import {
+  PartOfSpeechId,
+  InflectionTableId,
+  InflectionTableLayoutId,
+  InflectedFormId,
+  PageParams,
+} from '../../graphql/types';
+import {Connection} from '../../graphql/resolvers/types';
 
 import Model from '../model';
-import {PartOfSpeechId} from '../part-of-speech/types';
 
 import {
-  InflectionTableId,
   InflectionTableRow,
-  InflectionTableLayoutId,
   InflectionTableLayoutRow,
-  InflectedFormId,
   InflectedFormRow,
 } from './types';
 

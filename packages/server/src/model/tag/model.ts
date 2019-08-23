@@ -1,14 +1,18 @@
 import {UserInputError} from 'apollo-server';
 
-import {validatePageParams} from '../../schema/helpers';
-import {PageParams, Connection} from '../../schema/types';
+import {validatePageParams} from '../../graphql/helpers';
+import {
+  TagId,
+  LanguageId,
+  LemmaId,
+  DefinitionId,
+  PageParams,
+} from '../../graphql/types';
+import {Connection} from '../../graphql/resolvers/types';
 
 import Model from '../model';
-import {LanguageId} from '../language/types';
-import {LemmaId} from '../lemma/types';
-import {DefinitionId} from '../definition/types';
 
-import {TagId, TagRow, DefinitionTagRow, LemmaTagRow} from './types';
+import {TagRow, DefinitionTagRow, LemmaTagRow} from './types';
 
 class Tag extends Model {
   public readonly byIdKey = 'Tag.byId';

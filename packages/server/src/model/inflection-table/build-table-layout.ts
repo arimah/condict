@@ -4,9 +4,9 @@ import {
   InflectedFormId,
   InflectionTableRowInput,
   InflectedFormInput,
-  InflectionTableRowJson,
-  InflectionTableCellJson,
-} from './types';
+} from '../../graphql/types';
+
+import {InflectionTableRowJson, InflectionTableCellJson} from './types';
 
 export type TableLayoutResult = {
   finalLayout: InflectionTableRowJson[];

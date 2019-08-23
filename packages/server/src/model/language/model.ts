@@ -1,8 +1,9 @@
 import {UserInputError} from 'apollo-server';
 
 import {Awaitable} from '../../database/adaptor';
+import {LanguageId} from '../../graphql/types';
 
-import {LanguageId, LanguageRow} from './types';
+import {LanguageRow} from './types';
 import Model from '../model';
 
 class Language extends Model {

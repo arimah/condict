@@ -1,3 +1,6 @@
+"Represents a definition ID."
+scalar DefinitionId @id
+
 """
 As its name suggests, a definition defines a lemma. A definition has a part of
 speech, a description, and, optionally, some inflection tables.
@@ -9,7 +12,7 @@ A definition's inflection tables must belong to the definition's part of speech.
 """
 type Definition {
   "The globally unique ID of the definition."
-  id: ID!
+  id: DefinitionId!
 
   """
   The term that the definition applies to. This value is equal to `lemma.term`
@@ -94,6 +97,9 @@ type DefinitionStem {
   definition: Definition!
 }
 
+"Represents a definition inflection table ID."
+scalar DefinitionInflectionTableId @id
+
 """
 An inflection table attached to a single definition. In addition to containing
 an table, this type contains an otional caption and any number of custom forms
@@ -104,7 +110,7 @@ Some words inflect differently depending on usage; Condict supports this.
 """
 type DefinitionInflectionTable {
   "The globally unique ID of the definition inflection table."
-  id: ID!
+  id: DefinitionInflectionTableId!
 
   "An optional formatted text that describes the table."
   caption: TableCaption
@@ -214,16 +220,18 @@ type DerivedDefinition {
 
 extend type Query {
   "Finds a definition by ID."
-  definition(id: ID!): Definition
+  definition(id: DefinitionId!): Definition
 
   "Finds a definition inflection table by ID."
-  definitionInflectionTable(id: ID!): DefinitionInflectionTable
+  definitionInflectionTable(
+    id: DefinitionInflectionTableId!
+  ): DefinitionInflectionTable
 }
 
 "Input type for adding new definitions."
 input NewDefinitionInput {
   "The language that the definition will be added to."
-  languageId: ID!
+  languageId: LanguageId!
 
   """
   The term that this definition defines.
@@ -233,7 +241,7 @@ input NewDefinitionInput {
   term: String!
 
   "The part of speech that the definition belongs to."
-  partOfSpeechId: ID!
+  partOfSpeechId: PartOfSpeechId!
 
   "Formatted text that describes the definition."
   description: [BlockElementInput!]!
@@ -261,7 +269,7 @@ input EditDefinitionInput {
   tables will all be deleted. In other words, changing the part of speech will
   delete inflection tables unless you specify new ones.
   """
-  partOfSpeechId: ID
+  partOfSpeechId: PartOfSpeechId
 
   "If set, updates the definition description."
   description: [BlockElementInput!]
@@ -301,7 +309,7 @@ input NewDefinitionInflectionTableInput {
   customForms: [CustomInflectedFormInput!]!
 
   "The inflection table used by the definition."
-  inflectionTableId: ID!
+  inflectionTableId: InflectionTableId!
 }
 
 "Input type for editing a definition's inflection table."
@@ -310,7 +318,7 @@ input EditDefinitionInflectionTableInput {
   The ID of the definition inflection table. If set, it will update an existing
   definition inflection table.
   """
-  id: ID
+  id: DefinitionInflectionTableId
 
   "An optional formatted text that describes the table."
   caption: TableCaptionInput
@@ -325,15 +333,15 @@ input EditDefinitionInflectionTableInput {
   The inflection table used by the definition. When editing an existing table
   (`id` is not null), this property is ignored; you cannot change to another table.
   """
-  inflectionTableId: ID!
+  inflectionTableId: InflectionTableId!
 
   """
   If true, upgrades the inflection table's layout to the current version. If the
   table already uses the current version, this field has no effect. When adding
   a new table (`id` is null), this field is ignored; the latest layout version
-  is always used.
+  is always used. If omitted, defaults to false.
   """
-  upgradeTableLayout: Boolean!
+  upgradeTableLayout: Boolean
 }
 
 """
@@ -352,7 +360,7 @@ input TableCaptionInput {
 
 input CustomInflectedFormInput {
   "The inflected form that this value replaces within its table."
-  inflectedFormId: ID!
+  inflectedFormId: InflectedFormId!
 
   "The inflected word itself; the value of the table cell."
   value: String!
@@ -373,12 +381,12 @@ extend type Mutation {
 
   Requires authentication.
   """
-  editDefinition(id: ID!, data: EditDefinitionInput!): Definition!
+  editDefinition(id: DefinitionId!, data: EditDefinitionInput!): Definition!
 
   """
   Deletes a definition.
 
   Requires authentication.
   """
-  deleteDefinition(id: ID!): Boolean!
+  deleteDefinition(id: DefinitionId!): Boolean!
 }

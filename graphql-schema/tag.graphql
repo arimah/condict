@@ -1,3 +1,6 @@
+"Represents a tag ID."
+scalar TagId @id
+
 """
 Represents a generic tag. Tags with the same name have the same ID, and all
 tags are shared between languages. Tags can be attached to definitions, and
@@ -5,7 +8,7 @@ are mainly used for thematic grouping ("colour", "emotion", "food", etc.).
 """
 type Tag {
   "The ID of the tag."
-  id: ID!
+  id: TagId!
 
   "The name of the tag."
   name: String!
@@ -32,5 +35,5 @@ extend type Query {
   Finds a tag by ID or name. You must specify either `id` or `name`. If you
   specify both, only `id` will be used.
   """
-  tag(id: ID, name: String): Tag
+  tag(id: TagId, name: String): Tag
 }

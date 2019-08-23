@@ -1,6 +1,8 @@
+import {TagId} from '../../graphql/types';
+
 import Mutator from '../mutator';
 
-import {TagId, TagRow} from './types';
+import {TagRow} from './types';
 import {ValidTag} from './validators';
 
 class TagMut extends Mutator {

@@ -1,7 +1,7 @@
-import Mutator from '../mutator';
-import {LanguageId} from '../language/types';
+import {LemmaId, LanguageId} from '../../graphql/types';
 
-import {LemmaId} from './types';
+import Mutator from '../mutator';
+
 import {ValidTerm} from './validators';
 
 class LemmaMut extends Mutator {

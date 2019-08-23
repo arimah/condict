@@ -80,11 +80,11 @@ export const unique = <T, K>(
     return value;
   };
 
-// Same reasoning as the IdOf and InputIdOf types in ./id-of.ts.
-class ValidBase<V extends string> {
-  private validator: V | null = null;
-}
+// Same reasoning as the IdOf type in ../graphql/types.ts.
+const ValidatorKind = Symbol();
 
 // This type can be used by validators to express a validated value of type T,
 // as validated by the validator V.
-export type Valid<T, V extends string> = T & ValidBase<V>;
+export type Valid<T, V extends string> = T & {
+  [ValidatorKind]: V;
+};

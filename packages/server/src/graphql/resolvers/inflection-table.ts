@@ -1,18 +1,20 @@
-import {toNumberId} from '../../model/id-of';
 import {
   InflectionTableRow,
   InflectionTableLayoutRow,
   InflectedFormRow,
-  InflectionTableInputId,
-  NewInflectionTableInput,
-  EditInflectionTableInput,
-  InflectionTableLayoutInputId,
-  InflectedFormInputId,
   InflectionTableCellJson,
 } from '../../model/inflection-table/types';
 
-import {Resolvers, Mutators, IdArg, PageArg} from '../types';
+import {
+  InflectionTableId,
+  InflectionTableLayoutId,
+  InflectedFormId,
+  NewInflectionTableInput,
+  EditInflectionTableInput,
+} from '../types';
 import {mutator} from '../helpers';
+
+import {Resolvers, Mutators, IdArg, PageArg} from './types';
 
 const InflectionTable: Resolvers<InflectionTableRow> = {
   layout: (p, _args, {model: {InflectionTableLayout}}) =>
@@ -95,24 +97,24 @@ const InflectedForm: Resolvers<InflectedFormRow> = {
 const Query: Resolvers<unknown> = {
   inflectionTable: (
     _root,
-    {id}: IdArg<InflectionTableInputId>,
+    {id}: IdArg<InflectionTableId>,
     {model: {InflectionTable}}
   ) =>
-    InflectionTable.byId(toNumberId(id)),
+    InflectionTable.byId(id),
 
   inflectionTableLayout: (
     _root,
-    {id}: IdArg<InflectionTableLayoutInputId>,
+    {id}: IdArg<InflectionTableLayoutId>,
     {model: {InflectionTableLayout}}
   ) =>
-    InflectionTableLayout.byId(toNumberId(id)),
+    InflectionTableLayout.byId(id),
 
   inflectedForm: (
     _root,
-    {id}: IdArg<InflectedFormInputId>,
+    {id}: IdArg<InflectedFormId>,
     {model: {InflectedForm}}
   ) =>
-    InflectedForm.byId(toNumberId(id)),
+    InflectedForm.byId(id),
 };
 
 type AddInflectionTableArgs = {
@@ -120,7 +122,7 @@ type AddInflectionTableArgs = {
 };
 
 type EditInflectionTableArgs = {
-  id: InflectionTableInputId;
+  id: InflectionTableId;
   data: EditInflectionTableInput;
 };
 
@@ -132,15 +134,12 @@ const Mutation: Mutators<unknown> = {
 
   editInflectionTable: mutator(
     (_root, {id, data}: EditInflectionTableArgs, {mut: {InflectionTableMut}}) =>
-      InflectionTableMut.update(
-        toNumberId(id),
-        data
-      )
+      InflectionTableMut.update(id, data)
   ),
 
   deleteInflectionTable: mutator(
-    (_root, {id}: IdArg<InflectionTableInputId>, {mut: {InflectionTableMut}}) =>
-      InflectionTableMut.delete(toNumberId(id))
+    (_root, {id}: IdArg<InflectionTableId>, {mut: {InflectionTableMut}}) =>
+      InflectionTableMut.delete(id)
   ),
 };
 

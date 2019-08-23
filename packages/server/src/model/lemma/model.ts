@@ -1,9 +1,13 @@
-import {validatePageParams} from '../../schema/helpers';
-import {PageParams, Connection} from '../../schema/types';
+import {validatePageParams} from '../../graphql/helpers';
+import {
+  LanguageId,
+  LemmaId,
+  LemmaFilter,
+  PageParams,
+} from '../../graphql/types';
+import {Connection} from '../../graphql/resolvers/types';
 
-import {LanguageId} from '../language/types';
-
-import {LemmaId, LemmaRow, LemmaFilter} from './types';
+import {LemmaRow} from './types';
 import Model from '../model';
 
 class Lemma extends Model {

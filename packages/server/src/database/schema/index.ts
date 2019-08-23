@@ -1,7 +1,6 @@
-import {
-  InflectedFormId,
-  InflectionTableRowJson,
-} from '../../model/inflection-table/types';
+import {InflectedFormId} from '../../graphql/types';
+
+import {InflectionTableRowJson} from '../../model/inflection-table/types';
 import {BlockElementJson} from '../../rich-text/types';
 
 import {

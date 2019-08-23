@@ -137,15 +137,16 @@ type LinkInline implements InlineElement {
 }
 
 "Contains the item that an internal link points to."
-interface InternalLinkTarget {
-  "The ID of the item that the link points to."
-  id: ID!
-}
+union InternalLinkTarget =
+  | LanguageLinkTarget
+  | LemmaLinkTarget
+  | DefinitionLinkTarget
+  | PartOfSpeechLinkTarget
 
 "Contains the language that a language link points to."
-type LanguageLinkTarget implements InternalLinkTarget {
+type LanguageLinkTarget {
   "The ID of the language that the link points to."
-  id: ID!
+  id: LanguageId!
 
   """
   The language pointed to by the link. If the language has been removed since
@@ -155,9 +156,9 @@ type LanguageLinkTarget implements InternalLinkTarget {
 }
 
 "Contains the lemma that a lemma link points to."
-type LemmaLinkTarget implements InternalLinkTarget {
+type LemmaLinkTarget {
   "The ID of the lemma that the link points to."
-  id: ID!
+  id: LemmaId!
 
   """
   The lemma pointed to by the link. If the lemma has been removed since the
@@ -167,9 +168,9 @@ type LemmaLinkTarget implements InternalLinkTarget {
 }
 
 "Contains the definition that a definition link points to."
-type DefinitionLinkTarget implements InternalLinkTarget {
+type DefinitionLinkTarget {
   "The ID of the definition that the link points to."
-  id: ID!
+  id: DefinitionId!
 
   """
   The definition pointed to by the link. If the definition has been removed
@@ -179,9 +180,9 @@ type DefinitionLinkTarget implements InternalLinkTarget {
 }
 
 "Contains the part of speech that a part of speech link points to."
-type PartOfSpeechLinkTarget implements InternalLinkTarget {
+type PartOfSpeechLinkTarget {
   "The ID of the part of speech that the link points to."
-  id: ID!
+  id: PartOfSpeechId!
 
   """
   The part of speech pointed to by the link. If the part of speech has been

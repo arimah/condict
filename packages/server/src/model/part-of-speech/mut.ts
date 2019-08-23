@@ -1,14 +1,14 @@
 import {UserInputError} from 'apollo-server';
 
-import Mutator from '../mutator';
-import {toNumberId} from '../id-of';
-
 import {
   PartOfSpeechId,
-  PartOfSpeechRow,
   NewPartOfSpeechInput,
   EditPartOfSpeechInput,
-} from './types';
+} from '../../graphql/types';
+
+import Mutator from '../mutator';
+
+import {PartOfSpeechRow} from './types';
 import {validateName} from './validators';
 
 class PartOfSpeechMut extends Mutator {
@@ -18,7 +18,7 @@ class PartOfSpeechMut extends Mutator {
     const {db} = this;
     const {PartOfSpeech, Language} = this.model;
 
-    const language = await Language.byIdRequired(toNumberId(languageId));
+    const language = await Language.byIdRequired(languageId);
 
     name = await validateName(db, null, language.id, name);
 

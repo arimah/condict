@@ -1,2 +1,8 @@
+# TODO: Evaluate whether it is correct to ignore this file
+package-lock.json
+
+# Source files are compiled before publish, and are not otherwise needed
 dist
+
+# Config files should obviously not be committed
 config*.json

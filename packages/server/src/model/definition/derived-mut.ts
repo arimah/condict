@@ -1,11 +1,8 @@
 import MultiMap from '../../utils/multi-map';
+import {DefinitionId, LanguageId, InflectedFormId} from '../../graphql/types';
 
 import Mutator from '../mutator';
-import {LanguageId} from '../language/types';
-import {InflectedFormId} from '../inflection-table/types';
 import {validateTerm, ValidTerm} from '../lemma/validators';
-
-import {DefinitionId} from './types';
 
 export default class DerivedDefinitionMut extends Mutator {
   public async insertAll(

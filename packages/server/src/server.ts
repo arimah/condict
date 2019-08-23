@@ -11,8 +11,7 @@ import {Pool as DatabasePool} from './database/types';
 import reindentQuery from './database/reindent-query';
 import exportDatabase from './database/export';
 import importDatabase from './database/import';
-import schema from './schema';
-import {Context} from './schema/types';
+import * as graphql from './graphql';
 import createModelResolvers from './model';
 import {ServerConfig} from './types';
 
@@ -48,9 +47,10 @@ class CondictServer {
     }
 
     this.server = new ApolloServer({
-      typeDefs: schema.typeDefs,
-      resolvers: schema.resolvers,
-      context: async ({res}): Promise<Context> => {
+      typeDefs: graphql.getTypeDefs(),
+      resolvers: graphql.getResolvers(),
+      schemaDirectives: graphql.getDirectives(),
+      context: async ({res}): Promise<graphql.Context> => {
         const requestId = generateRequestId();
 
         const startTime = Date.now();

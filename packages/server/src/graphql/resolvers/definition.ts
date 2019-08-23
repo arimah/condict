@@ -1,18 +1,20 @@
-import {toNumberId} from '../../model/id-of';
 import {
   DefinitionRow,
   DefinitionStemRow,
   DefinitionInflectionTableRow,
   CustomInflectedFormRow,
   DerivedDefinitionRow,
-  DefinitionInputId,
-  NewDefinitionInput,
-  EditDefinitionInput,
-  DefinitionInflectionTableInputId,
 } from '../../model/definition/types';
 
-import {Resolvers, Mutators, IdArg, PageArg} from '../types';
+import {
+  DefinitionId,
+  DefinitionInflectionTableId,
+  NewDefinitionInput,
+  EditDefinitionInput,
+} from '../types';
 import {mutator} from '../helpers';
+
+import {Resolvers, Mutators, IdArg, PageArg} from './types';
 
 const Definition: Resolvers<DefinitionRow> = {
   partOfSpeech: (p, _args, {model: {PartOfSpeech}}) =>
@@ -93,15 +95,15 @@ const DerivedDefinition: Resolvers<DerivedDefinitionRow> = {
 };
 
 const Query: Resolvers<unknown> = {
-  definition: (_root, {id}: IdArg<DefinitionInputId>, {model: {Definition}}) =>
-    Definition.byId(toNumberId(id)),
+  definition: (_root, {id}: IdArg<DefinitionId>, {model: {Definition}}) =>
+    Definition.byId(id),
 
   definitionInflectionTable: (
     _root,
-    {id}: IdArg<DefinitionInflectionTableInputId>,
+    {id}: IdArg<DefinitionInflectionTableId>,
     {model: {DefinitionInflectionTable}}
   ) =>
-    DefinitionInflectionTable.byId(toNumberId(id)),
+    DefinitionInflectionTable.byId(id),
 };
 
 type AddDefinitionArgs = {
@@ -109,7 +111,7 @@ type AddDefinitionArgs = {
 };
 
 type EditDefinitionArgs = {
-  id: DefinitionInputId;
+  id: DefinitionId;
   data: EditDefinitionInput;
 };
 
@@ -121,12 +123,12 @@ const Mutation: Mutators<unknown> = {
 
   editDefinition: mutator(
     (_root, {id, data}: EditDefinitionArgs, {mut: {DefinitionMut}}) =>
-      DefinitionMut.update(toNumberId(id), data)
+      DefinitionMut.update(id, data)
   ),
 
   deleteDefinition: mutator(
-    (_root, {id}: IdArg<DefinitionInputId>, {mut: {DefinitionMut}}) =>
-      DefinitionMut.delete(toNumberId(id))
+    (_root, {id}: IdArg<DefinitionId>, {mut: {DefinitionMut}}) =>
+      DefinitionMut.delete(id)
   ),
 };
 

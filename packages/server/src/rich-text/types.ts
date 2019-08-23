@@ -1,18 +1,11 @@
-import {LanguageId} from '../model/language/types';
-import {LemmaId} from '../model/lemma/types';
-import {DefinitionId} from '../model/definition/types';
-import {PartOfSpeechId} from '../model/part-of-speech/types';
-
-// NOTE: The types in this file must be kept in sync with GraphQL!
-// See GraphQL for documentation comments.
-
-export const enum BlockKind {
-  PARAGRAPH = 'PARAGRAPH',
-  HEADING_1 = 'HEADING_1',
-  HEADING_2 = 'HEADING_2',
-  OLIST_ITEM = 'OLIST_ITEM',
-  ULIST_ITEM = 'ULIST_ITEM',
-}
+import {
+  BlockKind,
+  InlineKind,
+  DefinitionId,
+  LanguageId,
+  LemmaId,
+  PartOfSpeechId,
+} from '../graphql/types';
 
 export type BlockElementJson = {
   kind: BlockKind;
@@ -20,16 +13,6 @@ export type BlockElementJson = {
   text: string;
   inlines?: InlineElementJson[];
 };
-
-export const enum InlineKind {
-  BOLD = 'BOLD',
-  ITALIC = 'ITALIC',
-  UNDERLINE = 'UNDERLINE',
-  STRIKETHROUGH = 'STRIKETHROUGH',
-  SUPERSCRIPT = 'SUPERSCRIPT',
-  SUBSCRIPT = 'SUBSCRIPT',
-  LINK = 'LINK',
-}
 
 export type InlineElementJson = StyleInlineJson | LinkInlineJson;
 
@@ -51,25 +34,6 @@ export type TableCaptionJson = {
   inlines?: InlineElementJson[];
 };
 
-export type BlockElementInput = {
-  kind: BlockKind;
-  level?: number | null;
-  text: string;
-  inlines?: InlineElementInput[] | null;
-};
-
-export type InlineElementInput = {
-  kind: InlineKind;
-  start: number;
-  end: number;
-  linkTarget?: string | null;
-};
-
-export type TableCaptionInput = {
-  text: string;
-  inlines?: InlineElementInput[] | null;
-};
-
 export const enum CondictLinkType {
   LANGUAGE = 'language',
   LEMMA = 'lemma',
@@ -77,8 +41,8 @@ export const enum CondictLinkType {
   PART_OF_SPEECH = 'part-of-speech',
 }
 
-export type CondictLink
-  = LanguageLink
+export type CondictLink =
+  | LanguageLink
   | LemmaLink
   | DefinitionLink
   | PartOfSpeechLink;

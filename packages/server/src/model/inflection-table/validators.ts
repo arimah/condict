@@ -1,10 +1,8 @@
 import Adaptor from '../../database/adaptor';
+import {InflectionTableId, PartOfSpeechId} from '../../graphql/types';
 
 import validator, {lengthBetween, unique} from '../validator';
 import sizeOfColumn from '../size-of-column';
-import {PartOfSpeechId} from '../part-of-speech/types';
-
-import {InflectionTableId} from './types';
 
 const TableNameSize = sizeOfColumn('inflection_tables', 'name');
 const InflectionPatternSize = sizeOfColumn('inflected_forms', 'inflection_pattern');

@@ -1,12 +1,12 @@
 import {UserInputError, IFieldResolver} from 'apollo-server';
 
+import {PageParams} from './types';
 import {
   Context,
   IsMutator,
   MutatorFn,
-  PageParams,
   Connection,
-} from './types';
+} from './resolvers/types';
 
 /**
  * Creates a mutator resolver. The request must come from a session with a

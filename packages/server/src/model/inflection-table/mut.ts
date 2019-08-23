@@ -1,20 +1,19 @@
 import {UserInputError} from 'apollo-server';
 
-import Mutator from '../mutator';
-import FieldSet from '../field-set';
-import {toNumberId} from '../id-of';
-
 import {
   InflectionTableId,
-  InflectionTableRow,
   InflectionTableLayoutId,
-  InflectionTableLayoutRow,
   InflectedFormId,
   NewInflectionTableInput,
   EditInflectionTableInput,
   InflectionTableRowInput,
   InflectedFormInput,
-} from './types';
+} from '../../graphql/types';
+
+import Mutator from '../mutator';
+import FieldSet from '../field-set';
+
+import {InflectionTableRow, InflectionTableLayoutRow} from './types';
 import {
   validateName,
   validateFormInflectionPattern,
@@ -33,7 +32,7 @@ class InflectionTableMut extends Mutator {
     const {InflectionTableLayoutMut} = this.mut;
 
     const partOfSpeech = await PartOfSpeech.byIdRequired(
-      toNumberId(partOfSpeechId),
+      partOfSpeechId,
       'partOfSpeechId'
     );
 
@@ -212,14 +211,14 @@ class InflectionTableLayoutMut extends Mutator {
       rows,
       form => {
         if (form.id) {
-          if (!deletedFormIds.has(toNumberId(form.id))) {
+          if (!deletedFormIds.has(form.id)) {
             throw new UserInputError(
               `Form ${form.id} does not belong to this table`
             );
           }
           // We know this form is still in the table, so let's keep it.
-          deletedFormIds.delete(toNumberId(form.id));
-          return InflectedFormMut.update(toNumberId(form.id), form);
+          deletedFormIds.delete(form.id);
+          return InflectedFormMut.update(form.id, form);
         } else {
           // Insert new form
           return InflectedFormMut.insert(layout.id, form);

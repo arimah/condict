@@ -1,7 +1,8 @@
-import {toNumberId} from '../../model/id-of';
-import {LemmaInputId, LemmaRow} from '../../model/lemma/types';
+import {LemmaRow} from '../../model/lemma/types';
 
-import {Resolvers, IdArg} from '../types';
+import {LemmaId} from '../types';
+
+import {Resolvers, IdArg} from './types';
 
 const Lemma: Resolvers<LemmaRow> = {
   // term_display and term_unique have the same contents, but the former just
@@ -21,8 +22,8 @@ const Lemma: Resolvers<LemmaRow> = {
 };
 
 const Query: Resolvers<unknown> = {
-  lemma: (_root, {id}: IdArg<LemmaInputId>, {model: {Lemma}}) =>
-    Lemma.byId(toNumberId(id)),
+  lemma: (_root, {id}: IdArg<LemmaId>, {model: {Lemma}}) =>
+    Lemma.byId(id),
 };
 
 export default {

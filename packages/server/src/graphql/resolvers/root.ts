@@ -1,6 +1,8 @@
 // The root schema contains various essential types and definitions.
 
-import {Resolvers, ConnectionMeta as ConnectionMetaType} from '../types';
+import {ConnectionMeta as ConnectionMetaType} from '../types';
+
+import {Resolvers} from './types';
 
 const ConnectionMeta: Resolvers<ConnectionMetaType> = {
   hasNext: p => (p.page + 1) * p.perPage < p.totalCount,

@@ -1,3 +1,6 @@
+"Represents a language ID."
+scalar LanguageId @id
+
 "Determines how to filter lemmas."
 enum LemmaFilter {
   "All lemmas are included in the result."
@@ -31,7 +34,7 @@ In addition, every language has a (unique) name and a URL name.
 """
 type Language {
   "The globally unique ID of the language."
-  id: ID!
+  id: LanguageId!
 
   "The display name of the language."
   name: String!
@@ -82,7 +85,7 @@ extend type Query {
   Finds a language by ID or URL name. You must specify either `id` or `urlName`.
   If you specfiy both, only `id` will be used.
   """
-  language(id: ID, urlName: String): Language
+  language(id: LanguageId, urlName: String): Language
 }
 
 "Input type for a new language."
@@ -119,5 +122,5 @@ extend type Mutation {
 
   Requires authentication.
   """
-  editLanguage(id: ID!, data: EditLanguageInput!): Language!
+  editLanguage(id: LanguageId!, data: EditLanguageInput!): Language!
 }

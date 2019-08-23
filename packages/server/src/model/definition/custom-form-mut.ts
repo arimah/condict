@@ -1,13 +1,14 @@
 import {UserInputError} from 'apollo-server';
 
-import Mutator from '../mutator';
-import {toNumberId} from '../id-of';
 import {
+  DefinitionInflectionTableId,
+  CustomInflectedFormInput,
   InflectionTableLayoutId,
   InflectedFormId,
-} from '../inflection-table/types';
+} from '../../graphql/types';
 
-import {DefinitionInflectionTableId, CustomInflectedFormInput} from './types';
+import Mutator from '../mutator';
+
 import {validateFormValue} from './validators';
 
 export default class CustomFormMut extends Mutator {
@@ -23,7 +24,7 @@ export default class CustomFormMut extends Mutator {
       await Promise.all(
         customForms.map(async form => {
           const inflectedForm = await InflectedForm.byIdRequired(
-            toNumberId(form.inflectedFormId),
+            form.inflectedFormId,
             'inflectedFormId'
           );
           if (inflectedForm.inflection_table_version_id !== inflectionTableLayoutId) {

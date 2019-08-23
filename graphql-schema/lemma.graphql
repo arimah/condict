@@ -1,3 +1,6 @@
+"Represents a lemma ID."
+scalar LemmaId @id
+
 """
 A _lemma_ is a word listed in a dictionary. A lemma contains one or more
 _definitions_, which, as the name imply, actually define the lemma. The lemma
@@ -8,7 +11,7 @@ by changing the definitions contained in them.
 """
 type Lemma {
   "The globally unique ID of the lemma."
-  id: ID!
+  id: LemmaId!
 
   """
   The term that the lemma defines; the dictionary form of the word, e.g.
@@ -38,5 +41,5 @@ type Lemma {
 
 extend type Query {
   "Finds a lemma by ID. For richer lemma search, see the `Language` type."
-  lemma(id: ID!): Lemma
+  lemma(id: LemmaId!): Lemma
 }

@@ -13,9 +13,11 @@
     "start": "node dist/cli.js",
     "check": "tsc --noEmit",
     "clean": "rimraf dist",
-    "copyGraphql": "copyfiles --up 1 src/schema/*/*.graphql dist/",
+    "copyGraphql": "copyfiles --up 3 ../../graphql-schema/*.graphql dist/graphql/schema",
     "compile": "tsc",
-    "build": "npm run clean && npm run compile && npm run copyGraphql",
+    "build": "npm run build:graphqlTypes && npm run clean && npm run build:main",
+    "build:graphqlTypes": "condict-graphql-typer --schema-dir ../../graphql-schema --target ./src/graphql/types.ts",
+    "build:main": "npm run compile && npm run copyGraphql",
     "prepublishOnly": "npm install && npm run build",
     "lint": "eslint --ext .ts src/"
   },
@@ -27,11 +29,13 @@
     "dataloader": "^1.4.0",
     "deepmerge": "^4.0.0",
     "generic-pool": "^3.7.1",
-    "graphql": "^14.4.2",
+    "graphql": "^14.5.1",
+    "graphql-tools": "^4.0.5",
     "mysql": "^2.17.1",
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@condict/graphql-typer": "^0.1.0",
     "@types/better-sqlite3": "^5.4.0",
     "@types/command-line-args": "^5.0.0",
     "@types/generic-pool": "^3.1.9",

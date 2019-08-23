@@ -1,5 +1,19 @@
 # The root schema contains various essential types and definitions.
 
+"""
+Describes a scalar type as containing an ID, and defines what type of resource
+the ID refers to. The ID is a numeric value, and is turned into that on the
+server. For compatibility with the built-in `ID` type, the server also accepts
+string values for these IDs.
+
+The parameter `of` defines the type of resource that the ID refers to. Two IDs
+are eqiuvalent in TypeScript if they refer to the same type of resource. If
+omitted, it will be set to the scalar type's name, minus the `Id` suffix.
+
+Without this directive, a custom scalar value will be typed as `unknown`.
+"""
+directive @id(of: String) on SCALAR
+
 schema {
   query: Query
   mutation: Mutation

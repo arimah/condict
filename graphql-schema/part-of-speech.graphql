@@ -1,3 +1,6 @@
+"Represents a part of speech ID."
+scalar PartOfSpeechId @id
+
 """
 A part of speech is associated with each word in the dictionary. In addition to
 providing a way to group words, a part of speech can define any number of
@@ -6,7 +9,7 @@ See `InflectionTable` for more.
 """
 type PartOfSpeech {
   "The globally unique ID of the part of speech."
-  id: ID!
+  id: PartOfSpeechId!
 
   "The display name of the part of speech."
   name: String!
@@ -40,13 +43,13 @@ type PartOfSpeech {
 
 extend type Query {
   "Finds a part of speech by ID."
-  partOfSpeech(id: ID!): PartOfSpeech
+  partOfSpeech(id: PartOfSpeechId!): PartOfSpeech
 }
 
 "Input type for a new part of speech."
 input NewPartOfSpeechInput {
   "The language that the part of speech will be added to."
-  languageId: ID!
+  languageId: LanguageId!
 
   "The display name of the part of speech."
   name: String!
@@ -71,7 +74,10 @@ extend type Mutation {
 
   Requires authentication.
   """
-  editPartOfSpeech(id: ID!, data: EditPartOfSpeechInput!): PartOfSpeech!
+  editPartOfSpeech(
+    id: PartOfSpeechId!
+    data: EditPartOfSpeechInput!
+  ): PartOfSpeech!
 
   """
   Deletes a part of speech. It is not possible to delete a part of speech that
@@ -79,5 +85,5 @@ extend type Mutation {
 
   Requires authentication.
   """
-  deletePartOfSpeech(id: ID!): Boolean!
+  deletePartOfSpeech(id: PartOfSpeechId!): Boolean!
 }

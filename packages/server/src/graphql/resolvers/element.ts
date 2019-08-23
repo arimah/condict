@@ -1,5 +1,4 @@
 import {
-  InlineKind,
   BlockElementJson,
   InlineElementJson,
   LinkInlineJson,
@@ -15,7 +14,9 @@ import {
   parseCondictLink,
 } from '../../rich-text/condict-link';
 
-import {Resolvers} from '../types';
+import {InlineKind} from '../types';
+
+import {Resolvers} from './types';
 
 const BlockElement: Resolvers<BlockElementJson> = {
   // Level 0 is not usually stored in the object, to save space.
