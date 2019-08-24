@@ -1,4 +1,5 @@
-import inflectWord from '../../utils/inflect-word';
+import {inflectWord} from '@condict/inflect';
+
 import {InflectedFormId} from '../../graphql/types';
 
 import {InflectedFormRow} from '../inflection-table/types';
@@ -12,11 +13,7 @@ const deriveForms = (
   const derivedForms = new Map<InflectedFormId, string>();
 
   for (const form of derivableForms) {
-    const inflectedWord = inflectWord(
-      term,
-      stems,
-      form.inflection_pattern
-    );
+    const inflectedWord = inflectWord(form.inflection_pattern, term, stems);
     derivedForms.set(form.id, inflectedWord);
   }
 

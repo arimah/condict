@@ -1,3 +1,5 @@
+import {normalizePattern} from '@condict/inflect';
+
 import Adaptor from '../../database/adaptor';
 import {InflectionTableId, PartOfSpeechId} from '../../graphql/types';
 
@@ -34,7 +36,7 @@ export const validateName = (
 
 export const validateFormInflectionPattern =
   validator<string>('inflectionPattern')
-    .do(value => value.trim())
+    .do(normalizePattern)
     .do(lengthBetween(0, InflectionPatternSize))
     .validate;
 
