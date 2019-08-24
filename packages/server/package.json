@@ -22,7 +22,7 @@
     "lint": "eslint --ext .ts src/"
   },
   "dependencies": {
-    "@condict/inflect": "^0.1.0",
+    "@condict/inflect": "^0.1.1",
     "apollo-server": "^2.6.9",
     "better-sqlite3": "^5.4.0",
     "chalk": "^2.4.2",

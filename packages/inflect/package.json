@@ -1,6 +1,6 @@
 {
   "name": "@condict/inflect",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Provides APIs for inflecting words using Condict inflection patterns.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
@@ -13,7 +13,8 @@
     "compile": "tsc",
     "build": "npm run clean && npm run compile",
     "prepublishOnly": "npm install && npm run build",
-    "lint": "eslint --ext .ts,.tsx src/"
+    "lint": "eslint --ext .ts,.tsx src/",
+    "test": "mocha"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^1.12.0",
@@ -22,6 +23,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.12.3",
+    "mocha": "^6.2.0",
     "rimraf": "^2.6.3",
     "typescript": "^3.5.3"
   }

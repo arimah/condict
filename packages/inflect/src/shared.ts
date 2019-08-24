@@ -21,4 +21,4 @@ export const getReplacePattern = () => /(\{\{|\}\})|\{([^{}]+)\}/g;
  *      that this value may contain single '}' characters.
  */
 export const getTokenPattern = () =>
-  /(\{\{|\}\})|(\{([^{}]+)\})|((?:[^{}]|\}(?!\}))+)/g;
+  /(\{\{|\}\})|(\{([^{}]+)\})|((?:[^{}]|\}(?!\})|\{(?!\{|[^{}]+\}))+)/g;
