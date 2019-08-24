@@ -2,6 +2,7 @@ import React, {ChangeEvent, KeyboardEvent, PureComponent} from 'react';
 import FocusTrap from 'focus-trap-react';
 import {Options as FocusTrapOptions} from 'focus-trap';
 
+import {inflectWord} from '@condict/inflect';
 import {SROnly} from '@condict/a11y-utils';
 import genId from '@condict/gen-id';
 
@@ -10,7 +11,6 @@ import {Cell} from '../../value/types';
 
 import Value from '../value';
 import StemsContext, {StemsContextValue} from '../stems-context';
-import inflectWord from '../inflect-word';
 import {DataFields, Messages} from '../types';
 
 import * as S from './styles';

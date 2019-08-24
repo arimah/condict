@@ -1,9 +1,10 @@
 import React, {useContext} from 'react';
 
+import {inflectWord} from '@condict/inflect';
+
 import {CellDataProps} from '../../table-cell';
 
 import StemsContext from '../stems-context';
-import inflectWord from '../inflect-word';
 import {DataFields} from '../types';
 
 import * as S from './styles';
