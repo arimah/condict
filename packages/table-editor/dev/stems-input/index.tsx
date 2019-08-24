@@ -8,11 +8,12 @@ import * as S from './styles';
 export type Props = {
   value: Map<string, string>;
   stemNames: string[];
+  term: string;
   onChange: (newValue: Map<string, string>) => void;
 };
 
 const StemsInput = (props: Props) => {
-  const {value, stemNames, onChange} = props;
+  const {value, stemNames, term, onChange} = props;
 
   const [id] = useState(genId);
 
@@ -26,7 +27,7 @@ const StemsInput = (props: Props) => {
               {name}
               {': '}
               <S.ValueInput
-                value={value.get(name, '')}
+                value={value.get(name, term)}
                 onChange={e => onChange(value.set(name, e.target.value))}
               />
             </label>

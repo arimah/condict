@@ -439,6 +439,7 @@ class App extends Component<{}, State> {
             <StemsInput
               value={stems}
               stemNames={stemNames}
+              term={term}
               onChange={this.handleStemsChange}
             />
 
