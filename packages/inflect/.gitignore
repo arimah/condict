@@ -1,0 +1,8 @@
+# This is a library; don't commit this file
+package-lock.json
+
+# This file is generated on demand
+src/data.json
+
+# Source files are compiled before publish, and are not needed otherwise
+dist/
