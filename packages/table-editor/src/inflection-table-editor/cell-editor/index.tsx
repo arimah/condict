@@ -3,6 +3,7 @@ import FocusTrap from 'focus-trap-react';
 import {Options as FocusTrapOptions} from 'focus-trap';
 
 import {Checkbox} from '@condict/ui';
+import {normalizePattern} from '@condict/inflect';
 import {SROnly} from '@condict/a11y-utils';
 import genId from '@condict/gen-id';
 
@@ -60,7 +61,7 @@ export default class CellEditor extends PureComponent<Props, State> {
     };
 
     this.focusTrapOptions = {
-      onDeactivate: this.handleDeactivate,
+      onDeactivate: this.commit,
       returnFocusOnDeactivate: true,
       clickOutsideDeactivates: true,
       escapeDeactivates: true,
@@ -91,8 +92,13 @@ export default class CellEditor extends PureComponent<Props, State> {
     this.setState({trapActive: true});
   }
 
-  private handleDeactivate = () => {
-    this.props.onDone(this.state.cell);
+  private commit = () => {
+    const {cell} = this.state;
+    this.props.onDone(
+      cell.update('data', data =>
+        data.set('text', normalizePattern(data.text))
+      )
+    );
   };
 
   private handleInputFocus = () => {
@@ -166,7 +172,7 @@ export default class CellEditor extends PureComponent<Props, State> {
 
       e.preventDefault();
       e.stopPropagation();
-      this.props.onDone(this.state.cell);
+      this.commit();
     }
   };
 
