@@ -29,7 +29,7 @@ const writeType = (type: GraphQLType, input: boolean): string => {
     return writeNonNullType(type.ofType, input, writeType);
   }
   const typeText = writeNonNullType(type, input, writeType);
-  return input ? `${typeText} | undefined | null` : `${typeText} | null`;
+  return `${typeText} | null`;
 };
 
 export default writeType;

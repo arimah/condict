@@ -11,7 +11,6 @@ export const writeListType = (
   if (isNonNullType(type.ofType)) {
     return `${innerType}[]`;
   }
-  // innerType is `T | null` or `T | undefined | null`. We need some
-  // extra parentheses for precedence.
+  // innerType is `T | null`. We need some extra parentheses for precedence.
   return `(${innerType})[]`;
 };

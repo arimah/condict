@@ -1,7 +1,6 @@
 import {
   GraphQLInputObjectType,
   GraphQLInputField,
-  GraphQLNonNull,
   isNonNullType,
 } from 'graphql';
 
@@ -16,14 +15,9 @@ const defineField = (
   if (field.description) {
     t.appendLine(formatDescription(field.description));
   }
-  // For nullable input fields, we can use the slightly nicer syntax
-  // `field?: T | null` instead of `field: T | undefined | null`.
-  if (isNonNullType(field.type)) {
-    t.appendLine(`${field.name}: ${writeType(field.type, true)};`);
-  } else {
-    const fieldType = GraphQLNonNull(field.type);
-    t.appendLine(`${field.name}?: ${writeType(fieldType, true)} | null;`);
-  }
+  // For nullable input fields, we must also mark the field as optional.
+  const optional = !isNonNullType(field.type);
+  t.appendLine(`${field.name}${optional ? '?' : ''}: ${writeType(field.type, true)};`);
 };
 
 export const defineInputType = (
