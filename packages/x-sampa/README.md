@@ -1,6 +1,6 @@
 # @condict/x-sampa
 
-The [X-SAMPA][] is a method of encoding phonetic transcriptions, designed to be compatible with the [IPA][]. This package provides a function that converts most X-SAMPA text to IPA.
+The [X-SAMPA][xsampa] is a method of encoding phonetic transcriptions, designed to be compatible with the [IPA][]. This package provides a function that converts most X-SAMPA text to IPA.
 
 There are several noteworthy differences between standard X-SAMPA and what this package implements. Some extensions from the [Conlang X-SAMPA (CXS)][cxs] variant have been incorporated. The following are changes from standard X-SAMPA:
 
@@ -27,7 +27,7 @@ The asterisk, `*`, _is_ implemented as an escape character. Any character after 
 ```js
 import xsampaToIpa from '@condict/x-sampa';
 
-console.log(xsampaToIpa(`"foUn@'tIS@n`)); // ˌfoʊnəˈtɪʃən
+console.log(xsampaToIpa(`,foUn@'tIS@n`)); // ˌfoʊnəˈtɪʃən
 console.log(xsampaToIpa('r\\I.&kt')); // ɹɪ.ækt
 ```
 
