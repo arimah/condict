@@ -5,7 +5,6 @@ import {TextBuilder, formatDescription} from './utils';
 // In TypeScript, we know exactly what types are part of an interface, since
 // there's no way to add more implementing types to an interface after the
 // schema has been constructed. Basically, we can treat it like a union type.
-// This also allows us to use `__typename` as a discriminator.
 
 export const defineInterfaceType = (
   type: GraphQLInterfaceType,

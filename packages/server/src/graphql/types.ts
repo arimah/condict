@@ -14,7 +14,6 @@ export type IdOf<T extends string> = number & {
  * These include paragraphs, headings and list items.
  */
 export type BlockElement = {
-  __typename: 'BlockElement';
   /**
    * The block kind.
    */
@@ -92,7 +91,6 @@ export const enum BlockKind {
  * in a definition inflection table.
  */
 export type CustomInflectedForm = {
-  __typename: 'CustomInflectedForm';
   /**
    * The table that the form belongs to.
    */
@@ -128,7 +126,6 @@ export type CustomInflectedFormInput = {
  * A definition's inflection tables must belong to the definition's part of speech.
  */
 export type Definition = {
-  __typename: 'Definition';
   /**
    * The globally unique ID of the definition.
    */
@@ -194,7 +191,6 @@ export type Definition = {
  * * `PartOfSpeech.usedByDefinitions`
  */
 export type DefinitionConnection = {
-  __typename: 'DefinitionConnection';
   /**
    * Pagination metadata for this batch.
    */
@@ -219,7 +215,6 @@ export type DefinitionId = IdOf<'Definition'>;
  * Some words inflect differently depending on usage; Condict supports this.
  */
 export type DefinitionInflectionTable = {
-  __typename: 'DefinitionInflectionTable';
   /**
    * The globally unique ID of the definition inflection table.
    */
@@ -265,7 +260,6 @@ export type DefinitionInflectionTableId = IdOf<'DefinitionInflectionTable'>;
  * Contains the definition that a definition link points to.
  */
 export type DefinitionLinkTarget = {
-  __typename: 'DefinitionLinkTarget';
   /**
    * The ID of the definition that the link points to.
    */
@@ -283,7 +277,6 @@ export type DefinitionLinkTarget = {
  * with the value of the stem named `pl`.
  */
 export type DefinitionStem = {
-  __typename: 'DefinitionStem';
   /**
    * The name of the stem.
    */
@@ -310,7 +303,6 @@ export type DefinitionStem = {
  * > 1. _plural of_ bird
  */
 export type DerivedDefinition = {
-  __typename: 'DerivedDefinition';
   /**
    * The term that the definition applies to. This value is equal to `lemma.term`
    * and is provided here for convenience.
@@ -340,7 +332,6 @@ export type DerivedDefinition = {
  * Contains paginated results from the `Definition.derivedDefinitions` field.
  */
 export type DerivedDefinitionConnection = {
-  __typename: 'DerivedDefinitionConnection';
   /**
    * Pagination metadata for this batch.
    */
@@ -484,7 +475,6 @@ export type EditPartOfSpeechInput = {
  * _inflected form of_.
  */
 export type InflectedForm = {
-  __typename: 'InflectedForm';
   /**
    * The globally unique ID of the inflected form.
    */
@@ -579,7 +569,6 @@ export type InflectedFormInput = {
  *    used by many definitions.
  */
 export type InflectionTable = {
-  __typename: 'InflectionTable';
   /**
    * The globally unique ID of the inflection table.
    */
@@ -668,7 +657,6 @@ export type InflectionTableCellInput = {
  * type `InflectedForm` for details.
  */
 export type InflectionTableDataCell = {
-  __typename: 'InflectionTableDataCell';
   /**
    * The column span of the cell. The value is always greater than 0.
    */
@@ -688,7 +676,6 @@ export type InflectionTableDataCell = {
  * with no formatting.
  */
 export type InflectionTableHeaderCell = {
-  __typename: 'InflectionTableHeaderCell';
   /**
    * The column span of the cell. The value is always greater than 0.
    */
@@ -714,7 +701,6 @@ export type InflectionTableId = IdOf<'InflectionTable'>;
  * documentation of `InflectionTable` for details.
  */
 export type InflectionTableLayout = {
-  __typename: 'InflectionTableLayout';
   /**
    * The globally unique ID of this inflection table layout.
    */
@@ -766,7 +752,6 @@ export type InflectionTableLayout = {
  * Contains paginated results from the `InflectionTable.oldLayouts` field.
  */
 export type InflectionTableLayoutConnection = {
-  __typename: 'InflectionTableLayoutConnection';
   /**
    * Pagination metadata for this batch.
    */
@@ -789,7 +774,6 @@ export type InflectionTableLayoutId = IdOf<'InflectionTableLayout'>;
  * compatibility.
  */
 export type InflectionTableRow = {
-  __typename: 'InflectionTableRow';
   /**
    * Header and data cells of the table.
    */
@@ -904,7 +888,6 @@ export type InternalLinkTarget =
  * In addition, every language has a (unique) name and a URL name.
  */
 export type Language = {
-  __typename: 'Language';
   /**
    * The globally unique ID of the language.
    */
@@ -948,7 +931,6 @@ export type LanguageId = IdOf<'Language'>;
  * Contains the language that a language link points to.
  */
 export type LanguageLinkTarget = {
-  __typename: 'LanguageLinkTarget';
   /**
    * The ID of the language that the link points to.
    */
@@ -969,7 +951,6 @@ export type LanguageLinkTarget = {
  * by changing the definitions contained in them.
  */
 export type Lemma = {
-  __typename: 'Lemma';
   /**
    * The globally unique ID of the lemma.
    */
@@ -1004,7 +985,6 @@ export type Lemma = {
  * Contains paginated results from the `Language.lemmas` field.
  */
 export type LemmaConnection = {
-  __typename: 'LemmaConnection';
   /**
    * Pagination metadata for this batch.
    */
@@ -1044,7 +1024,6 @@ export type LemmaId = IdOf<'Lemma'>;
  * Contains the lemma that a lemma link points to.
  */
 export type LemmaLinkTarget = {
-  __typename: 'LemmaLinkTarget';
   /**
    * The ID of the lemma that the link points to.
    */
@@ -1061,7 +1040,6 @@ export type LemmaLinkTarget = {
  * or to an arbitrary external URI.
  */
 export type LinkInline = {
-  __typename: 'LinkInline';
   /**
    * The inline kind.
    */
@@ -1097,7 +1075,6 @@ export type LinkInline = {
  * The root mutation type.
  */
 export type Mutation = {
-  __typename: 'Mutation';
   /**
    * Adds a definition to the dictionary. The lemma is automatically created based
    * on the `term`: if there is a lemma with that term, the definition is added to
@@ -1278,7 +1255,6 @@ export type NewPartOfSpeechInput = {
  * Contains pagination details about a batch of a paginated collection.
  */
 export type PageInfo = {
-  __typename: 'PageInfo';
   /**
    * The 0-based page number. This value is always greater than or equal to 0.
    */
@@ -1325,7 +1301,6 @@ export type PageParams = {
  * See `InflectionTable` for more.
  */
 export type PartOfSpeech = {
-  __typename: 'PartOfSpeech';
   /**
    * The globally unique ID of the part of speech.
    */
@@ -1371,7 +1346,6 @@ export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
  * Contains the part of speech that a part of speech link points to.
  */
 export type PartOfSpeechLinkTarget = {
-  __typename: 'PartOfSpeechLinkTarget';
   /**
    * The ID of the part of speech that the link points to.
    */
@@ -1387,7 +1361,6 @@ export type PartOfSpeechLinkTarget = {
  * The root query type.
  */
 export type Query = {
-  __typename: 'Query';
   /**
    * Finds a definition by ID.
    */
@@ -1456,7 +1429,6 @@ export type StemInput = {
  * An `InlineElement` that applies a single style to its text.
  */
 export type StyleInline = {
-  __typename: 'StyleInline';
   /**
    * The inline kind.
    */
@@ -1476,7 +1448,6 @@ export type StyleInline = {
  * tables attached to a definition.
  */
 export type TableCaption = {
-  __typename: 'TableCaption';
   /**
    * The text content of the caption, without inline formatters.
    */
@@ -1510,7 +1481,6 @@ export type TableCaptionInput = {
  * are mainly used for thematic grouping ("colour", "emotion", "food", etc.).
  */
 export type Tag = {
-  __typename: 'Tag';
   /**
    * The ID of the tag.
    */
@@ -1525,7 +1495,6 @@ export type Tag = {
  * Contains paginated results from the `Query.tags` field.
  */
 export type TagConnection = {
-  __typename: 'TagConnection';
   /**
    * Pagination metadata for this batch.
    */

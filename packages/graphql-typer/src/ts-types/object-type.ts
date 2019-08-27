@@ -26,8 +26,6 @@ export const defineObjectType = (
   def
     .appendLine(`export type ${type.name} = {`)
     .indented(() => {
-      def.appendLine(`__typename: '${type.name}';`);
-
       for (const field of Object.values(type.getFields())) {
         defineField(def, field, writeType);
       }
