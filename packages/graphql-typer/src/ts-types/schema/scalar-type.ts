@@ -1,8 +1,8 @@
 import {GraphQLScalarType} from 'graphql';
 
-import getIdKind from '../graphql/id-kind';
+import getIdKind from '../../graphql/id-kind';
 
-import {TextBuilder, formatDescription} from './utils';
+import {TextBuilder, formatDescription} from '../utils';
 
 const builtins = new Map<string, string>([
   ['Boolean', 'boolean'],

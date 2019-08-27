@@ -1,6 +1,6 @@
 import {GraphQLEnumType, GraphQLEnumValue} from 'graphql';
 
-import {TextBuilder, formatDescription} from './utils';
+import {TextBuilder, formatDescription} from '../utils';
 
 const defineValue = (t: TextBuilder, value: GraphQLEnumValue) => {
   if (value.value !== value.name) {

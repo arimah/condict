@@ -8,6 +8,8 @@ import {
   isInterfaceType,
 } from 'graphql';
 
+import {TextBuilder} from '../utils';
+
 import {
   defineScalarType,
   isBuiltin as isBuiltinScalar,
@@ -17,7 +19,6 @@ import {defineObjectType} from './object-type';
 import {defineInputType} from './input-type';
 import {defineUnionType} from './union-type';
 import {defineInterfaceType} from './interface-type';
-import {TextBuilder} from './utils';
 import writeType from './write-type';
 
 const defineTypes = (

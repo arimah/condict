@@ -1,6 +1,6 @@
 import {GraphQLInterfaceType, GraphQLSchema} from 'graphql';
 
-import {TextBuilder, formatDescription} from './utils';
+import {TextBuilder, formatDescription} from '../utils';
 
 // In TypeScript, we know exactly what types are part of an interface, since
 // there's no way to add more implementing types to an interface after the

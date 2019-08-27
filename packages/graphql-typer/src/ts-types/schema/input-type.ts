@@ -1,22 +1,29 @@
-import {GraphQLObjectType, GraphQLField} from 'graphql';
+import {
+  GraphQLInputObjectType,
+  GraphQLInputField,
+  isNonNullType,
+} from 'graphql';
 
-import {TextBuilder, formatDescription} from './utils';
+import {TextBuilder, formatDescription} from '../utils';
+
 import {TypeWriter} from './types';
 
 const defineField = (
   t: TextBuilder,
-  field: GraphQLField<any, any, any>,
+  field: GraphQLInputField,
   writeType: TypeWriter
 ) => {
   if (field.description) {
     t.appendLine(formatDescription(field.description));
   }
-  t.appendLine(`${field.name}: ${writeType(field.type)};`);
+  // For nullable input fields, we must also mark the field as optional.
+  const optional = !isNonNullType(field.type);
+  t.appendLine(`${field.name}${optional ? '?' : ''}: ${writeType(field.type)};`);
 };
 
-export const defineObjectType = (
+export const defineInputType = (
   result: TextBuilder,
-  type: GraphQLObjectType,
+  type: GraphQLInputObjectType,
   writeType: TypeWriter
 ) => {
   if (type.description) {

@@ -75,8 +75,6 @@ More specifically, any type whose name starts with `__` will be considered priva
 
 ### `writeType()`
 
-> `writeType(type: GraphQLType, input: boolean): string`
+> `writeType(type: GraphQLType): string`
 
 Returns a TypeScript type name that refers to the specified type. This handles named types as well as lists and non-nullable types. Note that GraphQL types are nullable by default.
-
-If `input` is true, the type name is formatted as an input type. The only difference is that nullable input types can also be `undefined`, since graphql-js does not convert undefined values to null in user input.

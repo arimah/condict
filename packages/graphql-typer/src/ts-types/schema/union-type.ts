@@ -1,6 +1,6 @@
 import {GraphQLUnionType} from 'graphql';
 
-import {TextBuilder, formatDescription} from './utils';
+import {TextBuilder, formatDescription} from '../utils';
 
 export const defineUnionType = (result: TextBuilder, type: GraphQLUnionType) => {
   if (type.description) {
