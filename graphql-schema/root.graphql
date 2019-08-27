@@ -25,8 +25,8 @@ type Query
 "The root mutation type."
 type Mutation
 
-"Contains metadata about a paginated collection."
-type ConnectionMeta {
+"Contains pagination details about a batch of a paginated collection."
+type PageInfo {
   "The 0-based page number. This value is always greater than or equal to 0."
   page: Int!
 

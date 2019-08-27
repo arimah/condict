@@ -4,7 +4,7 @@ import {Logger} from 'winston';
 import Adaptor from '../../database/adaptor';
 import {ModelResolver, MutatorResolver} from '../../model';
 
-import {IdOf, PageParams, ConnectionMeta} from '../types';
+import {IdOf, PageParams, PageInfo} from '../types';
 
 export type Context = {
   db: Adaptor;
@@ -45,6 +45,6 @@ export type PageArg = {
 // the GraphQL schema. It must be synchronised with the GraphQL schema.
 
 export type Connection<T> = {
-  meta: Pick<ConnectionMeta, 'page' | 'perPage' | 'totalCount'>;
+  page: Pick<PageInfo, 'page' | 'perPage' | 'totalCount'>;
   nodes: T[];
 };

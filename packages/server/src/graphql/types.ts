@@ -88,35 +88,6 @@ export const enum BlockKind {
 }
 
 /**
- * Contains metadata about a paginated collection.
- */
-export type ConnectionMeta = {
-  __typename: 'ConnectionMeta';
-  /**
-   * The 0-based page number. This value is always greater than or equal to 0.
-   */
-  page: number;
-  /**
-   * The total number of items per page. This value is always at least 1.
-   */
-  perPage: number;
-  /**
-   * The total number of items in the paginated collection. This value is always
-   * greater than or equal to 0.
-   */
-  totalCount: number;
-  /**
-   * Determines whether there are more items in the collection.
-   */
-  hasNext: boolean;
-  /**
-   * Determines whether there are items on earlier pages. This value is true if
-   * and only if \`page\` is greater than zero.
-   */
-  hasPrev: boolean;
-};
-
-/**
  * A custom inflected form, typically an irregular form. It overrides a single cell
  * in a definition inflection table.
  */
@@ -225,9 +196,9 @@ export type Definition = {
 export type DefinitionConnection = {
   __typename: 'DefinitionConnection';
   /**
-   * Metadata about the connection, related to pagination.
+   * Pagination metadata for this batch.
    */
-  meta: ConnectionMeta;
+  page: PageInfo;
   /**
    * The definitions in this batch.
    */
@@ -371,9 +342,9 @@ export type DerivedDefinition = {
 export type DerivedDefinitionConnection = {
   __typename: 'DerivedDefinitionConnection';
   /**
-   * Metadata about the connection, related to pagination.
+   * Pagination metadata for this batch.
    */
-  meta: ConnectionMeta;
+  page: PageInfo;
   /**
    * The derived definitions in this batch.
    */
@@ -797,9 +768,9 @@ export type InflectionTableLayout = {
 export type InflectionTableLayoutConnection = {
   __typename: 'InflectionTableLayoutConnection';
   /**
-   * Metadata about the connection, related to pagination.
+   * Pagination metadata for this batch.
    */
-  meta: ConnectionMeta;
+  page: PageInfo;
   /**
    * The inflection table layouts in this batch.
    */
@@ -1035,9 +1006,9 @@ export type Lemma = {
 export type LemmaConnection = {
   __typename: 'LemmaConnection';
   /**
-   * Metadata about the connection, related to pagination.
+   * Pagination metadata for this batch.
    */
-  meta: ConnectionMeta;
+  page: PageInfo;
   /**
    * The lemmas in this batch.
    */
@@ -1304,6 +1275,35 @@ export type NewPartOfSpeechInput = {
 };
 
 /**
+ * Contains pagination details about a batch of a paginated collection.
+ */
+export type PageInfo = {
+  __typename: 'PageInfo';
+  /**
+   * The 0-based page number. This value is always greater than or equal to 0.
+   */
+  page: number;
+  /**
+   * The total number of items per page. This value is always at least 1.
+   */
+  perPage: number;
+  /**
+   * The total number of items in the paginated collection. This value is always
+   * greater than or equal to 0.
+   */
+  totalCount: number;
+  /**
+   * Determines whether there are more items in the collection.
+   */
+  hasNext: boolean;
+  /**
+   * Determines whether there are items on earlier pages. This value is true if
+   * and only if \`page\` is greater than zero.
+   */
+  hasPrev: boolean;
+};
+
+/**
  * Input type for pagination parameters.
  */
 export type PageParams = {
@@ -1527,9 +1527,9 @@ export type Tag = {
 export type TagConnection = {
   __typename: 'TagConnection';
   /**
-   * Metadata about the connection, related to pagination.
+   * Pagination metadata for this batch.
    */
-  meta: ConnectionMeta;
+  page: PageInfo;
   /**
    * The tags in this batch.
    */

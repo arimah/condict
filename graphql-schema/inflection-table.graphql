@@ -76,8 +76,8 @@ type InflectionTable {
 
 "Contains paginated results from the `InflectionTable.oldLayouts` field."
 type InflectionTableLayoutConnection {
-  "Metadata about the connection, related to pagination."
-  meta: ConnectionMeta!
+  "Pagination metadata for this batch."
+  page: PageInfo!
 
   "The inflection table layouts in this batch."
   nodes: [InflectionTableLayout!]!

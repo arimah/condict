@@ -16,8 +16,8 @@ type Tag {
 
 "Contains paginated results from the `Query.tags` field."
 type TagConnection {
-  "Metadata about the connection, related to pagination."
-  meta: ConnectionMeta!
+  "Pagination metadata for this batch."
+  page: PageInfo!
 
   "The tags in this batch."
   nodes: [Tag!]!

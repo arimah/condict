@@ -70,7 +70,7 @@ export const createConnection = <T>(
   totalCount: number,
   nodes: T[]
 ): Connection<T> => ({
-  meta: {
+  page: {
     page: pageParams.page,
     perPage: pageParams.perPage,
     totalCount,

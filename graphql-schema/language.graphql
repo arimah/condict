@@ -70,8 +70,8 @@ type Language {
 
 "Contains paginated results from the `Language.lemmas` field."
 type LemmaConnection {
-  "Metadata about the connection, related to pagination."
-  meta: ConnectionMeta!
+  "Pagination metadata for this batch."
+  page: PageInfo!
 
   "The lemmas in this batch."
   nodes: [Lemma!]!

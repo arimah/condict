@@ -74,8 +74,8 @@ Contains paginated results from one of the following fields:
 * `PartOfSpeech.usedByDefinitions`
 """
 type DefinitionConnection {
-  "Metadata about the connection, related to pagination."
-  meta: ConnectionMeta!
+  "Pagination metadata for this batch."
+  page: PageInfo!
 
   "The definitions in this batch."
   nodes: [Definition!]!
@@ -176,8 +176,8 @@ type CustomInflectedForm {
 
 "Contains paginated results from the `Definition.derivedDefinitions` field."
 type DerivedDefinitionConnection {
-  "Metadata about the connection, related to pagination."
-  meta: ConnectionMeta!
+  "Pagination metadata for this batch."
+  page: PageInfo!
 
   "The derived definitions in this batch."
   nodes: [DerivedDefinition!]!
