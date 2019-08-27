@@ -1,15 +1,17 @@
 import {PartOfSpeechRow} from '../../model/part-of-speech/types';
 
 import {
+  PartOfSpeech as PartOfSpeechType,
   PartOfSpeechId,
   NewPartOfSpeechInput,
   EditPartOfSpeechInput,
+  Query as QueryType,
 } from '../types';
 import {mutator} from '../helpers';
 
-import {Resolvers, Mutators, IdArg, PageArg} from './types';
+import {ResolversFor, Mutators, IdArg, PageArg} from './types';
 
-const PartOfSpeech: Resolvers<PartOfSpeechRow> = {
+const PartOfSpeech: ResolversFor<PartOfSpeechType, PartOfSpeechRow> = {
   inflectionTables: (p, _args, {model: {InflectionTable}}) =>
     InflectionTable.allByPartOfSpeech(p.id),
 
@@ -23,7 +25,7 @@ const PartOfSpeech: Resolvers<PartOfSpeechRow> = {
     Definition.allByPartOfSpeech(p.id, page),
 };
 
-const Query: Resolvers<unknown> = {
+const Query: ResolversFor<QueryType, unknown> = {
   partOfSpeech: (_root, args: IdArg<PartOfSpeechId>, {model: {PartOfSpeech}}) =>
     PartOfSpeech.byId(args.id),
 };
@@ -37,7 +39,7 @@ type EditPartOfSpeechArgs = {
   data: EditPartOfSpeechInput;
 };
 
-const Mutation: Mutators<unknown> = {
+const Mutation: Mutators = {
   addPartOfSpeech: mutator(
     (_root, {data}: AddPartOfSpeechArgs, {mut: {PartOfSpeechMut}}) =>
       PartOfSpeechMut.insert(data)

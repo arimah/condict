@@ -2,9 +2,9 @@
 
 import {PageInfo as PageInfoType} from '../types';
 
-import {Resolvers} from './types';
+import {ResolversFor} from './types';
 
-const PageInfo: Resolvers<PageInfoType> = {
+const PageInfo: ResolversFor<PageInfoType, PageInfoType> = {
   hasNext: p => (p.page + 1) * p.perPage < p.totalCount,
 
   hasPrev: p => p.page > 0,

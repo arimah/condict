@@ -7,16 +7,22 @@ import {
 } from '../../model/definition/types';
 
 import {
+  Definition as DefinitionType,
   DefinitionId,
+  DefinitionStem as DefinitionStemType,
+  DefinitionInflectionTable as DefinitionInflectionTableType,
   DefinitionInflectionTableId,
+  CustomInflectedForm as CustomInflectedFormType,
+  DerivedDefinition as DerivedDefinitionType,
   NewDefinitionInput,
   EditDefinitionInput,
+  Query as QueryType,
 } from '../types';
 import {mutator} from '../helpers';
 
-import {Resolvers, Mutators, IdArg, PageArg} from './types';
+import {ResolversFor, Mutators, IdArg, PageArg} from './types';
 
-const Definition: Resolvers<DefinitionRow> = {
+const Definition: ResolversFor<DefinitionType, DefinitionRow> = {
   partOfSpeech: (p, _args, {model: {PartOfSpeech}}) =>
     PartOfSpeech.byId(p.part_of_speech_id),
 
@@ -47,12 +53,15 @@ const Definition: Resolvers<DefinitionRow> = {
     Language.byId(p.language_id),
 };
 
-const DefinitionStem: Resolvers<DefinitionStemRow> = {
+const DefinitionStem: ResolversFor<DefinitionStemType, DefinitionStemRow> = {
   definition: (p, _args, {model: {Definition}}) =>
     Definition.byId(p.definition_id),
 };
 
-const DefinitionInflectionTable: Resolvers<DefinitionInflectionTableRow> = {
+const DefinitionInflectionTable: ResolversFor<
+  DefinitionInflectionTableType,
+  DefinitionInflectionTableRow
+> = {
   caption: p => p.caption && JSON.parse(p.caption),
 
   captionRaw: p => p.caption,
@@ -70,7 +79,10 @@ const DefinitionInflectionTable: Resolvers<DefinitionInflectionTableRow> = {
     Definition.byId(p.definition_id),
 };
 
-const CustomInflectedForm: Resolvers<CustomInflectedFormRow> = {
+const CustomInflectedForm: ResolversFor<
+  CustomInflectedFormType,
+  CustomInflectedFormRow
+> = {
   table: (p, _args, {model: {DefinitionInflectionTable}}) =>
     DefinitionInflectionTable.byId(p.definition_inflection_table_id),
 
@@ -80,7 +92,10 @@ const CustomInflectedForm: Resolvers<CustomInflectedFormRow> = {
   value: p => p.inflected_form,
 };
 
-const DerivedDefinition: Resolvers<DerivedDefinitionRow> = {
+const DerivedDefinition: ResolversFor<
+  DerivedDefinitionType,
+  DerivedDefinitionRow
+> = {
   derivedFrom: (p, _args, {model: {Definition}}) =>
     Definition.byId(p.original_definition_id),
 
@@ -94,7 +109,7 @@ const DerivedDefinition: Resolvers<DerivedDefinitionRow> = {
     Language.byId(p.language_id),
 };
 
-const Query: Resolvers<unknown> = {
+const Query: ResolversFor<QueryType, unknown> = {
   definition: (_root, {id}: IdArg<DefinitionId>, {model: {Definition}}) =>
     Definition.byId(id),
 
@@ -115,7 +130,7 @@ type EditDefinitionArgs = {
   data: EditDefinitionInput;
 };
 
-const Mutation: Mutators<unknown> = {
+const Mutation: Mutators = {
   addDefinition: mutator(
     (_root, {data}: AddDefinitionArgs, {mut: {DefinitionMut}}) =>
       DefinitionMut.insert(data)

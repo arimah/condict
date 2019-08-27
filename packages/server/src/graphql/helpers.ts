@@ -16,12 +16,12 @@ import {
  * @param resolver The resolver function to wrap.
  * @return A mutator function.
  */
-export const mutator = <T, Args>(resolver: IFieldResolver<T, Context, Args>): MutatorFn<T> => {
+export const mutator = <T, Args>(resolver: IFieldResolver<T, Context, Args>): MutatorFn => {
   const fn: any =
     (p: T, args: Args, context: Context, info: any) =>
       resolver(p, args, context, info);
   fn[IsMutator] = true;
-  return fn as MutatorFn<T>;
+  return fn as MutatorFn;
 };
 
 /**
@@ -31,12 +31,12 @@ export const mutator = <T, Args>(resolver: IFieldResolver<T, Context, Args>): Mu
  * @param resolver The resolver function to wrap.
  * @return A mutator function.
  */
-export const publicMutator = <T>(resolver: IFieldResolver<T, Context>): MutatorFn<T> => {
+export const publicMutator = <T>(resolver: IFieldResolver<T, Context>): MutatorFn => {
   const fn: any =
     (p: T, args: Record<string, any>, context: Context, info: any) =>
       resolver(p, args, context, info);
   fn[IsMutator] = true;
-  return fn as MutatorFn<T>;
+  return fn as MutatorFn;
 };
 
 export const validatePageParams = (

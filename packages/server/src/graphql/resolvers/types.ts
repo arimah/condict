@@ -1,10 +1,10 @@
-import {IResolverObject, IFieldResolver} from 'apollo-server';
+import {IFieldResolver} from 'apollo-server';
 import {Logger} from 'winston';
 
 import Adaptor from '../../database/adaptor';
 import {ModelResolver, MutatorResolver} from '../../model';
 
-import {IdOf, PageParams, PageInfo} from '../types';
+import {IdOf, PageParams, PageInfo, Mutation} from '../types';
 
 export type Context = {
   db: Adaptor;
@@ -13,16 +13,25 @@ export type Context = {
   mut: MutatorResolver;
 };
 
-export type Resolvers<T> = IResolverObject<T, Context>;
+export type ResolversFor<T, P> = {
+  // The default arguments type, `Record<string, any>`, does not deal well with
+  // required arguments: TypeScript complains about them being required by the
+  // actual arguments type, but absent in `Record<string, any>`. As much as I
+  // don't want `any` here, it seems to be the only practical solution.
+  [K in keyof T]?: IFieldResolver<P, Context, any>;
+} & {
+  // This resolver never receives arguments.
+  __resolveType?: IFieldResolver<P, Context, {}>;
+};
 
 export const IsMutator = Symbol('mutator function');
 
-export type MutatorFn<T> = IFieldResolver<T, Context> & {
+export type MutatorFn = IFieldResolver<unknown, Context> & {
   readonly [IsMutator]: boolean;
 };
 
-export type Mutators<T> = {
-  [k: string]: MutatorFn<T>;
+export type Mutators = {
+  [K in keyof Mutation]?: MutatorFn;
 };
 
 /**

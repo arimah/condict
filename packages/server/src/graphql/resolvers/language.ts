@@ -3,20 +3,22 @@ import {UserInputError} from 'apollo-server';
 import {LanguageRow} from '../../model/language/types';
 
 import {
+  Language as LanguageType,
   LanguageId,
   LemmaFilter,
   NewLanguageInput,
   EditLanguageInput,
+  Query as QueryType,
 } from '../types';
 import {mutator} from '../helpers';
 
-import {Resolvers, Mutators, PageArg} from './types';
+import {ResolversFor, Mutators, PageArg} from './types';
 
 type LemmasArgs = PageArg & {
   filter?: LemmaFilter | null;
 };
 
-const Language: Resolvers<LanguageRow> = {
+const Language: ResolversFor<LanguageType, LanguageRow> = {
   urlName: p => p.url_name,
 
   partsOfSpeech: (p, _args, {model: {PartOfSpeech}}) =>
@@ -36,7 +38,7 @@ type LanguageArgs = {
   urlName?: string | null;
 };
 
-const Query: Resolvers<unknown> = {
+const Query: ResolversFor<QueryType, unknown> = {
   languages: (_root, _args, {model: {Language}}) => Language.all(),
 
   language: (_root, args: LanguageArgs, {model: {Language}}) => {
@@ -61,7 +63,7 @@ type EditLanguageArgs = {
   data: EditLanguageInput;
 };
 
-const Mutation: Mutators<unknown> = {
+const Mutation: Mutators = {
   addLanguage: mutator(
     (_root, {data}: AddLanguageArgs, {mut: {LanguageMut}}) =>
       LanguageMut.insert(data)

@@ -1,10 +1,10 @@
 import {LemmaRow} from '../../model/lemma/types';
 
-import {LemmaId} from '../types';
+import {Lemma as LemmaType, LemmaId, Query as QueryType} from '../types';
 
-import {Resolvers, IdArg} from './types';
+import {ResolversFor, IdArg} from './types';
 
-const Lemma: Resolvers<LemmaRow> = {
+const Lemma: ResolversFor<LemmaType, LemmaRow> = {
   // term_display and term_unique have the same contents, but the former just
   // feels more fitting for display.
   term: p => p.term_display,
@@ -21,7 +21,7 @@ const Lemma: Resolvers<LemmaRow> = {
     Language.byId(p.language_id),
 };
 
-const Query: Resolvers<unknown> = {
+const Query: ResolversFor<QueryType, unknown> = {
   lemma: (_root, {id}: IdArg<LemmaId>, {model: {Lemma}}) =>
     Lemma.byId(id),
 };

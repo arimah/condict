@@ -6,17 +6,24 @@ import {
 } from '../../model/inflection-table/types';
 
 import {
+  InflectionTable as InflectionTableType,
   InflectionTableId,
+  InflectionTableLayout as InflectionTableLayoutType,
   InflectionTableLayoutId,
+  InflectionTableCell as InflectionTableCellType,
+  InflectionTableHeaderCell as InflectionTableHeaderCellType,
+  InflectionTableDataCell as InflectionTableDataCellType,
+  InflectedForm as InflectedFormType,
   InflectedFormId,
   NewInflectionTableInput,
   EditInflectionTableInput,
+  Query as QueryType,
 } from '../types';
 import {mutator} from '../helpers';
 
-import {Resolvers, Mutators, IdArg, PageArg} from './types';
+import {ResolversFor, Mutators, IdArg, PageArg} from './types';
 
-const InflectionTable: Resolvers<InflectionTableRow> = {
+const InflectionTable: ResolversFor<InflectionTableType, InflectionTableRow> = {
   layout: (p, _args, {model: {InflectionTableLayout}}) =>
     InflectionTableLayout.currentByTable(p.id),
 
@@ -33,7 +40,10 @@ const InflectionTable: Resolvers<InflectionTableRow> = {
     Definition.allByInflectionTable(p.id, page),
 };
 
-const InflectionTableLayout: Resolvers<InflectionTableLayoutRow> = {
+const InflectionTableLayout: ResolversFor<
+  InflectionTableLayoutType,
+  InflectionTableLayoutRow
+> = {
   isCurrent: p => p.is_current === 1,
 
   rows: p => JSON.parse(p.layout),
@@ -53,7 +63,10 @@ const InflectionTableLayout: Resolvers<InflectionTableLayoutRow> = {
     Definition.allByInflectionTableLayout(p.id, page),
 };
 
-const InflectionTableCell: Resolvers<InflectionTableCellJson> = {
+const InflectionTableCell: ResolversFor<
+  InflectionTableCellType,
+  InflectionTableCellJson
+> = {
   __resolveType(p) {
     if (p.inflectedFormId) {
       return 'InflectionTableDataCell';
@@ -64,13 +77,19 @@ const InflectionTableCell: Resolvers<InflectionTableCellJson> = {
 
 // We don't store columnSpan and rowSpan when their value is 1, so have to
 // add fallback resolvers for that.
-const InflectionTableHeaderCell: Resolvers<InflectionTableCellJson> = {
+const InflectionTableHeaderCell: ResolversFor<
+  InflectionTableHeaderCellType,
+  InflectionTableCellJson
+> = {
   columnSpan: p => p.columnSpan || 1,
 
   rowSpan: p => p.rowSpan || 1,
 };
 
-const InflectionTableDataCell: Resolvers<InflectionTableCellJson> = {
+const InflectionTableDataCell: ResolversFor<
+  InflectionTableDataCellType,
+  InflectionTableCellJson
+> = {
   columnSpan: p => p.columnSpan || 1,
 
   rowSpan: p => p.rowSpan || 1,
@@ -81,7 +100,7 @@ const InflectionTableDataCell: Resolvers<InflectionTableCellJson> = {
       : null,
 };
 
-const InflectedForm: Resolvers<InflectedFormRow> = {
+const InflectedForm: ResolversFor<InflectedFormType, InflectedFormRow> = {
   deriveLemma: p => p.derive_lemma === 1,
 
   inflectionPattern: p => p.inflection_pattern,
@@ -94,7 +113,7 @@ const InflectedForm: Resolvers<InflectedFormRow> = {
     InflectionTableLayout.byId(p.inflection_table_version_id),
 };
 
-const Query: Resolvers<unknown> = {
+const Query: ResolversFor<QueryType, unknown> = {
   inflectionTable: (
     _root,
     {id}: IdArg<InflectionTableId>,
@@ -126,7 +145,7 @@ type EditInflectionTableArgs = {
   data: EditInflectionTableInput;
 };
 
-const Mutation: Mutators<unknown> = {
+const Mutation: Mutators = {
   addInflectionTable: mutator(
     (_root, {data}: AddInflectionTableArgs, {mut: {InflectionTableMut}}) =>
       InflectionTableMut.insert(data)

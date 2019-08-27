@@ -14,16 +14,26 @@ import {
   parseCondictLink,
 } from '../../rich-text/condict-link';
 
-import {InlineKind} from '../types';
+import {
+  BlockElement as BlockElementType,
+  InlineElement as InlineElementType,
+  InlineKind,
+  LinkInline as LinkInlineType,
+  InternalLinkTarget as InternalLinkTargetType,
+  LanguageLinkTarget as LanguageLinkTargetType,
+  LemmaLinkTarget as LemmaLinkTargetType,
+  DefinitionLinkTarget as DefinitionLinkTargetType,
+  PartOfSpeechLinkTarget as PartOfSpeechLinkTargetType,
+} from '../types';
 
-import {Resolvers} from './types';
+import {ResolversFor} from './types';
 
-const BlockElement: Resolvers<BlockElementJson> = {
+const BlockElement: ResolversFor<BlockElementType, BlockElementJson> = {
   // Level 0 is not usually stored in the object, to save space.
   level: p => p.level || 0,
 };
 
-const InlineElement: Resolvers<InlineElementJson> = {
+const InlineElement: ResolversFor<InlineElementType, InlineElementJson> = {
   __resolveType(p) {
     switch (p.kind) {
       case InlineKind.BOLD:
@@ -39,12 +49,12 @@ const InlineElement: Resolvers<InlineElementJson> = {
   },
 };
 
-const LinkInline: Resolvers<LinkInlineJson> = {
+const LinkInline: ResolversFor<LinkInlineType, LinkInlineJson> = {
   internalLinkTarget: p =>
     isCondictLink(p.linkTarget) ? parseCondictLink(p.linkTarget) : null,
 };
 
-const InternalLinkTarget: Resolvers<CondictLink> = {
+const InternalLinkTarget: ResolversFor<InternalLinkTargetType, CondictLink> = {
   __resolveType(p) {
     switch (p.type) {
       case CondictLinkType.LANGUAGE:
@@ -59,22 +69,28 @@ const InternalLinkTarget: Resolvers<CondictLink> = {
   },
 };
 
-const LanguageLinkTarget: Resolvers<LanguageLink> = {
+const LanguageLinkTarget: ResolversFor<LanguageLinkTargetType, LanguageLink> = {
   language: (p, _args, {model: {Language}}) =>
     Language.byId(p.id),
 };
 
-const LemmaLinkTarget: Resolvers<LemmaLink> = {
+const LemmaLinkTarget: ResolversFor<LemmaLinkTargetType, LemmaLink> = {
   lemma: (p, _args, {model: {Lemma}}) =>
     Lemma.byId(p.id),
 };
 
-const DefinitionLinkTarget: Resolvers<DefinitionLink> = {
+const DefinitionLinkTarget: ResolversFor<
+  DefinitionLinkTargetType,
+  DefinitionLink
+> = {
   definition: (p, _args, {model: {Definition}}) =>
     Definition.byId(p.id),
 };
 
-const PartOfSpeechLinkTarget: Resolvers<PartOfSpeechLink> = {
+const PartOfSpeechLinkTarget: ResolversFor<
+  PartOfSpeechLinkTargetType,
+  PartOfSpeechLink
+> = {
   partOfSpeech: (p, _args, {model: {PartOfSpeech}}) =>
     PartOfSpeech.byId(p.id),
 };
