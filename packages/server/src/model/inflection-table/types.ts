@@ -38,36 +38,6 @@ export type InflectedFormRow = {
   display_name: string;
 };
 
-export type NewInflectionTableInput = {
-  partOfSpeechId: PartOfSpeechId;
-  name: string;
-  layout: InflectionTableRowInput[];
-};
-
-export type EditInflectionTableInput = {
-  name?: string | null;
-  layout?: InflectionTableRowInput[] | null;
-};
-
-export type InflectionTableRowInput = {
-  cells: InflectionTableCellInput[];
-};
-
-export type InflectionTableCellInput = {
-  columnSpan?: number | null;
-  rowSpan?: number | null;
-  headerText?: string | null;
-  inflectedForm?: InflectedFormInput | null;
-};
-
-export type InflectedFormInput = {
-  id?: InflectedFormId | null;
-  deriveLemma: boolean;
-  inflectionPattern: string;
-  displayName: string;
-  hasCustomDisplayName: boolean;
-};
-
 export type InflectionTableRowJson = {
   cells: InflectionTableCellJson[];
 };
