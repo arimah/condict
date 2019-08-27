@@ -24,10 +24,12 @@ const defineTypes = (
   schema: GraphQLSchema,
   includeIntrospectionTypes: boolean
 ): string => {
-  const def = new TextBuilder();
+  const result = new TextBuilder();
 
   // Define some basic things for IdOf.
-  def
+  result
+    .appendLine('/* eslint-disable */\n')
+    .appendLine('// THIS FILE IS AUTO GENERATED.\n')
     .appendLine(`const IdKind = Symbol();\n`)
     .appendLine('// This is a hack to get TypeScript to treat different ID types as distinct.')
     .appendLine('// The actual value will be a number (hence the `number` part), but by')
@@ -55,23 +57,23 @@ const defineTypes = (
       if (isBuiltinScalar(t)) {
         return;
       }
-      def.appendLine(defineScalarType(t));
+      defineScalarType(result, t);
     } else if (isEnumType(t)) {
-      def.appendLine(defineEnumType(t));
+      defineEnumType(result, t);
     } else if (isObjectType(t)) {
-      def.appendLine(defineObjectType(t, writeType));
+      defineObjectType(result, t, writeType);
     } else if (isInputObjectType(t)) {
-      def.appendLine(defineInputType(t, writeType));
+      defineInputType(result, t, writeType);
     } else if (isUnionType(t)) {
-      def.appendLine(defineUnionType(t));
+      defineUnionType(result, t);
     } else if (isInterfaceType(t)) {
-      def.appendLine(defineInterfaceType(t, schema));
+      defineInterfaceType(result, t, schema);
     }
 
-    def.appendLine('');
+    result.appendLine('');
   });
 
-  return def.toString();
+  return result.toString();
 };
 
 export default defineTypes;

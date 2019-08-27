@@ -13,20 +13,16 @@ const defineValue = (t: TextBuilder, value: GraphQLEnumValue) => {
   t.appendLine(`${value.name} = '${value.name}',`);
 };
 
-export const defineEnumType = (type: GraphQLEnumType): string => {
-  const def = new TextBuilder();
-
+export const defineEnumType = (result: TextBuilder, type: GraphQLEnumType) => {
   if (type.description) {
-    def.appendLine(formatDescription(type.description));
+    result.appendLine(formatDescription(type.description));
   }
-  def
+  result
     .appendLine(`export const enum ${type.name} {`)
     .indented(() => {
       for (const value of type.getValues()) {
-        defineValue(def, value);
+        defineValue(result, value);
       }
     })
-    .append('}');
-
-  return def.toString();
+    .appendLine('}');
 };

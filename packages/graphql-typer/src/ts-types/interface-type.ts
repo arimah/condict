@@ -7,24 +7,21 @@ import {TextBuilder, formatDescription} from './utils';
 // schema has been constructed. Basically, we can treat it like a union type.
 
 export const defineInterfaceType = (
+  result: TextBuilder,
   type: GraphQLInterfaceType,
   schema: GraphQLSchema
-): string => {
-  const def = new TextBuilder();
-
+) => {
   if (type.description) {
-    def.appendLine(formatDescription(type.description));
+    result.appendLine(formatDescription(type.description));
   }
-  def
+  result
     .append(`export type ${type.name} =`)
     .indented(() => {
       // Alternatives are always object types
       const types = schema.getPossibleTypes(type);
       for (const alternative of types) {
-        def.append(`\n| ${alternative.name}`);
+        result.append(`\n| ${alternative.name}`);
       }
     })
-    .append(';');
-
-  return def.toString();
+    .appendLine(';');
 };

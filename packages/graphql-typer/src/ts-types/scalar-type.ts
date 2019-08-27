@@ -2,46 +2,35 @@ import {GraphQLScalarType} from 'graphql';
 
 import getIdKind from '../graphql/id-kind';
 
-import {formatDescription} from './utils';
+import {TextBuilder, formatDescription} from './utils';
 
-type BuiltinScalar = {
-  output: string;
-  input: string;
-}
-
-const builtins = new Map<string, BuiltinScalar>([
-  ['Boolean', {output: 'boolean', input: 'boolean'}],
-  ['Int', {output: 'number', input: 'number'}],
-  ['Float', {output: 'number', input: 'number'}],
-  ['String', {output: 'string', input: 'string'}],
-  ['ID', {output: 'string', input: 'string | number'}],
+const builtins = new Map<string, string>([
+  ['Boolean', 'boolean'],
+  ['Int', 'number'],
+  ['Float', 'number'],
+  ['String', 'string'],
+  ['ID', 'string'],
 ]);
 
 export const isBuiltin = (type: GraphQLScalarType) => builtins.has(type.name);
 
-export const defineScalarType = (type: GraphQLScalarType): string => {
+export const defineScalarType = (result: TextBuilder, type: GraphQLScalarType) => {
   if (builtins.has(type.name)) {
     throw new Error(`Cannot write definition for built-in scalar '${type.name}'.`);
   }
 
-  const desc = type.description
-    ? formatDescription(type.description) + '\n'
-    : '';
+  if (type.description) {
+    result.appendLine(formatDescription(type.description));
+  }
 
-  // If this scalar is defined as `@id`, we can marshal it as such.
   const idKind = getIdKind(type);
-  if (idKind) {
-    return `${desc}export type ${type.name} = IdOf<'${idKind}'>;`;
-  }
-
-  // Otherwise, we have no idea what it is.
-  return `${desc}export type ${type.name} = unknown;`;
+  result
+    .append(`export type ${type.name} = `)
+    // If this scalar is defined as `@id`, we can marshal it as such.
+    // Otherwise, we have no idea what it is.
+    .append(idKind ? `IdOf<'${idKind}'>` : 'unknown')
+    .appendLine(';');
 };
 
-export const writeScalarType = (type: GraphQLScalarType, input: boolean) => {
-  const builtin = builtins.get(type.name);
-  if (builtin) {
-    return input ? builtin.input : builtin.output;
-  }
-  return type.name;
-};
+export const writeScalarType = (type: GraphQLScalarType) =>
+  builtins.get(type.name) || type.name;

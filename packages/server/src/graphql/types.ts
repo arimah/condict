@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+// THIS FILE IS AUTO GENERATED.
+
 const IdKind = Symbol();
 
 // This is a hack to get TypeScript to treat different ID types as distinct.

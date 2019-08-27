@@ -12,23 +12,22 @@ import {TypeWriter} from './types';
 
 const writeNonNullType = (
   type: GraphQLNullableType,
-  input: boolean,
   writeType: TypeWriter
 ): string => {
   if (isScalarType(type)) {
-    return writeScalarType(type, input);
+    return writeScalarType(type);
   }
   if (isListType(type)) {
-    return writeListType(type, input, writeType);
+    return writeListType(type, writeType);
   }
   return type.name;
 };
 
-const writeType = (type: GraphQLType, input: boolean): string => {
+const writeType = (type: GraphQLType): string => {
   if (isNonNullType(type)) {
-    return writeNonNullType(type.ofType, input, writeType);
+    return writeNonNullType(type.ofType, writeType);
   }
-  const typeText = writeNonNullType(type, input, writeType);
+  const typeText = writeNonNullType(type, writeType);
   return `${typeText} | null`;
 };
 
