@@ -1047,7 +1047,7 @@ export type LinkInline = {
   /**
    * The inline kind.
    */
-  kind: InlineKind;
+  kind: InlineKind.LINK;
   /**
    * The (inclusive) character offset at which the inline starts.
    */
@@ -1436,7 +1436,7 @@ export type StyleInline = {
   /**
    * The inline kind.
    */
-  kind: InlineKind;
+  kind: InlineKind.BOLD | InlineKind.ITALIC | InlineKind.UNDERLINE | InlineKind.STRIKETHROUGH | InlineKind.SUPERSCRIPT | InlineKind.SUBSCRIPT;
   /**
    * The (inclusive) character offset at which the inline starts.
    */

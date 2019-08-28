@@ -1,6 +1,6 @@
 {
   "name": "@condict/graphql-typer",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Utilities for generating TypeScript type definitions from a GraphQL schema.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",

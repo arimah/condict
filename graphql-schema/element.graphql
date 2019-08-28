@@ -93,7 +93,7 @@ interface InlineElement {
 "An `InlineElement` that applies a single style to its text."
 type StyleInline implements InlineElement {
   "The inline kind."
-  kind: InlineKind!
+  kind: InlineKind! @restrict(not: ["LINK"])
 
   "The (inclusive) character offset at which the inline starts."
   start: Int!
@@ -108,7 +108,7 @@ or to an arbitrary external URI.
 """
 type LinkInline implements InlineElement {
   "The inline kind."
-  kind: InlineKind!
+  kind: InlineKind! @restrict(only: ["LINK"])
 
   "The (inclusive) character offset at which the inline starts."
   start: Int!

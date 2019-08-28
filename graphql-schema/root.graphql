@@ -14,6 +14,28 @@ Without this directive, a custom scalar value will be typed as `unknown`.
 """
 directive @id(of: String) on SCALAR
 
+"""
+When placed on a object type field of an enum type, informs the GraphQL type
+generator that the field can only contain a subset of the enum type's values.
+There are two ways to use this directive:
+
+1. The `only` parameter accepts a list of permitted enum values, as string
+   containing the names of the enum values.
+2. The `not` parameter accepts a list of _disallowed_ enum values. This is of
+   course equivalent to listing every enum value except the ones in the list,
+   and is provided for convenience.
+
+You must specify exactly one of these parameters.
+
+Without this directive, a field of an enum type is permitted to contain any
+value of the enum. This directive is only applicable to fields inside object
+types. It is ignored on interface types and input types.
+
+This directive is only used by the GraphQL type generator and is ignored by the
+server and the client alike.
+"""
+directive @restrict(only: [String!], not: [String!]) on FIELD_DEFINITION
+
 schema {
   query: Query
   mutation: Mutation
