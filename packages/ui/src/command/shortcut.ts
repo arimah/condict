@@ -48,8 +48,8 @@ const formatModifiers: ModifierFormatter = isOSX
     // U+2325 = ⌥ Option Key
     // U+21E7 = ⇧ Upwards White Arrow, aka shift
     // U+2318 = ⌘ Place Of Interest Sign, aka Cmd
-    // Ctrl doesn't have a symbol.
-    `${secondary ? 'Ctrl+' : ''}${alt ? '\u2325' : ''}${shift ? '\u21E7' : ''}${primary ? '\u2318' : ''}`
+    // ^ = Ctrl
+    `${secondary ? '^' : ''}${alt ? '\u2325' : ''}${shift ? '\u21E7' : ''}${primary ? '\u2318' : ''}`
   : (primary, secondary, shift, alt) =>
     // Windows/Linux order: Ctrl+Shift+Alt+(key)
     `${primary || secondary ? 'Ctrl+' : ''}${shift ? 'Shift+' : ''}${alt ? 'Alt+' : ''}`;
