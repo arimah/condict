@@ -3,12 +3,12 @@ import {
   GraphQLEnumType,
   GraphQLEnumValue,
   GraphQLType,
-  ListValueNode,
-  StringValueNode,
   ValueNode,
   isEnumType,
   isNonNullType,
 } from 'graphql';
+
+import {assertIsList, assertIsString} from './helpers';
 
 export type PermittedEnumValues = {
   type: GraphQLEnumType;
@@ -67,24 +67,6 @@ const getRestrictDirective = (
     only: onlyArgument && onlyArgument.value,
     not: notArgument && notArgument.value,
   };
-};
-
-const assertIsList = (value: ValueNode): ListValueNode => {
-  switch (value.kind) {
-    case 'ListValue':
-      return value;
-    default:
-      throw new Error('Expected a list value');
-  }
-};
-
-const assertIsString = (value: ValueNode): StringValueNode => {
-  switch (value.kind) {
-    case 'StringValue':
-      return value;
-    default:
-      throw new Error('Expected a string value');
-  }
 };
 
 const getPermittedEnumValues = (
