@@ -1,6 +1,6 @@
 {
   "name": "@condict/ui",
-  "version": "0.3.7",
+  "version": "0.4.0",
   "description": "Shared UI components for Condict.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
@@ -41,15 +41,13 @@
     "react-dom": "^16.8.6",
     "react-is": "^16.8.6",
     "rimraf": "^2.6.3",
-    "styled-components": "^5.0.0-beta.6",
-    "styled-tools": "^1.7.1",
+    "styled-components": "^5.0.0-beta.8",
     "typescript": "^3.5.3"
   },
   "peerDependencies": {
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-is": "^16.8.6",
-    "styled-components": "^5.0.0-beta.6",
-    "styled-tools": "^1.7.1"
+    "styled-components": "^5.0.0-beta.8"
   }
 }

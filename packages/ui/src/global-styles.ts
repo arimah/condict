@@ -1,5 +1,4 @@
 import {createGlobalStyle} from 'styled-components';
-import {theme} from 'styled-tools';
 
 import LightTheme from './theme/light';
 
@@ -86,22 +85,22 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   a:link {
-    color: ${theme('link.color')};
+    color: ${p => p.theme.link.color};
     text-decoration: underline;
   }
 
   a:visited {
-    color: ${theme('link.visited')};
+    color: ${p => p.theme.link.visited};
     text-decoration: underline;
   }
 
   a:hover {
-    color: ${theme('link.hover')};
+    color: ${p => p.theme.link.hover};
     text-decoration: underline;
   }
 
   a:active {
-    color: ${theme('link.active')};
+    color: ${p => p.theme.link.active};
     text-decoration: underline;
   }
 `;

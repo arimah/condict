@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {prop, theme, ifProp} from 'styled-tools';
 
 import {transition} from '../theme';
 import LightTheme from '../theme/light';
@@ -17,39 +16,36 @@ export const Wrapper = styled.span`
 export const Select = styled.select<Props>`
   appearance: none;
   font: inherit;
-  border-radius: ${prop('borderRadius', '3px')};
-  border-color: ${theme('general.borderColor')};
-  background-color: ${theme('general.bg')};
-  color: ${theme('general.fg')};
+  border-radius: ${p => p.borderRadius || '3px'};
+  border-color: ${p => p.theme.general.borderColor};
+  background-color: ${p => p.theme.general.bg};
+  color: ${p => p.theme.general.fg};
 
   ${transition('border-color, color, background-color')}
 
-  ${ifProp('minimal',
-    css`
-      padding: 6px 28px 6px 9px;
-      border-style: none;
-    `,
-    css`
-      padding: 4px 26px 4px 7px;
-      border-width: 2px;
-      border-style: solid;
-    `
-  )}
+  ${p => p.minimal ? css`
+    padding: 6px 28px 6px 9px;
+    border-style: none;
+  ` : css`
+    padding: 4px 26px 4px 7px;
+    border-width: 2px;
+    border-style: solid;
+  `}
 
   &:hover {
-    background-color: ${theme('general.hoverBg')};
+    background-color: ${p => p.theme.general.hoverBg};
   }
 
   &:focus {
-    ${theme('focus.style')}
-    padding: ${ifProp('minimal', '4px 26px 4px 7px')};
-    border: 2px solid ${theme('focus.color')};
+    ${p => p.theme.focus.style}
+    padding: ${p => p.minimal && '4px 26px 4px 7px'};
+    border: 2px solid ${p => p.theme.focus.color};
   }
 
   &:disabled {
-    border-color: ${theme('general.disabledBorderColor')};
-    background-color: ${theme('general.bg')};
-    color: ${theme('general.disabledFg')};
+    border-color: ${p => p.theme.general.disabledBorderColor};
+    background-color: ${p => p.theme.general.bg};
+    color: ${p => p.theme.general.disabledFg};
   }
 `;
 
@@ -75,10 +71,7 @@ export const Arrow = styled.svg.attrs({
 
   ${transition('color')}
 
-  color: ${ifProp('disabled',
-    theme('general.disabledFg'),
-    theme('general.fg')
-  )};
+  color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
 `;
 
 Arrow.defaultProps = {

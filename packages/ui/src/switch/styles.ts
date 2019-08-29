@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {theme, ifProp} from 'styled-tools';
 
 import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
@@ -20,10 +19,7 @@ export type DisabledProps = {
 export const Label = styled.label<DisabledProps>`
   display: inline-block;
   box-sizing: border-box;
-  color: ${ifProp('disabled',
-    theme('general.disabledFg'),
-    theme('general.fg')
-  )};
+  color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
 
   ${transition('color')}
 `;
@@ -51,8 +47,8 @@ export const Input = styled.input.attrs({
   border-radius: 10px;
 
   &:focus {
-    ${theme('focus.style')}
-    border: 2px solid ${theme('focus.color')};
+    ${p => p.theme.focus.style}
+    border: 2px solid ${p => p.theme.focus.color};
   }
 `;
 
@@ -69,46 +65,44 @@ export const Switch = styled.span<IntentProps & CheckedProps & DisabledProps>`
   left: 0;
   width: 32px;
   height: 20px;
-  border: 2px solid ${ifProp('checked',
-    intentVar('altBg'),
-    theme('general.borderColor')
-  )};
+  border: 2px solid ${p => p.checked
+    ? intentVar('altBg')
+    : p.theme.general.borderColor
+  };
   border-radius: 10px;
-  background-color: ${ifProp('checked',
-    intentVar('altBg'),
-    theme('general.bg')
-  )};
+  background-color: ${p => p.checked
+    ? intentVar('altBg')
+    : p.theme.general.bg
+  };
 
   ${transition('border-color, background-color')}
 
   ${Label}:hover & {
-    border-color: ${ifProp('checked', intentVar('hoverAltBg'))};
-    background-color: ${ifProp('checked',
-      intentVar('hoverAltBg'),
-      theme('general.hoverBg')
-    )};
+    border-color: ${p => p.checked && intentVar('hoverAltBg')};
+    background-color: ${p => p.checked
+      ? intentVar('hoverAltBg')
+      : p => p.theme.general.hoverBg
+    };
   }
 
   ${Label}:active & {
-    border-color: ${ifProp('checked', intentVar('activeAltBg'))};
-    background-color: ${ifProp('checked',
-      intentVar('activeAltBg'),
-      theme('general.activeBg')
-    )};
+    border-color: ${p => p.checked && intentVar('activeAltBg')};
+    background-color: ${p => p.checked
+      ? intentVar('activeAltBg')
+      : p.theme.general.activeBg
+    };
   }
 
-  ${ifProp('disabled', css`
+  ${p => p.disabled && css<CheckedProps>`
     &&& {
-      border-color: ${ifProp('checked',
-        theme('general.disabledBg'),
-        theme('general.disabledBorderColor')
-      )};
-      background-color: ${ifProp('checked',
-        theme('general.disabledBg'),
-        theme('general.bg')
-      )};
+      border-color: ${p => p.theme.general[
+        p.checked ? 'disabledBg' : 'disabledBorderColor'
+      ]};
+      background-color: ${p => p.theme.general[
+        p.checked ? 'disabledBg' : 'bg'
+      ]};
     }
-  `)}
+  `}
 `;
 
 Switch.defaultProps = {
@@ -118,20 +112,20 @@ Switch.defaultProps = {
 export const Dot = styled.span<CheckedProps & DisabledProps & IntentProps>`
   position: absolute;
   top: 2px;
-  left: ${ifProp('checked', '14px', '2px')};
+  left: ${p => p.checked ? '14px' : '2px'};
   width: 12px;
   height: 12px;
   border-radius: 6px;
-  background-color: ${props =>
-    props.checked ? props.theme.general.bg :
-    props.disabled ? props.theme.general.disabledBorderColor :
-    props.theme.general.borderColor
-  };
+  background-color: ${p => p.theme.general[
+    p.checked ? 'bg' :
+    p.disabled ? 'disabledBorderColor' :
+    'borderColor'
+  ]};
 
   ${transition('left, background-color')}
 
   ${Label}:active & {
-    left: ${ifProp('checked', '12px', '4px')};
+    left: ${p => p.checked ? '12px' : '4px'};
   }
 `;
 

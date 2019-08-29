@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {ifProp, theme} from 'styled-tools';
 
 import {transition} from '../theme';
 import LightTheme from '../theme/light';
@@ -16,8 +15,8 @@ export const Toolbar = styled.div.attrs({
   padding: 4px;
   flex-wrap: wrap;
   border-radius: 6px;
-  background-color: ${theme('general.altBg')};
-  color: ${theme('general.altFg')};
+  background-color: ${p => p.theme.general.altBg};
+  color: ${p => p.theme.general.altFg};
 `;
 
 Toolbar.defaultProps = {
@@ -51,8 +50,8 @@ export const Button = styled.button.attrs({
   text-align: center;
   border: none;
   border-radius: 4px;
-  background-color: ${theme('general.altBg')};
-  color: ${theme('general.altFg')};
+  background-color: ${p => p.theme.general.altBg};
+  color: ${p => p.theme.general.altFg};
 
   ${transition('color, background-color')}
 
@@ -62,27 +61,27 @@ export const Button = styled.button.attrs({
 
   &:focus {
     padding: 4px 6px;
-    border: 2px solid ${theme('focus.color')};
-    ${theme('focus.style')};
+    border: 2px solid ${p => p.theme.focus.color};
+    ${p => p.theme.focus.style};
   }
 
   &:hover {
-    background-color: ${theme('general.hoverAltBg')};
+    background-color: ${p => p.theme.general.hoverAltBg};
   }
 
   &:active {
-    background-color: ${theme('general.activeAltBg')};
+    background-color: ${p => p.theme.general.activeAltBg};
   }
 
-  ${ifProp('checked', css`
+  ${p => p.checked && css`
     && {
-      background-color: ${theme('general.activeAltBg')};
+      background-color: ${p => p.theme.general.activeAltBg};
     }
-  `)}
+  `}
 
   &:disabled {
-    background-color: ${theme('general.altBg')};
-    color: ${theme('general.disabledAltFg')};
+    background-color: ${p => p.theme.general.altBg};
+    color: ${p => p.theme.general.disabledAltFg};
   }
 
   > .mdi-icon {

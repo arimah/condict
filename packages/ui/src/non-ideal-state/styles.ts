@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {ifProp, theme} from 'styled-tools';
 
 import LightTheme from '../theme/light';
 
@@ -14,19 +13,16 @@ export const Main = styled.div<Props>`
   margin: 16px auto;
   width: 260px;
   border-radius: 3px;
-  background: ${theme('general.bg')};
-  color: ${theme('general.fg')};
+  background: ${p => p.theme.general.bg};
+  color: ${p => p.theme.general.fg};
 
-  ${ifProp('minimal',
-    css`
-      padding: 16px 24px;
-    `,
-    css`
-      padding: 14px 22px;
-      border: 2px solid ${theme('general.borderColor')};
-      box-shadow: ${theme('shadow.elevation1')};
-    `
-  )}
+  ${p => p.minimal ? css`
+    padding: 16px 24px;
+  ` : css`
+    padding: 14px 22px;
+    border: 2px solid ${p => p.theme.general.borderColor};
+    box-shadow: ${p => p.theme.shadow.elevation1};
+  `}
 `;
 
 Main.defaultProps = {

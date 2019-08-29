@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {theme, ifProp} from 'styled-tools';
 
 import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
@@ -20,7 +19,7 @@ export type CheckedProps = {
 export const Label = styled.label<DisabledProps>`
   display: inline-block;
   box-sizing: border-box;
-  color: ${ifProp('disabled', theme('general.disabledFg'), theme('general.fg'))};
+  color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
 
   ${transition('color')}
 `;
@@ -45,43 +44,43 @@ export const CheckmarkContainer = styled.span<IntentProps & CheckedProps & Disab
 
   ${transition('border-color, background-color')}
 
-  background-color: ${ifProp('checked',
-    intentVar('altBg'),
-    theme('general.bg')
-  )};
-  border-color: ${ifProp('checked',
-    intentVar('altBg'),
-    theme('general.borderColor')
-  )};
+  background-color: ${p => p.checked
+    ? intentVar('altBg')
+    : p.theme.general.bg
+  };
+  border-color: ${p => p.checked
+    ? intentVar('altBg')
+    : p.theme.general.borderColor
+  };
 
   ${Label}:hover & {
-    border-color: ${ifProp('checked', intentVar('hoverAltBg'))};
-    background-color: ${ifProp('checked',
-      intentVar('hoverAltBg'),
-      theme('general.hoverBg')
-    )};
+    border-color: ${p => p.checked && intentVar('hoverAltBg')};
+    background-color: ${p => p.checked
+      ? intentVar('hoverAltBg')
+      : p.theme.general.hoverBg
+    };
   }
 
   ${Label}:active & {
-    border-color: ${ifProp('checked', intentVar('activeAltBg'))};
-    background-color: ${ifProp('checked',
-      intentVar('activeAltBg'),
-      theme('general.activeBg')
-    )};
+    border-color: ${p => p.checked && intentVar('activeAltBg')};
+    background-color: ${p => p.checked
+      ? intentVar('activeAltBg')
+      : p.theme.general.activeBg
+    };
   }
 
-  ${ifProp('disabled', css`
+  ${p => p.disabled && css<CheckedProps>`
     &&& {
-      background-color: ${ifProp('checked',
-        theme('general.disabledBg'),
-        theme('general.bg')
-      )};
-      border-color: ${ifProp('checked',
-        theme('general.disabledBg'),
-        theme('general.disabledBorderColor')
-      )};
+      background-color: ${p => p.checked
+        ? p.theme.general.disabledBg
+        : p.theme.general.bg
+      };
+      border-color: ${p => p.checked
+        ? p.theme.general.disabledBg
+        : p.theme.general.disabledBorderColor
+      };
     }
-  `)}
+  `}
 `;
 
 CheckmarkContainer.defaultProps = {
@@ -99,8 +98,8 @@ export const Input = styled.input.attrs({type: 'checkbox'})`
   border-radius: 3px;
 
   &:focus {
-    ${theme('focus.style')}
-    border: 2px solid ${theme('focus.color')};
+    ${p => p.theme.focus.style}
+    border: 2px solid ${p => p.theme.focus.color};
   }
 `;
 
@@ -115,12 +114,12 @@ export const IndeterminateMark = styled.span<CheckedProps>`
   left: 50%;
   width: 12px;
   height: 2px;
-  background-color: ${theme('general.bg')};
+  background-color: ${p => p.theme.general.bg};
   transform: translate(-50%, -50%);
 
   ${transition('opacity')}
 
-  opacity: ${ifProp('checked', '1', '0')};
+  opacity: ${p => p.checked ? '1' : '0'};
 `;
 
 IndeterminateMark.defaultProps = {
@@ -135,13 +134,13 @@ export const CheckMark = styled.span<CheckedProps>`
   left: 50%;
   width: 12px;
   height: 6px;
-  border-left: 2px solid ${theme('general.bg')};
-  border-bottom: 2px solid ${theme('general.bg')};
+  border-left: 2px solid ${p => p.theme.general.bg};
+  border-bottom: 2px solid ${p => p.theme.general.bg};
   transform: translate(-50%, -75%) rotate(-45deg);
 
   ${transition('opacity')}
 
-  opacity: ${ifProp('checked', '1', '0')};
+  opacity: ${p => p.checked ? '1' : '0'};
 `;
 
 CheckMark.defaultProps = {

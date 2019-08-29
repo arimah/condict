@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {ifProp, theme} from 'styled-tools';
 
 import {transition} from '../theme';
 import LightTheme from '../theme/light';
@@ -14,25 +13,25 @@ export const Menu = styled.div.attrs({
   // Needs to be focusable by JS.
   tabIndex: -1,
 })<MenuProps>`
-  display: ${ifProp('open', 'block', 'none')};
+  display: ${p => p.open ? 'block' : 'none'};
   padding-top: 4px;
   padding-bottom: 4px;
   position: absolute;
   top: 0;
   left: 0;
   border-radius: 4px;
-  background-color: ${theme('general.altBg')};
-  color: ${theme('general.altFg')};
+  background-color: ${p => p.theme.general.altBg};
+  color: ${p => p.theme.general.altFg};
   box-shadow: 3px 2px 4px 1px rgba(0, 0, 0, 0.45);
 
   &:focus {
     outline: none;
   }
 
-  ${ifProp('submenu', css`
+  ${p => p.submenu && css`
     margin-top: -4px;
     margin-bottom: -4px;
-  `)}
+  `}
 `;
 
 Menu.defaultProps = {
@@ -50,25 +49,23 @@ export const Item = styled.div<ItemProps>`
   position: relative;
   white-space: nowrap;
   cursor: default;
-  background-color: ${theme('general.altBg')};
+  background-color: ${p => p.theme.general.altBg};
 
   ${transition('background-color, color')}
 
-  ${ifProp('current', css`
-    background-color: ${theme('general.hoverAltBg')};
-  `)}
+  ${p => p.current && css`
+    background-color: ${p => p.theme.general.hoverAltBg};
+  `}
 
-  ${ifProp('disabled',
-    css`
-      color: ${theme('general.disabledAltFg')};
-    `,
-    css`
-      color: ${theme('general.altFg')};
+  ${p => p.disabled ? css`
+    color: ${p => p.theme.general.disabledAltFg};
+  ` : css`
+    color: ${p => p.theme.general.altFg};
 
-      &:active {
-        background-color: ${theme('general.activeAltBg')};
-      }
-    `)}
+    &:active {
+      background-color: ${p => p.theme.general.activeAltBg};
+    }
+  `}
 `;
 
 Item.defaultProps = {
@@ -126,27 +123,24 @@ export const ItemCheck = styled.span<ItemCheckProps>`
   border-style: solid;
   border-width: 2px;
 
-  ${ifProp('radio',
-    css`
-      border-radius: 9px;
-      border-color: ${ifProp('checked',
-        theme('primary.altBg'),
-        theme('general.borderColor')
-      )};
-      background-color: ${theme('general.bg')};
-    `,
-    css`
-      border-radius: 3px;
-      border-color: ${ifProp('checked',
-        theme('primary.altBg'),
-        theme('general.borderColor')
-      )};
-      background-color: ${ifProp('checked',
-        theme('primary.altBg'),
-        theme('general.bg')
-      )};
-    `)}
-
+  ${p => p.radio ? css<ItemCheckProps>`
+    border-radius: 9px;
+    border-color: ${p => p.checked
+      ? p.theme.primary.altBg
+      : p.theme.general.borderColor
+    };
+    background-color: ${p => p.theme.general.bg};
+  ` : css<ItemCheckProps>`
+    border-radius: 3px;
+    border-color: ${p => p.checked
+      ? p.theme.primary.altBg
+      : p.theme.general.borderColor
+    };
+    background-color: ${p => p.checked
+      ? p.theme.primary.altBg
+      : p.theme.general.bg
+    };
+  `}
 `;
 
 ItemCheck.defaultProps = {
@@ -161,8 +155,8 @@ export const CheckMark = styled.span`
   left: 50%;
   width: 12px;
   height: 6px;
-  border-left: 2px solid ${theme('general.bg')};
-  border-bottom: 2px solid ${theme('general.bg')};
+  border-left: 2px solid ${p => p.theme.general.bg};
+  border-bottom: 2px solid ${p => p.theme.general.bg};
   transform: translate(-50%, -75%) rotate(-45deg);
 `;
 
@@ -178,7 +172,7 @@ export const RadioDot = styled.span`
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  background-color: ${theme('primary.altBg')};
+  background-color: ${p => p.theme.primary.altBg};
   transform: translate(-50%, -50%);
 `;
 
@@ -191,7 +185,7 @@ export const Separator = styled.div.attrs({
 })`
   margin-top: 4px;
   margin-bottom: 4px;
-  border-top: 2px solid ${theme('general.borderColor')};
+  border-top: 2px solid ${p => p.theme.general.borderColor};
 `;
 
 Separator.defaultProps = {

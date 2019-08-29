@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-key, react/display-name */
 import React, {PureComponent} from 'react';
 import styled from 'styled-components';
-import {ifProp, theme} from 'styled-tools';
 import memoizeOne from 'memoize-one';
 
 import {
@@ -17,12 +16,12 @@ import {ComponentDemo, ToggleStateFunc} from './types';
 
 const Group = styled.div`
   padding: 16px;
-  border: 2px solid ${theme('general.borderColor')};
+  border: 2px solid ${p => p.theme.general.borderColor};
   border-radius: 3px;
 
   &:focus {
-    ${theme('focus.style')}
-    border-color: ${theme('focus.color')};
+    ${p => p.theme.focus.style}
+    border-color: ${p => p.theme.focus.color};
   }
 `;
 
@@ -32,8 +31,8 @@ type ResultDisplayProps = {
 };
 
 const ResultDisplay = styled.div<ResultDisplayProps>`
-  font-style: ${ifProp('italic', 'italic')};
-  font-weight: ${ifProp('bold', 'bold')};
+  font-style: ${p => p.italic && 'italic'};
+  font-weight: ${p => p.bold && 'bold'};
 
   :not(:first-child) {
     margin-top: 8px;

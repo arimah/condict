@@ -1,5 +1,4 @@
 import {css} from 'styled-components';
-import {theme} from 'styled-tools';
 
 import Intent from '../intent';
 
@@ -166,6 +165,6 @@ export const transition = (
   timingFunc: string = 'ease-in-out'
 ) => css`
   transition-property: ${property};
-  transition-duration: ${duration || theme('timing.short')};
+  transition-duration: ${duration || (p => p.theme.timing.short)};
   transition-timing-function: ${timingFunc};
 `;

@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {ifProp, theme} from 'styled-tools';
 
 import LightTheme from '../theme/light';
 import {Button} from '../button';
@@ -18,10 +17,7 @@ export const Main = styled.nav<DisabledProps>`
   margin-top: 16px;
   margin-bottom: 16px;
 
-  color: ${ifProp('disabled',
-    theme('general.disabledFg'),
-    theme('general.fg')
-  )};
+  color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
 `;
 
 Main.defaultProps = {
@@ -51,19 +47,19 @@ export const Page = styled(Button).attrs({
   padding: 6px 4px;
   min-width: 36px;
 
-  ${ifProp('current', css`
-    border-color: ${theme('general.borderColor')};
+  ${p => p.current && css`
+    border-color: ${p => p.theme.general.borderColor};
 
     &:disabled {
-      border-color: ${theme('general.disabledBorderColor')};
+      border-color: ${p => p.theme.general.disabledBorderColor};
     }
-  `)}
+  `}
 
-  ${ifProp('isLoading', css`
+  ${p => p.isLoading && css`
     && {
       color: transparent;
     }
-  `)}
+  `}
 
   & > .mdi-icon {
     vertical-align: -5px;

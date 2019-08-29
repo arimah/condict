@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {theme, ifProp} from 'styled-tools';
 
 import {intentVar, transition} from '../theme';
 import LightTheme from '../theme/light';
@@ -20,7 +19,7 @@ export type CheckedProps = {
 export const Label = styled.label<DisabledProps>`
   display: inline-block;
   box-sizing: border-box;
-  color: ${ifProp('disabled', theme('general.disabledFg'), theme('general.fg'))};
+  color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
 
   ${transition('color')}
 `;
@@ -38,37 +37,37 @@ export const RadioContainer = styled.span<CheckedProps & DisabledProps & IntentP
   height: 18px;
   position: relative;
   border-radius: 9px;
-  background-color: ${theme('general.bg')};
+  background-color: ${p => p.theme.general.bg};
 
-  border: 2px solid ${ifProp('checked',
-    intentVar('altBg'),
-    theme('general.borderColor')
-  )};
+  border: 2px solid ${p => p.checked
+    ? intentVar('altBg')
+    : p.theme.general.borderColor
+  };
 
   ${transition('border-color, background-color')}
 
   ${Label}:hover & {
-    border-color: ${ifProp('checked', intentVar('hoverAltBg'))};
-    background-color: ${ifProp('checked',
-      intentVar('hoverBg'),
-      theme('general.hoverBg')
-    )};
+    border-color: ${p => p.checked && intentVar('hoverAltBg')};
+    background-color: ${p => p.checked
+      ? intentVar('hoverBg')
+      : p.theme.general.hoverBg
+    };
   }
 
   ${Label}:active & {
-    border-color: ${ifProp('checked', intentVar('activeAltBg'))};
-    background-color: ${ifProp('checked',
-      intentVar('bg'),
-      theme('general.activeBg')
-    )};
+    border-color: ${p => p.checked && intentVar('activeAltBg')};
+    background-color: ${p => p.checked
+      ? intentVar('bg')
+      : p => p.theme.general.activeBg
+    };
   }
 
-  ${ifProp('disabled', css`
+  ${p => p.disabled && css`
     &&& {
-      border-color: ${theme('general.disabledBorderColor')};
-      background-color: ${theme('general.bg')};
+      border-color: ${p => p.theme.general.disabledBorderColor};
+      background-color: ${p => p.theme.general.bg};
     }
-  `)}
+  `}
 `;
 
 RadioContainer.defaultProps = {
@@ -85,8 +84,8 @@ export const Input = styled.input.attrs({type: 'radio'})`
   border-radius: 9px;
 
   &:focus {
-    ${theme('focus.style')}
-    border: 2px solid ${theme('focus.color')};
+    ${p => p.theme.focus.style}
+    border: 2px solid ${p => p.theme.focus.color};
   }
 `;
 
@@ -105,11 +104,11 @@ export const RadioDot = styled.span<CheckedProps & DisabledProps & IntentProps>`
   border-radius: 4px;
   transform: translate(-50%, -50%);
 
-  background-color: ${ifProp('disabled',
-    theme('general.disabledBg'),
-    intentVar('altBg')
-  )};
-  opacity: ${ifProp('checked', '1', '0')};
+  background-color: ${p => p.disabled
+    ? p.theme.general.disabledBg
+    : intentVar('altBg')
+  };
+  opacity: ${p => p.checked ? '1' : '0'};
 
   ${Label}:hover & {
     background-color: ${intentVar('hoverAltBg')};
