@@ -62,6 +62,7 @@ export type DisabledProps = {
 };
 
 export const Arrow = styled.svg.attrs({
+  role: 'presentation',
   width: '8',
   height: '8',
 })<DisabledProps>`
