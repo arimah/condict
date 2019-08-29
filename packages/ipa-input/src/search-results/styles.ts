@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import {theme} from 'styled-tools';
 
 import {LightTheme} from '@condict/ui';
 
@@ -9,14 +8,14 @@ export const SearchResult = styled.div`
   align-items: center;
   cursor: default;
 
-  background-color: ${theme('general.altBg')};
+  background-color: ${p => p.theme.general.altBg};
 
   &:not(:last-child) {
     margin-bottom: 2px;
   }
 
   &:hover {
-    background-color: ${theme('general.hoverAltBg')};
+    background-color: ${p => p.theme.general.hoverAltBg};
   }
 `;
 

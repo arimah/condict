@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import {theme} from 'styled-tools';
 
 import {TextInput} from '@condict/ui';
 
@@ -7,8 +6,8 @@ export const Main = styled.div`
   padding: 8px;
   width: 380px;
   border-radius: 4px;
-  background-color: ${theme('general.altBg')};
-  box-shadow: ${theme('shadow.elevation1')};
+  background-color: ${p => p.theme.general.altBg};
+  box-shadow: ${p => p.theme.shadow.elevation1};
 `;
 
 export const SearchWrapper = styled.div`

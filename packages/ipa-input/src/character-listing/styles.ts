@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {ifProp, theme} from 'styled-tools';
 
 import {LightTheme} from '@condict/ui';
 
@@ -10,13 +9,13 @@ export type GroupProps = {
 export const Group = styled.div.attrs({
   role: 'group',
 })<GroupProps>`
-  ${ifProp('hasBase', css`
+  ${p => p.hasBase && css`
     margin-left: 42px;
     text-indent: -42px;
-  `)}
+  `}
 
   &:not(:first-child) {
-    margin-top: ${ifProp('hasBase', '4px', '8px')};
+    margin-top: ${p => p.hasBase ? '4px' : '8px'};
   }
 `;
 
@@ -40,11 +39,11 @@ export const Character = styled.span<CharacterProps>`
   font-size: 17pt;
   cursor: default;
 
-  background-color: ${theme('general.altBg')};
-  font-weight: ${ifProp('isBase', 'bold')};
+  background-color: ${p => p.theme.general.altBg};
+  font-weight: ${p => p.isBase && 'bold'};
 
   &:hover {
-    background-color: ${theme('general.hoverAltBg')};
+    background-color: ${p => p.theme.general.hoverAltBg};
   }
 `;
 
