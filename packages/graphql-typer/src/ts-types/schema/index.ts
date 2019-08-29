@@ -21,10 +21,7 @@ import {defineUnionType} from './union-type';
 import {defineInterfaceType} from './interface-type';
 import writeType from './write-type';
 
-const defineTypes = (
-  schema: GraphQLSchema,
-  includeIntrospectionTypes: boolean
-): string => {
+const defineTypes = (schema: GraphQLSchema): string => {
   const result = new TextBuilder();
 
   // Define some basic things for IdOf.
@@ -48,14 +45,14 @@ const defineTypes = (
       .sort((a, b) => a.name.localeCompare(b.name, 'en'));
 
   types.forEach(t => {
-    // Types whose names start with '__' are used internally by GraphQL for
-    // introspection queries. Exclude them unless asked for.
-    if (!includeIntrospectionTypes && t.name.startsWith('__')) {
+    // If the type has no AST node, it must be a built-in. Always skip those.
+    if (!t.astNode) {
       return;
     }
 
     if (isScalarType(t)) {
       if (isBuiltinScalar(t)) {
+        console.warn(`Unexpected built-in scalar type: ${t.name}`);
         return;
       }
       defineScalarType(result, t);

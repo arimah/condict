@@ -9,7 +9,6 @@ import {buildGraphqlSchema, defineTypes} from '.';
 const options: OptionDefinition[] = [
   {name: 'schema-dir', alias: 's', type: String},
   {name: 'target', alias: 't', type: String},
-  {name: 'include-introspection-types', alias: 'i', type: Boolean},
 ];
 
 const main = () => {
@@ -23,10 +22,8 @@ const main = () => {
     return;
   }
 
-  const includeIntrospectionTypes = !!args['include-introspection-types'];
-
   const schema = buildGraphqlSchema(schemaDir);
-  const definitions = defineTypes(schema, includeIntrospectionTypes);
+  const definitions = defineTypes(schema);
   fs.writeFileSync(target, definitions, {encoding: 'utf-8'});
 };
 main();

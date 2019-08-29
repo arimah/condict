@@ -26,11 +26,10 @@ Example transformations:
 condict-graphql-typer --schema-dir SCHEMA_DIR --target TARGET_FILE [--include-introspection-types]
 ```
 
-Builds TypeScript type definitions from all .graphql files in `SCHEMA_DIR` (searched recursively), saving the result in `TARGET_FILE`. If `--include-introspection-types` is set, type definitions for introspection types are emitted as well.
+Builds TypeScript type definitions from all .graphql files in `SCHEMA_DIR` (searched recursively), saving the result in `TARGET_FILE`.
 
 * `--schema-dir SCHEMA_DIR` (alias: `-s`): The directory that is searched for .graphql files. The directory is searched recursively. All .graphql files that are found are concatenated together and parsed as a single string. The order of concatenation is not specified; each .graphql file should be a syntactically valid schema file. The files cannot contain queries, only schema definitions.
 * `--target TARGET_FILE` (alias: `-t`): The file that TypeScript definitions are written to. Any existing contents will be overwritten.
-* `--include-introspection-types` (alias: `-i`): If set, type definitions for introspection types – such as `__Schema`, `__Type`, `__Directive` – are generated as well. By default, they are skipped.
 
 ## Node API
 
