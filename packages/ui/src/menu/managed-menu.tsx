@@ -140,8 +140,8 @@ class ManagedMenu extends Component<Props> {
     this.detachEvents();
   }
 
-  public open() {
-    this.props.manager.open(this);
+  public open(fromKeyboard: boolean) {
+    this.props.manager.open(this, fromKeyboard);
   }
 
   private attachEvents() {

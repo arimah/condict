@@ -181,9 +181,10 @@ export default class MenuManager extends Component<Props, State> {
   private lastMouseTarget: Element | null = null;
   private intentTimeoutId: number | undefined;
 
-  public open(rootMenu: ManagedMenu) {
+  public open(rootMenu: ManagedMenu, fromKeyboard: boolean) {
     const {stack} = this.state;
     if (stack.openMenus.length === 0) {
+      this.firstNeedsFocus = fromKeyboard;
       this.setState({
         stack: stack.openRoot(rootMenu),
       });

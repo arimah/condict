@@ -56,7 +56,7 @@ const ContextMenuTrigger = (props: Props) => {
       : { x: e.clientX, y: e.clientY };
 
     if (menuRef.current) {
-      menuRef.current.open();
+      menuRef.current.open(e.button === 0);
       onToggle(true);
     }
   }, [onToggle]);

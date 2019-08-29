@@ -289,7 +289,7 @@ function makeTableEditor<D, V extends Value<D>, M>(
         } else {
           contextMenuParent.current = {x: e.clientX, y: e.clientY};
         }
-        contextMenu.current.open();
+        contextMenu.current.open(e.button === 0);
         this.setState({contextMenuOpen: true});
       }
     };

@@ -40,7 +40,9 @@ const MenuTrigger = (props: Props) => {
   const childRef = useRef<ChildType>(null);
   const openMenu = useCallback(() => {
     if (menuRef.current) {
-      menuRef.current.open();
+      // TODO: See if we can distinguish between mouse and keyboard clicks
+      // in this event.
+      menuRef.current.open(false);
       onToggle(true);
     }
   }, [onToggle]);
