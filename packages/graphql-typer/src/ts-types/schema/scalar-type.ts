@@ -14,6 +14,15 @@ const builtins = new Map<string, string>([
 
 export const isBuiltin = (type: GraphQLScalarType) => builtins.has(type.name);
 
+const formatIdKind = (idKind: string): string => {
+  // If the ID kind is all alphanumeric, we never need to do anything fancy.
+  if (/^[a-zA-Z0-9_\- ]+$/.test(idKind)) {
+    return `'${idKind}'`;
+  }
+  // A JSON-escaped string should be good enough.
+  return JSON.stringify(idKind);
+};
+
 export const defineScalarType = (result: TextBuilder, type: GraphQLScalarType) => {
   if (builtins.has(type.name)) {
     throw new Error(`Cannot write definition for built-in scalar '${type.name}'.`);
@@ -28,7 +37,7 @@ export const defineScalarType = (result: TextBuilder, type: GraphQLScalarType) =
     .append(`export type ${type.name} = `)
     // If this scalar is defined as `@id`, we can marshal it as such.
     // Otherwise, we have no idea what it is.
-    .append(idKind ? `IdOf<'${idKind}'>` : 'unknown')
+    .append(idKind ? `IdOf<${formatIdKind(idKind)}>` : 'unknown')
     .appendLine(';');
 };
 

@@ -1,7 +1,15 @@
-export const formatDescription = (desc: string): string =>
-  `/**\n` +
-  ` * ${desc.replace(/\n/g, `\n * `)}\n` +
-  ` */`;
+export const formatDescription = (desc: string): string => {
+  // There is no way to embed */ inside a delimited comment, so just bail in
+  // the extremely unlikely case that someone tries this.
+  if (desc.includes('*/')) {
+    throw new Error(`Field description cannot contain '*/'`);
+  }
+  return (
+    `/**\n` +
+    ` * ${desc.replace(/\n/g, `\n * `)}\n` +
+    ` */`
+  );
+};
 
 export class TextBuilder {
   private parts: string[] = [];
