@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {ifProp, theme} from 'styled-tools';
 
 import {
   LightTheme,
@@ -27,13 +26,13 @@ export type CellDataProps = {
 export const CellData = styled.div<CellDataProps>`
   flex: 1 0 auto;
   padding: 6px;
-  ${ifProp('inflected', `font-style: italic;`)}
-  ${ifProp('custom', css`
-    color: ${ifProp('theme.dark',
-      ifProp('disabled', disabledDarkStemColor, darkStemColor),
-      ifProp('disabled', disabledLightStemColor, lightStemColor)
-    )};
-  `)}
+  ${p => p.inflected && `font-style: italic;`}
+  ${p => p.custom && css<CellDataProps>`
+    color: ${p => p.theme.dark
+      ? (p.disabled ? disabledDarkStemColor : darkStemColor)
+      : (p.disabled ? disabledLightStemColor : lightStemColor)
+    };
+  `}
 `;
 
 CellData.defaultProps = {
@@ -49,10 +48,9 @@ export const DeletedForm = styled.span<DeletedFormProps>`
   width: 16px;
   height: 2px;
   vertical-align: middle;
-  background-color: ${ifProp('disabled',
-    theme('general.disabledBorderColor'),
-    theme('general.borderColor')
-  )};
+  background-color: ${p => p.theme.general[
+    p.disabled ? 'disabledBorderColor' : 'borderColor'
+  ]};
 `;
 
 DeletedForm.defaultProps = {

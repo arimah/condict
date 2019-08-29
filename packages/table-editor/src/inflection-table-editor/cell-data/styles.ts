@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {ifProp} from 'styled-tools';
 
 export type CellIconsProps = {
   disabled: boolean;
@@ -10,9 +9,9 @@ export const CellIcons = styled.div<CellIconsProps>`
   margin-left: 5px;
   margin-right: 5px;
 
-  ${ifProp('disabled', css`
+  ${p => p.disabled && css`
     opacity: 0.4;
-  `)}
+  `}
 
   > svg {
     display: block;

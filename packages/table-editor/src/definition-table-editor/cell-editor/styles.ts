@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {theme, ifProp} from 'styled-tools';
 
 import {
   Button,
@@ -34,9 +33,9 @@ export const CellInput = styled(TextInput)<CellInputProps>`
     padding: 6px 0 6px 6px;
     width: 100%;
     height: 100%;
-    ${ifProp('inflected', css`
+    ${p => p.inflected && css`
       font-style: italic;
-    `)}
+    `}
   }
 
   /* The "x" button that Edge enforces... */
@@ -57,11 +56,11 @@ export const CellPopup = styled.div`
 
   font-weight: normal;
 
-  border: 2px solid ${theme('general.borderColor')};
+  border: 2px solid ${p => p.theme.general.borderColor};
   border-radius: 3px;
-  background-color: ${theme('general.altBg')};
-  color: ${theme('general.altFg')};
-  box-shadow: ${theme('shadow.elevation2')};
+  background-color: ${p => p.theme.general.altBg};
+  color: ${p => p.theme.general.altFg};
+  box-shadow: ${p => p.theme.shadow.elevation2};
 
   ::after {
     content: '';
@@ -72,9 +71,9 @@ export const CellPopup = styled.div`
     width: 11px;
     height: 11px;
 
-    border-top: 2px solid ${theme('general.borderColor')};
-    border-right: 2px solid ${theme('general.borderColor')};
-    background-color: ${theme('general.altBg')};
+    border-top: 2px solid ${p => p.theme.general.borderColor};
+    border-right: 2px solid ${p => p.theme.general.borderColor};
+    background-color: ${p => p.theme.general.altBg};
     transform: rotate(-45deg);
   }
 `;

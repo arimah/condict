@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {theme, ifProp} from 'styled-tools';
 
 import {LightTheme} from '@condict/ui';
 
@@ -20,36 +19,29 @@ export const Cell = styled.td<CellProps>`
 
   border: 2px solid transparent;
 
-  ${ifProp('header',
-    css`
-      font-weight: bold;
-      background-color: ${ifProp('disabled',
-        theme('general.disabledAltBg'),
-        theme('general.altBg')
-      )};
-      color: ${ifProp('disabled',
-        theme('general.disabledAltFg'),
-        theme('general.altFg')
-      )};
-    `,
-    css`
-      font-weight: normal;
-      background-color: ${theme('general.bg')};
-      color: ${ifProp('disabled',
-        theme('general.disabledFg'),
-        theme('general.fg')
-      )};
-    `
-  )}
+  ${p => p.header ? css<CellProps>`
+    font-weight: bold;
+    background-color: ${p => p.theme.general[
+      p.disabled ? 'disabledAltBg' : 'altBg'
+    ]};
+    color: ${p => p.theme.general[
+      p.disabled ? 'disabledAltFg' : 'altFg'
+    ]};
+  ` : css<CellProps>`
+    font-weight: normal;
+    background-color: ${p => p.theme.general.bg};
+    color: ${p => p.theme.general[
+      p.disabled ? 'disabledFg' : 'fg'
+    ]};
+  `}
 
   ${Table}:focus &,
   ${Table}.force-focus & {
-    ${ifProp('selected', css`
-      background-color: ${ifProp('header',
-        theme('selection.altBg'),
-        theme('selection.bg')
-      )};
-    `)}
+    ${p => p.selected && css<CellProps>`
+      background-color: ${p => p.theme.selection[
+        p.header ? 'altBg' : 'bg'
+      ]};
+    `}
   }
 `;
 
@@ -77,14 +69,13 @@ export const CellBorder = styled.div<CellBorderProps>`
   left: -2px;
   pointer-events: none;
 
-  border: 2px solid ${ifProp('disabled',
-    theme('general.disabledBorderColor'),
-    theme('general.borderColor')
-  )};
+  border: 2px solid ${p => p.theme.general[
+    p.disabled ? 'disabledBorderColor' : 'borderColor'
+  ]};
 
   ${Table}:focus &,
   ${Table}.force-focus & {
-    ${ifProp('focused', theme('focus.style'))}
+    ${p => p.focused && p.theme.focus.style}
     border-color: ${props =>
       props.focused ? props.theme.focus.color :
       props.selected ? props.theme.selection.borderColor :

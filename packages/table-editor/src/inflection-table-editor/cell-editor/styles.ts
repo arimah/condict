@@ -1,5 +1,4 @@
 import styled, {css} from 'styled-components';
-import {theme, ifProp} from 'styled-tools';
 
 import {Button, TextInput, LightTheme, Intent} from '@condict/ui';
 
@@ -30,13 +29,13 @@ export const CellInputWrapper = styled.label<CellInputWrapperProps>`
   align-items: center;
   cursor: text;
 
-  border: 2px solid ${theme('general.borderColor')};
-  background-color: ${theme('general.bg')};
+  border: 2px solid ${p => p.theme.general.borderColor};
+  background-color: ${p => p.theme.general.bg};
 
-  ${ifProp('focus', css`
-    ${theme('focus.style')}
-    border-color: ${theme('focus.color')};
-  `)}
+  ${p => p.focus && css`
+    ${p => p.theme.focus.style}
+    border-color: ${p => p.theme.focus.color};
+  `}
 `;
 
 CellInputWrapper.defaultProps = {
@@ -44,14 +43,14 @@ CellInputWrapper.defaultProps = {
 };
 
 export type CellIconsProps = {
-  disabled: boolean;
+  disabled?: boolean;
 };
 
-export const CellIcons = styled.span`
+export const CellIcons = styled.span<CellIconsProps>`
   display: block;
   margin-right: 5px;
 
-  opacity: ${ifProp('disabled', '0.4')};
+  opacity: ${p => p.disabled && '0.4'};
 
   > svg {
     display: block;
@@ -99,11 +98,11 @@ export const CellPopup = styled.div`
   font-weight: normal;
   white-space: nowrap;
 
-  border: 2px solid ${theme('general.borderColor')};
+  border: 2px solid ${p => p.theme.general.borderColor};
   border-radius: 3px;
-  background-color: ${theme('general.altBg')};
-  color: ${theme('general.altFg')};
-  box-shadow: ${theme('shadow.elevation2')};
+  background-color: ${p => p.theme.general.altBg};
+  color: ${p => p.theme.general.altFg};
+  box-shadow: ${p => p.theme.shadow.elevation2};
 
   ::after {
     content: '';
@@ -114,9 +113,9 @@ export const CellPopup = styled.div`
     width: 11px;
     height: 11px;
 
-    border-top: 2px solid ${theme('general.borderColor')};
-    border-right: 2px solid ${theme('general.borderColor')};
-    background-color: ${theme('general.altBg')};
+    border-top: 2px solid ${p => p.theme.general.borderColor};
+    border-right: 2px solid ${p => p.theme.general.borderColor};
+    background-color: ${p => p.theme.general.altBg};
     transform: rotate(-45deg);
   }
 `;
@@ -134,7 +133,7 @@ export const CellSettingsGroup = styled.div`
 export const CellSettingsSeparator = styled.div`
   margin-top: 10px;
   margin-bottom: 10px;
-  border-top: 1px solid ${theme('general.borderColor')};
+  border-top: 1px solid ${p => p.theme.general.borderColor};
 `;
 
 CellSettingsSeparator.defaultProps = {

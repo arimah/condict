@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import {ifProp} from 'styled-tools';
 
 import {
   LightTheme,
@@ -23,10 +22,10 @@ const darkStemColor = stemColor(Saturation.HIGH, 65);
 const disabledDarkStemColor = stemColor(Saturation.LOW, 35);
 
 export const InflectionStem = styled.span<DisabledProps>`
-  color: ${ifProp('theme.dark',
-    ifProp('disabled', disabledDarkStemColor, darkStemColor),
-    ifProp('disabled', disabledLightStemColor, lightStemColor)
-  )};
+  color: ${p => p.theme.dark
+    ? (p.disabled ? disabledDarkStemColor : darkStemColor)
+    : (p.disabled ? disabledLightStemColor : lightStemColor)
+  };
 `;
 
 InflectionStem.defaultProps = {
@@ -44,10 +43,10 @@ const darkBraceColor = braceColor(Saturation.HIGH, 60);
 const disabledDarkBraceColor = braceColor(Saturation.LOW, 30);
 
 export const EscapedBrace = styled.span<DisabledProps>`
-  color: ${ifProp('theme.dark',
-    ifProp('disabled', disabledDarkBraceColor, darkBraceColor),
-    ifProp('disabled', disabledLightBraceColor, lightBraceColor)
-  )};
+  color: ${p => p.theme.dark
+    ? (p.disabled ? disabledDarkBraceColor : darkBraceColor)
+    : (p.disabled ? disabledLightBraceColor : lightBraceColor)
+  };
 `;
 
 EscapedBrace.defaultProps = {

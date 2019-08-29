@@ -235,7 +235,7 @@ export default class CellEditor extends PureComponent<Props, State> {
           ref={this.inputRef}
         />
         {needIcons &&
-          <S.CellIcons>
+          <S.CellIcons disabled={false}>
             {!data.deriveLemma && <DoNotDeriveLemmaIcon/>}
             {data.hasCustomDisplayName && <CustomDisplayNameIcon/>}
           </S.CellIcons>
