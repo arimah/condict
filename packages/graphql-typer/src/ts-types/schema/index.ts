@@ -8,6 +8,7 @@ import {
   isInterfaceType,
 } from 'graphql';
 
+import {CommonHeader, IdOfDefinition} from '../shared';
 import {TextBuilder} from '../utils';
 import {isBuiltin as isBuiltinScalar} from '../builtin-scalars';
 
@@ -24,19 +25,8 @@ const defineTypes = (schema: GraphQLSchema): string => {
 
   // Define some basic things for IdOf.
   result
-    .appendLine('/* eslint-disable */\n')
-    .appendLine('// THIS FILE IS AUTO GENERATED.\n')
-    .appendLine(`const IdKind = Symbol();\n`)
-    .appendLine('// This is a hack to get TypeScript to treat different ID types as distinct.')
-    .appendLine('// The actual value will be a number (hence the `number` part), but by')
-    .appendLine("// pretending there's an extra property that is unique to each type, we can")
-    .appendLine('// get TypeScript to reject invalid ID uses, such as attempting to assign')
-    .appendLine('// a DefinitionId to a LemmaId.')
-    .appendLine(
-      `export type IdOf<T extends string> = number & {\n` +
-      `  [IdKind]: T;\n` +
-      `};\n`
-    );
+    .appendLine(CommonHeader)
+    .appendLine(IdOfDefinition);
 
   const types =
     Object.values(schema.getTypeMap())

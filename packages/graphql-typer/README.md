@@ -22,26 +22,42 @@ Example transformations:
 
 ## Command-line usage
 
-```
-condict-graphql-typer --schema-dir SCHEMA_DIR --target TARGET_FILE [--include-introspection-types]
+```shell
+condict-graphql-typer --schema-dir=SCHEMA_DIR --target=server --output=OUTPUT_FILE
+condict-graphql-typer --schema-dir=SCHEMA_DIR --target=client --src=SRC_DIR --defs=DEFS_FILE
+condict-graphql-typer --help
 ```
 
-Builds TypeScript type definitions from all .graphql files in `SCHEMA_DIR` (searched recursively), saving the result in `TARGET_FILE`.
+Builds TypeScript type definitions from all .graphql files in `SCHEMA_DIR` (searched recursively), saving the result in `OUTPUT_FILE`.
 
-* `--schema-dir SCHEMA_DIR` (alias: `-s`): The directory that is searched for .graphql files. The directory is searched recursively. All .graphql files that are found are concatenated together and parsed as a single string. The order of concatenation is not specified; each .graphql file should be a syntactically valid schema file. The files cannot contain queries, only schema definitions.
-* `--target TARGET_FILE` (alias: `-t`): The file that TypeScript definitions are written to. Any existing contents will be overwritten.
+* `--schema-dir SCHEMA_DIR` (alias: `-s`): The directory that is searched for .graphql schema files. The directory is searched recursively. All .graphql files that are found are concatenated together and parsed as a single string. The order of concatenation is not specified; each .graphql file should be a syntactically valid schema file. The files cannot contain queries, only schema definitions.
+* `--target <server|client>` (alias: `-t`): Determines whether to write server type definitions (`server`), or client operation type definitions (`client`).
+* `--output OUTPUT_FILE` (alias: `-o`): Server only. The file that TypeScript definitions are written to. Any existing contents will be overwritten.
+* `--src=SRC_DIR`: Client only. Client only. The source directory that is searched for client .graphql files. Every file named `query.graphql` contains one or more operations (queries, mutations, subscriptions) and receives a generated `query.ts` in the same directory. All other .graphql files are expected to contain fragment definitions, which are made available to all operations across the codebase.
+* `--defs=DEFS_FILE` (alias: `-d`): Client only. The path to the shared definitions file, which will receive generated definitions for the `IdOf`, `Query`, `QueryArgs` and `QueryResult` types as well as enum, input and custom ID types.
+* `--help` (alias: `-h`): Shows a help screen.
 
 ## Node API
 
-Example:
+Server types example:
 
 ```js
 const gqlTyper = require('@condict/graphql-typer');
 
 const schema = gqlTyper.buildGraphqlSchema('../graphql-schema');
-const includeIntrospectionTypes = false;
-const definitions = gqlTyper.defineTypes(schema, includeIntrospectionTypes);
-console.log(definitions);
+const definitions = gqlTyper.defineServerTypes(schema);
+console.log(definitions); // This value should be saved to a file
+```
+
+Client types example:
+
+```js
+const gqlTyper = require('@condict/graphql-typer');
+
+const schema = gqlTyper.buildGraphqlSchema('../graphql-schema');
+const sharedPath = './graphql-shared.ts';
+const srcDir = './src';
+gqlTyper.defineClientTypes(schema, sharedPath, srcDir);
 ```
 
 ### `buildGraphqlSchema()`
@@ -64,16 +80,16 @@ Given a GraphQL scalar type, determines whether it is a [custom ID type](#custom
 
 `GraphQLScalarType` does not directly store the type's directives. Instead, they are looked up through the AST node. As a result, this function returns `null` for any scalar type that lacks an AST node.
 
-### `defineTypes()`
+### `defineServerTypes()`
 
-> `defineTypes(schema: GraphQLSchema, includeIntrospectionTypes: boolean): string`
+> `defineServerTypes(schema: GraphQLSchema): string`
 
-Constructs TypeScript definitions for the types in the specified schema, which are returned as a TypeScript source string. If `includeIntrospectionTypes` is true, then type definitions for introspection types – such as `__Schema`, `__Type` and `__Directive` – will be generated as well; otherwise, they are skipped.
+Constructs TypeScript definitions for the types in the specified schema, which are returned as a TypeScript source string. Note that only user-defined types are exported; introspection types like `__Type` and `__Schema` are always skipped.
 
-More specifically, any type whose name starts with `__` will be considered private to GraphQL, and is skipped when `includeIntrospectionTypes` is false.
+### `defineClientTypes()`
 
-### `writeType()`
+> `defineClientTypes(schema: GraphQLSchema, sharedPath: string, srcDir: string): void`
 
-> `writeType(type: GraphQLType): string`
+Constructs TypeScript definitions for all operations in every applicable .graphql file in `srcDir`, based on `schema`. Shared type definitions (the `IdOf`, `Query`, `QueryArgs` and `QueryResult` types) are put in `sharedPath`.
 
-Returns a TypeScript type name that refers to the specified type. This handles named types as well as lists and non-nullable types. Note that GraphQL types are nullable by default.
+Note that unlike [`getServerTypes()`](#getservertypes), this function writes the result to each applicable file, rather than returning a string with definitions.

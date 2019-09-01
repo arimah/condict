@@ -57,6 +57,10 @@ export class TextBuilder {
     return this;
   }
 
+  public matches(pattern: RegExp): boolean {
+    return pattern.test(this.text);
+  }
+
   public toString(): string {
     return this.text;
   }
