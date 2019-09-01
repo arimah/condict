@@ -9,11 +9,9 @@ import {
 } from 'graphql';
 
 import {TextBuilder} from '../utils';
+import {isBuiltin as isBuiltinScalar} from '../builtin-scalars';
 
-import {
-  defineScalarType,
-  isBuiltin as isBuiltinScalar,
-} from './scalar-type';
+import {defineScalarType} from './scalar-type';
 import {defineEnumType} from './enum-type';
 import {defineObjectType} from './object-type';
 import {defineInputType} from './input-type';

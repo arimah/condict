@@ -3,16 +3,7 @@ import {GraphQLScalarType} from 'graphql';
 import getIdKind from '../../graphql/id-kind';
 
 import {TextBuilder, formatDescription} from '../utils';
-
-const builtins = new Map<string, string>([
-  ['Boolean', 'boolean'],
-  ['Int', 'number'],
-  ['Float', 'number'],
-  ['String', 'string'],
-  ['ID', 'string'],
-]);
-
-export const isBuiltin = (type: GraphQLScalarType) => builtins.has(type.name);
+import {TypePosition, isBuiltin, getBuiltin} from '../builtin-scalars';
 
 const formatIdKind = (idKind: string): string => {
   // If the ID kind is all alphanumeric, we never need to do anything fancy.
@@ -24,7 +15,7 @@ const formatIdKind = (idKind: string): string => {
 };
 
 export const defineScalarType = (result: TextBuilder, type: GraphQLScalarType) => {
-  if (builtins.has(type.name)) {
+  if (isBuiltin(type)) {
     throw new Error(`Cannot write definition for built-in scalar '${type.name}'.`);
   }
 
@@ -42,4 +33,4 @@ export const defineScalarType = (result: TextBuilder, type: GraphQLScalarType) =
 };
 
 export const writeScalarType = (type: GraphQLScalarType) =>
-  builtins.get(type.name) || type.name;
+  getBuiltin(type, TypePosition.SERVER) || type.name;
