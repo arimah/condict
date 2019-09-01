@@ -8,17 +8,18 @@ import {
   isNonNullType,
 } from 'graphql';
 
-import {assertIsList, assertIsString} from './helpers';
+import {
+  assertIsList,
+  assertIsString,
+  getDirective,
+  getArgument,
+} from './helpers';
 
 export type PermittedEnumValues = {
   type: GraphQLEnumType;
   values: GraphQLEnumValue[];
   allowNull: boolean;
 };
-
-const RESTRICT_DIRECTIVE_NAME = 'restrict';
-const ONLY_ARGUMENT_NAME = 'only';
-const NOT_ARGUMENT_NAME = 'not';
 
 type EnumTypeInfo = {
   type: GraphQLEnumType;
@@ -45,19 +46,14 @@ const getRestrictDirective = (
 ): RestrictDirective | null => {
   const restrictDirective =
     field.astNode &&
-    field.astNode.directives &&
-    field.astNode.directives.find(d => d.name.value === RESTRICT_DIRECTIVE_NAME);
+    getDirective(field.astNode, 'restrict');
   if (!restrictDirective) {
     // Field is not restricted, so anything goes.
     return null;
   }
 
-  const onlyArgument =
-    restrictDirective.arguments &&
-    restrictDirective.arguments.find(a => a.name.value === ONLY_ARGUMENT_NAME);
-  const notArgument =
-    restrictDirective.arguments &&
-    restrictDirective.arguments.find(a => a.name.value === NOT_ARGUMENT_NAME);
+  const onlyArgument = getArgument(restrictDirective, 'only');
+  const notArgument = getArgument(restrictDirective, 'not');
 
   if (onlyArgument && notArgument) {
     throw new Error(`Cannot mix 'only:' and 'not:' in @restrict directive`);
