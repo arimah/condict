@@ -12,7 +12,7 @@ export const formatDescription = (desc: string): string => {
 };
 
 export class TextBuilder {
-  private parts: string[] = [];
+  private text: string = '';
   private indentation: string = '';
   private needIndentation: boolean = true;
 
@@ -21,14 +21,14 @@ export class TextBuilder {
     // non-empty string, we need to indent lines (as long as the current
     // indentation level is not zero, in which case we can skip that work).
     if (this.needIndentation && this.indentation && value && !value.startsWith('\n')) {
-      this.parts.push(this.indentation);
+      this.text += this.indentation;
     }
     // Add indentation after each newline, except at the very end.
     const indentedValue =
       this.indentation && value.includes('\n')
         ? value.replace(/\n(?!$)/g, `\n${this.indentation}`)
         : value;
-    this.parts.push(indentedValue);
+    this.text += indentedValue;
 
     // If the value ends with a newline, we need to insert indentation whenever
     // the next part arrives.
@@ -58,6 +58,6 @@ export class TextBuilder {
   }
 
   public toString(): string {
-    return this.parts.join('');
+    return this.text;
   }
 }
