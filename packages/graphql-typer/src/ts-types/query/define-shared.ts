@@ -113,10 +113,10 @@ const defineShared = (
   // in any operation. We need to include those in the output as well.
   const allUsedTypes = new Set<ImportedType>();
   for (const type of usedTypes) {
+    allUsedTypes.add(type);
     if (isInputObjectType(type)) {
       collectInputFieldTypes(allUsedTypes, type);
     }
-    allUsedTypes.add(type);
   }
 
   for (const type of allUsedTypes) {
