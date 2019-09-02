@@ -30,7 +30,7 @@ condict-graphql-typer --help
 
 Builds TypeScript type definitions from all .graphql files in `SCHEMA_DIR` (searched recursively), saving the result in `OUTPUT_FILE`.
 
-* `--schema-dir SCHEMA_DIR` (alias: `-s`): The directory that is searched for .graphql schema files. The directory is searched recursively. All .graphql files that are found are concatenated together and parsed as a single string. The order of concatenation is not specified; each .graphql file should be a syntactically valid schema file. The files cannot contain queries, only schema definitions.
+* `--schema-dir SCHEMA_DIR` (alias: `-s`): The directory that is searched for .graphql schema files. The directory is searched recursively. All .graphql files that are found are concatenated together and parsed as a single string. Each .graphql file should be a syntactically valid, self-contained schema file. The files cannot contain queries, only schema definitions.
 * `--target <server|client>` (alias: `-t`): Determines whether to write server type definitions (`server`), or client operation type definitions (`client`).
 * `--output OUTPUT_FILE` (alias: `-o`): Server only. The file that TypeScript definitions are written to. Any existing contents will be overwritten.
 * `--src=SRC_DIR`: Client only. Client only. The source directory that is searched for client .graphql files. Every file named `query.graphql` contains one or more operations (queries, mutations, subscriptions) and receives a generated `query.ts` in the same directory. All other .graphql files are expected to contain fragment definitions, which are made available to all operations across the codebase.
@@ -70,7 +70,7 @@ Reads all .graphql files in the `schemaDir` directory (searched recursively), an
 
 > `findAllGraphqlFiles(schemaDir: string): string[]`
 
-Returns the full paths of every .graphql file inside `schemaDir` (searched recursively).
+Returns the full paths of every .graphql file inside `schemaDir` (searched recursively). Matching paths are sorted alphabetically.
 
 ### `getIdKind()`
 
