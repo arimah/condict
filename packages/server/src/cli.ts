@@ -4,7 +4,8 @@ import parseCliArgs, {OptionDefinition} from 'command-line-args';
 
 import createLogger from './create-logger';
 import parseConfig from './parse-config';
-import createServer from './server';
+import CondictServer from './server';
+import CondictHttpServer from './http-server';
 import {ServerConfig} from './types';
 
 // Fall back to development if missing. Ensures we get proper console
@@ -25,6 +26,34 @@ const options: OptionDefinition[] = [
   {name: 'view-table-schema', type: String},
 ];
 
+const printSchema = (server: CondictServer, tableName: string | null) => {
+  const schema = server.getTableSchema(tableName);
+  if (schema === null) {
+    console.error(`Table not found: ${tableName}`);
+    process.exitCode = 2;
+  } else {
+    console.log(schema);
+  }
+};
+
+const start = async (server: CondictServer) => {
+  const logger = server.getLogger();
+
+  const httpServer = new CondictHttpServer(server);
+
+  process.on('SIGINT', async () => {
+    logger.info('Exit: Ctrl+C');
+
+    logger.info('Stopping server...');
+    await httpServer.stop();
+
+    logger.info('Goodbye!');
+  });
+
+  const {url} = await httpServer.start();
+  logger.info(`Server listening on ${url}`);
+};
+
 const main = async () => {
   const args = parseCliArgs(options);
 
@@ -38,40 +67,21 @@ const main = async () => {
   }
 
   const logger = createLogger(config.log);
-  const server = createServer(logger, config);
+  const server = new CondictServer(logger, config);
 
   try {
     if (args.export) {
       await server.export(args.target as string);
-      await server.close();
     } else if (args.import) {
       await server.import(args.source as string);
-      await server.close();
     } else if (args['view-table-schema'] !== undefined) {
-      const tableName = args['view-table-schema'] as string | null;
-      const schema = server.getTableSchema(tableName);
-      if (schema === null) {
-        console.error(`Table not found: ${tableName}`);
-      } else {
-        console.log(schema);
-      }
-      await server.close();
+      printSchema(server, args['view-table-schema'] as string | null);
     } else {
-      process.on('SIGINT', async () => {
-        logger.info('Exit: Ctrl+C');
-
-        logger.info('Stopping server...');
-        await server.close();
-
-        logger.info('Goodbye!');
-      });
-
-      const {url} = await server.start();
-      logger.info(`Server listening on ${url}`);
+      await start(server);
     }
   } catch (e) {
     logger.error(`Unhandled server error: ${e}\n${e.stack}`);
-    await server.close();
+    await server.stop();
     process.exitCode = 1;
   }
 };

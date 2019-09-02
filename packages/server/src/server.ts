@@ -1,7 +1,7 @@
 import fs from 'fs';
-import {Server} from 'http';
 
-import {ApolloServer} from 'apollo-server';
+import {GraphQLSchema} from 'graphql';
+import {makeExecutableSchema} from 'graphql-tools';
 import {Logger} from 'winston';
 
 import performStartupChecks from './startup-checks';
@@ -12,20 +12,20 @@ import reindentQuery from './database/reindent-query';
 import exportDatabase from './database/export';
 import importDatabase from './database/import';
 import * as graphql from './graphql';
-import createModelResolvers from './model';
+import createModelResolvers, {Resolvers} from './model';
 import {ServerConfig} from './types';
 
-// Generates a short, pseudo-random request ID.
-// Exclusively for use in logs, so you can identify
-// individual requests.
-const generateRequestId = () => Math.random().toString(36).substr(2, 7);
+export type ContextResult = {
+  context: graphql.Context;
+  finish: () => void;
+};
 
-class CondictServer {
+export default class CondictServer {
   private readonly logger: Logger;
   private readonly config: ServerConfig;
   private readonly databasePool: DatabasePool;
-  private server: ApolloServer | null;
-  private httpServer: Server | null;
+  private readonly schema: GraphQLSchema;
+  private started: boolean = false;
 
   public constructor(logger: Logger, config: ServerConfig) {
     if (!config.database) {
@@ -34,62 +34,79 @@ class CondictServer {
 
     this.logger = logger;
     this.config = config;
-
     this.databasePool = createPool(logger, config.database);
-
-    this.server = null;
-    this.httpServer = null;
-  }
-
-  private createApolloServer() {
-    if (this.server) {
-      return;
-    }
-
-    this.server = new ApolloServer({
+    this.schema = makeExecutableSchema({
       typeDefs: graphql.getTypeDefs(),
       resolvers: graphql.getResolvers(),
       schemaDirectives: graphql.getDirectives(),
-      context: async ({res}): Promise<graphql.Context> => {
-        const requestId = generateRequestId();
-
-        const startTime = Date.now();
-        this.logger.info(`Start request ${requestId}`);
-
-        let db: Adaptor | undefined;
-        res.on('finish', () => {
-          this.logger.info(
-            `Request ${requestId} finished in ${Date.now() - startTime} ms`
-          );
-          // Return the database connection to the pool after the request.
-          if (db) {
-            db.release();
-          }
-        });
-        db = await this.databasePool.getConnection();
-
-        const modelResolvers = createModelResolvers(db, this.logger);
-
-        return {
-          db,
-          logger: this.logger,
-          ...modelResolvers,
-        };
-      },
     });
   }
 
-  public async start(): Promise<{url: string}> {
+  public async start(): Promise<void> {
+    if (this.started) {
+      return;
+    }
+
     const {logger, config, databasePool} = this;
-    logger.info('Condict is starting!');
-
-    this.createApolloServer();
     await performStartupChecks(logger, config, databasePool);
+    this.started = true;
+  }
 
-    const {url, server} = await (this.server as ApolloServer).listen();
-    this.httpServer = server;
+  public async stop(): Promise<void> {
+    if (!this.started) {
+      return;
+    }
+    await this.databasePool.close();
+    this.started = false;
+  }
 
-    return {url};
+  public getLogger(): Logger {
+    return this.logger;
+  }
+
+  public getConfig(): Readonly<ServerConfig> {
+    return this.config;
+  }
+
+  public getDatabasePool(): DatabasePool {
+    return this.databasePool;
+  }
+
+  public getSchema(): GraphQLSchema {
+    return this.schema;
+  }
+
+  public async getContextValue(): Promise<ContextResult> {
+    if (!this.started) {
+      throw new Error('Server is not started.');
+    }
+
+    const {logger, databasePool} = this;
+
+    let modelResolvers: Resolvers | undefined;
+    let db: Adaptor | undefined;
+    try {
+      db = await databasePool.getConnection();
+      modelResolvers = createModelResolvers(db, logger);
+    } catch (e) {
+      if (db) {
+        db.release();
+      }
+      throw e;
+    }
+
+    return {
+      context: {
+        db,
+        logger,
+        ...modelResolvers,
+      },
+      finish: () => {
+        if (db) {
+          db.release();
+        }
+      },
+    };
   }
 
   public export(outputFile: string): Promise<void> {
@@ -156,15 +173,4 @@ class CondictServer {
       )
       .join('\n\n');
   }
-
-  public async close(): Promise<void> {
-    if (this.httpServer) {
-      this.logger.info('Stopping HTTP server...');
-      this.httpServer.close();
-    }
-    await this.databasePool.close();
-  }
 }
-
-export default (logger: Logger, config: ServerConfig) =>
-  new CondictServer(logger, config);
