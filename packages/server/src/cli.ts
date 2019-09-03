@@ -73,9 +73,9 @@ const main = async () => {
 
   try {
     if (args.export) {
-      await importDatabase(logger, config, args.target as string);
+      await exportDatabase(logger, config, args.target as string);
     } else if (args.import) {
-      await exportDatabase(logger, config, args.source as string);
+      await importDatabase(logger, config, args.source as string);
     } else if (args['view-table-schema'] !== undefined) {
       printSchema(config, args['view-table-schema'] as string | null);
     } else {
