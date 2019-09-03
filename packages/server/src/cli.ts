@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 
 import parseCliArgs, {OptionDefinition} from 'command-line-args';
+import {Logger} from 'winston';
 
 import createLogger from './create-logger';
 import parseConfig from './parse-config';
 import CondictServer from './server';
 import CondictHttpServer from './http-server';
+import importDatabase from './import-database';
+import exportDatabase from './export-database';
+import getTableSchema from './table-schema';
 import {ServerConfig} from './types';
 
 // Fall back to development if missing. Ensures we get proper console
@@ -26,8 +30,8 @@ const options: OptionDefinition[] = [
   {name: 'view-table-schema', type: String},
 ];
 
-const printSchema = (server: CondictServer, tableName: string | null) => {
-  const schema = server.getTableSchema(tableName);
+const printSchema = (config: ServerConfig, tableName: string | null) => {
+  const schema = getTableSchema(config.database.type, tableName);
   if (schema === null) {
     console.error(`Table not found: ${tableName}`);
     process.exitCode = 2;
@@ -36,9 +40,8 @@ const printSchema = (server: CondictServer, tableName: string | null) => {
   }
 };
 
-const start = async (server: CondictServer) => {
-  const logger = server.getLogger();
-
+const start = async (logger: Logger, config: ServerConfig) => {
+  const server = new CondictServer(logger, config);
   const httpServer = new CondictHttpServer(server);
 
   process.on('SIGINT', async () => {
@@ -67,21 +70,19 @@ const main = async () => {
   }
 
   const logger = createLogger(config.log);
-  const server = new CondictServer(logger, config);
 
   try {
     if (args.export) {
-      await server.export(args.target as string);
+      await importDatabase(logger, config, args.target as string);
     } else if (args.import) {
-      await server.import(args.source as string);
+      await exportDatabase(logger, config, args.source as string);
     } else if (args['view-table-schema'] !== undefined) {
-      printSchema(server, args['view-table-schema'] as string | null);
+      printSchema(config, args['view-table-schema'] as string | null);
     } else {
-      await start(server);
+      await start(logger, config);
     }
   } catch (e) {
     logger.error(`Unhandled server error: ${e}\n${e.stack}`);
-    await server.stop();
     process.exitCode = 1;
   }
 };
