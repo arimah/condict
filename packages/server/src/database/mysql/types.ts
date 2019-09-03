@@ -8,8 +8,7 @@ export type Options = Pick<
 const isValidPort = (port: number) =>
   !isNaN(port) &&
   isFinite(port) &&
-  port > 0 &&
-  port % 1 === 0;
+  1 <= port && port <= 65535;
 
 export const validateOptions = (options: { [k: string]: any }): Options => {
   const user = options.user != null ? String(options.user) : undefined;
