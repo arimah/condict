@@ -4,8 +4,10 @@ import {
   GraphQLList,
   GraphQLNullableType,
   GraphQLScalarType,
+  GraphQLObjectType,
   GraphQLInputType,
   GraphQLInputObjectType,
+  OperationTypeNode,
   isScalarType,
   isNonNullType,
   isListType,
@@ -59,20 +61,22 @@ writeType = (type: GraphQLType): string => {
   return `${typeText} | null | undefined`;
 };
 
-const QueryDefinition =
+const OperationDefinition =
+  `const OperationSymbol = Symbol();\n` +
   `const ArgsSymbol = Symbol();\n` +
   `const ResultSymbol = Symbol();\n` +
   `\n` +
-  `// Similar to the IdOf type, this is a hack to attach extra metadata to a query.\n` +
-  `// The symbol fields don't actually exist (the value is a string), but allow us\n` +
-  `// to extract the argument and result types from the query.\n` +
-  `export type Query<A, R> = string & {\n` +
+  `// Similar to the IdOf type, this is a hack to attach extra metadata to an operation.\n` +
+  `// The symbol fields don't actually exist (the value is just a string), but allow us\n` +
+  `// to extract the operation kind, and argument and result types from the query.\n` +
+  `export type Operation<O extends string, A, R> = string & {\n` +
+  `  [OperationSymbol]: O;\n` +
   `  [ArgsSymbol]: A;\n` +
   `  [ResultSymbol]: R;\n` +
   `};\n` +
   `\n` +
-  `export type QueryArgs<Q> = Q extends Query<infer A, any> ? A : unknown;\n` +
-  `export type QueryResult<Q> = Q extends Query<any, infer R> ? R : unknown;\n`;
+  `export type OperationArgs<Op> = Op extends Operation<any, infer A, any> ? A : unknown;\n` +
+  `export type OperationResult<Op> = Op extends Operation<any, any, infer R> ? R : unknown;\n`;
 
 const getInnerType = (type: GraphQLInputType): ImportedType =>
   isNonNullType(type) ? getInnerType(type.ofType) :
@@ -98,6 +102,16 @@ const collectInputFieldTypes = (
   }
 };
 
+const defineOperationType = (
+  result: TextBuilder,
+  type: GraphQLObjectType,
+  operation: OperationTypeNode
+) => {
+  result.appendLine(
+    `export type ${type.name}<A, R> = Operation<'${operation}', A, R>;\n`
+  );
+};
+
 const defineShared = (
   schema: GraphQLSchema,
   usedTypes: Set<ImportedType>
@@ -106,8 +120,21 @@ const defineShared = (
 
   result
     .appendLine(CommonHeader)
-    .appendLine(QueryDefinition)
-    .appendLine(IdOfDefinition);
+    .appendLine(IdOfDefinition)
+    .appendLine(OperationDefinition);
+
+  const queryType = schema.getQueryType();
+  if (queryType) {
+    defineOperationType(result, queryType, 'query');
+  }
+  const mutationType = schema.getMutationType();
+  if (mutationType) {
+    defineOperationType(result, mutationType, 'mutation');
+  }
+  const subscriptionType = schema.getSubscriptionType();
+  if (subscriptionType) {
+    defineOperationType(result, subscriptionType, 'subscription');
+  }
 
   // Input type fields can reference other types that aren't mentioned
   // in any operation. We need to include those in the output as well.

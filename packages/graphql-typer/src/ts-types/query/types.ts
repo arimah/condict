@@ -16,6 +16,11 @@ export type Globals = {
   readonly schema: GraphQLSchema;
   readonly fragments: ReadonlyMap<string, FragmentDefinitionNode>;
   readonly sharedDefinitionsPath: string;
+  readonly operationTypeNames: {
+    query: string | undefined;
+    mutation: string | undefined;
+    subscription: string | undefined;
+  };
 
   useType(type: ImportedType): string;
 };

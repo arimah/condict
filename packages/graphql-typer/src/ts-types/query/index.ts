@@ -86,10 +86,19 @@ const defineClientTypes = (
     | GraphQLInputObjectType;
   const usedTypes = new Set<ReferencedType>();
 
+  const queryType = schema.getQueryType();
+  const mutationType = schema.getMutationType();
+  const subscriptionType = schema.getSubscriptionType();
+
   const globals: Globals = {
     sharedDefinitionsPath: sharedPath,
     fragments,
     schema,
+    operationTypeNames: {
+      query: queryType ? queryType.name : undefined,
+      mutation: mutationType ? mutationType.name : undefined,
+      subscription: subscriptionType ? subscriptionType.name : undefined,
+    },
     useType: t => {
       usedTypes.add(t);
       return t.name;

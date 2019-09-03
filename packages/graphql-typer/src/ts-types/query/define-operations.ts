@@ -88,27 +88,30 @@ const defineOperations = (
       }
       hasAnonymous = true;
     }
+    const opTypeName = globals.operationTypeNames[op.operation];
+    if (!opTypeName) {
+      throw new Error(`No type defined for this operation: ${op.operation}`);
+    }
+    importedTypes.add(opTypeName);
     return typeOperation(operationParams, op);
   });
 
   const result = new TextBuilder();
 
-  result
-    .appendLine(CommonHeader)
-    .append('import {')
-    .indented(() => {
-      if (importedTypes.size > 0) {
-        result.appendLine('');
+  result.appendLine(CommonHeader);
+
+  if (importedTypes.size > 0) {
+    result
+      .appendLine('import {')
+      .indented(() => {
         result.appendLine(
-          ['Query', ...importedTypes].join(',\n')
+          [...importedTypes].join(',\n')
         );
-      } else {
-        result.append('Query');
-      }
-    })
-    .append('} from ')
-    .append(JSON.stringify(importPathTo(dir, globals.sharedDefinitionsPath)))
-    .appendLine(';\n');
+      })
+      .append('} from ')
+      .append(JSON.stringify(importPathTo(dir, globals.sharedDefinitionsPath)))
+      .appendLine(';\n');
+  }
 
   for (const op of operationTypes) {
     result

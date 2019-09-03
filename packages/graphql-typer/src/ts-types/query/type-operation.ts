@@ -75,7 +75,7 @@ const typeOperation = (
   const typeParams = getTypeWriterParams(params, usedFragments);
   const opType = getOperationRootType(params, op);
 
-  typeText.append('Query<');
+  typeText.append(`${opType.name}<`);
   typeParameters(
     typeParams,
     typeText,
