@@ -1,6 +1,5 @@
 import {GraphQLSchema} from 'graphql';
 import {makeExecutableSchema} from 'graphql-tools';
-import {Logger} from 'winston';
 
 import performStartupChecks from './startup-checks';
 import {createPool} from './database';
@@ -8,7 +7,7 @@ import Adaptor from './database/adaptor';
 import {Pool as DatabasePool} from './database/types';
 import {getTypeDefs, getResolvers, getDirectives, Context} from './graphql';
 import createModelResolvers, {Resolvers} from './model';
-import {ServerConfig} from './types';
+import {ServerConfig, Logger} from './types';
 
 export type ContextResult = {
   context: Context;

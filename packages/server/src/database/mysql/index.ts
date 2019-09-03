@@ -1,5 +1,6 @@
 import * as mysql from 'mysql';
-import {Logger} from 'winston';
+
+import {Logger} from '../../types';
 
 import {Driver} from '../types';
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import parseCliArgs, {OptionDefinition} from 'command-line-args';
-import {Logger} from 'winston';
 
 import createLogger from './create-logger';
 import parseConfig from './parse-config';
@@ -10,7 +9,7 @@ import CondictHttpServer from './http-server';
 import importDatabase from './import-database';
 import exportDatabase from './export-database';
 import getTableSchema from './table-schema';
-import {ServerConfig} from './types';
+import {ServerConfig, Logger} from './types';
 
 // Fall back to development if missing. Ensures we get proper console
 // logging and other nice things.

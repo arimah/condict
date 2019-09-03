@@ -2,7 +2,7 @@ import chalk, {Chalk} from 'chalk';
 import * as winston from 'winston';
 import * as Transport from 'winston-transport';
 
-import {LogLevel, LoggerOptions} from './types';
+import {Logger, LoggerOptions, LogLevel} from './types';
 
 const levels: Record<LogLevel, number> = {
   error: 0,
@@ -34,7 +34,7 @@ const fileFormat = winston.format.combine(
   winston.format.json()
 );
 
-export default (config: LoggerOptions) => {
+export default (config: LoggerOptions): Logger => {
   const transports: Transport[] = [];
 
   if (process.env.NODE_ENV === 'development') {

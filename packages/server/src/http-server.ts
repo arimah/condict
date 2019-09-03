@@ -1,12 +1,12 @@
 import {Server as HttpServer} from 'http';
 
 import {ApolloServer} from 'apollo-server';
-import {Logger} from 'winston';
 
 import genId from '@condict/gen-id';
 
 import CondictServer from './server';
 import {Context} from './graphql';
+import {Logger} from './types';
 
 export type ServerInfo = {
   url: string;

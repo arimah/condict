@@ -1,8 +1,7 @@
 import {ReadStream} from 'fs';
 
-import {Logger} from 'winston';
-
 import LineReader from '../utils/line-reader';
+import {Logger} from '../types';
 
 import Adaptor from './adaptor';
 import fileFacts from './dump-file-facts';

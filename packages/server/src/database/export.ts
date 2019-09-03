@@ -1,6 +1,6 @@
 import {WriteStream} from 'fs';
 
-import {Logger} from 'winston';
+import {Logger} from '../types';
 
 import Adaptor from './adaptor';
 import fileFacts from './dump-file-facts';

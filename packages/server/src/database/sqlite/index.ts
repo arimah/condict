@@ -4,7 +4,8 @@ import {
   Pool,
   Factory,
 } from 'generic-pool';
-import {Logger} from 'winston';
+
+import {Logger} from '../../types';
 
 import {Driver} from '../types';
 

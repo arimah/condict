@@ -1,8 +1,8 @@
 import {IFieldResolver} from 'apollo-server';
-import {Logger} from 'winston';
 
 import Adaptor from '../../database/adaptor';
 import {ModelResolver, MutatorResolver} from '../../model';
+import {Logger} from '../../types';
 
 import {IdOf, PageParams, PageInfo, Mutation} from '../types';
 

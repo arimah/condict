@@ -1,11 +1,9 @@
 import fs from 'fs';
 
-import {Logger} from 'winston';
-
 import {createPool} from './database';
 import exportDatabaseImpl from './database/export';
 import performStartupChecks from './startup-checks';
-import {ServerConfig} from './types';
+import {ServerConfig, Logger} from './types';
 
 const exportDatabase = (
   logger: Logger,

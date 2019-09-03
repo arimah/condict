@@ -1,6 +1,7 @@
 import {Database as Connection} from 'better-sqlite3';
-import {Logger} from 'winston';
 import {Pool} from 'generic-pool';
+
+import {Logger} from '../../types';
 
 import Adaptor, {Sql, ExecResult} from '../adaptor';
 

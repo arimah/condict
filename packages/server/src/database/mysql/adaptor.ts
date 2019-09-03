@@ -1,5 +1,6 @@
 import {escape, PoolConnection} from 'mysql';
-import {Logger} from 'winston';
+
+import {Logger} from '../../types';
 
 import Adaptor, {Sql, ExecResult} from '../adaptor';
 

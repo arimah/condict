@@ -1,10 +1,10 @@
 import DataLoader from 'dataloader';
-import {Logger} from 'winston';
 
 import FieldSet from '../model/field-set';
 import {createConnection} from '../graphql/helpers';
 import {PageParams} from '../graphql/types';
 import {Connection} from '../graphql/resolvers/types';
+import {Logger} from '../types';
 
 import reindentQuery from './reindent-query';
 

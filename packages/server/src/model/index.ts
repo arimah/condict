@@ -1,6 +1,5 @@
-import {Logger} from 'winston';
-
 import Adaptor from '../database/adaptor';
+import {Logger} from '../types';
 
 import DefinitionModel from './definition/model';
 import InflectionTableModel from './inflection-table/model';

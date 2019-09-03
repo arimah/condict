@@ -1,4 +1,4 @@
-import {Logger} from 'winston';
+import {Logger} from '../types';
 
 import Adaptor from './adaptor';
 import {TableSchema, ColumnSchema, ForeignKeyRef} from './schema/types';

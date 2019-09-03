@@ -1,4 +1,4 @@
-import {Logger} from 'winston';
+import {Logger} from '../types';
 
 import mysql from './mysql';
 import sqlite from './sqlite';

@@ -16,6 +16,10 @@ export type ServerConfig = {
   log: LoggerOptions;
 };
 
+export type Logger = {
+  [K in LogLevel]: (message: string, ...extra: any[]) => void;
+};
+
 export const isLogLevel = (value: any): value is LogLevel =>
   value === 'error' ||
   value === 'warn' ||

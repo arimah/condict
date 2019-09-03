@@ -1,10 +1,8 @@
-import {Logger} from 'winston';
-
 import {generateSchema} from './database';
 import Adaptor from './database/adaptor';
 import {Pool as DatabasePool} from './database/types';
 import {schemaVersion as serverSchemaVersion} from './database/schema';
-import {ServerConfig} from './types';
+import {ServerConfig, Logger} from './types';
 
 const getSchemaVersion = async (db: Adaptor) => {
   type Row = { value: string };
