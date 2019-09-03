@@ -1,7 +1,32 @@
 import fs from 'fs';
 
-import {ServerConfig, LoggerOptions, LogFile, isLogLevel} from './types';
+import {
+  ServerConfig,
+  LoggerOptions,
+  LogFile,
+  LogLevel,
+  isLogLevel,
+} from './types';
 import {validateOptions as validateDatabaseOptions} from './database';
+
+const validateStdout = (value: any): LogLevel | false => {
+  switch (value) {
+    case null:
+    case undefined:
+      // If stdout logging is not specified, default to showing everything in
+      // development and nothing in production.
+      return process.env.NODE_ENV === 'development' ? 'debug' : false;
+    case true:
+      return 'debug';
+    case false:
+      return false;
+    default:
+      if (!isLogLevel(value)) {
+        throw new Error(`Invalid log level: ${value}`);
+      }
+      return value;
+  }
+};
 
 const validateLogFile = (config: any): LogFile => {
   const path = config.path;
@@ -10,26 +35,31 @@ const validateLogFile = (config: any): LogFile => {
   }
 
   const level = config.level;
-  if (level !== undefined && !isLogLevel(level)) {
+  if (level != null && !isLogLevel(level)) {
     throw new Error(`Invalid log level: ${level}`);
   }
 
-  return {path, level};
+  return {path, level: level || 'info'};
 };
 
 const validateLoggerOptions = (config: any): LoggerOptions => {
-  if (config == null || typeof config !== 'object') {
+  if (config == null) {
+    return {stdout: false, files: []};
+  }
+  if (typeof config !== 'object') {
     throw new Error('Logger config must be an object.');
   }
 
-  let files = config.files;
+  const stdout = validateStdout(config.stdout);
+
+  const files = config.files;
   if (!Array.isArray(files)) {
     throw new Error("Logger config must have a 'files' property which must be an array.");
   }
 
   const validFiles = files.map(f => validateLogFile(f));
 
-  return {files: validFiles};
+  return {stdout, files: validFiles};
 };
 
 const validateConfig = (config: any): ServerConfig => {

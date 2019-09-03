@@ -8,6 +8,7 @@
     "database": "condict"
   },
   "log": {
+    "stdout": "info",
     "files": [
       {"path": "server.log", "level": "info"},
       {"path": "error.log", "level": "error"},

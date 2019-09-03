@@ -8,7 +8,8 @@ export type LogFile = {
 };
 
 export type LoggerOptions = {
-  files?: LogFile[];
+  stdout: LogLevel | false;
+  files: LogFile[];
 };
 
 export type ServerConfig = {

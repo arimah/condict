@@ -34,24 +34,34 @@ const fileFormat = winston.format.combine(
   winston.format.json()
 );
 
+const NullLogger: Logger = {
+  error() { },
+  warn() { },
+  info() { },
+  debug() { },
+};
+
 export default (config: LoggerOptions): Logger => {
   const transports: Transport[] = [];
 
-  if (process.env.NODE_ENV === 'development') {
+  if (config.stdout) {
     transports.push(new winston.transports.Console({
-      // Always show everything in development
-      level: 'debug',
+      level: config.stdout,
       format: consoleFormat,
     }));
   }
 
-  (config.files || []).forEach(file => {
+  config.files.forEach(file => {
     transports.push(new winston.transports.File({
       filename: file.path,
-      level: file.level || 'info',
+      level: file.level,
       format: fileFormat,
     }));
   });
+
+  if (transports.length === 0) {
+    return NullLogger;
+  }
 
   return winston.createLogger({levels, transports});
 };
