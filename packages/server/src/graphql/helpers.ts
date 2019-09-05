@@ -11,7 +11,9 @@ import {Context, IsMutator, MutatorFn} from './resolvers/types';
  * @param resolver The resolver function to wrap.
  * @return A mutator function.
  */
-export const mutator = <T, Args>(resolver: IFieldResolver<T, Context, Args>): MutatorFn => {
+export const mutator = <T, Args>(
+  resolver: IFieldResolver<T, Context, Args>
+): MutatorFn => {
   const fn: any =
     (p: T, args: Args, context: Context, info: any) =>
       resolver(p, args, context, info);
@@ -26,9 +28,11 @@ export const mutator = <T, Args>(resolver: IFieldResolver<T, Context, Args>): Mu
  * @param resolver The resolver function to wrap.
  * @return A mutator function.
  */
-export const publicMutator = <T>(resolver: IFieldResolver<T, Context>): MutatorFn => {
+export const publicMutator = <T, Args>(
+  resolver: IFieldResolver<T, Context, Args>
+): MutatorFn => {
   const fn: any =
-    (p: T, args: Record<string, any>, context: Context, info: any) =>
+    (p: T, args: Args, context: Context, info: any) =>
       resolver(p, args, context, info);
   fn[IsMutator] = true;
   return fn as MutatorFn;
