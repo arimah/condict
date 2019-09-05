@@ -26,11 +26,16 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
 
   lemmaCount: p => p.lemma_count,
 
-  lemmas: (p, {page, filter}: LemmasArgs, {model: {Lemma}}) =>
-    Lemma.allByLanguage(p.id, page, filter || LemmaFilter.ALL_LEMMAS),
+  lemmas: (p, {page, filter}: LemmasArgs, {model: {Lemma}}, info) =>
+    Lemma.allByLanguage(
+      p.id,
+      page,
+      filter || LemmaFilter.ALL_LEMMAS,
+      info
+    ),
 
-  tags: (p, {page}: PageArg, {model: {Tag}}) =>
-    Tag.allByLanguage(p.id, page),
+  tags: (p, {page}: PageArg, {model: {Tag}}, info) =>
+    Tag.allByLanguage(p.id, page, info),
 };
 
 type LanguageArgs = {

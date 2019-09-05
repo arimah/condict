@@ -4,7 +4,7 @@ import Adaptor from '../../database/adaptor';
 import {ModelResolver, MutatorResolver} from '../../model';
 import {Logger} from '../../types';
 
-import {IdOf, PageParams, PageInfo, Mutation} from '../types';
+import {IdOf, PageParams, Mutation} from '../types';
 
 export type Context = {
   db: Adaptor;
@@ -48,12 +48,4 @@ export type IdArg<T extends IdOf<any>> = {
  */
 export type PageArg = {
   page?: PageParams | null;
-};
-
-// NOTE: The below type is a generic version of various connection types from
-// the GraphQL schema. It must be synchronised with the GraphQL schema.
-
-export type Connection<T> = {
-  page: Pick<PageInfo, 'page' | 'perPage' | 'totalCount'>;
-  nodes: T[];
 };

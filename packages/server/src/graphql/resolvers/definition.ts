@@ -43,8 +43,8 @@ const Definition: ResolversFor<DefinitionType, DefinitionRow> = {
   tags: (p, _args, {model: {Tag}}) =>
     Tag.allByDefinition(p.id),
 
-  derivedDefinitions: (p, {page}: PageArg, {model: {DerivedDefinition}}) =>
-    DerivedDefinition.allByDerivedFrom(p.id, page),
+  derivedDefinitions: (p, {page}: PageArg, {model: {DerivedDefinition}}, info) =>
+    DerivedDefinition.allByDerivedFrom(p.id, page, info),
 
   lemma: (p, _args, {model: {Lemma}}) =>
     Lemma.byId(p.lemma_id),

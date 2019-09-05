@@ -21,8 +21,8 @@ const PartOfSpeech: ResolversFor<PartOfSpeechType, PartOfSpeechRow> = {
   isInUse: (p, _args, {model: {Definition}}) =>
     Definition.anyUsesPartOfSpeech(p.id),
 
-  usedByDefinitions: (p, {page}: PageArg, {model: {Definition}}) =>
-    Definition.allByPartOfSpeech(p.id, page),
+  usedByDefinitions: (p, {page}: PageArg, {model: {Definition}}, info) =>
+    Definition.allByPartOfSpeech(p.id, page, info),
 };
 
 const Query: ResolversFor<QueryType, unknown> = {

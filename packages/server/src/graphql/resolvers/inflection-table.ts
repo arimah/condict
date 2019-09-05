@@ -27,8 +27,8 @@ const InflectionTable: ResolversFor<InflectionTableType, InflectionTableRow> = {
   layout: (p, _args, {model: {InflectionTableLayout}}) =>
     InflectionTableLayout.currentByTable(p.id),
 
-  oldLayouts: (p, {page}: PageArg, {model: {InflectionTableLayout}}) =>
-    InflectionTableLayout.allOldByTable(p.id, page),
+  oldLayouts: (p, {page}: PageArg, {model: {InflectionTableLayout}}, info) =>
+    InflectionTableLayout.allOldByTable(p.id, page, info),
 
   partOfSpeech: (p, _args, {model: {PartOfSpeech}}) =>
     PartOfSpeech.byId(p.part_of_speech_id),
@@ -36,8 +36,8 @@ const InflectionTable: ResolversFor<InflectionTableType, InflectionTableRow> = {
   isInUse: (p, _args, {model: {Definition}}) =>
     Definition.anyUsesInflectionTable(p.id),
 
-  usedByDefinitions: (p, {page}: PageArg, {model: {Definition}}) =>
-    Definition.allByInflectionTable(p.id, page),
+  usedByDefinitions: (p, {page}: PageArg, {model: {Definition}}, info) =>
+    Definition.allByInflectionTable(p.id, page, info),
 };
 
 const InflectionTableLayout: ResolversFor<
@@ -59,8 +59,8 @@ const InflectionTableLayout: ResolversFor<
   isInUse: (p, _args, {model: {Definition}}) =>
     Definition.anyUsesInflectionTableLayout(p.id),
 
-  usedByDefinitions: (p, {page}: PageArg, {model: {Definition}}) =>
-    Definition.allByInflectionTableLayout(p.id, page),
+  usedByDefinitions: (p, {page}: PageArg, {model: {Definition}}, info) =>
+    Definition.allByInflectionTableLayout(p.id, page, info),
 };
 
 const InflectionTableCell: ResolversFor<

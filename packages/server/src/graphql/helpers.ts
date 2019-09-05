@@ -1,12 +1,7 @@
 import {UserInputError, IFieldResolver} from 'apollo-server';
 
 import {PageParams} from './types';
-import {
-  Context,
-  IsMutator,
-  MutatorFn,
-  Connection,
-} from './resolvers/types';
+import {Context, IsMutator, MutatorFn} from './resolvers/types';
 
 /**
  * Creates a mutator resolver. The request must come from a session with a
@@ -57,23 +52,3 @@ export const validatePageParams = (
 
   return page;
 };
-
-/**
- * Creates a connection type for use in a GraphQL response.
- * @param pageParams Pagination parameters, which describe the current page and
- *        number of items per page.
- * @param totalCount The total number of items in the collection.
- * @param nodes The items in the current window of the collection.
- */
-export const createConnection = <T>(
-  pageParams: PageParams,
-  totalCount: number,
-  nodes: T[]
-): Connection<T> => ({
-  page: {
-    page: pageParams.page,
-    perPage: pageParams.perPage,
-    totalCount,
-  },
-  nodes,
-});

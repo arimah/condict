@@ -1,4 +1,5 @@
 import {UserInputError} from 'apollo-server';
+import {GraphQLResolveInfo} from 'graphql';
 
 import {Awaitable} from '../../database/adaptor';
 import {validatePageParams} from '../../graphql/helpers';
@@ -9,9 +10,10 @@ import {
   InflectedFormId,
   PageParams,
 } from '../../graphql/types';
-import {Connection} from '../../graphql/resolvers/types';
 
 import Model from '../model';
+import paginate from '../paginate';
+import {Connection} from '../types';
 
 import {
   InflectionTableRow,
@@ -206,14 +208,16 @@ class InflectionTableLayout extends Model {
 
   public allOldByTable(
     tableId: InflectionTableId,
-    page?: PageParams | null
+    page: PageParams | undefined | null,
+    info?: GraphQLResolveInfo
   ): Promise<Connection<InflectionTableLayoutRow>> {
-    const condition = this.db.raw`
+    const {db} = this;
+    const condition = db.raw`
       itv.inflection_table_id = ${tableId} and is_current = 0
     `;
-    return this.db.paginate(
+    return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async db => {
+      async () => {
         const {total} = await db.getRequired<{total: number}>`
           select count(*) as total
           from inflection_table_versions itv
@@ -221,7 +225,7 @@ class InflectionTableLayout extends Model {
         `;
         return total;
       },
-      (db, limit, offset) => db.all<InflectionTableLayoutRow>`
+      (limit, offset) => db.all<InflectionTableLayoutRow>`
         select
           itv.*,
           itl.*
@@ -231,7 +235,8 @@ class InflectionTableLayout extends Model {
         where ${condition}
         order by itv.id desc
         limit ${limit} offset ${offset}
-      `
+      `,
+      info
     );
   }
 }

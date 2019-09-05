@@ -10,7 +10,7 @@ type TagArgs = {
 };
 
 const Query: ResolversFor<QueryType, unknown> = {
-  tags: (_root, {page}: PageArg, {model: {Tag}}) => Tag.all(page),
+  tags: (_root, {page}: PageArg, {model: {Tag}}, info) => Tag.all(page, info),
 
   tag(_root, args: TagArgs, {model: {Tag}}) {
     if (args.id != null) {

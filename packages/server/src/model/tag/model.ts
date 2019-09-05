@@ -1,4 +1,5 @@
 import {UserInputError} from 'apollo-server';
+import {GraphQLResolveInfo} from 'graphql';
 
 import {validatePageParams} from '../../graphql/helpers';
 import {
@@ -8,9 +9,10 @@ import {
   DefinitionId,
   PageParams,
 } from '../../graphql/types';
-import {Connection} from '../../graphql/resolvers/types';
 
 import Model from '../model';
+import paginate from '../paginate';
+import {Connection} from '../types';
 
 import {TagRow, DefinitionTagRow, LemmaTagRow} from './types';
 
@@ -25,33 +27,40 @@ class Tag extends Model {
   };
   public readonly maxPerPage = 200;
 
-  public all(page?: PageParams | null): Promise<Connection<TagRow>> {
-    return this.db.paginate(
+  public all(
+    page: PageParams | undefined | null,
+    info?: GraphQLResolveInfo
+  ): Promise<Connection<TagRow>> {
+    const {db} = this;
+    return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async db => {
+      async () => {
         const row = await db.getRequired<{total: number}>`
           select count(*) as total
           from tags
         `;
         return row.total;
       },
-      (db, limit, offset) =>
+      (limit, offset) =>
         db.all<TagRow>`
           select *
           from tags
           order by name
           limit ${limit} offset ${offset}
-        `
+        `,
+      info
     );
   }
 
   public allByLanguage(
     languageId: LanguageId,
-    page?: PageParams | null
+    page?: PageParams | null,
+    info?: GraphQLResolveInfo
   ): Promise<Connection<TagRow>> {
-    return this.db.paginate(
+    const {db} = this;
+    return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async db => {
+      async () => {
         const row = await db.getRequired<{total: number}>`
           select count(distinct t.id) as total
           from definition_tags dt
@@ -61,7 +70,7 @@ class Tag extends Model {
         `;
         return row.total;
       },
-      (db, limit, offset) =>
+      (limit, offset) =>
         db.all<TagRow>`
           select t.*
           from definition_tags dt
@@ -71,7 +80,8 @@ class Tag extends Model {
           group by t.id
           order by t.name
           limit ${limit} offset ${offset}
-        `
+        `,
+      info
     );
   }
 

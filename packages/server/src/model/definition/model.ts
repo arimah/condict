@@ -1,4 +1,5 @@
 import {UserInputError} from 'apollo-server';
+import {GraphQLResolveInfo} from 'graphql';
 
 import {
   DefinitionId,
@@ -10,9 +11,10 @@ import {
   PageParams,
 } from '../../graphql/types';
 import {validatePageParams} from '../../graphql/helpers';
-import {Connection} from '../../graphql/resolvers/types';
 
 import Model from '../model';
+import paginate from '../paginate';
+import {Connection} from '../types';
 
 import {
   DefinitionRow,
@@ -105,13 +107,15 @@ class Definition extends Model {
     );
   }
 
-  public allByInflectionTableCond(
+  private allByInflectionTableCond(
     condition: any,
-    page?: PageParams | null
+    page: PageParams | undefined | null,
+    info?: GraphQLResolveInfo
   ): Promise<Connection<DefinitionRow>> {
-    return this.db.paginate(
+    const {db} = this;
+    return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async db => {
+      async () => {
         const {total} = await db.getRequired<{total: number}>`
           select count(distinct dit.definition_id) as total
           from definition_inflection_tables dit
@@ -119,7 +123,7 @@ class Definition extends Model {
         `;
         return total;
       },
-      (db, limit, offset) => db.all<DefinitionRow>`
+      (limit, offset) => db.all<DefinitionRow>`
         select
           d.*,
           l.term_display as term
@@ -130,27 +134,32 @@ class Definition extends Model {
         group by d.id
         order by l.term_display, d.id
         limit ${limit} offset ${offset}
-      `
+      `,
+      info
     );
   }
 
   public allByInflectionTable(
     tableId: InflectionTableId,
-    page?: PageParams | null
+    page: PageParams | undefined | null,
+    info?: GraphQLResolveInfo
   ): Promise<Connection<DefinitionRow>> {
     return this.allByInflectionTableCond(
       this.db.raw`dit.inflection_table_id = ${tableId}`,
-      page
+      page,
+      info
     );
   }
 
   public allByInflectionTableLayout(
     versionId: InflectionTableLayoutId,
-    page?: PageParams | null
+    page: PageParams | undefined | null,
+    info?: GraphQLResolveInfo
   ): Promise<Connection<DefinitionRow>> {
     return this.allByInflectionTableCond(
       this.db.raw`dit.inflection_table_version_id = ${versionId}`,
-      page
+      page,
+      info
     );
   }
 
@@ -169,14 +178,16 @@ class Definition extends Model {
 
   public allByPartOfSpeech(
     partOfSpeechId: PartOfSpeechId,
-    page?: PageParams | null
+    page: PageParams | undefined | null,
+    info?: GraphQLResolveInfo
   ): Promise<Connection<DefinitionRow>> {
-    const condition = this.db.raw`
+    const {db} = this;
+    const condition = db.raw`
       d.part_of_speech_id = ${partOfSpeechId}
     `;
-    return this.db.paginate(
+    return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async db => {
+      async () => {
         const {total} = await db.getRequired<{total: number}>`
           select count(*) as total
           from definitions d
@@ -184,7 +195,7 @@ class Definition extends Model {
         `;
         return total;
       },
-      (db, limit, offset) => db.all<DefinitionRow>`
+      (limit, offset) => db.all<DefinitionRow>`
         select
           d.*,
           l.term_display as term
@@ -193,7 +204,8 @@ class Definition extends Model {
         where ${condition}
         order by l.term_display, d.id
         limit ${limit} offset ${offset}
-      `
+      `,
+      info
     );
   }
 }
@@ -342,14 +354,16 @@ class DerivedDefinition extends Model {
 
   public async allByDerivedFrom(
     definitionId: DefinitionId,
-    page?: PageParams | null
+    page: PageParams | undefined | null,
+    info?: GraphQLResolveInfo
   ): Promise<Connection<DerivedDefinitionRow>> {
-    const condition = this.db.raw`
+    const {db} = this;
+    const condition = db.raw`
       dd.original_definition_id = ${definitionId}
     `;
-    return this.db.paginate(
+    return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async db => {
+      async () => {
         const {total} = await db.getRequired<{total: number}>`
           select count(*) as total
           from derived_definitions dd
@@ -357,7 +371,7 @@ class DerivedDefinition extends Model {
         `;
         return total;
       },
-      (db, limit, offset) => db.all<DerivedDefinitionRow>`
+      (limit, offset) => db.all<DerivedDefinitionRow>`
         select
           dd.*,
           l.term_display as term,
@@ -367,7 +381,8 @@ class DerivedDefinition extends Model {
         where ${condition}
         order by l.term_display, dd.inflected_form_id
         limit ${limit} offset ${offset}
-      `
+      `,
+      info
     );
   }
 }

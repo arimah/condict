@@ -1,3 +1,5 @@
+import {GraphQLResolveInfo} from 'graphql';
+
 import {validatePageParams} from '../../graphql/helpers';
 import {
   LanguageId,
@@ -5,10 +7,12 @@ import {
   LemmaFilter,
   PageParams,
 } from '../../graphql/types';
-import {Connection} from '../../graphql/resolvers/types';
+
+import Model from '../model';
+import paginate from '../paginate';
+import {Connection} from '../types';
 
 import {LemmaRow} from './types';
-import Model from '../model';
 
 class Lemma extends Model {
   public readonly byIdKey = 'Lemma.byId';
@@ -55,7 +59,8 @@ class Lemma extends Model {
   public async allByLanguage(
     languageId: LanguageId,
     page: PageParams | undefined | null,
-    filter: LemmaFilter
+    filter: LemmaFilter,
+    info?: GraphQLResolveInfo
   ): Promise<Connection<LemmaRow>> {
     const {db} = this;
     const condition = db.raw`
@@ -76,9 +81,9 @@ class Lemma extends Model {
           db.raw``
         }
     `;
-    return this.db.paginate(
+    return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async db => {
+      async () => {
         const {total} = await db.getRequired<{total: number}>`
           select count(*) as total
           from lemmas l
@@ -86,13 +91,14 @@ class Lemma extends Model {
         `;
         return total;
       },
-      (db, limit, offset) => db.all<LemmaRow>`
+      (limit, offset) => db.all<LemmaRow>`
         select l.*
         from lemmas l
         where ${condition}
         order by l.term_display
         limit ${limit} offset ${offset}
-      `
+      `,
+      info
     );
   }
 }
