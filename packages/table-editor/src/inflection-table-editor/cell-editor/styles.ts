@@ -153,6 +153,7 @@ export const DisplayNameInput = styled(TextInput)`
 
 export const DeriveDisplayNameButton = styled(Button).attrs({
   slim: true,
+  bold: true,
   intent: Intent.SECONDARY,
 })`
   display: block;

@@ -84,6 +84,7 @@ CellPopup.defaultProps = {
 
 export const RevertButton = styled(Button).attrs({
   slim: true,
+  bold: true,
   intent: Intent.SECONDARY,
 })`
   display: block;

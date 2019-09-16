@@ -191,7 +191,6 @@ export default class CellEditor extends PureComponent<Props, State> {
     return (
       <S.CellPopup>
         <S.RevertButton
-          slim
           label={messages.useDefaultFormButton()}
           onClick={this.handleRevertClick}
         />

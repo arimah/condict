@@ -419,7 +419,7 @@ class App extends Component<{}, State> {
           </section>
 
           <p>
-            <Button onClick={this.handleCopyTableLayout}>
+            <Button bold onClick={this.handleCopyTableLayout}>
               &darr; Copy layout to definition table
             </Button>
           </p>
