@@ -22,7 +22,7 @@ export const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) =>
     type = 'button',
     command: commandName,
     slim = false,
-    minimal = false,
+    bold = false,
     intent = Intent.PRIMARY,
     disabled,
     onClick,
@@ -39,7 +39,7 @@ export const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) =>
       {...otherProps}
       aria-label={ariaLabel}
       slim={slim}
-      minimal={minimal}
+      bold={bold}
       intent={intent}
       disabled={command !== null ? command.disabled || disabled : disabled}
       onClick={command !== null ? command.exec : onClick}

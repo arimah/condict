@@ -149,8 +149,8 @@ class App extends Component<{}, State> {
               onChange={this.handleToggleDarkTheme}
             />
             <Button
-              intent={Intent.SECONDARY}
               slim
+              intent={Intent.DANGER}
               label='Reset all components'
               onClick={this.handleResetAll}
             />

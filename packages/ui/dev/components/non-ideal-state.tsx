@@ -75,7 +75,7 @@ const demo: ComponentDemo<State> = {
           ? 'Let\u2019s get started \u2013 the first step is to add a language.'
           : undefined
       }
-      action={action ? <Button label='Add a language'/> : undefined}
+      action={action ? <Button bold label='Add a language'/> : undefined}
     />,
 };
 

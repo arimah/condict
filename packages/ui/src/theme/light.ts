@@ -13,7 +13,7 @@ const LightTheme = createTheme({
   dark: false,
 
   primary: {
-    fg: primaryColor(Saturation.HIGH, 35),
+    fg: primaryColor(Saturation.HIGH, 30),
     bg: primaryColor(Saturation.LOW, 90),
     hoverBg: primaryColor(Saturation.LOW, 95),
     activeBg: primaryColor(Saturation.HIGH, 85),
@@ -47,7 +47,7 @@ const LightTheme = createTheme({
   },
 
   danger: {
-    fg: dangerColor(Saturation.HIGH, 40),
+    fg: dangerColor(Saturation.HIGH, 30),
     bg: dangerColor(Saturation.HIGH, 95),
     hoverBg: dangerColor(Saturation.HIGH, 97),
     activeBg: dangerColor(Saturation.HIGH, 90),

@@ -40,12 +40,18 @@ export const Item = styled.li`
 export const Page = styled(Button).attrs({
   type: 'button',
   slim: false,
-  minimal: true,
   intent: Intent.SECONDARY as Intent,
 })<PageProps>`
   display: block;
   padding: 6px 4px;
   min-width: 36px;
+  border-color: transparent;
+  background-color: transparent;
+
+  &:disabled {
+    border-color: transparent;
+    background-color: transparent;
+  }
 
   ${p => p.current && css`
     border-color: ${p => p.theme.general.borderColor};
@@ -60,10 +66,6 @@ export const Page = styled(Button).attrs({
       color: transparent;
     }
   `}
-
-  & > .mdi-icon {
-    vertical-align: -5px;
-  }
 `;
 
 Page.defaultProps = {};

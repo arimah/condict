@@ -13,7 +13,7 @@ const DarkTheme = createTheme({
   dark: true,
 
   primary: {
-    fg: primaryColor(Saturation.HIGH, 65),
+    fg: primaryColor(Saturation.HIGH, 90),
     bg: primaryColor(Saturation.LOW, 20),
     hoverBg: primaryColor(Saturation.LOW, 25),
     activeBg: primaryColor(Saturation.HIGH, 15),
@@ -47,11 +47,11 @@ const DarkTheme = createTheme({
   },
 
   danger: {
-    fg: dangerColor(Saturation.HIGH, 65),
+    fg: dangerColor(Saturation.HIGH, 90),
     bg: dangerColor(Saturation.LOW, 20),
     hoverBg: dangerColor(Saturation.LOW, 25),
     activeBg: dangerColor(Saturation.HIGH, 10),
-    disabledFg: dangerColor(Saturation.LOW, 30),
+    disabledFg: dangerColor(Saturation.LOW, 40),
     disabledBg: dangerColor(Saturation.LOW, 15),
     altFg: '#000000',
     altBg: dangerColor(Saturation.HIGH, 65),

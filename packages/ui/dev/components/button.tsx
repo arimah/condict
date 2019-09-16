@@ -14,7 +14,7 @@ const Intents = [
 export type State = {
   intent: Intent;
   disabled: boolean;
-  minimal: boolean;
+  bold: boolean;
   slim: boolean;
 };
 
@@ -23,7 +23,7 @@ const demo: ComponentDemo<State> = {
   initialState: {
     intent: Intent.PRIMARY,
     disabled: false,
-    minimal: false,
+    bold: false,
     slim: false,
   },
   controls: (state, setState, toggleState) => [
@@ -40,9 +40,9 @@ const demo: ComponentDemo<State> = {
       onChange={() => toggleState('disabled')}
     />,
     <Checkbox
-      checked={state.minimal}
-      label='Minimal'
-      onChange={() => toggleState('minimal')}
+      checked={state.bold}
+      label='Bold'
+      onChange={() => toggleState('bold')}
     />,
     <Checkbox
       checked={state.slim}
@@ -50,19 +50,19 @@ const demo: ComponentDemo<State> = {
       onChange={() => toggleState('slim')}
     />,
   ],
-  contents: ({intent, disabled, minimal, slim}) =>
+  contents: ({intent, disabled, bold, slim}) =>
     <Demo.List>
       <Demo.Row>
         <Button
           intent={intent}
           disabled={disabled}
-          minimal={minimal}
+          bold={bold}
           slim={slim}
           label='Regular button'
         />
         <LinkButton
           intent={intent}
-          minimal={minimal}
+          bold={bold}
           slim={slim}
           label='Link button'
           href='#'

@@ -6,7 +6,7 @@ import Intent from '../intent';
 
 export type Props = {
   slim: boolean;
-  minimal: boolean;
+  bold: boolean;
   intent: Intent;
 };
 
@@ -28,24 +28,7 @@ export const ButtonStyle = css<Props>`
     ${p => p.theme.focus.style}
   }
 
-  ${p => p.minimal ? css<Props>`
-    color: ${intentVar('fg')};
-    border-color: transparent;
-    background-color: transparent;
-
-    &:hover {
-      background-color: ${intentVar('hoverBg')};
-    }
-
-    &:active {
-      background-color: ${intentVar('bg')};
-    }
-
-    &:disabled {
-      color: ${intentVar('disabledFg')};
-      background-color: transparent;
-    }
-  ` : css<Props>`
+  ${p => p.bold ? css<Props>`
     color: ${intentVar('altFg')};
     border-color: ${intentVar('borderColor')};
     background-color: ${intentVar('altBg')};
@@ -62,7 +45,48 @@ export const ButtonStyle = css<Props>`
       color: ${intentVar('disabledAltFg')};
       border-color: ${intentVar('disabledBorderColor')};
       background-color: ${intentVar('disabledAltBg')};
-    }`}
+    }
+  ` : css<Props>`
+    color: ${intentVar('fg')};
+    border-color: ${intentVar('bg')};
+    background-color: ${intentVar('bg')};
+
+    &:hover {
+      background-color: ${intentVar('hoverBg')};
+    }
+
+    &:active {
+      background-color: ${intentVar('activeBg')};
+    }
+
+    &:disabled {
+      color: ${intentVar('disabledFg')};
+      border-color: ${intentVar('disabledBg')};
+      background-color: ${intentVar('disabledBg')};
+    }
+  `}
+
+  > .mdi-icon {
+    margin-top: -4px;
+    margin-bottom: -4px;
+    vertical-align: -3px;
+  }
+
+  > .mdi-icon:first-child {
+    margin-left: -6px;
+  }
+
+  > .mdi-icon:not(:first-child) {
+    margin-left: 8px;
+  }
+
+  > .mdi-icon:last-child {
+    margin-right: -6px;
+  }
+
+  > .mdi-icon:not(:last-child) {
+    margin-right: 8px;
+  }
 `;
 
 export const Button = styled.button<Props>`
@@ -79,7 +103,7 @@ export const Link = styled.a<Props>`
   &:hover,
   &:active,
   &:visited {
-    color: ${p => p.minimal ? intentVar('fg') : intentVar('altFg')};
+    color: ${p => p.bold ? intentVar('altFg') : intentVar('fg')};
     text-decoration: none;
   }
 

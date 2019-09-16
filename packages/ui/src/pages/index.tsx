@@ -113,12 +113,12 @@ const addRelativeNav = (
   if (lastPage > 0) {
     pageNodes.unshift(getPage('prev', page - 1, {
       label: 'Previous page',
-      children: <ChevronLeft size={20}/>,
+      children: <ChevronLeft/>,
       disabled: page === 0,
     }));
     pageNodes.push(getPage('next', page + 1, {
       label: 'Next page',
-      children: <ChevronRight size={20}/>,
+      children: <ChevronRight/>,
       disabled: page === lastPage,
     }));
   }

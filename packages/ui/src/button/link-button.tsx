@@ -28,7 +28,7 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref
     label,
     command: commandName,
     slim = false,
-    minimal = false,
+    bold = false,
     intent = Intent.PRIMARY,
     onClick,
     children,
@@ -45,7 +45,7 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref
       role='button'
       aria-label={ariaLabel}
       slim={slim}
-      minimal={minimal}
+      bold={bold}
       intent={intent}
       onClick={
         command !== null
