@@ -86,22 +86,22 @@ export const GlobalStyles = createGlobalStyle`
 
   a:link {
     color: ${p => p.theme.link.color};
-    text-decoration: underline;
+    text-decoration: none;
   }
 
   a:visited {
     color: ${p => p.theme.link.visited};
-    text-decoration: underline;
+    text-decoration: none;
   }
 
   a:hover {
     color: ${p => p.theme.link.hover};
-    text-decoration: underline;
+    text-decoration: none;
   }
 
   a:active {
     color: ${p => p.theme.link.active};
-    text-decoration: underline;
+    text-decoration: none;
   }
 `;
 

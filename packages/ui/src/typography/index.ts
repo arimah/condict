@@ -12,4 +12,11 @@ export const BodyText = styled.div`
     /* Headings have enough spacing around them as it is. */
     line-height: normal;
   }
+
+  a:link,
+  a:visited,
+  a:hover,
+  a:active {
+    text-decoration: underline;
+  }
 `;
