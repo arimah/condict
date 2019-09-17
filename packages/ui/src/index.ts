@@ -53,3 +53,5 @@ export {default as LightTheme} from './theme/light';
 
 export {default as Intent} from './intent';
 export {default as Placement, RelativeParent, placeElement} from './placement';
+
+export {default as combineRefs} from './combine-refs';
