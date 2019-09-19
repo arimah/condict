@@ -122,7 +122,7 @@ export type IntegerColumnSchema = OwnColumnSchema & {
    * The size of the column in bits. The database engine guarantees at least
    * this capacity.
    */
-  size: number;
+  size: 8 | 16 | 32 | 64;
   /**
    * The default value of the column, if applicable. If omitted, the column has
    * no default value, the exact meaning of which varies between database engines.
