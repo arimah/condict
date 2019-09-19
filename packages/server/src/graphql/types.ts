@@ -121,6 +121,13 @@ export type CustomInflectedFormInput = {
 };
 
 /**
+ * Represents a date and time. The value is sent as the number of milliseconds
+ * since midnight 1 January 1970 UTC (that is, a value compatible with the JS
+ * `Date` type).
+ */
+export type Date = number;
+
+/**
  * As its name suggests, a definition defines a lemma. A definition has a part of
  * speech, a description, and, optionally, some inflection tables.
  * 
@@ -1074,6 +1081,32 @@ export type LinkInline = {
    */
   internalLinkTarget: InternalLinkTarget | null;
 };
+
+/**
+ * Represents the marshalling type of a custom scalar. See the docuemtnation of
+ * the `@marshal` directive.
+ */
+export const enum MarshalType {
+  /**
+   * The type is marshalled as an integer. In the JSON payload, it is a numeric
+   * value with no fractional component. In queries, the type accepts integer
+   * literals. The TypeScript representation is `number`.
+   */
+  INT_TYPE = 'INT_TYPE',
+  /**
+   * The type is marshalled as a floating-point value. In the JSOn payload, it is
+   * a numeric value with an optional fractional component. In queries, the type
+   * accepts integer and floating-point literals. The TypeScript representation
+   * is `number`.
+   */
+  FLOAT_TYPE = 'FLOAT_TYPE',
+  /**
+   * The type is marshalled as a string value. In the JSON payload, it is a string.
+   * In queries, the type accepts string literals. The TypeScript representation
+   * is `string`.
+   */
+  STRING_TYPE = 'STRING_TYPE',
+}
 
 /**
  * The root mutation type.

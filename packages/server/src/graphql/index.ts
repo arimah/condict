@@ -14,6 +14,7 @@ import RootResolvers from './resolvers/root';
 import TagResolvers from './resolvers/tag';
 
 import IdDirective from './id-directive';
+import MarshalDirective from './marshal-directive';
 
 export {Context} from './resolvers/types';
 
@@ -46,4 +47,5 @@ export const getTypeDefs = () =>
 
 export const getDirectives = () => ({
   id: IdDirective,
+  marshal: MarshalDirective,
 });

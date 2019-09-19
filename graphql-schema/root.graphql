@@ -46,3 +46,10 @@ input PageParams {
   """
   perPage: Int!
 }
+
+"""
+Represents a date and time. The value is sent as the number of milliseconds
+since midnight 1 January 1970 UTC (that is, a value compatible with the JS
+`Date` type).
+"""
+scalar Date @marshal(as: INT_TYPE)

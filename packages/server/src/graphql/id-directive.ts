@@ -1,6 +1,8 @@
 import {GraphQLScalarType, ValueNode, Kind} from 'graphql';
 import {SchemaDirectiveVisitor} from 'graphql-tools';
 
+const serialize = (value: any) => value;
+
 const parseValue = (value: any) => {
   if (typeof value === 'number') {
     return value | 0;
@@ -12,8 +14,6 @@ const parseValue = (value: any) => {
   }
   return 0;
 };
-
-const serialize = (value: any) => value;
 
 const parseLiteral = (node: ValueNode) => {
   if (node.kind === Kind.INT) {
@@ -31,8 +31,8 @@ const parseLiteral = (node: ValueNode) => {
 
 export default class IdDirective extends SchemaDirectiveVisitor {
   public visitScalar(scalar: GraphQLScalarType): GraphQLScalarType | void | null {
-    scalar.parseValue = parseValue;
     scalar.serialize = serialize;
+    scalar.parseValue = parseValue;
     scalar.parseLiteral = parseLiteral;
     return scalar;
   }
