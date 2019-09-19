@@ -1,6 +1,7 @@
 import {GraphQLScalarType} from 'graphql';
 
 import getIdKind from '../../graphql/id-kind';
+import getMarshalType, {MarshalType} from '../../graphql/marshal-type';
 
 import {TextBuilder, formatDescription} from '../utils';
 import {TypePosition, isBuiltin, getBuiltin} from '../builtin-scalars';
@@ -14,6 +15,16 @@ const formatIdKind = (idKind: string): string => {
   return JSON.stringify(idKind);
 };
 
+const formatMarshalType = (type: MarshalType): string => {
+  switch (type) {
+    case MarshalType.INT:
+    case MarshalType.FLOAT:
+      return 'number';
+    case MarshalType.STRING:
+      return 'string';
+  }
+};
+
 export const defineScalarType = (result: TextBuilder, type: GraphQLScalarType) => {
   if (isBuiltin(type)) {
     throw new Error(`Cannot write definition for built-in scalar '${type.name}'.`);
@@ -24,11 +35,17 @@ export const defineScalarType = (result: TextBuilder, type: GraphQLScalarType) =
   }
 
   const idKind = getIdKind(type);
+  const marshalType = getMarshalType(type);
   result
     .append(`export type ${type.name} = `)
-    // If this scalar is defined as `@id`, we can marshal it as such.
-    // Otherwise, we have no idea what it is.
-    .append(idKind ? `IdOf<${formatIdKind(idKind)}>` : 'unknown')
+    .append(
+      // If this scalar is defined as `@id`, we must marshal it as such.
+      idKind ? `IdOf<${formatIdKind(idKind)}>` :
+      // If there is a `@marshal` directive, we should use that type instead.
+      marshalType ? formatMarshalType(marshalType) :
+      // Otherwise, we have no idea what it is.
+      'unknown'
+    )
     .appendLine(';');
 };
 
