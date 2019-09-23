@@ -11,11 +11,11 @@ import getCellDescription from './get-cell-description';
 import StemsContext, {StemsContextValue} from './stems-context';
 import ContextMenu, {hasContextMenu} from './context-menu';
 import DefaultMessages from './messages';
-import {DataFields, Messages} from './types';
+import {Messages} from './types';
 
 export {Value as DefinitionTableValue};
 
-const DefinitionTableEditorInner = makeTableEditor<DataFields, Value, Messages>({
+const DefinitionTableEditorInner = makeTableEditor({
   CellData,
   CellEditor,
   ContextMenu,

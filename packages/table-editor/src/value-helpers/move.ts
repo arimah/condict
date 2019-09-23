@@ -29,7 +29,7 @@ const navigate = (
   }
 };
 
-const move = <D, V extends Value<D>>(
+const move = <V extends Value<any>>(
   value: V,
   deltaRow: MoveDelta,
   deltaCol: MoveDelta,

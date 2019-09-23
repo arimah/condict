@@ -1,6 +1,6 @@
 import {List} from 'immutable';
 
-import Value from '../value';
+import Value, {ValueData} from '../value';
 import Layout from '../value/layout';
 import Selection from '../value/selection';
 import {Cell} from '../value/types';
@@ -18,7 +18,7 @@ const getOverlapSize = (
   return Math.max(0, smallestMax - largestMin + 1);
 };
 
-export const deleteSelectedRows = <D, V extends Value<D>>(value: V) => {
+export const deleteSelectedRows = <V extends Value<any>>(value: V) => {
   const {selection, layout} = value;
 
   // If every row is selected, just return an empty table.
@@ -76,8 +76,10 @@ export const deleteSelectedRows = <D, V extends Value<D>>(value: V) => {
           layoutCell.row,
           layoutCell.rowSpan
         );
-        newRows = newRows.updateIn(pathToCell(layoutCell), (cell: Cell<D>) =>
-          cell.set('rowSpan', cell.rowSpan - overlapSize)
+        newRows = newRows.updateIn(
+          pathToCell(layoutCell),
+          (cell: Cell<ValueData<V>>) =>
+            cell.set('rowSpan', cell.rowSpan - overlapSize)
         );
       }
     }
@@ -106,8 +108,10 @@ export const deleteSelectedRows = <D, V extends Value<D>>(value: V) => {
         const insertIndex =
           value.findCellInsertIndex(nextRow, c) +
           nextRowNewCells;
-        newRows = newRows.updateIn([nextRow, 'cells'], (cells: List<Cell<D>>) =>
-          cells.insert(insertIndex, newCell)
+        newRows = newRows.updateIn(
+          [nextRow, 'cells'],
+          (cells: List<Cell<ValueData<V>>>) =>
+            cells.insert(insertIndex, newCell)
         );
         nextRowNewCells++;
       }
@@ -129,7 +133,7 @@ export const deleteSelectedRows = <D, V extends Value<D>>(value: V) => {
   return value.make(newRows, newLayout, newSelection);
 };
 
-export const deleteSelectedColumns = <D, V extends Value<D>>(value: V) => {
+export const deleteSelectedColumns = <V extends Value<any>>(value: V) => {
   const {selection, layout} = value;
 
   // If every column is selected, just return an empty table.
@@ -168,8 +172,10 @@ export const deleteSelectedColumns = <D, V extends Value<D>>(value: V) => {
           layoutCell.columnSpan
         );
 
-        newRows = newRows.updateIn(pathToCell(layoutCell), (cell: Cell<D>) =>
-          cell.set('columnSpan', cell.columnSpan - overlapSize)
+        newRows = newRows.updateIn(
+          pathToCell(layoutCell),
+          (cell: Cell<ValueData<V>>) =>
+            cell.set('columnSpan', cell.columnSpan - overlapSize)
         );
 
         c += overlapSize;
@@ -186,9 +192,11 @@ export const deleteSelectedColumns = <D, V extends Value<D>>(value: V) => {
     }
 
     if (firstIndexToRemove !== null) {
-      newRows = newRows.updateIn([r, 'cells'], (cells: List<Cell<D>>) =>
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        cells.splice(firstIndexToRemove!, removeCount)
+      newRows = newRows.updateIn(
+        [r, 'cells'],
+        (cells: List<Cell<ValueData<V>>>) =>
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          cells.splice(firstIndexToRemove!, removeCount)
       );
     }
   }

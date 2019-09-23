@@ -20,7 +20,7 @@ import {
   RelativeParent,
 } from '@condict/ui';
 
-import Value from '../value';
+import Value, {ValueData} from '../value';
 import {Cell} from '../value/types';
 import {mapToArray} from '../immutable-utils';
 import makeTableRow from '../table-row';
@@ -33,15 +33,15 @@ import NavigationCommands from './navigation-commands';
 import MultiselectCommands from './multiselect-commands';
 import StructureCommands from './structure-commands';
 
-export type Config<D, V extends Value<D>, M> = {
+export type Config<V extends Value<any>, M> = {
   ContextMenu: ComponentType<ContextMenuProps<V, M>>;
   DefaultMessages: M;
   hasContextMenu: (value: V) => boolean;
-  getCellDescription: (cell: Cell<D>, messages: M) => string;
+  getCellDescription: (cell: Cell<ValueData<V>>, messages: M) => string;
   canEditStructure: boolean;
   canSelectMultiple: boolean;
   commands: CommandSpecMap;
-} & TableCellConfig<D, V, M>;
+} & TableCellConfig<V, M>;
 
 export type Props<V extends Value<any>, M> = {
   value: V;
@@ -79,8 +79,8 @@ export type TableEditorComponent<V extends Value<any>, M> = ComponentType<Props<
   ): JSX.Element;
 };
 
-function makeTableEditor<D, V extends Value<D>, M>(
-  config: Config<D, V, M>
+function makeTableEditor<V extends Value<any>, M>(
+  config: Config<V, M>
 ): TableEditorComponent<V, M> {
   const {
     ContextMenu,
@@ -114,7 +114,7 @@ function makeTableEditor<D, V extends Value<D>, M>(
     mouseDown: boolean;
     mouseDownCellKey: string | null;
     editing: boolean;
-    editingCell: Cell<D> | null;
+    editingCell: Cell<ValueData<V>> | null;
     editingTypedValue: string | null;
     contextMenuOpen: boolean;
   };
@@ -301,11 +301,11 @@ function makeTableEditor<D, V extends Value<D>, M>(
       }
     };
 
-    private handleEditInput = (value: Cell<D>) => {
+    private handleEditInput = (value: Cell<ValueData<V>>) => {
       this.setState({editingCell: value});
     };
 
-    private handleFinishEdit = (newCellValue: Cell<D>) => {
+    private handleFinishEdit = (newCellValue: Cell<ValueData<V>>) => {
       const {value, onChange} = this.props;
 
       const prevCellValue = value.getCell(value.selection.focusedCellKey);

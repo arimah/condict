@@ -1,10 +1,10 @@
-import Value from '../value';
+import Value, {ValueData} from '../value';
 import {Cell} from '../value/types';
 
-const reduceSelected = <D, V extends Value<D>, R>(
+const reduceSelected = <V extends Value<any>, R>(
   value: V,
   initialValue: R,
-  f: (acc: R, cell: Cell<D>) => R
+  f: (acc: R, cell: Cell<ValueData<V>>) => R
 ) => {
   const {selection, layout} = value;
 

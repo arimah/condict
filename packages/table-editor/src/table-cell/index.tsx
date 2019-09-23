@@ -1,50 +1,50 @@
 import React, {ComponentType} from 'react';
 
-import Value from '../value';
+import Value, {ValueData} from '../value';
 import {Cell} from '../value/types';
 import {Messages} from '../types';
 
 import * as S from './styles';
 
-export type Config<D, V extends Value<D>, M> = {
-  CellData: ComponentType<CellDataProps<D>>;
-  CellEditor: ComponentType<CellEditorProps<D, V, M>>;
-  canEditCell: (cell: Cell<D>) => boolean;
+export type Config<V extends Value<any>, M> = {
+  CellData: ComponentType<CellDataProps<V>>;
+  CellEditor: ComponentType<CellEditorProps<V, M>>;
+  canEditCell: (cell: Cell<ValueData<V>>) => boolean;
 };
 
-export type CellDataProps<D> = {
-  cell: Cell<D>;
+export type CellDataProps<V extends Value<any>> = {
+  cell: Cell<ValueData<V>>;
   editing: boolean;
   disabled: boolean;
 };
 
-export type CellEditorProps<D, V extends Value<D>, M> = {
+export type CellEditorProps<V extends Value<any>, M> = {
   id: string;
-  initialCell: Cell<D>;
+  initialCell: Cell<ValueData<V>>;
   typedValue: string | null;
   tableValue: V;
   messages: Messages & M;
-  onInput: (cell: Cell<D>) => void;
-  onDone: (cell: Cell<D>) => void;
+  onInput: (cell: Cell<ValueData<V>>) => void;
+  onDone: (cell: Cell<ValueData<V>>) => void;
 };
 
-export type Props<D, V extends Value<D>, M> = {
-  cell: Cell<D>;
+export type Props<V extends Value<any>, M> = {
+  cell: Cell<ValueData<V>>;
   tableId: string;
   disabled: boolean;
   focused: boolean;
   selected: boolean;
-  editingCell: Cell<D> | null;
+  editingCell: Cell<ValueData<V>> | null;
   editingTypedValue: string | null;
   editingTableValue: V | null;
   messages: Messages & M;
-  onEditInput: (cell: Cell<D>) => void;
-  onFinishEdit: (cell: Cell<D>) => void;
+  onEditInput: (cell: Cell<ValueData<V>>) => void;
+  onFinishEdit: (cell: Cell<ValueData<V>>) => void;
 };
 
 function makeTableCell<D, V extends Value<D>, M>(
-  config: Config<D, V, M>
-): ComponentType<Props<D, V, M>> {
+  config: Config<V, M>
+): ComponentType<Props<V, M>> {
   const {
     CellData,
     CellEditor,
@@ -52,7 +52,7 @@ function makeTableCell<D, V extends Value<D>, M>(
   } = config;
 
   const TableCell = React.memo(
-    (props: Props<D, V, M>) => {
+    (props: Props<V, M>) => {
       const {
         cell,
         tableId,

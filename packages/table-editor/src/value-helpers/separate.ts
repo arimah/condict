@@ -1,13 +1,13 @@
 import {List} from 'immutable';
 
-import Value from '../value';
+import Value, {ValueData} from '../value';
 import Layout from '../value/layout';
 import Selection from '../value/selection';
 import {Row, Cell, LayoutCell} from '../value/types';
 
-const separateCell = <D, V extends Value<D>>(
+const separateCell = <V extends Value<any>>(
   value: V,
-  newRows: List<Row<D>>,
+  newRows: List<Row<ValueData<V>>>,
   layoutCell: LayoutCell
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -38,8 +38,10 @@ const separateCell = <D, V extends Value<D>>(
         // This is a brand new cell, so it needs to be inserted, and we
         // also have to clear its data and give it a new key.
         const newCell = value.createCellFrom(cell);
-        newRows = newRows.updateIn([r, 'cells'], (cells: List<Cell<D>>) =>
-          cells.insert(insertIndex + c, newCell)
+        newRows = newRows.updateIn(
+          [r, 'cells'],
+          (cells: List<Cell<ValueData<V>>>) =>
+            cells.insert(insertIndex + c, newCell)
         );
       }
     }
@@ -48,7 +50,7 @@ const separateCell = <D, V extends Value<D>>(
   return newRows;
 };
 
-const separate = <D, V extends Value<D>>(value: V) => {
+const separate = <V extends Value<any>>(value: V) => {
   const {selection, layout} = value;
 
   // If none of the selected cells spans multiple rows or columns, there's

@@ -2,7 +2,7 @@ import {List} from 'immutable';
 
 import genId from '@condict/gen-id';
 
-import Value, {RowType} from '../value';
+import Value, {ValueData, RowType} from '../value';
 import {Cell} from '../value/types';
 import Layout from '../value/layout';
 import Selection from '../value/selection';
@@ -34,7 +34,10 @@ const getInsertIndex = (
   }
 };
 
-export const insertRow = <D, V extends Value<D>>(value: V, location: InsertLocation) => {
+export const insertRow = <V extends Value<any>>(
+  value: V,
+  location: InsertLocation
+) => {
   const {selection, layout} = value;
 
   const [originRow, offset] = getInsertIndex(
@@ -48,7 +51,7 @@ export const insertRow = <D, V extends Value<D>>(value: V, location: InsertLocat
   // column, in terms of expanding multi-row cells. See the comment in
   // `insertColumn` and, like, flip it 90 degrees.
   let newRows = value.rows;
-  let newCells = List<Cell<D>>();
+  let newCells = List<Cell<ValueData<V>>>();
   for (let c = 0; c < layout.colCount; ) {
     const layoutCell = layout.cellFromPosition(originRow, c);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -67,8 +70,10 @@ export const insertRow = <D, V extends Value<D>>(value: V, location: InsertLocat
         : layoutCell.row + layoutCell.rowSpan - 1 > originRow
     );
     if (needsExtension) {
-      newRows = newRows.updateIn(pathToCell(layoutCell), (cell: Cell<D>) =>
-        cell.set('rowSpan', cell.rowSpan + 1)
+      newRows = newRows.updateIn(
+        pathToCell(layoutCell),
+        (cell: Cell<ValueData<V>>) =>
+          cell.set('rowSpan', cell.rowSpan + 1)
       );
 
       // Since we've extended this cell to cover the new row, we also know
@@ -83,7 +88,7 @@ export const insertRow = <D, V extends Value<D>>(value: V, location: InsertLocat
   }
   newRows = newRows.insert(
     originRow + offset,
-    RowType<D>({key: genId(), cells: newCells})
+    RowType<ValueData<V>>({key: genId(), cells: newCells})
   );
 
   const newLayout = new Layout(newRows);
@@ -103,7 +108,10 @@ export const insertRow = <D, V extends Value<D>>(value: V, location: InsertLocat
   );
 };
 
-export const insertColumn = <D, V extends Value<D>>(value: V, location: InsertLocation) => {
+export const insertColumn = <V extends Value<any>>(
+  value: V,
+  location: InsertLocation
+) => {
   const {selection, layout} = value;
 
   const [originCol, offset] = getInsertIndex(
@@ -157,8 +165,10 @@ export const insertColumn = <D, V extends Value<D>>(value: V, location: InsertLo
         : layoutCell.col + layoutCell.columnSpan - 1 > originCol
     );
     if (needsExtension) {
-      newRows = newRows.updateIn(pathToCell(layoutCell), (cell: Cell<D>) =>
-        cell.set('columnSpan', cell.columnSpan + 1)
+      newRows = newRows.updateIn(
+        pathToCell(layoutCell),
+        (cell: Cell<ValueData<V>>) =>
+          cell.set('columnSpan', cell.columnSpan + 1)
       );
 
       // Since we've extended this cell to cover the new column, we also know
@@ -167,8 +177,10 @@ export const insertColumn = <D, V extends Value<D>>(value: V, location: InsertLo
     } else {
       const newCell = value.createCellFrom(protoCell);
       const insertIndex = value.findCellInsertIndex(r, originCol + offset);
-      newRows = newRows.updateIn([r, 'cells'], (cells: List<Cell<D>>) =>
-        cells.insert(insertIndex, newCell)
+      newRows = newRows.updateIn(
+        [r, 'cells'],
+        (cells: List<Cell<ValueData<V>>>) =>
+          cells.insert(insertIndex, newCell)
       );
 
       r++;

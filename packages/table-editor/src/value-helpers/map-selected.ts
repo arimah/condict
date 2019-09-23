@@ -1,11 +1,11 @@
-import Value from '../value';
+import Value, {ValueData} from '../value';
 import {Cell} from '../value/types';
 
 import pathToCell from './path-to-cell';
 
-const mapSelected = <D, V extends Value<D>>(
+const mapSelected = <V extends Value<any>>(
   value: V,
-  f: (cell: Cell<D>) => Cell<D>
+  f: (cell: Cell<ValueData<V>>) => Cell<ValueData<V>>
 ) => {
   const {selection, layout} = value;
 

@@ -13,7 +13,7 @@ import {ContextMenuProps} from '../table-editor';
 import reduceSelected from '../value-helpers/reduce-selected';
 
 import Value from './value';
-import {DataFields, Messages} from './types';
+import {Messages} from './types';
 
 type Props = ContextMenuProps<Value, Messages>;
 
@@ -23,7 +23,7 @@ type SelectionInfo = {
 };
 
 const getSelectionInfo = (value: Value) =>
-  reduceSelected<DataFields, Value, SelectionInfo>(
+  reduceSelected<Value, SelectionInfo>(
     value,
     {canSeparateCells: false, hasDataCells: false},
     (result, cell) => {

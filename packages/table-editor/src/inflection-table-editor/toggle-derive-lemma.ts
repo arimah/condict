@@ -1,7 +1,6 @@
 import mapSelected from '../value-helpers/map-selected';
 
 import Value from './value';
-import {DataFields} from './types';
 
 export default (value: Value) => {
   const {selection} = value;
@@ -16,7 +15,7 @@ export default (value: Value) => {
   }
 
   const deriveLemma = !focusedCell.data.deriveLemma;
-  return mapSelected<DataFields, Value>(value, cell =>
+  return mapSelected(value, cell =>
     cell.set('data', cell.data.set('deriveLemma', deriveLemma))
   );
 };

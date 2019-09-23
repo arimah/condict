@@ -1,13 +1,17 @@
-import Value from '../value';
+import Value, {ValueData} from '../value';
 import {Cell} from '../value/types';
 
 import mapSelected from './map-selected';
 
-export default <D, V extends Value<D>>(value: V) => {
+export default <V extends Value<any>>(value: V) => {
   const {selection} = value;
 
-  const focusedCell = value.getCell(selection.focusedCellKey) as Cell<D>;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const focusedCell = value.getCell(selection.focusedCellKey)!;
   const header = !focusedCell.header;
 
-  return mapSelected(value, (cell: Cell<D>) => cell.set('header', header));
+  return mapSelected(
+    value,
+    (cell: Cell<ValueData<V>>) => cell.set('header', header)
+  );
 };

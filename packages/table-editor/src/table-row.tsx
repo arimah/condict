@@ -3,31 +3,31 @@ import {List} from 'immutable';
 
 import makeTableCell, {Config} from './table-cell';
 import {mapToArray} from './immutable-utils';
-import Value from './value';
+import Value, {ValueData} from './value';
 import Selection from './value/selection';
 import {Cell} from './value/types';
 import {Messages} from './types';
 
-export type Props<D, V extends Value<D>, M> = {
-  cells: List<Cell<D>>;
+export type Props<V extends Value<any>, M> = {
+  cells: List<Cell<ValueData<V>>>;
   tableId: string;
   disabled: boolean;
   selection: Selection | null;
-  editingCell: Cell<D> | null;
+  editingCell: Cell<ValueData<V>> | null;
   editingTypedValue: string | null;
   editingTableValue: V | null;
   messages: Messages & M;
-  onEditInput: (cell: Cell<D>) => void;
-  onFinishEdit: (cell: Cell<D>) => void;
+  onEditInput: (cell: Cell<ValueData<V>>) => void;
+  onFinishEdit: (cell: Cell<ValueData<V>>) => void;
 };
 
-function makeTableRow<D, V extends Value<D>, M>(
-  config: Config<D, V, M>
-): ComponentType<Props<D, V, M>> {
+function makeTableRow<V extends Value<any>, M>(
+  config: Config<V, M>
+): ComponentType<Props<V, M>> {
   const TableCell = makeTableCell(config);
 
   const TableRow = React.memo(
-    (props: Props<D, V, M>) => {
+    (props: Props<V, M>) => {
       const {
         cells,
         tableId,

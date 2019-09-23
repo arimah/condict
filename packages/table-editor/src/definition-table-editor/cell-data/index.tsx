@@ -5,11 +5,11 @@ import {inflectWord} from '@condict/inflect';
 import {CellDataProps} from '../../table-cell';
 
 import StemsContext from '../stems-context';
-import {DataFields} from '../types';
+import Value from '../value';
 
 import * as S from './styles';
 
-export type Props = CellDataProps<DataFields>;
+export type Props = CellDataProps<Value>;
 
 const CellData = ({cell, disabled}: Props) => {
   if (cell.header) {

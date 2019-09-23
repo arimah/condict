@@ -4,11 +4,11 @@ import InflectionPattern from '../../inflection-pattern';
 import {DoNotDeriveLemmaIcon, CustomDisplayNameIcon} from '../../icons';
 import {CellDataProps} from '../../table-cell';
 
-import {DataFields} from '../types';
+import Value from '../value';
 
 import * as S from './styles';
 
-export type Props = CellDataProps<DataFields>;
+export type Props = CellDataProps<Value>;
 
 const CellData = ({cell, editing, disabled}: Props) => {
   const {data} = cell;

@@ -15,7 +15,7 @@ import {DataFields, Messages} from '../types';
 
 import * as S from './styles';
 
-export type Props = CellEditorProps<DataFields, Value, Messages>;
+export type Props = CellEditorProps<Value, Messages>;
 
 type State = {
   trapActive: boolean;

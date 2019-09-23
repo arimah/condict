@@ -1,7 +1,7 @@
 import Value from '../value';
 import Selection from '../value/selection';
 
-export default <D, V extends Value<D>>(value: V) => {
+export default <V extends Value<any>>(value: V) => {
   const {layout} = value;
   const firstCell = layout.cellFromPosition(0, 0);
   const lastCell = layout.cellFromPosition(

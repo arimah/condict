@@ -23,6 +23,9 @@ export const makeRow = Record<RowFields<any>>({
 export const RowType = <D>(values: Partial<RowFields<D>>) =>
   (makeRow as Record.Factory<RowFields<D>>)(values);
 
+export type ValueData<V extends Value<any>> =
+  V extends Value<infer D> ? D : unknown;
+
 export default abstract class Value<D> {
   public readonly rows: List<Row<D>>;
   public readonly layout: Layout;
