@@ -55,3 +55,7 @@ export {default as Intent} from './intent';
 export {default as Placement, RelativeParent, placeElement} from './placement';
 
 export {default as combineRefs} from './combine-refs';
+export {
+  default as DescendantCollection,
+  GetElementFunc,
+} from './descendant-collection';

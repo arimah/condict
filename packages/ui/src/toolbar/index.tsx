@@ -69,7 +69,7 @@ const getValidFocus = (
     !currentFocus.current ||
     !descendants.findManagedRef(currentFocus.current)
   ) {
-    // Either there is on current focus, or the current focus is not a child
+    // Either there is no current focus, or the current focus is not a child
     // of this toolbar. Focus the first element.
     return descendants.getFirstEnabled();
   } else if (currentFocus.current.disabled) {
