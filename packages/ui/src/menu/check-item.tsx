@@ -65,8 +65,8 @@ const CheckItem = React.forwardRef<HTMLDivElement, Props>((
       current={hasFocus}
       disabled={effectiveDisabled}
       role={radio ? 'menuitemradio' : 'menuitemcheckbox'}
-      aria-checked={checked ? 'true' : 'false'}
-      aria-disabled={effectiveDisabled ? 'true' : 'false'}
+      aria-checked={checked}
+      aria-disabled={effectiveDisabled}
       aria-keyshortcuts={
         effectiveShortcut
           ? effectiveShortcut.toAriaString()

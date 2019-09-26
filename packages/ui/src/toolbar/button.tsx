@@ -47,11 +47,7 @@ const Button = React.forwardRef<HTMLButtonElement, Props>((
     <S.Button
       {...otherProps}
       aria-label={ariaLabel}
-      aria-pressed={
-        checked != null
-          ? (String(checked) as 'true' | 'false')
-          : undefined
-      }
+      aria-pressed={checked != null ? checked : undefined}
       checked={checked}
       aria-keyshortcuts={
         effectiveShortcut

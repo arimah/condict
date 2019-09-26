@@ -158,7 +158,7 @@ export const Pages = React.forwardRef<HTMLElement, Props>((
       <S.Page
         label={extraProps.label || `Page ${p + 1} of ${totalPages}`}
         aria-current={extraProps.current ? 'page' : undefined}
-        aria-busy={extraProps.current && loading ? 'true' : undefined}
+        aria-busy={extraProps.current ? loading : undefined}
         current={extraProps.current}
         isLoading={extraProps.current && loading}
         disabled={extraProps.disabled || disabled}

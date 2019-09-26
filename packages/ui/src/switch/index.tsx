@@ -57,7 +57,7 @@ export const Switch = (props: Props) => {
           disabled={disabled}
           checked={checked}
           role='button'
-          aria-pressed={checked ? 'true' : 'false'}
+          aria-pressed={checked}
           aria-label={ariaLabel}
         />
       </S.SwitchContainer>
