@@ -9,6 +9,9 @@ import {
 } from './types';
 import {validateOptions as validateDatabaseOptions} from './database';
 
+const isObject = (value: any): value is { [key: string]: any } =>
+  value != null && typeof value === 'object';
+
 const validateStdout = (value: any): LogLevel | false => {
   switch (value) {
     case null:
@@ -29,6 +32,10 @@ const validateStdout = (value: any): LogLevel | false => {
 };
 
 const validateLogFile = (config: any): LogFile => {
+  if (!isObject(config)) {
+    throw new Error('Log file config must be an object.');
+  }
+
   const path = config.path;
   if (typeof path !== 'string' || path === '') {
     throw new Error('Log file name must be a non-empty string.');
@@ -46,8 +53,8 @@ const validateLoggerOptions = (config: any): LoggerOptions => {
   if (config == null) {
     return {stdout: false, files: []};
   }
-  if (typeof config !== 'object') {
-    throw new Error('Logger config must be an object.');
+  if (!isObject(config)) {
+    throw new Error('Logger config must be an object, null or undefined.');
   }
 
   const stdout = validateStdout(config.stdout);
@@ -62,7 +69,10 @@ const validateLoggerOptions = (config: any): LoggerOptions => {
   return {stdout, files: validFiles};
 };
 
-const validateConfig = (config: any): ServerConfig => {
+export const validateConfig = (config: any): ServerConfig => {
+  if (!isObject(config)) {
+    throw new Error('Config must be an object.');
+  }
   const database = validateDatabaseOptions(config.database);
   const log = validateLoggerOptions(config.log);
   return {database, log};

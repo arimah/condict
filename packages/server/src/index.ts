@@ -4,6 +4,7 @@ export {default as CondictHttpServer} from './http-server';
 export {default as importDatabase} from './import-database';
 export {default as exportDatabase} from './export-database';
 export {default as getTableSchema} from './table-schema';
+export {default as parseConfig, validateConfig} from './parse-config';
 export {
   Logger,
   LoggerOptions,

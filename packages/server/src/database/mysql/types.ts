@@ -10,12 +10,15 @@ const isValidPort = (port: number) =>
   isFinite(port) &&
   1 <= port && port <= 65535;
 
+const optional = <T>(value: any, transform: (value: any) => T) =>
+  value != null ? transform(value) : undefined;
+
 export const validateOptions = (options: { [k: string]: any }): Options => {
-  const user = options.user != null ? String(options.user) : undefined;
-  const password = options.password != null ? String(options.password) : undefined;
-  const database = options.database != null ? String(options.database) : undefined;
-  const host = options.host != null ? String(options.host) : undefined;
-  const port = options.port != null ? Number(options.port) | 0 : undefined;
+  const user = optional(options.user, String);
+  const password = optional(options.password, String);
+  const database = optional(options.database, String);
+  const host = optional(options.host, String);
+  const port = optional(options.port, port => Number(port) | 0);
 
   if (port !== undefined && !isValidPort(port)) {
     throw new Error('The database port, if specified, must be an integer between 1 and 65535 (inclusive).');
