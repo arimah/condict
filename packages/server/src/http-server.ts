@@ -24,14 +24,16 @@ export default class CondictHttpServer {
 
     this.apolloServer = new ApolloServer({
       schema: server.getSchema(),
-      context: async ({res}): Promise<Context> => {
+      context: async ({req, res}): Promise<Context> => {
         const {logger, server} = this;
 
         const requestId = genId();
         const startTime = Date.now();
         logger.info(`Start request ${requestId}`);
 
-        const {context, finish} = await server.getContextValue();
+        const {context, finish} = await server.getContextValue(
+          req.header('x-condict-session-id')
+        );
         res.once('finish', () => {
           const requestTime = Date.now() - startTime;
           logger.info(`Request ${requestId} finished in ${requestTime} ms`);

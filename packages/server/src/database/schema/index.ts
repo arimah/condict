@@ -638,6 +638,57 @@ const tables: TableSchema[] = [
       'inflected_form_id',
     ],
   },
+
+  {
+    name: 'users',
+    comment: 'Users which the end user can authenticate as in order to perform mutations. This table is only needed if you connect to the Condict server remotely; when Condict runs completely locally, authentication is not necessary.',
+    columns: [
+      id,
+      {
+        name: 'name',
+        comment: 'The name of the user. Usernames are case-sensitive and unique.',
+        type: ColumnType.VARCHAR,
+        size: 32,
+      },
+      {
+        name: 'password_hash',
+        comment: "A hashed version of the user's password. Passwords are hashed using bcrypt.",
+        type: ColumnType.VARCHAR,
+        size: 70,
+      },
+    ],
+    primaryKey: 'id',
+    unique: ['name'],
+  },
+
+  {
+    name: 'user_sessions',
+    comment: 'Sessions associated with each user. Sessions are identified by a string ID, and expire after some time.',
+    columns: [
+      {
+        name: 'id',
+        comment: 'The ID of the session, which is a string value.',
+        type: ColumnType.VARCHAR,
+        size: 48, // Big enough.
+      },
+      {
+        name: 'user_id',
+        comment: 'The user that the session belongs to.',
+        references: {
+          table: 'users',
+          column: 'id',
+          onDelete: ReferenceAction.CASCADE,
+        },
+      },
+      {
+        name: 'expires_at',
+        comment: 'The date and time that the session expires, as the number of milliseconds since midnight 1 January, 1970, UTC.',
+        type: ColumnType.UNSIGNED_INT,
+        size: 64,
+      },
+    ],
+    primaryKey: 'id',
+  },
 ];
 
 export default tables;

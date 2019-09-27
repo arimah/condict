@@ -12,6 +12,7 @@ import LemmaResolvers from './resolvers/lemma';
 import PartOfSpeechResolvers from './resolvers/part-of-speech';
 import RootResolvers from './resolvers/root';
 import TagResolvers from './resolvers/tag';
+import UserResolvers from './resolvers/user';
 
 import IdDirective from './id-directive';
 import MarshalDirective from './marshal-directive';
@@ -30,6 +31,7 @@ export const getResolvers = () =>
     PartOfSpeechResolvers,
     RootResolvers,
     TagResolvers,
+    UserResolvers,
   ]) as IResolvers<any, any>;
 
 // GraphQL schema type definitions are read from the .graphql files

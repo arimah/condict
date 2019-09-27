@@ -1,24 +1,28 @@
-import {UserInputError, IFieldResolver} from 'apollo-server';
+import {
+  AuthenticationError,
+  UserInputError,
+  IFieldResolver,
+} from 'apollo-server';
 
 import {PageParams} from './types';
-import {Context, IsMutator, MutatorFn} from './resolvers/types';
+import {Context, MutatorFn} from './resolvers/types';
 
 /**
- * Creates a mutator resolver. The request must come from a session with a
- * user token.
- *
- * FIXME: Actually authenticate literally anything whatsoever.
+ * Creates a mutator resolver. The request must have a valid session ID.
  * @param resolver The resolver function to wrap.
  * @return A mutator function.
  */
-export const mutator = <T, Args>(
-  resolver: IFieldResolver<T, Context, Args>
-): MutatorFn => {
-  const fn: any =
-    (p: T, args: Args, context: Context, info: any) =>
-      resolver(p, args, context, info);
-  fn[IsMutator] = true;
-  return fn as MutatorFn;
+export const mutator = <Args>(
+  resolver: IFieldResolver<unknown, Context, Args>
+): MutatorFn<Args> => {
+  const fn: IFieldResolver<unknown, Context, Args> =
+    async (p: unknown, args: Args, context: Context, info: any) => {
+      if (!await context.hasValidSession()) {
+        throw new AuthenticationError('Session ID is missing, expired or invalid');
+      }
+      return resolver(p, args, context, info);
+    };
+  return fn as MutatorFn<Args>;
 };
 
 /**
@@ -28,15 +32,9 @@ export const mutator = <T, Args>(
  * @param resolver The resolver function to wrap.
  * @return A mutator function.
  */
-export const publicMutator = <T, Args>(
-  resolver: IFieldResolver<T, Context, Args>
-): MutatorFn => {
-  const fn: any =
-    (p: T, args: Args, context: Context, info: any) =>
-      resolver(p, args, context, info);
-  fn[IsMutator] = true;
-  return fn as MutatorFn;
-};
+export const publicMutator = <Args>(
+  resolver: IFieldResolver<unknown, Context, Args>
+): MutatorFn<Args> => resolver as MutatorFn<Args>;
 
 export const validatePageParams = (
   page: PageParams,

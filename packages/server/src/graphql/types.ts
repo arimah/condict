@@ -465,6 +465,16 @@ export type EditPartOfSpeechInput = {
 };
 
 /**
+ * Represents a failed login attempt.
+ */
+export type FailedLogin = {
+  /**
+   * The reason for the failed login.
+   */
+  reason: LoginFailureReason;
+};
+
+/**
  * A single inflected form. Each form belongs to exactly one table.
  * 
  * An inflected form has an _inflection pattern_, which describes how to construct
@@ -1083,6 +1093,27 @@ export type LinkInline = {
 };
 
 /**
+ * Describes why a login failed.
+ */
+export const enum LoginFailureReason {
+  /**
+   * The user could not be found.
+   */
+  USER_NOT_FOUND = 'USER_NOT_FOUND',
+  /**
+   * The password did not match.
+   */
+  PASSWORD_MISMATCH = 'PASSWORD_MISMATCH',
+}
+
+/**
+ * Represents the result of a login attempt.
+ */
+export type LoginResult =
+  | UserSession
+  | FailedLogin;
+
+/**
  * Represents the marshalling type of a custom scalar. See the docuemtnation of
  * the `@marshal` directive.
  */
@@ -1183,6 +1214,22 @@ export type Mutation = {
    * Requires authentication.
    */
   deletePartOfSpeech: boolean;
+  /**
+   * Attempts to log in on the server using the specified username and password.
+   */
+  logIn: LoginResult;
+  /**
+   * Logs out of the current session. Returns true if the session was terminated,
+   * false if there is no current session.
+   */
+  logOut: boolean;
+  /**
+   * Tries to resume the current session. If the session exists and has not
+   * expired, the expiry date is updated and the session data is returned. If
+   * the current session ID refers to an expired or invalid session, null is
+   * returned, and the user must log in again to edit the dictionary.
+   */
+  resumeSession: UserSession | null;
 };
 
 /**
@@ -1546,4 +1593,26 @@ export type TagConnection = {
  * Represents a tag ID.
  */
 export type TagId = IdOf<'Tag'>;
+
+/**
+ * Represents a user session. User sessions can be obtained by using the `logIn` or
+ * `resumeSession` mutation. The `username` field is meant for use in UIs, such as
+ * to show who the user is logged in as. The `sessionId` is the unique identifier
+ * for the session.
+ */
+export type UserSession = {
+  /**
+   * The ID of the session. Use this value to resume the session later.
+   */
+  sessionId: string;
+  /**
+   * The name of the user this session applies to.
+   */
+  username: string;
+  /**
+   * The date and time that the session expires. After this point, the user must
+   * log in again to make changes to the dictionary.
+   */
+  expiresAt: Date;
+};
 

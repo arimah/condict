@@ -11,6 +11,8 @@ export type Context = {
   logger: Logger;
   model: ModelResolver;
   mut: MutatorResolver;
+  sessionId: string | null;
+  hasValidSession(): Promise<boolean>;
 };
 
 export type ResolversFor<T, P> = {
@@ -24,14 +26,14 @@ export type ResolversFor<T, P> = {
   __resolveType?: IFieldResolver<P, Context, {}>;
 };
 
-export const IsMutator = Symbol('mutator function');
+const IsMutator = Symbol('mutator function');
 
-export type MutatorFn = IFieldResolver<unknown, Context> & {
-  readonly [IsMutator]: boolean;
+export type MutatorFn<A> = IFieldResolver<unknown, Context, A> & {
+  [IsMutator]: true;
 };
 
 export type Mutators = {
-  [K in keyof Mutation]?: MutatorFn;
+  [K in keyof Mutation]?: MutatorFn<any>;
 };
 
 /**

@@ -14,6 +14,11 @@ export type ContextResult = {
   finish: () => void;
 };
 
+export const LocalSession = Symbol();
+
+const validSession = () => Promise.resolve(true);
+const noSession = () => Promise.resolve(false);
+
 export default class CondictServer {
   private readonly logger: Logger;
   private readonly config: ServerConfig;
@@ -70,7 +75,9 @@ export default class CondictServer {
     return this.schema;
   }
 
-  public async getContextValue(): Promise<ContextResult> {
+  public async getContextValue(
+    sessionId?: string | typeof LocalSession | null
+  ): Promise<ContextResult> {
     if (!this.started) {
       throw new Error('Server is not started.');
     }
@@ -85,19 +92,35 @@ export default class CondictServer {
     } catch (e) {
       if (db) {
         db.release();
+        db = undefined;
       }
       throw e;
     }
+
+    const hasValidSession =
+      sessionId == undefined ? noSession :
+      sessionId === LocalSession ? validSession :
+      () => {
+        if (db && modelResolvers) {
+          const {UserSession} = modelResolvers.model;
+          return UserSession.verify(sessionId);
+        }
+        return noSession();
+      };
 
     return {
       context: {
         db,
         logger,
-        ...modelResolvers,
+        model: modelResolvers.model,
+        mut: modelResolvers.mut,
+        sessionId: typeof sessionId === 'string' ? sessionId : null,
+        hasValidSession,
       },
       finish: () => {
         if (db) {
           db.release();
+          db = undefined;
         }
       },
     };
