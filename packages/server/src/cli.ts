@@ -17,16 +17,21 @@ if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'development';
 }
 
-const options: OptionDefinition[] = [
+const globalOptions: OptionDefinition[] = [
   {name: 'config', alias: 'c', type: String},
+  {name: 'command', type: String, defaultOption: true},
+];
 
-  {name: 'export', type: Boolean},
-  {name: 'target', type: String},
+const exportOptions: OptionDefinition[] = [
+  {name: 'target', alias: 't', type: String, defaultOption: true},
+];
 
-  {name: 'import', type: Boolean},
-  {name: 'source', type: String},
+const importOptions: OptionDefinition[] = [
+  {name: 'source', alias: 's', type: String, defaultOption: true},
+];
 
-  {name: 'view-table-schema', type: String},
+const viewTableSchemaOptions: OptionDefinition[] = [
+  {name: 'table', alias: 't', type: String, defaultOption: true},
 ];
 
 const printSchema = (config: ServerConfig, tableName: string | null) => {
@@ -57,13 +62,15 @@ const start = async (logger: Logger, config: ServerConfig) => {
 };
 
 const main = async () => {
-  const args = parseCliArgs(options);
+  const args = parseCliArgs(globalOptions, {stopAtFirstUnknown: true});
 
   let config: ServerConfig;
   try {
     config = parseConfig(args.config || 'config.json');
   } catch (e) {
-    console.error(`Failed to read config from ${args.config || 'config.json'}: ${e}`);
+    console.error(
+      `Failed to read config from ${args.config || 'config.json'}: ${e}`
+    );
     process.exitCode = 1;
     return;
   }
@@ -71,14 +78,37 @@ const main = async () => {
   const logger = createLogger(config.log);
 
   try {
-    if (args.export) {
-      await exportDatabase(logger, config, args.target as string);
-    } else if (args.import) {
-      await importDatabase(logger, config, args.source as string);
-    } else if (args['view-table-schema'] !== undefined) {
-      printSchema(config, args['view-table-schema'] as string | null);
-    } else {
-      await start(logger, config);
+    const command = args.command as string | undefined;
+    switch (command) {
+      case 'start':
+      case undefined: {
+        await start(logger, config);
+        break;
+      }
+      case 'export': {
+        const cmdArgs = parseCliArgs(exportOptions, {
+          argv: args._unknown || [],
+        });
+        await exportDatabase(logger, config, cmdArgs.target as string);
+        break;
+      }
+      case 'import': {
+        const cmdArgs = parseCliArgs(importOptions, {
+          argv: args._unknown || [],
+        });
+        await importDatabase(logger, config, cmdArgs.source as string);
+        break;
+      }
+      case 'view-table-schema': {
+        const cmdArgs = parseCliArgs(viewTableSchemaOptions, {
+          argv: args._unknown || [],
+        });
+        printSchema(config, (cmdArgs.table as string | null | undefined) || null);
+        break;
+      }
+      default:
+        console.error(`Unknown command: ${command}`);
+        break;
     }
   } catch (e) {
     logger.error(`Unhandled server error: ${e}\n${e.stack}`);
