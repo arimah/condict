@@ -27,10 +27,6 @@ export default class CondictServer {
   private started: boolean = false;
 
   public constructor(logger: Logger, config: ServerConfig) {
-    if (!config.database) {
-      throw new Error('Database configuration missing');
-    }
-
     this.logger = logger;
     this.config = config;
     this.databasePool = createPool(logger, config.database);

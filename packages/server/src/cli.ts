@@ -3,14 +3,14 @@
 import parseCliArgs, {OptionDefinition} from 'command-line-args';
 
 import createLogger from './create-logger';
-import parseConfig from './parse-config';
+import loadConfig from './config';
 import CondictServer from './server';
 import CondictHttpServer from './http-server';
 import importDatabase from './import-database';
 import exportDatabase from './export-database';
 import getTableSchema from './table-schema';
 import {addUser, editUser, deleteUser} from './manage-users';
-import {ServerConfig, Logger} from './types';
+import {ServerConfig, ServerConfigWithLogger, Logger} from './types';
 
 // Fall back to development if missing. Ensures we get proper console
 // logging and other nice things.
@@ -79,13 +79,12 @@ const start = async (logger: Logger, config: ServerConfig) => {
 const main = async () => {
   const args = parseCliArgs(globalOptions, {stopAtFirstUnknown: true});
 
-  let config: ServerConfig;
+  const configFile = args.config || 'config.json';
+  let config: ServerConfigWithLogger;
   try {
-    config = parseConfig(args.config || 'config.json');
+    config = loadConfig(configFile);
   } catch (e) {
-    console.error(
-      `Failed to read config from ${args.config || 'config.json'}: ${e}`
-    );
+    console.error(`Failed to read config from ${configFile}: ${e}`);
     process.exitCode = 1;
     return;
   }

@@ -1,5 +1,9 @@
 import {ConfigOptions as DatabaseConfigOptions} from './database/types';
 
+export type ServerConfig = {
+  database: DatabaseConfigOptions;
+};
+
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 
 export type LogFile = {
@@ -12,8 +16,7 @@ export type LoggerOptions = {
   files: LogFile[];
 };
 
-export type ServerConfig = {
-  database: DatabaseConfigOptions;
+export type ServerConfigWithLogger = ServerConfig & {
   log: LoggerOptions;
 };
 

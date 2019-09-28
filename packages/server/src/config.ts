@@ -2,6 +2,7 @@ import fs from 'fs';
 
 import {
   ServerConfig,
+  ServerConfigWithLogger,
   LoggerOptions,
   LogFile,
   LogLevel,
@@ -10,7 +11,7 @@ import {
 import {validateOptions as validateDatabaseOptions} from './database';
 
 const isObject = (value: any): value is { [key: string]: any } =>
-  value != null && typeof value === 'object';
+  value != null && typeof value === 'object' && !Array.isArray(value);
 
 const validateStdout = (value: any): LogLevel | false => {
   switch (value) {
@@ -49,7 +50,7 @@ const validateLogFile = (config: any): LogFile => {
   return {path, level: level || 'info'};
 };
 
-const validateLoggerOptions = (config: any): LoggerOptions => {
+export const validateLoggerOptions = (config: any): LoggerOptions => {
   if (config == null) {
     return {stdout: false, files: []};
   }
@@ -74,14 +75,26 @@ export const validateConfig = (config: any): ServerConfig => {
     throw new Error('Config must be an object.');
   }
   const database = validateDatabaseOptions(config.database);
-  const log = validateLoggerOptions(config.log);
-  return {database, log};
+  return {database};
 };
 
-export default (fileName: string) => {
+export const validateConfigWithLogger = (
+  config: any
+): ServerConfigWithLogger => {
+  if (!isObject(config)) {
+    throw new Error('Config must be an object.');
+  }
+  const basicConfig = validateConfig(config);
+  const log = validateLoggerOptions(config.log);
+  return {...basicConfig, log};
+};
+
+const loadConfigFile = (fileName: string) => {
   const configText = fs.readFileSync(fileName, {
     encoding: 'utf-8',
   });
   const config = JSON.parse(configText);
-  return validateConfig(config);
+  return validateConfigWithLogger(config);
 };
+
+export default loadConfigFile;
