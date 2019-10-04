@@ -89,6 +89,9 @@ class UserSessionMut extends Mutator {
 
     const user = await User.byName(username);
     if (!user) {
+      // Forcefully hash the submitted password, to make brute-force user
+      // discovery much more difficult. It's basically just a delay.
+      await validatePassword(password);
       return {reason: LoginFailureReason.USER_NOT_FOUND};
     }
 

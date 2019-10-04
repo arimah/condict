@@ -3,7 +3,6 @@ import {
   GraphQLScalarSerializer,
   GraphQLScalarValueParser,
   GraphQLScalarLiteralParser,
-  ValueNode,
   Kind,
 } from 'graphql';
 import {SchemaDirectiveVisitor} from 'graphql-tools';
@@ -52,7 +51,7 @@ const MarshalImpls: Record<MarshalTypeName, MarshalImpl> = {
         return node.value;
       }
       return null;
-    }
+    },
   },
 };
 
