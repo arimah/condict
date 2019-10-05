@@ -1,4 +1,4 @@
-import {compare} from 'bcrypt';
+import {compare, hash} from 'bcrypt';
 import nanoid from 'nanoid';
 
 import {
@@ -11,7 +11,7 @@ import Mutator from '../mutator';
 import FieldSet from '../field-set';
 
 import {UserId, UserRow, NewUserInput, EditUserInput} from './types';
-import {validateName, validatePassword} from './validators';
+import {validateName, validatePassword, BcryptRounds} from './validators';
 
 class UserMut extends Mutator {
   public async insert({name, password}: NewUserInput): Promise<UserRow> {
@@ -91,7 +91,7 @@ class UserSessionMut extends Mutator {
     if (!user) {
       // Forcefully hash the submitted password, to make brute-force user
       // discovery much more difficult. It's basically just a delay.
-      await validatePassword(password);
+      await hash(password, BcryptRounds);
       return {reason: LoginFailureReason.USER_NOT_FOUND};
     }
 

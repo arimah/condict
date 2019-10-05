@@ -37,7 +37,7 @@ export const validateName = (
     .validate(value);
 
 // FIXME: Verify this is a sensible value. Derive automatically based on server?
-const BcryptRounds = 12;
+export const BcryptRounds = 12;
 
 export const validatePassword =
   validator<string>('password')
