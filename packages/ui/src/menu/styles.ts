@@ -1,7 +1,6 @@
 import styled, {css} from 'styled-components';
 
 import {transition} from '../theme';
-import LightTheme from '../theme/light';
 
 export type MenuProps = {
   open: boolean;
@@ -34,10 +33,6 @@ export const Menu = styled.div.attrs({
   `}
 `;
 
-Menu.defaultProps = {
-  theme: LightTheme,
-};
-
 export type ItemProps = {
   current?: boolean;
   disabled?: boolean;
@@ -67,10 +62,6 @@ export const Item = styled.div<ItemProps>`
     }
   `}
 `;
-
-Item.defaultProps = {
-  theme: LightTheme,
-};
 
 export const ItemIcon = styled.span`
   display: block;
@@ -143,10 +134,6 @@ export const ItemCheck = styled.span<ItemCheckProps>`
   `}
 `;
 
-ItemCheck.defaultProps = {
-  theme: LightTheme,
-};
-
 export const CheckMark = styled.span`
   display: block;
   box-sizing: border-box;
@@ -160,10 +147,6 @@ export const CheckMark = styled.span`
   transform: translate(-50%, -75%) rotate(-45deg);
 `;
 
-CheckMark.defaultProps = {
-  theme: LightTheme,
-};
-
 export const RadioDot = styled.span`
   display: block;
   position: absolute;
@@ -176,10 +159,6 @@ export const RadioDot = styled.span`
   transform: translate(-50%, -50%);
 `;
 
-RadioDot.defaultProps = {
-  theme: LightTheme,
-};
-
 export const Separator = styled.div.attrs({
   role: 'separator',
 })`
@@ -187,10 +166,6 @@ export const Separator = styled.div.attrs({
   margin-bottom: 4px;
   border-top: 2px solid ${p => p.theme.general.borderColor};
 `;
-
-Separator.defaultProps = {
-  theme: LightTheme,
-};
 
 export const PhantomFadeTime = 200;
 

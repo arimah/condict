@@ -1,7 +1,6 @@
 import styled, {css} from 'styled-components';
 
 import {intentVar, transition} from '../theme';
-import LightTheme from '../theme/light';
 import Intent from '../intent';
 
 export type IntentProps = {
@@ -23,10 +22,6 @@ export const Label = styled.label<DisabledProps>`
 
   ${transition('color')}
 `;
-
-Label.defaultProps = {
-  theme: LightTheme,
-};
 
 export const RadioContainer = styled.span<CheckedProps & DisabledProps & IntentProps>`
   display: inline-block;
@@ -70,10 +65,6 @@ export const RadioContainer = styled.span<CheckedProps & DisabledProps & IntentP
   `}
 `;
 
-RadioContainer.defaultProps = {
-  theme: LightTheme,
-};
-
 export const Input = styled.input.attrs({type: 'radio'})`
   appearance: none;
   position: absolute;
@@ -88,10 +79,6 @@ export const Input = styled.input.attrs({type: 'radio'})`
     border: 2px solid ${p => p.theme.focus.color};
   }
 `;
-
-Input.defaultProps = {
-  theme: LightTheme,
-};
 
 export const RadioDot = styled.span<CheckedProps & DisabledProps & IntentProps>`
   display: block;
@@ -120,7 +107,3 @@ export const RadioDot = styled.span<CheckedProps & DisabledProps & IntentProps>`
 
   ${transition('opacity, background-color')}
 `;
-
-RadioDot.defaultProps = {
-  theme: LightTheme,
-};

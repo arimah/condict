@@ -1,7 +1,6 @@
 import styled, {css} from 'styled-components';
 
 import {transition} from '../theme';
-import LightTheme from '../theme/light';
 
 import {DeleteIcon} from './icons';
 
@@ -44,10 +43,6 @@ export const Main = styled.span<Props>`
     color: ${p => p.theme.general.disabledFg};
   `}
 `;
-
-Main.defaultProps = {
-  theme: LightTheme,
-};
 
 export const Tag = styled.button.attrs({
   type: 'button',
@@ -98,10 +93,6 @@ export const Tag = styled.button.attrs({
   }
 `;
 
-Tag.defaultProps = {
-  theme: LightTheme,
-};
-
 export const DeleteMarker = styled(DeleteIcon)`
   position: absolute;
   right: 8px;
@@ -138,7 +129,3 @@ export const Input = styled.input.attrs({
     color: ${p => p.theme.general.disabledFg};
   }
 `;
-
-Input.defaultProps = {
-  theme: LightTheme,
-};

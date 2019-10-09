@@ -1,7 +1,6 @@
 import styled, {css} from 'styled-components';
 
 import {transition} from '../theme';
-import LightTheme from '../theme/light';
 
 export type Props = {
   minimal: boolean;
@@ -56,7 +55,3 @@ export const Input = styled.input<Props>`
     color: ${p => p.theme.general.disabledFg};
   }
 `;
-
-Input.defaultProps = {
-  theme: LightTheme,
-};

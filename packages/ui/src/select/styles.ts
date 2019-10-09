@@ -1,7 +1,6 @@
 import styled, {css} from 'styled-components';
 
 import {transition} from '../theme';
-import LightTheme from '../theme/light';
 
 export type Props = {
   borderRadius?: number;
@@ -49,10 +48,6 @@ export const Select = styled.select<Props>`
   }
 `;
 
-Select.defaultProps = {
-  theme: LightTheme,
-};
-
 export type DisabledProps = {
   disabled?: boolean;
 };
@@ -73,7 +68,3 @@ export const Arrow = styled.svg.attrs({
 
   color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
 `;
-
-Arrow.defaultProps = {
-  theme: LightTheme,
-};

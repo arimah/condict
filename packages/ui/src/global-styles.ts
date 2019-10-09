@@ -1,7 +1,5 @@
 import {createGlobalStyle} from 'styled-components';
 
-import LightTheme from './theme/light';
-
 export const GlobalStyles = createGlobalStyle`
   * {
     margin: 0;
@@ -109,7 +107,3 @@ export const GlobalStyles = createGlobalStyle`
     text-decoration: none;
   }
 `;
-
-GlobalStyles.defaultProps = {
-  theme: LightTheme,
-};

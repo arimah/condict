@@ -1,7 +1,6 @@
 import styled, {css} from 'styled-components';
 
 import {intentVar, transition} from '../theme';
-import LightTheme from '../theme/light';
 import Intent from '../intent';
 
 export type IntentProps = {
@@ -23,10 +22,6 @@ export const Label = styled.label<DisabledProps>`
 
   ${transition('color')}
 `;
-
-Label.defaultProps = {
-  theme: LightTheme,
-};
 
 export const CheckmarkContainer = styled.span<IntentProps & CheckedProps & DisabledProps>`
   display: inline-block;
@@ -83,10 +78,6 @@ export const CheckmarkContainer = styled.span<IntentProps & CheckedProps & Disab
   `}
 `;
 
-CheckmarkContainer.defaultProps = {
-  theme: LightTheme,
-};
-
 export const Input = styled.input.attrs({type: 'checkbox'})`
   appearance: none;
   box-sizing: border-box;
@@ -103,10 +94,6 @@ export const Input = styled.input.attrs({type: 'checkbox'})`
   }
 `;
 
-Input.defaultProps = {
-  theme: LightTheme,
-};
-
 export const IndeterminateMark = styled.span<CheckedProps>`
   display: block;
   position: absolute;
@@ -121,10 +108,6 @@ export const IndeterminateMark = styled.span<CheckedProps>`
 
   opacity: ${p => p.checked ? '1' : '0'};
 `;
-
-IndeterminateMark.defaultProps = {
-  theme: LightTheme,
-};
 
 export const CheckMark = styled.span<CheckedProps>`
   display: block;
@@ -142,7 +125,3 @@ export const CheckMark = styled.span<CheckedProps>`
 
   opacity: ${p => p.checked ? '1' : '0'};
 `;
-
-CheckMark.defaultProps = {
-  theme: LightTheme,
-};

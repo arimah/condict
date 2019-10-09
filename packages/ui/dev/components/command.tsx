@@ -9,7 +9,6 @@ import {
   CommandGroup,
   Button,
   Checkbox,
-  LightTheme,
 } from '../../src';
 
 import {ComponentDemo, ToggleStateFunc} from './types';
@@ -42,10 +41,6 @@ const ResultDisplay = styled.div<ResultDisplayProps>`
     margin-bottom: 8px;
   }
 `;
-
-Group.defaultProps = {
-  theme: LightTheme,
-};
 
 type Props = {
   state: State;

@@ -1,7 +1,6 @@
 import styled, {css} from 'styled-components';
 
 import {transition} from '../theme';
-import LightTheme from '../theme/light';
 
 export type ButtonProps = {
   checked?: boolean;
@@ -19,10 +18,6 @@ export const Toolbar = styled.div.attrs({
   color: ${p => p.theme.general.altFg};
 `;
 
-Toolbar.defaultProps = {
-  theme: LightTheme,
-};
-
 export const Group = styled.div.attrs({
   role: 'group' as string | undefined,
 })`
@@ -35,10 +30,6 @@ export const Group = styled.div.attrs({
     margin-right: 16px;
   }
 `;
-
-Group.defaultProps = {
-  theme: LightTheme,
-};
 
 export const Button = styled.button.attrs({
   type: 'button' as 'button' | 'submit' | 'reset' | undefined, // boo

@@ -1,6 +1,5 @@
 import styled, {css} from 'styled-components';
 
-import LightTheme from '../theme/light';
 import {Button} from '../button';
 import Intent from '../intent';
 
@@ -19,10 +18,6 @@ export const Main = styled.nav<DisabledProps>`
 
   color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
 `;
-
-Main.defaultProps = {
-  theme: LightTheme,
-};
 
 // This list and its items are necessary for assisitive technologies to read
 // the pages correctly.

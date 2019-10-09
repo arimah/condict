@@ -1,7 +1,6 @@
 import styled, {css} from 'styled-components';
 
 import {intentVar, transition} from '../theme';
-import LightTheme from '../theme/light';
 import Intent from '../intent';
 
 export type Props = {
@@ -93,10 +92,6 @@ export const Button = styled.button<Props>`
   ${ButtonStyle}
 `;
 
-Button.defaultProps = {
-  theme: LightTheme,
-};
-
 export const Link = styled.a<Props>`
   /* We have to do some extra work to override link styles :( */
   &:link,
@@ -109,7 +104,3 @@ export const Link = styled.a<Props>`
 
   ${ButtonStyle}
 `;
-
-Link.defaultProps = {
-  theme: LightTheme,
-};

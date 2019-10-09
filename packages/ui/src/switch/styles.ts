@@ -1,7 +1,6 @@
 import styled, {css} from 'styled-components';
 
 import {intentVar, transition} from '../theme';
-import LightTheme from '../theme/light';
 import Intent from '../intent';
 
 export type IntentProps = {
@@ -23,10 +22,6 @@ export const Label = styled.label<DisabledProps>`
 
   ${transition('color')}
 `;
-
-Label.defaultProps = {
-  theme: LightTheme,
-};
 
 export const SwitchContainer = styled.span`
   display: inline-block;
@@ -51,10 +46,6 @@ export const Input = styled.input.attrs({
     border: 2px solid ${p => p.theme.focus.color};
   }
 `;
-
-Input.defaultProps = {
-  theme: LightTheme,
-};
 
 export const Switch = styled.span<IntentProps & CheckedProps & DisabledProps>`
   display: inline-block;
@@ -105,10 +96,6 @@ export const Switch = styled.span<IntentProps & CheckedProps & DisabledProps>`
   `}
 `;
 
-Switch.defaultProps = {
-  theme: LightTheme,
-};
-
 export const Dot = styled.span<CheckedProps & DisabledProps & IntentProps>`
   position: absolute;
   top: 2px;
@@ -128,7 +115,3 @@ export const Dot = styled.span<CheckedProps & DisabledProps & IntentProps>`
     left: ${p => p.checked ? '12px' : '4px'};
   }
 `;
-
-Dot.defaultProps = {
-  theme: LightTheme,
-};

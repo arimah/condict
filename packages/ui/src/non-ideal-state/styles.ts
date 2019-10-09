@@ -1,7 +1,5 @@
 import styled, {css} from 'styled-components';
 
-import LightTheme from '../theme/light';
-
 export type Props = {
   minimal?: boolean;
 };
@@ -24,10 +22,6 @@ export const Main = styled.div<Props>`
     box-shadow: ${p => p.theme.shadow.elevation1};
   `}
 `;
-
-Main.defaultProps = {
-  theme: LightTheme,
-};
 
 export const Image = styled.div`
   margin-top: 8px;
