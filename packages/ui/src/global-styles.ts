@@ -11,7 +11,12 @@ export const GlobalStyles = createGlobalStyle`
   body {
     font-size: 11pt;
     font-family: 'Inter', sans-serif;
-    font-feature-settings: 'cv08', 'tnum', 'calt' off;
+    font-feature-settings:
+      'cv07', /* alternative ß */
+      'cv08', /* upper-case i with serifs */
+      'tnum', /* tabular numerals */
+      'calt' off, /* contextual alternatives */
+      'liga' off; /* standard ligatures */
   }
 
   h1 {
