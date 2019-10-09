@@ -1,10 +1,6 @@
 import styled, {css} from 'styled-components';
 
-import {
-  LightTheme,
-  Saturation,
-  makeColorFn,
-} from '@condict/ui';
+import {Saturation, makeColorFn} from '@condict/ui';
 
 const stemColor = makeColorFn(291, {
   high: 70,
@@ -35,10 +31,6 @@ export const CellData = styled.div<CellDataProps>`
   `}
 `;
 
-CellData.defaultProps = {
-  theme: LightTheme,
-};
-
 export type DeletedFormProps = {
   disabled: boolean;
 };
@@ -52,7 +44,3 @@ export const DeletedForm = styled.span<DeletedFormProps>`
     p.disabled ? 'disabledBorderColor' : 'borderColor'
   ]};
 `;
-
-DeletedForm.defaultProps = {
-  theme: LightTheme,
-};

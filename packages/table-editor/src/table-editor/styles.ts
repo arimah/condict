@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-import {LightTheme} from '@condict/ui';
-
 export const TableWrapper = styled.div``;
 
 export const Table = styled.table`
@@ -14,10 +12,6 @@ export const Table = styled.table`
   }
 `;
 
-Table.defaultProps = {
-  theme: LightTheme,
-};
-
 export type HelperProps = {
   disabled: boolean;
 };
@@ -28,7 +22,3 @@ export const Helper = styled.div<HelperProps>`
 
   color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
 `;
-
-Helper.defaultProps = {
-  theme: LightTheme,
-};

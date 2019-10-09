@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 
-import {
-  LightTheme,
-  Saturation,
-  makeColorFn,
-} from '@condict/ui';
+import {Saturation, makeColorFn} from '@condict/ui';
 
 export type DisabledProps = {
   disabled: boolean;
@@ -28,10 +24,6 @@ export const InflectionStem = styled.span<DisabledProps>`
   };
 `;
 
-InflectionStem.defaultProps = {
-  theme: LightTheme,
-};
-
 const braceColor = makeColorFn(174, {
   high: 65,
   low: 40,
@@ -48,7 +40,3 @@ export const EscapedBrace = styled.span<DisabledProps>`
     : (p.disabled ? disabledLightBraceColor : lightBraceColor)
   };
 `;
-
-EscapedBrace.defaultProps = {
-  theme: LightTheme,
-};

@@ -1,11 +1,6 @@
 import styled, {css} from 'styled-components';
 
-import {
-  Button,
-  TextInput,
-  LightTheme,
-  Intent,
-} from '@condict/ui';
+import {Button, TextInput, Intent} from '@condict/ui';
 
 export const CellEditor = styled.div`
   position: absolute;
@@ -77,10 +72,6 @@ export const CellPopup = styled.div`
     transform: rotate(-45deg);
   }
 `;
-
-CellPopup.defaultProps = {
-  theme: LightTheme,
-};
 
 export const RevertButton = styled(Button).attrs({
   slim: true,

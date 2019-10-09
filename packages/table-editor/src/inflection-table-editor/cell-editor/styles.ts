@@ -1,6 +1,6 @@
 import styled, {css} from 'styled-components';
 
-import {Button, TextInput, LightTheme, Intent} from '@condict/ui';
+import {Button, TextInput, Intent} from '@condict/ui';
 
 export const CellEditor = styled.div`
   position: absolute;
@@ -37,10 +37,6 @@ export const CellInputWrapper = styled.label<CellInputWrapperProps>`
     border-color: ${p => p.theme.focus.color};
   `}
 `;
-
-CellInputWrapper.defaultProps = {
-  theme: LightTheme,
-};
 
 export type CellIconsProps = {
   disabled?: boolean;
@@ -120,10 +116,6 @@ export const CellPopup = styled.div`
   }
 `;
 
-CellPopup.defaultProps = {
-  theme: LightTheme,
-};
-
 export const CellSettingsGroup = styled.div`
   &:not(:first-child) {
     margin-top: 5px;
@@ -135,10 +127,6 @@ export const CellSettingsSeparator = styled.div`
   margin-bottom: 10px;
   border-top: 1px solid ${p => p.theme.general.borderColor};
 `;
-
-CellSettingsSeparator.defaultProps = {
-  theme: LightTheme,
-};
 
 export const DisplayNameLabel = styled.label`
   display: block;
@@ -165,7 +153,3 @@ DeriveDisplayNameButton.defaultProps = undefined;
 export const DisplayNameDesc = styled.div`
   white-space: normal;
 `;
-
-DisplayNameDesc.defaultProps = {
-  theme: LightTheme,
-};

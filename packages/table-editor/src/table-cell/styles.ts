@@ -1,7 +1,5 @@
 import styled, {css} from 'styled-components';
 
-import {LightTheme} from '@condict/ui';
-
 import {Table} from '../table-editor/styles';
 
 export type CellProps = {
@@ -45,10 +43,6 @@ export const Cell = styled.td<CellProps>`
   }
 `;
 
-Cell.defaultProps = {
-  theme: LightTheme,
-};
-
 export const CellDataWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -88,7 +82,3 @@ export const CellBorder = styled.div<CellBorderProps>`
     };
   }
 `;
-
-CellBorder.defaultProps = {
-  theme: LightTheme,
-};
