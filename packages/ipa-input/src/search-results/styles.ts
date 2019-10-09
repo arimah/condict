@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-import {LightTheme} from '@condict/ui';
-
 export const SearchResult = styled.div`
   display: flex;
   flex-direction: row;
@@ -18,10 +16,6 @@ export const SearchResult = styled.div`
     background-color: ${p => p.theme.general.hoverAltBg};
   }
 `;
-
-SearchResult.defaultProps = {
-  theme: LightTheme,
-};
 
 export const SearchResultChar = styled.span`
   flex: none;

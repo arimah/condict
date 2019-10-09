@@ -1,7 +1,5 @@
 import styled, {css} from 'styled-components';
 
-import {LightTheme} from '@condict/ui';
-
 export type GroupProps = {
   hasBase: boolean;
 };
@@ -46,7 +44,3 @@ export const Character = styled.span<CharacterProps>`
     background-color: ${p => p.theme.general.hoverAltBg};
   }
 `;
-
-Character.defaultProps = {
-  theme: LightTheme,
-};
