@@ -53,6 +53,7 @@ class LemmaMut extends Mutator {
       result.map<[string, LemmaId]>(row => [row.term, row.id])
     );
 
+    let hasNewTerms = false;
     for (const term of terms) {
       // TODO: Can we parallelise this? Auto-increment IDs *should* be serial.
       if (!termToId.has(term)) {
@@ -61,10 +62,11 @@ class LemmaMut extends Mutator {
           values (${languageId}, ${term}, ${term})
         `;
         termToId.set(term, insertId);
+        hasNewTerms = true;
       }
     }
 
-    if (termToId.size !== terms.length) {
+    if (hasNewTerms) {
       // At least one term was inserted, so we need to update the count.
       await this.updateLemmaCount(languageId);
     }
