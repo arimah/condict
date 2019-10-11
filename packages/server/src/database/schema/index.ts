@@ -659,6 +659,7 @@ const tables: TableSchema[] = [
     ],
     primaryKey: 'id',
     unique: ['name'],
+    skipExport: true,
   },
 
   {
@@ -688,6 +689,7 @@ const tables: TableSchema[] = [
       },
     ],
     primaryKey: 'id',
+    skipExport: true,
   },
 ];
 
