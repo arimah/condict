@@ -15,15 +15,17 @@ export type Context = {
   hasValidSession(): Promise<boolean>;
 };
 
+export type ResolverContext = Omit<Context, 'mut'>;
+
 export type ResolversFor<T, P> = {
   // The default arguments type, `Record<string, any>`, does not deal well with
   // required arguments: TypeScript complains about them being required by the
   // actual arguments type, but absent in `Record<string, any>`. As much as I
   // don't want `any` here, it seems to be the only practical solution.
-  [K in keyof T]?: IFieldResolver<P, Context, any>;
+  [K in keyof T]?: IFieldResolver<P, ResolverContext, any>;
 } & {
   // This resolver never receives arguments.
-  __resolveType?: IFieldResolver<P, Context, {}>;
+  __resolveType?: IFieldResolver<P, ResolverContext, {}>;
 };
 
 const IsMutator = Symbol('mutator function');

@@ -1,5 +1,3 @@
-import {UserInputError} from 'apollo-server';
-
 import {LanguageRow} from '../../model/language/types';
 
 import {
