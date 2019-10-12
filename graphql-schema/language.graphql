@@ -39,12 +39,6 @@ type Language {
   "The display name of the language."
   name: String!
 
-  """
-  The URL name of the language; that is, the name used and shown in the address
-  bar.
-  """
-  urlName: String!
-
   "The parts of speech that belong to this language."
   partsOfSpeech: [PartOfSpeech!]!
 
@@ -81,32 +75,20 @@ extend type Query {
   "Lists all languages in the dictionary."
   languages: [Language!]!
 
-  """
-  Finds a language by ID or URL name. You must specify either `id` or `urlName`.
-  If you specfiy both, only `id` will be used.
-  """
-  language(id: LanguageId, urlName: String): Language
+  "Finds a language by ID."
+  language(id: LanguageId!): Language
 }
 
 "Input type for a new language."
 input NewLanguageInput {
   "The display name of the language."
   name: String!
-
-  """
-  The URL name of the language; that is, the name used and shown in the address
-  bar.
-  """
-  urlName: String!
 }
 
 "Input type for editing an existing language."
 input EditLanguageInput {
   "If set, updates the display name of the language."
   name: String
-
-  "If set, updates the URL name of the language."
-  urlName: String
 }
 
 extend type Mutation {

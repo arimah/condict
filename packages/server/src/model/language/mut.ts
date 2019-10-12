@@ -8,28 +8,27 @@ import Mutator from '../mutator';
 import FieldSet from '../field-set';
 
 import {LanguageRow} from './types';
-import {validateName, validateUrlName} from './validators';
+import {validateName} from './validators';
 
 class LanguageMut extends Mutator {
   public async insert(
-    {name, urlName}: NewLanguageInput
+    {name}: NewLanguageInput
   ): Promise<LanguageRow> {
     const {db} = this;
     const {Language} = this.model;
 
     name = await validateName(db, null, name);
-    urlName = await validateUrlName(db, null, urlName);
 
     const {insertId} = await db.exec<LanguageId>`
-      insert into languages (name, url_name)
-      values (${name}, ${urlName})
+      insert into languages (name)
+      values (${name})
     `;
     return Language.byIdRequired(insertId);
   }
 
   public async update(
     id: LanguageId,
-    {name, urlName}: EditLanguageInput
+    {name}: EditLanguageInput
   ): Promise<LanguageRow> {
     const {db} = this;
     const {Language} = this.model;
@@ -41,13 +40,6 @@ class LanguageMut extends Mutator {
       newFields.set(
         'name',
         await validateName(db, language.id, name)
-      );
-    }
-
-    if (urlName != null) {
-      newFields.set(
-        'url_name',
-        await validateUrlName(db, language.id, urlName)
       );
     }
 

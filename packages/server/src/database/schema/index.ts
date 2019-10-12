@@ -77,23 +77,14 @@ const tables: TableSchema[] = [
         type: ColumnType.VARCHAR,
         size: 96,
       },
-      {
-        name: 'url_name',
-        comment: 'The name of the language as displayed in the URL. Limited in length to ensure the URL is of a reasonable size.',
-        type: ColumnType.VARCHAR,
-        size: 32,
-        collate: Collation.BINARY,
-      },
     ],
     primaryKey: 'id',
     unique: [
       'name',
-      'url_name',
     ],
     async preImport(db, row) {
       type Status = {
         name_taken: number;
-        url_name_taken: number;
       };
       const result = await db.getRequired<Status>`
         select
@@ -101,21 +92,11 @@ const tables: TableSchema[] = [
             select 1
             from languages
             where name = ${row.name}
-          ) as name_taken,
-          exists (
-            select 1
-            from languages
-            where url_name = ${row.url_name}
-          ) as url_name_taken
+          ) as name_taken
       `;
       if (result.name_taken === 1) {
         throw new Error(
           `Cannot continue import: there is already a language named '${row.name}'`
-        );
-      }
-      if (result.url_name_taken === 1) {
-        throw new Error(
-          `Cannot continue import: there is already a language with the URL name '${row.url_name}'`
         );
       }
     },

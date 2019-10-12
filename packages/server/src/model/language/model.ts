@@ -50,14 +50,6 @@ class Language extends Model {
       where name = ${name}
     `;
   }
-
-  public byUrlName(urlName: string): Awaitable<LanguageRow | null> {
-    return this.db.get<LanguageRow>`
-      select *
-      from languages
-      where url_name = ${urlName}
-    `;
-  }
 }
 
 export default {Language};

@@ -19,8 +19,6 @@ type LemmasArgs = PageArg & {
 };
 
 const Language: ResolversFor<LanguageType, LanguageRow> = {
-  urlName: p => p.url_name,
-
   partsOfSpeech: (p, _args, {model: {PartOfSpeech}}) =>
     PartOfSpeech.allByLanguage(p.id),
 
@@ -39,24 +37,14 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
 };
 
 type LanguageArgs = {
-  id?: LanguageId | null;
-  urlName?: string | null;
+  id: LanguageId;
 };
 
 const Query: ResolversFor<QueryType, unknown> = {
   languages: (_root, _args, {model: {Language}}) => Language.all(),
 
-  language: (_root, args: LanguageArgs, {model: {Language}}) => {
-    if (args.id != null) {
-      return Language.byId(args.id);
-    }
-    if (args.urlName != null) {
-      return Language.byUrlName(args.urlName);
-    }
-    throw new UserInputError(`You must specify one of 'id' or 'urlName'`, {
-      invalidArgs: ['id', 'urlName'],
-    });
-  },
+  language: (_root, {id}: LanguageArgs, {model: {Language}}) =>
+    Language.byId(id),
 };
 
 type AddLanguageArgs = {

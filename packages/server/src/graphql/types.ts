@@ -448,10 +448,6 @@ export type EditLanguageInput = {
    * If set, updates the display name of the language.
    */
   name?: string | null;
-  /**
-   * If set, updates the URL name of the language.
-   */
-  urlName?: string | null;
 };
 
 /**
@@ -918,11 +914,6 @@ export type Language = {
    */
   name: string;
   /**
-   * The URL name of the language; that is, the name used and shown in the address
-   * bar.
-   */
-  urlName: string;
-  /**
    * The parts of speech that belong to this language.
    */
   partsOfSpeech: PartOfSpeech[];
@@ -1314,11 +1305,6 @@ export type NewLanguageInput = {
    * The display name of the language.
    */
   name: string;
-  /**
-   * The URL name of the language; that is, the name used and shown in the address
-   * bar.
-   */
-  urlName: string;
 };
 
 /**
@@ -1470,8 +1456,7 @@ export type Query = {
    */
   languages: Language[];
   /**
-   * Finds a language by ID or URL name. You must specify either `id` or `urlName`.
-   * If you specfiy both, only `id` will be used.
+   * Finds a language by ID.
    */
   language: Language | null;
   /**
