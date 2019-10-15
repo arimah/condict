@@ -305,13 +305,10 @@ class InflectedFormMut extends Mutator {
 
     const existingForm = await InflectedForm.byIdRequired(id);
 
-    const [
-      inflectionPattern,
-      displayName,
-    ] = [
-      validateFormInflectionPattern(form.inflectionPattern),
-      validateFormDisplayName(form.displayName),
-    ];
+    const inflectionPattern = validateFormInflectionPattern(
+      form.inflectionPattern
+    );
+    const displayName = validateFormDisplayName(form.displayName);
 
     await db.exec`
       update inflected_forms
