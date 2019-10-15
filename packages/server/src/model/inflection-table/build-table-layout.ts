@@ -80,10 +80,10 @@ const buildTableLayout = async (
       cells.push(layoutCell);
     }
 
-    await Promise.all(cellPromises);
-
     finalLayout.push({cells});
   }
+
+  await Promise.all(cellPromises);
 
   return {finalLayout, stems: Array.from(stems)};
 };
