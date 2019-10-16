@@ -271,12 +271,16 @@ function makeTableEditor<V extends Value<any>, M>(
     };
 
     private handleContextMenu = (e: SyntheticMouseEvent) => {
-      const {value} = this.props;
+      const {value, disabled} = this.props;
       if (this.state.editing) {
         return;
       }
 
       e.preventDefault();
+
+      if (disabled) {
+        return;
+      }
 
       const {contextMenu, contextMenuParent} = this;
       if (hasContextMenu(value) && contextMenu.current) {
