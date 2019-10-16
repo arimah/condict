@@ -35,7 +35,8 @@ export const Select = styled.select<Props>`
     background-color: ${p => p.theme.general.hoverBg};
   }
 
-  &:focus {
+  &:focus,
+  &.force-focus {
     ${p => p.theme.focus.style}
     padding: ${p => p.minimal && '4px 26px 4px 7px'};
     border: 2px solid ${p => p.theme.focus.color};

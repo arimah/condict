@@ -50,7 +50,8 @@ export const Button = styled.button.attrs({
     margin-left: 2px;
   }
 
-  &:focus {
+  &:focus,
+  &.force-focus {
     padding: 4px 6px;
     border: 2px solid ${p => p.theme.focus.color};
     ${p => p.theme.focus.style};

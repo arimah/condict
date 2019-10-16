@@ -86,7 +86,8 @@ export const Tag = styled.button.attrs({
     color: ${p => p.theme.danger.altFg};
   }
 
-  &:focus {
+  &:focus,
+  &.force-focus {
     ${p => p.theme.focus.style}
     outline: none;
     border-color: ${p => p.theme.focus.color};

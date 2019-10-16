@@ -18,7 +18,8 @@ const Group = styled.div`
   border: 2px solid ${p => p.theme.general.borderColor};
   border-radius: 3px;
 
-  &:focus {
+  &:focus,
+  &.force-focus {
     ${p => p.theme.focus.style}
     border-color: ${p => p.theme.focus.color};
   }

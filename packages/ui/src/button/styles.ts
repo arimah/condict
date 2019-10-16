@@ -22,7 +22,8 @@ export const ButtonStyle = css<Props>`
 
   ${transition('color, border-color, background-color')}
 
-  &:focus {
+  &:focus,
+  &.force-focus {
     border: 2px solid ${p => p.theme.focus.color};
     ${p => p.theme.focus.style}
   }

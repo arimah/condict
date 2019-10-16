@@ -41,7 +41,8 @@ export const Input = styled.input.attrs({
   height: 20px;
   border-radius: 10px;
 
-  &:focus {
+  &:focus,
+  &.force-focus {
     ${p => p.theme.focus.style}
     border: 2px solid ${p => p.theme.focus.color};
   }

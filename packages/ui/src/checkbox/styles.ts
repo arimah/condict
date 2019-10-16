@@ -88,7 +88,8 @@ export const Input = styled.input.attrs({type: 'checkbox'})`
   height: 18px;
   border-radius: 3px;
 
-  &:focus {
+  &:focus,
+  &.force-focus {
     ${p => p.theme.focus.style}
     border: 2px solid ${p => p.theme.focus.color};
   }

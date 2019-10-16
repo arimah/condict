@@ -34,7 +34,8 @@ export const Input = styled.input<Props>`
     }
   `}
 
-  &:focus {
+  &:focus,
+  &.force-focus {
     ${p => p.theme.focus.style}
     padding: ${p => p.minimal && '4px'};
     border: 2px solid ${p => p.theme.focus.color};

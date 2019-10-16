@@ -74,7 +74,8 @@ export const Input = styled.input.attrs({type: 'radio'})`
   height: 18px;
   border-radius: 9px;
 
-  &:focus {
+  &:focus,
+  &.force-focus {
     ${p => p.theme.focus.style}
     border: 2px solid ${p => p.theme.focus.color};
   }
