@@ -59,3 +59,5 @@ export {
   default as DescendantCollection,
   GetElementFunc,
 } from './descendant-collection';
+
+export {default as FocusTrap, FocusTrapOptions} from './focus-trap';

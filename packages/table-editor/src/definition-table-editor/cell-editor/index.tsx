@@ -1,7 +1,6 @@
 import React, {ChangeEvent, KeyboardEvent, PureComponent} from 'react';
-import FocusTrap from 'focus-trap-react';
-import {Options as FocusTrapOptions} from 'focus-trap';
 
+import {FocusTrap, FocusTrapOptions} from '@condict/ui';
 import {inflectWord} from '@condict/inflect';
 import {SROnly} from '@condict/a11y-utils';
 import genId from '@condict/gen-id';
@@ -134,7 +133,7 @@ export default class CellEditor extends PureComponent<Props, State> {
     return (
       <FocusTrap
         active={trapActive}
-        focusTrapOptions={this.focusTrapOptions}
+        options={this.focusTrapOptions}
       >
         <S.CellEditor
           id={this.props.id}
