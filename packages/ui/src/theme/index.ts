@@ -52,7 +52,8 @@ export type SelectionTheme = {
 };
 
 export type TimingTheme = {
-  readonly short: string;
+  readonly short: number;
+  readonly long: number;
 };
 
 export type ShadowTheme = {
@@ -66,7 +67,7 @@ export type PartialTheme = Partial<{
   [K in keyof Theme]: Partial<Theme[K]>;
 }>;
 
-const DefaultIntent: IntentTheme = Object.freeze({
+const DefaultIntent: IntentTheme = {
   fg: '#000000',
   bg: '#FFFFFF',
   hoverBg: '#FFFFFF',
@@ -82,41 +83,42 @@ const DefaultIntent: IntentTheme = Object.freeze({
   disabledAltBg: '#FFFFFF',
   borderColor: '#333333',
   disabledBorderColor: '#333333',
-});
+};
 
-const DefaultLink: LinkTheme = Object.freeze({
+const DefaultLink: LinkTheme = {
   color: '#0000FF',
   visited: '#9900FF',
   hover: '#3333FF',
   active: '#FFA500',
-});
+};
 
-const DefaultFocus: FocusTheme = Object.freeze({
+const DefaultFocus: FocusTheme = {
   color: '#00DDFF', // 500, blue
   style: `
     box-shadow: 0 0 4px #00DDFF;
     outline: none;
   `,
-});
+};
 
-const DefaultSelection: SelectionTheme = Object.freeze({
+const DefaultSelection: SelectionTheme = {
   bg: '#00CCFF',
   altBg: '#00CCFF',
   borderColor: '#00CCFF',
-});
+};
 
-const DefaultTiming: TimingTheme = Object.freeze({
-  short: '100ms',
-});
+const DefaultTiming: TimingTheme = {
+  short: 100,
+  long: 250,
+};
 
-const DefaultShadow: ShadowTheme = Object.freeze({
+const DefaultShadow: ShadowTheme = {
   color: 'rgba(0, 0, 0, 0.175)',
   elevation1: '0 2px 5px rgba(0, 0, 0, 0.175)',
   elevation2: '0 3px 8px rgba(0, 0, 0, 0.175)',
   elevation3: '0 4px 10px rgba(0, 0, 0, 0.175)',
-});
+};
 
-const DefaultTheme: Theme = Object.freeze({
+const DefaultTheme: Theme = {
   dark: false,
   primary: DefaultIntent,
   secondary: DefaultIntent,
@@ -127,24 +129,24 @@ const DefaultTheme: Theme = Object.freeze({
   selection: DefaultSelection,
   timing: DefaultTiming,
   shadow: DefaultShadow,
-});
+};
 
 export const extendTheme = (baseTheme: Theme, newTheme: PartialTheme) => {
   const keys = Object.keys(baseTheme);
-  return Object.freeze(keys.reduce<Theme>(
+  return keys.reduce<Theme>(
     (theme: any, key: string) => {
       const baseProp = (baseTheme as any)[key];
       const newProp = (newTheme as any)[key];
       theme[key] = key in newTheme
         ? (
           typeof baseProp === 'object'
-            ? Object.freeze({...baseProp, ...newProp})
+            ? {...baseProp, ...newProp}
             : newProp
         ) : baseProp;
       return theme;
     },
     {} as any
-  ));
+  );
 };
 
 export const createTheme = (theme: PartialTheme) => extendTheme(DefaultTheme, theme);
@@ -161,10 +163,14 @@ export const intentVar =
 
 export const transition = (
   property: string,
-  duration: string | null = null,
+  duration: number | keyof TimingTheme = 'short',
   timingFunc: string = 'ease-in-out'
 ) => css`
   transition-property: ${property};
-  transition-duration: ${duration || (p => p.theme.timing.short)};
+  transition-duration: ${
+    typeof duration === 'number'
+      ? duration
+      : (p => p.theme.timing[duration])
+  }ms;
   transition-timing-function: ${timingFunc};
 `;
