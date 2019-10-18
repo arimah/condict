@@ -1,4 +1,4 @@
-import React, {Component, ReactElement, Ref} from 'react';
+import React, {Component, Ref} from 'react';
 import createFocusTrap, {
   FocusTrap as FocusTrapImpl,
   Options as FocusTrapOptions,
@@ -27,9 +27,9 @@ import combineRefs from './combine-refs';
 
 export {Options as FocusTrapOptions} from 'focus-trap';
 
-type HTMLElementChild = ReactElement<{
-  ref: Ref<HTMLElement>;
-}>;
+type HTMLElementChild = JSX.Element & {
+  ref?: Ref<HTMLElement>;
+};
 
 export type Props<C extends HTMLElementChild> = {
   active: boolean;
@@ -81,9 +81,9 @@ class FocusTrap<C extends HTMLElementChild> extends Component<Props<C>> {
       if (nextProps.active) {
         this.focusTrap.activate();
       } else {
-        const {returnFocusOnDeactivate} = nextProps.options;
+        const {returnFocusOnDeactivate = true} = nextProps.options;
         this.focusTrap.deactivate({
-          returnFocus: returnFocusOnDeactivate || false,
+          returnFocus: returnFocusOnDeactivate,
         });
       }
     }
@@ -102,8 +102,9 @@ class FocusTrap<C extends HTMLElementChild> extends Component<Props<C>> {
       return;
     }
     this.focusTrap.deactivate();
+    const {returnFocusOnDeactivate = true} = this.props.options;
     if (
-      this.props.options.returnFocusOnDeactivate &&
+      returnFocusOnDeactivate &&
       this.previousFocus &&
       (this.previousFocus as any).focus
     ) {
@@ -115,7 +116,7 @@ class FocusTrap<C extends HTMLElementChild> extends Component<Props<C>> {
     const {children} = this.props as Props<C>;
 
     const childWithRef = React.cloneElement(children, {
-      ref: combineRefs(children.props.ref, this.focusTrapElement),
+      ref: combineRefs(children.ref, this.focusTrapElement),
     });
     return childWithRef;
   }
