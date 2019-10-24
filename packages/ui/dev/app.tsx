@@ -1,5 +1,12 @@
-import React, {Component, ChangeEvent} from 'react';
+import React, {Component, Fragment, ChangeEvent} from 'react';
 import ReactDOM from 'react-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch as RouteSwitch,
+  Link,
+  NavLink,
+} from 'react-router-dom';
 import {ThemeProvider} from 'styled-components';
 
 import {
@@ -12,6 +19,7 @@ import {
 } from '../src';
 import Demo from './demo';
 import ComponentDemos from './components';
+import {ComponentDemo} from './components/types';
 
 import * as S from './styles';
 
@@ -80,6 +88,12 @@ const writeSettings = (settings: Settings) => {
   }
 };
 
+const ComponentDemoPaths: [string, ComponentDemo][] =
+  ComponentDemos.map(d => [
+    d.name.toLowerCase().replace(/\s+/g, '-'),
+    d,
+  ]);
+
 type State = {
   settings: Settings;
 };
@@ -138,7 +152,7 @@ class App extends Component<{}, State> {
 
     return (
       <ThemeProvider theme={settings.darkTheme ? DarkTheme : LightTheme}>
-        <>
+        <Router>
           <h1>UI component test page</h1>
 
           <S.Group>
@@ -156,23 +170,45 @@ class App extends Component<{}, State> {
             />
           </S.Group>
 
-          {ComponentDemos.map(demo =>
-            <Demo
-              key={demo.name}
-              name={demo.name}
-              state={settings[demo.name]}
-              controls={demo.controls}
-              contents={demo.contents}
-              alignX={demo.alignX}
-              alignY={demo.alignY}
-              onSetState={this.handleSetDemoState}
-              onToggleState={this.handleToggleDemoState}
-            />
-          )}
+          <S.Content>
+            <S.MainNav>
+              <ul>
+                {ComponentDemoPaths.map(([path, demo]) =>
+                  <li key={demo.name}>
+                    <NavLink to={`/${path}`} activeClassName='current'>
+                      {demo.name}
+                    </NavLink>
+                  </li>
+                )}
+              </ul>
+            </S.MainNav>
+
+            <S.CurrentDemo>
+              <RouteSwitch>
+                {ComponentDemoPaths.map(([path, demo]) =>
+                  <Route key={demo.name} path={`/${path}`}>
+                    <Demo
+                      name={demo.name}
+                      state={settings[demo.name]}
+                      controls={demo.controls}
+                      contents={demo.contents}
+                      alignX={demo.alignX}
+                      alignY={demo.alignY}
+                      onSetState={this.handleSetDemoState}
+                      onToggleState={this.handleToggleDemoState}
+                    />
+                  </Route>
+                )}
+                <Route path='/'>
+                  <p>&larr; Select a component to try it out!</p>
+                </Route>
+              </RouteSwitch>
+            </S.CurrentDemo>
+          </S.Content>
 
           <S.AppStyles/>
           <ComponentStyles/>
-        </>
+        </Router>
       </ThemeProvider>
     );
   }

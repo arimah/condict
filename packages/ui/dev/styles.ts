@@ -15,7 +15,54 @@ export const AppStyles = createGlobalStyle`
   #app-root {
     margin-left: auto;
     margin-right: auto;
-    max-width: 900px;
+    max-width: 1100px;
+  }
+`;
+
+export const Content = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 32px;
+`;
+
+export const MainNav = styled.nav`
+  flex: 0 2 200px;
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  li:not(:first-child) {
+    margin-top: 8px;
+  }
+
+  a {
+    display: inline-block;
+    color: ${p => p.theme.link.color};
+
+    ${transition('color')}
+  }
+
+  a:hover {
+    color: ${p => p.theme.link.hover};
+  }
+
+  a:active {
+    color: ${p => p.theme.link.active};
+  }
+
+  a.current {
+    font-weight: bold;
+    color: ${p => p.theme.secondary.fg};
+  }
+`;
+
+export const CurrentDemo = styled.main`
+  flex: 1 1 auto;
+
+  > section:first-child > h2:first-child {
+    margin-top: 0;
   }
 `;
 
