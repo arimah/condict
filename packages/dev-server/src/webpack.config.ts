@@ -6,7 +6,7 @@ import 'html-replace-webpack-plugin';
 type Options = {
   entry: string;
   rootDir: string | string[];
-  contentBase?: string;
+  contentBase?: string | false;
   title: string;
   template: string;
 };
@@ -25,6 +25,8 @@ export default ({
 
   output: {
     filename: 'main.js',
+    // Ensure HtmlWebpackPlugin emits an absolute path.
+    publicPath: '/',
   },
 
   devtool: 'cheap-source-map',
@@ -32,6 +34,8 @@ export default ({
   devServer: {
     contentBase,
     hot: true,
+    historyApiFallback: true,
+    serveIndex: false,
   },
 
   resolve: {

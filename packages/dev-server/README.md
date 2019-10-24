@@ -42,7 +42,7 @@ The module exports a function, `CondictDevServer`, which takes an object of opti
 | --- | --- | --- |
 | `entry` | string or string[] | Defines the dev server's entry point. This correspond's to Webpack's `entry` option. This should be an absolute path. |
 | `rootDir` | string or string[] | The directory or array of directories containing *all* TypeScript files to be served by the dev server. If files are served from `src/`, that must be included in the array, due to how TypeScript works. Root dirs should be absolute paths. |
-| `contentBase` | string | Optional. The directory from which to serve static content, such as image assets. Defaults to `rootDir`. |
+| `contentBase` | string or false | Optional. The directory from which to serve static content, such as image assets. If set to `false`, disables static content serving. Defaults to `false`. |
 | `title` | string | Optional. The title of the dev server page. This value replaces the placeholder `@@title@@` within the HTML template. Defaults to "Condict dev server". |
 | `template` | string | Optional. The path to an HTML file that is used as the dev server template. The default template is [`templates/default.html`](./templates/default.html). The placeholder `@@title@@` is replaced by the value of the `title` option. |
 | `port` | number | Optional. The port number that the dev server listens on. Defaults to the environment variable `WEBPACK_PORT` when present, or `3000` otherwise. |

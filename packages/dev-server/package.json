@@ -1,6 +1,6 @@
 {
   "name": "@condict/dev-server",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Thin wrapper around webpack-dev-server that injects Condict-specific config.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
@@ -30,7 +30,7 @@
     "@types/react-dom": "^16.8.5",
     "@types/styled-components": "4.1.8",
     "@types/webpack": "^4.32.1",
-    "@types/webpack-dev-server": "^3.1.7",
+    "@types/webpack-dev-server": "^3.4.0",
     "@typescript-eslint/eslint-plugin": "^1.12.0",
     "@typescript-eslint/parser": "^1.12.0",
     "chalk": "^2.4.2",

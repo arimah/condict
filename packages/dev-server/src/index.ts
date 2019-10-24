@@ -9,7 +9,7 @@ import getWebpackConfig from './webpack.config';
 type Options = {
   entry: string;
   rootDir: string;
-  contentBase?: string;
+  contentBase?: string | false;
   title?: string;
   template?: string;
   port?: number;
@@ -34,7 +34,7 @@ export function start(options: Options) {
   const webpackConfig = getWebpackConfig({
     entry,
     rootDir,
-    contentBase: options.contentBase || rootDir,
+    contentBase: options.contentBase || false,
     title: options.title || 'Condict dev server',
     template: options.template || path.resolve(__dirname, '../templates/default.html'),
   });
