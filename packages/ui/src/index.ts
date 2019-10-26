@@ -2,6 +2,18 @@ export {Button, Props as ButtonProps} from './button';
 export {LinkButton, Props as LinkButtonProps} from './button/link-button';
 export {Checkbox, Props as CheckboxProps} from './checkbox';
 export {ConlangFlag, Props as ConlangFlagProps} from './conlang-flag';
+export {
+  FocusScope,
+  FocusScopeProps,
+  FocusTrap,
+  FocusTrapProps,
+  TargetOptions,
+  getFocusable,
+  getTabReachable,
+  sortByTabOrder,
+  disableFocusManager,
+  enableFocusManager,
+} from './focus';
 export {GlobalStyles} from './global-styles';
 export {Menu, Props as MenuProps, MenuElement, MenuRef, MenuType} from './menu';
 export {default as MenuTrigger} from './menu/trigger';
@@ -59,5 +71,3 @@ export {
   default as DescendantCollection,
   GetElementFunc,
 } from './descendant-collection';
-
-export {default as FocusTrap, FocusTrapOptions} from './focus-trap';

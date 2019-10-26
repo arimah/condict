@@ -2,6 +2,7 @@ import ButtonDemo from './button';
 import CheckboxDemo from './checkbox';
 import CommandDemo from './command';
 import ConlangFlagDemo from './conlang-flag';
+import FocusDemo from './focus';
 import MenuDemo from './menu';
 import NonIdealStateDemo from './non-ideal-state';
 import NumberInputDemo from './number-input';
@@ -22,6 +23,7 @@ const AllDemos: ComponentDemo<any>[] = [
   CheckboxDemo,
   CommandDemo,
   ConlangFlagDemo,
+  FocusDemo,
   MenuDemo,
   NonIdealStateDemo,
   NumberInputDemo,
