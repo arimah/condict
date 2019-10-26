@@ -2,6 +2,7 @@ import React, {Component, MouseEvent as SyntheticMouseEvent} from 'react';
 import memoizeOne from 'memoize-one';
 
 import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
+import {disableFocusManager, enableFocusManager} from '../focus';
 
 import {MenuItem, ManagedTreeContext, ManagedTreeContextValue} from './context';
 import ManagedMenu from './managed-menu';
@@ -188,6 +189,7 @@ export default class MenuManager extends Component<Props, State> {
       this.setState({
         stack: stack.openRoot(rootMenu),
       });
+      disableFocusManager();
     }
   }
 
@@ -228,6 +230,7 @@ export default class MenuManager extends Component<Props, State> {
         }
       } else {
         this.detachEvents();
+        enableFocusManager();
 
         const previousRoot =
           prevStack.openMenus[0] &&
@@ -246,6 +249,7 @@ export default class MenuManager extends Component<Props, State> {
   public componentWillUnmount() {
     this.cancelIntent();
     this.detachEvents();
+    enableFocusManager();
   }
 
   private attachEvents() {

@@ -1,6 +1,14 @@
 import React, {useState} from 'react';
 
-import {FocusTrap, Button, Checkbox, TextInput, Intent} from '../../../src';
+import {
+  FocusTrap,
+  Button,
+  Checkbox,
+  TextInput,
+  Menu,
+  MenuTrigger,
+  Intent,
+} from '../../../src';
 
 import * as S from './styles';
 
@@ -37,11 +45,20 @@ const Demo = () => {
             </Checkbox>
           </p>
           <p>
-            <Button
-              slim
-              label='Button in first trap'
-              intent={Intent.SECONDARY}
-            />
+            <MenuTrigger
+              menu={
+                <Menu>
+                  <Menu.Item label='Sample menu'/>
+                  <Menu.CheckItem label='Focus manager override' checked/>
+                </Menu>
+              }
+            >
+              <Button
+                slim
+                label='Menu button in first trap'
+                intent={Intent.SECONDARY}
+              />
+            </MenuTrigger>
           </p>
         </S.Scope>
       </FocusTrap>
