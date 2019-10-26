@@ -5,13 +5,14 @@ export const tryFocus = (...elements: (Element | null)[]) => {
   for (const element of elements) {
     if (
       element &&
-      document.activeElement !== element &&
       isFocusable(element) &&
       isFocusableElement(element)
     ) {
-      element.focus();
-      if (element.tagName === 'INPUT') {
-        (element as HTMLInputElement).select();
+      if (document.activeElement !== element) {
+        element.focus();
+        if (element.tagName === 'INPUT') {
+          (element as HTMLInputElement).select();
+        }
       }
       return;
     }
