@@ -1,12 +1,13 @@
 import React, {ChangeEvent, KeyboardEvent, PureComponent} from 'react';
 
-import {FocusTrap, FocusTrapOptions} from '@condict/ui';
+import {FocusTrap} from '@condict/ui';
 import {inflectWord} from '@condict/inflect';
 import {SROnly} from '@condict/a11y-utils';
 import genId from '@condict/gen-id';
 
 import {CellEditorProps} from '../../table-cell';
 import {Cell} from '../../value/types';
+import EditorShortcuts from '../../editor-shortcuts';
 
 import Value from '../value';
 import StemsContext, {StemsContextValue} from '../stems-context';
@@ -26,7 +27,6 @@ export default class CellEditor extends PureComponent<Props, State> {
   public static readonly contextType = StemsContext;
 
   private readonly dialogId = genId();
-  private readonly focusTrapOptions: FocusTrapOptions;
   private readonly inputRef = React.createRef<HTMLInputElement>();
 
   public constructor(props: Readonly<Props>, context: StemsContextValue) {
@@ -50,13 +50,6 @@ export default class CellEditor extends PureComponent<Props, State> {
       trapActive: false,
       cell: initialCell,
       inflectedForm,
-    };
-
-    this.focusTrapOptions = {
-      onDeactivate: this.handleDeactivate,
-      returnFocusOnDeactivate: true,
-      clickOutsideDeactivates: true,
-      escapeDeactivates: true,
     };
   }
 
@@ -84,7 +77,7 @@ export default class CellEditor extends PureComponent<Props, State> {
     this.setState({trapActive: true});
   }
 
-  private handleDeactivate = () => {
+  private commit = () => {
     this.props.onDone(this.state.cell);
   };
 
@@ -100,24 +93,24 @@ export default class CellEditor extends PureComponent<Props, State> {
     const {cell} = this.state;
     this.setState({
       cell: cell.set('data', cell.data.set('customForm', null)),
-    }, () => {
-      this.props.onDone(this.state.cell);
-    });
+    }, this.commit);
   };
 
   private handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      // Allow Enter to work with buttons.
-      if (
-        document.activeElement &&
-        document.activeElement.tagName === 'BUTTON'
-      ) {
-        return;
-      }
+    // Allow Enter to work with buttons.
+    if (
+      e.key === 'Enter' &&
+      document.activeElement &&
+      document.activeElement.tagName === 'BUTTON'
+    ) {
+      return;
+    }
 
+    const cmd = EditorShortcuts.get(e);
+    if (cmd && cmd.command === 'commit') {
       e.preventDefault();
       e.stopPropagation();
-      this.props.onDone(this.state.cell);
+      this.commit();
     }
   };
 
@@ -133,7 +126,7 @@ export default class CellEditor extends PureComponent<Props, State> {
     return (
       <FocusTrap
         active={trapActive}
-        options={this.focusTrapOptions}
+        onPointerDownOutside={this.commit}
       >
         <S.CellEditor
           id={this.props.id}
