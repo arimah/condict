@@ -53,8 +53,15 @@ const FocusScope = (props: Props) => {
   const lastEnabled = useRef(enabled);
 
   // We need to update the previous focus as early as possible: focus might
-  // already have moved into the trap by the time the effect runs.
-  if (!lastEnabled.current && enabled) {
+  // already have moved into the trap by the time the effect runs. Also, if
+  // focus is *already inside* the focus trap, assume it was moved there
+  // deliberately before activating the trap, and ignore it.
+  if (
+    !lastEnabled.current && enabled && !(
+      rootRef.current &&
+      rootRef.current.contains(document.activeElement)
+    )
+  ) {
     previousFocus.current = document.activeElement;
   }
   lastEnabled.current = enabled;
