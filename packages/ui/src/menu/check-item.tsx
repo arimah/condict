@@ -76,9 +76,10 @@ const CheckItem = React.forwardRef<HTMLDivElement, Props>((
     >
       <S.ItemIcon>{icon}</S.ItemIcon>
       <S.ItemLabel>{label}</S.ItemLabel>
-      <S.ItemShortcut>
-        {effectiveShortcut && String(effectiveShortcut)}
-      </S.ItemShortcut>
+      {effectiveShortcut &&
+        <S.ItemShortcut>
+          {String(effectiveShortcut)}
+        </S.ItemShortcut>}
       <S.ItemCheck checked={checked} radio={radio}>
         {checked && (radio ? <S.RadioDot/> : <S.CheckMark/>)}
       </S.ItemCheck>
@@ -100,9 +101,10 @@ const PhantomItem = ({icon, label, shortcut, checked, radio}: PhantomProps) =>
   <S.Item aria-hidden='true'>
     <S.ItemIcon>{icon}</S.ItemIcon>
     <S.ItemLabel>{label}</S.ItemLabel>
-    <S.ItemShortcut>
-      {shortcut && String(shortcut)}
-    </S.ItemShortcut>
+    {shortcut &&
+      <S.ItemShortcut>
+        {String(shortcut)}
+      </S.ItemShortcut>}
     <S.ItemCheck checked={checked} radio={radio}>
       {checked && (radio ? <S.RadioDot/> : <S.CheckMark/>)}
     </S.ItemCheck>

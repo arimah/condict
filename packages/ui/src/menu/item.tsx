@@ -78,9 +78,10 @@ const Item = React.forwardRef<HTMLDivElement, Props>((
     >
       <S.ItemIcon>{icon}</S.ItemIcon>
       <S.ItemLabel>{label}</S.ItemLabel>
-      <S.ItemShortcut>
-        {effectiveShortcut && String(effectiveShortcut)}
-      </S.ItemShortcut>
+      {effectiveShortcut &&
+        <S.ItemShortcut>
+          {String(effectiveShortcut)}
+        </S.ItemShortcut>}
       <S.ItemSubmenu>
         {children != null && <ChevronRightIcon/>}
       </S.ItemSubmenu>
@@ -114,9 +115,10 @@ const PhantomItem = ({icon, label, shortcut, hasSubmenu}: PhantomProps) =>
   <S.Item aria-hidden='true'>
     <S.ItemIcon>{icon}</S.ItemIcon>
     <S.ItemLabel>{label}</S.ItemLabel>
-    <S.ItemShortcut>
-      {shortcut && String(shortcut)}
-    </S.ItemShortcut>
+    {shortcut &&
+      <S.ItemShortcut>
+        {String(shortcut)}
+      </S.ItemShortcut>}
     <S.ItemSubmenu>
       {hasSubmenu && <ChevronRightIcon/>}
     </S.ItemSubmenu>
