@@ -19,30 +19,45 @@ import platform from 'platform';
 // In addition, macOS sometimes uses Ctrl as a "secondary" modifier.
 //
 // This is why we have a `primary` modifier instead of `ctrl`, so that we can
-// select the most appropriate modifier for the system. You can also specify
-// `primary: SECONDARY`, as weird as that looks, to force Ctrl everywhere.
+// select the most appropriate modifier for the system. The `secondary` modifier
+// exists almost exclusively to support macOS, but also to allow user-typed
+// shortcuts to use the Super/Windows key on Linux/Windows.
 //
-// You cannot combine the primary and secondary modifier. (macOS shortcuts
-// sometimes do that, but the behaviour is not portable.)
+// It *is* possible to combine the primary and secondary modifiers (some
+// shortcuts on macOS do that), but this is not portable behaviour and should
+// be customised per OS.
+//
+// When parsing keyboard shortcut specifications, `Primary+` is taken to mean
+// Cmd on macOS, and Ctrl elsewhere. `Secondary+` is Ctrl on macOS and the
+// Super/Windows key elsewhere. `Ctrl+` and `Control+` mean Ctrl on every OS,
+// and can be used to avoid platform-specific code.
 
 type AnyKeyboardEvent = KeyboardEvent | SyntheticKeyboardEvent;
 
-const isOSX: boolean =
+const isMacOS: boolean =
   platform.os != null &&
   platform.os.family != null &&
-  /os\s*x/.test(platform.os.family);
+  /os\s*x/i.test(platform.os.family);
 
-const hasPrimary = isOSX
+const isWindows: boolean =
+  platform.os != null &&
+  platform.os.family != null &&
+  /windows/i.test(platform.os.family);
+
+const hasPrimary = isMacOS
   ? (e: AnyKeyboardEvent) => e.metaKey
   : (e: AnyKeyboardEvent) => e.ctrlKey;
-const hasSecondary = (e: AnyKeyboardEvent) => e.ctrlKey;
 
-const modifiersPattern = /(Primary|Secondary|Shift|Alt)\s*\+\s*/gi;
+const hasSecondary = isMacOS
+  ? (e: AnyKeyboardEvent) => e.ctrlKey
+  : (e: AnyKeyboardEvent) => e.metaKey;
+
+const modifiersPattern = /(Primary|Secondary|Shift|Alt|Ctrl|Control)\s*\+\s*/gi;
 
 type ModifierFormatter =
   (primary: boolean, secondary: boolean, shift: boolean, alt: boolean) => string;
 
-const formatModifiers: ModifierFormatter = isOSX
+const formatModifiers: ModifierFormatter = isMacOS
   ? (primary, secondary, shift, alt) =>
     // macOS order: Ctrl+Opt+Shift+Cmd+(key)
     // U+2325 = ⌥ Option Key
@@ -50,19 +65,23 @@ const formatModifiers: ModifierFormatter = isOSX
     // U+2318 = ⌘ Place Of Interest Sign, aka Cmd
     // ^ = Ctrl
     `${secondary ? '^' : ''}${alt ? '\u2325' : ''}${shift ? '\u21E7' : ''}${primary ? '\u2318' : ''}`
-  : (primary, secondary, shift, alt) =>
-    // Windows/Linux order: Ctrl+Shift+Alt+(key)
-    `${primary || secondary ? 'Ctrl+' : ''}${shift ? 'Shift+' : ''}${alt ? 'Alt+' : ''}`;
+  : isWindows
+    ? (primary, secondary, shift, alt) =>
+      // Windows order: Win+Ctrl+Alt+Shift+(key)
+      `${secondary ? 'Win+' : ''}${primary ? 'Ctrl+' : ''}${alt ? 'Alt+' : ''}${shift ? 'Shift+' : ''}`
+    : (primary, secondary, shift, alt) =>
+      // Linux order: Super+Ctrl+Alt+Shift+(key)
+      `${secondary ? 'Super+' : ''}${primary ? 'Ctrl+' : ''}${alt ? 'Alt+' : ''}${shift ? 'Shift+' : ''}`;
 
-const formatAriaModifiers: ModifierFormatter = isOSX
+const formatAriaModifiers: ModifierFormatter = isMacOS
   ? (primary, secondary, shift, alt) =>
     // Primary = Meta
     // Secondary = Control
-    `${primary ? 'Meta+' : ''}${secondary ? 'Control+' : ''}${shift ? 'Shift+' : ''}${alt ? 'Alt+' : ''}`
+    `${primary ? 'Meta+' : ''}${secondary ? 'Control+' : ''}${alt ? 'Alt+' : ''}${shift ? 'Shift+' : ''}`
   : (primary, secondary, shift, alt) =>
     // Primary = Control
-    // Secondary = Control
-    `${primary || secondary ? 'Control+' : ''}${shift ? 'Shift+' : ''}${alt ? 'Alt+' : ''}`;
+    // Secondary = Meta
+    `${primary ? 'Control+' : ''}${secondary ? 'Meta+' : ''}${alt ? 'Alt+' : ''}${shift ? 'Shift+' : ''}`;
 
 // Translates a small number of special keys into a more palatable name.
 // Some of these choices may be questionable.
@@ -83,7 +102,8 @@ const translateKeyName = (name: string) => {
 
 export type ShortcutConfig = {
   keys: string | string[];
-  primary: boolean | 'secondary';
+  primary: boolean;
+  secondary: boolean;
   shift: boolean;
   alt: boolean;
 };
@@ -91,6 +111,7 @@ export type ShortcutConfig = {
 const DefaultConfig: ShortcutConfig = Object.freeze({
   keys: [],
   primary: false,
+  secondary: false,
   shift: false,
   alt: false,
 });
@@ -98,10 +119,9 @@ const DefaultConfig: ShortcutConfig = Object.freeze({
 export type ShortcutType = Shortcut | ShortcutGroup;
 
 export class Shortcut {
-  public static readonly SECONDARY = 'secondary';
-
   public readonly keys: string[];
-  public readonly primary: boolean | 'secondary';
+  public readonly primary: boolean;
+  public readonly secondary: boolean;
   public readonly shift: boolean;
   public readonly alt: boolean;
 
@@ -109,6 +129,7 @@ export class Shortcut {
     const fullConfig: ShortcutConfig = {...DefaultConfig, ...config};
     this.keys = Array.isArray(fullConfig.keys) ? fullConfig.keys : [fullConfig.keys];
     this.primary = fullConfig.primary;
+    this.secondary = fullConfig.secondary;
     this.shift = fullConfig.shift;
     this.alt = fullConfig.alt;
   }
@@ -119,10 +140,8 @@ export class Shortcut {
 
   public testModifiers(keyEvent: AnyKeyboardEvent) {
     return (
-      (
-        this.primary === 'secondary' && hasSecondary(keyEvent) ||
-        this.primary === hasPrimary(keyEvent)
-      ) &&
+      this.primary === hasPrimary(keyEvent) &&
+      this.secondary === hasSecondary(keyEvent) &&
       this.shift === keyEvent.shiftKey &&
       this.alt === keyEvent.altKey
     );
@@ -148,8 +167,8 @@ export class Shortcut {
 
   public toString(): string {
     const modifiers = formatModifiers(
-      this.primary === true,
-      this.primary === 'secondary',
+      this.primary,
+      this.secondary,
       this.shift,
       this.alt
     );
@@ -158,8 +177,8 @@ export class Shortcut {
 
   public toAriaString(): string {
     const modifiers = formatAriaModifiers(
-      this.primary === true,
-      this.primary === 'secondary',
+      this.primary,
+      this.secondary,
       this.shift,
       this.alt
     );
@@ -183,13 +202,21 @@ export class Shortcut {
           config.primary = true;
           break;
         case 'secondary':
-          config.primary = 'secondary';
+          config.secondary = true;
           break;
         case 'shift':
           config.shift = true;
           break;
         case 'alt':
           config.alt = true;
+          break;
+        case 'ctrl':
+        case 'control':
+          if (isMacOS) {
+            config.secondary = true;
+          } else {
+            config.primary = true;
+          }
           break;
       }
       return '';
