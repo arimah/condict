@@ -182,6 +182,7 @@ The command object has the same structure as the command passed to [`<CommandCon
 ## `Shortcut`
 
 * [constructor](#shortcut-constructor)
+* [`Shortcut.prototype.matches()`](#shortcutprototypematches)
 * [`Shortcut.prototype.forEach()`](#shortcutprototypeforeach)
 * [`Shortcut.prototype.toString()`](#shortcutprototypetostring)
 * [`Shortcut.prototype.toAriaString()`](#shortcutprototypetoariastring)
@@ -226,6 +227,12 @@ Constructs a new `Shortcut`. `fields` is an object with the following keys:
 | `primary` | boolean or [`Shortcut.SECONDARY`](#shortcutsecondary) | If `true`, the shortcut responds when the primary modifier is held. If set to [`Shortcut.SECONDARY`](#shortcutsecondary), the secondary modifier must be held. Finally, if set to `false`, both modifiers must be released. If omitted, this field defaults to `false`. |
 | `shift` | boolean | If `true`, the <kbd>Shift</kbd> key must be held. Otherwise, it must be released. If omitted, this field defaults to `false`. |
 | `alt` | boolean | If `true`, the <kbd>Alt</kbd> or <kbd>⌥ Option</kbd> key must be held. Otherwise, it must be released. If omitted, this field defaults to `false`. |
+
+### `Shortcut.prototype.matches`
+
+> `matches(keyEvent: KeyboardEvent): boolean`
+
+Determines whether the specified keyboard event (which can be either a native `KeyboardEvent` or a synthetic React event) matches the shortcut.
 
 ### `Shortcut.prototype.forEach`
 
@@ -292,6 +299,7 @@ When this value is passed to the `primary` field in [the constructor](#shortcut-
 ## `ShortcutGroup`
 
 * [constructor](#shortcutgroup-constructor)
+* [`ShortcutGroup.prototype.matches()`](#shortcutgroupprototypematches)
 * [`ShortcutGroup.prototype.forEach()`](#shortcutgroupprototypeforeach)
 * [`ShortcutGroup.prototype.toString()`](#shortcutgroupprototypetostring)
 * [`ShortcutGroup.prototype.toAriaString()`](#shortcutgroupprototypetoariastring)
@@ -309,6 +317,12 @@ See [`Shortcut`](#shortcut) for more details on keys, modifiers, and other conce
 Constructs a new `ShortcutGroup`. `shortcuts` is an array of [`Shortcut`](#shortcut) values.
 
 Note that each value must be `Shortcut`, not a string. To parse an array of strings into a `ShortcutGroup`, use [`Shortcut.parse`](#shortcut-parse).
+
+### `ShortcutGroup.prototype.matches`
+
+> `matches(keyEvent: KeyboardEvent): boolean`
+
+Determines whether the specified keyboard event (which can be either a native `KeyboardEvent` or a synthetic React event) matches any shortcut in the group.
 
 ### `ShortcutGroup.prototype.forEach`
 
@@ -337,7 +351,7 @@ Formats each shortcut in the group as an ARIA-compatible shortcut string. See [`
 
 ---
 
-The `ShortcutMap` class contains an efficient mapping from a [`Shortcut`](#shortcut) to an arbitrary value (typically a command). The shortcut map can then be used to look up values from a keyboard event.
+The `ShortcutMap` class contains an efficient mapping from a [`Shortcut`](#shortcut) or [`ShortcutGroup`](#shortcutgroup) to an arbitrary value (typically a command). The shortcut map can then be used to look up values from a keyboard event.
 
 ### `ShortcutMap` constructor
 
@@ -361,6 +375,10 @@ An object that defines various common shortcuts. The following shortcuts are def
 | --- | --- | --- | --- |
 | `undo` | <kbd>Ctrl</kbd>+<kbd>Z</kbd> | <kbd>Ctrl</kbd>+<kbd>Z</kbd> | <kbd>⌘ Command</kbd>+<kbd>Z</kbd> |
 | `redo` | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> | <kbd>Ctrl</kbd>+<kbd>Y</kbd> | <kbd>⇧ Shift</kbd>+<kbd>⌘ Command</kbd>+<kbd>Z</kbd> |
+| `cut` | <kbd>Ctrl</kbd>+<kbd>X</kbd> | <kbd>Ctrl</kbd>+<kbd>X</kbd> | <kbd>⌘ Command</kbd>+<kbd>X</kbd> |
+| `copy` | <kbd>Ctrl</kbd>+<kbd>C</kbd> | <kbd>Ctrl</kbd>+<kbd>C</kbd> | <kbd>⌘ Command</kbd>+<kbd>C</kbd> |
+| `paste` | <kbd>Ctrl</kbd>+<kbd>V</kbd> | <kbd>Ctrl</kbd>+<kbd>V</kbd> | <kbd>⌘ Command</kbd>+<kbd>V</kbd> |
+| `selectAll` | <kbd>Ctrl</kbd>+<kbd>A</kbd> | <kbd>Ctrl</kbd>+<kbd>A</kbd> | <kbd>⌘ Command</kbd>+<kbd>A</kbd> |
 
 These keyboard shortcuts are largely standardised, and should not be used for other meanings.
 

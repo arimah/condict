@@ -113,6 +113,10 @@ export class Shortcut {
     this.alt = fullConfig.alt;
   }
 
+  public matches(keyEvent: AnyKeyboardEvent): boolean {
+    return this.keys.includes(keyEvent.key) && this.testModifiers(keyEvent);
+  }
+
   public testModifiers(keyEvent: AnyKeyboardEvent) {
     return (
       (
@@ -210,6 +214,10 @@ export class ShortcutGroup {
 
   public constructor(shortcuts: Shortcut[]) {
     this.shortcuts = shortcuts;
+  }
+
+  public matches(keyEvent: AnyKeyboardEvent): boolean {
+    return this.shortcuts.some(s => s.matches(keyEvent));
   }
 
   public forEach(cb: (shortcut: Shortcut, index: number) => void) {

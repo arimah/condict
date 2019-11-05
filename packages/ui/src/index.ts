@@ -46,7 +46,12 @@ export {
   ConsumerProps as CommandConsumerProps,
   useCommand,
 } from './command';
-export {Shortcut, ShortcutGroup, ShortcutMap} from './command/shortcut';
+export {
+  Shortcut,
+  ShortcutGroup,
+  ShortcutType,
+  ShortcutMap,
+} from './command/shortcut';
 export {Shortcuts} from './command/shortcuts';
 
 export {Theme, createTheme, extendTheme, intentVar, transition} from './theme';
