@@ -28,8 +28,8 @@ export const primaryColor = makeColorFn(291, {
 
 // Blue with a tiny bit of green (bluish grey)
 export const secondaryColor = makeColorFn(200, {
-  high: 10,
-  low: 5,
+  high: 15,
+  low: 10,
 });
 
 // Red with the tiniest hint of green

@@ -31,11 +31,11 @@ const DarkTheme = createTheme({
 
   secondary: {
     fg: '#FFFFFF',
-    bg: secondaryColor(Saturation.LOW, 15),
-    hoverBg: secondaryColor(Saturation.LOW, 20),
-    activeBg: secondaryColor(Saturation.HIGH, 10),
+    bg: secondaryColor(Saturation.LOW, 20),
+    hoverBg: secondaryColor(Saturation.LOW, 25),
+    activeBg: secondaryColor(Saturation.HIGH, 15),
     disabledFg: secondaryColor(Saturation.LOW, 40),
-    disabledBg: secondaryColor(Saturation.LOW, 10),
+    disabledBg: secondaryColor(Saturation.LOW, 15),
     altFg: '#000000',
     altBg: secondaryColor(Saturation.HIGH, 85),
     hoverAltBg: secondaryColor(Saturation.HIGH, 95),

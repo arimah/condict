@@ -31,11 +31,11 @@ const LightTheme = createTheme({
 
   secondary: {
     fg: '#000000',
-    bg: secondaryColor(Saturation.LOW, 90),
-    hoverBg: secondaryColor(Saturation.LOW, 95),
-    activeBg: secondaryColor(Saturation.HIGH, 85),
-    disabledFg: secondaryColor(Saturation.LOW, 70),
-    disabledBg: secondaryColor(Saturation.LOW, 95),
+    bg: secondaryColor(Saturation.LOW, 85),
+    hoverBg: secondaryColor(Saturation.LOW, 90),
+    activeBg: secondaryColor(Saturation.HIGH, 80),
+    disabledFg: secondaryColor(Saturation.LOW, 60),
+    disabledBg: secondaryColor(Saturation.LOW, 90),
     altFg: '#FFFFFF',
     altBg: secondaryColor(Saturation.HIGH, 15),
     hoverAltBg: secondaryColor(Saturation.HIGH, 30),
