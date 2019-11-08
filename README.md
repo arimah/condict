@@ -32,6 +32,7 @@ The eventual goal of Condict is to be distributable as a standalone Electron app
 * [graphql-typer](./packages/graphql-typer): Generates TypeScript type definitions from a GraphQL schema.
 * [ipa](./packages/ipa): Utilities for searching and listing [IPA][] characters.
 * [ipa-input](./packages/ipa-input): A fancy textbox that searches [IPA][] characters.
+* [platform](./packages/platform): Basic platform detection, with support for overrides.
 * [server](./packages/server): The storage backend.
 * [table-editor](./packages/table-editor): UI components for editing inflection tables. Separate package because of its size and complexity.
 * [ui](./packages/ui): Mostly-general-purpose reusable UI components.
