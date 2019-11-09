@@ -1,5 +1,6 @@
 import {KeyboardEvent as SyntheticKeyboardEvent} from 'react';
-import platform from 'platform';
+
+import {selectPlatform, isMacOS} from '@condict/platform';
 
 // Keyboard shortcuts are *weird*.
 //
@@ -11,12 +12,12 @@ import platform from 'platform';
 // (but not exclusively) used in combination with Ctrl. Shift usually entails
 // some notion of "moreness". Ctrl+W closes the current tab, Ctrl+Shift+W closes
 // *every* tab. Shift also (universally, thankfully) extends selections. We can
-// read Ctrl on the very useful `ctrlKey` property.
+// read Ctrl with `getModifierState('Control')`.
 //
 // On macOS, the "primary" modifier is Cmd, which, JS being JS, is not actually
-// mapped to `ctrlKey`, but to `metaKey` (which on Windows is the Windows key,
-// and on Linux and Unix-likes is the Super key (which we don't care about)).
-// In addition, macOS sometimes uses Ctrl as a "secondary" modifier.
+// mapped to `Control`, but to `Meta` (which on Windows may be the Windows key,
+// and on Linux and Unix-likes possibly the Super key). In addition, macOS
+// sometimes uses Ctrl as a "secondary" modifier.
 //
 // This is why we have a `primary` modifier instead of `ctrl`, so that we can
 // select the most appropriate modifier for the system. The `secondary` modifier
@@ -34,54 +35,63 @@ import platform from 'platform';
 
 type AnyKeyboardEvent = KeyboardEvent | SyntheticKeyboardEvent;
 
-const isMacOS: boolean =
-  platform.os != null &&
-  platform.os.family != null &&
-  /os\s*x/i.test(platform.os.family);
+const hasPrimary = selectPlatform({
+  macos: (e: AnyKeyboardEvent) => e.getModifierState('Meta'),
+  windows: (e: AnyKeyboardEvent) =>
+    e.getModifierState('Control') || e.getModifierState('AltGraph'),
+  other: (e: AnyKeyboardEvent) => e.getModifierState('Control'),
+});
 
-const isWindows: boolean =
-  platform.os != null &&
-  platform.os.family != null &&
-  /windows/i.test(platform.os.family);
+const hasSecondary = selectPlatform({
+  macos: (e: AnyKeyboardEvent) => e.getModifierState('Control'),
+  default: (e: AnyKeyboardEvent) => e.getModifierState('OS'),
+});
 
-const hasPrimary = isMacOS
-  ? (e: AnyKeyboardEvent) => e.metaKey
-  : (e: AnyKeyboardEvent) => e.ctrlKey;
-
-const hasSecondary = isMacOS
-  ? (e: AnyKeyboardEvent) => e.ctrlKey
-  : (e: AnyKeyboardEvent) => e.metaKey;
+const hasAlt = selectPlatform({
+  windows: (e: AnyKeyboardEvent) =>
+    e.getModifierState('Alt') || e.getModifierState('AltGraph'),
+  default: (e: AnyKeyboardEvent) => e.getModifierState('Alt'),
+});
 
 const modifiersPattern = /(Primary|Secondary|Shift|Alt|Ctrl|Control)\s*\+\s*/gi;
 
 type ModifierFormatter =
   (primary: boolean, secondary: boolean, shift: boolean, alt: boolean) => string;
 
-const formatModifiers: ModifierFormatter = isMacOS
-  ? (primary, secondary, shift, alt) =>
+const joinMods = (
+  a: false | string,
+  b: false | string,
+  c: false | string,
+  d: false | string
+) =>
+  `${a || ''}${b || ''}${c || ''}${d || ''}`;
+
+const formatModifiers: ModifierFormatter = selectPlatform({
+  macos: (primary, secondary, shift, alt) =>
     // macOS order: Ctrl+Opt+Shift+Cmd+(key)
     // U+2325 = ⌥ Option Key
     // U+21E7 = ⇧ Upwards White Arrow, aka shift
     // U+2318 = ⌘ Place Of Interest Sign, aka Cmd
     // ^ = Ctrl
-    `${secondary ? '^' : ''}${alt ? '\u2325' : ''}${shift ? '\u21E7' : ''}${primary ? '\u2318' : ''}`
-  : isWindows
-    ? (primary, secondary, shift, alt) =>
-      // Windows order: Win+Ctrl+Alt+Shift+(key)
-      `${secondary ? 'Win+' : ''}${primary ? 'Ctrl+' : ''}${alt ? 'Alt+' : ''}${shift ? 'Shift+' : ''}`
-    : (primary, secondary, shift, alt) =>
-      // Linux order: Super+Ctrl+Alt+Shift+(key)
-      `${secondary ? 'Super+' : ''}${primary ? 'Ctrl+' : ''}${alt ? 'Alt+' : ''}${shift ? 'Shift+' : ''}`;
+    joinMods(secondary && '^', alt && '\u2325', shift && '\u21E7', primary && '\u2318'),
+  windows: (primary, secondary, shift, alt) =>
+    // Windows order: Win+Ctrl+Alt+Shift+(key)
+    joinMods(secondary && 'Win+', primary && 'Ctrl+', alt && 'Alt+', shift && 'Shift+'),
+  other: (primary, secondary, shift, alt) =>
+    // Linux order: Super+Ctrl+Alt+Shift+(key)
+    joinMods(secondary && 'Super+', primary && 'Ctrl+', alt && 'Alt+', shift && 'Shift+'),
+});
 
-const formatAriaModifiers: ModifierFormatter = isMacOS
-  ? (primary, secondary, shift, alt) =>
+const formatAriaModifiers: ModifierFormatter = selectPlatform({
+  macos: (primary, secondary, shift, alt) =>
     // Primary = Meta
     // Secondary = Control
-    `${primary ? 'Meta+' : ''}${secondary ? 'Control+' : ''}${alt ? 'Alt+' : ''}${shift ? 'Shift+' : ''}`
-  : (primary, secondary, shift, alt) =>
+    joinMods(primary && 'Meta+', secondary && 'Control+', alt && 'Alt+', shift && 'Shift+'),
+  default: (primary, secondary, shift, alt) =>
     // Primary = Control
     // Secondary = Meta
-    `${primary ? 'Control+' : ''}${secondary ? 'Meta+' : ''}${alt ? 'Alt+' : ''}${shift ? 'Shift+' : ''}`;
+    joinMods(primary && 'Control+', secondary && 'Meta+', alt && 'Alt+', shift && 'Shift+'),
+});
 
 // Translates a small number of special keys into a more palatable name.
 // Some of these choices may be questionable.
@@ -142,8 +152,8 @@ export class Shortcut {
     return (
       this.primary === hasPrimary(keyEvent) &&
       this.secondary === hasSecondary(keyEvent) &&
-      this.shift === keyEvent.shiftKey &&
-      this.alt === keyEvent.altKey
+      this.shift === keyEvent.getModifierState('Shift') &&
+      this.alt === hasAlt(keyEvent)
     );
   }
 

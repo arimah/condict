@@ -1,11 +1,6 @@
-import platform from 'platform';
+import {isWindows} from '@condict/platform';
 
 import {Shortcut} from './shortcut';
-
-const isWindows =
-  platform.os != null &&
-  platform.os.family != null &&
-  /windows/i.test(platform.os.family);
 
 export const Shortcuts = Object.freeze({
   undo: Shortcut.parse('Primary+Z z'),
