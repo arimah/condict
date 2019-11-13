@@ -41,8 +41,7 @@ export enum FocusScopeBehavior {
   CONTAIN = 'contain',
 }
 
-export type FocusScopeState = {
-  root: RefObject<Element>;
+export type FocusScopeProps = {
   behavior: FocusScopeBehavior;
   onPointerDownOutside?: (target: Element) => void;
 };

@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React from 'react';
 
 import combineRefs from '../combine-refs';
 
@@ -19,10 +19,7 @@ const FocusScope = (props: Props) => {
     children,
   } = props;
 
-  const rootRef = useRef<Element>(null);
-
-  useManagedFocus({
-    root: rootRef,
+  const rootRef = useManagedFocus({
     behavior: getBehavior(active),
   });
 

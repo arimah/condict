@@ -1,10 +1,10 @@
-import {useState, useEffect} from 'react';
+import {RefObject, useState, useMemo, useEffect} from 'react';
 
 import genId from '@condict/gen-id';
 
 import {getTabReachable} from './targets';
 import {tryFocus, getNearestFocusable} from './utils';
-import {FocusScopeState, FocusScopeBehavior} from './types';
+import {FocusScopeProps, FocusScopeBehavior} from './types';
 
 // Some notes on the tab handling.
 //
@@ -65,6 +65,10 @@ type TabGroup = {
   last: Element | null;
 };
 
+type FocusScopeState = {
+  root: Element | null;
+} & FocusScopeProps;
+
 type ScopeGroups = {
   contain: FocusScopeState[];
   exclude: FocusScopeState[];
@@ -84,7 +88,6 @@ const nextTick = (cb: () => void): (() => void) => {
 };
 
 const needUpdate = (prev: FocusScopeState, next: FocusScopeState) =>
-  prev.root !== next.root ||
   prev.behavior !== next.behavior;
 
 const needManagedFocus = (scopes: Iterable<FocusScopeState>) => {
@@ -98,8 +101,8 @@ const needManagedFocus = (scopes: Iterable<FocusScopeState>) => {
 
 const getScopeRoots = (scopes: FocusScopeState[]) =>
   scopes
-    .filter(s => s.root.current !== null)
-    .map(s => s.root.current as Element);
+    .filter(s => s.root !== null)
+    .map(s => s.root as Element);
 
 const findLowestCommonParent = (elements: Element[]) =>
   elements.reduce((parent, element) => {
@@ -161,14 +164,14 @@ const manager = (() => {
     const {contain, exclude} = getScopeGroups();
     if (
       contain.length > 0 &&
-      !contain.some(e => e.root.current && e.root.current.contains(element))
+      !contain.some(e => e.root && e.root.contains(element))
     ) {
       // The element must be inside one of the 'contain' scopes, but isn't.
       return 'outside-contain';
     }
     if (
       exclude.length > 0 &&
-      exclude.some(e => e.root.current && e.root.current.contains(element))
+      exclude.some(e => e.root && e.root.contains(element))
     ) {
       // The element must *not* be inside one of the 'exclude' scopes, but is.
       return 'inside-exclude';
@@ -417,12 +420,30 @@ const manager = (() => {
   });
 
   return {
-    set(key: string, state: FocusScopeState) {
+    set(key: string, props: FocusScopeProps) {
       const prevState = scopes.get(key);
+      const nextState: FocusScopeState = {
+        root: prevState ? prevState.root : null,
+        ...props,
+      };
       // Not all properties affect things, so always update 'scopes'.
-      scopes.set(key, state);
+      scopes.set(key, nextState);
       scopeGroups = null;
-      if (!prevState || needUpdate(prevState, state)) {
+      if (!prevState || needUpdate(prevState, nextState)) {
+        updateScopes();
+      }
+    },
+
+    getRoot(key: string): Element | null {
+      const state = scopes.get(key);
+      return state ? state.root : null;
+    },
+
+    setRoot(key: string, root: Element | null) {
+      const state = scopes.get(key);
+      if (state && state.root !== root) {
+        state.root = root;
+        scopeGroups = null;
         updateScopes();
       }
     },
@@ -446,12 +467,22 @@ const manager = (() => {
   };
 })();
 
-export const useManagedFocus = (state: FocusScopeState) => {
+export const useManagedFocus = (props: FocusScopeProps): RefObject<Element> => {
   const [key] = useState(genId);
 
-  manager.set(key, state);
+  manager.set(key, props);
 
   useEffect(() => () => manager.remove(key), []);
+
+  const rootRef = useMemo(() => ({
+    get current() {
+      return manager.getRoot(key);
+    },
+    set current(root: Element | null) {
+      manager.setRoot(key, root);
+    },
+  }), []);
+  return rootRef;
 };
 
 export const disableFocusManager = manager.disable;

@@ -37,11 +37,9 @@ const FocusScope = (props: Props) => {
     children,
   } = props;
 
-  const rootRef = useRef<Element>(null);
   const previousFocus = useRef(document.activeElement);
 
-  useManagedFocus({
-    root: rootRef,
+  const rootRef = useManagedFocus({
     behavior: getBehavior(active),
     onPointerDownOutside,
   });
