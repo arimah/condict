@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key, react/display-name */
-import React, {PureComponent} from 'react';
+import React, {useMemo, useCallback} from 'react';
 import styled from 'styled-components';
 import memoizeOne from 'memoize-one';
 
@@ -56,95 +56,91 @@ export type State = {
   bold: boolean;
 };
 
-class CommandDemo extends PureComponent<Props> {
-  private getOuterCommands = memoizeOne((): CommandSpecMap => {
-    return {
-      toggleItalic: {
-        shortcut: 'Primary+I i',
-        exec: () => 'italicOuter',
-      },
-      toggleBold: {
-        shortcut: 'Primary+B b',
-        exec: () => 'bold',
-      },
-    };
-  });
-
-  private getInnerCommands = memoizeOne((): CommandSpecMap => {
-    return {
-      toggleItalic: {
-        shortcut: 'Primary+I i',
-        exec: () => 'italicInner',
-      },
-    };
-  });
-
-  private execCommand = (cmd: Command) => this.props.toggleState(cmd.exec());
-
-  public render() {
-    const {
+const CommandDemo = React.memo((props: Props) => {
+  const {
+    state: {
       outerDisabled,
       innerDisabled,
       italicOuter,
       italicInner,
       bold,
-    } = this.props.state;
+    },
+    toggleState,
+  } = props;
 
-    return (
+  const outerCommands = useMemo((): CommandSpecMap => ({
+    toggleItalic: {
+      shortcut: 'Primary+I i',
+      exec: () => 'italicOuter',
+    },
+    toggleBold: {
+      shortcut: 'Primary+B b',
+      exec: () => 'bold',
+    },
+  }), []);
+
+  const innerCommands = useMemo((): CommandSpecMap => ({
+    toggleItalic: {
+      shortcut: 'Primary+I i',
+      exec: () => 'italicInner',
+    },
+  }), []);
+
+  const execCommand = useCallback((cmd: Command) => {
+    toggleState(cmd.exec());
+  }, [toggleState]);
+
+  return (
+    <CommandGroup
+      as={Group}
+      tabIndex={0}
+      disabled={outerDisabled}
+      commands={outerCommands}
+      onExec={execCommand}
+    >
+      <div>
+        <Button
+          slim
+          label='Toggle italic'
+          command='toggleItalic'
+        />
+        {' '}
+        <Button
+          slim
+          label='Toggle bold'
+          command='toggleBold'
+        />
+      </div>
+      <ResultDisplay italic={italicOuter} bold={bold}>
+        outer state: italic={String(italicOuter)}, bold={String(bold)}
+      </ResultDisplay>
       <CommandGroup
         as={Group}
         tabIndex={0}
-        disabled={outerDisabled}
-        commands={this.getOuterCommands()}
-        onExec={this.execCommand}
+        disabled={innerDisabled}
+        commands={innerCommands}
+        onExec={execCommand}
       >
         <div>
           <Button
             slim
-            label='Toggle italic'
+            label='Toggle italic (inner)'
             command='toggleItalic'
           />
           {' '}
           <Button
             slim
-            label='Toggle bold'
+            label='Toggle bold (outer)'
             command='toggleBold'
           />
         </div>
-        <ResultDisplay
-          italic={italicOuter}
-          bold={bold}
-        >
-          outer state: italic={String(italicOuter)}, bold={String(bold)}
+        <ResultDisplay italic={italicInner}>
+          inner state: italic={String(italicInner)}
         </ResultDisplay>
-        <CommandGroup
-          as={Group}
-          tabIndex={0}
-          disabled={innerDisabled}
-          commands={this.getInnerCommands()}
-          onExec={this.execCommand}
-        >
-          <div>
-            <Button
-              slim
-              label='Toggle italic (inner)'
-              command='toggleItalic'
-            />
-            {' '}
-            <Button
-              slim
-              label='Toggle bold (outer)'
-              command='toggleBold'
-            />
-          </div>
-          <ResultDisplay italic={italicInner}>
-            inner state: italic={String(italicInner)}
-          </ResultDisplay>
-        </CommandGroup>
       </CommandGroup>
-    );
-  }
-}
+    </CommandGroup>
+  );
+});
 
 const demo: ComponentDemo<State> = {
   name: 'Command',
