@@ -25,15 +25,15 @@ type PositiveTabIndexElement = {
 };
 
 const candidateSelector = `
-  button,
-  input,
-  textarea,
-  select,
-  a[href],
-  audio[controls],
-  video[controls],
-  [tabindex],
-  [contenteditable]:not([contenteditable=false])
+  button:enabled,
+  input:enabled,
+  textarea:enabled,
+  select:enabled,
+  a[href]:enabled,
+  audio[controls]:enabled,
+  video[controls]:enabled,
+  [tabindex]:enabled,
+  [contenteditable]:not([contenteditable=false]):enabled
 `;
 
 const getCandidates = (
