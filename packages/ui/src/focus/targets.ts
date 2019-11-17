@@ -29,11 +29,11 @@ const candidateSelector = `
   input:enabled,
   textarea:enabled,
   select:enabled,
-  a[href]:enabled,
-  audio[controls]:enabled,
-  video[controls]:enabled,
-  [tabindex]:enabled,
-  [contenteditable]:not([contenteditable=false]):enabled
+  a[href],
+  audio[controls],
+  video[controls],
+  [tabindex]:not(:disabled),
+  [contenteditable]:not([contenteditable=false]):not(:disabled)
 `;
 
 const getCandidates = (
