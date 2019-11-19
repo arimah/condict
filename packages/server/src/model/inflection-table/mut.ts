@@ -211,13 +211,12 @@ class InflectionTableLayoutMut extends Mutator {
       rows,
       form => {
         if (form.id) {
-          if (!deletedFormIds.has(form.id)) {
+          // We know this form is still in the table, so let's keep it.
+          if (!deletedFormIds.delete(form.id)) {
             throw new UserInputError(
               `Form ${form.id} does not belong to this table`
             );
           }
-          // We know this form is still in the table, so let's keep it.
-          deletedFormIds.delete(form.id);
           return InflectedFormMut.update(form.id, form);
         } else {
           // Insert new form
@@ -303,23 +302,28 @@ class InflectedFormMut extends Mutator {
     const {db} = this;
     const {InflectedForm} = this.model;
 
-    const existingForm = await InflectedForm.byIdRequired(id);
-
     const inflectionPattern = validateFormInflectionPattern(
       form.inflectionPattern
     );
     const displayName = validateFormDisplayName(form.displayName);
 
-    await db.exec`
+    const {affectedRows} = await db.exec`
       update inflected_forms
       set
         derive_lemma = ${form.deriveLemma},
         inflection_pattern = ${inflectionPattern},
         display_name = ${displayName}
-      where id = ${existingForm.id}
+      where id = ${id}
     `;
-    db.clearCache(InflectedForm.byIdKey, existingForm.id);
-    return existingForm.id;
+
+    if (affectedRows === 0) {
+      throw new UserInputError(`Inflected form not found: ${id}`, {
+        invalidArgs: ['id'],
+      });
+    }
+
+    db.clearCache(InflectedForm.byIdKey, id);
+    return id;
   }
 }
 
