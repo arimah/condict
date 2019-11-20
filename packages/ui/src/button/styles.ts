@@ -12,12 +12,12 @@ export type Props = {
 export const ButtonStyle = css<Props>`
   display: inline-block;
   box-sizing: border-box;
-  padding: ${p => p.slim ? '4px 6px' : '6px 14px'};
+  padding: ${p => p.slim ? '4px 10px' : '6px 14px'};
   font: inherit;
   font-weight: normal;
   text-align: center;
   border: 2px solid;
-  border-radius: ${p => p.slim ? '4px' : '7px'};
+  border-radius: ${p => p.slim ? '3px' : '7px'};
   position: relative;
 
   ${transition('color, border-color, background-color')}
