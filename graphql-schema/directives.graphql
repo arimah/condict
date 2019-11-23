@@ -25,7 +25,7 @@ enum MarshalType {
   """
   INT_TYPE
   """
-  The type is marshalled as a floating-point value. In the JSOn payload, it is
+  The type is marshalled as a floating-point value. In the JSON payload, it is
   a numeric value with an optional fractional component. In queries, the type
   accepts integer and floating-point literals. The TypeScript representation
   is `number`.
