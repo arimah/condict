@@ -63,6 +63,7 @@ type InnerType =
   | GraphQLUnionType
   | GraphQLEnumType;
 
+// eslint-disable-next-line prefer-const
 let writeFieldType: (
   result: TextBuilder,
   type: GraphQLOutputType,
@@ -109,7 +110,7 @@ writeFieldType = (result, type, writeInnerType) => {
 const resolvePossibleTypes = (
   possibleTypes: PossibleTypes
 ): readonly GraphQLObjectType[] => {
-  let types =
+  const types =
     typeof possibleTypes === 'function'
       ? possibleTypes()
       : possibleTypes;

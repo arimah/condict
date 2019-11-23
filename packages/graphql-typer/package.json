@@ -1,6 +1,6 @@
 {
   "name": "@condict/graphql-typer",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Utilities for generating TypeScript type definitions from a GraphQL schema.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
@@ -20,18 +20,18 @@
   },
   "dependencies": {
     "command-line-args": "^5.1.1",
-    "graphql": "^14.5.0"
+    "graphql": "^14.5.8"
   },
   "devDependencies": {
     "@types/command-line-args": "^5.0.0",
-    "@types/node": "^12.7.2",
-    "@typescript-eslint/eslint-plugin": "^1.12.0",
-    "@typescript-eslint/parser": "^1.12.0",
+    "@types/node": "^12.12.12",
+    "@typescript-eslint/eslint-plugin": "^2.8.0",
+    "@typescript-eslint/parser": "^2.8.0",
     "chalk": "^2.4.2",
     "eslint": "^5.16.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.12.3",
-    "rimraf": "^2.6.3",
-    "typescript": "^3.5.3"
+    "rimraf": "^3.0.0",
+    "typescript": "^3.7.2"
   }
 }

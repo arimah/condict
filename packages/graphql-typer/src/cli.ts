@@ -44,7 +44,7 @@ const usage = () => {
     `Options:\n` +
     `--schema-dir=SCHEMA_DIR  (alias: -s)\n` +
     `        The directory from which GraphQL schema definitions are read. The schema\n` +
-    `        is constructed from every '*.graphl' file found in this directory, which\n` +
+    `        is constructed from every '*.graphql' file found in this directory, which\n` +
     `        is searched recursively.\n` +
     `\n` +
     `--target=<server|client>  (alias: -t)\n` +
@@ -72,7 +72,7 @@ const usage = () => {
 };
 
 const main = () => {
-  let args = parseCliArgs(options);
+  const args = parseCliArgs(options);
 
   if (args.help) {
     usage();
@@ -82,7 +82,7 @@ const main = () => {
   const schemaDir = args['schema-dir'] as string | undefined;
   const target = args.target as 'server' | 'client' | undefined;
   if (!schemaDir || !target) {
-    console.error('Both --schema-dir/-s and --target/-o must be specified');
+    console.error('Both --schema-dir/-s and --target/-t must be specified');
     process.exitCode = 1;
     return;
   }

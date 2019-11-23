@@ -59,6 +59,7 @@ const getValidFragmentTypes = (outputFields: OutputFields) =>
     ? outputFields.possibleTypes
     : [outputFields.type, ...outputFields.possibleTypes];
 
+// eslint-disable-next-line prefer-const
 let collectFields: (
   params: TypeWriterParams,
   outputFields: OutputFields,

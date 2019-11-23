@@ -103,6 +103,7 @@ const writeDirectives = (
   });
 };
 
+// eslint-disable-next-line prefer-const
 let writeSelectionSet: (
   result: TextBuilder,
   selections: SelectionSetNode

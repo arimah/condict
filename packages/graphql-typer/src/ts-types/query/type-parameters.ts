@@ -16,6 +16,7 @@ import {TextBuilder} from '../utils';
 
 import {TypeWriterParams} from './types';
 
+// eslint-disable-next-line prefer-const
 let writeVariableType: (params: TypeWriterParams, type: TypeNode) => string;
 
 const writeListType = (

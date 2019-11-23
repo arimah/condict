@@ -29,13 +29,14 @@ import {CommonHeader, IdOfDefinition} from '../shared';
 
 import {ImportedType} from './types';
 
+// eslint-disable-next-line prefer-const
 let writeType: (type: GraphQLType) => string;
 
 const writeScalarType = (type: GraphQLScalarType): string =>
   getBuiltinScalar(type, TypePosition.CLIENT_INPUT) || type.name;
 
 const writeListType = (type: GraphQLList<any>): string => {
-  let innerType = writeType(type.ofType);
+  const innerType = writeType(type.ofType);
   if (isNonNullType(type.ofType)) {
     return `${innerType}[]`;
   }

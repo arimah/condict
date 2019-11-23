@@ -12,9 +12,9 @@ export const formatDescription = (desc: string): string => {
 };
 
 export class TextBuilder {
-  private text: string = '';
-  private indentation: string = '';
-  private needIndentation: boolean = true;
+  private text = '';
+  private indentation = '';
+  private needIndentation = true;
 
   public append(value: string): this {
     // If the previous part ended in a newline and we're inserting a

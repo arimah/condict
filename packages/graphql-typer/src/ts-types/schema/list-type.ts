@@ -6,7 +6,7 @@ export const writeListType = (
   type: GraphQLList<any>,
   writeType: TypeWriter
 ): string => {
-  let innerType = writeType(type.ofType);
+  const innerType = writeType(type.ofType);
   if (isNonNullType(type.ofType)) {
     return `${innerType}[]`;
   }
