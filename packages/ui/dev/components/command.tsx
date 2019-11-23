@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-key, react/display-name */
 import React, {useMemo, useCallback} from 'react';
 import styled from 'styled-components';
-import memoizeOne from 'memoize-one';
 
 import {
   Command,

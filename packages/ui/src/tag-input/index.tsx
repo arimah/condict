@@ -277,7 +277,7 @@ export class TagInput extends Component<Props, State> {
   private wrapper = React.createRef<HTMLSpanElement>();
   private mainDescId = genId();
   private tagDescId = genId();
-  private hasFocus: boolean = false;
+  private hasFocus = false;
 
   public constructor(props: Props) {
     super(props);

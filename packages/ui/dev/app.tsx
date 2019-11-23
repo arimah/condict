@@ -1,10 +1,9 @@
-import React, {Component, Fragment, ChangeEvent} from 'react';
+import React, {Component, ChangeEvent} from 'react';
 import ReactDOM from 'react-dom';
 import {
   BrowserRouter as Router,
   Route,
   Switch as RouteSwitch,
-  Link,
   NavLink,
 } from 'react-router-dom';
 import {ThemeProvider} from 'styled-components';

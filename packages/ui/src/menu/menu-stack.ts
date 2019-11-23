@@ -105,9 +105,7 @@ export default class MenuStack {
     // then open the new submenu underneath the parent menu.
     const newOpenMenus = openMenus.slice(0, parentMenuIndex + 1);
     newOpenMenus.push(new OpenMenu(parentItem.submenu, parentItem));
-    let newStack = this.withOpenMenus(newOpenMenus);
-
-    return newStack;
+    return this.withOpenMenus(newOpenMenus);
   }
 
   public activateCurrent(manager: MenuManager): MenuStack {

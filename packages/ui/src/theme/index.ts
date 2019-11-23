@@ -164,7 +164,7 @@ export const intentVar =
 export const transition = (
   property: string,
   duration: number | keyof TimingTheme = 'short',
-  timingFunc: string = 'ease-in-out'
+  timingFunc = 'ease-in-out'
 ) => css`
   transition-property: ${property};
   transition-duration: ${

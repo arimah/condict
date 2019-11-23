@@ -178,7 +178,7 @@ export default class MenuManager extends Component<Props, State> {
     phantomProps: null,
   };
 
-  public firstNeedsFocus: boolean = false;
+  public firstNeedsFocus = false;
   private lastMouseTarget: Element | null = null;
   private intentTimeoutId: number | undefined;
 

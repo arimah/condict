@@ -81,6 +81,7 @@ class Demo extends PureComponent<Props, State> {
   }
 
   public componentDidCatch(_error: Error, _info: unknown) {
+    // Deliberately empty to suppress error messages in the console.
   }
 
   public static getDerivedStateFromError(error: Error) {

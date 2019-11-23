@@ -40,7 +40,7 @@ const getCandidates = (
   root: Element,
   includeRoot: boolean
 ): Element[] => {
-  let candidates = Array.from(root.querySelectorAll(
+  const candidates = Array.from(root.querySelectorAll(
     candidateSelector
   ));
   if (includeRoot && root.matches(candidateSelector)) {

@@ -107,7 +107,7 @@ class ManagedMenu extends Component<Props> {
   public readonly items = new DescendantCollection<MenuItem, HTMLElement>(item => item.self);
   private readonly menuRef = React.createRef<HTMLDivElement>();
   private readonly getMenuContextValue = memoizeOne(getMenuContextValue);
-  private needFocus: boolean = false;
+  private needFocus = false;
 
   public contains(elem: Node | null) {
     return (
