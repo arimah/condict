@@ -73,7 +73,7 @@ export default abstract class Value<D> {
 
   public withFocusedCell(
     newFocusedCellKey: string | null,
-    extendSelection: boolean = false
+    extendSelection = false
   ): this {
     const {focusedCellKey, selectedCells, selectionStart} = this.selection;
     // We need to update the state if

@@ -33,7 +33,7 @@ const move = <V extends Value<any>>(
   value: V,
   deltaRow: MoveDelta,
   deltaCol: MoveDelta,
-  extendSelection: boolean = false
+  extendSelection = false
 ) => {
   const {layout, selection: {focusedCellKey}} = value;
   const focusedCell = layout.cellFromKey(focusedCellKey) as LayoutCell;

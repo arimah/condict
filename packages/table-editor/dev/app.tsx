@@ -230,7 +230,7 @@ class App extends Component<{}, State> {
     inflectionTableValue: new ValueWithHistory(InitialInflectionTableValue),
     definitionTableValue: new ValueWithHistory(InitialDefinitionTableValue),
   };
-  private nextFormId: number = 100; // arbitrarily large value
+  private nextFormId = 100; // arbitrarily large value
 
   public constructor(props: {}) {
     super(props);
