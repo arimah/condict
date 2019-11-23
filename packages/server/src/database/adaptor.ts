@@ -236,7 +236,7 @@ abstract class Adaptor {
   public batchOneToOne<K extends string | number, Row>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: K[]) => Awaitable<Row[]>,
+    fetcher: (db: this, ids: readonly K[]) => Awaitable<Row[]>,
     getRowId: (row: Row) => K
   ): Promise<Row | null>;
   /**
@@ -261,14 +261,14 @@ abstract class Adaptor {
   public batchOneToOne<K extends string | number, Row, E>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: K[], extraArg: E) => Awaitable<Row[]>,
+    fetcher: (db: this, ids: readonly K[], extraArg: E) => Awaitable<Row[]>,
     getRowId: (row: Row) => K,
     extraArg: E
   ): Promise<Row | null>;
   public batchOneToOne<K extends string | number, Row, E = undefined>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: K[], extraArg?: E) => Awaitable<Row[]>,
+    fetcher: (db: this, ids: readonly K[], extraArg?: E) => Awaitable<Row[]>,
     getRowId: (row: Row) => K,
     extraArg?: E
   ): Promise<Row | null> {
@@ -309,7 +309,7 @@ abstract class Adaptor {
   public batchOneToMany<K extends string | number, Row>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: K[]) => Awaitable<Row[]>,
+    fetcher: (db: this, ids: readonly K[]) => Awaitable<Row[]>,
     getRowId: (row: Row) => K
   ): Promise<Row[]>;
   /**
@@ -334,14 +334,14 @@ abstract class Adaptor {
   public batchOneToMany<K extends string | number, Row, E>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: K[], extraArg: E) => Awaitable<Row[]>,
+    fetcher: (db: this, ids: readonly K[], extraArg: E) => Awaitable<Row[]>,
     getRowId: (row: Row) => K,
     extraArg: E
   ): Promise<Row[]>;
   public batchOneToMany<K extends string | number, Row, E = undefined>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: K[], extraArg?: E) => Awaitable<Row[]>,
+    fetcher: (db: this, ids: readonly K[], extraArg?: E) => Awaitable<Row[]>,
     getRowId: (row: Row) => K,
     extraArg?: E
   ): Promise<Row[]> {
