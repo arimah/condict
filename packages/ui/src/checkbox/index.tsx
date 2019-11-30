@@ -30,13 +30,13 @@ export const Checkbox = (props: Props) => {
   const {
     className,
     intent = Intent.PRIMARY,
-    checked,
     indeterminate = false,
     label,
     disabled,
     labelProps,
     inputRef,
     children,
+    // checked deliberately included here
     ...inputProps
   } = props;
 
@@ -56,21 +56,18 @@ export const Checkbox = (props: Props) => {
       {...labelProps}
       className={className}
       disabled={disabled}
+      intent={intent}
     >
-      <S.CheckmarkContainer
+      <S.Input
+        {...inputProps}
         intent={intent}
-        checked={checked || indeterminate}
         disabled={disabled}
-      >
-        <S.IndeterminateMark checked={indeterminate}/>
-        <S.CheckMark checked={checked}/>
-        <S.Input
-          {...inputProps}
-          disabled={disabled}
-          checked={!!checked}
-          aria-label={ariaLabel}
-          ref={combineRefs(setIndeterminate, inputRef)}
-        />
+        aria-label={ariaLabel}
+        ref={combineRefs(setIndeterminate, inputRef)}
+      />
+      <S.CheckmarkContainer>
+        <S.IndeterminateMark/>
+        <S.CheckMark/>
       </S.CheckmarkContainer>
       {renderedContent}
     </S.Label>

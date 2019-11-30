@@ -14,7 +14,7 @@ export type Props = {
   >;
 } & Partial<S.IntentProps> & Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  'aria-label' | 'aria-pressed' | 'role'
+  'aria-label' | 'aria-pressed' | 'role' | 'type'
 >;
 
 export const Switch = (props: Props) => {
@@ -37,30 +37,22 @@ export const Switch = (props: Props) => {
   return (
     <S.Label
       {...labelProps}
+      intent={intent}
       className={className}
       disabled={disabled}
     >
-      <S.SwitchContainer>
-        <S.Switch
-          disabled={disabled}
-          intent={intent}
-          checked={checked}
-        >
-          <S.Dot
-            disabled={disabled}
-            intent={intent}
-            checked={checked}
-          />
-        </S.Switch>
-        <S.Input
-          {...inputProps}
-          disabled={disabled}
-          checked={checked}
-          role='button'
-          aria-pressed={checked}
-          aria-label={ariaLabel}
-        />
-      </S.SwitchContainer>
+      <S.Input
+        {...inputProps}
+        intent={intent}
+        disabled={disabled}
+        checked={checked}
+        role='button'
+        aria-pressed={checked}
+        aria-label={ariaLabel}
+      />
+      <S.Switch>
+        <S.Dot/>
+      </S.Switch>
       {renderedContent}
     </S.Label>
   );

@@ -42,45 +42,38 @@ export const Radio = (props: Props) => {
   const {
     className,
     intent = Intent.PRIMARY,
-    checked,
     label,
     disabled,
-    name,
+    name = '',
     labelProps,
     inputRef,
     children,
+    // checked deliberately included here
     ...inputProps
   } = props;
   const radioGroup = useContext(RadioGroupContext);
 
-  const actualName = `${radioGroup.namePrefix}${name || ''}`;
+  const actualName = `${radioGroup.namePrefix}${name}`;
 
   const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
 
   return (
     <S.Label
       {...labelProps}
+      intent={intent}
       className={className}
       disabled={disabled}
     >
-      <S.RadioContainer
+      <S.Input
+        {...inputProps}
         intent={intent}
-        checked={checked}
+        name={actualName}
         disabled={disabled}
-      >
-        <S.RadioDot
-          intent={intent}
-          checked={checked}
-          disabled={disabled}
-        />
-        <S.Input
-          {...inputProps}
-          name={actualName}
-          disabled={disabled}
-          checked={checked}
-          aria-label={ariaLabel}
-          ref={inputRef}
-        />
+        aria-label={ariaLabel}
+        ref={inputRef}
+      />
+      <S.RadioContainer>
+        <S.RadioDot intent={intent}/>
       </S.RadioContainer>
       {renderedContent}
     </S.Label>
