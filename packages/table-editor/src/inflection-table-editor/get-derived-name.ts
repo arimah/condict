@@ -27,8 +27,18 @@ import Value from './value';
 //   - F: Indefinite accusative plural
 //
 // If a data cell spans multiple rows or columns, we only consider headers
-// in its originating row and column. The character case is also normalized,
-// such that only the first character is capitalized.
+// that span over all of the data cell's rows/columns. Given a table like this:
+//
+//   +----------+----------+------------+
+//   |          | Ergative | Absolutive |
+//   +----------+----------+------------+
+//   | Singular | A        |            |
+//   +----------+----------+ C          |
+//   | Plural   | B        |            |
+//   +----------+----------+------------+
+//
+// Form A will be named "Singular ergative", B will be "Plural ergative", and
+// C will just be "Absolutive".
 //
 // Finally, we only consider consecutive header cells up to the nearest data
 // cell. What this means is that in this table:
@@ -50,11 +60,13 @@ const collectNearbyHeaders = (
   headerTexts: string[],
   startPos: number,
   getCell: (pos: number) => LayoutCell,
+  canUseHeader: (pos: number, cell: LayoutCell) => boolean,
   decrement: (pos: number, cell: LayoutCell) => number
 ) => {
   let foundHeader = false;
   for (let pos = startPos; pos >= 0; ) {
     const candidateLayoutCell = getCell(pos);
+
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const candidateCell = value.rows
       .get(candidateLayoutCell.row)!
@@ -63,10 +75,12 @@ const collectNearbyHeaders = (
 
     if (candidateCell.header) {
       foundHeader = true;
-      headerTexts.push(candidateCell.data.text);
+      if (canUseHeader(pos, candidateLayoutCell)) {
+        headerTexts.push(candidateCell.data.text);
+      }
     } else if (foundHeader) {
       // We've already collected at least one header, and then encountered a
-      // data cell, which means we're done locating column headers!
+      // data cell, which means we're done locating headers!
       break;
     }
 
@@ -84,21 +98,29 @@ export default (value: Value, key: string) => {
   // We walk through the table "inside-out", starting at the selected cell.
   const nameParts: string[] = [];
 
+  const lastColIndex = layoutCell.col + layoutCell.columnSpan - 1;
   // Column headers first
   collectNearbyHeaders(
     value,
     nameParts,
     layoutCell.row - 1,
     row => layout.cellFromPosition(row, layoutCell.col),
+    (row, cell) =>
+      layoutCell.columnSpan === 1 ||
+      layout.cellFromPosition(row, lastColIndex) === cell,
     (row, cell) => row - cell.rowSpan
   );
 
+  const lastRowIndex = layoutCell.row + layoutCell.rowSpan - 1;
   // Row headers second
   collectNearbyHeaders(
     value,
     nameParts,
     layoutCell.col - 1,
     col => layout.cellFromPosition(layoutCell.row, col),
+    (col, cell) =>
+      layoutCell.rowSpan === 1 ||
+      layout.cellFromPosition(lastRowIndex, col) === cell,
     (col, cell) => col - cell.columnSpan
   );
 
