@@ -94,12 +94,7 @@ Toolbars forward their ref to the underlying `<div>` element.
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `className` | string | `''` | One or more class names that are forwarded to the toolbar element (a `<div>`). |
-| `children` | node | `undefined` | The contents of the toolbar, usually a number of toolbar items. |
-
-Other props are _not_ forwarded to any underlying element.
+This component accepts the same props as a `<div>` element, except `role`, which is always set to `'toolbar'`. All props are forwarded to the underlying toolbar element.
 
 ## `<Toolbar.Button>`
 

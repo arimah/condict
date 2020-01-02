@@ -1,4 +1,13 @@
-import React, {ReactNode, RefObject, useState, useMemo, useEffect} from 'react';
+import React, {
+  HTMLAttributes,
+  FocusEvent,
+  KeyboardEvent,
+  RefObject,
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react';
 
 import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
 import DescendantCollection from '../descendant-collection';
@@ -96,10 +105,7 @@ const getValidFocus = (
   return currentFocus;
 };
 
-export type Props = {
-  className?: string;
-  children: ReactNode;
-};
+export type Props = Omit<HTMLAttributes<HTMLDivElement>, 'role'>;
 
 export const Toolbar = Object.assign(
   // eslint-disable-next-line react/display-name
@@ -107,7 +113,7 @@ export const Toolbar = Object.assign(
     props: Props,
     ref
   ) => {
-    const {className, children} = props;
+    const {onFocus, onKeyDown, children, ...otherProps} = props;
 
     const [descendants] = useState(() =>
       new DescendantCollection<RefObject<ItemElement>, ItemElement>(
@@ -125,6 +131,25 @@ export const Toolbar = Object.assign(
       descendants,
       currentFocus,
     }), [currentFocus]);
+
+    const handleFocus = useCallback((e: FocusEvent<HTMLDivElement>) => {
+      const ref = descendants.findManagedRef(e.target);
+      if (ref) {
+        setCurrentFocus(ref);
+      }
+      if (onFocus) {
+        onFocus.call(e.currentTarget, e);
+      }
+    }, [onFocus]);
+
+    const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
+      const command = KeyboardMap.get(e);
+      if (command) {
+        e.preventDefault();
+        e.stopPropagation();
+        command.exec(contextValue);
+      }
+    }, [contextValue, onKeyDown]);
 
     // After rendering, ensure the current item is one of the enabled children
     // of the toolbar. If you press a Redo button that then becomes disabled
@@ -145,21 +170,9 @@ export const Toolbar = Object.assign(
     return (
       <Context.Provider value={contextValue}>
         <S.Toolbar
-          className={className}
-          onFocus={e => {
-            const ref = descendants.findManagedRef(e.target);
-            if (ref) {
-              setCurrentFocus(ref);
-            }
-          }}
-          onKeyDown={e => {
-            const command = KeyboardMap.get(e);
-            if (command) {
-              e.preventDefault();
-              e.stopPropagation();
-              command.exec(contextValue);
-            }
-          }}
+          {...otherProps}
+          onFocus={handleFocus}
+          onKeyDown={handleKeyDown}
           ref={ref}
         >
           {children}
