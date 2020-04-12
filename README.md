@@ -1,17 +1,19 @@
-> # CONDICT IS PAUSED
->
-> **Please note:** Development of Condict is paused while I work out some technical decisions. In particular:
->
-> - Are there any good, sufficiently customisable rich-text editors for the web? Many are either too locked into a particular format (almost everything other than [Slate][]), or have bizarre editing bugs (e.g. [Slate][]).
-> - Is Electron the way forward? Performance is not great; memory is hogged; the UI looks and feels non-native.
-> - If not Electron, then what? Can the NodeJS-based backend be kept, or is it necessary to rewrite that logic too?
-> - SQLite is amazing, and is probably here to stay, but what about Unicode? [ICU][] is a nightmare to compile, and the [`better-sqlite3`][better-sqlite3] package is not easy to use with a custom amalgamation.
->
-> To anyone reading this, **thoughts and comments are welcome!** Please don't hesitate to [create an issue](https://github.com/arimah/condict/issues/new) if you wish to offer feedback.
+# CONDICT IS PAUSED
+
+**Please note:** Development of Condict is paused while I work out some technical decisions. In particular:
+
+- Are there any good, sufficiently customisable rich-text editors for the web? Many are either too locked into a particular format (almost everything other than [Slate][]), or have bizarre editing bugs (e.g. [Slate][]).
+- Is Electron the way forward? Performance is not great; memory is hogged; the UI looks and feels non-native.
+- If not Electron, then what? Can the NodeJS-based backend be kept, or is it necessary to rewrite that logic too?
+- SQLite is amazing, and is probably here to stay, but what about Unicode? [ICU][] is a nightmare to compile, and the [`better-sqlite3`][better-sqlite3] package is not easy to use with a custom amalgamation.
+
+To anyone reading this, **thoughts and comments are welcome!** Please don't hesitate to [create an issue](https://github.com/arimah/condict/issues/new) if you wish to offer feedback.
 
 [slate]: https://www.slatejs.org/
 [icu]: http://site.icu-project.org/home
 [better-sqlite3]: https://github.com/JoshuaWise/better-sqlite3
+
+---
 
 # Condict
 
