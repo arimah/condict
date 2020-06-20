@@ -30,7 +30,7 @@ A language contains:
 * Lemmas (see `Lemma`), which are basically the words of the dictionary. Each
   lemma can contain any number of definitions (see `Definition`).
 
-In addition, every language has a (unique) name and a URL name.
+In addition, every language has a (unique) name.
 """
 type Language {
   "The globally unique ID of the language."

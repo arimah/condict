@@ -20,6 +20,36 @@ Example transformations:
 | `scalar SomeKey @id` | `export type SomeKey = IdOf<'SomeKey'>;` |
 | `scalar MyOwnId @id(of: "MyOwnId")` | `export type MyOwnId = IdOf<'MyOwnId'>;` |
 
+## Custom scalar marshalling
+
+In addition to the `@id` directive, this package also supports custom marshalling of scalars through the `@marshal` directive. The directive takes a single parameter, `as`, which determines how the scalar is marshalled.
+
+Marshalling affects how values of the type are transferred in JSON payloads (requests and responses), and determines which literal types the scalar accepts in queries and mutations. The table below summarises the `@marshal` types.
+
+| GraphQL schema | Query literal type | JSON payload type | TypeScript type |
+| --- | --- | --- |
+| `@marshal(as: INT_TYPE)` | integer | number | `number` |
+| `@marshal(as: FLOAT_TYPE)` | integer, floating-point | number | `number` |
+| `@marshal(as: STRING_TYPE)` | string | string | `string` |
+
+An example:
+
+```graphql
+scalar Date @marshal(as: INT_TYPE)
+
+extend type Query {
+  nextDay(date: Date!): Date!
+}
+
+query {
+  nextDay(date: 1592644245435)
+
+  # INT_TYPE only accepts integer literals
+  invalid1: nextDay(date: 1592644245435.0)
+  invalid2: nextDay(date: "1592644245435")
+}
+```
+
 ## Command-line usage
 
 ```shell
@@ -77,6 +107,14 @@ Returns the full paths of every .graphql file inside `schemaDir` (searched recur
 > `getIdKind(type: GraphQLScalarType): string | null`
 
 Given a GraphQL scalar type, determines whether it is a [custom ID type](#custom-id-types) (with the `@id` directive), and if so, gets the name of the resource it belongs to. If the type is not a custom ID type, returns null.
+
+`GraphQLScalarType` does not directly store the type's directives. Instead, they are looked up through the AST node. As a result, this function returns `null` for any scalar type that lacks an AST node.
+
+### `getMarshalType()`
+
+> `getMarshalType(type: GraphQLScalarType): MarshalType | null`
+
+Given a GraphQL scalar type, determines whether it has a [`@marshal` directive](#custom-scalar-marshalling), and if so, gets the type it should be marshalled as. If the scalar type has no `@marshal` directive, returns null.
 
 `GraphQLScalarType` does not directly store the type's directives. Instead, they are looked up through the AST node. As a result, this function returns `null` for any scalar type that lacks an AST node.
 

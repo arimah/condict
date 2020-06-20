@@ -165,7 +165,7 @@ Assuming `T` is a nullable type:
 
 | GraphQL type | TS type (response) | TS type (request)            |
 | ---          | ---                | ---                          |
-| `[T]`        | `(T \| null)[]`    | `(T |\ null |\ undefined)[]` |
+| `[T]`        | `(T \| null)[]`    | `(T \| null \| undefined)[]` |
 | `[T!]`       | `T[]`              | `T[]`                        |
 
 Undefined is permitted in request position because `JSON.stringify` turns undefined inside arrays into null.
@@ -173,6 +173,58 @@ Undefined is permitted in request position because `JSON.stringify` turns undefi
 ### Enum values
 
 An enum is generated from the GraphQL schema (as described under [Enum types](#enum-types)), which is referenced where it is used.
+
+Additionally, the custom directive `@restrict` is used to instruct the GraphQL typer that only a subset of the enum values are possible. This directive is implemented only for fields in object types. The purpose is to allow enum-typed fields to be used as discriminants in TypeScript, without having to select `__typename` as well. Example:
+
+```graphql
+enum InlineKind { BOLD, ITALIC, LINK }
+interface Inline {
+  kind: InlineKind!
+  text: String!
+}
+type StyleInline implements Inline {
+  kind: InlineKind! @restrict(not: ["LINK"])
+  text: String!
+}
+type LinkInline implements Inline {
+  kind: InlineKind! @restrict(only: ["LINK"])
+  text: String!
+  url: String!
+}
+extend type Query {
+  inlines: [Inline!]!
+}
+
+query {
+  inlines {
+    ... on StyleInline { kind, text }
+    ... on LinkInline { kind, text, url }
+  }
+}
+```
+
+This leads to the following result type:
+
+```typescript
+const enum InlineKind {
+  BOLD = 'BOLD',
+  ITALIC = 'ITALIC',
+  LINK = 'LINK',
+}
+
+type Result = {
+  inlines: ({
+    kind: InlineKind.BOLD | InlineKind.ITALIC;
+    text: string;
+  } | {
+    kind: InlineKind.LINK;
+    text: string;
+    url: string;
+  })[];
+};
+```
+
+The `@restrict` directive is _only_ used by the GraphQL typer. Neither the server nor the client verifies that only the permitted enum values are present.
 
 ### Union values
 
@@ -412,6 +464,6 @@ type Result = {
 };
 ```
 
-### `@include` and `skip`
+### `@include` and `@skip`
 
 These two directives cause major challenges for query typing. `@include` and `@skip` directives with a _constant_ condition are supported, and do what you would expect. With a non-constant condition (e.g. `@include(if: $something)`), the GraphQL typer throws an error, as figuring out exactly which fields are present in which circumstances is difficult.

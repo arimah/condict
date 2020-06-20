@@ -282,8 +282,8 @@ input EditInflectionTableInput {
   """
   If set, updates the layout of the inflection table.
 
-  It is not possible to change this setting on a table that is used by one or
-  more definitions.
+  If the table is used by any definitions, changing the layout will cause a new
+  new layout version to be created. See the documentation of `InflectionTable`.
   """
   layout: [InflectionTableRowInput!]
 }
@@ -370,8 +370,7 @@ extend type Mutation {
   addInflectionTable(data: NewInflectionTableInput!): InflectionTable!
 
   """
-  Edits an inflection table. It is not possible to change `layout` on a table
-  that is used by one or more definitions.
+  Edits an inflection table.
 
   Requires authentication.
   """
