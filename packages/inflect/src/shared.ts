@@ -6,7 +6,7 @@
  *   1: An escaped brace ('{{' or '}}').
  *   2: A stem name (non-normalized). The stem name never contains '{' or '}'.
  */
-export const getReplacePattern = () => /(\{\{|\}\})|\{([^{}]+)\}/g;
+export const getReplacePattern = (): RegExp => /(\{\{|\}\})|\{([^{}]+)\}/g;
 
 /**
  * Gets a regular expression that can be used for tokenizing the contents of
@@ -20,5 +20,5 @@ export const getReplacePattern = () => /(\{\{|\}\})|\{([^{}]+)\}/g;
  *   4: Plain text content. Note that '}' does not have to be escaped, meaning
  *      that this value may contain single '}' characters.
  */
-export const getTokenPattern = () =>
+export const getTokenPattern = (): RegExp =>
   /(\{\{|\}\})|(\{([^{}]+)\})|((?:[^{}]|\}(?!\})|\{(?!\{|[^{}]+\}))+)/g;
