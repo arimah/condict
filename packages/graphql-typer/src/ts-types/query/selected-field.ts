@@ -121,7 +121,7 @@ export const writeSelectedFieldType = (
   params: TypeWriterParams,
   result: TextBuilder,
   field: SelectedField
-) => {
+): void => {
   switch (field.kind) {
     case '__typename': {
       const possibleTypes = resolvePossibleTypes(field.possibleTypes);
@@ -178,7 +178,7 @@ const validateFieldSelection = (
   }
 };
 
-export const fieldAlreadyTakenError = (name: string) =>
+export const fieldAlreadyTakenError = (name: string): Error =>
   new Error(`A different field is already selected under the name '${name}'`);
 
 export const selectField = (
@@ -186,7 +186,7 @@ export const selectField = (
   parentType: ObjectLikeType,
   selection: FieldNode,
   field: GraphQLField<any, any>
-) => {
+): void => {
   const outputName = (selection.alias || selection.name).value;
   const subSelections = validateFieldSelection(parentType, field, selection);
 
@@ -213,7 +213,7 @@ export const selectTypename = (
   outputFields: Map<string, SelectedField>,
   selection: FieldNode,
   possibleTypes: PossibleTypes
-) => {
+): void => {
   const outputName = (selection.alias || selection.name).value;
 
   const output = outputFields.get(outputName);

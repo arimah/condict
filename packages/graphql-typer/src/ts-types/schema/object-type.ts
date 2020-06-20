@@ -35,7 +35,7 @@ export const defineObjectType = (
   result: TextBuilder,
   type: GraphQLObjectType,
   writeType: TypeWriter
-) => {
+): void => {
   if (type.description) {
     result.appendLine(formatDescription(type.description));
   }

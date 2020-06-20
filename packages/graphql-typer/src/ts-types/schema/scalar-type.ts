@@ -25,7 +25,10 @@ const formatMarshalType = (type: MarshalType): string => {
   }
 };
 
-export const defineScalarType = (result: TextBuilder, type: GraphQLScalarType) => {
+export const defineScalarType = (
+  result: TextBuilder,
+  type: GraphQLScalarType
+): void => {
   if (isBuiltin(type)) {
     throw new Error(`Cannot write definition for built-in scalar '${type.name}'.`);
   }
@@ -49,5 +52,5 @@ export const defineScalarType = (result: TextBuilder, type: GraphQLScalarType) =
     .appendLine(';');
 };
 
-export const writeScalarType = (type: GraphQLScalarType) =>
+export const writeScalarType = (type: GraphQLScalarType): string =>
   getBuiltin(type, TypePosition.SERVER) || type.name;

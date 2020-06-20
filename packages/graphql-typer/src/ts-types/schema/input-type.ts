@@ -25,7 +25,7 @@ export const defineInputType = (
   result: TextBuilder,
   type: GraphQLInputObjectType,
   writeType: TypeWriter
-) => {
+): void => {
   if (type.description) {
     result.appendLine(formatDescription(type.description));
   }

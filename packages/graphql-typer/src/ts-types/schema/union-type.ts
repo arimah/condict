@@ -2,7 +2,10 @@ import {GraphQLUnionType} from 'graphql';
 
 import {TextBuilder, formatDescription} from '../utils';
 
-export const defineUnionType = (result: TextBuilder, type: GraphQLUnionType) => {
+export const defineUnionType = (
+  result: TextBuilder,
+  type: GraphQLUnionType
+): void => {
   if (type.description) {
     result.appendLine(formatDescription(type.description));
   }

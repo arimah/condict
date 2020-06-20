@@ -10,7 +10,7 @@ export const defineInterfaceType = (
   result: TextBuilder,
   type: GraphQLInterfaceType,
   schema: GraphQLSchema
-) => {
+): void => {
   if (type.description) {
     result.appendLine(formatDescription(type.description));
   }

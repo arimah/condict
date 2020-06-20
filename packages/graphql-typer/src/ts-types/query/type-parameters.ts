@@ -70,7 +70,7 @@ const typeParameters = (
   params: TypeWriterParams,
   typeText: TextBuilder,
   variables?: readonly VariableDefinitionNode[]
-) => {
+): void => {
   if (!variables || variables.length === 0) {
     typeText.append('{} | null | undefined');
     return;

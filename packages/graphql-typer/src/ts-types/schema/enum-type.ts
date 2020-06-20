@@ -13,7 +13,10 @@ const defineValue = (t: TextBuilder, value: GraphQLEnumValue) => {
   t.appendLine(`${value.name} = '${value.name}',`);
 };
 
-export const defineEnumType = (result: TextBuilder, type: GraphQLEnumType) => {
+export const defineEnumType = (
+  result: TextBuilder,
+  type: GraphQLEnumType
+): void => {
   if (type.description) {
     result.appendLine(formatDescription(type.description));
   }

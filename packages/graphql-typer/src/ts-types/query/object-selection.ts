@@ -23,7 +23,7 @@ export const collectFields = (
   type: GraphQLObjectType,
   outputFields: Map<string, SelectedField>,
   selections: readonly SelectionNode[]
-) => {
+): void => {
   for (const sel of selections) {
     const included = isSelectionIncluded(sel);
     if (included === SelectionInclusion.DEPENDS) {
@@ -83,7 +83,7 @@ const writeObjectTypeSelection = (
   result: TextBuilder,
   type: GraphQLObjectType,
   selections: readonly SelectionNode[]
-) => {
+): void => {
   const outputFields = new Map<string, SelectedField>();
 
   collectFields(params, type, outputFields, selections);

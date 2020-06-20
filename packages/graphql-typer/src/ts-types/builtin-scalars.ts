@@ -43,7 +43,8 @@ const builtins = new Map<string, BuiltinScalar>([
   }],
 ]);
 
-export const isBuiltin = (type: GraphQLScalarType) => builtins.has(type.name);
+export const isBuiltin = (type: GraphQLScalarType): boolean =>
+  builtins.has(type.name);
 
 export const getBuiltin = (
   type: GraphQLScalarType,

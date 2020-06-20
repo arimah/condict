@@ -74,7 +74,7 @@ const defineClientTypes = (
   schema: GraphQLSchema,
   sharedPath: string,
   srcDir: string
-) => {
+): void => {
   const fragments = new Map<string, FragmentDefinitionNode>();
   const operationFiles: [string, DocumentNode][] = [];
 

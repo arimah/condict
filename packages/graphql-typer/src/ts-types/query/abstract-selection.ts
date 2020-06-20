@@ -254,7 +254,7 @@ const writeAbstractTypeSelection = (
   result: TextBuilder,
   type: GraphQLInterfaceType | GraphQLUnionType,
   selections: readonly SelectionNode[]
-) => {
+): void => {
   const outputFields: OutputFields = {
     type,
     possibleTypes: params.schema.getPossibleTypes(type),
