@@ -45,6 +45,7 @@ The eventual goal of Condict is to be distributable as a standalone Electron app
 
 * [a11y-utils](./packages/a11y-utils): Various small utility functions and React components for accessibility features.
 * [dev-server](./packages/dev-server): A small wrapper around Webpack dev server, used by other packages for testing UI components.
+* [eslint-plugin](./packages/eslint-plugin): ESLint configuration.
 * [gen-id](./packages/gen-id): A microscopic package which exports a single function that generates a random-enough ID string.
 * [graphql-typer](./packages/graphql-typer): Generates TypeScript type definitions from a GraphQL schema.
 * [ipa](./packages/ipa): Utilities for searching and listing [IPA][] characters.
