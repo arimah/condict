@@ -6,7 +6,7 @@ module.exports = {
   },
   "extends": [
     // NB: This config is inlined into ../index.js, hence './configs'.
-    "./config/base.js",
+    "./configs/base.js",
     "plugin:react/recommended",
     "plugin:jsx-a11y/recommended",
   ],
