@@ -1,6 +1,6 @@
 {
   "name": "@condict/dev-server",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Thin wrapper around webpack-dev-server that injects Condict-specific config.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
@@ -19,35 +19,31 @@
   },
   "dependencies": {
     "html-replace-webpack-plugin": "^2.5.6",
-    "html-webpack-plugin": "^3.2.0",
-    "ts-loader": "^6.2.1",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "html-webpack-plugin": "^4.3.0",
+    "ts-loader": "^7.0.5",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   },
   "devDependencies": {
-    "@types/html-webpack-plugin": "^3.2.1",
-    "@types/react": "^16.9.12",
-    "@types/react-dom": "^16.9.4",
-    "@types/styled-components": "^4.4.0",
-    "@types/webpack": "^4.41.0",
-    "@types/webpack-dev-server": "^3.4.0",
-    "@typescript-eslint/eslint-plugin": "^2.8.0",
-    "@typescript-eslint/parser": "^2.8.0",
-    "chalk": "^3.0.0",
-    "eslint": "^5.16.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.12.3",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-is": "^16.12.0",
-    "rimraf": "^3.0.0",
-    "styled-components": "^5.0.0-rc.2",
-    "styled-tools": "^1.7.1",
-    "typescript": "^3.7.2"
+    "@condict/eslint-plugin": "^0.1.1",
+    "@types/html-webpack-plugin": "^3.2.3",
+    "@types/react": "^16.9.38",
+    "@types/react-dom": "^16.9.8",
+    "@types/styled-components": "^5.1.0",
+    "@types/webpack": "^4.41.17",
+    "@types/webpack-dev-server": "^3.11.0",
+    "chalk": "^4.1.0",
+    "eslint": "^7.3.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-is": "^16.13.1",
+    "rimraf": "^3.0.2",
+    "styled-components": "^5.1.1",
+    "typescript": "^3.9.5"
   },
   "peerDependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   }
 }

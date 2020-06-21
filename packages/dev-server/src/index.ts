@@ -16,7 +16,7 @@ type Options = {
   host?: string;
 };
 
-export function start(options: Options) {
+export function start(options: Options): void {
   const {entry, rootDir} = options;
   if (!entry) {
     throw new Error('Dev server option missing: entry');
