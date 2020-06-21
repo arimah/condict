@@ -122,7 +122,7 @@ function makeTableEditor<V extends Value<any>, M>(
   class TableEditor extends Component<Props<V, M>, State> {
     public static defaultProps = {
       disabled: false,
-      onChange: () => { },
+      onChange: () => { /* no-op */ },
     };
 
     public state: State = {

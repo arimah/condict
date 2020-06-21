@@ -10,7 +10,7 @@ import * as S from './styles';
 
 export type Props = CellDataProps<Value>;
 
-const CellData = ({cell, editing, disabled}: Props) => {
+const CellData = ({cell, editing, disabled}: Props): JSX.Element => {
   const {data} = cell;
   if (cell.header) {
     return <S.CellData>{data.text || ' '}</S.CellData>;

@@ -37,7 +37,7 @@ const getSelectionInfo = (value: Value) =>
     }
   );
 
-const ContextMenu = ({value, messages}: Props) => {
+const ContextMenu = ({value, messages}: Props): JSX.Element | null => {
   const {selection} = value;
   const {focusedCellKey} = selection;
   const focusedCell = value.getCell(focusedCellKey);

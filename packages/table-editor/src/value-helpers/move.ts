@@ -34,7 +34,7 @@ const move = <V extends Value<any>>(
   deltaRow: MoveDelta,
   deltaCol: MoveDelta,
   extendSelection = false
-) => {
+): V => {
   const {layout, selection: {focusedCellKey}} = value;
   const focusedCell = layout.cellFromKey(focusedCellKey) as LayoutCell;
   const newRow = navigate(

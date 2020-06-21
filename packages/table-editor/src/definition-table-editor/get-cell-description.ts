@@ -2,7 +2,10 @@ import {Cell} from '../value/types';
 
 import {DataFields, Messages} from './types';
 
-export default (cell: Cell<DataFields>, messages: Messages) => {
+const getCellDescription = (
+  cell: Cell<DataFields>,
+  messages: Messages
+): string => {
   if (!cell.header) {
     const {data} = cell;
     switch (data.customForm) {
@@ -16,3 +19,5 @@ export default (cell: Cell<DataFields>, messages: Messages) => {
   }
   return '';
 };
+
+export default getCellDescription;

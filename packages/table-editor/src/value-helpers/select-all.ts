@@ -1,7 +1,7 @@
 import Value from '../value';
 import Selection from '../value/selection';
 
-export default <V extends Value<any>>(value: V) => {
+const selectAll = <V extends Value<any>>(value: V): V => {
   const {layout} = value;
   const firstCell = layout.cellFromPosition(0, 0);
   const lastCell = layout.cellFromPosition(
@@ -15,3 +15,5 @@ export default <V extends Value<any>>(value: V) => {
     firstCell.key
   ));
 };
+
+export default selectAll;

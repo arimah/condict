@@ -2,7 +2,7 @@ import mapSelected from '../value-helpers/map-selected';
 
 import Value from './value';
 
-export default (value: Value) => {
+export default (value: Value): Value => {
   const {selection} = value;
 
   // This interaction can get a bit weird when the focus is on a header cell,

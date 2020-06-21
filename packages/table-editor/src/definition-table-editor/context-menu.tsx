@@ -9,7 +9,7 @@ import {Messages} from './types';
 
 type Props = ContextMenuProps<Value, Messages>;
 
-const ContextMenu = ({value, messages}: Props) => {
+const ContextMenu = ({value, messages}: Props): JSX.Element | null => {
   const {focusedCellKey} = value.selection;
   const focusedCell = value.getCell(focusedCellKey);
 
@@ -33,7 +33,7 @@ const ContextMenu = ({value, messages}: Props) => {
 
 export default ContextMenu;
 
-export const hasContextMenu = (value: Value) => {
+export const hasContextMenu = (value: Value): boolean => {
   const {focusedCellKey} = value.selection;
   const focusedCell = value.getCell(focusedCellKey);
   return focusedCell !== null && !focusedCell.header;

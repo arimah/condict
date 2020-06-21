@@ -1,6 +1,14 @@
 import Layout from './layout';
 import {LayoutCell} from './types';
 
+export type SelectionData = {
+  readonly selectedCells: Set<string>;
+  readonly minRow: number;
+  readonly maxRow: number;
+  readonly minCol: number;
+  readonly maxCol: number;
+};
+
 const findSelectionBounds = (layout: Layout, cellA: LayoutCell, cellB: LayoutCell) => {
   // Consider the following table:
   //
@@ -74,11 +82,11 @@ const findSelectionBounds = (layout: Layout, cellA: LayoutCell, cellB: LayoutCel
   return {minRow, maxRow, minCol, maxCol};
 };
 
-export default (
+const findSelection = (
   layout: Layout,
   focusedCellKey: string,
   selectionStart: string
-) => {
+): SelectionData => {
   const {colCount, grid, cellsByKey} = layout;
 
   const selectedCells = new Set<string>();
@@ -109,3 +117,5 @@ export default (
     return {selectedCells, minRow, maxRow, minCol, maxCol};
   }
 };
+
+export default findSelection;

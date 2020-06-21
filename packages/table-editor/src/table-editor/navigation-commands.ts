@@ -6,7 +6,7 @@ import moveFocus, {MoveDelta} from '../value-helpers/move';
 const commands: CommandSpecMap = {
   moveUp: {
     shortcut: Shortcut.parse('ArrowUp'),
-    exec: <V extends Value<any>>(value: V) => moveFocus(
+    exec: <V extends Value<any>>(value: V): V => moveFocus(
       value,
       MoveDelta.PREV,
       MoveDelta.NONE
@@ -15,7 +15,7 @@ const commands: CommandSpecMap = {
 
   moveToFirstRow: {
     shortcut: Shortcut.parse('Primary+ArrowUp'),
-    exec: <V extends Value<any>>(value: V) => moveFocus(
+    exec: <V extends Value<any>>(value: V): V => moveFocus(
       value,
       MoveDelta.FIRST,
       MoveDelta.NONE
@@ -24,7 +24,7 @@ const commands: CommandSpecMap = {
 
   moveDown: {
     shortcut: Shortcut.parse('ArrowDown'),
-    exec: <V extends Value<any>>(value: V) => moveFocus(
+    exec: <V extends Value<any>>(value: V): V => moveFocus(
       value,
       MoveDelta.NEXT,
       MoveDelta.NONE
@@ -33,7 +33,7 @@ const commands: CommandSpecMap = {
 
   moveToLastRow: {
     shortcut: Shortcut.parse('Primary+ArrowDown'),
-    exec: <V extends Value<any>>(value: V) => moveFocus(
+    exec: <V extends Value<any>>(value: V): V => moveFocus(
       value,
       MoveDelta.LAST,
       MoveDelta.NONE
@@ -42,7 +42,7 @@ const commands: CommandSpecMap = {
 
   moveLeft: {
     shortcut: Shortcut.parse('ArrowLeft'),
-    exec: <V extends Value<any>>(value: V) => moveFocus(
+    exec: <V extends Value<any>>(value: V): V => moveFocus(
       value,
       MoveDelta.NONE,
       MoveDelta.PREV
@@ -51,7 +51,7 @@ const commands: CommandSpecMap = {
 
   moveToFirstColumn: {
     shortcut: ShortcutGroup.parse(['Primary+ArrowLeft', 'Home']),
-    exec: <V extends Value<any>>(value: V) => moveFocus(
+    exec: <V extends Value<any>>(value: V): V => moveFocus(
       value,
       MoveDelta.NONE,
       MoveDelta.FIRST
@@ -60,7 +60,7 @@ const commands: CommandSpecMap = {
 
   moveRight: {
     shortcut: Shortcut.parse('ArrowRight'),
-    exec: <V extends Value<any>>(value: V) => moveFocus(
+    exec: <V extends Value<any>>(value: V): V => moveFocus(
       value,
       MoveDelta.NONE,
       MoveDelta.NEXT
@@ -69,7 +69,7 @@ const commands: CommandSpecMap = {
 
   moveToLastColumn: {
     shortcut: ShortcutGroup.parse(['Primary+ArrowRight', 'End']),
-    exec: <V extends Value<any>>(value: V) => moveFocus(
+    exec: <V extends Value<any>>(value: V): V => moveFocus(
       value,
       MoveDelta.NONE,
       MoveDelta.LAST
@@ -78,7 +78,7 @@ const commands: CommandSpecMap = {
 
   moveToFirstCell: {
     shortcut: Shortcut.parse('Primary+Home'),
-    exec: <V extends Value<any>>(value: V) => moveFocus(
+    exec: <V extends Value<any>>(value: V): V => moveFocus(
       value,
       MoveDelta.FIRST,
       MoveDelta.FIRST
@@ -87,7 +87,7 @@ const commands: CommandSpecMap = {
 
   moveToLastCell: {
     shortcut: Shortcut.parse('Primary+End'),
-    exec: <V extends Value<any>>(value: V) => moveFocus(
+    exec: <V extends Value<any>>(value: V): V => moveFocus(
       value,
       MoveDelta.LAST,
       MoveDelta.LAST

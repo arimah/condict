@@ -37,7 +37,7 @@ const getInsertIndex = (
 export const insertRow = <V extends Value<any>>(
   value: V,
   location: InsertLocation
-) => {
+): V => {
   const {selection, layout} = value;
 
   const [originRow, offset] = getInsertIndex(
@@ -111,7 +111,7 @@ export const insertRow = <V extends Value<any>>(
 export const insertColumn = <V extends Value<any>>(
   value: V,
   location: InsertLocation
-) => {
+): V => {
   const {selection, layout} = value;
 
   const [originCol, offset] = getInsertIndex(

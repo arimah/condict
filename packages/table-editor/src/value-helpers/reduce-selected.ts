@@ -5,7 +5,7 @@ const reduceSelected = <V extends Value<any>, R>(
   value: V,
   initialValue: R,
   f: (acc: R, cell: Cell<ValueData<V>>) => R
-) => {
+): R => {
   const {selection, layout} = value;
 
   let result = initialValue;

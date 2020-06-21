@@ -50,7 +50,7 @@ const separateCell = <V extends Value<any>>(
   return newRows;
 };
 
-const separate = <V extends Value<any>>(value: V) => {
+const separate = <V extends Value<any>>(value: V): V => {
   const {selection, layout} = value;
 
   // If none of the selected cells spans multiple rows or columns, there's

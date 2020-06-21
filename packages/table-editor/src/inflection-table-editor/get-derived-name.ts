@@ -88,7 +88,7 @@ const collectNearbyHeaders = (
   }
 };
 
-export default (value: Value, key: string) => {
+const getDerivedName = (value: Value, key: string): string => {
   const {layout} = value;
   const layoutCell = layout.cellFromKey(key);
   if (!layoutCell) {
@@ -143,3 +143,5 @@ export default (value: Value, key: string) => {
     return 'Inflected form';
   }
 };
+
+export default getDerivedName;

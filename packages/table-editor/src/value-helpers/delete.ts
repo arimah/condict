@@ -18,7 +18,7 @@ const getOverlapSize = (
   return Math.max(0, smallestMax - largestMin + 1);
 };
 
-export const deleteSelectedRows = <V extends Value<any>>(value: V) => {
+export const deleteSelectedRows = <V extends Value<any>>(value: V): V => {
   const {selection, layout} = value;
 
   // If every row is selected, just return an empty table.
@@ -133,7 +133,7 @@ export const deleteSelectedRows = <V extends Value<any>>(value: V) => {
   return value.make(newRows, newLayout, newSelection);
 };
 
-export const deleteSelectedColumns = <V extends Value<any>>(value: V) => {
+export const deleteSelectedColumns = <V extends Value<any>>(value: V): V => {
   const {selection, layout} = value;
 
   // If every column is selected, just return an empty table.

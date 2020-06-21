@@ -12,7 +12,7 @@ export type Props = {
   onChange: (newValue: Map<string, string>) => void;
 };
 
-const StemsInput = (props: Props) => {
+const StemsInput = (props: Props): JSX.Element => {
   const {value, stemNames, term, onChange} = props;
 
   const [id] = useState(genId);

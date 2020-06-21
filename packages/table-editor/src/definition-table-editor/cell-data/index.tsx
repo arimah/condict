@@ -11,7 +11,7 @@ import * as S from './styles';
 
 export type Props = CellDataProps<Value>;
 
-const CellData = ({cell, disabled}: Props) => {
+const CellData = ({cell, disabled}: Props): JSX.Element => {
   if (cell.header) {
     return <S.CellData>{cell.data.text}</S.CellData>;
   }

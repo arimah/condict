@@ -2,6 +2,13 @@ import {List} from 'immutable';
 
 import {Row, Cell, LayoutCell} from './types';
 
+export type LayoutData = {
+  readonly rowCount: number;
+  readonly colCount: number;
+  readonly grid: LayoutCell[];
+  readonly cellsByKey: Map<string, LayoutCell>;
+};
+
 const fillLayoutGrid = (
   grid: LayoutCell[],
   colCount: number,
@@ -20,7 +27,7 @@ const fillLayoutGrid = (
   }
 };
 
-export default (rows: List<Row<unknown>>) => {
+const buildLayout = (rows: List<Row<unknown>>): LayoutData => {
   const colCounts: number[] = [];
   rows.forEach((row, rowIndex) => {
     row.cells.forEach(cell => {
@@ -65,3 +72,5 @@ export default (rows: List<Row<unknown>>) => {
 
   return {rowCount, colCount, grid, cellsByKey};
 };
+
+export default buildLayout;

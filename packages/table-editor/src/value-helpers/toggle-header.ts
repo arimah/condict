@@ -3,7 +3,7 @@ import {Cell} from '../value/types';
 
 import mapSelected from './map-selected';
 
-export default <V extends Value<any>>(value: V) => {
+const toggleHeader = <V extends Value<any>>(value: V): V => {
   const {selection} = value;
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -15,3 +15,5 @@ export default <V extends Value<any>>(value: V) => {
     (cell: Cell<ValueData<V>>) => cell.set('header', header)
   );
 };
+
+export default toggleHeader;

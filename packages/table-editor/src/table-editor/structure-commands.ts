@@ -27,7 +27,7 @@ const commands: CommandSpecMap = {
 
   insertRowAbove: {
     shortcut: Shortcut.parse('Primary+I i'),
-    exec: <V extends Value<any>>(value: V) => insertRow(
+    exec: <V extends Value<any>>(value: V): V => insertRow(
       value,
       InsertLocation.BEFORE
     ),
@@ -35,7 +35,7 @@ const commands: CommandSpecMap = {
 
   insertRowAtTop: {
     shortcut: Shortcut.parse('Primary+Shift+I i'),
-    exec: <V extends Value<any>>(value: V) => insertRow(
+    exec: <V extends Value<any>>(value: V): V => insertRow(
       value,
       InsertLocation.START
     ),
@@ -43,7 +43,7 @@ const commands: CommandSpecMap = {
 
   insertRowBelow: {
     shortcut: Shortcut.parse('Primary+K k'),
-    exec: <V extends Value<any>>(value: V) => insertRow(
+    exec: <V extends Value<any>>(value: V): V => insertRow(
       value,
       InsertLocation.AFTER
     ),
@@ -51,7 +51,7 @@ const commands: CommandSpecMap = {
 
   insertRowAtBottom: {
     shortcut: Shortcut.parse('Primary+Shift+K k'),
-    exec: <V extends Value<any>>(value: V) => insertRow(
+    exec: <V extends Value<any>>(value: V): V => insertRow(
       value,
       InsertLocation.END
     ),
@@ -59,7 +59,7 @@ const commands: CommandSpecMap = {
 
   insertColumnBefore: {
     shortcut: Shortcut.parse('Primary+J j'),
-    exec: <V extends Value<any>>(value: V) => insertColumn(
+    exec: <V extends Value<any>>(value: V): V => insertColumn(
       value,
       InsertLocation.BEFORE
     ),
@@ -67,7 +67,7 @@ const commands: CommandSpecMap = {
 
   insertColumnAtStart: {
     shortcut: Shortcut.parse('Primary+Shift+J j'),
-    exec: <V extends Value<any>>(value: V) => insertColumn(
+    exec: <V extends Value<any>>(value: V): V => insertColumn(
       value,
       InsertLocation.START
     ),
@@ -75,7 +75,7 @@ const commands: CommandSpecMap = {
 
   insertColumnAfter: {
     shortcut: Shortcut.parse('Primary+L l'),
-    exec: <V extends Value<any>>(value: V) => insertColumn(
+    exec: <V extends Value<any>>(value: V): V => insertColumn(
       value,
       InsertLocation.AFTER
     ),
@@ -83,7 +83,7 @@ const commands: CommandSpecMap = {
 
   insertColumnAtEnd: {
     shortcut: Shortcut.parse('Primary+Shift+L l'),
-    exec: <V extends Value<any>>(value: V) => insertColumn(
+    exec: <V extends Value<any>>(value: V): V => insertColumn(
       value,
       InsertLocation.END
     ),

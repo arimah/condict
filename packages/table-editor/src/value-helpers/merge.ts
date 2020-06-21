@@ -7,7 +7,7 @@ import Layout from '../value/layout';
 import Selection from '../value/selection';
 import {Cell} from '../value/types';
 
-const merge = <V extends Value<any>>(value: V) => {
+const merge = <V extends Value<any>>(value: V): V => {
   const {selection} = value;
   // If there's only a single cell (or none) selected, there's nothing to
   // merge, so we don't have to do anything!

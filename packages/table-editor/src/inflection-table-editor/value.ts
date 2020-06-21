@@ -61,7 +61,7 @@ export default class InflectionTableValue extends Value<DataFields> {
     return Data();
   }
 
-  public createCellFrom(protoCell: CellType<DataFields>) {
+  public createCellFrom(protoCell: CellType<DataFields>): CellType<DataFields> {
     return Cell({
       key: genId(),
       header: protoCell.header,

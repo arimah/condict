@@ -6,7 +6,9 @@ import {Row, RowFields, Cell, CellFields} from './types';
 import Layout from './layout';
 import Selection from './selection';
 
-export const CellOf = <D>(Data: Record.Factory<D>) =>
+export const CellOf = <D>(
+  Data: Record.Factory<D>
+): Record.Factory<CellFields<D>> =>
   Record<CellFields<D>>({
     key: '',
     header: false,
@@ -20,7 +22,9 @@ export const makeRow = Record<RowFields<any>>({
   cells: List(),
 });
 
-export const RowType = <D>(values: Partial<RowFields<D>>) =>
+export const RowType = <D>(
+  values: Partial<RowFields<D>>
+): RecordOf<RowFields<D>> =>
   (makeRow as Record.Factory<RowFields<D>>)(values);
 
 export type ValueData<V extends Value<any>> =
@@ -63,7 +67,7 @@ export default abstract class Value<D> {
     return null;
   }
 
-  public withSelection(selection: Selection) {
+  public withSelection(selection: Selection): this {
     return this.make(
       this.rows,
       this.layout,

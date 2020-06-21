@@ -6,7 +6,7 @@ import pathToCell from './path-to-cell';
 const mapSelected = <V extends Value<any>>(
   value: V,
   f: (cell: Cell<ValueData<V>>) => Cell<ValueData<V>>
-) => {
+): V => {
   const {selection, layout} = value;
 
   let newRows = value.rows;

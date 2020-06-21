@@ -53,7 +53,7 @@ export default class CellEditor extends PureComponent<Props, State> {
     };
   }
 
-  public componentDidMount() {
+  public componentDidMount(): void {
     // If we got into the cell editor by typing into the cell, we need to move
     // the selection to the end of the value, so the user can keep typing. The
     // default behaviour is to select the entire text, which obviously means
@@ -118,7 +118,7 @@ export default class CellEditor extends PureComponent<Props, State> {
     this.props.onInput(this.state.cell);
   };
 
-  public render() {
+  public render(): JSX.Element {
     const {messages} = this.props;
     const {trapActive} = this.state;
 
