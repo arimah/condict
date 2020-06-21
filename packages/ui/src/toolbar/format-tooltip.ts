@@ -1,6 +1,9 @@
 import {ShortcutType} from '../command/shortcut';
 
-export default (label: string | null, shortcut: ShortcutType | undefined | null) => {
+const formatTooltip = (
+  label: string | null,
+  shortcut: ShortcutType | undefined | null
+): string | undefined => {
   if (!label) {
     if (shortcut) {
       // A shortcut with no label? Display the shortcut on its own.
@@ -14,3 +17,5 @@ export default (label: string | null, shortcut: ShortcutType | undefined | null)
   }
   return label;
 };
+
+export default formatTooltip;

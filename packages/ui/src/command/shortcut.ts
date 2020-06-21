@@ -148,7 +148,7 @@ export class Shortcut {
     return this.keys.includes(keyEvent.key) && this.testModifiers(keyEvent);
   }
 
-  public testModifiers(keyEvent: AnyKeyboardEvent) {
+  public testModifiers(keyEvent: AnyKeyboardEvent): boolean {
     return (
       this.primary === hasPrimary(keyEvent) &&
       this.secondary === hasSecondary(keyEvent) &&
@@ -157,7 +157,7 @@ export class Shortcut {
     );
   }
 
-  public forEach(cb: (shortcut: Shortcut, index: number) => void) {
+  public forEach(cb: (shortcut: Shortcut, index: number) => void): void {
     cb(this, 0);
   }
 
@@ -238,7 +238,7 @@ export class Shortcut {
   public static is(
     a: ShortcutType | null | undefined,
     b: ShortcutType | null | undefined
-  ) {
+  ): boolean {
     if (a == null || b == null) {
       return a == b;
     }
@@ -257,7 +257,7 @@ export class ShortcutGroup {
     return this.shortcuts.some(s => s.matches(keyEvent));
   }
 
-  public forEach(cb: (shortcut: Shortcut, index: number) => void) {
+  public forEach(cb: (shortcut: Shortcut, index: number) => void): void {
     this.shortcuts.forEach(cb);
   }
 

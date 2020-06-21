@@ -17,7 +17,7 @@ export type Props = {
   'aria-label' | 'aria-pressed' | 'role' | 'type'
 >;
 
-export const Switch = (props: Props) => {
+export const Switch = (props: Props): JSX.Element => {
   const {
     className,
     intent = Intent.PRIMARY,

@@ -12,6 +12,8 @@ import {
 
 import * as S from './styles';
 
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 const Demo = () => {
   const [active, setActive] = useState(false);
   const [checked, setChecked] = useState(false);

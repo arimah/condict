@@ -170,7 +170,7 @@ type State = {
 
 export default class MenuManager extends Component<Props, State> {
   public static defaultProps = {
-    onClose: () => { },
+    onClose: (): void => { /* no-op */ },
   };
 
   public state: State = {
@@ -182,7 +182,7 @@ export default class MenuManager extends Component<Props, State> {
   private lastMouseTarget: Element | null = null;
   private intentTimeoutId: number | undefined;
 
-  public open(rootMenu: ManagedMenu, fromKeyboard: boolean) {
+  public open(rootMenu: ManagedMenu, fromKeyboard: boolean): void {
     const {stack} = this.state;
     if (stack.openMenus.length === 0) {
       this.firstNeedsFocus = fromKeyboard;
@@ -193,7 +193,7 @@ export default class MenuManager extends Component<Props, State> {
     }
   }
 
-  public addPhantom(item: MenuItem) {
+  public addPhantom(item: MenuItem): void {
     const rect = item.self.getBoundingClientRect();
     const phantomProps = {
       top: rect.top,
@@ -212,7 +212,7 @@ export default class MenuManager extends Component<Props, State> {
     }, PhantomFadeTime);
   }
 
-  public componentDidUpdate(_prevProps: Props, prevState: State) {
+  public componentDidUpdate(_prevProps: Props, prevState: State): void {
     const prevStack = prevState.stack;
     const nextStack = this.state.stack;
 
@@ -246,7 +246,7 @@ export default class MenuManager extends Component<Props, State> {
     }
   }
 
-  public componentWillUnmount() {
+  public componentWillUnmount(): void {
     this.cancelIntent();
     this.detachEvents();
     enableFocusManager();
@@ -419,7 +419,7 @@ export default class MenuManager extends Component<Props, State> {
     this.setState({stack: stack.closeAll()});
   };
 
-  public render() {
+  public render(): JSX.Element {
     const {children} = this.props;
     const {stack, phantomProps} = this.state;
 

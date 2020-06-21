@@ -27,9 +27,9 @@ export type ChildType = RelativeParent & {
   focus: () => void;
 };
 
-const DefaultOnToggle = () => { };
+const DefaultOnToggle = () => { /* no-op */ };
 
-const ContextMenuTrigger = (props: Props) => {
+const ContextMenuTrigger = (props: Props): JSX.Element => {
   const {
     menu,
     onToggle = DefaultOnToggle,

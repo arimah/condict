@@ -6,6 +6,8 @@ import * as S from './styles';
 
 const Sections = [1, 2, 3];
 
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 const Demo = () => {
   const [trapActive, setTrapActive] = useState(false);
   const [section, setSection] = useState(0);

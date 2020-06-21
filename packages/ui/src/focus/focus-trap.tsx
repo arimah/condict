@@ -29,7 +29,7 @@ const getBehavior = (active: Active) =>
     ? FocusScopeBehavior.NORMAL
     : FocusScopeBehavior.CONTAIN;
 
-const FocusScope = (props: Props) => {
+const FocusScope = (props: Props): JSX.Element => {
   const {
     active = true,
     return: restore = true,

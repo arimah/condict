@@ -94,7 +94,7 @@ export const placeElement = (
   elem: HTMLElement | SVGElement,
   parent: RelativeParent,
   placement: Placement
-) => {
+): void => {
   const elemRect = elem.getBoundingClientRect();
   const parentRect = getParentRect(parent);
   const viewport = getViewport();

@@ -97,7 +97,7 @@ export function CommandGroup<
   props: Props & Omit<React.ComponentPropsWithoutRef<E>, 'onKeyDown'> & {
     as?: E;
   }
-) {
+): JSX.Element {
   const {
     as,
     commands,
@@ -190,7 +190,7 @@ export class CommandConsumer extends Component<ConsumerProps> {
   private getCommand = memoizeOne(getCommand);
   private renderChildren = memoizeOne(renderChildren);
 
-  public render() {
+  public render(): JSX.Element {
     const {name, children} = this.props;
     const command = this.getCommand(name, this.context);
     return this.renderChildren(children, command);

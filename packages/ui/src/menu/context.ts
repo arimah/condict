@@ -23,6 +23,11 @@ export type MenuContextValue = {
 
 export const MenuContext = React.createContext<MenuContextValue | null>(null);
 
+export type MenuItemValue = {
+  hasFocus: boolean;
+  submenuPlacement: Placement;
+};
+
 export class MenuItem {
   public label!: string;
   public disabled!: boolean;
@@ -40,7 +45,7 @@ export class MenuItem {
     this.submenuRef = submenuRef;
   }
 
-  public get id() {
+  public get id(): string {
     return this.self.id;
   }
 
@@ -63,7 +68,7 @@ export const useNearestMenu = (
   disabled: boolean,
   onActivate: () => void,
   renderPhantom: () => JSX.Element
-) => {
+): MenuItemValue => {
   const context = useContext(MenuContext);
   if (!context) {
     throw new Error('Menu item must be placed inside a menu');

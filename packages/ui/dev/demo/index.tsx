@@ -48,7 +48,7 @@ class Demo extends PureComponent<Props, State> {
     this.props.onToggleState(this.props.name, key);
   };
 
-  public render() {
+  public render(): JSX.Element {
     const {
       name,
       state,
@@ -80,11 +80,11 @@ class Demo extends PureComponent<Props, State> {
     );
   }
 
-  public componentDidCatch(_error: Error, _info: unknown) {
+  public componentDidCatch(_error: Error, _info: unknown): void {
     // Deliberately empty to suppress error messages in the console.
   }
 
-  public static getDerivedStateFromError(error: Error) {
+  public static getDerivedStateFromError(error: Error): Partial<State> {
     return {error};
   }
 }

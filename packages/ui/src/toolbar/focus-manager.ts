@@ -16,7 +16,7 @@ export type ContextValue = {
 
 export const Context = React.createContext<ContextValue | null>(null);
 
-export const useManagedFocus = (itemRef: RefObject<ItemElement>) => {
+export const useManagedFocus = (itemRef: RefObject<ItemElement>): boolean => {
   const context = useContext(Context);
   if (!context) {
     throw new Error('Toolbar item must be placed inside a <Toolbar>');

@@ -264,7 +264,7 @@ type State = {
 export class TagInput extends Component<Props, State> {
   public static defaultProps: Partial<Props> = {
     tags: [],
-    onChange: () => { },
+    onChange: (): void => { /* no-op */ },
   };
 
   public input = React.createRef<HTMLInputElement>();
@@ -369,7 +369,7 @@ export class TagInput extends Component<Props, State> {
     }
   };
 
-  public commitTags(keepLast: boolean) {
+  public commitTags(keepLast: boolean): void {
     const input = this.input.current;
     if (!input) {
       return;
@@ -416,7 +416,7 @@ export class TagInput extends Component<Props, State> {
     }
   }
 
-  public editTag(tag: string) {
+  public editTag(tag: string): void {
     const {tags} = this.props;
     const input = this.input.current;
     if (!input) {
@@ -445,7 +445,7 @@ export class TagInput extends Component<Props, State> {
   public deleteTag(
     tag: string,
     getNextSelected: (items: Descendants, current: TagInputChild) => any
-  ) {
+  ): void {
     const {tags: prevTags} = this.props;
     const nextTags = prevTags.filter(t => t !== tag);
 
@@ -473,7 +473,7 @@ export class TagInput extends Component<Props, State> {
     });
   }
 
-  public render() {
+  public render(): JSX.Element {
     const {
       className,
       tags,

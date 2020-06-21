@@ -109,14 +109,14 @@ class ManagedMenu extends Component<Props> {
   private readonly getMenuContextValue = memoizeOne(getMenuContextValue);
   private needFocus = false;
 
-  public contains(elem: Node | null) {
+  public contains(elem: Node | null): boolean {
     return (
-      this.menuRef.current &&
+      this.menuRef.current !== null &&
       this.menuRef.current.contains(elem)
     );
   }
 
-  public componentDidUpdate(prevProps: Readonly<Props>) {
+  public componentDidUpdate(prevProps: Readonly<Props>): void {
     const nextProps = this.props;
     if (prevProps.stack !== nextProps.stack) {
       const prevOpen = isMenuOpen(prevProps.stack, this);
@@ -136,11 +136,11 @@ class ManagedMenu extends Component<Props> {
     this.updatePlacement();
   }
 
-  public componentWillUnmount() {
+  public componentWillUnmount(): void {
     this.detachEvents();
   }
 
-  public open(fromKeyboard: boolean) {
+  public open(fromKeyboard: boolean): void {
     this.props.manager.open(this, fromKeyboard);
   }
 
@@ -176,7 +176,7 @@ class ManagedMenu extends Component<Props> {
     }
   });
 
-  public render() {
+  public render(): JSX.Element {
     const {id, name, placement, stack, children} = this.props;
 
     const open = isMenuOpen(stack, this);

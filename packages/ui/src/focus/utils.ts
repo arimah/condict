@@ -1,7 +1,7 @@
 import {isFocusableElement} from './types';
 import {isFocusable} from './targets';
 
-export const tryFocus = (...elements: (Element | null)[]) => {
+export const tryFocus = (...elements: (Element | null)[]): void => {
   for (const element of elements) {
     if (
       element &&

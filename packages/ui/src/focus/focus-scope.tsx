@@ -13,7 +13,7 @@ export type Props = {
 const getBehavior = (active: boolean) =>
   active ? FocusScopeBehavior.NORMAL : FocusScopeBehavior.EXCLUDE;
 
-const FocusScope = (props: Props) => {
+const FocusScope = (props: Props): JSX.Element => {
   const {
     active = true,
     children,

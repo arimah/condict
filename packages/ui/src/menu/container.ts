@@ -1,6 +1,6 @@
 let container: HTMLDivElement | null = null;
 
-const getContainer = () => {
+const getContainer = (): HTMLElement => {
   if (container === null) {
     container = document.createElement('div');
     document.body.appendChild(container);

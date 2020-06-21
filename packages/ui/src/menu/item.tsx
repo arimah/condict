@@ -21,7 +21,7 @@ export type Props = {
   children?: ReactNode;
 };
 
-const DefaultOnActivate = () => { };
+const DefaultOnActivate = () => { /* no-op */ };
 
 const Item = React.forwardRef<HTMLDivElement, Props>((
   props: Props,

@@ -20,7 +20,7 @@ export type Props = {
   onActivate?: () => void;
 };
 
-const DefaultOnActivate = () => {};
+const DefaultOnActivate = () => { /* no-op */ };
 
 const CheckItem = React.forwardRef<HTMLDivElement, Props>((
   props: Props,

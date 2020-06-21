@@ -38,7 +38,7 @@ type ContextValue = {
 
 export const RadioGroupContext = React.createContext<ContextValue>({namePrefix: ''});
 
-export const Radio = (props: Props) => {
+export const Radio = (props: Props): JSX.Element => {
   const {
     className,
     intent = Intent.PRIMARY,

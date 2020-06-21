@@ -2,6 +2,6 @@ import React from 'react';
 
 import * as S from './styles';
 
-const Separator = () => <S.Separator/>;
+const Separator = (): JSX.Element => <S.Separator/>;
 
 export default Separator;

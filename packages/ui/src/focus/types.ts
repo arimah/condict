@@ -17,7 +17,7 @@ export type ElementSource<E extends Element = Element> =
 
 export const elementFromSource = <E extends Element>(
   source: ElementSource<E>
-) =>
+): E | null =>
   typeof source === 'function'
     ? source()
     : source.current;

@@ -26,7 +26,7 @@ export type Props = {
   'aria-label' | 'type'
 >;
 
-export const Checkbox = (props: Props) => {
+export const Checkbox = (props: Props): JSX.Element => {
   const {
     className,
     intent = Intent.PRIMARY,

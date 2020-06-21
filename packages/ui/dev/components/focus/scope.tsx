@@ -4,6 +4,8 @@ import {FocusScope, Checkbox, Button, TextInput, Intent} from '../../../src';
 
 import * as S from './styles';
 
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 const Demo = () => {
   const [scope1, setScope1] = useState(true);
   const [scope2, setScope2] = useState(true);

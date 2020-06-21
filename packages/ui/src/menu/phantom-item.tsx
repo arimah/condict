@@ -14,7 +14,7 @@ export type Props = {
   renderItem: () => JSX.Element;
 };
 
-const PhantomWrapper = (props: Props) => {
+const PhantomWrapper = (props: Props): JSX.Element => {
   const {
     top,
     left,

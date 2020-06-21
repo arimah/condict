@@ -15,7 +15,7 @@ const DefaultSaturationMap: SaturationMap = {
 
 export const makeColorFn =
   (hue: number, saturationMap: SaturationMap = DefaultSaturationMap) =>
-    (sat: Saturation, lum: number) => {
+    (sat: Saturation, lum: number): string => {
       const effectiveSat = saturationMap[sat];
       return `hsl(${hue}, ${effectiveSat}%, ${lum}%)`;
     };

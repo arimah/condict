@@ -1,4 +1,4 @@
-import {css} from 'styled-components';
+import {Interpolation, css} from 'styled-components';
 
 import Intent from '../intent';
 
@@ -131,7 +131,7 @@ const DefaultTheme: Theme = {
   shadow: DefaultShadow,
 };
 
-export const extendTheme = (baseTheme: Theme, newTheme: PartialTheme) => {
+export const extendTheme = (baseTheme: Theme, newTheme: PartialTheme): Theme => {
   const keys = Object.keys(baseTheme);
   return keys.reduce<Theme>(
     (theme: any, key: string) => {
@@ -149,7 +149,8 @@ export const extendTheme = (baseTheme: Theme, newTheme: PartialTheme) => {
   );
 };
 
-export const createTheme = (theme: PartialTheme) => extendTheme(DefaultTheme, theme);
+export const createTheme = (theme: PartialTheme): Theme =>
+  extendTheme(DefaultTheme, theme);
 
 export type IntentProps = {
   intent: Intent;
@@ -157,15 +158,15 @@ export type IntentProps = {
 };
 
 export const intentVar =
-  (variable: keyof IntentTheme) =>
-    (props: IntentProps) =>
+  <K extends keyof IntentTheme>(variable: K) =>
+    (props: IntentProps): IntentTheme[K] =>
       props.theme[props.intent][variable];
 
 export const transition = (
   property: string,
   duration: number | keyof TimingTheme = 'short',
   timingFunc = 'ease-in-out'
-) => css`
+): Interpolation<any> => css`
   transition-property: ${property};
   transition-duration: ${
     typeof duration === 'number'

@@ -29,7 +29,7 @@ export type GetElementFunc<R, E extends Descendant> = (element: R) => E;
  *     if (!ref.current) {
  *       throw new Error('No element!');
  *     }
- *     ref.current;
+ *     return ref.current;
  *   };
  *   //...
  *   const descendants = new DescendantCollection(getElement);
@@ -70,7 +70,7 @@ export default class DescendantCollection<R, E extends Descendant> {
    * This method should be called during rendering, not in an effect.
    * @param itemRef The descendant to register.
    */
-  public register(itemRef: R) {
+  public register(itemRef: R): void {
     if (this.itemRefSet.has(itemRef)) {
       return;
     }
@@ -86,7 +86,7 @@ export default class DescendantCollection<R, E extends Descendant> {
    *
    * This method should be called when the descendant unmounts.
    */
-  public unregister(itemRef: R) {
+  public unregister(itemRef: R): void {
     // Note: Removing an element doesn't change the relative order. If the
     // collection was ordered before, it will be ordered afterwards too.
     if (this.itemRefSet.has(itemRef)) {
