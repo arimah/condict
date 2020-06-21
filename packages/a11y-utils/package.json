@@ -1,6 +1,6 @@
 {
   "name": "@condict/a11y-utils",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Accessibility utils for Condict, primarily its UI components.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
@@ -17,18 +17,14 @@
     "lint": "eslint --ext .ts,.tsx src/"
   },
   "devDependencies": {
-    "@types/react": "^16.8.24",
-    "@types/styled-components": "4.1.8",
-    "@typescript-eslint/eslint-plugin": "^1.12.0",
-    "@typescript-eslint/parser": "^1.12.0",
-    "cross-env": "^6.0.3",
-    "eslint": "^5.16.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.12.3",
-    "rimraf": "^3.0.0",
-    "typescript": "^3.7.2"
+    "@condict/eslint-plugin": "^0.1.0",
+    "@types/react": "^16.9.38",
+    "@types/styled-components": "^5.1.0",
+    "eslint": "^7.3.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.5"
   },
   "peerDependencies": {
-    "styled-components": "^5.0.0-rc.2"
+    "styled-components": "^5.1.1"
   }
 }
