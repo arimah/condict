@@ -53,7 +53,7 @@ class Definition extends Model {
 
   public async byIdRequired(
     id: DefinitionId,
-    paramName: string = 'id'
+    paramName = 'id'
   ): Promise<DefinitionRow> {
     const definition = await this.byId(id);
     if (!definition) {
@@ -275,7 +275,7 @@ class DefinitionInflectionTable extends Model {
 
   public async byIdRequired(
     id: DefinitionInflectionTableId,
-    paramName: string = 'id'
+    paramName = 'id'
   ): Promise<DefinitionInflectionTableRow> {
     const table = await this.byId(id);
     if (!table) {

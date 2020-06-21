@@ -9,7 +9,7 @@ import Adaptor, {Sql, ExecResult} from '../adaptor';
 // robust, as it will fail miserably with certain field names. We use it in
 // this adaptor only because all the code is trusted; there are no foreign
 // queries anywhere.
-const escapeId = (id: string) => `"${id}"`;
+const escapeId = (id: string) => '`' + id + '`';
 
 class RawSql {
   public sql: string;
@@ -109,11 +109,11 @@ export default class SqliteAdaptor extends Adaptor {
     this.connection.prepare('begin').run();
   }
 
-  public commit() {
+  public commit(): void {
     this.connection.prepare('commit').run();
   }
 
-  public rollBack() {
+  public rollBack(): void {
     this.connection.prepare('rollback').run();
   }
 
@@ -136,7 +136,7 @@ export default class SqliteAdaptor extends Adaptor {
     return new RawSql(sql, params);
   }
 
-  public release() {
+  public release(): void {
     this.pool.release(this.connection);
   }
 }

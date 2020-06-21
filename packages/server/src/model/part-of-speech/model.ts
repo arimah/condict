@@ -26,7 +26,7 @@ class PartOfSpeech extends Model {
 
   public async byIdRequired(
     id: PartOfSpeechId,
-    paramName: string = 'id'
+    paramName = 'id'
   ): Promise<PartOfSpeechRow> {
     const partOfSpeech = await this.byId(id);
     if (!partOfSpeech) {

@@ -9,7 +9,7 @@ type Pending = {
 export default class LineReader {
   private readonly stream: NodeJS.ReadableStream;
   private readonly reader: readline.Interface;
-  private ended: boolean = false;
+  private ended = false;
   // Buffer of lines that have emerged out of the fucking aether despite
   // having paused the goddamn reader.
   private buffer: string[] = [];

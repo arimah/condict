@@ -35,10 +35,10 @@ const fileFormat = winston.format.combine(
 );
 
 const NullLogger: Logger = {
-  error() { },
-  warn() { },
-  info() { },
-  debug() { },
+  error() { /* no-op */ },
+  warn() { /* no-op */ },
+  info() { /* no-op */ },
+  debug() { /* no-op */ },
 };
 
 export default (config: LoggerOptions): Logger => {

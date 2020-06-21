@@ -34,7 +34,7 @@ const linkTargetTable: Record<CondictLinkType, string> = {
 export const updateInlineReferences = (
   inlines: InlineElementJson[] | undefined,
   newIds: NewIdMap
-) => {
+): void => {
   if (!inlines) {
     return;
   }

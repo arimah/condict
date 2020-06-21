@@ -32,7 +32,7 @@ class Language extends Model {
 
   public async byIdRequired(
     id: LanguageId,
-    paramName: string = 'id'
+    paramName = 'id'
   ): Promise<LanguageRow> {
     const language = await this.byId(id);
     if (!language) {

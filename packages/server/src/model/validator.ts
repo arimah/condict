@@ -42,7 +42,7 @@ export const lengthBetween = <T extends {length: number}>(
   maxLength: number,
   message: LengthBetweenMessage<T> = defaultLengthBetweenMessage
 ) =>
-  (value: T, paramName: string) => {
+  (value: T, paramName: string): T => {
     if (value.length < minLength || value.length > maxLength) {
       throw new UserInputError(`${paramName}: ${message(value, minLength, maxLength)}`, {
         invalidArgs: [paramName],
@@ -55,7 +55,7 @@ export const matches = (
   regex: RegExp,
   message: (value: string) => string
 ) =>
-  (value: string, paramName: string) => {
+  (value: string, paramName: string): string => {
     if (!regex.test(value)) {
       throw new UserInputError(`${paramName}: ${message(value)}`, {
         invalidArgs: [paramName],
@@ -69,7 +69,7 @@ export const unique = <T, K>(
   getExistingId: (value: T) => Promise<K | null>,
   message: (value: T) => string
 ) =>
-  async (value: T, paramName: string) => {
+  async (value: T, paramName: string): Promise<T> => {
     const existingId = await getExistingId(value);
     if (existingId !== null && existingId !== currentId) {
       throw new UserInputError(`${paramName}: ${message(value)}`, {

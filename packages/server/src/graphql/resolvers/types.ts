@@ -25,7 +25,7 @@ export type ResolversFor<T, P> = {
   [K in keyof T]?: IFieldResolver<P, ResolverContext, any>;
 } & {
   // This resolver never receives arguments.
-  __resolveType?: IFieldResolver<P, ResolverContext, {}>;
+  __resolveType?: IFieldResolver<P, ResolverContext, unknown>;
 };
 
 const IsMutator = Symbol('mutator function');

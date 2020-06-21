@@ -101,7 +101,7 @@ class Tag extends Model {
 
   public async byIdRequired(
     id: TagId,
-    paramName: string = 'id'
+    paramName = 'id'
   ): Promise<TagRow> {
     const tag = await this.byId(id);
     if (!tag) {

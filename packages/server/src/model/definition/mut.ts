@@ -403,7 +403,7 @@ class DefinitionDescriptionMut extends Mutator {
     definitionId: DefinitionId,
     description: BlockElementInput[]
   ): Promise<void> {
-    const finalDescription = validateDescription(description, () => {});
+    const finalDescription = validateDescription(description, () => { /* ignore */ });
 
     await this.db.exec`
       insert into definition_descriptions (definition_id, description)
@@ -415,7 +415,7 @@ class DefinitionDescriptionMut extends Mutator {
     definitionId: DefinitionId,
     description: BlockElementInput[]
   ): Promise<void> {
-    const finalDescription = validateDescription(description, () => {});
+    const finalDescription = validateDescription(description, () => { /* ignore */ });
 
     await this.db.exec`
       update definition_descriptions

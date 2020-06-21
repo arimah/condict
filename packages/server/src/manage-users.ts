@@ -14,7 +14,7 @@ type Prompt = {
 
 const withPrompt = async <T>(fn: (prompt: Prompt) => Promise<T>) => {
   let stdoutMuted = false;
-  var mutableStdout = new Writable({
+  const mutableStdout = new Writable({
     write: (chunk, encoding, callback) => {
       if (stdoutMuted) {
         // Write only newlines (they terminate the input line)
@@ -83,7 +83,7 @@ export const addUser = async (
   config: ServerConfig,
   maybeName?: string | null,
   maybePassword?: string | null
-) => {
+): Promise<void> => {
   const args = await withPrompt(async prompt => {
     const name = maybeName ||
       await prompt.query('Name of new user: ');
@@ -113,7 +113,7 @@ export const editUser = async (
   userNameOrId: string | number,
   maybeNewName?: string | null,
   maybeNewPassword?: string | null
-) => {
+): Promise<void> => {
   const args = await withPrompt(async prompt => {
     // If either is specified as an argument, prompt for neither: if the user
     // runs `edit-user x --new-name y`, we assume that's the only thing they
@@ -168,7 +168,7 @@ export const deleteUser = async (
   logger: Logger,
   config: ServerConfig,
   userNameOrId: string | number
-) => {
+): Promise<void> => {
   try {
     await withResolvers(logger, config, async ({
       model: {User},

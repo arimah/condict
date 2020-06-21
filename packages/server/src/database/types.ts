@@ -12,14 +12,23 @@ export type Pool = {
 
 export type FindColumn = (ref: ForeignKeyRef) => ColumnSchema;
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type Driver<Opt extends object> = {
   createPool(logger: Logger, options: Opt): Pool;
   generateSchema(
     schema: TableSchema[],
     findColumn: FindColumn
-  ): [string, string[]][];
+  ): SchemaDef;
   validateOptions(options: { [k: string]: any }): Opt;
 };
+
+export type SchemaDef = TableDef[];
+
+/**
+ * A generated table definition. The first value is the name of the table, the
+ * second an array of SQL commands that are executed to create the table.
+ */
+export type TableDef = [string, string[]];
 
 export type Drivers = {
   mysql: Driver<MysqlOptions>;

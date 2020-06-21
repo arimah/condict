@@ -24,7 +24,7 @@ export default class CondictServer {
   private readonly config: ServerConfig;
   private readonly databasePool: DatabasePool;
   private readonly schema: GraphQLSchema;
-  private started: boolean = false;
+  private started = false;
 
   public constructor(logger: Logger, config: ServerConfig) {
     this.logger = logger;

@@ -41,7 +41,7 @@ class InflectionTable extends Model {
 
   public async byIdRequired(
     id: InflectionTableId,
-    paramName: string = 'id'
+    paramName = 'id'
   ): Promise<InflectionTableRow> {
     const inflectionTable = await this.byId(id);
     if (!inflectionTable) {
@@ -90,7 +90,7 @@ class InflectedForm extends Model {
 
   public async byIdRequired(
     id: InflectedFormId,
-    paramName: string = 'id'
+    paramName = 'id'
   ): Promise<InflectedFormRow> {
     const inflectedForm = await this.byId(id);
     if (!inflectedForm) {
@@ -161,7 +161,7 @@ class InflectionTableLayout extends Model {
 
   public async byIdRequired(
     id: InflectionTableLayoutId,
-    paramName: string = 'id'
+    paramName = 'id'
   ): Promise<InflectionTableLayoutRow> {
     const layout = await this.byId(id);
     if (!layout) {
@@ -195,7 +195,7 @@ class InflectionTableLayout extends Model {
 
   public async currentByTableRequired(
     tableId: InflectionTableId,
-    paramName: string = 'tableId'
+    paramName = 'tableId'
   ): Promise<InflectionTableLayoutRow> {
     const layout = await this.currentByTable(tableId);
     if (!layout) {

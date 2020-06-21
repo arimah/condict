@@ -6,7 +6,7 @@ const performStartupChecks = async (
   logger: Logger,
   config: ServerConfig,
   databasePool: DatabasePool
-) => {
+): Promise<void> => {
   await ensureSchemaIsValid(logger, config, databasePool);
 };
 

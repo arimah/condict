@@ -8,7 +8,7 @@
  */
 export default class FieldSet<T> {
   private map: Partial<T> = {};
-  private empty: boolean = true;
+  private empty = true;
 
   public get isEmpty(): boolean {
     return this.empty;
@@ -22,7 +22,7 @@ export default class FieldSet<T> {
     return this.map[key];
   }
 
-  public set<K extends keyof T>(key: K, value: T[K]) {
+  public set<K extends keyof T>(key: K, value: T[K]): void {
     this.empty = false;
     this.map[key] = value;
   }

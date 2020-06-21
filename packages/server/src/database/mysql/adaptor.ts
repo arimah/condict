@@ -130,7 +130,7 @@ export default class MysqlAdaptor extends Adaptor {
     return new RawSql(sql);
   }
 
-  public release() {
+  public release(): void {
     this.connection.release();
   }
 }

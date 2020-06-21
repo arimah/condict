@@ -59,7 +59,7 @@ const exportDatabase = async (
   logger: Logger,
   db: Adaptor,
   outputStream: WriteStream
-) => {
+): Promise<void> => {
   const startTime = Date.now();
   logger.info('Starting database export.');
 

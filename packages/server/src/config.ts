@@ -89,7 +89,7 @@ export const validateConfigWithLogger = (
   return {...basicConfig, log};
 };
 
-const loadConfigFile = (fileName: string) => {
+const loadConfigFile = (fileName: string): ServerConfigWithLogger => {
   const configText = fs.readFileSync(fileName, {
     encoding: 'utf-8',
   });

@@ -84,7 +84,7 @@ const ensureSchemaIsValid = async (
   logger: Logger,
   config: ServerConfig,
   databasePool: DatabasePool
-) => {
+): Promise<void> => {
   const db = await databasePool.getConnection();
   try {
     const schemaVersion = await getSchemaVersion(db);

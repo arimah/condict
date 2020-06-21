@@ -151,7 +151,7 @@ export default class MultiMap<K, V> {
    * separately.
    * @param cb A callback that receives each value under each key.
    */
-  public forEach(cb: (key: K, value: V) => void) {
+  public forEach(cb: (key: K, value: V) => void): void {
     for (const [key, values] of this.collection) {
       for (const value of values) {
         cb(key, value);

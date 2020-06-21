@@ -434,8 +434,8 @@ export type EditInflectionTableInput = {
   /**
    * If set, updates the layout of the inflection table.
    * 
-   * It is not possible to change this setting on a table that is used by one or
-   * more definitions.
+   * If the table is used by any definitions, changing the layout will cause a new
+   * new layout version to be created. See the documentation of `InflectionTable`.
    */
   layout?: InflectionTableRowInput[] | null;
 };
@@ -902,7 +902,7 @@ export type InternalLinkTarget =
  * * Lemmas (see `Lemma`), which are basically the words of the dictionary. Each
  *   lemma can contain any number of definitions (see `Definition`).
  * 
- * In addition, every language has a (unique) name and a URL name.
+ * In addition, every language has a (unique) name.
  */
 export type Language = {
   /**
@@ -1161,8 +1161,7 @@ export type Mutation = {
    */
   addInflectionTable: InflectionTable;
   /**
-   * Edits an inflection table. It is not possible to change `layout` on a table
-   * that is used by one or more definitions.
+   * Edits an inflection table.
    * 
    * Requires authentication.
    */

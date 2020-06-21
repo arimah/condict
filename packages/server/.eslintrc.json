@@ -1,5 +1,13 @@
 {
   "extends": [
-    "../../eslint-node.config.js"
-  ]
+    "plugin:@condict/node"
+  ],
+  "plugins": [
+    "@condict"
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": ["warn", {
+      "allowArgumentsExplicitlyTypedAsAny": true
+    }]
+  }
 }

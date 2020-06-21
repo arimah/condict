@@ -24,33 +24,45 @@ const MarshalImpls: Record<MarshalTypeName, MarshalImpl> = {
       if (typeof value === 'number' && Number.isInteger(value)) {
         return value;
       }
-      return null;
+      throw new TypeError(`Expected an integer value; got '${value}'`);
     },
     parseLiteral: node => {
       if (node.kind === Kind.INT) {
         return parseInt(node.value, 10);
       }
-      return null;
+      throw new TypeError(`Expected an integer literal; got ${node.kind}`);
     },
   },
   FLOAT_TYPE: {
     serialize: value => value,
-    parseValue: value => typeof value === 'number' ? value : null,
+    parseValue: value => {
+      if (typeof value === 'number') {
+        return value;
+      }
+      throw new TypeError(`Expected a number value; got '${value}'`);
+    },
     parseLiteral: node => {
       if (node.kind === Kind.INT || node.kind === Kind.FLOAT) {
         return parseFloat(node.value);
       }
-      return null;
+      throw new TypeError(
+        `Expected an integer or floating-point literal; got ${node.kind}`
+      );
     },
   },
   STRING_TYPE: {
     serialize: value => value,
-    parseValue: value => typeof value === 'string' ? value : null,
+    parseValue: value => {
+      if (typeof value === 'string') {
+        return value;
+      }
+      throw new TypeError(`Expected a string value; got '${value}'`);
+    },
     parseLiteral: node => {
       if (node.kind === Kind.STRING) {
         return node.value;
       }
-      return null;
+      throw new TypeError(`Expected a string literal; got ${node.kind}`);
     },
   },
 };

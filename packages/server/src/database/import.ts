@@ -71,7 +71,7 @@ const importDatabase = async (
   logger: Logger,
   db: Adaptor,
   inputStream: ReadStream
-) => {
+): Promise<void> => {
   const startTime = Date.now();
   logger.info('Starting database import.');
 

@@ -9,7 +9,7 @@ import {
   isFKColumn,
 } from '../schema/types';
 
-import {FindColumn} from '../types';
+import {FindColumn, SchemaDef, TableDef} from '../types';
 
 // The better-sqlite3 library offers no way of escaping identifiers or values
 // (probably for the best, so you don't get tempted to compose queries in a
@@ -19,7 +19,7 @@ import {FindColumn} from '../types';
 // These hand-rolled escape functions should never be used with anything that
 // comes even close to being untrusted code.
 
-const escapeId = (id: string) => `"${id}"`;
+const escapeId = (id: string) => '`' + id + '`';
 
 const escapeValue = (value: boolean | number | string | null) => {
   switch (typeof value) {
@@ -178,7 +178,7 @@ const generateCreateTable = (
   return [createTable, ...uniqueIndexes, ...indexes];
 };
 
-export default (schema: TableSchema[], findColumn: FindColumn) =>
-  schema.map<[string, string[]]>(table =>
+export default (schema: TableSchema[], findColumn: FindColumn): SchemaDef =>
+  schema.map<TableDef>(table =>
     [table.name, generateCreateTable(table, findColumn)]
   );

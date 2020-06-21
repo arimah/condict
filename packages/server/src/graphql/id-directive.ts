@@ -22,11 +22,13 @@ const parseLiteral = (node: ValueNode) => {
   if (node.kind === Kind.STRING) {
     const n = parseInt(node.value, 10);
     if (isNaN(n) || !isFinite(n)) {
-      return null;
+      throw new TypeError(`Value ${node.value} could not be parsed as an integer`);
     }
     return n;
   }
-  return null;
+  return new TypeError(
+    `ID type expected an integer or string literal; got ${node.kind}`
+  );
 };
 
 export default class IdDirective extends SchemaDirectiveVisitor {

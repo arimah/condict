@@ -1,5 +1,5 @@
 import {compare, hash} from 'bcrypt';
-import nanoid from 'nanoid';
+import {nanoid} from 'nanoid';
 
 import {
   LoginResult,
@@ -133,7 +133,7 @@ class UserSessionMut extends Mutator {
     if (session && now < session.expires_at) {
       const user = await User.byIdRequired(session.user_id);
 
-      let expiresAt = now + this.sessionDuration;
+      const expiresAt = now + this.sessionDuration;
       await db.exec`
         update user_sessions
         set expires_at = ${expiresAt}

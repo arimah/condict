@@ -3,7 +3,7 @@
  * Its purpose is to create a cleaner, more easily digested log, by normalizing
  * queries to remove redundant leading and trailing white space.
  */
-export default (query: string) => {
+export default (query: string): string => {
   let indent: string | null = null;
   const lines = query.split('\n').filter(line => {
     if (indent !== null) {

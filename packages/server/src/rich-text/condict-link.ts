@@ -13,7 +13,8 @@ import {CondictLink, CondictLinkType} from './types';
 const linkTargetRegex =
   /^condict:\/\/(language|lemma|definition|part-of-speech)\/([0-9]+)$/;
 
-export const isCondictLink = (target: string) => /^condict:\/\//.test(target);
+export const isCondictLink = (target: string): boolean =>
+  /^condict:\/\//.test(target);
 
 export const parseCondictLink = (target: string): CondictLink => {
   const match = linkTargetRegex.exec(target);

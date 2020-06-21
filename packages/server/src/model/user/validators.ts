@@ -18,7 +18,7 @@ export const validateName = (
   db: Adaptor,
   currentId: UserId | null,
   value: string
-) =>
+): Promise<string> =>
   validator<string>('name')
     .do(name => name.trim())
     .do(lengthBetween(UserNameMinLength, UserNameMaxLength))

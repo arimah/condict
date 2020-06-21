@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+// ^ For functions defined inside `TableSchema`s. We can infer their parameter
+// and return types from `TableSchema`, and specifying them here adds clutter.
+
 import {InflectedFormId} from '../../graphql/types';
 
 import {InflectionTableRowJson} from '../../model/inflection-table/types';
@@ -229,7 +233,6 @@ const tables: TableSchema[] = [
     ],
     primaryKey: 'id',
     index: [
-      'inflection_table_id',
       'inflection_table_version_id',
     ],
   },

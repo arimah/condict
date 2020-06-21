@@ -205,7 +205,7 @@ abstract class Adaptor {
    * is not logged.
    * @param sql The query to log.
    */
-  protected logQuery(sql: string) {
+  protected logQuery(sql: string): void {
     if (!this.logQueries) {
       return;
     }
@@ -383,7 +383,7 @@ abstract class Adaptor {
    * @param batchKey The key to clear cache for.
    * @param id The ID to clear cache for.
    */
-  public clearCache<K extends string | number>(batchKey: string, id: K) {
+  public clearCache<K extends string | number>(batchKey: string, id: K): void {
     if (this.dataLoaders[batchKey]) {
       this.dataLoaders[batchKey].clear(id);
     }

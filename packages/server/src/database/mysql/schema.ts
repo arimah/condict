@@ -11,7 +11,7 @@ import {
   isFKColumn,
 } from '../schema/types';
 
-import {FindColumn} from '../types';
+import {FindColumn, SchemaDef, TableDef} from '../types';
 
 const getIntType = (size: number) => {
   switch (size) {
@@ -171,7 +171,7 @@ const generateCreateTable = (
   `;
 };
 
-export default (schema: TableSchema[], findColumn: FindColumn) =>
-  schema.map<[string, string[]]>(table =>
+export default (schema: TableSchema[], findColumn: FindColumn): SchemaDef =>
+  schema.map<TableDef>(table =>
     [table.name, [generateCreateTable(table, findColumn)]]
   );
