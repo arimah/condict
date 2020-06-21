@@ -5,7 +5,7 @@ const {performance} = require('perf_hooks');
 const chalk = require('chalk');
 const {red, yellow, green, cyan} = chalk;
 
-const ipa = require('./lib');
+const ipa = require('./dist');
 
 const rl = readline.createInterface({
   input: process.stdin,
