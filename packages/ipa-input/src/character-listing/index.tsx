@@ -17,7 +17,7 @@ const Character = ({char, isBase = false}: CharacterProps) =>
     {char.display}
   </S.Character>;
 
-const CharacterListing = () =>
+const CharacterListing = (): JSX.Element =>
   // FIXME: Render the array directly when TypeScript allows it
   <>
     {ipa.getGroups().map((group, index) =>

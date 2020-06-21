@@ -9,11 +9,12 @@ const highlightMatches = (
   query: string,
   cache: Map<string, HighlightedMatch>,
   outerKey?: Key
-) => {
+): HighlightedMatch => {
   // Terms and queries should never contain newlines. (Famous last words?)
   const cacheKey = `${term}\n${query}\n${outerKey}`;
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey);
+  const cachedResult = cache.get(cacheKey);
+  if (cachedResult) {
+    return cachedResult;
   }
 
   const termLower = term.toLowerCase();

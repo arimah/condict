@@ -6,7 +6,7 @@ import CharacterListing from './character-listing';
 
 const hasQuery = (q: string) => !/^\s*$/.test(q);
 
-export const IpaInput = () => {
+export const IpaInput = (): JSX.Element => {
   const [query, setQuery] = useState('');
 
   return (

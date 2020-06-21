@@ -3,7 +3,7 @@ import React, {Fragment} from 'react';
 import highlightMatches, {HighlightedMatch} from './highlight-matches';
 import * as S from './styles';
 
-type Props = {
+export type Props = {
   char: {
     input: string;
     display: string;
@@ -18,7 +18,7 @@ type Props = {
   highlightCache: Map<string, HighlightedMatch>;
 };
 
-const SearchResult = (props: Props) => {
+const SearchResult = (props: Props): JSX.Element => {
   const {char, match, highlightCache} = props;
 
   const drawnMatches = new Set(
