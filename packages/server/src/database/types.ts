@@ -12,7 +12,6 @@ export type Pool = {
 
 export type FindColumn = (ref: ForeignKeyRef) => ColumnSchema;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type Driver<Opt extends object> = {
   createPool(logger: Logger, options: Opt): Pool;
   generateSchema(

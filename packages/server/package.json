@@ -39,7 +39,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@condict/eslint-plugin": "^0.1.0",
+    "@condict/eslint-plugin": "^0.1.2",
     "@condict/graphql-typer": "^0.3.0",
     "@types/bcrypt": "^3.0.0",
     "@types/better-sqlite3": "^5.4.0",

@@ -2,7 +2,7 @@ module.exports = {
   "env": {
     "browser": true,
     "node": true,
-    "es6": true
+    "es6": true,
   },
   "extends": [
     // NB: This config is inlined into ../index.js, hence './configs'.
@@ -16,15 +16,15 @@ module.exports = {
   ],
   "settings": {
     "react": {
-      "version": "detect"
-    }
+      "version": "detect",
+    },
   },
   "rules": {
     "react/prop-types": "off", // We have a type system.
 
     "jsx-quotes": [
       "error",
-      "prefer-single"
+      "prefer-single",
     ],
 
     "jsx-a11y/label-has-associated-control": [
@@ -34,8 +34,8 @@ module.exports = {
           "TextInput",
           "NumberInput",
           "Select"
-        ]
-      }
+        ],
+      },
     ],
 
     // This rule is deprecated and should not be used.

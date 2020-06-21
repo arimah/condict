@@ -1,7 +1,7 @@
 module.exports = {
   "env": {
     "node": true,
-    "es6": true
+    "es6": true,
   },
   "extends": [
     // NB: This config is inlined into ../index.js, hence './configs'.

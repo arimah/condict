@@ -4,10 +4,5 @@
   ],
   "plugins": [
     "@condict"
-  ],
-  "rules": {
-    "@typescript-eslint/explicit-module-boundary-types": ["warn", {
-      "allowArgumentsExplicitlyTypedAsAny": true
-    }]
-  }
+  ]
 }
