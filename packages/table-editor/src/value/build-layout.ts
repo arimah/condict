@@ -1,76 +1,73 @@
-import {List} from 'immutable';
-
-import {Row, Cell, LayoutCell} from './types';
-
-export type LayoutData = {
-  readonly rowCount: number;
-  readonly colCount: number;
-  readonly grid: LayoutCell[];
-  readonly cellsByKey: Map<string, LayoutCell>;
-};
+import {TableBase, Table, CellKey, Layout, LayoutCell} from './types';
 
 const fillLayoutGrid = (
-  grid: LayoutCell[],
-  colCount: number,
+  grid: CellKey[],
+  columnCount: number,
   cell: LayoutCell
 ) => {
-  if (cell.rowSpan === 1 && cell.columnSpan === 1) {
-    grid[cell.row * colCount + cell.col] = cell;
+  const {key, rowSpan, columnSpan, homeRow: row, homeColumn: column} = cell;
+
+  if (rowSpan === 1 && columnSpan === 1) {
+    grid[row * columnCount + column] = key;
   } else {
-    const {row, rowSpan, col, columnSpan} = cell;
     for (let r = 0; r < rowSpan; r++) {
       for (let c = 0; c < columnSpan; c++) {
-        const index = (r + row) * colCount + c + col;
-        grid[index] = cell;
+        const index = (r + row) * columnCount + c + column;
+        grid[index] = key;
       }
     }
   }
 };
 
-const buildLayout = (rows: List<Row<unknown>>): LayoutData => {
-  const colCounts: number[] = [];
-  rows.forEach((row, rowIndex) => {
-    row.cells.forEach(cell => {
-      const columnSpan = cell.columnSpan || 1;
-      // This cell contributes columnSpan columns to every row it's in.
-      for (let r = 0; r < cell.rowSpan; r++) {
-        const index = rowIndex + r;
-        colCounts[index] = (colCounts[index] || 0) + columnSpan;
+const buildLayout = (table: TableBase<unknown>): Layout => {
+  // First we need to calculate the total size of the table.
+  const columnCounts: number[] = [];
+  table.rows.forEach((row, rowIndex) => {
+    row.cells.forEach(key => {
+      const {columnSpan, rowSpan} = Table.getCell(table, key);
+      if (rowSpan === 1) {
+        columnCounts[rowIndex] = (columnCounts[rowIndex] || 0) + columnSpan;
+      } else {
+        // This cell contributes columnSpan columns to every row it's in.
+        for (let r = 0; r < rowSpan; r++) {
+          const index = rowIndex + r;
+          columnCounts[index] = (columnCounts[index] || 0) + columnSpan;
+        }
       }
     });
   });
 
-  const rowCount = colCounts.length;
-  const colCount = colCounts.reduce((a, b) => Math.max(a, b), 0);
+  const rowCount = columnCounts.length;
+  const columnCount = columnCounts.reduce((a, b) => Math.max(a, b), 0);
 
-  const grid: LayoutCell[] = new Array(rowCount * colCount).fill(null);
-  const cellsByKey: Map<string, LayoutCell> = new Map();
+  const grid = new Array<CellKey>(rowCount * columnCount).fill('');
+  const cells = new Map<CellKey, LayoutCell>();
 
-  for (let r = 0; r < rowCount; r++) {
-    const rowData = rows.get(r) as Row<unknown>;
+  for (let r = 0; r < table.rows.length; r++) {
+    const row = table.rows[r];
 
     let gridColumn = 0;
-    for (let c = 0; c < rowData.cells.size; c++) {
+    for (let c = 0; c < row.cells.length; c++) {
       // Find the next free cell
-      while (grid[r * colCount + gridColumn] !== null) {
+      while (grid[r * columnCount + gridColumn] !== '') {
         gridColumn++;
       }
 
-      const cellData = rowData.cells.get(c) as Cell<unknown>;
-      const gridCell = {
-        row: r,
-        col: gridColumn,
-        colIndex: c,
-        rowSpan: cellData.rowSpan,
-        columnSpan: cellData.columnSpan,
-        key: cellData.key,
+      const {key, columnSpan, rowSpan} = Table.getCell(table, row.cells[c]);
+      const layoutCell: LayoutCell = {
+        key,
+        homeRow: r,
+        homeColumn: gridColumn,
+        indexInRow: c,
+        rowSpan,
+        columnSpan,
       };
-      fillLayoutGrid(grid, colCount, gridCell);
-      cellsByKey.set(gridCell.key, gridCell);
+      fillLayoutGrid(grid, columnCount, layoutCell);
+      cells.set(key, layoutCell);
     }
   }
 
-  return {rowCount, colCount, grid, cellsByKey};
+  return {rowCount, columnCount, grid, cells};
 };
 
 export default buildLayout;

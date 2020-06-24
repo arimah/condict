@@ -1,15 +1,14 @@
 import {CommandSpecMap, Shortcut} from '@condict/ui';
 
-import deleteSelectedForms from './delete-selected';
-import restoreSelectedForms from './restore-selected';
+import {deleteSelected, restoreSelected} from './operations';
 
 const commands: CommandSpecMap = {
   deleteSelectedForms: {
     shortcut: Shortcut.parse('Delete Backspace'),
-    exec: deleteSelectedForms,
+    exec: deleteSelected,
   },
   restoreSelectedForms: {
-    exec: restoreSelectedForms,
+    exec: restoreSelected,
   },
 };
 

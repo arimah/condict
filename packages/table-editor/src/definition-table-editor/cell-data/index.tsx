@@ -2,29 +2,29 @@ import React, {useContext} from 'react';
 
 import {inflectWord} from '@condict/inflect';
 
-import {CellDataProps} from '../../table-cell';
+import {CellDataProps} from '../../types';
 
 import StemsContext from '../stems-context';
-import Value from '../value';
+import {DefinitionTableData} from '../types';
 
 import * as S from './styles';
 
-export type Props = CellDataProps<Value>;
+export type Props = CellDataProps<DefinitionTableData>;
 
-const CellData = ({cell, disabled}: Props): JSX.Element => {
+const CellData = ({cell, data, disabled}: Props): JSX.Element => {
   if (cell.header) {
-    return <S.CellData>{cell.data.text}</S.CellData>;
+    return <S.CellData>{data.text}</S.CellData>;
   }
-  if (cell.data.customForm !== null) {
+  if (data.customForm !== null) {
     return (
       <S.CellData custom disabled={disabled}>
-        {cell.data.customForm || <S.DeletedForm disabled={disabled}/>}
+        {data.customForm || <S.DeletedForm disabled={disabled}/>}
       </S.CellData>
     );
   }
   return (
     <S.CellData inflected disabled={disabled}>
-      <InflectedForm pattern={cell.data.text}/>
+      <InflectedForm pattern={data.text}/>
     </S.CellData>
   );
 };

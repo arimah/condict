@@ -1,6 +1,9 @@
+import DefaultEditorMessages from '../messages';
+
 import {Messages} from './types';
 
 const DefaultMessages: Messages = {
+  ...DefaultEditorMessages,
   noDerivedLemma: () => 'Not added to the dictionary.',
   hasCustomName: () => 'Form has custom name.',
   headerCellOption: () => 'Header cell',

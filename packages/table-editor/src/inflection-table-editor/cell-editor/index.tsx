@@ -1,29 +1,28 @@
-import React, {ChangeEvent, KeyboardEvent, PureComponent} from 'react';
+import React, {ChangeEvent, PureComponent} from 'react';
+import produce from 'immer';
 
-import {Checkbox, FocusTrap} from '@condict/ui';
+import {FocusTrap} from '@condict/ui';
 import {normalizePattern} from '@condict/inflect';
 import {SROnly} from '@condict/a11y-utils';
 import genId from '@condict/gen-id';
 
-import {DoNotDeriveLemmaIcon, CustomDisplayNameIcon} from '../../icons';
-import {CellEditorProps} from '../../table-cell';
-import {Cell} from '../../value/types';
-import EditorShortcuts from '../../editor-shortcuts';
+import CellDialog from '../../cell-dialog';
+import {CellWithData, CellEditorProps} from '../../types';
 
-import Value from '../value';
-import getDerivedDisplayName from '../get-derived-name';
-import {DataFields, Messages} from '../types';
+import {getDerivedName} from '../operations';
+import {InflectionTableData, Messages} from '../types';
 
+import CellInput from './cell-input';
+import SettingToggle from './setting-toggle';
+import DisplayNameInput from './display-name-input';
 import * as S from './styles';
 
-export type Props = CellEditorProps<Value, Messages>;
+export type Props = CellEditorProps<InflectionTableData, Messages>;
 
 type State = {
-  trapActive: boolean;
-  inputFocused: boolean;
-  cell: Cell<DataFields>;
-  displayName: string;
+  value: CellWithData<InflectionTableData>;
   derivedDisplayName: string;
+  trapActive: boolean;
 };
 
 export default class CellEditor extends PureComponent<Props, State> {
@@ -35,27 +34,30 @@ export default class CellEditor extends PureComponent<Props, State> {
   public constructor(props: Readonly<Props>) {
     super(props);
 
-    const {typedValue, tableValue} = props;
-    let {initialCell} = props;
-    if (typedValue) {
-      initialCell = initialCell.set(
-        'data',
-        initialCell.data.set('text', typedValue)
-      );
-    }
-    const derivedDisplayName = getDerivedDisplayName(
-      tableValue,
-      initialCell.key
+    const {table, typedValue} = props;
+
+    // Since display names are hidden normally, we don't bother recomputing
+    // them for all cells when the table structure changes. Instead, it's
+    // computed on demand when you start editing a cell and when the table
+    // is exported.
+    const derivedDisplayName = getDerivedName(
+      table,
+      props.initial.cell.key
     );
 
+    const value = produce(props.initial, value => {
+      if (typedValue) {
+        value.data.text = typedValue;
+      }
+      if (!value.data.hasCustomDisplayName) {
+        value.data.displayName = derivedDisplayName;
+      }
+    });
+
     this.state = {
-      trapActive: false,
-      inputFocused: false,
-      cell: initialCell,
-      displayName: initialCell.data.hasCustomDisplayName
-        ? initialCell.data.displayName
-        : derivedDisplayName,
+      value,
       derivedDisplayName,
+      trapActive: false,
     };
   }
 
@@ -69,7 +71,7 @@ export default class CellEditor extends PureComponent<Props, State> {
     if (input) {
       input.focus();
       if (this.props.typedValue) {
-        const dataLength = this.state.cell.data.text.length;
+        const dataLength = this.state.value.data.text.length;
         input.setSelectionRange(dataLength, dataLength, 'forward');
 
         // We've modified the cell inside the constructor. Make sure to notify
@@ -84,66 +86,57 @@ export default class CellEditor extends PureComponent<Props, State> {
   }
 
   private commit = () => {
-    const {cell} = this.state;
-    this.props.onDone(
-      cell.update('data', data =>
-        data.set('text', normalizePattern(data.text))
-      )
+    this.props.onCommit(
+      produce(this.state.value, value => {
+        value.data.text = normalizePattern(value.data.text);
+      })
     );
   };
 
-  private handleInputFocus = () => {
-    this.setState({inputFocused: true});
-  };
-
-  private handleInputBlur = () => {
-    this.setState({inputFocused: false});
-  };
-
   private handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target;
-    const {cell} = this.state;
+    const text = e.target.value;
     this.setState({
-      cell: cell.set('data', cell.data.set('text', value)),
+      value: produce(this.state.value, value => {
+        value.data.text = text;
+      }),
     }, this.emitInput);
   };
 
   private handleHeaderChange = (e: ChangeEvent<HTMLInputElement>) => {
     const header = e.target.checked;
-    const {cell} = this.state;
-    this.setState({cell: cell.set('header', header)}, this.emitInput);
+    this.setState({
+      value: produce(this.state.value, value => {
+        value.cell.header = header;
+      }),
+    }, this.emitInput);
   };
 
   private handleDeriveLemmaChange = (e: ChangeEvent<HTMLInputElement>) => {
     const deriveLemma = e.target.checked;
-    const {cell} = this.state;
     this.setState({
-      cell: cell.set('data', cell.data.set('deriveLemma', deriveLemma)),
+      value: produce(this.state.value, value => {
+        value.data.deriveLemma = deriveLemma;
+      }),
     }, this.emitInput);
   };
 
   private handleDisplayNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target;
-    const {cell} = this.state;
+    const displayName = e.target.value;
     this.setState({
-      cell: cell.set('data',
-        cell.data
-          .set('hasCustomDisplayName', true)
-          .set('displayName', value)
-      ),
-      displayName: value,
+      value: produce(this.state.value, value => {
+        value.data.hasCustomDisplayName = true;
+        value.data.displayName = displayName;
+      }),
     }, this.emitInput);
   };
 
   private handleDeriveDisplayNameClick = () => {
-    const {cell, derivedDisplayName} = this.state;
+    const {value, derivedDisplayName} = this.state;
     this.setState({
-      cell: cell.set('data',
-        cell.data
-          .set('hasCustomDisplayName', false)
-          .set('displayName', derivedDisplayName)
-      ),
-      displayName: derivedDisplayName,
+      value: produce(value, value => {
+        value.data.hasCustomDisplayName = false;
+        value.data.displayName = derivedDisplayName;
+      }),
     }, this.emitInput);
 
     if (this.displayNameRef.current) {
@@ -151,31 +144,13 @@ export default class CellEditor extends PureComponent<Props, State> {
     }
   };
 
-  private handleKeyDown = (e: KeyboardEvent) => {
-    // Allow Enter to work with buttons.
-    if (
-      e.key === 'Enter' &&
-      document.activeElement &&
-      document.activeElement.tagName === 'BUTTON'
-    ) {
-      return;
-    }
-
-    const cmd = EditorShortcuts.get(e);
-    if (cmd && cmd.command === 'commit') {
-      e.preventDefault();
-      e.stopPropagation();
-      this.commit();
-    }
-  };
-
   private emitInput = () => {
-    this.props.onInput(this.state.cell);
+    this.props.onInput(this.state.value);
   };
 
   public render(): JSX.Element {
     const {messages} = this.props;
-    const {trapActive} = this.state;
+    const {value, trapActive} = this.state;
 
     const helperId = `${this.dialogId}-desc`;
     return (
@@ -183,129 +158,44 @@ export default class CellEditor extends PureComponent<Props, State> {
         active={trapActive}
         onPointerDownOutside={this.commit}
       >
-        <S.CellEditor
+        <CellDialog
           id={this.props.id}
-          role='dialog'
           aria-label={messages.cellEditorTitle()}
-          aria-modal='true'
           aria-describedby={helperId}
-          tabIndex={-1}
-          onKeyDown={this.handleKeyDown}
+          onRequestClose={this.commit}
         >
           <SROnly id={helperId}>
             {messages.cellEditorSRHelper()}
           </SROnly>
-          {this.renderCellInput()}
+          <CellInput
+            value={value}
+            messages={messages}
+            onChange={this.handleTextChange}
+            ref={this.inputRef}
+          />
           <S.CellPopup>
-            {this.renderHeaderToggle()}
-            {this.renderDeriveLemmaToggle()}
-            {this.renderDisplayNameInput()}
+            <SettingToggle
+              checked={value.cell.header}
+              label={messages.headerCellOption()}
+              onChange={this.handleHeaderChange}
+            />
+            {!value.cell.header && <>
+              <SettingToggle
+                checked={value.data.deriveLemma}
+                label={messages.deriveLemmaOption()}
+                onChange={this.handleDeriveLemmaChange}
+              />
+              <S.CellSettingsSeparator/>
+              <DisplayNameInput
+                data={value.data}
+                messages={messages}
+                onChange={this.handleDisplayNameChange}
+                onDeriveName={this.handleDeriveDisplayNameClick}
+              />
+            </>}
           </S.CellPopup>
-        </S.CellEditor>
+        </CellDialog>
       </FocusTrap>
     );
-  }
-
-  private renderCellInput() {
-    const {messages} = this.props;
-    const {inputFocused, cell} = this.state;
-    const {data} = cell;
-
-    const needIcons = !cell.header && (
-      !data.deriveLemma ||
-      data.hasCustomDisplayName
-    );
-    return (
-      <S.CellInputWrapper focus={inputFocused}>
-        <S.CellInput
-          minimal
-          value={data.text}
-          aria-label={messages.cellValueLabel()}
-          borderRadius='0'
-          onChange={this.handleTextChange}
-          onFocus={this.handleInputFocus}
-          onBlur={this.handleInputBlur}
-          ref={this.inputRef}
-        />
-        {needIcons &&
-          <S.CellIcons disabled={false}>
-            {!data.deriveLemma && <DoNotDeriveLemmaIcon/>}
-            {data.hasCustomDisplayName && <CustomDisplayNameIcon/>}
-          </S.CellIcons>
-        }
-      </S.CellInputWrapper>
-    );
-  }
-
-  private renderHeaderToggle() {
-    const {messages} = this.props;
-    const {cell} = this.state;
-
-    return (
-      <S.CellSettingsGroup>
-        <Checkbox
-          checked={cell.header}
-          label={messages.headerCellOption()}
-          onChange={this.handleHeaderChange}
-        />
-      </S.CellSettingsGroup>
-    );
-  }
-
-  private renderDeriveLemmaToggle() {
-    const {messages} = this.props;
-    const {cell} = this.state;
-    if (cell.header) {
-      return null;
-    }
-
-    return (
-      <S.CellSettingsGroup>
-        <Checkbox
-          checked={cell.data.deriveLemma}
-          label={messages.deriveLemmaOption()}
-          onChange={this.handleDeriveLemmaChange}
-        />
-      </S.CellSettingsGroup>
-    );
-  }
-
-  private renderDisplayNameInput() {
-    const {messages} = this.props;
-    const {cell, displayName} = this.state;
-    if (cell.header) {
-      return null;
-    }
-
-    const {data} = cell;
-    return <>
-      <S.CellSettingsSeparator/>
-      <S.CellSettingsGroup>
-        <S.DisplayNameLabel>
-          {messages.formNameLabel()}
-          <S.DisplayNameInput
-            minimal
-            value={displayName}
-            aria-describedby={
-              data.hasCustomDisplayName
-                ? undefined
-                : this.displayNameDescId
-            }
-            onChange={this.handleDisplayNameChange}
-            ref={this.displayNameRef}
-          />
-        </S.DisplayNameLabel>
-        {data.hasCustomDisplayName ? (
-          <S.DeriveDisplayNameButton
-            label={messages.useAutomaticNameButton()}
-            onClick={this.handleDeriveDisplayNameClick}
-          />
-        ) : (
-          <S.DisplayNameDesc id={this.displayNameDescId}>
-            {messages.automaticNameHelper()}
-          </S.DisplayNameDesc>
-        )}
-      </S.CellSettingsGroup>
-    </>;
   }
 }

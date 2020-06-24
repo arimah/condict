@@ -1,15 +1,15 @@
 import React, {useState} from 'react';
-import {Map} from 'immutable';
+import produce from 'immer';
 
 import genId from '@condict/gen-id';
 
 import * as S from './styles';
 
 export type Props = {
-  value: Map<string, string>;
-  stemNames: string[];
+  value: ReadonlyMap<string, string>;
+  stemNames: readonly string[];
   term: string;
-  onChange: (newValue: Map<string, string>) => void;
+  onChange: (newValue: ReadonlyMap<string, string>) => void;
 };
 
 const StemsInput = (props: Props): JSX.Element => {
@@ -27,8 +27,12 @@ const StemsInput = (props: Props): JSX.Element => {
               {name}
               {': '}
               <S.ValueInput
-                value={value.get(name, term)}
-                onChange={e => onChange(value.set(name, e.target.value))}
+                value={value.has(name) ? value.get(name) || '' : term}
+                onChange={e => {
+                  onChange(produce(value, value => {
+                    value.set(name, e.target.value);
+                  }));
+                }}
               />
             </label>
           </S.Item>

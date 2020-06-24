@@ -1,17 +1,16 @@
 import {CommandSpecMap, Shortcut} from '@condict/ui';
 
-import clearSelectedCells from './clear-selected';
-import toggleSelectedCellsDeriveLemma from './toggle-derive-lemma';
+import {clearSelected, toggleDeriveLemma} from './operations';
 
 const commands: CommandSpecMap = {
   clearSelectedCells: {
     shortcut: Shortcut.parse('Delete Backspace'),
-    exec: clearSelectedCells,
+    exec: clearSelected,
   },
 
   toggleDeriveLemma: {
     shortcut: Shortcut.parse('Primary+D d'),
-    exec: toggleSelectedCellsDeriveLemma,
+    exec: toggleDeriveLemma,
   },
 };
 

@@ -1,6 +1,9 @@
+import DefaultEditorMessages from '../messages';
+
 import {Messages} from './types';
 
 const DefaultMessages: Messages = {
+  ...DefaultEditorMessages,
   formIsInflected: () => 'Form is inflected automatically.',
   formIsDeleted: () => 'Form is deleted.',
   customForm: () => 'Custom form.',

@@ -1,16 +1,17 @@
-export {default as BaseValue} from './value';
+import * as Immer from 'immer';
+
+export * from './inflection-table-editor';
+export * from './definition-table-editor';
 export {
-  DefinitionTableEditor,
-  DefinitionTableValue,
-  Props as DefinitionTableProps,
-} from './definition-table-editor';
-export {
-  InflectionTableEditor,
-  InflectionTableValue,
-  Props as InflectionTableProps,
-} from './inflection-table-editor';
-export {
-  InflectionTableJson,
-  InflectionTableJsonRow,
-  InflectionTableJsonCell,
-} from './inflection-table-editor/types';
+  Table,
+  Row,
+  RowKey,
+  Cell,
+  CellKey,
+  Selection,
+  Layout,
+  SelectionShape,
+} from './value';
+
+// Sigh
+Immer.enableMapSet();

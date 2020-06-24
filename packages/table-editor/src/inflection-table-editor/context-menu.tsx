@@ -1,5 +1,6 @@
 import React from 'react';
 import MergeIcon from 'mdi-react/TableMergeCellsIcon';
+import SeparateIcon from 'mdi-react/TableSplitCellIcon';
 import InsertRowAboveIcon from 'mdi-react/TableRowPlusBeforeIcon';
 import InsertRowBelowIcon from 'mdi-react/TableRowPlusAfterIcon';
 import DeleteRowIcon from 'mdi-react/TableRowRemoveIcon';
@@ -9,22 +10,22 @@ import DeleteColumnIcon from 'mdi-react/TableColumnRemoveIcon';
 
 import {Menu} from '@condict/ui';
 
-import {ContextMenuProps} from '../table-editor';
-import reduceSelected from '../value-helpers/reduce-selected';
+import {Table} from '../value';
+import {reduceSelected} from '../operations';
+import {ContextMenuProps} from '../types';
 
-import Value from './value';
-import {Messages} from './types';
+import {InflectionTableData, Messages} from './types';
 
-type Props = ContextMenuProps<Value, Messages>;
+type Props = ContextMenuProps<InflectionTableData, Messages>;
 
 type SelectionInfo = {
   canSeparateCells: boolean;
   hasDataCells: boolean;
 };
 
-const getSelectionInfo = (value: Value) =>
-  reduceSelected<Value, SelectionInfo>(
-    value,
+const getSelectionInfo = (table: Table<InflectionTableData>) =>
+  reduceSelected<InflectionTableData, SelectionInfo>(
+    table,
     {canSeparateCells: false, hasDataCells: false},
     (result, cell) => {
       if (cell.columnSpan > 1 || cell.rowSpan > 1) {
@@ -37,11 +38,11 @@ const getSelectionInfo = (value: Value) =>
     }
   );
 
-const ContextMenu = ({value, messages}: Props): JSX.Element | null => {
-  const {selection} = value;
-  const {focusedCellKey} = selection;
-  const focusedCell = value.getCell(focusedCellKey);
-  const sel = getSelectionInfo(value);
+const ContextMenu = ({table, messages}: Props): JSX.Element | null => {
+  const {selectionShape: sel} = table;
+  const focusedCell = Table.getCell(table, sel.focus);
+  const focusedData = Table.getData(table, sel.focus);
+  const selInfo = getSelectionInfo(table);
 
   if (!focusedCell) {
     return null;
@@ -49,27 +50,28 @@ const ContextMenu = ({value, messages}: Props): JSX.Element | null => {
 
   return <>
     <Menu.CheckItem
-      label={messages.headerCellMenu(selection.size)}
+      label={messages.headerCellMenu(sel.cells.size)}
       checked={focusedCell.header}
       command='toggleHeader'
     />
     <Menu.CheckItem
-      label={messages.deriveLemmaMenu(selection.size)}
-      checked={sel.hasDataCells && focusedCell.data.deriveLemma}
+      label={messages.deriveLemmaMenu(sel.cells.size)}
+      checked={selInfo.hasDataCells && focusedData.deriveLemma}
       command='toggleDeriveLemma'
-      disabled={!sel.hasDataCells}
+      disabled={!selInfo.hasDataCells}
     />
     <Menu.Separator/>
     <Menu.Item
       label={messages.mergeCells()}
       icon={<MergeIcon/>}
       command='mergeSelection'
-      disabled={selection.size === 1}
+      disabled={sel.cells.size === 1}
     />
     <Menu.Item
       label={messages.separateCells()}
+      icon={<SeparateIcon/>}
       command='separateSelection'
-      disabled={!sel.canSeparateCells}
+      disabled={!selInfo.canSeparateCells}
     />
     <Menu.Separator/>
     <Menu.Item label={messages.insertSubmenu()}>
@@ -97,12 +99,12 @@ const ContextMenu = ({value, messages}: Props): JSX.Element | null => {
     </Menu.Item>
     <Menu.Separator/>
     <Menu.Item
-      label={messages.deleteRows(selection.maxRow - selection.minRow + 1)}
+      label={messages.deleteRows(sel.maxRow - sel.minRow + 1)}
       icon={<DeleteRowIcon/>}
       command='deleteSelectedRows'
     />
     <Menu.Item
-      label={messages.deleteColumns(selection.maxCol - selection.minCol + 1)}
+      label={messages.deleteColumns(sel.maxColumn - sel.minColumn + 1)}
       icon={<DeleteColumnIcon/>}
       command='deleteSelectedColumns'
     />

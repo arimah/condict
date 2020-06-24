@@ -1,26 +1,27 @@
-import React, {ChangeEvent, KeyboardEvent, PureComponent} from 'react';
+import React, {ChangeEvent, PureComponent} from 'react';
+import produce from 'immer';
 
 import {FocusTrap} from '@condict/ui';
 import {inflectWord} from '@condict/inflect';
 import {SROnly} from '@condict/a11y-utils';
 import genId from '@condict/gen-id';
 
-import {CellEditorProps} from '../../table-cell';
-import {Cell} from '../../value/types';
-import EditorShortcuts from '../../editor-shortcuts';
+import CellDialog from '../../cell-dialog';
+import {CellWithData, CellEditorProps} from '../../types';
 
-import Value from '../value';
-import StemsContext, {StemsContextValue} from '../stems-context';
-import {DataFields, Messages} from '../types';
+import CellInput from './cell-input';
+import StemsContext from '../stems-context';
+import {DefinitionTableData, StemsContextValue, Messages} from '../types';
 
 import * as S from './styles';
 
-export type Props = CellEditorProps<Value, Messages>;
+export type Props = CellEditorProps<DefinitionTableData, Messages>;
 
 type State = {
+  value: CellWithData<DefinitionTableData>;
+  /** The pre-calculated default inflected form. */
+  defaultForm: string;
   trapActive: boolean;
-  cell: Cell<DataFields>;
-  inflectedForm: string;
 };
 
 export default class CellEditor extends PureComponent<Props, State> {
@@ -33,23 +34,22 @@ export default class CellEditor extends PureComponent<Props, State> {
     super(props, context);
 
     const {typedValue} = props;
-    let {initialCell} = props;
-    if (typedValue) {
-      initialCell = initialCell.set(
-        'data',
-        initialCell.data.set('customForm', typedValue)
-      );
-    }
 
-    const inflectedForm = inflectWord(
-      initialCell.data.text,
+    const value = produce(props.initial, value => {
+      if (typedValue) {
+        value.data.customForm = typedValue;
+      }
+    });
+
+    const defaultForm = inflectWord(
+      value.data.text,
       context.term,
       context.stems
     );
     this.state = {
+      value,
+      defaultForm,
       trapActive: false,
-      cell: initialCell,
-      inflectedForm,
     };
   }
 
@@ -63,7 +63,7 @@ export default class CellEditor extends PureComponent<Props, State> {
       input.focus();
       if (this.props.typedValue) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const dataLength = this.state.cell.data.customForm!.length;
+        const dataLength = this.state.value.data.customForm!.length;
         input.setSelectionRange(dataLength, dataLength, 'forward');
 
         // We've modified the cell inside the constructor. Make sure to notify
@@ -78,115 +78,73 @@ export default class CellEditor extends PureComponent<Props, State> {
   }
 
   private commit = () => {
-    this.props.onDone(this.state.cell);
+    this.props.onCommit(this.state.value);
   };
 
   private handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target;
-    const {cell} = this.state;
+    const customForm = e.target.value;
     this.setState({
-      cell: cell.set('data', cell.data.set('customForm', value)),
+      value: produce(this.state.value, value => {
+        value.data.customForm = customForm;
+      }),
     }, this.emitInput);
   };
 
   private handleRevertClick = () => {
-    const {cell} = this.state;
     this.setState({
-      cell: cell.set('data', cell.data.set('customForm', null)),
+      value: produce(this.state.value, value => {
+        value.data.customForm = null;
+      }),
     }, this.commit);
   };
 
-  private handleKeyDown = (e: KeyboardEvent) => {
-    // Allow Enter to work with buttons.
-    if (
-      e.key === 'Enter' &&
-      document.activeElement &&
-      document.activeElement.tagName === 'BUTTON'
-    ) {
-      return;
-    }
-
-    const cmd = EditorShortcuts.get(e);
-    if (cmd && cmd.command === 'commit') {
-      e.preventDefault();
-      e.stopPropagation();
-      this.commit();
-    }
-  };
-
   private emitInput = () => {
-    this.props.onInput(this.state.cell);
+    this.props.onInput(this.state.value);
   };
 
   public render(): JSX.Element {
     const {messages} = this.props;
-    const {trapActive} = this.state;
+    const {value, defaultForm, trapActive} = this.state;
 
     const helperId = `${this.dialogId}-helper`;
+    const descId = value.data.customForm !== null
+      ? `${this.dialogId}-desc`
+      : undefined;
     return (
       <FocusTrap
         active={trapActive}
         onPointerDownOutside={this.commit}
       >
-        <S.CellEditor
+        <CellDialog
           id={this.props.id}
-          role='dialog'
           aria-label={messages.cellEditorTitle()}
-          aria-modal='true'
           aria-describedby={helperId}
-          tabIndex={-1}
-          onKeyDown={this.handleKeyDown}
+          onRequestClose={this.commit}
         >
           <SROnly id={helperId}>
             {messages.cellEditorSRHelper()}
           </SROnly>
-          {this.renderCellInput()}
-          {this.renderCellPopup()}
-        </S.CellEditor>
+          <CellInput
+            data={value.data}
+            defaultForm={defaultForm}
+            messages={messages}
+            aria-describedby={descId}
+            onChange={this.handleTextChange}
+            ref={this.inputRef}
+          />
+          {descId &&
+            <SROnly id={descId}>
+              {messages.cellDialogInputHelper()}
+            </SROnly>}
+          {value.data.customForm !== null &&
+            <S.CellPopup>
+              <S.RevertButton
+                label={messages.useDefaultFormButton()}
+                onClick={this.handleRevertClick}
+              />
+            </S.CellPopup>}
+        </CellDialog>
       </FocusTrap>
-    );
-  }
-
-  private renderCellInput() {
-    const {messages} = this.props;
-    const {cell: {data}, inflectedForm} = this.state;
-
-    return (
-      <S.CellInput
-        value={data.customForm !== null ? data.customForm : inflectedForm}
-        aria-label={messages.cellValueLabel()}
-        aria-describedby={
-          data.customForm !== null
-            ? `${this.dialogId}-desc`
-            : undefined
-        }
-        borderRadius='0'
-        inflected={data.customForm === null}
-        onChange={this.handleTextChange}
-        ref={this.inputRef}
-      />
-    );
-  }
-
-  private renderCellPopup() {
-    const {messages} = this.props;
-    const {cell: {data}} = this.state;
-
-    if (data.customForm === null) {
-      return (
-        <SROnly id={`${this.dialogId}-desc`}>
-          {messages.cellDialogInputHelper()}
-        </SROnly>
-      );
-    }
-
-    return (
-      <S.CellPopup>
-        <S.RevertButton
-          label={messages.useDefaultFormButton()}
-          onClick={this.handleRevertClick}
-        />
-      </S.CellPopup>
     );
   }
 }

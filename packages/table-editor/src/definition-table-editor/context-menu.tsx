@@ -2,39 +2,33 @@ import React from 'react';
 
 import {Menu} from '@condict/ui';
 
-import {ContextMenuProps} from '../table-editor';
+import {Table} from '../value';
+import {ContextMenuProps} from '../types';
 
-import Value from './value';
-import {Messages} from './types';
+import {DefinitionTable, DefinitionTableData, Messages} from './types';
 
-type Props = ContextMenuProps<Value, Messages>;
+type Props = ContextMenuProps<DefinitionTableData, Messages>;
 
-const ContextMenu = ({value, messages}: Props): JSX.Element | null => {
-  const {focusedCellKey} = value.selection;
-  const focusedCell = value.getCell(focusedCellKey);
-
-  if (!focusedCell) {
-    return null;
-  }
+const ContextMenu = ({table, messages}: Props): JSX.Element | null => {
+  const focusedData = Table.getData(table, table.selection.focus);
 
   return <>
     <Menu.Item
       label={messages.useDefaultFormMenu()}
       command='restoreSelectedForms'
-      disabled={focusedCell.data.customForm === null}
+      disabled={focusedData.customForm === null}
     />
     <Menu.Item
       label={messages.deleteThisForm()}
       command='deleteSelectedForms'
-      disabled={focusedCell.data.customForm === ''}
+      disabled={focusedData.customForm === ''}
     />
   </>;
 };
 
 export default ContextMenu;
 
-export const hasContextMenu = (value: Value): boolean => {
-  const {focusedCellKey} = value.selection;
-  const focusedCell = value.getCell(focusedCellKey);
-  return focusedCell !== null && !focusedCell.header;
+export const hasContextMenu = (table: DefinitionTable): boolean => {
+  const focusedCell = Table.getCell(table, table.selection.focus);
+  return !focusedCell.header;
 };

@@ -1,7 +1,7 @@
 import React, {ChangeEvent, Component, ReactNode} from 'react';
 import ReactDOM from 'react-dom';
 import {ThemeProvider} from 'styled-components';
-import {Map, Stack} from 'immutable';
+import produce, {Draft} from 'immer';
 import InsertRowAboveIcon from 'mdi-react/TableRowPlusBeforeIcon';
 import InsertRowBelowIcon from 'mdi-react/TableRowPlusAfterIcon';
 import DeleteRowIcon from 'mdi-react/TableRowRemoveIcon';
@@ -23,12 +23,13 @@ import {
 } from '@condict/ui';
 
 import {
+  Table,
+  InflectionTable,
   InflectionTableEditor,
-  InflectionTableValue,
-  DefinitionTableEditor,
-  DefinitionTableValue,
-  BaseValue as Value,
   InflectionTableJson,
+  InflectedFormJson,
+  DefinitionTable,
+  DefinitionTableEditor,
 } from '../src';
 
 import InflectionTableData from './inflection-table-data.json';
@@ -43,20 +44,20 @@ declare global {
   }
 }
 
-const InitialInflectionTableValue = InflectionTableValue.from(
+const InitialInflectionTableValue = InflectionTable.fromJson(
   InflectionTableData
 );
-const InitialDefinitionTableValue = DefinitionTableValue.from(
+const InitialDefinitionTableValue = DefinitionTable.fromJson(
   InflectionTableData,
-  Map([
+  new Map([
     [6, 'nerkuar'],
     [12, ''],
   ])
 );
 const InitialStemNames = ['Plural root'];
-const InitialStems = Map({
-  'Plural root': 'nerk',
-});
+const InitialStems = new Map([
+  ['Plural root', 'nerk'],
+]);
 
 // Logic taken from the server-side code.
 const collectStemNames = (pattern: string, stems: Set<string>) => {
@@ -72,82 +73,83 @@ const collectStemNames = (pattern: string, stems: Set<string>) => {
   }
 };
 
-class ValueWithHistory<T> {
-  public readonly value: T;
-  public readonly undoStack: Stack<T>;
-  public readonly redoStack: Stack<T>;
-
-  public constructor(value: T, undoStack = Stack<T>(), redoStack = Stack<T>()) {
-    this.value = value;
-    this.undoStack = undoStack;
-    this.redoStack = redoStack;
-  }
-
-  public get canUndo(): boolean {
-    return this.undoStack.size > 0;
-  }
-
-  public get canRedo(): boolean {
-    return this.redoStack.size > 0;
-  }
-
-  public set(value: T): ValueWithHistory<T> {
-    return new ValueWithHistory(
-      value,
-      this.undoStack,
-      this.redoStack
-    );
-  }
-
-  public push(value: T): ValueWithHistory<T> {
-    return new ValueWithHistory(
-      value,
-      this.undoStack.push(this.value),
-      Stack()
-    );
-  }
-
-  public undo(): ValueWithHistory<T> {
-    const value = this.undoStack.peek();
-    if (!value) {
-      return this;
-    }
-
-    const undoStack = this.undoStack.pop();
-    const redoStack = this.redoStack.push(this.value);
-    return new ValueWithHistory(value, undoStack, redoStack);
-  }
-
-  public redo(): ValueWithHistory<T> {
-    const value = this.redoStack.peek();
-    if (!value) {
-      return this;
-    }
-
-    const redoStack = this.redoStack.pop();
-    const undoStack = this.undoStack.push(this.value);
-    return new ValueWithHistory(value, undoStack, redoStack);
-  }
+interface HistoryStack<T> {
+  readonly value: T;
+  readonly undoStack: readonly T[];
+  readonly redoStack: readonly T[];
 }
 
-type EditorDemoProps<T extends Value<any>> = {
-  value: ValueWithHistory<T>;
+const HistoryStack = {
+  create<T>(value: T): HistoryStack<T> {
+    return {value, undoStack: [], redoStack: []};
+  },
+
+  canUndo<T>(history: HistoryStack<T>): boolean {
+    return history.undoStack.length > 0;
+  },
+
+  canRedo<T>(history: HistoryStack<T>): boolean {
+    return history.redoStack.length > 0;
+  },
+
+  set<T>(history: HistoryStack<T>, value: T): HistoryStack<T> {
+    return produce(history, history => {
+      history.value = value as Draft<T>;
+    });
+  },
+
+  push<T>(history: HistoryStack<T>, value: T): HistoryStack<T> {
+    return produce(history, history => {
+      history.undoStack.push(history.value);
+      history.value = value as Draft<T>;
+    });
+  },
+
+  undo<T>(history: HistoryStack<T>): HistoryStack<T> {
+    if (history.undoStack.length === 0) {
+      return history;
+    }
+    return produce(history, history => {
+      history.redoStack.push(history.value);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      history.value = history.undoStack.pop()!;
+    });
+  },
+
+  redo<T>(history: HistoryStack<T>): HistoryStack<T> {
+    if (history.redoStack.length === 0) {
+      return history;
+    }
+    return produce(history, history => {
+      history.undoStack.push(history.value);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      history.value = history.redoStack.pop()!;
+    });
+  },
+};
+
+type EditorDemoProps<D> = {
+  value: HistoryStack<Table<D>>;
   controls?: (data: {
     disabled: boolean;
-    value: ValueWithHistory<T>;
-    setValue: (value: T) => void;
+    value: HistoryStack<Table<D>>;
+    setValue: (value: Table<D>) => void;
     toggleDisabled: () => void;
   }) => ReactNode;
-  onChange: (value: ValueWithHistory<T>) => void;
-  children: (value: T, disabled: boolean, setValue: (value: T) => void) => ReactNode;
+  onChange: (value: HistoryStack<Table<D>>) => void;
+  children: (
+    value: Table<D>,
+    disabled: boolean,
+    setValue: (value: Table<D>) => void
+  ) => ReactNode;
 };
 
 type EditorDemoState = {
   disabled: boolean;
 };
 
-class EditorDemo<T extends Value<any>>
-  extends Component<EditorDemoProps<T>, EditorDemoState>
+class EditorDemo<D>
+  extends Component<EditorDemoProps<D>, EditorDemoState>
 {
   public state: EditorDemoState = {
     disabled: false,
@@ -155,27 +157,31 @@ class EditorDemo<T extends Value<any>>
 
   private handleUndo = () => {
     const {value, onChange} = this.props;
-    onChange(value.undo());
+    onChange(HistoryStack.undo(value));
   };
 
   private handleRedo = () => {
     const {value, onChange} = this.props;
-    onChange(value.redo());
+    onChange(HistoryStack.redo(value));
   };
 
   private handleToggleDisabled = () => {
     this.setState({disabled: !this.state.disabled});
   };
 
-  private handleSetValue = (nextValue: T) => {
+  private handleSetValue = (nextValue: Table<D>) => {
     const {value, onChange} = this.props;
     const prevValue = value.value;
 
     // Change in selection only doesn't contribute to the undo stack.
-    if (nextValue.rows !== prevValue.rows) {
-      onChange(value.push(nextValue));
+    if (
+      nextValue.rows === prevValue.rows &&
+      nextValue.cells === prevValue.cells &&
+      nextValue.cellData === prevValue.cellData
+    ) {
+      onChange(HistoryStack.set(value, nextValue));
     } else {
-      onChange(value.set(nextValue));
+      onChange(HistoryStack.push(value, nextValue));
     }
   };
 
@@ -190,12 +196,12 @@ class EditorDemo<T extends Value<any>>
           undo: {
             shortcut: Shortcuts.undo,
             exec: this.handleUndo,
-            disabled: !value.canUndo,
+            disabled: !HistoryStack.canUndo(value),
           },
           redo: {
             shortcut: Shortcuts.redo,
             exec: this.handleRedo,
-            disabled: !value.canRedo,
+            disabled: !HistoryStack.canRedo(value),
           },
         }}
       >
@@ -215,10 +221,10 @@ class EditorDemo<T extends Value<any>>
 type State = {
   darkTheme: boolean;
   term: string;
-  stems: Map<string, string>;
+  stems: ReadonlyMap<string, string>;
   stemNames: string[];
-  inflectionTableValue: ValueWithHistory<InflectionTableValue>;
-  definitionTableValue: ValueWithHistory<DefinitionTableValue>;
+  inflectionTable: HistoryStack<InflectionTable>;
+  definitionTable: HistoryStack<DefinitionTable>;
 };
 
 class App extends Component<{}, State> {
@@ -227,32 +233,25 @@ class App extends Component<{}, State> {
     term: 'nerku',
     stems: InitialStems,
     stemNames: InitialStemNames,
-    inflectionTableValue: new ValueWithHistory(InitialInflectionTableValue),
-    definitionTableValue: new ValueWithHistory(InitialDefinitionTableValue),
+    inflectionTable: HistoryStack.create(InitialInflectionTableValue),
+    definitionTable: HistoryStack.create(InitialDefinitionTableValue),
   };
   private nextFormId = 100; // arbitrarily large value
 
   public constructor(props: {}) {
     super(props);
 
-    this.handleToggleDarkTheme = this.handleToggleDarkTheme.bind(this);
-    this.handleTermChange = this.handleTermChange.bind(this);
-    this.handleStemsChange = this.handleStemsChange.bind(this);
-    this.handleInflectionTableChange = this.handleInflectionTableChange.bind(this);
-    this.handleDefinitionTableChange = this.handleDefinitionTableChange.bind(this);
-    this.handleCopyTableLayout = this.handleCopyTableLayout.bind(this);
-
     window.importInflectionTable = data => {
-      const value = InflectionTableValue.from(data);
+      const value = InflectionTable.fromJson(data);
 
-      const {inflectionTableValue: valueWithHistory} = this.state;
+      const {inflectionTable: history} = this.state;
       this.setState({
-        inflectionTableValue: valueWithHistory.push(value),
+        inflectionTable: HistoryStack.push(history, value),
       });
     };
 
     window.exportInflectionTable = () =>
-      this.state.inflectionTableValue.value.toJS();
+      InflectionTable.export(this.state.inflectionTable.value);
   }
 
   private handleToggleDarkTheme = (e: ChangeEvent<HTMLInputElement>) => {
@@ -263,48 +262,54 @@ class App extends Component<{}, State> {
     this.setState({term: e.target.value});
   };
 
-  private handleStemsChange = (stems: Map<string, string>) => {
+  private handleStemsChange = (stems: ReadonlyMap<string, string>) => {
     this.setState({stems});
   };
 
   private handleInflectionTableChange = (
-    value: ValueWithHistory<InflectionTableValue>
+    value: HistoryStack<InflectionTable>
   ) => {
-    this.setState({inflectionTableValue: value});
+    this.setState({inflectionTable: value});
   };
 
   private handleDefinitionTableChange = (
-    value: ValueWithHistory<DefinitionTableValue>
+    value: HistoryStack<DefinitionTable>
   ) => {
-    this.setState({definitionTableValue: value});
+    this.setState({definitionTable: value});
   };
 
   private handleCopyTableLayout = () => {
-    const {inflectionTableValue, definitionTableValue} = this.state;
+    const {inflectionTable, definitionTable} = this.state;
 
     const stemNames = new Set<string>();
-    const inflectionTableData = inflectionTableValue.value.toJS();
+    const inflectionTableData = InflectionTable.export(inflectionTable.value);
     inflectionTableData.forEach(row => {
       row.cells.forEach(cell => {
         if (cell.inflectedForm) {
           collectStemNames(cell.inflectedForm.inflectionPattern, stemNames);
 
           if (cell.inflectedForm.id === null) {
-            cell.inflectedForm.id = String(this.nextFormId);
+            // Naughty hack.
+            (cell.inflectedForm as Draft<InflectedFormJson>).id = this.nextFormId;
             this.nextFormId++;
           }
         }
       });
     });
-    console.log('Inflection table data = ', inflectionTableData); // eslint-disable-line no-console
+    // eslint-disable-next-line no-console
+    console.log('Inflection table data = ', inflectionTableData);
 
-    const definitionTableData = definitionTableValue.value.toJS();
-    console.log('Definition table data = ', definitionTableData); // eslint-disable-line no-console
+    const definitionTableData = DefinitionTable.exportCustomForms(
+      definitionTable.value
+    );
+    // eslint-disable-next-line no-console
+    console.log('Definition table data = ', definitionTableData);
 
     this.setState({
       stemNames: Array.from(stemNames),
-      definitionTableValue: definitionTableValue.push(
-        DefinitionTableValue.from(inflectionTableData, definitionTableData)
+      definitionTable: HistoryStack.push(
+        definitionTable,
+        DefinitionTable.fromJson(inflectionTableData, definitionTableData)
       ),
     });
   };
@@ -315,8 +320,8 @@ class App extends Component<{}, State> {
       term,
       stems,
       stemNames,
-      inflectionTableValue,
-      definitionTableValue,
+      inflectionTable,
+      definitionTable,
     } = this.state;
 
     return (
@@ -337,7 +342,7 @@ class App extends Component<{}, State> {
             <h2>InflectionTableEditor</h2>
 
             <EditorDemo
-              value={inflectionTableValue}
+              value={inflectionTable}
               onChange={this.handleInflectionTableChange}
               controls={({disabled, value, setValue, toggleDisabled}) =>
                 <InflectionTableEditor.Commands
@@ -444,7 +449,7 @@ class App extends Component<{}, State> {
             />
 
             <EditorDemo
-              value={definitionTableValue}
+              value={definitionTable}
               onChange={this.handleDefinitionTableChange}
               controls={({disabled, toggleDisabled}) =>
                 <S.ToolbarWrapper>

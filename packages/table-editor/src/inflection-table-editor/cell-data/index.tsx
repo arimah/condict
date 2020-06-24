@@ -1,17 +1,16 @@
 import React from 'react';
 
-import InflectionPattern from '../../inflection-pattern';
 import {DoNotDeriveLemmaIcon, CustomDisplayNameIcon} from '../../icons';
-import {CellDataProps} from '../../table-cell';
+import InflectionPattern from '../../inflection-pattern';
+import {CellDataProps} from '../../types';
 
-import Value from '../value';
+import {InflectionTableData} from '../types';
 
 import * as S from './styles';
 
-export type Props = CellDataProps<Value>;
+export type Props = CellDataProps<InflectionTableData>;
 
-const CellData = ({cell, editing, disabled}: Props): JSX.Element => {
-  const {data} = cell;
+const CellData = ({cell, data, editing, disabled}: Props): JSX.Element => {
   if (cell.header) {
     return <S.CellData>{data.text || ' '}</S.CellData>;
   }

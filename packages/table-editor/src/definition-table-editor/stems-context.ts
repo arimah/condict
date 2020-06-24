@@ -1,20 +1,15 @@
 import React from 'react';
-import {Map} from 'immutable';
 
-export type StemsContextValue = {
-  term: string;
-  stems: Map<string, string>;
-};
+import {StemsContextValue} from './types';
 
-const StemsContextError =
-  'No StemsContext provided - this is clearly a bug. Check the renderer of `DefinitionTableEditor`.';
+const missingError = () => new Error('Stems context missing');
 
 const StemsContext = React.createContext<StemsContextValue>({
-  get term(): string {
-    throw new Error(StemsContextError);
+  get term(): never {
+    throw missingError();
   },
-  get stems(): Map<string, string> {
-    throw new Error(StemsContextError);
+  get stems(): never {
+    throw missingError();
   },
 });
 

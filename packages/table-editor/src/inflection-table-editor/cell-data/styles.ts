@@ -1,17 +1,16 @@
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 export type CellIconsProps = {
   disabled: boolean;
 };
 
+// NOTE: This styling must be synchronized with the one in ../cell-editor/styles
 export const CellIcons = styled.div<CellIconsProps>`
   display: block;
   margin-left: 5px;
   margin-right: 5px;
 
-  ${p => p.disabled && css`
-    opacity: 0.4;
-  `}
+  opacity: ${p => p.disabled && '0.4'};
 
   > svg {
     display: block;
