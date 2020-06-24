@@ -6,7 +6,7 @@ There are several noteworthy differences between standard X-SAMPA and what this 
 
 * Both `1` and `i\` represent \[ɨ\].
 * Both `}` and `u\` represent \[ʉ\].
-* But note: CXS `&` is encoded by standard X-SAMPA `}` \[æ\]; `&` represents \[ɶ\], as in standard X-SAMPA, not \[æ\] as in CXS; and `&\` \[ɶ\] from CXS is absent.
+* But note: CXS `&` is encoded by standard X-SAMPA `{` \[æ\]; `&` represents \[ɶ\], as in standard X-SAMPA, not \[æ\] as in CXS; and `&\` \[ɶ\] from CXS is absent.
 * Both `'` and `"` represent \[ˈ\] (primary stress).
 * Both `,` and `%` represent \[ˌ\] (secondary stress).
 * Palatalisation \[ʲ\] is expressed through `_j` and `;`. The standard X-SAMPA `'` is used for primary stress instead.
