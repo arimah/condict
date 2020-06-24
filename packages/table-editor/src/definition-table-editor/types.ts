@@ -22,7 +22,7 @@ export type DefinitionTable = Table<DefinitionTableData>;
 export const DefinitionTable = {
   fromJson(
     rows: DefinitionTableJson,
-    customForms: Map<number, string>
+    customForms: ReadonlyMap<number, string>
   ): DefinitionTable {
     return convertStandardTable(
       rows,

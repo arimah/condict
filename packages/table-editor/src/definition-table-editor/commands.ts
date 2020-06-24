@@ -7,6 +7,7 @@ const commands: CommandSpecMap = {
     shortcut: Shortcut.parse('Delete Backspace'),
     exec: deleteSelected,
   },
+
   restoreSelectedForms: {
     exec: restoreSelected,
   },
