@@ -22,7 +22,7 @@ export const elementFromSource = <E extends Element>(
     ? source()
     : source.current;
 
-export enum FocusScopeBehavior {
+export const enum FocusScopeBehavior {
   /**
    * The elements in the focus scope are not treated specially. Basically
    * you can tab through them like any other set of elements.
