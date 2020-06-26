@@ -158,10 +158,10 @@ export const deleteSelectedRows = <D>(
 export const deleteSelectedColumns = <D>(
   table: Table<D>
 ): Table<D> => {
-  // If every row is selected, just return an empty table.
+  // If every column is selected, just return an empty table.
   if (
-    table.selectionShape.minRow === 0 &&
-    table.selectionShape.maxRow === table.layout.rowCount - 1
+    table.selectionShape.minColumn === 0 &&
+    table.selectionShape.maxColumn === table.layout.columnCount - 1
   ) {
     return getEmptyTable(table);
   }
