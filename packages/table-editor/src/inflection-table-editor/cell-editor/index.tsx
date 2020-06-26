@@ -191,6 +191,7 @@ export default class CellEditor extends PureComponent<Props, State> {
                 messages={messages}
                 onChange={this.handleDisplayNameChange}
                 onDeriveName={this.handleDeriveDisplayNameClick}
+                ref={this.displayNameRef}
               />
             </>}
           </S.CellPopup>
