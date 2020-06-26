@@ -1,7 +1,5 @@
 # @condict/table-editor
 
-Condict permits word inflection rules to be defined, in the shape of inflection tables. This package implements Condict's table editors. Note that there are two table editors: one for defning inflection tables ([`<InflectionTableEditor>`](#inflectiontableeditor)), and another for customizing those tables for a single definition ([`<DefinitionTableEditor>`](#definitiontableeditor)).
-
 * [`<InflectionTableEditor>`](#inflectiontableeditor)
 * [`<InflectionTableEditor.Commands>`](#inflectiontableeditorcommands)
 * [`InflectionTable`](#inflectiontable)
@@ -10,6 +8,10 @@ Condict permits word inflection rules to be defined, in the shape of inflection 
 * [`<DefinitionTableEditor.Commands>`](#definitiontableeditorcommands)
 * [`DefinitionTable`](#definitiontable)
 * [`DefinitionTableMessages`](#definitiontablemessages)
+
+---
+
+Condict permits word inflection rules to be defined, in the shape of inflection tables. This package implements Condict's table editors. Note that there are two table editors: one for defning inflection tables ([`<InflectionTableEditor>`](#inflectiontableeditor)), and another for customizing those tables for a single definition ([`<DefinitionTableEditor>`](#definitiontableeditor)).
 
 ## `<InflectionTableEditor>`
 
