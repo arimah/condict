@@ -101,6 +101,7 @@ const HistoryStack = {
   push<T>(history: HistoryStack<T>, value: T): HistoryStack<T> {
     return produce(history, history => {
       history.undoStack.push(history.value);
+      history.redoStack = [];
       history.value = value as Draft<T>;
     });
   },
