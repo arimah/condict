@@ -39,9 +39,8 @@ export type IsCellEmptyFn<D> = (data: D) => boolean;
 /** The type of a cell's key. It's a short string value. */
 export type CellKey = string;
 
-let nextCellKey = 0;
 /** Generates a cell key. */
-export const CellKey = () => `C${nextCellKey++}`; //genId;
+export const CellKey = genId;
 
 /**
  * A single row in the table. Note that this contains the cell key only - the
