@@ -7,12 +7,13 @@ import React, {
 
 import genId from '@condict/gen-id';
 
-import {InflectionTableData, Messages} from '../types';
+import {Messages} from '../types';
 
 import * as S from './styles';
 
 export type Props = {
-  data: InflectionTableData;
+  value: string;
+  hasCustomName: boolean;
   messages: Messages;
   onChange: ChangeEventHandler<HTMLInputElement>;
   onDeriveName: MouseEventHandler;
@@ -22,7 +23,7 @@ const DisplayNameInput = React.forwardRef((
   props: Props,
   ref: Ref<HTMLInputElement>
 ): JSX.Element => {
-  const {data, messages, onChange, onDeriveName} = props;
+  const {value, hasCustomName, messages, onChange, onDeriveName} = props;
 
   const descId = useMemo(genId, []);
 
@@ -32,17 +33,13 @@ const DisplayNameInput = React.forwardRef((
         {messages.formNameLabel()}
         <S.DisplayNameInput
           minimal
-          value={data.displayName}
-          aria-describedby={
-            data.hasCustomDisplayName
-              ? undefined
-              : descId
-          }
+          value={value}
+          aria-describedby={hasCustomName ? undefined : descId}
           onChange={onChange}
           ref={ref}
         />
       </S.DisplayNameLabel>
-      {data.hasCustomDisplayName ? (
+      {hasCustomName ? (
         <S.DeriveDisplayNameButton
           label={messages.useAutomaticNameButton()}
           onClick={onDeriveName}

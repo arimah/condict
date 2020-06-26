@@ -19,8 +19,15 @@ import * as S from './styles';
 
 export type Props = CellEditorProps<InflectionTableData, Messages>;
 
+// The cell editor stores a copy of the current display name, rather than
+// always getting it from the cell. If we didn't do this, we would have to
+// set the cell's display name whenever the editor opens, unless the cell
+// has a custom name already. This would cause unnecessary cell updates,
+// polluting undo stacks and the like.
+
 type State = {
   value: CellWithData<InflectionTableData>;
+  displayName: string;
   derivedDisplayName: string;
   trapActive: boolean;
 };
@@ -49,14 +56,14 @@ export default class CellEditor extends PureComponent<Props, State> {
       if (typedValue) {
         value.data.text = typedValue;
       }
-      if (!value.data.hasCustomDisplayName) {
-        value.data.displayName = derivedDisplayName;
-      }
     });
 
     this.state = {
       value,
       derivedDisplayName,
+      displayName: value.data.hasCustomDisplayName
+        ? value.data.displayName
+        : derivedDisplayName,
       trapActive: false,
     };
   }
@@ -127,6 +134,7 @@ export default class CellEditor extends PureComponent<Props, State> {
         value.data.hasCustomDisplayName = true;
         value.data.displayName = displayName;
       }),
+      displayName,
     }, this.emitInput);
   };
 
@@ -137,6 +145,7 @@ export default class CellEditor extends PureComponent<Props, State> {
         value.data.hasCustomDisplayName = false;
         value.data.displayName = derivedDisplayName;
       }),
+      displayName: derivedDisplayName,
     }, this.emitInput);
 
     if (this.displayNameRef.current) {
@@ -150,7 +159,7 @@ export default class CellEditor extends PureComponent<Props, State> {
 
   public render(): JSX.Element {
     const {messages} = this.props;
-    const {value, trapActive} = this.state;
+    const {value, displayName, trapActive} = this.state;
 
     const helperId = `${this.dialogId}-desc`;
     return (
@@ -187,7 +196,8 @@ export default class CellEditor extends PureComponent<Props, State> {
               />
               <S.CellSettingsSeparator/>
               <DisplayNameInput
-                data={value.data}
+                value={displayName}
+                hasCustomName={value.data.hasCustomDisplayName}
                 messages={messages}
                 onChange={this.handleDisplayNameChange}
                 onDeriveName={this.handleDeriveDisplayNameClick}
