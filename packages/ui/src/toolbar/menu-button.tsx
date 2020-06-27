@@ -40,7 +40,7 @@ const MenuButton = React.forwardRef<HTMLButtonElement, Props>((
       <S.Button
         {...otherProps}
         aria-label={ariaLabel}
-        checked={open}
+        menuOpen={open}
         tabIndex={isCurrent ? 0 : -1}
         title={formatTooltip(label, null)}
         ref={combineRefs(ref, ownRef)}
