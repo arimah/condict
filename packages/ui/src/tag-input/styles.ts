@@ -1,7 +1,5 @@
 import styled, {css} from 'styled-components';
 
-import {transition} from '../theme';
-
 import {DeleteIcon} from './icons';
 
 export type Props = {
@@ -20,8 +18,6 @@ export const Main = styled.span<Props>`
   border-color: ${p => p.theme.general.borderColor};
   background-color: ${p => p.theme.general.bg};
   color: ${p => p.theme.general.fg};
-
-  ${transition('border-color, color')}
 
   ${p => p.minimal ? css`
     padding: 2px;
@@ -62,8 +58,6 @@ export const Tag = styled.button.attrs({
   color: ${p => p.theme.general.altFg};
   cursor: default;
 
-  ${transition('background-color, border-color, color, padding')}
-
   ${p => p.disabled && css`
     &&& {
       padding-left: 14px;
@@ -99,9 +93,8 @@ export const DeleteMarker = styled(DeleteIcon)`
   right: 8px;
   top: 50%;
   margin-top: -4px;
+  pointer-events: none;
   opacity: 0.25;
-
-  ${transition('opacity')}
 
   ${Tag}:hover &,
   ${Tag}:active & {

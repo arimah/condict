@@ -17,7 +17,12 @@ export type Props = {
   command?: string | null;
 } & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  'aria-label' | 'aria-pressed' | 'aria-keyshortcuts' | 'tabIndex' | 'title' | 'type'
+  | 'aria-label'
+  | 'aria-pressed'
+  | 'aria-keyshortcuts'
+  | 'tabIndex'
+  | 'title'
+  | 'type'
 >;
 
 const Button = React.forwardRef<HTMLButtonElement, Props>((

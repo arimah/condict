@@ -23,8 +23,6 @@ export const Switch = styled.span`
   border: 2px solid ${p => p.theme.general.borderColor};
   border-radius: 10px;
   background-color: ${p => p.theme.general.bg};
-
-  ${transition('border-color, background-color')}
 `;
 
 export const Dot = styled.span`
@@ -36,7 +34,7 @@ export const Dot = styled.span`
   border-radius: 6px;
   background-color: ${p => p.theme.general.borderColor};
 
-  ${transition('left, background-color')}
+  ${transition('left')}
 `;
 
 export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
@@ -95,8 +93,6 @@ export const Label = styled.label<DisabledProps & IntentProps>`
   box-sizing: border-box;
   position: relative;
   color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
-
-  ${transition('color')}
 
   &:hover {
     > ${Switch} {

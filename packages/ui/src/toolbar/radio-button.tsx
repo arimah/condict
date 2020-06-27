@@ -88,7 +88,13 @@ export type Props = {
   command?: string | null;
 } & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  'aria-checked' | 'aria-keyshortcuts' | 'aria-label' | 'role' | 'tabIndex' | 'title'
+  | 'aria-checked'
+  | 'aria-keyshortcuts'
+  | 'aria-label'
+  | 'role'
+  | 'tabIndex'
+  | 'title'
+  | 'type'
 >;
 
 const RadioButton = React.forwardRef<HTMLButtonElement, Props>((

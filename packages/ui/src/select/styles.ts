@@ -1,7 +1,5 @@
 import styled, {css} from 'styled-components';
 
-import {transition} from '../theme';
-
 export type Props = {
   borderRadius?: number;
   minimal?: boolean;
@@ -19,8 +17,6 @@ export const Select = styled.select<Props>`
   border-color: ${p => p.theme.general.borderColor};
   background-color: ${p => p.theme.general.bg};
   color: ${p => p.theme.general.fg};
-
-  ${transition('border-color, color, background-color')}
 
   ${p => p.minimal ? css`
     padding: 6px 28px 6px 9px;
@@ -64,8 +60,6 @@ export const Arrow = styled.svg.attrs({
   right: 10px;
   pointer-events: none;
   transform: translate(0, -50%);
-
-  ${transition('color')}
 
   color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
 `;

@@ -1,15 +1,11 @@
 import styled, {createGlobalStyle} from 'styled-components';
 
-import {transition} from '../src';
-
 export const AppStyles = createGlobalStyle`
   body {
     background-color: ${p => p.theme.general[
       p.theme.dark ? 'hoverBg' : 'activeBg'
     ]};
     color: ${p => p.theme.general.fg};
-
-    ${transition('color, background-color')}
   }
 
   #app-root {
@@ -37,11 +33,10 @@ export const MainNav = styled.nav`
     margin-top: 8px;
   }
 
-  a {
+  a,
+  a:visited {
     display: inline-block;
     color: ${p => p.theme.link.color};
-
-    ${transition('color')}
   }
 
   a:hover {

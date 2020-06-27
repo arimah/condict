@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import {intentVar, transition} from '../theme';
+import {intentVar} from '../theme';
 import Intent from '../intent';
 
 export type IntentProps = {
@@ -24,8 +24,6 @@ export const CheckmarkContainer = styled.span`
   border: 2px solid ${p => p.theme.general.borderColor};
   border-radius: 3px;
   background-color: ${p => p.theme.general.bg};
-
-  ${transition('border-color, background-color')}
 `;
 
 export const IndeterminateMark = styled.span`
@@ -38,8 +36,6 @@ export const IndeterminateMark = styled.span`
   background-color: ${p => p.theme.general.bg};
   transform: translate(-50%, -50%);
   opacity: 0;
-
-  ${transition('opacity')}
 `;
 
 export const CheckMark = styled.span`
@@ -54,8 +50,6 @@ export const CheckMark = styled.span`
   border-bottom: 2px solid ${p => p.theme.general.bg};
   transform: translate(-50%, -75%) rotate(-45deg);
   opacity: 0;
-
-  ${transition('opacity')}
 `;
 
 // Don't give the input a 0x0 size, as doing so will make it impossible for
@@ -112,8 +106,6 @@ export const Label = styled.label<DisabledProps & IntentProps>`
   box-sizing: border-box;
   position: relative;
   color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
-
-  ${transition('color')}
 
   &:hover {
     > ${CheckmarkContainer} {

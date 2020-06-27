@@ -1,6 +1,6 @@
 import styled, {createGlobalStyle} from 'styled-components';
 
-import {TextInput, transition} from '@condict/ui';
+import {TextInput} from '@condict/ui';
 
 export const AppStyles = createGlobalStyle`
   body {
@@ -8,8 +8,6 @@ export const AppStyles = createGlobalStyle`
       p.theme.dark ? 'hoverBg' : 'activeBg'
     ]};
     color: ${p => p.theme.general.fg};
-
-    ${transition('color, background-color')}
   }
 
   #app-root {

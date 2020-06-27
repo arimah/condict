@@ -1,7 +1,5 @@
 import styled, {css} from 'styled-components';
 
-import {transition} from '../theme';
-
 export type MenuProps = {
   open: boolean;
   submenu: boolean;
@@ -45,8 +43,6 @@ export const Item = styled.div<ItemProps>`
   white-space: nowrap;
   cursor: default;
   background-color: ${p => p.theme.general.altBg};
-
-  ${transition('background-color, color')}
 
   ${p => p.current && css`
     background-color: ${p => p.theme.general.hoverAltBg};

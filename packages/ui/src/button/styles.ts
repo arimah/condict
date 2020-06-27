@@ -1,6 +1,6 @@
 import styled, {css} from 'styled-components';
 
-import {intentVar, transition} from '../theme';
+import {intentVar} from '../theme';
 import Intent from '../intent';
 
 export type Props = {
@@ -19,8 +19,6 @@ export const ButtonStyle = css<Props>`
   border: 2px solid;
   border-radius: ${p => p.slim ? '3px' : '7px'};
   position: relative;
-
-  ${transition('color, border-color, background-color')}
 
   &:focus,
   &.force-focus {

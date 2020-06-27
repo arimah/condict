@@ -1,7 +1,5 @@
 import styled, {css} from 'styled-components';
 
-import {transition} from '../theme';
-
 export type ButtonProps = {
   checked?: boolean;
 };
@@ -32,7 +30,7 @@ export const Group = styled.div.attrs({
 `;
 
 export const Button = styled.button.attrs({
-  type: 'button' as 'button' | 'submit' | 'reset' | undefined, // boo
+  type: 'button',
 })<ButtonProps>`
   flex: none;
   padding: 6px 8px;
@@ -43,8 +41,6 @@ export const Button = styled.button.attrs({
   border-radius: 4px;
   background-color: ${p => p.theme.general.altBg};
   color: ${p => p.theme.general.altFg};
-
-  ${transition('color, background-color')}
 
   &:not(:first-child) {
     margin-left: 2px;

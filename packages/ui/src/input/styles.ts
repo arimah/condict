@@ -1,7 +1,5 @@
 import styled, {css} from 'styled-components';
 
-import {transition} from '../theme';
-
 export type Props = {
   minimal: boolean;
   autoSize?: boolean;
@@ -15,8 +13,6 @@ export const Input = styled.input<Props>`
   border-color: ${p => p.theme.general.borderColor};
   background-color: ${p => p.theme.general.bg};
   color: ${p => p.theme.general.fg};
-
-  ${transition('border-color, color')}
 
   ${p => p.minimal ? css`
     padding: 6px;
@@ -47,7 +43,6 @@ export const Input = styled.input<Props>`
   }
 
   &::placeholder {
-    ${transition('color')}
     color: ${p => p.theme.general.fg};
     opacity: 0.65;
   }

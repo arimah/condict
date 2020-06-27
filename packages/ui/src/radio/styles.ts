@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import {intentVar, transition} from '../theme';
+import {intentVar} from '../theme';
 import Intent from '../intent';
 
 export type IntentProps = {
@@ -24,8 +24,6 @@ export const RadioContainer = styled.span`
   border: 2px solid ${p => p.theme.general.borderColor};
   border-radius: 9px;
   background-color: ${p => p.theme.general.bg};
-
-  ${transition('border-color, background-color')}
 `;
 
 export const RadioDot = styled.span<IntentProps>`
@@ -40,8 +38,6 @@ export const RadioDot = styled.span<IntentProps>`
   background-color: ${intentVar('altBg')};
   transform: translate(-50%, -50%);
   opacity: 0;
-
-  ${transition('opacity, background-color')}
 `;
 
 // Don't give the input a 0x0 size, as doing so will make it impossible for
@@ -89,8 +85,6 @@ export const Label = styled.label<DisabledProps & IntentProps>`
   box-sizing: border-box;
   position: relative;
   color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
-
-  ${transition('color')}
 
   &:hover {
     > ${RadioContainer} {
