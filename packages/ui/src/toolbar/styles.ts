@@ -64,21 +64,16 @@ export const Button = styled.button.attrs({
 
   ${p => p.checked && css`
     && {
-      background-color: ${p => p.theme.general.activeAltBg};
-      box-shadow: inset ${p => p.theme.dark
-        ? '0 1px 3px rgba(0, 0, 0, 0.5)'
-        : '0 1px 3px rgba(0, 0, 0, 0.25)'
-      };
+      background-color: ${p => p.theme.primary.bg};
+      box-shadow:
+        inset 0 1px 3px rgba(0, 0, 0, ${p => p.theme.dark ? '0.75' : '0.4'});
     }
 
     &&:focus,
     &&.force-focus {
       box-shadow:
         0 0 4px ${p => p.theme.focus.color},
-        inset ${p => p.theme.dark
-          ? '0 1px 3px rgba(0, 0, 0, 0.5)'
-          : '0 1px 3px rgba(0, 0, 0, 0.25)'
-        };
+        inset 0 1px 3px rgba(0, 0, 0, ${p => p.theme.dark ? '0.75' : '0.4'});
     }
   `}
 
