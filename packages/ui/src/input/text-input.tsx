@@ -1,7 +1,4 @@
-import React, {InputHTMLAttributes, useRef, useEffect} from 'react';
-import autoSizeInput from 'autosize-input';
-
-import combineRefs from '../combine-refs';
+import React, {InputHTMLAttributes} from 'react';
 
 import * as S from './styles';
 
@@ -23,32 +20,15 @@ export const TextInput = React.forwardRef<HTMLInputElement, Props>((
   const {
     type = 'text',
     minimal = false,
-    autoSize = false,
     ...otherProps
   } = props;
-
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (autoSize && inputRef.current) {
-      const clearAutoSize = autoSizeInput(inputRef.current);
-      return () => {
-        clearAutoSize();
-        if (inputRef.current) {
-          inputRef.current.style.width = '';
-        }
-      };
-    }
-    return undefined;
-  }, [autoSize]);
 
   return (
     <S.Input
       {...otherProps}
       type={type}
       minimal={minimal}
-      autoSize={autoSize}
-      ref={combineRefs(inputRef, ref)}
+      ref={ref}
     />
   );
 });

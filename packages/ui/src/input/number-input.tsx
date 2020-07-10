@@ -5,7 +5,7 @@ import * as S from './styles';
 export type Props = {
   value?: string | number;
   children?: never;
-} & Partial<Omit<S.Props, 'autoSize'>> & Omit<
+} & Partial<S.Props> & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'children' | 'value' | 'type'
 >;

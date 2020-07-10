@@ -24,7 +24,6 @@ export type State = {
   type: TextInputType;
   disabled: boolean;
   minimal: boolean;
-  autoSize: boolean;
   value: string;
 };
 
@@ -34,7 +33,6 @@ const demo: ComponentDemo<State> = {
     type: 'text',
     disabled: false,
     minimal: false,
-    autoSize: false,
     value: '',
   },
   controls: (state, setState, toggleState) => [
@@ -56,18 +54,12 @@ const demo: ComponentDemo<State> = {
       label='Minimal'
       onChange={() => toggleState('minimal')}
     />,
-    <Checkbox
-      checked={state.autoSize}
-      label='Auto-size'
-      onChange={() => toggleState('autoSize')}
-    />,
   ],
-  contents: ({type, disabled, minimal, autoSize, value}, setState) =>
+  contents: ({type, disabled, minimal, value}, setState) =>
     <MaxWidthTextInput
       type={type}
       disabled={disabled}
       minimal={minimal}
-      autoSize={autoSize}
       value={value}
       placeholder='Type here...'
       onChange={e => setState({value: e.target.value})}

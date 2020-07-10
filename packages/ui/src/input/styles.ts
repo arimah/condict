@@ -2,7 +2,6 @@ import styled, {css} from 'styled-components';
 
 export type Props = {
   minimal: boolean;
-  autoSize?: boolean;
   borderRadius?: string;
 };
 
@@ -21,13 +20,6 @@ export const Input = styled.input<Props>`
     padding: 4px;
     border-width: 2px;
     border-style: solid;
-  `}
-
-  ${p => p.autoSize && css`
-    /* Edge's "x" button; it messes up the size calculation. */
-    &::-ms-clear {
-      display: none;
-    }
   `}
 
   &:focus,

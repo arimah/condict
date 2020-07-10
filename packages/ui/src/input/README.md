@@ -19,13 +19,12 @@ import {NumberInput, TextInput} from '@condict/ui';
   onChange={...}
 />
 
-// A minimal URL input with auto-size behaviour.
+// A minimal URL input.
 <TextInput
   value={...}
   type='url'
   placeholder='Image address'
   minimal
-  autoSize
   onChange={...}
 />
 
@@ -85,7 +84,6 @@ Text inputs do _not_ forward their ref to the underlying element. Use the `input
 | `maxLength` | number | `undefined` | The maximum length of the input. If omitted, the input has no maximum length. |
 | `disabled` | boolean | `false` | If true, the input is disabled. |
 | `minimal` | boolean | `false` | If true, the input is rendered without a border. |
-| `autoSize` | boolean | `false` | If true, the input's width is adjusted to match the text. This is accomplished by setting the `width` CSS property directly on the input's `style`. To give it a minimum or maximum width, use the CSS `min-width` and `max-width` properties. Auto-size does not work well with password inputs. |
 | `borderRadius` | string | `undefined` | If specified, sets the border radius of the input. Note that this is a CSS string, not a number. If omitted, uses the default styling. |
 | `inputRef` | ref | `undefined` | Receives the underlying `<input>`. |
 | `onChange` | function | no-op | Attaches the `change` event handler to the input, which is triggered whenever the user changes the value. |
