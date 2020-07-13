@@ -3,10 +3,13 @@ import {
   GraphQLEnumType,
   GraphQLEnumValue,
   GraphQLType,
+  Location,
   ValueNode,
   isEnumType,
   isNonNullType,
 } from 'graphql';
+
+import formatLoc from '../format-loc';
 
 import {
   assertIsList,
@@ -24,11 +27,12 @@ export type PermittedEnumValues = {
 type EnumTypeInfo = {
   type: GraphQLEnumType;
   allowNull: boolean;
-}
+};
 
 type RestrictDirective = {
   only?: ValueNode;
   not?: ValueNode;
+  loc?: Location;
 };
 
 const getEnumType = (type: GraphQLType): EnumTypeInfo | null => {
@@ -56,12 +60,17 @@ const getRestrictDirective = (
   const notArgument = getArgument(restrictDirective, 'not');
 
   if (onlyArgument && notArgument) {
-    throw new Error(`Cannot mix 'only:' and 'not:' in @restrict directive`);
+    throw new Error(
+      `${formatLoc(
+        onlyArgument.loc
+      )}: Cannot mix 'only:' and 'not:' in @restrict directive`
+    );
   }
 
   return {
     only: onlyArgument && onlyArgument.value,
     not: notArgument && notArgument.value,
+    loc: restrictDirective.loc,
   };
 };
 
@@ -86,10 +95,10 @@ const getPermittedEnumValues = (
       assertIsList(restrict.only)
         .values
         .map(assertIsString)
-        .map(({value: name}) => {
+        .map(({value: name, loc}) => {
           const value = enumInfo.type.getValue(name);
           if (!value) {
-            throw new Error(`Unknown enum value: ${name}`);
+            throw new Error(`${formatLoc(loc)}: Unknown enum value: ${name}`);
           }
           return value;
         });
@@ -99,17 +108,21 @@ const getPermittedEnumValues = (
         .values
         .map(assertIsString)
         .reduce(
-          (values, {value: name}) => {
+          (values, {value: name, loc}) => {
             // We have to verify that the name actually refers to a known value.
             if (!enumInfo.type.getValue(name)) {
-              throw new Error(`Unknown enum value: ${name}`);
+              throw new Error(`${formatLoc(loc)}: Unknown enum value: ${name}`);
             }
             return values.filter(v => v.name !== name);
           },
           enumInfo.type.getValues()
         );
   } else {
-    throw new Error(`@restrict directive must have either 'only:' or 'not:'`);
+    throw new Error(
+      `${formatLoc(
+        restrict.loc
+      )}: @restrict directive must have either 'only:' or 'not:'`
+    );
   }
   return {
     type: enumInfo.type,

@@ -7,6 +7,8 @@ import {
   isScalarType,
 } from 'graphql';
 
+import formatLoc from '../../format-loc';
+
 import {CommonHeader} from '../shared';
 import {TextBuilder} from '../utils';
 import {isBuiltin as isBuiltinScalar} from '../builtin-scalars';
@@ -84,13 +86,21 @@ const defineOperations = (
   const operationTypes = operations.map(op => {
     if (!op.name) {
       if (hasAnonymous) {
-        throw new Error('There cannot be multiple anonymous operations in a file');
+        throw new Error(
+          `${formatLoc(
+            op.loc
+          )}: There cannot be multiple anonymous operations in a file`
+        );
       }
       hasAnonymous = true;
     }
     const opTypeName = globals.operationTypeNames[op.operation];
     if (!opTypeName) {
-      throw new Error(`No type defined for this operation: ${op.operation}`);
+      throw new Error(
+        `${formatLoc(
+          op.loc
+        )}: No type defined for this operation: ${op.operation}`
+      );
     }
     importedTypes.add(opTypeName);
     return typeOperation(operationParams, op);

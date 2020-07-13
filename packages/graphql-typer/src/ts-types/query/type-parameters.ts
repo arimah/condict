@@ -8,6 +8,8 @@ import {
   isInputObjectType,
 } from 'graphql';
 
+import formatLoc from '../../format-loc';
+
 import {
   TypePosition,
   getBuiltin as getBuiltinScalar,
@@ -42,7 +44,9 @@ const writeNullableType = (
 
   const actualType = params.schema.getType(type.name.value);
   if (!actualType) {
-    throw new Error(`Unknown type: ${type.name.value}`);
+    throw new Error(
+      `${formatLoc(type.name.loc)}: Unknown type: ${type.name.value}`
+    );
   }
   if (isScalarType(actualType)) {
     const builtin = getBuiltinScalar(actualType, TypePosition.CLIENT_INPUT);
@@ -51,7 +55,11 @@ const writeNullableType = (
   if (isEnumType(actualType) || isInputObjectType(actualType)) {
     return params.useType(actualType);
   }
-  throw new Error(`Type is not valid in input position: ${actualType.name}`);
+  throw new Error(
+    `${formatLoc(type.name.loc)}: Type is not valid in input position: ${
+      actualType.name
+    }`
+  );
 };
 
 writeVariableType = (params, type) => {

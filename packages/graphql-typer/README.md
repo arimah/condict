@@ -94,7 +94,7 @@ gqlTyper.defineClientTypes(schema, sharedPath, srcDir);
 
 > `buildGraphqlSchema(schemaDir: string): GraphQLSchema`
 
-Reads all .graphql files in the `schemaDir` directory (searched recursively), and constructs a GraphQL schema instance.
+Reads all .graphql files in the `schemaDir` directory (searched recursively), and constructs a GraphQL schema instance. If the schema is invalid, an error is thrown.
 
 ### `findAllGraphqlFiles()`
 

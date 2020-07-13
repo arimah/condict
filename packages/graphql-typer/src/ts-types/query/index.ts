@@ -12,6 +12,8 @@ import {
   parse,
 } from 'graphql';
 
+import formatLoc from '../../format-loc';
+
 import findGraphqlFiles from '../../graphql/find-files';
 
 import defineOperations from './define-operations';
@@ -35,7 +37,9 @@ const collectFragments = (
             def.loc ? def.loc.source.name : '<unknown>',
           ];
           throw new Error(
-            `Fragment '${def.name.value}' is defined in multiple locations: ${
+            `${formatLoc(def.loc)}: Fragment '${
+              def.name.value
+            }' is defined in multiple locations: ${
               locations.join(', ')
             }`
           );
@@ -44,9 +48,15 @@ const collectFragments = (
         break;
       }
       case 'OperationDefinition':
-        throw new Error(`Operation must be inside a file named 'query.graphql'`);
+        throw new Error(
+          `${formatLoc(
+            def.loc
+          )}: Operation must be inside a file named 'query.graphql'`
+        );
       default:
-        throw new Error(`Unexpected definition: ${def.kind}`);
+        throw new Error(
+          `${formatLoc(def.loc)}: Unexpected definition: ${def.kind}`
+        );
     }
   }
 };

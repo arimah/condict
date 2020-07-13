@@ -6,12 +6,14 @@ import {
   ValueNode,
 } from 'graphql';
 
+import formatLoc from '../format-loc';
+
 export const assertIsList = (value: ValueNode): ListValueNode => {
   switch (value.kind) {
     case 'ListValue':
       return value;
     default:
-      throw new Error('Expected a list value');
+      throw new Error(`${formatLoc(value.loc)}: Expected a list value`);
   }
 };
 
@@ -20,7 +22,7 @@ export const assertIsString = (value: ValueNode): StringValueNode => {
     case 'StringValue':
       return value;
     default:
-      throw new Error('Expected a string value');
+      throw new Error(`${formatLoc(value.loc)}: Expected a string value`);
   }
 };
 

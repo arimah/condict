@@ -8,6 +8,8 @@ import {
   isUnionType,
 } from 'graphql';
 
+import formatLoc from '../../format-loc';
+
 import {TextBuilder} from '../utils';
 
 import {
@@ -95,7 +97,9 @@ collectFields = (params, outputFields, selections) => {
   for (const sel of selections) {
     const included = isSelectionIncluded(sel);
     if (included === SelectionInclusion.DEPENDS) {
-      throw new Error(`Conditional fields are not yet supported`);
+      throw new Error(
+        `${formatLoc(sel.loc)}: Conditional fields are not yet supported`
+      );
     }
     if (included === SelectionInclusion.SKIP) {
       continue;
@@ -112,23 +116,32 @@ collectFields = (params, outputFields, selections) => {
             )
           );
         } else if (isUnionType(outputFields.type)) {
-          throw new Error(`Cannot select field '${sel.name.value}' on a union type`);
+          throw new Error(
+            `${formatLoc(sel.loc)}: Cannot select field '${
+              sel.name.value
+            }' on a union type`
+          );
         } else {
           const field = outputFields.type.getFields()[sel.name.value];
           if (!field) {
-            throw new Error(`Cannot select unknown field: ${sel.name.value}`);
+            throw new Error(
+              `${formatLoc(sel.loc)}: Cannot select unknown field: ${
+                sel.name.value
+              }`
+            );
           }
           selectField(outputFields.common, outputFields.type, sel, field);
         }
         break;
       }
       case 'FragmentSpread': {
-        const fragment = params.useFragment(sel.name.value);
+        const fragment = params.useFragment(sel.name.value, sel.loc);
         const fragmentType = validateFragmentType(
           params,
           getValidFragmentTypes(outputFields),
           fragment.typeCondition,
-          fragment.name.value
+          fragment.name.value,
+          sel.loc
         );
         collectFragmentFields(
           params,
@@ -145,7 +158,8 @@ collectFields = (params, outputFields, selections) => {
               params,
               getValidFragmentTypes(outputFields),
               sel.typeCondition,
-              null
+              null,
+              sel.loc
             )
             : outputFields.type;
         collectFragmentFields(
@@ -177,6 +191,7 @@ const mergeCommonFields = (
         case '__typename':
           result.set(name, {
             kind: '__typename',
+            loc: field.loc,
             possibleTypes: fields.type,
           });
           break;
@@ -187,6 +202,7 @@ const mergeCommonFields = (
           const actualField = fields.type.getFields()[field.field.name];
           result.set(name, {
             kind: 'field',
+            loc: field.loc,
             field: actualField,
             subSelections: field.subSelections,
           });
@@ -206,6 +222,7 @@ const mergeCommonFields = (
           } else {
             result.set(name, {
               kind: '__typename',
+              loc: field.loc,
               possibleTypes: fields.type,
             });
           }
@@ -218,6 +235,7 @@ const mergeCommonFields = (
             if (prev.subSelections && field.subSelections) {
               result.set(name, {
                 kind: 'field',
+                loc: prev.loc,
                 field: field.field,
                 subSelections: [
                   ...prev.subSelections,
@@ -226,11 +244,7 @@ const mergeCommonFields = (
               });
             }
           } else {
-            result.set(name, {
-              kind: 'field',
-              field: field.field,
-              subSelections: field.subSelections,
-            });
+            result.set(name, field);
           }
           break;
       }

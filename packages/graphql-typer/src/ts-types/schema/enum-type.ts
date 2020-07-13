@@ -1,10 +1,15 @@
 import {GraphQLEnumType, GraphQLEnumValue} from 'graphql';
 
+import formatLoc from '../../format-loc';
+
 import {TextBuilder, formatDescription} from '../utils';
 
 const defineValue = (t: TextBuilder, value: GraphQLEnumValue) => {
   if (value.value !== value.name) {
-    throw new Error(`Non-string enum value not supported: ${value.name}`);
+    const loc = value.astNode && value.astNode.loc || undefined;
+    throw new Error(
+      `${formatLoc(loc)}: Non-string enum value not supported: ${value.name}`
+    );
   }
 
   if (value.description) {

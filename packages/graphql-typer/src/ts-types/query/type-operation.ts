@@ -4,6 +4,7 @@ import {
   isObjectType,
 } from 'graphql';
 
+import formatLoc from '../../format-loc';
 import {minifyOperation, minifyFragment} from '../../graphql/minify';
 
 import {TextBuilder} from '../utils';
@@ -20,12 +21,12 @@ const getTypeWriterParams = (
   const typeParams: TypeWriterParams = {
     schema: params.schema,
     useType: type => params.useType(type),
-    useFragment: name => {
+    useFragment: (name, loc) => {
       const fragment =
         params.ownFragments.get(name) ||
         params.fragments.get(name);
       if (!fragment) {
-        throw new Error(`Unknown fragment: ${name}`);
+        throw new Error(`${formatLoc(loc)}: Unknown fragment: ${name}`);
       }
       usedFragments.set(name, fragment);
       return fragment;

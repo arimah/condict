@@ -8,6 +8,7 @@ import {
   GraphQLObjectType,
   GraphQLScalarType,
   GraphQLUnionType,
+  Location,
 } from 'graphql';
 
 import {TextBuilder} from '../utils';
@@ -32,7 +33,7 @@ export type OperationParams = {
 export type TypeWriterParams = {
   readonly schema: GraphQLSchema;
   useType(type: ImportedType): string;
-  useFragment(name: string): FragmentDefinitionNode;
+  useFragment(name: string, loc?: Location): FragmentDefinitionNode;
   writeSelection(
     result: TextBuilder,
     type: ObjectLikeType,

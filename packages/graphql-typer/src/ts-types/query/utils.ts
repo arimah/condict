@@ -4,6 +4,7 @@ import {
   NamedTypeNode,
   GraphQLOutputType,
   GraphQLNamedType,
+  Location,
   isInterfaceType,
   isListType,
   isNonNullType,
@@ -11,6 +12,7 @@ import {
   isUnionType,
 } from 'graphql';
 
+import formatLoc from '../../format-loc';
 import {getDirective, getArgument} from '../../graphql/helpers';
 
 import {ObjectLikeType, TypeWriterParams} from './types';
@@ -76,22 +78,27 @@ export const validateFragmentType = (
   params: TypeWriterParams,
   expectedTypes: readonly GraphQLNamedType[],
   {name: {value: fragmentTypeName}}: NamedTypeNode,
-  fragmentName: string | null
+  fragmentName: string | null,
+  loc: Location | undefined
 ): GraphQLNamedType => {
   const fragmentType = params.schema.getType(fragmentTypeName);
   if (!fragmentType) {
     throw new Error(
-      fragmentName
-        ? `Fragment '${fragmentName}' references unknown target type: ${fragmentTypeName}`
-        : `Inline fragment references unknown target type: ${fragmentTypeName}`
+      `${formatLoc(loc)}: ${
+        fragmentName
+          ? `Fragment '${fragmentName}' references unknown target type: ${fragmentTypeName}`
+          : `Inline fragment references unknown target type: ${fragmentTypeName}`
+      }`
     );
   }
   if (!expectedTypes.includes(fragmentType)) {
     const expectedTypeNames = expectedTypes.map(t => t.name).join(' | ');
     throw new Error(
-      fragmentName
-        ? `Fragment '${fragmentName}' is for type ${fragmentType.name}; expected ${expectedTypeNames}`
-        : `Inline fragment is on type ${fragmentType.name}; expected ${expectedTypeNames}`
+      `${formatLoc(loc)}: ${
+        fragmentName
+          ? `Fragment '${fragmentName}' is for type ${fragmentType.name}; expected ${expectedTypeNames}`
+          : `Inline fragment is on type ${fragmentType.name}; expected ${expectedTypeNames}`
+      }`
     );
   }
   return fragmentType;

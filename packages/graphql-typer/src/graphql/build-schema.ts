@@ -5,9 +5,12 @@ import {
   GraphQLSchema,
   buildASTSchema,
   extendSchema,
+  validateSchema,
   parse,
   isTypeSystemExtensionNode,
 } from 'graphql';
+
+import formatLoc from '../format-loc';
 
 import findAllGraphqlFiles from './find-files';
 
@@ -36,6 +39,13 @@ const buildGraphqlSchema = (dir: string): GraphQLSchema => {
 
   const basicSchema = buildASTSchema(definitions);
   const fullSchema = extendSchema(basicSchema, extensions);
+  const errors = validateSchema(fullSchema);
+  if (errors.length > 0) {
+    throw new Error(`The GraphQL schema is invalid:\n${errors.map(err => {
+      const node = err.nodes && err.nodes[0];
+      return `- ${formatLoc(node && node.loc)}: ${err.message}`;
+    })}`);
+  }
   return fullSchema;
 };
 

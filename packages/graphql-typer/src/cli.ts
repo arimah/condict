@@ -87,32 +87,39 @@ const main = () => {
     return;
   }
 
-  const schema = buildGraphqlSchema(schemaDir);
-  switch (target) {
-    case 'server': {
-      const output = args.output as string | undefined;
-      if (!output) {
-        console.error('--output must be specified for --target=server');
-        process.exitCode = 1;
-        return;
-      }
+  try {
+    const schema = buildGraphqlSchema(schemaDir);
 
-      const definitions = defineServerTypes(schema);
-      fs.writeFileSync(output, definitions, {encoding: 'utf-8'});
-      break;
-    }
-    case 'client': {
-      const src = args.src as string | undefined;
-      const defs = args.defs as string | undefined;
-      if (!src || !defs) {
-        console.error('Both --src and --defs must be specified for --target=client');
-        process.exitCode = 1;
-        return;
-      }
+    switch (target) {
+      case 'server': {
+        const output = args.output as string | undefined;
+        if (!output) {
+          console.error('--output must be specified for --target=server');
+          process.exitCode = 1;
+          return;
+        }
 
-      defineClientTypes(schema, path.resolve(defs), path.resolve(src));
-      break;
+        const definitions = defineServerTypes(schema);
+        fs.writeFileSync(output, definitions, {encoding: 'utf-8'});
+        break;
+      }
+      case 'client': {
+        const src = args.src as string | undefined;
+        const defs = args.defs as string | undefined;
+        if (!src || !defs) {
+          console.error('Both --src and --defs must be specified for --target=client');
+          process.exitCode = 1;
+          return;
+        }
+
+        defineClientTypes(schema, path.resolve(defs), path.resolve(src));
+        break;
+      }
     }
+  } catch (e) {
+    console.error(e.message);
+    process.exitCode = 1;
+    return;
   }
 };
 main();

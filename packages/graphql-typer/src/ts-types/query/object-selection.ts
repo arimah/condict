@@ -3,6 +3,8 @@ import {
   SelectionNode,
 } from 'graphql';
 
+import formatLoc from '../../format-loc';
+
 import {TextBuilder} from '../utils';
 
 import {
@@ -27,7 +29,9 @@ export const collectFields = (
   for (const sel of selections) {
     const included = isSelectionIncluded(sel);
     if (included === SelectionInclusion.DEPENDS) {
-      throw new Error(`Conditional fields are not yet supported`);
+      throw new Error(
+        `${formatLoc(sel.loc)}: Conditional fields are not yet supported`
+      );
     }
     if (included === SelectionInclusion.SKIP) {
       continue;
@@ -40,7 +44,11 @@ export const collectFields = (
         } else {
           const field = type.getFields()[sel.name.value];
           if (!field) {
-            throw new Error(`Cannot select unknown field: ${sel.name.value}`);
+            throw new Error(
+              `${formatLoc(sel.loc)}: Cannot select unknown field: ${
+                sel.name.value
+              }`
+            );
           }
           selectField(outputFields, type, sel, field);
         }
@@ -52,7 +60,8 @@ export const collectFields = (
           params,
           [type],
           fragment.typeCondition,
-          fragment.name.value
+          fragment.name.value,
+          sel.loc
         );
         collectFields(
           params,
@@ -64,7 +73,13 @@ export const collectFields = (
       }
       case 'InlineFragment': {
         if (sel.typeCondition) {
-          validateFragmentType(params, [type], sel.typeCondition, null);
+          validateFragmentType(
+            params,
+            [type],
+            sel.typeCondition,
+            null,
+            sel.loc
+          );
         }
         collectFields(
           params,

@@ -1,5 +1,7 @@
 import {GraphQLScalarType} from 'graphql';
 
+import formatLoc from '../format-loc';
+
 import {getDirective, getArgument} from './helpers';
 
 export const enum MarshalType {
@@ -26,10 +28,20 @@ const getMarshalType = (type: GraphQLScalarType): MarshalType | null => {
   if (marshalDirective) {
     const asArgument = getArgument(marshalDirective, 'as');
     if (!asArgument) {
-      throw new Error(`@marshal directive missing 'as:' argument on scalar '${type.name}'`);
+      throw new Error(
+        `${formatLoc(
+          marshalDirective.loc
+        )}: @marshal directive missing 'as:' argument on scalar '${type.name}'`
+      );
     }
     if (asArgument.value.kind !== 'EnumValue') {
-      throw new Error(`Expected 'as:' argument to be an enum value on scalar '${type.name}'`);
+      throw new Error(
+        `${formatLoc(
+          asArgument.value.loc
+        )}: Expected 'as:' argument to be an enum value on scalar '${
+          type.name
+        }'`
+      );
     }
     return convertTypeName(asArgument.value.value);
   }

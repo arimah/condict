@@ -7,6 +7,7 @@ import {
   GraphQLOutputType,
   GraphQLScalarType,
   GraphQLUnionType,
+  Location,
   FieldNode,
   SelectionNode,
   isListType,
@@ -15,6 +16,7 @@ import {
   isEnumType,
 } from 'graphql';
 
+import formatLoc from '../../format-loc';
 import getPermittedEnumValues from '../../graphql/enum-values';
 
 import {
@@ -32,12 +34,14 @@ export type SelectedField =
 
 export type RegularField = {
   kind: 'field';
+  loc: Location | undefined;
   field: GraphQLField<any, any>;
   subSelections: readonly SelectionNode[] | null;
 };
 
 export type TypenameField = {
   kind: '__typename';
+  loc: Location | undefined;
   /* The actual object type(s) that this field names. */
   possibleTypes: PossibleTypes;
 };
@@ -164,22 +168,30 @@ const validateFieldSelection = (
   if (objectType) {
     if (!sel.selectionSet) {
       throw new Error(
-        `The field '${parentType.name}.${field.name}' requires a selection of subfields`
+        `${formatLoc(sel.loc)}: The field '${
+          parentType.name
+        }.${field.name}' requires a selection of subfields`
       );
     }
     return sel.selectionSet.selections;
   } else {
     if (sel.selectionSet) {
       throw new Error(
-        `The field '${parentType.name}.${field.name}' cannot have a selection of subfields`
+        `${formatLoc(sel.selectionSet.loc)}: The field '${
+          parentType.name
+        }.${field.name}' cannot have a selection of subfields`
       );
     }
     return null;
   }
 };
 
-export const fieldAlreadyTakenError = (name: string): Error =>
-  new Error(`A different field is already selected under the name '${name}'`);
+export const fieldAlreadyTakenError = (name: string, loc?: Location): Error =>
+  new Error(
+    `${formatLoc(loc)}: A different field is already selected under the name '${
+      name
+    }'`
+  );
 
 export const selectField = (
   outputFields: Map<string, SelectedField>,
@@ -187,13 +199,14 @@ export const selectField = (
   selection: FieldNode,
   field: GraphQLField<any, any>
 ): void => {
-  const outputName = (selection.alias || selection.name).value;
+  const nameNode = selection.alias || selection.name;
+  const outputName = nameNode.value;
   const subSelections = validateFieldSelection(parentType, field, selection);
 
   const output = outputFields.get(outputName);
   if (output) {
     if (output.kind === '__typename' || output.field !== field) {
-      throw fieldAlreadyTakenError(outputName);
+      throw fieldAlreadyTakenError(outputName, nameNode.loc);
     }
 
     if (subSelections) {
@@ -203,6 +216,7 @@ export const selectField = (
   } else {
     outputFields.set(outputName, {
       kind: 'field',
+      loc: selection.loc,
       field,
       subSelections,
     });
@@ -214,12 +228,13 @@ export const selectTypename = (
   selection: FieldNode,
   possibleTypes: PossibleTypes
 ): void => {
-  const outputName = (selection.alias || selection.name).value;
+  const nameNode = selection.alias || selection.name;
+  const outputName = nameNode.value;
 
   const output = outputFields.get(outputName);
   if (output) {
     if (output.kind === 'field') {
-      throw fieldAlreadyTakenError(outputName);
+      throw fieldAlreadyTakenError(outputName, nameNode.loc);
     }
 
     // If the output field is already __typename, we assume that the previous
@@ -227,6 +242,7 @@ export const selectTypename = (
   } else {
     outputFields.set(outputName, {
       kind: '__typename',
+      loc: selection.loc,
       possibleTypes,
     });
   }
