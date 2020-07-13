@@ -123,7 +123,7 @@ export const editUser = async (
         await prompt.query('New name (blank to keep current): ') ||
         null;
       const password =
-        await prompt.queryPassword('New password (blank to keep current: ') ||
+        await prompt.queryPassword('New password (blank to keep current): ') ||
         null;
       return {name, password};
     } else {

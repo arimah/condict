@@ -27,15 +27,10 @@ export type BlockElement = {
    */
   level: number;
   /**
-   * The text content of the block, without inline formatters.
+   * A list of inlines, which contain the block's formatted text content as well
+   * as links.
    */
-  text: string;
-  /**
-   * A list of inlines, which determine how to format the block's text content.
-   * Inlines are ordered primarily by `start`, secondarily by `end`. If there are
-   * no inlines, this field is null.
-   */
-  inlines: InlineElement[] | null;
+  inlines: InlineElement[];
 };
 
 /**
@@ -52,14 +47,10 @@ export type BlockElementInput = {
    */
   level?: number | null;
   /**
-   * The text content of the block, without inline formatters.
+   * A list of inlines, which contain the block's formatted text content as well
+   * as links.
    */
-  text: string;
-  /**
-   * A list of inlines, which determine how to format the block's text content.
-   * If there are no inlines, this field is null.
-   */
-  inlines?: InlineElementInput[] | null;
+  inlines: InlineElementInput[];
 };
 
 /**
@@ -471,6 +462,83 @@ export type FailedLogin = {
 };
 
 /**
+ * Formatted text content. These appear as children of block elements, either
+ * directly in the `inlines` list, or indirectly inside links (see `LinkInline`).
+ */
+export type FormattedText = {
+  /**
+   * The formatted text.
+   */
+  text: string;
+  /**
+   * True if the text is bold.
+   */
+  bold: boolean;
+  /**
+   * True if the text is italicized.
+   */
+  italic: boolean;
+  /**
+   * True if the text is underlined.
+   */
+  underline: boolean;
+  /**
+   * True if the text is struck through.
+   */
+  strikethrough: boolean;
+  /**
+   * True if the text is formatted as subscript characters.
+   * 
+   * `subscript` and `superscript` are mutually exclusive.
+   */
+  subscript: boolean;
+  /**
+   * True if the text is formatted as superscript characters.
+   * 
+   * `subscript` and `superscript` are mutually exclusive.
+   */
+  superscript: boolean;
+};
+
+/**
+ * Input type for a piece of formatted text.
+ */
+export type FormattedTextInput = {
+  /**
+   * The formatted text.
+   */
+  text: string;
+  /**
+   * If true, the text is bold.
+   */
+  bold?: boolean | null;
+  /**
+   * If true, the text is italicized.
+   */
+  italic?: boolean | null;
+  /**
+   * If true, the text is underlined.
+   */
+  underline?: boolean | null;
+  /**
+   * If true, the text is struck through.
+   */
+  strikethrough?: boolean | null;
+  /**
+   * If true, the text is formatted as subscript characters.
+   * 
+   * `subscript` and `superscript` are mutually exclusive.
+   */
+  subscript?: boolean | null;
+  /**
+   * If true, the text is formatted as superscript characters.
+   * 
+   * `subscript` and `superscript` are mutually exclusive.
+   */
+  superscript?: boolean | null;
+};
+
+/**
  * A single inflected form. Each form belongs to exactly one table.
  * 
  * An inflected form has an _inflection pattern_, which describes how to construct
@@ -809,15 +877,10 @@ export type InflectionTableRowInput = {
 };
 
 /**
- * An inline element. These appear as the children of block elements. Inlines have
- * no text of their own; instead, they refer to character offsets inside the text
- * content of the block.
- * 
- * The character offets of an inline element are true Unicode character offsets,
- * not byte offsets or UTF-16 code unit offsets.
+ * An inline element, which is either formatted text or a link.
  */
 export type InlineElement =
-  | StyleInline
+  | FormattedText
   | LinkInline;
 
 /**
@@ -825,62 +888,18 @@ export type InlineElement =
  */
 export type InlineElementInput = {
   /**
-   * The inline kind.
+   * If set, the inline element is a piece of formatted text, and this field
+   * contains the text and its associated formatting.
    * 
-   * If the inline kind is `LINK`, you must also set `linkTarget`. See that field
-   * for more details.
+   * `text` and `linkTarget` are mutually exclusive.
    */
-  kind: InlineKind;
+  text?: FormattedTextInput | null;
   /**
-   * The (inclusive) character offset at which the inline starts.
+   * If set, the inline element is a link, and this field contains the link target
+   * and its formatted text content.
    */
-  start: number;
-  /**
-   * The (exclusive) character offset at which the inline ends.
-   */
-  end: number;
-  /**
-   * If the inline is a link, contains the target of the link.
-   * 
-   * For details, see `LinkInline.linkTarget`.
-   */
-  linkTarget?: string | null;
+  link?: LinkInlineInput | null;
 };
-
-/**
- * The kind of an inline element.
- */
-export const enum InlineKind {
-  /**
-   * Bold text. The inline element is a `StyleInline`.
-   */
-  BOLD = 'BOLD',
-  /**
-   * Italic text. The inline element is `StyleInline`.
-   */
-  ITALIC = 'ITALIC',
-  /**
-   * Underlined text. The inline element is `StyleInline`.
-   */
-  UNDERLINE = 'UNDERLINE',
-  /**
-   * Struck-through text. The inline element is `StyleInline`.
-   */
-  STRIKETHROUGH = 'STRIKETHROUGH',
-  /**
-   * Superscript text. The inline element is `StyleInline`.
-   */
-  SUPERSCRIPT = 'SUPERSCRIPT',
-  /**
-   * Subscript text. The inline element is `StyleInline`.
-   */
-  SUBSCRIPT = 'SUBSCRIPT',
-  /**
-   * A link, which can link to an item in the dictionary or to an arbitrary URI.
-   * The inline element is a `LinkInline`.
-   */
-  LINK = 'LINK',
-}
 
 /**
  * Contains the item that an internal link points to.
@@ -1048,27 +1067,15 @@ export type LemmaLinkTarget = {
 };
 
 /**
- * An `InlineElement` that represents a link, either to an item in the dictionary,
- * or to an arbitrary external URI.
+ * An inline element that represents a link, either to an item in the dictionary,
+ * or to an arbitrary external URI. Link elements may not contain other links.
  */
 export type LinkInline = {
   /**
-   * The inline kind.
-   */
-  kind: InlineKind.LINK;
-  /**
-   * The (inclusive) character offset at which the inline starts.
-   */
-  start: number;
-  /**
-   * The (exclusive) character offset at which the inline ends.
-   */
-  end: number;
-  /**
    * The target of the link. The link target can either be an external link, in
    * which case this field contains a fully qualified HTTP or HTTPS URL, such as
-   * `https://example.com`. Internal links use the `condict://` pseudo-protocol
-   * as follows:
+   * `https://example.com`, or an internal links using the pseudo-protocol
+   * `condict:` as follows:
    * 
    * * `condict://language/{id}` links to the start page of a language.
    * * `condict://lemma/{id}` links to a lemma.
@@ -1081,6 +1088,26 @@ export type LinkInline = {
    * this field is null.
    */
   internalLinkTarget: InternalLinkTarget | null;
+  /**
+   * A list of formatted text parts that make up the link's text. Note that links
+   * are not permitted here.
+   */
+  inlines: FormattedText[];
+};
+
+/**
+ * Input type for a link inline element.
+ */
+export type LinkInlineInput = {
+  /**
+   * Contains the target of the link. For details, see `LinkInline.linkTarget`.
+   */
+  linkTarget: string;
+  /**
+   * A list of formatted text parts that make up the link's text. Note that links
+   * are not permitted here.
+   */
+  inlines: FormattedTextInput[];
 };
 
 /**
@@ -1494,38 +1521,15 @@ export type StemInput = {
 };
 
 /**
- * An `InlineElement` that applies a single style to its text.
- */
-export type StyleInline = {
-  /**
-   * The inline kind.
-   */
-  kind: InlineKind.BOLD | InlineKind.ITALIC | InlineKind.UNDERLINE | InlineKind.STRIKETHROUGH | InlineKind.SUPERSCRIPT | InlineKind.SUBSCRIPT;
-  /**
-   * The (inclusive) character offset at which the inline starts.
-   */
-  start: number;
-  /**
-   * The (exclusive) character offset at which the inline ends.
-   */
-  end: number;
-};
-
-/**
  * A single paragraph of formatted text, which is used as a caption for inflection
  * tables attached to a definition.
  */
 export type TableCaption = {
   /**
-   * The text content of the caption, without inline formatters.
+   * A list of formatted text parts that make up the caption's content. Note that
+   * unlike a definition's description, a table caption cannot contain links.
    */
-  text: string;
-  /**
-   * A list of inlines, which determine how to format the caption's text content.
-   * Inlines are ordered primarily by `start`, secondarily by `end`. If there are
-   * no inlines, this field is null.
-   */
-  inlines: InlineElement[] | null;
+  inlines: FormattedText[];
 };
 
 /**
@@ -1533,14 +1537,10 @@ export type TableCaption = {
  */
 export type TableCaptionInput = {
   /**
-   * The text content of the caption, without inline formatters.
+   * A list of formatted text parts that make up the caption's content. Note that
+   * unlike a definition's description, a table caption cannot contain links.
    */
-  text: string;
-  /**
-   * A list of inlines, which determine how to format the caption's text content.
-   * If there are no inlines, this field is null.
-   */
-  inlines?: InlineElementInput[] | null;
+  inlines: FormattedTextInput[];
 };
 
 /**

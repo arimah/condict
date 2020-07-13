@@ -148,15 +148,11 @@ A single paragraph of formatted text, which is used as a caption for inflection
 tables attached to a definition.
 """
 type TableCaption {
-  "The text content of the caption, without inline formatters."
-  text: String!
-
   """
-  A list of inlines, which determine how to format the caption's text content.
-  Inlines are ordered primarily by `start`, secondarily by `end`. If there are
-  no inlines, this field is null.
+  A list of formatted text parts that make up the caption's content. Note that
+  unlike a definition's description, a table caption cannot contain links.
   """
-  inlines: [InlineElement!]
+  inlines: [FormattedText!]!
 }
 
 """
@@ -348,14 +344,11 @@ input EditDefinitionInflectionTableInput {
 Input type for a table caption, which is a single paragraph of formatted text.
 """
 input TableCaptionInput {
-  "The text content of the caption, without inline formatters."
-  text: String!
-
   """
-  A list of inlines, which determine how to format the caption's text content.
-  If there are no inlines, this field is null.
+  A list of formatted text parts that make up the caption's content. Note that
+  unlike a definition's description, a table caption cannot contain links.
   """
-  inlines: [InlineElementInput!]
+  inlines: [FormattedTextInput!]!
 }
 
 input CustomInflectedFormInput {

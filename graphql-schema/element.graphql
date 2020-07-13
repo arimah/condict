@@ -33,94 +33,61 @@ type BlockElement {
   "The indentation level of the element, starting at 0."
   level: Int!
 
-  "The text content of the block, without inline formatters."
+  """
+  A list of inlines, which contain the block's formatted text content as well
+  as links.
+  """
+  inlines: [InlineElement!]!
+}
+
+"An inline element, which is either formatted text or a link."
+union InlineElement = FormattedText | LinkInline
+
+"""
+Formatted text content. These appear as children of block elements, either
+directly in the `inlines` list, or indirectly inside links (see `LinkInline`).
+"""
+type FormattedText {
+  "The formatted text."
   text: String!
 
-  """
-  A list of inlines, which determine how to format the block's text content.
-  Inlines are ordered primarily by `start`, secondarily by `end`. If there are
-  no inlines, this field is null.
-  """
-  inlines: [InlineElement!]
-}
+  "True if the text is bold."
+  bold: Boolean!
 
-"The kind of an inline element."
-enum InlineKind {
-  "Bold text. The inline element is a `StyleInline`."
-  BOLD
+  "True if the text is italicized."
+  italic: Boolean!
 
-  "Italic text. The inline element is `StyleInline`."
-  ITALIC
+  "True if the text is underlined."
+  underline: Boolean!
 
-  "Underlined text. The inline element is `StyleInline`."
-  UNDERLINE
-
-  "Struck-through text. The inline element is `StyleInline`."
-  STRIKETHROUGH
-
-  "Superscript text. The inline element is `StyleInline`."
-  SUPERSCRIPT
-
-  "Subscript text. The inline element is `StyleInline`."
-  SUBSCRIPT
+  "True if the text is struck through."
+  strikethrough: Boolean!
 
   """
-  A link, which can link to an item in the dictionary or to an arbitrary URI.
-  The inline element is a `LinkInline`.
+  True if the text is formatted as subscript characters.
+
+  `subscript` and `superscript` are mutually exclusive.
   """
-  LINK
+  subscript: Boolean!
+
+  """
+  True if the text is formatted as superscript characters.
+
+  `subscript` and `superscript` are mutually exclusive.
+  """
+  superscript: Boolean!
 }
 
 """
-An inline element. These appear as the children of block elements. Inlines have
-no text of their own; instead, they refer to character offsets inside the text
-content of the block.
-
-The character offets of an inline element are true Unicode character offsets,
-not byte offsets or UTF-16 code unit offsets.
+An inline element that represents a link, either to an item in the dictionary,
+or to an arbitrary external URI. Link elements may not contain other links.
 """
-interface InlineElement {
-  "The inline kind."
-  kind: InlineKind!
-
-  "The (inclusive) character offset at which the inline starts."
-  start: Int!
-
-  "The (exclusive) character offset at which the inline ends."
-  end: Int!
-}
-
-"An `InlineElement` that applies a single style to its text."
-type StyleInline implements InlineElement {
-  "The inline kind."
-  kind: InlineKind! @restrict(not: ["LINK"])
-
-  "The (inclusive) character offset at which the inline starts."
-  start: Int!
-
-  "The (exclusive) character offset at which the inline ends."
-  end: Int!
-}
-
-"""
-An `InlineElement` that represents a link, either to an item in the dictionary,
-or to an arbitrary external URI.
-"""
-type LinkInline implements InlineElement {
-  "The inline kind."
-  kind: InlineKind! @restrict(only: ["LINK"])
-
-  "The (inclusive) character offset at which the inline starts."
-  start: Int!
-
-  "The (exclusive) character offset at which the inline ends."
-  end: Int!
-
+type LinkInline {
   """
   The target of the link. The link target can either be an external link, in
   which case this field contains a fully qualified HTTP or HTTPS URL, such as
-  `https://example.com`. Internal links use the `condict://` pseudo-protocol
-  as follows:
+  `https://example.com`, or an internal links using the pseudo-protocol
+  `condict:` as follows:
 
   * `condict://language/{id}` links to the start page of a language.
   * `condict://lemma/{id}` links to a lemma.
@@ -134,6 +101,12 @@ type LinkInline implements InlineElement {
   this field is null.
   """
   internalLinkTarget: InternalLinkTarget
+
+  """
+  A list of formatted text parts that make up the link's text. Note that links
+  are not permitted here.
+  """
+  inlines: [FormattedText!]!
 }
 
 "Contains the item that an internal link points to."
@@ -202,36 +175,70 @@ input BlockElementInput {
   """
   level: Int
 
-  "The text content of the block, without inline formatters."
-  text: String!
-
   """
-  A list of inlines, which determine how to format the block's text content.
-  If there are no inlines, this field is null.
+  A list of inlines, which contain the block's formatted text content as well
+  as links.
   """
-  inlines: [InlineElementInput!]
+  inlines: [InlineElementInput!]!
 }
 
 "Input type for an inline element."
 input InlineElementInput {
   """
-  The inline kind.
+  If set, the inline element is a piece of formatted text, and this field
+  contains the text and its associated formatting.
 
-  If the inline kind is `LINK`, you must also set `linkTarget`. See that field
-  for more details.
+  `text` and `linkTarget` are mutually exclusive.
   """
-  kind: InlineKind!
-
-  "The (inclusive) character offset at which the inline starts."
-  start: Int!
-
-  "The (exclusive) character offset at which the inline ends."
-  end: Int!
+  text: FormattedTextInput
 
   """
-  If the inline is a link, contains the target of the link.
-
-  For details, see `LinkInline.linkTarget`.
+  If set, the inline element is a link, and this field contains the link target
+  and its formatted text content.
   """
-  linkTarget: String
+  link: LinkInlineInput
+}
+
+"Input type for a piece of formatted text."
+input FormattedTextInput {
+  "The formatted text."
+  text: String!
+
+  "If true, the text is bold."
+  bold: Boolean
+
+  "If true, the text is italicized."
+  italic: Boolean
+
+  "If true, the text is underlined."
+  underline: Boolean
+
+  "If true, the text is struck through."
+  strikethrough: Boolean
+
+  """
+  If true, the text is formatted as subscript characters.
+
+  `subscript` and `superscript` are mutually exclusive.
+  """
+  subscript: Boolean
+
+  """
+  If true, the text is formatted as superscript characters.
+
+  `subscript` and `superscript` are mutually exclusive.
+  """
+  superscript: Boolean
+}
+
+"Input type for a link inline element."
+input LinkInlineInput {
+  "Contains the target of the link. For details, see `LinkInline.linkTarget`."
+  linkTarget: String!
+
+  """
+  A list of formatted text parts that make up the link's text. Note that links
+  are not permitted here.
+  """
+  inlines: [FormattedTextInput!]!
 }

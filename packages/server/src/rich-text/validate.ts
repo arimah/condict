@@ -4,7 +4,7 @@ import {
   BlockElementInput,
   BlockKind,
   InlineElementInput,
-  InlineKind,
+  FormattedTextInput,
   TableCaptionInput,
 } from '../graphql/types';
 
@@ -12,6 +12,7 @@ import {
   CondictLink,
   BlockElementJson,
   InlineElementJson,
+  FormattedTextJson,
   TableCaptionJson,
 } from './types';
 import {
@@ -21,94 +22,90 @@ import {
 
 export type LinkRefCollector = (target: CondictLink) => void;
 
-// GraphQL validates types, including values of BlockKind and InlineKind types.
+// GraphQL validates types, including enum values like BlockKind.
 // Rather than repeat the schema here to double-check, we let GraphQL do its
 // thing and perform only other kinds of validation.
 
 const EmptyParagraph: BlockElementJson = {
   kind: BlockKind.PARAGRAPH,
-  text: '',
+  inlines: [{text: ''}],
 };
 
-// Inlines are sorted by start index ascending, end index descending. This
-// ensures that inlines are (1) in order, (2) nested correctly, in an outside-
-// in manner. Example:
-//
-//   Lorem ipsum dolor sit amet.
-//         |------------------|
-//         |---------|
-//                         |--|
-//
-// These inlines must be in this order, as the second and third are logically
-// nested within the first. The order of the second and third inlines is
-// actually unimportant as long as they don't overlap, but sorting in this
-// manner takes care of everything neatly.
-//
-// Partially overlapping inlines are not permitted, but no attempt is made
-// to detect them.
-const compareInlines = (
-  a: InlineElementInput,
-  b: InlineElementInput
-) => a.start - b.start || b.end - a.end;
+const validateFormattedText = (text: FormattedTextInput): FormattedTextJson => {
+  const result: FormattedTextJson = {text: text.text};
+  if (text.bold) {
+    result.bold = true;
+  }
+  if (text.italic) {
+    result.italic = true;
+  }
+  if (text.underline) {
+    result.underline = true;
+  }
+  if (text.strikethrough) {
+    result.strikethrough = true;
+  }
+  if (text.subscript) {
+    result.subscript = true;
+  } else if (text.superscript) {
+    result.superscript = true;
+  }
+  return result;
+};
 
-export const validateInline = (
+const validateInline = (
   inputInline: InlineElementInput,
   collectLinkReference?: LinkRefCollector
 ): InlineElementJson => {
-  if (inputInline.kind === InlineKind.LINK) {
+  if (inputInline.link) {
+    const {link} = inputInline;
+
+    if (inputInline.text) {
+      throw new UserInputError('Inline element cannot have both `link` and `text`');
+    }
     if (!collectLinkReference) {
       throw new UserInputError('Links are not permitted in this context');
     }
-    if (!inputInline.linkTarget) {
-      throw new UserInputError('Missing linkTarget on an inline of type LINK');
-    }
 
-    const linkTarget = inputInline.linkTarget;
-    if (isCondictLink(linkTarget)) {
-      const link = parseCondictLink(linkTarget);
-      collectLinkReference(link);
+    if (isCondictLink(link.linkTarget)) {
+      const internalLink = parseCondictLink(link.linkTarget);
+      collectLinkReference(internalLink);
     }
     return {
-      kind: InlineKind.LINK,
-      start: inputInline.start,
-      end: inputInline.end,
-      linkTarget,
+      linkTarget: link.linkTarget,
+      inlines: link.inlines
+        .map(validateFormattedText)
+        // Remove empty text nodes
+        .filter(t => !FormattedTextJson.isEmpty(t)),
     };
   }
 
-  return {
-    kind: inputInline.kind,
-    start: inputInline.start,
-    end: inputInline.end,
-  };
+  if (inputInline.text) {
+    return validateFormattedText(inputInline.text);
+  }
+
+  throw new UserInputError('Inline element must have either `link` or `text`');
 };
 
-export const validateBlock = (
+const validateBlock = (
   inputBlock: BlockElementInput,
   collectLinkReference?: LinkRefCollector
 ): BlockElementJson => {
   const result: BlockElementJson = {
     kind: inputBlock.kind,
-    text: inputBlock.text,
+    inlines: inputBlock.inlines
+      .map(inline => validateInline(inline, collectLinkReference))
+      // Remove empty inlines
+      .filter(inline => !InlineElementJson.isEmpty(inline)),
   };
+
+  if (result.inlines.length === 0) {
+    // There must be at least one text inline in every block.
+    result.inlines.push({text: ''});
+  }
 
   if (inputBlock.level != null && inputBlock.level > 0) {
     result.level = inputBlock.level;
-  }
-
-  let inlines: InlineElementJson[] | null = null;
-  if (inputBlock.inlines && inputBlock.inlines.length > 0) {
-    inlines = inputBlock.inlines
-      // Validate each inline,
-      .map(inline => validateInline(inline, collectLinkReference))
-      // remove empty inlines,
-      .filter(inline => inline.start !== inline.end)
-      // and sort!
-      .sort(compareInlines);
-  }
-
-  if (inlines && inlines.length > 0) {
-    result.inlines = inlines;
   }
 
   return result;
@@ -118,18 +115,29 @@ export const validateDescription = (
   inputBlocks: BlockElementInput[],
   collectLinkReference?: LinkRefCollector
 ): BlockElementJson[] => {
-  // Filter out empty blocks
-  const nonEmptyBlocks = inputBlocks.filter(block => block.text !== '');
-
-  // The description cannot have zero blocks. If there is no text content,
-  // return a single empty paragraph.
-  if (nonEmptyBlocks.length === 0) {
-    return [EmptyParagraph];
-  }
-
-  return nonEmptyBlocks.map(block =>
+  // Note: While we do remove empty inlines (as they serve no purpose at all),
+  // we cannot remove empty *blocks* willy-nilly. The user may have put them
+  // there for extra spacing or similar. However, we can and do trim empty
+  // blocks at the start and end.
+  const blocks = inputBlocks.map(block =>
     validateBlock(block, collectLinkReference)
   );
+
+  // Trim empty blocks from the start.
+  while (blocks.length > 0 && BlockElementJson.isEmpty(blocks[0])) {
+    blocks.shift();
+  }
+  // Trim empty blocks from the end.
+  while (
+    blocks.length > 0 &&
+    BlockElementJson.isEmpty(blocks[blocks.length - 1])
+  ) {
+    blocks.pop();
+  }
+
+  // The description cannot have zero blocks. If we trimmed away everything,
+  // return a single empty paragraph.
+  return blocks.length === 0 ? [EmptyParagraph] : blocks;
 };
 
 export const validateTableCaption = (
@@ -139,24 +147,16 @@ export const validateTableCaption = (
     return null;
   }
 
-  const result: TableCaptionJson = {
-    text: inputCaption.text,
+  const caption: TableCaptionJson = {
+    inlines: inputCaption.inlines
+      .map(validateFormattedText)
+      // Remove empty text nodes
+      .filter(text => !FormattedTextJson.isEmpty(text)),
   };
 
-  let inlines: InlineElementJson[] | null = null;
-  if (inputCaption.inlines && inputCaption.inlines.length > 0) {
-    inlines = inputCaption.inlines
-      // Validate each inline,
-      .map(inline => validateInline(inline))
-      // remove empty inlines,
-      .filter(inline => inline.start !== inline.end)
-      // and sort!
-      .sort(compareInlines);
+  if (TableCaptionJson.isEmpty(caption)) {
+    return null;
   }
 
-  if (inlines && inlines.length > 0) {
-    result.inlines = inlines;
-  }
-
-  return result;
+  return caption;
 };

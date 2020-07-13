@@ -1,6 +1,5 @@
 import {
   BlockKind,
-  InlineKind,
   DefinitionId,
   LanguageId,
   LemmaId,
@@ -10,28 +9,72 @@ import {
 export type BlockElementJson = {
   kind: BlockKind;
   level?: number;
-  text: string;
-  inlines?: InlineElementJson[];
+  inlines: InlineElementJson[];
 };
 
-export type InlineElementJson = StyleInlineJson | LinkInlineJson;
+export const BlockElementJson = {
+  isEmpty(block: BlockElementJson): boolean {
+    return block.inlines.every(InlineElementJson.isEmpty);
+  },
+};
 
-export type StyleInlineJson = {
-  kind: Exclude<InlineKind, InlineKind.LINK>;
-  start: number;
-  end: number;
+export type InlineElementJson = FormattedTextJson | LinkInlineJson;
+
+export const InlineElementJson = {
+  isLink(inline: InlineElementJson): inline is LinkInlineJson {
+    return typeof (inline as any).linkTarget === 'string';
+  },
+
+  isEmpty(inline: InlineElementJson): boolean {
+    return (
+      InlineElementJson.isLink(inline)
+        ? LinkInlineJson.isEmpty(inline)
+        : FormattedTextJson.isEmpty(inline)
+    );
+  },
+};
+
+export type FormattedTextJson = {
+  text: string;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  strikethrough?: boolean;
+  subscript?: boolean;
+  superscript?: boolean;
+};
+
+export const FormattedTextJson = {
+  isEmpty(text: FormattedTextJson): boolean {
+    return text.text === '';
+  },
 };
 
 export type LinkInlineJson = {
-  kind: InlineKind.LINK;
-  start: number;
-  end: number;
   linkTarget: string;
+  inlines: FormattedTextJson[];
+};
+
+export const LinkInlineJson = {
+  isEmpty(link: LinkInlineJson): boolean {
+    return (
+      link.inlines.length === 0 ||
+      link.inlines.every(FormattedTextJson.isEmpty)
+    );
+  },
 };
 
 export type TableCaptionJson = {
-  text: string;
-  inlines?: InlineElementJson[];
+  inlines: FormattedTextJson[];
+};
+
+export const TableCaptionJson = {
+  isEmpty(caption: TableCaptionJson): boolean {
+    return (
+      caption.inlines.length === 0 ||
+      caption.inlines.every(FormattedTextJson.isEmpty)
+    );
+  },
 };
 
 export const enum CondictLinkType {

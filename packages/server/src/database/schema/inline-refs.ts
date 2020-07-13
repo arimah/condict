@@ -1,4 +1,3 @@
-import {InlineKind} from '../../graphql/types';
 import {InlineElementJson, CondictLinkType} from '../../rich-text/types';
 import {isCondictLink, parseCondictLink} from '../../rich-text/condict-link';
 
@@ -39,9 +38,9 @@ export const updateInlineReferences = (
     return;
   }
 
-  inlines.forEach(inline => {
-    if (inline.kind !== InlineKind.LINK) {
-      return;
+  for (const inline of inlines) {
+    if (!InlineElementJson.isLink(inline)) {
+      continue;
     }
 
     if (isCondictLink(inline.linkTarget)) {
@@ -49,5 +48,5 @@ export const updateInlineReferences = (
       const table = linkTargetTable[link.type];
       inline.linkTarget = `condict://${link.type}/${newIds[table].get(link.id)}`;
     }
-  });
+  }
 };

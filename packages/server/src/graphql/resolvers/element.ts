@@ -2,6 +2,7 @@ import {
   BlockElementJson,
   InlineElementJson,
   LinkInlineJson,
+  FormattedTextJson,
   CondictLink,
   CondictLinkType,
   LanguageLink,
@@ -17,7 +18,7 @@ import {
 import {
   BlockElement as BlockElementType,
   InlineElement as InlineElementType,
-  InlineKind,
+  FormattedText as FormattedTextType,
   LinkInline as LinkInlineType,
   InternalLinkTarget as InternalLinkTargetType,
   LanguageLinkTarget as LanguageLinkTargetType,
@@ -29,24 +30,27 @@ import {
 import {ResolversFor} from './types';
 
 const BlockElement: ResolversFor<BlockElementType, BlockElementJson> = {
-  // Level 0 is not usually stored in the object, to save space.
+  // Level 0 is not stored in the object, to save space.
   level: p => p.level || 0,
 };
 
 const InlineElement: ResolversFor<InlineElementType, InlineElementJson> = {
   __resolveType(p) {
-    switch (p.kind) {
-      case InlineKind.BOLD:
-      case InlineKind.ITALIC:
-      case InlineKind.UNDERLINE:
-      case InlineKind.STRIKETHROUGH:
-      case InlineKind.SUPERSCRIPT:
-      case InlineKind.SUBSCRIPT:
-        return 'StyleInline';
-      case InlineKind.LINK:
-        return 'LinkInline';
+    if (InlineElementJson.isLink(p)) {
+      return 'LinkInline';
     }
+    return 'FormattedText';
   },
+};
+
+const FormattedText: ResolversFor<FormattedTextType, FormattedTextJson> = {
+  // Formatting properties are not stored in the object, to save space.
+  bold: p => p.bold || false,
+  italic: p => p.italic || false,
+  underline: p => p.underline || false,
+  strikethrough: p => p.strikethrough || false,
+  subscript: p => p.subscript || false,
+  superscript: p => p.superscript || false,
 };
 
 const LinkInline: ResolversFor<LinkInlineType, LinkInlineJson> = {
@@ -98,6 +102,7 @@ const PartOfSpeechLinkTarget: ResolversFor<
 export default {
   BlockElement,
   InlineElement,
+  FormattedText,
   LinkInline,
   InternalLinkTarget,
   LanguageLinkTarget,
