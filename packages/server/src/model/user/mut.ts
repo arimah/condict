@@ -19,15 +19,10 @@ class UserMut extends Mutator {
     const {User} = this.model;
 
     // Note: validatePassword also hashes the password.
-    const [
-      validName,
-      validPassword,
-    ] = await Promise.all([
-      validateName(db, null, name),
-      validatePassword(password),
-    ]);
+    const validName = validateName(db, null, name);
+    const validPassword = await validatePassword(password);
 
-    const {insertId: id} = await db.exec<UserId>`
+    const {insertId: id} = db.exec<UserId>`
       insert into users (name, password_hash)
       values (${validName}, ${validPassword})
     `;
@@ -42,18 +37,18 @@ class UserMut extends Mutator {
     const {db} = this;
     const {User} = this.model;
 
-    const user = await User.byIdRequired(id);
+    const user = User.byIdRequired(id);
 
     const newFields = new FieldSet<UserRow>();
     if (name && name !== user.name) {
-      newFields.set('name', await validateName(db, id, name));
+      newFields.set('name', validateName(db, id, name));
     }
     if (password) {
       newFields.set('password_hash', await validatePassword(password));
     }
 
     if (newFields.hasValues) {
-      await db.exec`
+      db.exec`
         update users
         set ${newFields}
         where id = ${id}
@@ -62,10 +57,10 @@ class UserMut extends Mutator {
     return User.byIdRequired(id);
   }
 
-  public async delete(id: UserId): Promise<boolean> {
+  public delete(id: UserId): boolean {
     const {db} = this;
 
-    const {affectedRows} = await db.exec`
+    const {affectedRows} = db.exec`
       delete from users
       where id = ${id}
     `;
@@ -87,7 +82,7 @@ class UserSessionMut extends Mutator {
     const {db} = this;
     const {User} = this.model;
 
-    const user = await User.byName(username);
+    const user = User.byName(username);
     if (!user) {
       // Forcefully hash the submitted password, to make brute-force user
       // discovery much more difficult. It's basically just a delay.
@@ -103,7 +98,7 @@ class UserSessionMut extends Mutator {
     // Username and password match. We can create the session.
     const sessionId = nanoid();
     const expiresAt = Date.now() + this.sessionDuration;
-    await db.exec`
+    db.exec`
       insert into user_sessions (id, user_id, expires_at)
       values (${sessionId}, ${user.id}, ${expiresAt})
     `;
@@ -115,26 +110,26 @@ class UserSessionMut extends Mutator {
     };
   }
 
-  public async logOut(sessionId: string): Promise<boolean> {
-    const {affectedRows} = await this.db.exec`
+  public logOut(sessionId: string): boolean {
+    const {affectedRows} = this.db.exec`
       delete from user_sessions
       where id = ${sessionId}
     `;
     return affectedRows > 0;
   }
 
-  public async resumeSession(sessionId: string): Promise<UserSessionType | null> {
+  public resumeSession(sessionId: string): UserSessionType | null {
     const {db} = this;
     const {User, UserSession} = this.model;
 
     const now = Date.now();
-    const session = await UserSession.byId(sessionId);
+    const session = UserSession.byId(sessionId);
 
     if (session && now < session.expires_at) {
-      const user = await User.byIdRequired(session.user_id);
+      const user = User.byIdRequired(session.user_id);
 
       const expiresAt = now + this.sessionDuration;
-      await db.exec`
+      db.exec`
         update user_sessions
         set expires_at = ${expiresAt}
         where id = ${sessionId}

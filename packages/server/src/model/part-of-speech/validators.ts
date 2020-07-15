@@ -1,4 +1,4 @@
-import Adaptor from '../../database/adaptor';
+import {Connection} from '../../database';
 import {PartOfSpeechId, LanguageId} from '../../graphql/types';
 
 import validator, {lengthBetween, unique} from '../validator';
@@ -7,18 +7,18 @@ import sizeOfColumn from '../size-of-column';
 const NameSize = sizeOfColumn('parts_of_speech', 'name');
 
 export const validateName = (
-  db: Adaptor,
+  db: Connection,
   currentId: PartOfSpeechId | null,
   languageId: LanguageId,
   value: string
-): Promise<string> =>
+): string =>
   validator<string>('name')
     .do(value => value.trim())
     .do(lengthBetween(1, NameSize))
     .do(unique(
       currentId,
-      async name => {
-        const row = await db.get<{id: PartOfSpeechId}>`
+      name => {
+        const row = db.get<{id: PartOfSpeechId}>`
           select id
           from parts_of_speech
           where name = ${name}

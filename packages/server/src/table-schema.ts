@@ -1,12 +1,8 @@
 import {generateSchema} from './database';
-import {Drivers} from './database/types';
 import reindentQuery from './database/reindent-query';
 
-const getTableSchema = (
-  databaseType: keyof Drivers,
-  tableName: string | null
-): string | null => {
-  let schema = generateSchema(databaseType);
+const getTableSchema = (tableName: string | null): string | null => {
+  let schema = generateSchema();
 
   if (tableName !== null) {
     schema = schema.filter(([name]) => name === tableName);

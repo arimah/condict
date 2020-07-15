@@ -4,7 +4,7 @@ import {isCondictLink, parseCondictLink} from '../../rich-text/condict-link';
 import {ForeignKeyContentRef, NewIdMap} from './types';
 
 // Columns that can be referenced by inline elements (inside formatted text).
-export const inlineElementReferences: ForeignKeyContentRef[] = [
+export const InlineElementReferences: ForeignKeyContentRef[] = [
   {
     table: 'languages',
     column: 'id',
@@ -23,7 +23,7 @@ export const inlineElementReferences: ForeignKeyContentRef[] = [
   },
 ];
 
-const linkTargetTable: Record<CondictLinkType, string> = {
+const LinkTargetTable: Record<CondictLinkType, string> = {
   language: 'languages',
   lemma: 'lemmas',
   definition: 'definitions',
@@ -45,7 +45,7 @@ export const updateInlineReferences = (
 
     if (isCondictLink(inline.linkTarget)) {
       const link = parseCondictLink(inline.linkTarget);
-      const table = linkTargetTable[link.type];
+      const table = LinkTargetTable[link.type];
       inline.linkTarget = `condict://${link.type}/${newIds[table].get(link.id)}`;
     }
   }

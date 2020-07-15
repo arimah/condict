@@ -66,11 +66,11 @@ export const matches = (
 
 export const unique = <T, K>(
   currentId: K | null,
-  getExistingId: (value: T) => Promise<K | null>,
+  getExistingId: (value: T) => K | null,
   message: (value: T) => string
 ) =>
-  async (value: T, paramName: string): Promise<T> => {
-    const existingId = await getExistingId(value);
+  (value: T, paramName: string): T => {
+    const existingId = getExistingId(value);
     if (existingId !== null && existingId !== currentId) {
       throw new UserInputError(`${paramName}: ${message(value)}`, {
         invalidArgs: [paramName],

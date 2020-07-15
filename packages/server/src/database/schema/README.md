@@ -16,6 +16,6 @@ Some general notes about the database design:
 * Use `unique` constraints to ensure _correctness_, never merely as a performance optimisation.
 * Put an index on any column that is used in a `where` clause. If multiple columns are commonly used together, consider using a composite index.
 
-Dates deserve special mention. SQLite has very limited date and time handling. There is no built-in date (or datetime) type, and all date functions operate on strings. MySQL also enjoys string-based date handling, but has richer functions for manipulating dates. We don't anticipate that Condict will be required to perform any particularly complex date handling in queries; at most we'll sort by date, and maybe in the future perform "last x days" filtering. As a result, dates are stored as milliseconds since midnight on 1 January 1970 UTC, matching the JS `Date` class.
+Dates deserve special mention. SQLite has very limited date and time handling. There is no built-in date (or datetime) type, and all date functions operate on strings. We don't anticipate that Condict will be required to perform any particularly complex date handling in queries; at most we'll sort by date, and maybe in the future perform "last x days" filtering. As a result, dates are stored as milliseconds since midnight on 1 January 1970 UTC, matching the JS `Date` class.
 
 In GraphQL, our own `Date` scalar type is sent as such an integer value. This additionally means we incur no penalties from converting and parsing back and forth; everything is just numbers.

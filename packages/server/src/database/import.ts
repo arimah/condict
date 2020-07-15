@@ -3,7 +3,7 @@ import {ReadStream} from 'fs';
 import LineReader from '../utils/line-reader';
 import {Logger} from '../types';
 
-import Adaptor from './adaptor';
+import {Connection} from './sqlite';
 import fileFacts from './dump-file-facts';
 import getNewIdMap from './get-new-id-map';
 import schema, {schemaVersion} from './schema';
@@ -69,7 +69,7 @@ const getColumnImporters = (table: TableSchema) =>
 
 const importDatabase = async (
   logger: Logger,
-  db: Adaptor,
+  db: Connection,
   inputStream: ReadStream
 ): Promise<void> => {
   const startTime = Date.now();
@@ -117,12 +117,12 @@ const importDatabase = async (
         // This should be a row from the table. Try to parse it as JSON.
         const row = JSON.parse(line);
         if (table.preImport) {
-          await table.preImport(db, row);
+          table.preImport(db, row);
         }
         columnImporters.forEach(importer => importer(row, newIds));
 
         const values = columnNames.map(c => row[c]);
-        const {insertId} = await db.exec`
+        const {insertId} = db.exec`
           insert into ${tableNameSql} (${columnNamesSql})
           values (${values});
         `;

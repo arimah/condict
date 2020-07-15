@@ -1,4 +1,4 @@
-import {ConfigOptions as DatabaseConfigOptions} from './database/types';
+import {Options as DatabaseConfigOptions} from './database';
 
 export type ServerConfig = {
   database: DatabaseConfigOptions;

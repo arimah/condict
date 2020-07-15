@@ -2,7 +2,7 @@ import {WriteStream} from 'fs';
 
 import {Logger} from '../types';
 
-import Adaptor from './adaptor';
+import {Connection} from './sqlite';
 import fileFacts from './dump-file-facts';
 import getNewIdMap from './get-new-id-map';
 import schema, {schemaVersion} from './schema';
@@ -57,7 +57,7 @@ const writeOutput = (stream: WriteStream, data: string) => new Promise<void>(
 
 const exportDatabase = async (
   logger: Logger,
-  db: Adaptor,
+  db: Connection,
   outputStream: WriteStream
 ): Promise<void> => {
   const startTime = Date.now();
@@ -90,7 +90,7 @@ const exportDatabase = async (
 
     // TODO: Stream rows from the database, rather than fetching every single
     // one in one go.
-    const rows = await db.all<{id?: number}>`
+    const rows = db.all<{id?: number}>`
       select *
       from ${db.raw(table.name)}
     `;

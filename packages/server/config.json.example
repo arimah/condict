@@ -1,11 +1,6 @@
 {
   "database": {
-    "type": "mysql",
-    "host": "localhost",
-    "port": 3306,
-    "user": "condict",
-    "password": "securePassword123",
-    "database": "condict"
+    "file": "condict.sqlite"
   },
   "log": {
     "stdout": "info",

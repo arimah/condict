@@ -5,36 +5,36 @@ import {validateTag} from '../tag/validators';
 import Mutator from '../mutator';
 
 export default class DefinitionTagMut extends Mutator {
-  public async insertAll(definitionId: DefinitionId, tags: string[]): Promise<void> {
+  public insertAll(definitionId: DefinitionId, tags: string[]): void {
     const {db} = this;
     const {TagMut} = this.mut;
 
-    const tagToId = await TagMut.ensureAllExist(tags.map(validateTag));
+    const tagToId = TagMut.ensureAllExist(tags.map(validateTag));
 
     if (tagToId.size > 0) {
       const tagIds = Array.from(tagToId.values());
 
-      await db.exec`
+      db.exec`
         insert into definition_tags (definition_id, tag_id)
         values ${tagIds.map(id => db.raw`(${definitionId}, ${id})`)}
       `;
     }
   }
 
-  public async update(definitionId: DefinitionId, tags: string[]): Promise<void> {
+  public update(definitionId: DefinitionId, tags: string[]): void {
     const {TagMut} = this.mut;
 
     // We could compute a delta here, but it's kind of messy and complex, and
     // this all happens inside a transaction anyway.
-    await this.deleteAll(definitionId);
-    await this.insertAll(definitionId, tags);
+    this.deleteAll(definitionId);
+    this.insertAll(definitionId, tags);
 
     // This may have orphaned a number of tags, so we need to delete those.
-    await TagMut.deleteOrphaned();
+    TagMut.deleteOrphaned();
   }
 
-  private async deleteAll(definitionId: DefinitionId): Promise<void> {
-    await this.db.exec`
+  private deleteAll(definitionId: DefinitionId): void {
+    this.db.exec`
       delete from definition_tags
       where definition_id = ${definitionId}
     `;

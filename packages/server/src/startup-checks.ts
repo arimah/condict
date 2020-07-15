@@ -1,11 +1,10 @@
-import ensureSchemaIsValid from './database/validate-schema';
-import {Pool as DatabasePool} from './database/types';
+import {ConnectionPool, ensureSchemaIsValid} from './database';
 import {ServerConfig, Logger} from './types';
 
 const performStartupChecks = async (
   logger: Logger,
   config: ServerConfig,
-  databasePool: DatabasePool
+  databasePool: ConnectionPool
 ): Promise<void> => {
   await ensureSchemaIsValid(logger, config, databasePool);
 };

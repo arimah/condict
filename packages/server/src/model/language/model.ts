@@ -1,6 +1,5 @@
 import {UserInputError} from 'apollo-server';
 
-import {Awaitable} from '../../database/adaptor';
 import {LanguageId} from '../../graphql/types';
 
 import {LanguageRow} from './types';
@@ -9,7 +8,7 @@ import Model from '../model';
 class Language extends Model {
   public readonly byIdKey = 'Language.byId';
 
-  public all(): Awaitable<LanguageRow[]> {
+  public all(): LanguageRow[] {
     return this.db.all<LanguageRow>`
       select *
       from languages
@@ -43,7 +42,7 @@ class Language extends Model {
     return language;
   }
 
-  public byName(name: string): Awaitable<LanguageRow | null> {
+  public byName(name: string): LanguageRow | null {
     return this.db.get<LanguageRow>`
       select *
       from languages

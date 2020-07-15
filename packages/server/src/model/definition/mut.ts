@@ -54,15 +54,15 @@ class DefinitionMut extends Mutator {
     const validTerm = validateTerm(term);
 
     return db.transact(async () => {
-      const lemmaId = await LemmaMut.ensureExists(language.id, validTerm);
+      const lemmaId = LemmaMut.ensureExists(language.id, validTerm);
 
-      const {insertId: definitionId} = await db.exec<DefinitionId>`
+      const {insertId: definitionId} = db.exec<DefinitionId>`
         insert into definitions (lemma_id, language_id, part_of_speech_id)
         values (${lemmaId}, ${language.id}, ${partOfSpeech.id})
       `;
 
-      await DefinitionDescriptionMut.insert(definitionId, description);
-      const stemMap = await DefinitionStemMut.insert(definitionId, stems);
+      DefinitionDescriptionMut.insert(definitionId, description);
+      const stemMap = DefinitionStemMut.insert(definitionId, stems);
 
       const derivedDefinitions = await this.updateInflectionTables(
         definitionId,
@@ -73,9 +73,9 @@ class DefinitionMut extends Mutator {
         true
       );
 
-      await DefinitionTagMut.insertAll(definitionId, tags);
+      DefinitionTagMut.insertAll(definitionId, tags);
 
-      await DerivedDefinitionMut.insertAll(
+      DerivedDefinitionMut.insertAll(
         language.id,
         definitionId,
         derivedDefinitions
@@ -107,7 +107,7 @@ class DefinitionMut extends Mutator {
     return db.transact(async () => {
       const newFields = new FieldSet<DefinitionRow>();
 
-      const actualTerm = await this.updateTerm(definition, term, newFields);
+      const actualTerm = this.updateTerm(definition, term, newFields);
       const actualPartOfSpeechId = await this.updatePartOfSpeech(
         definition,
         partOfSpeechId,
@@ -124,7 +124,7 @@ class DefinitionMut extends Mutator {
       }
 
       if (newFields.hasValues) {
-        await db.exec`
+        db.exec`
           update definitions
           set ${newFields}
           where id = ${definition.id}
@@ -132,7 +132,7 @@ class DefinitionMut extends Mutator {
       }
 
       if (description) {
-        await DefinitionDescriptionMut.update(definition.id, description);
+        DefinitionDescriptionMut.update(definition.id, description);
       }
 
       const stemMap = await DefinitionStemMut.update(definition.id, stems);
@@ -149,28 +149,28 @@ class DefinitionMut extends Mutator {
       );
 
       if (tags) {
-        await DefinitionTagMut.update(definition.id, tags);
+        DefinitionTagMut.update(definition.id, tags);
       }
 
       // If the derived definitions or term have changed, we may have orphaned
       // one or more lemmas, so we have to delete them too.
-      await LemmaMut.deleteEmpty(definition.language_id);
+      LemmaMut.deleteEmpty(definition.language_id);
 
       db.clearCache(Definition.byIdKey, definition.id);
       return Definition.byIdRequired(definition.id);
     });
   }
 
-  private async updateTerm(
+  private updateTerm(
     definition: DefinitionRow,
     term: string | undefined | null,
     newFields: FieldSet<DefinitionRow>
-  ): Promise<string> {
+  ): string {
     const {LemmaMut} = this.mut;
 
     if (term != null && term !== definition.term) {
       const validTerm = validateTerm(term);
-      const newLemmaId = await LemmaMut.ensureExists(
+      const newLemmaId = LemmaMut.ensureExists(
         definition.language_id,
         validTerm
       );
@@ -214,11 +214,11 @@ class DefinitionMut extends Mutator {
       return false;
     }
 
-    await this.db.exec`
+    this.db.exec`
       delete from definitions
       where id = ${id}
     `;
-    await LemmaMut.deleteEmpty(definition.language_id);
+    LemmaMut.deleteEmpty(definition.language_id);
     return true;
   }
 
@@ -243,7 +243,7 @@ class DefinitionMut extends Mutator {
         false
       );
     } else if (newFormsNeeded) {
-      derivedDefinitions = await this.rederiveAllForms(
+      derivedDefinitions = this.rederiveAllForms(
         definition.id,
         term,
         stemMap
@@ -251,8 +251,8 @@ class DefinitionMut extends Mutator {
     }
 
     if (derivedDefinitions) {
-      await DerivedDefinitionMut.deleteAll(definition.id);
-      await DerivedDefinitionMut.insertAll(
+      DerivedDefinitionMut.deleteAll(definition.id);
+      DerivedDefinitionMut.insertAll(
         definition.language_id,
         definition.id,
         derivedDefinitions
@@ -264,7 +264,7 @@ class DefinitionMut extends Mutator {
       // so clear them out of the database.
       // Note: We must do this here, not at the end of updateInflectionTables,
       // as we have to wait for new derived definitions to be inserted.
-      await InflectionTableLayoutMut.deleteObsolete();
+      InflectionTableLayoutMut.deleteObsolete();
     }
   }
 
@@ -313,7 +313,7 @@ class DefinitionMut extends Mutator {
     }
 
     if (!isNewDefinition) {
-      await DefinitionInflectionTableMut.deleteOld(
+      DefinitionInflectionTableMut.deleteOld(
         definitionId,
         currentTableIds
       );
@@ -322,11 +322,11 @@ class DefinitionMut extends Mutator {
     return derivedDefinitions;
   }
 
-  private async rederiveAllForms(
+  private rederiveAllForms(
     definitionId: DefinitionId,
     term: string,
     stemMap: Map<string, string>
-  ): Promise<MultiMap<string, InflectedFormId>> {
+  ): MultiMap<string, InflectedFormId> {
     type Row = {
       id: DefinitionInflectionTableId;
       inflection_table_version_id: InflectionTableLayoutId;
@@ -337,17 +337,17 @@ class DefinitionMut extends Mutator {
 
     const derivedDefinitions = new MultiMap<string, InflectedFormId>();
 
-    const definitionTables = await db.all<Row>`
+    const definitionTables = db.all<Row>`
       select id, inflection_table_version_id
       from definition_inflection_tables
       where definition_id = ${definitionId}
     `;
-    const customForms = await this.fetchAllCustomForms(
+    const customForms = this.fetchAllCustomForms(
       definitionTables.map(t => t.id)
     );
 
     for (const table of definitionTables) {
-      const derivedForms = await DefinitionInflectionTableMut.deriveAllForms(
+      const derivedForms = DefinitionInflectionTableMut.deriveAllForms(
         table.id,
         term,
         stemMap,
@@ -364,9 +364,9 @@ class DefinitionMut extends Mutator {
     return derivedDefinitions;
   }
 
-  private async fetchAllCustomForms(
+  private fetchAllCustomForms(
     definitionTableIds: DefinitionInflectionTableId[]
-  ): Promise<Map<DefinitionInflectionTableId, Map<InflectedFormId, string>>> {
+  ): Map<DefinitionInflectionTableId, Map<InflectedFormId, string>> {
     type Row = {
       parent_id: DefinitionInflectionTableId;
       inflected_form_id: InflectedFormId;
@@ -375,7 +375,7 @@ class DefinitionMut extends Mutator {
 
     const {db} = this;
 
-    const allCustomForms = await db.all<Row>`
+    const allCustomForms = db.all<Row>`
       select
         df.definition_inflection_table_id as parent_id,
         df.inflected_form_id,
@@ -399,25 +399,25 @@ class DefinitionMut extends Mutator {
 }
 
 class DefinitionDescriptionMut extends Mutator {
-  public async insert(
+  public insert(
     definitionId: DefinitionId,
     description: BlockElementInput[]
-  ): Promise<void> {
+  ): void {
     const finalDescription = validateDescription(description, () => { /* ignore */ });
 
-    await this.db.exec`
+    this.db.exec`
       insert into definition_descriptions (definition_id, description)
       values (${definitionId}, ${JSON.stringify(finalDescription)})
     `;
   }
 
-  public async update(
+  public update(
     definitionId: DefinitionId,
     description: BlockElementInput[]
-  ): Promise<void> {
+  ): void {
     const finalDescription = validateDescription(description, () => { /* ignore */ });
 
-    await this.db.exec`
+    this.db.exec`
       update definition_descriptions
       set description = ${JSON.stringify(finalDescription)}
       where definition_id = ${definitionId}

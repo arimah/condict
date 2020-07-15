@@ -19,7 +19,7 @@ export {
   ServerConfigWithLogger,
 } from './types';
 export {
-  Drivers,
-  DriverOptions,
-  ConfigOptions,
-} from './database/types';
+  Connection,
+  ConnectionPool,
+  Options as DatabaseConfig,
+} from './database';

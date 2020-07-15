@@ -6,7 +6,7 @@ import {TagRow} from './types';
 import {ValidTag} from './validators';
 
 class TagMut extends Mutator {
-  public async ensureAllExist(tags: ValidTag[]): Promise<Map<string, TagId>> {
+  public ensureAllExist(tags: ValidTag[]): Map<string, TagId> {
     const {db} = this;
 
     if (tags.length === 0) {
@@ -14,19 +14,19 @@ class TagMut extends Mutator {
       return new Map();
     }
 
-    const result = await db.all<TagRow>`
+    const result = db.all<TagRow>`
       select *
       from tags
       where name in (${tags})
     `;
     const tagToId = new Map<string, TagId>(
-      result.map<[string, TagId]>(row => [row.name, row.id])
+      result.map(row => [row.name, row.id])
     );
 
     for (const tag of tags) {
       // TODO: Can we parallelise this? Auto-increment IDs *should* be serial.
       if (!tagToId.has(tag)) {
-        const {insertId} = await db.exec<TagId>`
+        const {insertId} = db.exec<TagId>`
           insert into tags (name)
           values (${tag})
         `;
@@ -37,11 +37,11 @@ class TagMut extends Mutator {
     return tagToId;
   }
 
-  public async deleteOrphaned(): Promise<void> {
+  public deleteOrphaned(): void {
     const {db} = this;
     const {Tag} = this.model;
 
-    const emptyIds = await db.all<{id: TagId}>`
+    const emptyIds = db.all<{id: TagId}>`
       select t.id
       from tags t
       left join definition_tags dt on dt.tag_id = t.id
@@ -52,7 +52,7 @@ class TagMut extends Mutator {
     if (emptyIds.length > 0) {
       emptyIds.forEach(row => db.clearCache(Tag.byIdKey, row.id));
 
-      await db.exec`
+      db.exec`
         delete from tags
         where id in (${emptyIds.map(row => row.id)})
       `;

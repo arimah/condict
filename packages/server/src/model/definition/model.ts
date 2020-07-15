@@ -82,8 +82,8 @@ class Definition extends Model {
     );
   }
 
-  private async anyUsesInflectionTableCond(condition: any): Promise<boolean> {
-    const {used} = await this.db.getRequired<{used: number}>`
+  private anyUsesInflectionTableCond(condition: any): boolean {
+    const {used} = this.db.getRequired<{used: number}>`
       select exists (
         select 1
         from definition_inflection_tables
@@ -93,7 +93,7 @@ class Definition extends Model {
     return used === 1;
   }
 
-  public anyUsesInflectionTable(tableId: InflectionTableId): Promise<boolean> {
+  public anyUsesInflectionTable(tableId: InflectionTableId): boolean {
     return this.anyUsesInflectionTableCond(
       this.db.raw`inflection_table_id = ${tableId}`
     );
@@ -101,7 +101,7 @@ class Definition extends Model {
 
   public anyUsesInflectionTableLayout(
     versionId: InflectionTableLayoutId
-  ): Promise<boolean> {
+  ): boolean {
     return this.anyUsesInflectionTableCond(
       this.db.raw`inflection_table_version_id = ${versionId}`
     );
@@ -111,12 +111,12 @@ class Definition extends Model {
     condition: any,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Promise<Connection<DefinitionRow>> {
+  ): Connection<DefinitionRow> {
     const {db} = this;
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async () => {
-        const {total} = await db.getRequired<{total: number}>`
+      () => {
+        const {total} = db.getRequired<{total: number}>`
           select count(distinct dit.definition_id) as total
           from definition_inflection_tables dit
           where ${condition}
@@ -143,7 +143,7 @@ class Definition extends Model {
     tableId: InflectionTableId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Promise<Connection<DefinitionRow>> {
+  ): Connection<DefinitionRow> {
     return this.allByInflectionTableCond(
       this.db.raw`dit.inflection_table_id = ${tableId}`,
       page,
@@ -155,7 +155,7 @@ class Definition extends Model {
     versionId: InflectionTableLayoutId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Promise<Connection<DefinitionRow>> {
+  ): Connection<DefinitionRow> {
     return this.allByInflectionTableCond(
       this.db.raw`dit.inflection_table_version_id = ${versionId}`,
       page,
@@ -163,10 +163,10 @@ class Definition extends Model {
     );
   }
 
-  public async anyUsesPartOfSpeech(
+  public anyUsesPartOfSpeech(
     partOfSpeechId: PartOfSpeechId
-  ): Promise<boolean> {
-    const {used} = await this.db.getRequired<{used: number}>`
+  ): boolean {
+    const {used} = this.db.getRequired<{used: number}>`
       select exists (
         select 1
         from definitions
@@ -180,15 +180,15 @@ class Definition extends Model {
     partOfSpeechId: PartOfSpeechId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Promise<Connection<DefinitionRow>> {
+  ): Connection<DefinitionRow> {
     const {db} = this;
     const condition = db.raw`
       d.part_of_speech_id = ${partOfSpeechId}
     `;
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async () => {
-        const {total} = await db.getRequired<{total: number}>`
+      () => {
+        const {total} = db.getRequired<{total: number}>`
           select count(*) as total
           from definitions d
           where ${condition}
@@ -352,19 +352,19 @@ class DerivedDefinition extends Model {
     );
   }
 
-  public async allByDerivedFrom(
+  public allByDerivedFrom(
     definitionId: DefinitionId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Promise<Connection<DerivedDefinitionRow>> {
+  ): Connection<DerivedDefinitionRow> {
     const {db} = this;
     const condition = db.raw`
       dd.original_definition_id = ${definitionId}
     `;
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async () => {
-        const {total} = await db.getRequired<{total: number}>`
+      () => {
+        const {total} = db.getRequired<{total: number}>`
           select count(*) as total
           from derived_definitions dd
           where ${condition}

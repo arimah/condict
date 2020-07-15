@@ -9,16 +9,16 @@ const buildStemMap = (stems: StemInput[]) => new Map<string, string>(
 );
 
 export default class DefinitionStemMut extends Mutator {
-  public async insert(
+  public insert(
     definitionId: DefinitionId,
     stems: StemInput[]
-  ): Promise<Map<string, string>> {
+  ): Map<string, string> {
     const {db} = this;
 
     const finalStems = validateStems(stems);
 
     if (finalStems.length > 0) {
-      await db.exec`
+      db.exec`
         insert into definition_stems (definition_id, name, value)
         values ${finalStems.map(s =>
           db.raw`(${definitionId}, ${s.name}, ${s.value})`
@@ -37,8 +37,8 @@ export default class DefinitionStemMut extends Mutator {
 
     let stemMap: Map<string, string>;
     if (stems) {
-      await this.deleteAll(definitionId);
-      stemMap = await this.insert(definitionId, stems);
+      this.deleteAll(definitionId);
+      stemMap = this.insert(definitionId, stems);
     } else {
       const currentStems = await DefinitionStem.allByDefinition(definitionId);
       stemMap = buildStemMap(currentStems);
@@ -47,8 +47,8 @@ export default class DefinitionStemMut extends Mutator {
     return stemMap;
   }
 
-  public async deleteAll(definitionId: DefinitionId): Promise<void> {
-    await this.db.exec`
+  public deleteAll(definitionId: DefinitionId): void {
+    this.db.exec`
       delete from definition_stems
       where definition_id = ${definitionId}
     `;

@@ -34,7 +34,6 @@
     "generic-pool": "^3.7.1",
     "graphql": "^15.1.0",
     "graphql-tools": "^6.0.10",
-    "mysql": "^2.18.1",
     "nanoid": "^3.1.10",
     "winston": "^3.2.1"
   },
@@ -45,7 +44,6 @@
     "@types/better-sqlite3": "^5.4.0",
     "@types/command-line-args": "^5.0.0",
     "@types/generic-pool": "^3.1.9",
-    "@types/mysql": "^2.15.14",
     "@types/node": "^14.0.13",
     "copyfiles": "^2.3.0",
     "eslint": "^7.3.0",

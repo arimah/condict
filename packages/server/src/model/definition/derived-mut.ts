@@ -5,11 +5,11 @@ import Mutator from '../mutator';
 import {validateTerm, ValidTerm} from '../lemma/validators';
 
 export default class DerivedDefinitionMut extends Mutator {
-  public async insertAll(
+  public insertAll(
     languageId: LanguageId,
     originalDefinitionId: DefinitionId,
     derivedDefinitions: MultiMap<string, InflectedFormId>
-  ): Promise<void> {
+  ): void {
     const {db} = this;
     const {LemmaMut} = this.mut;
 
@@ -37,7 +37,7 @@ export default class DerivedDefinitionMut extends Mutator {
       })
       .filter(Boolean);
 
-    const termToLemmaId = await LemmaMut.ensureAllExist(
+    const termToLemmaId = LemmaMut.ensureAllExist(
       languageId,
       Array.from(validDerivedDefinitions.keys()) as ValidTerm[]
     );
@@ -54,7 +54,7 @@ export default class DerivedDefinitionMut extends Mutator {
     }
 
     if (values.length > 0) {
-      await db.exec`
+      db.exec`
         insert into derived_definitions (
           lemma_id,
           original_definition_id,
@@ -65,8 +65,8 @@ export default class DerivedDefinitionMut extends Mutator {
     }
   }
 
-  public async deleteAll(originalDefinitionId: DefinitionId): Promise<void> {
-    await this.db.exec`
+  public deleteAll(originalDefinitionId: DefinitionId): void {
+    this.db.exec`
       delete from derived_definitions
       where original_definition_id = ${originalDefinitionId}
     `;

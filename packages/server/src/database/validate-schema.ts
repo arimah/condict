@@ -1,19 +1,18 @@
 import {ServerConfig, Logger} from '../types';
 
 import {generateSchema} from '.';
-import Adaptor from './adaptor';
-import {Pool as DatabasePool} from './types';
+import {Connection, ConnectionPool} from './sqlite';
 import {schemaVersion as serverSchemaVersion} from './schema';
 
-const getSchemaVersion = async (db: Adaptor) => {
+const getSchemaVersion = (db: Connection) => {
   type Row = { value: string };
 
-  const hasSchemaInfo = await db.tableExists('schema_info');
+  const hasSchemaInfo = db.tableExists('schema_info');
   if (!hasSchemaInfo) {
     return null;
   }
 
-  const result = await db.get<Row>`
+  const result = db.get<Row>`
     select value
     from schema_info
     where name = 'schema_version'
@@ -25,16 +24,16 @@ const getSchemaVersion = async (db: Adaptor) => {
   return +result.value;
 };
 
-const createSchema = async (
+const createSchema = (
   logger: Logger,
-  db: Adaptor,
+  db: Connection,
   config: ServerConfig,
   isNewSchema: boolean
 ) => {
-  const schema = generateSchema(config.database.type);
+  const schema = generateSchema();
 
   for (const [tableName, statements] of schema) {
-    const tableExists = await db.tableExists(tableName);
+    const tableExists = db.tableExists(tableName);
     if (tableExists) {
       if (isNewSchema) {
         logger.warn(`Skipping existing table: ${tableName}`);
@@ -47,35 +46,43 @@ const createSchema = async (
     }
 
     for (const statement of statements) {
-      await db.exec(statement);
+      db.exec(statement);
     }
   }
 
   if (isNewSchema) {
-    await db.exec`
+    db.exec`
       insert into schema_info (name, value)
       values ('schema_version', ${String(serverSchemaVersion)})
     `;
   }
 };
 
-const createNewSchema = (logger: Logger, db: Adaptor, config: ServerConfig) => {
-  logger.info('No schema_info or schema version found: initializing new database.');
+const createNewSchema = (
+  logger: Logger,
+  db: Connection,
+  config: ServerConfig
+) => {
+  logger.info(
+    'No schema_info or schema version found: initializing new database.'
+  );
   return createSchema(logger, db, config, true);
 };
 
-const verifySchema = (logger: Logger, db: Adaptor, config: ServerConfig) => {
+const verifySchema = (logger: Logger, db: Connection, config: ServerConfig) => {
   logger.info('Database schema is up to date. Verifying existing tables.');
   return createSchema(logger, db, config, false);
 };
 
-const migrateSchema = async (
+const migrateSchema = (
   logger: Logger,
-  db: Adaptor,
+  db: Connection,
   config: ServerConfig,
   schemaVersion: number
 ) => {
-  logger.info(`Found schema version ${schemaVersion}; migrating to ${serverSchemaVersion}`);
+  logger.info(
+    `Found schema version ${schemaVersion}; migrating to ${serverSchemaVersion}`
+  );
   // TODO: Support for migrations
   throw new Error('Migrations are not yet implemented');
 };
@@ -83,20 +90,22 @@ const migrateSchema = async (
 const ensureSchemaIsValid = async (
   logger: Logger,
   config: ServerConfig,
-  databasePool: DatabasePool
+  databasePool: ConnectionPool
 ): Promise<void> => {
   const db = await databasePool.getConnection();
   try {
-    const schemaVersion = await getSchemaVersion(db);
+    const schemaVersion = getSchemaVersion(db);
     if (schemaVersion === null) {
-      await createNewSchema(logger, db, config);
+      createNewSchema(logger, db, config);
     } else if (schemaVersion < serverSchemaVersion) {
-      await migrateSchema(logger, db, config, schemaVersion);
+      migrateSchema(logger, db, config, schemaVersion);
     } else if (schemaVersion === serverSchemaVersion) {
-      await verifySchema(logger, db, config);
+      verifySchema(logger, db, config);
     } else if (schemaVersion > serverSchemaVersion) {
       throw new Error(
-        `Database schema version is too high! (database = ${schemaVersion}, server = ${serverSchemaVersion})`
+        `Database schema version is too high! (database = ${
+          schemaVersion
+        }, server = ${serverSchemaVersion})`
       );
     }
   } finally {

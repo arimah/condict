@@ -36,10 +36,10 @@ class InflectionTableMut extends Mutator {
       'partOfSpeechId'
     );
 
-    name = await validateName(db, null, partOfSpeech.id, name);
+    name = validateName(db, null, partOfSpeech.id, name);
 
-    return db.transact(async () => {
-      const {insertId: tableId} = await db.exec<InflectionTableId>`
+    return db.transact(() => {
+      const {insertId: tableId} = db.exec<InflectionTableId>`
         insert into inflection_tables (
           part_of_speech_id,
           name
@@ -47,7 +47,7 @@ class InflectionTableMut extends Mutator {
         values (${partOfSpeech.id}, ${name})
       `;
 
-      await InflectionTableLayoutMut.insert(tableId, layout);
+      InflectionTableLayoutMut.insert(tableId, layout);
 
       return InflectionTable.byIdRequired(tableId);
     });
@@ -67,14 +67,14 @@ class InflectionTableMut extends Mutator {
     if (name != null) {
       newFields.set(
         'name',
-        await validateName(db, table.id, table.part_of_speech_id, name)
+        validateName(db, table.id, table.part_of_speech_id, name)
       );
     }
 
     if (newFields.hasValues || layout != null) {
       await db.transact(async () => {
         if (newFields.hasValues) {
-          await db.exec`
+          db.exec`
             update inflection_tables
             set ${newFields}
             where id = ${table.id}
@@ -90,23 +90,23 @@ class InflectionTableMut extends Mutator {
     return InflectionTable.byIdRequired(table.id);
   }
 
-  public async delete(id: InflectionTableId): Promise<boolean> {
+  public delete(id: InflectionTableId): boolean {
     const {db} = this;
 
     // The table cannot be deleted while it is in use by one or
     // more definitions.
-    await this.ensureUnused(id);
+    this.ensureUnused(id);
 
-    const {affectedRows} = await db.exec`
+    const {affectedRows} = db.exec`
       delete from inflection_tables
       where id = ${id}
     `;
     return affectedRows > 0;
   }
 
-  private async ensureUnused(id: InflectionTableId) {
+  private ensureUnused(id: InflectionTableId) {
     const {Definition} = this.model;
-    if (await Definition.anyUsesInflectionTable(id)) {
+    if (Definition.anyUsesInflectionTable(id)) {
       throw new UserInputError(
         `Operation not permitted on table ${id} because it is used by one or more lemmas`
       );
@@ -115,11 +115,11 @@ class InflectionTableMut extends Mutator {
 }
 
 class InflectionTableLayoutMut extends Mutator {
-  public async insert(
+  public insert(
     tableId: InflectionTableId,
     rows: InflectionTableRowInput[]
-  ): Promise<void> {
-    await this.createNewTableLayout(tableId, rows);
+  ): void {
+    this.createNewTableLayout(tableId, rows);
   }
 
   public async update(
@@ -137,13 +137,13 @@ class InflectionTableLayoutMut extends Mutator {
       await InflectionTableLayout.currentByTableRequired(tableId);
 
     const needNewLayoutVersion =
-      await Definition.anyUsesInflectionTableLayout(currentLayout.id);
+      Definition.anyUsesInflectionTableLayout(currentLayout.id);
 
     if (needNewLayoutVersion) {
-      const layoutId = await this.createNewTableLayout(tableId, rows);
+      const layoutId = this.createNewTableLayout(tableId, rows);
 
       // Ensure this table has only one current layout.
-      await db.exec`
+      db.exec`
         update inflection_table_versions
         set is_current = (id = ${layoutId})
         where inflection_table_id = ${tableId}
@@ -155,28 +155,28 @@ class InflectionTableLayoutMut extends Mutator {
     db.clearCache(InflectionTableLayout.currentByTableKey, tableId);
   }
 
-  private async createNewTableLayout(
+  private createNewTableLayout(
     tableId: InflectionTableId,
     rows: InflectionTableRowInput[]
-  ): Promise<InflectionTableLayoutId> {
+  ): InflectionTableLayoutId {
     const {db} = this;
     const {InflectedFormMut} = this.mut;
 
     // First we need to make sure there is an inflection table version.
-    const {insertId: layoutId} = await db.exec<InflectionTableLayoutId>`
+    const {insertId: layoutId} = db.exec<InflectionTableLayoutId>`
       insert into inflection_table_versions (inflection_table_id, is_current)
       values (${tableId}, 1)
     `;
 
     // Let's construct the table layout! While we walk through cells, we'll
     // simultaneously insert all the inflected forms.
-    const {finalLayout, stems} = await buildTableLayout(
+    const {finalLayout, stems} = buildTableLayout(
       rows,
       form => InflectedFormMut.insert(layoutId, form)
     );
 
     // And insert the layout!
-    await this.db.exec`
+    this.db.exec`
       insert into inflection_table_layouts (
         inflection_table_version_id,
         layout,
@@ -207,7 +207,7 @@ class InflectionTableLayoutMut extends Mutator {
         .map(form => form.id)
     );
 
-    const {finalLayout, stems} = await buildTableLayout(
+    const {finalLayout, stems} = buildTableLayout(
       rows,
       form => {
         if (form.id) {
@@ -225,7 +225,7 @@ class InflectionTableLayoutMut extends Mutator {
       }
     );
 
-    await db.exec`
+    db.exec`
       update inflection_table_layouts
       set
         layout = ${JSON.stringify(finalLayout)},
@@ -235,7 +235,7 @@ class InflectionTableLayoutMut extends Mutator {
 
     // Delete old forms
     if (deletedFormIds.size > 0) {
-      await db.exec`
+      db.exec`
         delete from inflected_forms
         where id in (${Array.from(deletedFormIds)})
       `;
@@ -244,12 +244,12 @@ class InflectionTableLayoutMut extends Mutator {
     db.clearCache(InflectedForm.allByTableLayoutKey, layout.id);
   }
 
-  public async deleteObsolete(): Promise<void> {
+  public deleteObsolete(): void {
     const {db} = this;
 
     // Find all layouts that are (1) not current, (2) not used by any definitions.
     // These can safely be deleted.
-    const obsoleteLayouts = await db.all<{id: InflectionTableLayoutId}>`
+    const obsoleteLayouts = db.all<{id: InflectionTableLayoutId}>`
       select itv.id
       from inflection_table_versions itv
       left join definition_inflection_tables dit on
@@ -259,7 +259,7 @@ class InflectionTableLayoutMut extends Mutator {
     `;
 
     if (obsoleteLayouts.length > 0) {
-      await db.exec`
+      db.exec`
         delete from inflection_table_versions
         where id in (${obsoleteLayouts.map(r => r.id)})
       `;
@@ -268,20 +268,13 @@ class InflectionTableLayoutMut extends Mutator {
 }
 
 class InflectedFormMut extends Mutator {
-  public async insert(
+  public insert(
     layoutId: InflectionTableLayoutId,
     form: InflectedFormInput
-  ): Promise<InflectedFormId> {
+  ): InflectedFormId {
     const {db} = this;
 
-    const fieldValues = [
-      form.deriveLemma,
-      form.hasCustomDisplayName,
-      validateFormInflectionPattern(form.inflectionPattern),
-      validateFormDisplayName(form.displayName),
-    ];
-
-    const {insertId} = await db.exec<InflectedFormId>`
+    const {insertId} = db.exec<InflectedFormId>`
       insert into inflected_forms (
         inflection_table_version_id,
         derive_lemma,
@@ -289,16 +282,22 @@ class InflectedFormMut extends Mutator {
         inflection_pattern,
         display_name
       )
-      values (${layoutId}, ${fieldValues})
+      values (
+        ${layoutId},
+        ${form.deriveLemma},
+        ${form.hasCustomDisplayName},
+        ${validateFormInflectionPattern(form.inflectionPattern)},
+        ${validateFormDisplayName(form.displayName)}
+      )
     `;
 
     return insertId;
   }
 
-  public async update(
+  public update(
     id: InflectedFormId,
     form: InflectedFormInput
-  ): Promise<InflectedFormId> {
+  ): InflectedFormId {
     const {db} = this;
     const {InflectedForm} = this.model;
 
@@ -307,7 +306,7 @@ class InflectedFormMut extends Mutator {
     );
     const displayName = validateFormDisplayName(form.displayName);
 
-    const {affectedRows} = await db.exec`
+    const {affectedRows} = db.exec`
       update inflected_forms
       set
         derive_lemma = ${form.deriveLemma},

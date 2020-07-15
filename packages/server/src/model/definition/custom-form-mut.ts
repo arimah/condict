@@ -41,7 +41,7 @@ export default class CustomFormMut extends Mutator {
     );
 
     if (allCustomForms.size > 0) {
-      await db.exec`
+      db.exec`
         insert into definition_forms (
           definition_inflection_table_id,
           inflected_form_id,
@@ -58,8 +58,8 @@ export default class CustomFormMut extends Mutator {
     return allCustomForms;
   }
 
-  public async deleteAll(tableId: DefinitionInflectionTableId): Promise<void> {
-    await this.db.exec`
+  public deleteAll(tableId: DefinitionInflectionTableId): void {
+    this.db.exec`
       delete from definition_forms
       where definition_inflection_table_id = ${tableId}
     `;

@@ -11,15 +11,15 @@ import {LanguageRow} from './types';
 import {validateName} from './validators';
 
 class LanguageMut extends Mutator {
-  public async insert(
+  public insert(
     {name}: NewLanguageInput
   ): Promise<LanguageRow> {
     const {db} = this;
     const {Language} = this.model;
 
-    name = await validateName(db, null, name);
+    name = validateName(db, null, name);
 
-    const {insertId} = await db.exec<LanguageId>`
+    const {insertId} = db.exec<LanguageId>`
       insert into languages (name)
       values (${name})
     `;
@@ -37,14 +37,11 @@ class LanguageMut extends Mutator {
 
     const newFields = new FieldSet<LanguageRow>();
     if (name != null) {
-      newFields.set(
-        'name',
-        await validateName(db, language.id, name)
-      );
+      newFields.set('name', validateName(db, language.id, name));
     }
 
     if (newFields.hasValues) {
-      await db.exec`
+      db.exec`
         update languages
         set ${newFields}
         where id = ${language.id}

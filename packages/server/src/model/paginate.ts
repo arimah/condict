@@ -1,7 +1,6 @@
 import {GraphQLResolveInfo, SelectionSetNode} from 'graphql';
 
 import {PageParams} from '../graphql/types';
-import {Awaitable} from '../database/adaptor';
 
 import {Connection} from './types';
 
@@ -63,11 +62,9 @@ const findSelectedFields = (info?: GraphQLResolveInfo): SelectedFields => {
    * the GraphQL schema.
    * @param page Determines which page to fetch and how many items to fetch
    *        from that page.
-   * @param getTotal A callback that returns a promise that resolves to the
-   *        total number of matching items.
-   * @param getNodes A callback that returns an awaitable value that resolves
-   *        to the nodes in the current page. It takes the database connection,
-   *        the limit (number of nodes per page), and the start offset.
+   * @param getTotal A callback that returns the total number of matching items.
+   * @param getNodes A callback that returns the nodes in the current page. It
+   *        receives the limit (number of nodes per page) and the start offset.
    * @param info The GraphQL resolver info. This value is used to determine
    *        which callback argument to invoke. If the `page` field is not
    *        selected, `getTotal` is never called. Likewise, if the `nodes`
@@ -75,19 +72,17 @@ const findSelectedFields = (info?: GraphQLResolveInfo): SelectedFields => {
    * @return A connection value that contains the nodes of the current page as
    *         well as pagination details for the connection.
  */
-const paginate = async <T>(
+const paginate = <T>(
   page: PageParams,
-  getTotal: () => Awaitable<number>,
-  getNodes: (limit: number, offset: number) => Awaitable<T[]>,
+  getTotal: () => number,
+  getNodes: (limit: number, offset: number) => T[],
   info?: GraphQLResolveInfo
-): Promise<Connection<T>> => {
+): Connection<T> => {
   const selected = findSelectedFields(info);
 
   const offset = page.page * page.perPage;
-  const [totalCount, nodes] = await Promise.all([
-    selected.page ? getTotal() : 0,
-    selected.nodes ? getNodes(page.perPage, offset) : [],
-  ]);
+  const totalCount = selected.page ? getTotal() : 0;
+  const nodes = selected.nodes ? getNodes(page.perPage, offset) : [];
 
   return {
     page: {

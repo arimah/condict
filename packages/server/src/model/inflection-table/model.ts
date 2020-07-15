@@ -1,7 +1,6 @@
 import {UserInputError} from 'apollo-server';
 import {GraphQLResolveInfo} from 'graphql';
 
-import {Awaitable} from '../../database/adaptor';
 import {validatePageParams} from '../../graphql/helpers';
 import {
   PartOfSpeechId,
@@ -120,7 +119,7 @@ class InflectedForm extends Model {
 
   public allDerivableByTableLayout(
     versionId: InflectionTableLayoutId
-  ): Awaitable<InflectedFormRow[]> {
+  ): InflectedFormRow[] {
     return this.db.all<InflectedFormRow>`
       select *
       from inflected_forms
@@ -210,15 +209,15 @@ class InflectionTableLayout extends Model {
     tableId: InflectionTableId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Promise<Connection<InflectionTableLayoutRow>> {
+  ): Connection<InflectionTableLayoutRow> {
     const {db} = this;
     const condition = db.raw`
       itv.inflection_table_id = ${tableId} and is_current = 0
     `;
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async () => {
-        const {total} = await db.getRequired<{total: number}>`
+      () => {
+        const {total} = db.getRequired<{total: number}>`
           select count(*) as total
           from inflection_table_versions itv
           where ${condition}

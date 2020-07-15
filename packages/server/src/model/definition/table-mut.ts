@@ -52,7 +52,7 @@ export default class DefinitionInflectionTableMut extends Mutator {
     );
     const finalCaption = validateTableCaption(caption);
 
-    const {insertId: tableId} = await db.exec<DefinitionInflectionTableId>`
+    const {insertId: tableId} = db.exec<DefinitionInflectionTableId>`
       insert into definition_inflection_tables (
         definition_id,
         inflection_table_id,
@@ -75,7 +75,7 @@ export default class DefinitionInflectionTableMut extends Mutator {
       customForms
     );
 
-    const derivedForms = await this.deriveAllForms(
+    const derivedForms = this.deriveAllForms(
       tableId,
       definition.term,
       definition.stemMap,
@@ -118,7 +118,7 @@ export default class DefinitionInflectionTableMut extends Mutator {
 
     const finalCaption = validateTableCaption(caption);
 
-    await db.exec`
+    db.exec`
       update definition_inflection_tables
       set
         caption = ${finalCaption && JSON.stringify(finalCaption)},
@@ -131,14 +131,14 @@ export default class DefinitionInflectionTableMut extends Mutator {
     // We could compute a custom forms delta, but it's kind of messy.
     // It's much easier to just delete all old forms and insert the new.
     // This all happens inside a transaction anyway.
-    await CustomFormMut.deleteAll(id);
+    CustomFormMut.deleteAll(id);
     const customFormMap = await CustomFormMut.insert(
       id,
       tableLayout.id,
       customForms
     );
 
-    const derivedForms = await this.deriveAllForms(
+    const derivedForms = this.deriveAllForms(
       table.id,
       definition.term,
       definition.stemMap,
@@ -172,19 +172,19 @@ export default class DefinitionInflectionTableMut extends Mutator {
     return {inflectionTable, currentLayout};
   }
 
-  public async deriveAllForms(
+  public deriveAllForms(
     tableId: DefinitionInflectionTableId,
     term: string,
     stemMap: Map<string, string>,
     inflectionTableLayoutId: InflectionTableLayoutId,
     customForms: Map<InflectedFormId, string>
-  ): Promise<Map<InflectedFormId, string>> {
+  ): Map<InflectedFormId, string> {
     const {InflectedForm} = this.model;
 
     const derivedForms = deriveForms(
       term,
       stemMap,
-      await InflectedForm.allDerivableByTableLayout(inflectionTableLayoutId)
+      InflectedForm.allDerivableByTableLayout(inflectionTableLayoutId)
     );
 
     customForms.forEach((formValue, formId) => {
@@ -196,12 +196,12 @@ export default class DefinitionInflectionTableMut extends Mutator {
     return derivedForms;
   }
 
-  public async deleteOld(
+  public deleteOld(
     definitionId: DefinitionId,
     currentIds: DefinitionInflectionTableId[]
-  ): Promise<void> {
+  ): void {
     const {db} = this;
-    await db.exec`
+    db.exec`
       delete from definition_inflection_tables
       where definition_id = ${definitionId}
         ${

@@ -50,7 +50,7 @@ const commandOptions: Record<string, OptionDefinition[]> = {
 };
 
 const printSchema = (config: ServerConfig, tableName: string | null) => {
-  const schema = getTableSchema(config.database.type, tableName);
+  const schema = getTableSchema(tableName);
   if (schema === null) {
     console.error(`Table not found: ${tableName}`);
     process.exitCode = 2;

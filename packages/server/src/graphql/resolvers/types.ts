@@ -1,19 +1,19 @@
 import {IFieldResolver} from 'apollo-server';
 
-import Adaptor from '../../database/adaptor';
+import {Connection} from '../../database';
 import {ModelResolver, MutatorResolver} from '../../model';
 import {Logger} from '../../types';
 
 import {IdOf, PageParams, Mutation} from '../types';
 
-export type Context = {
-  db: Adaptor;
-  logger: Logger;
-  model: ModelResolver;
-  mut: MutatorResolver;
-  sessionId: string | null;
-  hasValidSession(): Promise<boolean>;
-};
+export interface Context {
+  readonly db: Connection;
+  readonly logger: Logger;
+  readonly model: ModelResolver;
+  readonly mut: MutatorResolver;
+  readonly sessionId: string | null;
+  readonly hasValidSession: () => boolean;
+}
 
 export type ResolverContext = Omit<Context, 'mut'>;
 

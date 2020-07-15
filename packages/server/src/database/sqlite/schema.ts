@@ -21,20 +21,20 @@ import {FindColumn, SchemaDef, TableDef} from '../types';
 
 const escapeId = (id: string) => '`' + id + '`';
 
-const escapeValue = (value: boolean | number | string | null) => {
+const escapeValue = (value: boolean | number | string | null): string => {
   switch (typeof value) {
     case 'boolean': return value ? '1' : '0';
     case 'number': return String(value);
     case 'string':
       return `'${value.replace(/['\\]/, ch => `\\${ch}`)}'`;
-    default: return null;
+    default: return 'null';
   }
 };
 
 const getCollation = (collation: Collation): string => {
   switch (collation) {
     case Collation.BINARY: return 'binary';
-    // TODO: Make sure Unicode collation extension is loaded
+    // FIXME: Make sure Unicode collation extension is loaded
     case Collation.UNICODE: return 'nocase';
   }
 };

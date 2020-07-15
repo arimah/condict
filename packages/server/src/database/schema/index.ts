@@ -14,7 +14,7 @@ import {
   Collation,
   ReferenceAction,
 } from './types';
-import {inlineElementReferences, updateInlineReferences} from './inline-refs';
+import {InlineElementReferences, updateInlineReferences} from './inline-refs';
 
 export const schemaVersion = 1;
 
@@ -24,8 +24,8 @@ export const schemaVersion = 1;
 //    other column can be in the primary key.
 // 2. Any column named `id` must also be auto-incremented.
 //
-// The exporter relies on this. Moreover, some databases (e.g. SQLite) have no
-// support for auto-incremented columns that are not the sole PK.
+// The exporter relies on this. Moreover, SQLite has no support for auto-
+// incremented columns that are not the sole PK.
 //
 // Use the shorthand object defined literally right below this comment if you
 // need an `id` column.
@@ -86,17 +86,13 @@ const tables: TableSchema[] = [
     unique: [
       'name',
     ],
-    async preImport(db, row) {
-      type Status = {
-        name_taken: number;
-      };
-      const result = await db.getRequired<Status>`
-        select
-          exists (
-            select 1
-            from languages
-            where name = ${row.name}
-          ) as name_taken
+    preImport(db, row) {
+      const result = db.getRequired<{name_taken: number}>`
+        select exists (
+          select 1
+          from languages
+          where name = ${row.name}
+        ) as name_taken
       `;
       if (result.name_taken === 1) {
         throw new Error(
@@ -425,7 +421,7 @@ const tables: TableSchema[] = [
           return JSON.stringify(blocks);
         },
         contentReferences: [
-          ...inlineElementReferences,
+          ...InlineElementReferences,
         ],
       },
     ],

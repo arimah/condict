@@ -56,12 +56,12 @@ class Lemma extends Model {
     return `Lemma.byTerm(${languageId})`;
   }
 
-  public async allByLanguage(
+  public allByLanguage(
     languageId: LanguageId,
     page: PageParams | undefined | null,
     filter: LemmaFilter,
     info?: GraphQLResolveInfo
-  ): Promise<Connection<LemmaRow>> {
+  ): Connection<LemmaRow> {
     const {db} = this;
     const condition = db.raw`
       l.language_id = ${languageId}
@@ -83,8 +83,8 @@ class Lemma extends Model {
     `;
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async () => {
-        const {total} = await db.getRequired<{total: number}>`
+      () => {
+        const {total} = db.getRequired<{total: number}>`
           select count(*) as total
           from lemmas l
           where ${condition}

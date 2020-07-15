@@ -1,6 +1,6 @@
 import {normalizePattern} from '@condict/inflect';
 
-import Adaptor from '../../database/adaptor';
+import {Connection} from '../../database';
 import {InflectionTableId, PartOfSpeechId} from '../../graphql/types';
 
 import validator, {lengthBetween, unique} from '../validator';
@@ -11,18 +11,18 @@ const InflectionPatternSize = sizeOfColumn('inflected_forms', 'inflection_patter
 const DisplayNameSize = sizeOfColumn('inflected_forms', 'display_name');
 
 export const validateName = (
-  db: Adaptor,
+  db: Connection,
   currentId: InflectionTableId | null,
   partOfSpeechId: PartOfSpeechId,
   value: string
-): Promise<string> =>
+): string =>
   validator<string>('name')
     .do(value => value.trim())
     .do(lengthBetween(1, TableNameSize))
     .do(unique(
       currentId,
-      async name => {
-        const row = await db.get<{id: InflectionTableId}>`
+      name => {
+        const row = db.get<{id: InflectionTableId}>`
           select id
           from inflection_tables
           where name = ${name}

@@ -30,12 +30,12 @@ class Tag extends Model {
   public all(
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Promise<Connection<TagRow>> {
+  ): Connection<TagRow> {
     const {db} = this;
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async () => {
-        const row = await db.getRequired<{total: number}>`
+      () => {
+        const row = db.getRequired<{total: number}>`
           select count(*) as total
           from tags
         `;
@@ -56,12 +56,12 @@ class Tag extends Model {
     languageId: LanguageId,
     page?: PageParams | null,
     info?: GraphQLResolveInfo
-  ): Promise<Connection<TagRow>> {
+  ): Connection<TagRow> {
     const {db} = this;
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
-      async () => {
-        const row = await db.getRequired<{total: number}>`
+      () => {
+        const row = db.getRequired<{total: number}>`
           select count(distinct t.id) as total
           from definition_tags dt
           inner join tags t on t.id = dt.tag_id
@@ -112,7 +112,7 @@ class Tag extends Model {
     return tag;
   }
 
-  public async byName(name: string): Promise<TagRow | null> {
+  public byName(name: string): Promise<TagRow | null> {
     return this.db.batchOneToOne(
       this.byNameKey,
       name,
@@ -126,7 +126,7 @@ class Tag extends Model {
     );
   }
 
-  public async allByLemma(lemmaId: LemmaId): Promise<TagRow[]> {
+  public allByLemma(lemmaId: LemmaId): Promise<TagRow[]> {
     return this.db.batchOneToMany(
       this.allByLemmaKey,
       lemmaId,
@@ -146,7 +146,7 @@ class Tag extends Model {
     );
   }
 
-  public async allByDefinition(definitionId: DefinitionId): Promise<TagRow[]> {
+  public allByDefinition(definitionId: DefinitionId): Promise<TagRow[]> {
     return this.db.batchOneToMany(
       this.allByDefinitionKey,
       definitionId,

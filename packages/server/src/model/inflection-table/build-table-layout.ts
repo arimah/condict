@@ -28,15 +28,14 @@ const collectStemNames = (pattern: string, stems: Set<string>) => {
   }
 };
 
-const buildTableLayout = async (
+const buildTableLayout = (
   layout: InflectionTableRowInput[],
-  handleInflectedForm: (form: InflectedFormInput) => Promise<InflectedFormId>
-): Promise<TableLayoutResult> => {
+  handleInflectedForm: (form: InflectedFormInput) => InflectedFormId
+): TableLayoutResult => {
   const finalLayout: InflectionTableRowJson[] = [];
   const stems = new Set<string>();
 
-  const cellPromises: Promise<void>[] = [];
-  outer: for (const row of layout) {
+  for (const row of layout) {
     const cells: InflectionTableCellJson[] = [];
 
     for (const cell of row.cells) {
@@ -59,22 +58,11 @@ const buildTableLayout = async (
         // All we do here is collect stem names, like `{Plural root}`,
         // inside the inflection pattern.
         collectStemNames(cell.inflectedForm.inflectionPattern, stems);
-        cellPromises.push(
-          handleInflectedForm(cell.inflectedForm).then(id => {
-            layoutCell.inflectedFormId = id;
-          })
-        );
+        layoutCell.inflectedFormId = handleInflectedForm(cell.inflectedForm);
       } else {
-        // We can't just throw an error here: if any existing cell promise is
-        // rejected, we'll cause an unhandled promise rejection.
-        cellPromises.push(
-          Promise.reject(
-            new UserInputError(
-              `Cell must have either 'headerText' or 'inflectedForm'`
-            )
-          )
+        throw new UserInputError(
+          `Cell must have either 'headerText' or 'inflectedForm'`
         );
-        break outer;
       }
 
       cells.push(layoutCell);
@@ -82,8 +70,6 @@ const buildTableLayout = async (
 
     finalLayout.push({cells});
   }
-
-  await Promise.all(cellPromises);
 
   return {finalLayout, stems: Array.from(stems)};
 };

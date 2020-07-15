@@ -2,27 +2,25 @@ import {GraphQLSchema} from 'graphql';
 import {makeExecutableSchema} from 'graphql-tools';
 
 import performStartupChecks from './startup-checks';
-import {createPool} from './database';
-import Adaptor from './database/adaptor';
-import {Pool as DatabasePool} from './database/types';
+import {Connection, ConnectionPool, createPool} from './database';
 import {getTypeDefs, getResolvers, getDirectives, Context} from './graphql';
 import createModelResolvers, {Resolvers} from './model';
 import {ServerConfig, Logger} from './types';
 
-export type ContextResult = {
-  context: Context;
-  finish: () => void;
-};
+export interface ContextResult {
+  readonly context: Context;
+  readonly finish: () => void;
+}
 
 export const LocalSession = Symbol();
 
-const validSession = () => Promise.resolve(true);
-const noSession = () => Promise.resolve(false);
+const validSession = () => true;
+const noSession = () => false;
 
 export default class CondictServer {
   private readonly logger: Logger;
   private readonly config: ServerConfig;
-  private readonly databasePool: DatabasePool;
+  private readonly databasePool: ConnectionPool;
   private readonly schema: GraphQLSchema;
   private started = false;
 
@@ -63,7 +61,7 @@ export default class CondictServer {
     return this.config;
   }
 
-  public getDatabasePool(): DatabasePool {
+  public getDatabasePool(): ConnectionPool {
     return this.databasePool;
   }
 
@@ -81,7 +79,7 @@ export default class CondictServer {
     const {logger, databasePool} = this;
 
     let modelResolvers: Resolvers | undefined;
-    let db: Adaptor | undefined;
+    let db: Connection | undefined;
     try {
       db = await databasePool.getConnection();
       modelResolvers = createModelResolvers(db, logger);

@@ -1,4 +1,4 @@
-import Adaptor from '../database/adaptor';
+import {Connection} from '../database';
 import {Logger} from '../types';
 
 import DefinitionModel from './definition/model';
@@ -87,7 +87,7 @@ const ModelResolverPrototype: ModelResolver = (() => {
         (this.logger as Logger).debug(`Instantiating model: ${name}`);
 
         const value = new ModelType(
-          this.db as Adaptor,
+          this.db as Connection,
           this as ModelResolver
         );
         Object.defineProperty(this, name, {value});
@@ -108,7 +108,7 @@ const MutatorResolverPrototype: MutatorResolver = (() => {
         (this.logger as Logger).debug(`Instantiating mutator: ${name}`);
 
         const value = new MutatorType(
-          this.db as Adaptor,
+          this.db as Connection,
           this.model as ModelResolver,
           this as MutatorResolver
         );
@@ -121,7 +121,7 @@ const MutatorResolverPrototype: MutatorResolver = (() => {
   return result;
 })();
 
-export default (db: Adaptor, logger: Logger): Resolvers => {
+export default (db: Connection, logger: Logger): Resolvers => {
   const model: ModelResolver = Object.assign(
     Object.create(ModelResolverPrototype),
     {db, logger}

@@ -1,7 +1,7 @@
 import {UserInputError} from 'apollo-server';
 import {hash} from 'bcrypt';
 
-import Adaptor from '../../database/adaptor';
+import {Connection} from '../../database';
 
 import validator, {Valid, lengthBetween, unique} from '../validator';
 import sizeOfColumn from '../size-of-column';
@@ -15,17 +15,17 @@ const UserNameMinLength = 3;
 const UserNameMaxLength = sizeOfColumn('users', 'name');
 
 export const validateName = (
-  db: Adaptor,
+  db: Connection,
   currentId: UserId | null,
   value: string
-): Promise<string> =>
+): string =>
   validator<string>('name')
     .do(name => name.trim())
     .do(lengthBetween(UserNameMinLength, UserNameMaxLength))
     .do(unique(
       currentId,
-      async name => {
-        const row = await db.get<{id: UserId}>`
+      name => {
+        const row = db.get<{id: UserId}>`
           select id
           from users
           where name = ${name}

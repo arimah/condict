@@ -20,9 +20,9 @@ class PartOfSpeechMut extends Mutator {
 
     const language = await Language.byIdRequired(languageId);
 
-    name = await validateName(db, null, language.id, name);
+    name = validateName(db, null, language.id, name);
 
-    const {insertId} = await db.exec<PartOfSpeechId>`
+    const {insertId} = db.exec<PartOfSpeechId>`
       insert into parts_of_speech (language_id, name)
       values (${language.id}, ${name})
     `;
@@ -39,14 +39,14 @@ class PartOfSpeechMut extends Mutator {
     const partOfSpeech = await PartOfSpeech.byIdRequired(id);
 
     if (name != null) {
-      const newName = await validateName(
+      const newName = validateName(
         db,
         partOfSpeech.id,
         partOfSpeech.language_id,
         name
       );
 
-      await db.exec`
+      db.exec`
         update parts_of_speech
         set name = ${newName}
         where id = ${partOfSpeech.id}
@@ -57,21 +57,21 @@ class PartOfSpeechMut extends Mutator {
     return PartOfSpeech.byIdRequired(partOfSpeech.id);
   }
 
-  public async delete(id: PartOfSpeechId): Promise<boolean> {
+  public delete(id: PartOfSpeechId): boolean {
     const {db} = this;
 
-    await this.ensureUnused(id);
+    this.ensureUnused(id);
 
-    const {affectedRows} = await db.exec`
+    const {affectedRows} = db.exec`
       delete from parts_of_speech
       where id = ${id}
     `;
     return affectedRows > 0;
   }
 
-  private async ensureUnused(id: PartOfSpeechId) {
+  private ensureUnused(id: PartOfSpeechId) {
     const {Definition} = this.model;
-    if (await Definition.anyUsesPartOfSpeech(id)) {
+    if (Definition.anyUsesPartOfSpeech(id)) {
       throw new UserInputError(
         `Part of speech ${id} cannot be deleted because it is used by one or more lemmas`
       );

@@ -140,8 +140,8 @@ export const editUser = async (
       mut: {UserMut},
     }) => {
       const user = typeof userNameOrId === 'string'
-        ? await User.byName(userNameOrId)
-        : await User.byId(userNameOrId as UserId);
+        ? User.byName(userNameOrId)
+        : User.byId(userNameOrId as UserId);
 
       if (!user) {
         throw new Error(`User not found: ${userNameOrId}`);
@@ -170,7 +170,7 @@ export const deleteUser = async (
   userNameOrId: string | number
 ): Promise<void> => {
   try {
-    await withResolvers(logger, config, async ({
+    await withResolvers(logger, config, ({
       model: {User},
       mut: {UserMut},
     }) => {
@@ -178,20 +178,22 @@ export const deleteUser = async (
       if (typeof userNameOrId === 'number') {
         userId = userNameOrId as UserId;
       } else {
-        const user = await User.byName(userNameOrId);
+        const user = User.byName(userNameOrId);
         if (!user) {
           logger.warn(`User does not exist: ${userNameOrId}`);
-          return;
+          return Promise.resolve();
         }
         userId = user.id;
       }
 
-      const deleted = await UserMut.delete(userId);
+      const deleted = UserMut.delete(userId);
       if (deleted) {
         logger.info(`User deleted: ${userNameOrId}`);
       } else {
         logger.warn(`User not found: ${userNameOrId}`);
       }
+
+      return Promise.resolve();
     });
   } catch (e) {
     console.error(`An error occurred: ${e.message || e}`);

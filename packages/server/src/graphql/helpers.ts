@@ -16,8 +16,8 @@ export const mutator = <Args>(
   resolver: IFieldResolver<unknown, Context, Args>
 ): MutatorFn<Args> => {
   const fn: IFieldResolver<unknown, Context, Args> =
-    async (p: unknown, args: Args, context: Context, info: any) => {
-      if (!await context.hasValidSession()) {
+    (p: unknown, args: Args, context: Context, info: any) => {
+      if (!context.hasValidSession()) {
         throw new AuthenticationError('Session ID is missing, expired or invalid');
       }
       return resolver(p, args, context, info);
