@@ -27,24 +27,19 @@ const validator = <T>(paramName: string): Validator<T, T> => {
 
 export default validator;
 
-export type LengthBetweenMessage<T> = (
-  value: T,
-  minLength: number,
-  maxLength: number
-) => string;
+export type MinLengthMessage<T> = (value: T, minLength: number) => string;
 
-const defaultLengthBetweenMessage =
-  <T>(value: T, minLength: number, maxLength: number) =>
-    `must be between ${minLength} and ${maxLength} characters`;
+const defaultMinLengthMessage =
+  <T>(value: T, minLength: number) =>
+    `must have at least ${minLength} character${minLength !== 1 ? 's' : ''}`;
 
-export const lengthBetween = <T extends {length: number}>(
+export const minLength = <T extends {length: number}>(
   minLength: number,
-  maxLength: number,
-  message: LengthBetweenMessage<T> = defaultLengthBetweenMessage
+  message: MinLengthMessage<T> = defaultMinLengthMessage
 ) =>
   (value: T, paramName: string): T => {
-    if (value.length < minLength || value.length > maxLength) {
-      throw new UserInputError(`${paramName}: ${message(value, minLength, maxLength)}`, {
+    if (value.length < minLength) {
+      throw new UserInputError(`${paramName}: ${message(value, minLength)}`, {
         invalidArgs: [paramName],
       });
     }

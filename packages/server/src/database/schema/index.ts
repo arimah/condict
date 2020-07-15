@@ -34,28 +34,25 @@ export const schemaVersion = 1;
 // the primary key; don't forget to set `primaryKey`!
 const id: ColumnSchema = {
   name: 'id',
-  comment: 'The row ID.',
   type: ColumnType.ID,
   autoIncrement: true,
 };
 
 const tables: TableSchema[] = [
+  // Schema metadata.
   {
     name: 'schema_info',
-    comment: 'Schema metadata.',
     columns: [
+      // The metadata key.
       {
         name: 'name',
-        comment: 'The metadata key.',
-        type: ColumnType.VARCHAR,
-        size: 32,
+        type: ColumnType.TEXT,
         collate: Collation.BINARY,
       },
+      // The metadata value.
       {
         name: 'value',
-        comment: 'The metadata value.',
-        type: ColumnType.VARCHAR,
-        size: 32,
+        type: ColumnType.TEXT,
         collate: Collation.BINARY,
       },
     ],
@@ -63,23 +60,21 @@ const tables: TableSchema[] = [
     skipExport: true,
   },
 
+  // Languages that are defined in the dictionary.
   {
     name: 'languages',
-    comment: 'Languages that are defined in the dictionary.',
     columns: [
       id,
+      // The total number of lemmas in the language. Cached for performance.
       {
         name: 'lemma_count',
-        comment: 'The total number of lemmas in the language. Cached for performance.',
-        type: ColumnType.UNSIGNED_INT,
-        size: 32,
+        type: ColumnType.INT,
         default: 0,
       },
+      // The full display name of the language.
       {
         name: 'name',
-        comment: 'The full display name of the language.',
-        type: ColumnType.VARCHAR,
-        size: 96,
+        type: ColumnType.TEXT,
       },
     ],
     primaryKey: 'id',
@@ -102,25 +97,25 @@ const tables: TableSchema[] = [
     },
   },
 
+  // Parts of speech defined for a language. A part of speech is associated with
+  // every definition, and can define any number of inflection tables.
   {
     name: 'parts_of_speech',
-    comment: 'Parts of speech defined for a language. A part of speech is associated with every definition, and can define any number of inflection tables.',
     columns: [
       id,
+      // The language that the part of speech belongs to.
       {
         name: 'language_id',
-        comment: 'The language that the part of speech belongs to.',
         references: {
           table: 'languages',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // The display name of the part of speech.
       {
         name: 'name',
-        comment: 'The display name of the part of speech.',
-        type: ColumnType.VARCHAR,
-        size: 96,
+        type: ColumnType.TEXT,
       },
     ],
     primaryKey: 'id',
@@ -132,25 +127,24 @@ const tables: TableSchema[] = [
     ],
   },
 
+  // Inflection tables for each part of speech.
   {
     name: 'inflection_tables',
-    comment: 'Inflection tables for each part of speech.',
     columns: [
       id,
+      // The parent part of speech.
       {
         name: 'part_of_speech_id',
-        comment: 'The parent part of speech.',
         references: {
           table: 'parts_of_speech',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // The name of the inflection table, shown in admin UIs.
       {
         name: 'name',
-        comment: 'The name of the inflection table, shown in admin UIs.',
-        type: ColumnType.VARCHAR,
-        size: 64,
+        type: ColumnType.TEXT,
       },
     ],
     primaryKey: 'id',
@@ -162,23 +156,24 @@ const tables: TableSchema[] = [
     ],
   },
 
+  // Current and historical versions of each table's layout. The actual layout
+  // data is stored in `inflection_table_layouts`.
   {
     name: 'inflection_table_versions',
-    comment: "Current and historical versions of each table's layout. The actual layout data is stored in `inflection_table_layouts`.",
     columns: [
       id,
+      // The parent inflection table.
       {
         name: 'inflection_table_id',
-        comment: 'The parent inflection table.',
         references: {
           table: 'inflection_tables',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // Indicates whether this is the current layout of the table.
       {
         name: 'is_current',
-        comment: 'Indicates whether this is the current layout of the table.',
         type: ColumnType.BOOLEAN,
       },
     ],
@@ -188,43 +183,49 @@ const tables: TableSchema[] = [
     ],
   },
 
+  // Individual cells in an inflection table, which correspond to single
+  // inflected forms. The position of a cell is determined by the layout
+  // of the inflection table.
   {
     name: 'inflected_forms',
-    comment: 'Individual cells in an inflection table, which correspond to single inflected forms. The position of a cell is determined by the layout of the inflection table.',
     columns: [
       id,
+      // The parent inflection table version.
       {
         name: 'inflection_table_version_id',
-        comment: 'The parent inflection table version.',
         references: {
           table: 'inflection_table_versions',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // Determines whether the inflected form, once computed for a definition,
+      // should be added as a separate lemma.
       {
         name: 'derive_lemma',
-        comment: 'Determines whether the inflected form, once computed for a definition, should be added as a separate lemma.',
         type: ColumnType.BOOLEAN,
         default: true,
       },
+      // Determines whether the `display_name` was entered specifically by the
+      // user, or derived automatically from the header cells in the containing
+      // table.
       {
         name: 'custom_display_name',
-        comment: 'Determines whether the `display_name` was entered specifically by the user, or derived automatically from the header cells in the containing table.',
         type: ColumnType.BOOLEAN,
         default: false,
       },
+      // A pattern, such as '{~}s', which describes how to construct the
+      // inflected form. Placeholders are replaced by the lemma form and/or
+      // custom stems defined for the definition.
       {
         name: 'inflection_pattern',
-        comment: "A pattern, such as '{~}s', which describes how to construct the inflected form. Placeholders are replaced by the lemma form and/or custom stems defined for the definition.",
-        type: ColumnType.VARCHAR,
-        size: 64,
+        type: ColumnType.TEXT,
       },
+      // The display name of the inflected form, which is usually derived from
+      // the cell's position in its table, and may be edited by the user.
       {
         name: 'display_name',
-        comment: "The display name of the inflected form, which is usually derived from the cell's position in its table, and may be edited by the user.",
-        type: ColumnType.VARCHAR,
-        size: 96,
+        type: ColumnType.TEXT,
       },
     ],
     primaryKey: 'id',
@@ -233,22 +234,26 @@ const tables: TableSchema[] = [
     ],
   },
 
+  // Layouts for all inflected tables. This is a separate table for two reasons:
+  // it means we don't have to fetch a potentially large JSON object unless the
+  // layout is asked for, and it means we can actually reference `inflected_forms`
+  // in each cell so the data export/import works.
   {
     name: 'inflection_table_layouts',
-    comment: "Layouts for all inflected tables. This is a separate table for two reasons: it means we don't have to fetch a potentially large JSON object unless the layout is asked for, and it means we can actually reference `inflected_forms` in each cell so the data export/import works.",
     columns: [
+      // The parent inflection table version.
       {
         name: 'inflection_table_version_id',
-        comment: 'The parent inflection table version.',
         references: {
           table: 'inflection_table_versions',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // A JSON object that describes the layout of the table. See app
+      // documentation for details.
       {
         name: 'layout',
-        comment: 'A JSON object that describes the layout of the table. See app documentation for details.',
         type: ColumnType.JSON,
         contentReferences: [
           {
@@ -282,9 +287,12 @@ const tables: TableSchema[] = [
           return JSON.stringify(rows);
         },
       },
+      // A JSON array that contains the unique stem names present in the table
+      // layout. This is calculated when the layout is updated, and is stored
+      // here primarily for performance reasons (so we don't have to walk the
+      // table and parse inflection patterns in the admin UI).
       {
         name: 'stems',
-        comment: "A JSON array that contains the unique stem names present in the table layout. This is calculated when the layout is updated, and is stored here primarily for performance reasons (so we don't have to walk the table and parse inflection patterns in the admin UI).",
         type: ColumnType.JSON,
         // We can export this as a JSON object, since it's a JSON column.
         export: value => JSON.parse(value),
@@ -295,16 +303,18 @@ const tables: TableSchema[] = [
     primaryKey: 'inflection_table_version_id',
   },
 
+  // The tags that exist in the dictionary. Tags may be attached to any number
+  // of definitions (see `definition_tags`), and are not specific to any
+  // language (that is, they are global). Tags names are stored separately to
+  // avoid duplicating textual data.
   {
     name: 'tags',
-    comment: 'The tags that exist in the dictionary. Tags may be attached to any number of definitions (see `definition_tags`), and are not specific to any language (that is, they are global). Tags names are stored separately to avoid duplicating textual data.',
     columns: [
       id,
+      // The name of the tag.
       {
         name: 'name',
-        comment: 'The name of the tag.',
-        type: ColumnType.VARCHAR,
-        size: 64,
+        type: ColumnType.TEXT,
       },
     ],
     primaryKey: 'id',
@@ -313,32 +323,37 @@ const tables: TableSchema[] = [
     ],
   },
 
+  // The lemmas of the dictionary; the words that are listed and looked up.
+  // Each lemma may have zero or more regular definitions (see `definitions`)
+  // and zero or more derived definitions (see `derived_definitions`), but must
+  // have at least one of either kind.
   {
     name: 'lemmas',
-    comment: 'The lemmas of the dictionary; the words that are listed and looked up. Each lemma may have zero or more regular definitions (see `definitions`) and zero or more derived definitions (see `derived_definitions`), but must have at least one of either kind.',
     columns: [
       id,
+      // The language that the lemma belongs to.
       {
         name: 'language_id',
-        comment: 'The language that the lemma belongs to.',
         references: {
           table: 'languages',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // The term being defined. This field uses binary collation, for "correct"
+      // uniqueness (we want accented letters to be distinct from their
+      // non-accented counterparts, and case matters). This value must be equal
+      // to `term_display`.
       {
         name: 'term_unique',
-        comment: 'The term being defined. This field uses binary collation, for "correct" uniqueness (we want accented letters to be distinct from their non-accented counterparts, and case matters). This value must be equal to `term_display`.',
-        type: ColumnType.VARCHAR,
-        size: 160,
+        type: ColumnType.TEXT,
         collate: Collation.BINARY,
       },
+      // The term being defined. This field uses the default Unicode collation,
+      // for quick sorting. This value must be equal to `term_unique`.
       {
         name: 'term_display',
-        comment: 'The term being defined. This field uses the default Unicode collation, for quick sorting. This value must be equal to `term_unique`.',
-        type: ColumnType.VARCHAR,
-        size: 160,
+        type: ColumnType.TEXT,
       },
     ],
     primaryKey: 'id',
@@ -351,32 +366,34 @@ const tables: TableSchema[] = [
     ],
   },
 
+  // Definitions attached to a single lemma. A lemma may have multiple
+  // definitions, and can also include forms that are derived by inflecting a
+  // definition from this table (see `derived_definitions`).
   {
     name: 'definitions',
-    comment: 'Definitions attached to a single lemma. A lemma may have multiple definitions, and can also include forms that are derived by inflecting a definition from this table (see `derived_definitions`).',
     columns: [
       id,
+      // The lemma that this definition belongs to.
       {
         name: 'lemma_id',
-        comment: 'The lemma that this definition belongs to.',
         references: {
           table: 'lemmas',
           column: 'id',
           onDelete: ReferenceAction.RESTRICT,
         },
       },
+      // The language that the definition belongs to.
       {
         name: 'language_id',
-        comment: 'The language that the definition belongs to.',
         references: {
           table: 'languages',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // The part of speech of the definition.
       {
         name: 'part_of_speech_id',
-        comment: 'The part of speech of the definition.',
         references: {
           table: 'parts_of_speech',
           column: 'id',
@@ -392,22 +409,26 @@ const tables: TableSchema[] = [
     ],
   },
 
+  // Descriptions associated with each definition. This is a separate table for
+  // two reasons: it means we don't have to fetch a potentially large JSON
+  // object unless the description is asked for, and it means we can actually
+  // reference `definitions` in the formatted text so the data export/import
+  // works.
   {
     name: 'definition_descriptions',
-    comment: 'Descriptions associated with each definition. This is a separate table for two reasons: it means we don\'t have to fetch a potentially large JSON object unless the description is asked for, and it means we can actually reference `definitions` in the formatted text so the data export/import works.',
     columns: [
+      // The definition that this description belongs to.
       {
         name: 'definition_id',
-        comment: 'The definition that this description belongs to.',
         references: {
           table: 'definitions',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // The definition text itself. See app documentation for details.
       {
         name: 'description',
-        comment: 'The definition text itself. See app documentation for details.',
         type: ColumnType.JSON,
         export(value, newIds) {
           const blocks = JSON.parse(value) as BlockElementJson[];
@@ -428,30 +449,28 @@ const tables: TableSchema[] = [
     primaryKey: 'definition_id',
   },
 
+  // Inflection stems for individual definitions.
   {
     name: 'definition_stems',
-    comment: 'Inflection stems for individual definitions.',
     columns: [
+      // The definition that this stem belongs to.
       {
         name: 'definition_id',
-        comment: 'The definition that this stem belongs to.',
         references: {
           table: 'definitions',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // The name (key) of the stem.
       {
         name: 'name',
-        comment: 'The name (key) of the stem.',
-        type: ColumnType.VARCHAR,
-        size: 32,
+        type: ColumnType.TEXT,
       },
+      // The value of the stem.
       {
         name: 'value',
-        comment: 'The value of the stem.',
-        type: ColumnType.VARCHAR,
-        size: 160,
+        type: ColumnType.TEXT,
       },
     ],
     primaryKey: ['definition_id', 'name'],
@@ -462,45 +481,49 @@ const tables: TableSchema[] = [
 
   {
     name: 'definition_inflection_tables',
-    comment: 'Specifies which inflection tables a definition uses. Within a single definition, the same inflection_table_id may occur multiple times: sometimes a word has different inflected forms depending on context or usage.',
+    // Specifies which inflection tables a definition uses. Within a single
+    // definition, the same inflection_table_id may occur multiple times:
+    // sometimes a word has different inflected forms depending on context or
+    // usage.
     columns: [
       id,
+      // The definition that this table belongs to.
       {
         name: 'definition_id',
-        comment: 'The definition that this table belongs to.',
         references: {
           table: 'definitions',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // The inflection table that inflected forms are generated from.
       {
         name: 'inflection_table_id',
-        comment: 'The inflection table that inflected forms are generated from.',
         references: {
           table: 'inflection_tables',
           column: 'id',
           onDelete: ReferenceAction.RESTRICT,
         },
       },
+      // The inflection table version that inflected forms are generated from.
       {
         name: 'inflection_table_version_id',
-        comment: 'The inflection table version that inflected forms are generated from.',
         references: {
           table: 'inflection_table_versions',
           column: 'id',
           onDelete: ReferenceAction.RESTRICT,
         },
       },
+      // The sort order of the inflection table within its definition.
       {
         name: 'sort_order',
-        comment: 'The sort order of the inflection table within its definition.',
-        type: ColumnType.UNSIGNED_INT,
-        size: 16,
+        type: ColumnType.INT,
       },
+      // A short, optional caption of the table, such as "In the sense so-and-so".
+      // A single formatted paragraph. See app documentation for details. Links
+      // are not permitted inside the table caption.
       {
         name: 'caption',
-        comment: 'A short, optional caption of the table, such as "In the sense so-and-so". A single formatted paragraph. See app documentation for details. Links are not permitted inside the table caption.',
         type: ColumnType.JSON,
         allowNull: true,
         default: null,
@@ -517,33 +540,32 @@ const tables: TableSchema[] = [
     ],
   },
 
+  // Irregular or otherwise custom inflected forms for individual definitions.
   {
     name: 'definition_forms',
-    comment: 'Irregular or otherwise custom inflected forms for individual definitions.',
     columns: [
+      // The definition inflection table that this form belongs to.
       {
         name: 'definition_inflection_table_id',
-        comment: 'The definition inflection table that this form belongs to.',
         references: {
           table: 'definition_inflection_tables',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // The inflected form that this value overrides.
       {
         name: 'inflected_form_id',
-        comment: 'The inflected form that this value overrides.',
         references: {
           table: 'inflected_forms',
           column: 'id',
           onDelete: ReferenceAction.RESTRICT,
         },
       },
+      // The inflected form, without stem placeholders.
       {
         name: 'inflected_form',
-        comment: 'The inflected form, without stem placeholders.',
-        type: ColumnType.VARCHAR,
-        size: 160,
+        type: ColumnType.TEXT,
       },
     ],
     primaryKey: ['definition_inflection_table_id', 'inflected_form_id'],
@@ -553,22 +575,22 @@ const tables: TableSchema[] = [
     ],
   },
 
+  // Tags attached to individual definitions. A definition can have any number of tags.
   {
     name: 'definition_tags',
-    comment: 'Tags attached to individual definitions. A definition can have any number of tags.',
     columns: [
+      // The definition this tag is attached to.
       {
         name: 'definition_id',
-        comment: 'The definition this tag is attached to.',
         references: {
           table: 'definitions',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // The tag used by the definition.
       {
         name: 'tag_id',
-        comment: 'The tag used by the definition.',
         references: {
           table: 'tags',
           column: 'id',
@@ -579,31 +601,38 @@ const tables: TableSchema[] = [
     primaryKey: ['definition_id', 'tag_id'],
   },
 
+  // Definitions that are derived by inflecting a non-derived definition. These
+  // are attached to a single lemma. Note that the same lemma may have multiple
+  // forms derived from the same non-derived definition, but only one derived
+  // form per inflected_form_id. That is, a single lemma may be the nominative
+  // singular, accusative singular and dative singular all at once, but it
+  // cannot have two nominative singular derivations from the same original
+  // definition.
   {
     name: 'derived_definitions',
-    comment: 'Definitions that are derived by inflecting a non-derived definition. These are attached to a single lemma. Note that the same lemma may have multiple forms derived from the same non-derived definition, but only one derived form per inflected_form_id. That is, a single lemma may be the nominative singular, accusative singular and dative singular all at once, but it cannot have two nominative singular derivations from the same original definition.',
     columns: [
+      // The lemma that this definition is listed under.
       {
         name: 'lemma_id',
-        comment: 'The lemma that this definition is listed under.',
         references: {
           table: 'lemmas',
           column: 'id',
           onDelete: ReferenceAction.RESTRICT,
         },
       },
+      // The definition that this form was derived from, so that we can link
+      // back to it, e.g. "Nominative singular of ...".
       {
         name: 'original_definition_id',
-        comment: 'The definition that this form was derived from, so that we can link back to it, e.g. "Nominative singular of ...".',
         references: {
           table: 'definitions',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // The inflected form that this form was derived from.
       {
         name: 'inflected_form_id',
-        comment: 'The inflected form that this form was derived from.',
         references: {
           table: 'inflected_forms',
           column: 'id',
@@ -619,22 +648,23 @@ const tables: TableSchema[] = [
     ],
   },
 
+  // Users which the end user can authenticate as in order to perform mutations.
+  // This table is only needed if you connect to the Condict server remotely;
+  // when Condict runs completely locally, authentication is not necessary.
   {
     name: 'users',
-    comment: 'Users which the end user can authenticate as in order to perform mutations. This table is only needed if you connect to the Condict server remotely; when Condict runs completely locally, authentication is not necessary.',
     columns: [
       id,
+      // The name of the user. Usernames are case-sensitive and unique.
       {
         name: 'name',
-        comment: 'The name of the user. Usernames are case-sensitive and unique.',
-        type: ColumnType.VARCHAR,
-        size: 32,
+        type: ColumnType.TEXT,
       },
+      // A hashed version of the user's password. Passwords are hashed using
+      // bcrypt.
       {
         name: 'password_hash',
-        comment: "A hashed version of the user's password. Passwords are hashed using bcrypt.",
-        type: ColumnType.VARCHAR,
-        size: 70,
+        type: ColumnType.TEXT,
       },
     ],
     primaryKey: 'id',
@@ -642,30 +672,30 @@ const tables: TableSchema[] = [
     skipExport: true,
   },
 
+  // Sessions associated with each user. Sessions are identified by a string ID,
+  // and expire after some time.
   {
     name: 'user_sessions',
-    comment: 'Sessions associated with each user. Sessions are identified by a string ID, and expire after some time.',
     columns: [
+      // The ID of the session, which is an arbitrary string value.
       {
         name: 'id',
-        comment: 'The ID of the session, which is a string value.',
-        type: ColumnType.VARCHAR,
-        size: 48, // Big enough.
+        type: ColumnType.TEXT,
       },
+      // The user that the session belongs to.
       {
         name: 'user_id',
-        comment: 'The user that the session belongs to.',
         references: {
           table: 'users',
           column: 'id',
           onDelete: ReferenceAction.CASCADE,
         },
       },
+      // The date and time that the session expires, as the number of
+      // milliseconds since midnight 1 January, 1970, UTC.
       {
         name: 'expires_at',
-        comment: 'The date and time that the session expires, as the number of milliseconds since midnight 1 January, 1970, UTC.',
-        type: ColumnType.UNSIGNED_INT,
-        size: 64,
+        type: ColumnType.INT,
       },
     ],
     primaryKey: 'id',

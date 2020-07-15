@@ -9,8 +9,6 @@ import {
 
 import Mutator from '../mutator';
 
-import {validateFormValue} from './validators';
-
 export default class CustomFormMut extends Mutator {
   public async insert(
     definitionTableId: DefinitionInflectionTableId,
@@ -34,8 +32,7 @@ export default class CustomFormMut extends Mutator {
             );
           }
 
-          const value = validateFormValue(form.value);
-          return [inflectedForm.id, value] as [InflectedFormId, string];
+          return [inflectedForm.id, form.value] as const;
         })
       )
     );

@@ -50,9 +50,9 @@ const resolveBaseType = (
   switch (column.type) {
     case ColumnType.ID:
     case ColumnType.BOOLEAN:
-    case ColumnType.UNSIGNED_INT:
+    case ColumnType.INT:
       return 'integer';
-    case ColumnType.VARCHAR:
+    case ColumnType.TEXT:
     case ColumnType.JSON:
       return 'text';
     case ColumnType.ENUM: {
@@ -80,13 +80,13 @@ const resolveColumnType = (
   if (!isFKColumn(column)) {
     switch (column.type) {
       case ColumnType.BOOLEAN:
-      case ColumnType.UNSIGNED_INT:
-      case ColumnType.VARCHAR:
+      case ColumnType.INT:
+      case ColumnType.TEXT:
       case ColumnType.ENUM:
         if (column.default !== undefined) {
           columnType += ` default ${escapeValue(column.default)}`;
         }
-        if (column.type === ColumnType.VARCHAR && column.collate) {
+        if (column.type === ColumnType.TEXT && column.collate) {
           columnType += ` collate ${getCollation(column.collate)}`;
         }
         break;

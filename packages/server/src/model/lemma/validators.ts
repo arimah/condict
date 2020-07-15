@@ -1,13 +1,10 @@
-import validator, {lengthBetween, Valid} from '../validator';
-import sizeOfColumn from '../size-of-column';
-
-const TermSize = sizeOfColumn('lemmas', 'term_unique');
+import validator, {minLength, Valid} from '../validator';
 
 export type ValidTerm = Valid<string, 'LemmaTerm'>;
 
 export const validateTerm =
   validator<string>('term')
     .do(value => value.trim())
-    .do(lengthBetween(1, TermSize))
+    .do(minLength(1))
     .do(value => value as ValidTerm)
     .validate;

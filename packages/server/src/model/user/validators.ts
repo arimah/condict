@@ -3,8 +3,7 @@ import {hash} from 'bcrypt';
 
 import {Connection} from '../../database';
 
-import validator, {Valid, lengthBetween, unique} from '../validator';
-import sizeOfColumn from '../size-of-column';
+import validator, {Valid, minLength, unique} from '../validator';
 
 import {UserId} from './types';
 
@@ -12,7 +11,6 @@ import {UserId} from './types';
 export type ValidPassword = Valid<string, 'Password'>;
 
 const UserNameMinLength = 3;
-const UserNameMaxLength = sizeOfColumn('users', 'name');
 
 export const validateName = (
   db: Connection,
@@ -21,7 +19,7 @@ export const validateName = (
 ): string =>
   validator<string>('name')
     .do(name => name.trim())
-    .do(lengthBetween(UserNameMinLength, UserNameMaxLength))
+    .do(minLength(UserNameMinLength))
     .do(unique(
       currentId,
       name => {

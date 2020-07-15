@@ -1,10 +1,7 @@
 import {Connection} from '../../database';
 import {LanguageId} from '../../graphql/types';
 
-import validator, {lengthBetween, unique} from '../validator';
-import sizeOfColumn from '../size-of-column';
-
-const NameSize = sizeOfColumn('languages', 'name');
+import validator, {minLength, unique} from '../validator';
 
 export const validateName = (
   db: Connection,
@@ -13,7 +10,7 @@ export const validateName = (
 ): string =>
   validator<string>('name')
     .do(name => name.trim())
-    .do(lengthBetween(1, NameSize))
+    .do(minLength(1))
     .do(unique(
       currentId,
       name => {

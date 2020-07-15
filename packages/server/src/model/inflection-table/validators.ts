@@ -3,12 +3,7 @@ import {normalizePattern} from '@condict/inflect';
 import {Connection} from '../../database';
 import {InflectionTableId, PartOfSpeechId} from '../../graphql/types';
 
-import validator, {lengthBetween, unique} from '../validator';
-import sizeOfColumn from '../size-of-column';
-
-const TableNameSize = sizeOfColumn('inflection_tables', 'name');
-const InflectionPatternSize = sizeOfColumn('inflected_forms', 'inflection_pattern');
-const DisplayNameSize = sizeOfColumn('inflected_forms', 'display_name');
+import validator, {minLength, unique} from '../validator';
 
 export const validateName = (
   db: Connection,
@@ -18,7 +13,7 @@ export const validateName = (
 ): string =>
   validator<string>('name')
     .do(value => value.trim())
-    .do(lengthBetween(1, TableNameSize))
+    .do(minLength(1))
     .do(unique(
       currentId,
       name => {
@@ -37,11 +32,9 @@ export const validateName = (
 export const validateFormInflectionPattern =
   validator<string>('inflectionPattern')
     .do(normalizePattern)
-    .do(lengthBetween(0, InflectionPatternSize))
     .validate;
 
 export const validateFormDisplayName =
   validator<string>('displayName')
     .do(value => value.trim())
-    .do(lengthBetween(0,  DisplayNameSize))
     .validate;

@@ -3,14 +3,6 @@ import {Connection} from '../sqlite';
 export interface TableSchema {
   /** The name of the table. */
   readonly name: string;
-  /**
-   * A comment that describes the purpose of the table and any design rationales
-   * that are worth highlighting. The comment is intended to help anyone who
-   * looks through the database in a client, that is, without having the code
-   * handy. If the database engine does not support comments, this property is
-   * ignored by the adaptor.
-   */
-  readonly comment: string;
   /** The columns of the table. This array must not be empty. */
   readonly columns: ColumnSchema[];
   /**
@@ -59,11 +51,11 @@ export type IndexedColumn = string | string[];
  */
 export type ImportExportFunction = (value: any, newIds: NewIdMap) => any;
 
-export type ColumnSchema
-  = IdColumnSchema
+export type ColumnSchema =
+  | IdColumnSchema
   | BooleanColumnSchema
   | IntegerColumnSchema
-  | VarcharColumnSchema
+  | TextColumnSchema
   | EnumColumnSchema
   | JsonColumnSchema
   | FKColumnSchema;
@@ -71,11 +63,6 @@ export type ColumnSchema
 export interface BaseColumnSchema {
   /** The name of the column. */
   readonly name: string;
-  /**
-   * A comment that describes the purpose of the column. See the `comment` column
-   * in {@link TableSchema}.
-   */
-  readonly comment: string;
   /** If true, null values are permitted in the column. */
   readonly allowNull?: boolean;
   /** A function that transforms the column value before it is exported. */
@@ -107,44 +94,31 @@ export interface BooleanColumnSchema extends OwnColumnSchema {
   readonly type: ColumnType.BOOLEAN;
   /**
    * The default value of the column, if applicable. If omitted, the column has
-   * no default value, the exact meaning of which varies between database engines.
-   * Most columns have no default value.
+   * no default value.
    */
   readonly default?: boolean | null;
 }
 
 export interface IntegerColumnSchema extends OwnColumnSchema {
   /** The type of the column. */
-  readonly type: ColumnType.UNSIGNED_INT;
-  /**
-   * The size of the column in bits. The database engine guarantees at least
-   * this capacity.
-   */
-  readonly size: 8 | 16 | 32 | 64;
+  readonly type: ColumnType.INT;
   /**
    * The default value of the column, if applicable. If omitted, the column has
-   * no default value, the exact meaning of which varies between database engines.
-   * Most columns have no default value.
+   * no default value.
    */
   readonly default?: number | null;
 }
 
-export interface VarcharColumnSchema extends OwnColumnSchema {
+export interface TextColumnSchema extends OwnColumnSchema {
   /** The type of the column. */
-  readonly type: ColumnType.VARCHAR;
-  /**
-   * The size of the column, which is the maximum number of Unicode code points
-   * that can be stored in the column.
-   */
-  readonly size: number;
+  readonly type: ColumnType.TEXT;
   /**
    * The collation of the column. See more under {@link Collation}.
    */
   readonly collate?: Collation;
   /**
    * The default value of the column, if applicable. If omitted, the column has
-   * no default value, the exact meaning of which varies between database engines.
-   * Most columns have no default value.
+   * no default value.
    */
   readonly default?: string | null;
 }
@@ -156,8 +130,7 @@ export interface EnumColumnSchema extends OwnColumnSchema {
   readonly values: string[];
   /**
    * The default value of the column, if applicable. If omitted, the column has
-   * no default value, the exact meaning of which varies between database engines.
-   * Most columns have no default value.
+   * no default value.
    */
   readonly default?: string | null;
 }
@@ -189,34 +162,25 @@ export const isFKColumn = (def: ColumnSchema): def is FKColumnSchema => {
   return (def as FKColumnSchema).references != null;
 };
 
-/** The type of a column. */
+/**
+ * The type of a column. Many of these column types resolve to the same declared
+ * SQLite type, and are distinguished mostly for the sake of the developer.
+ */
 export const enum ColumnType {
-  /**
-   * An integer type suitable for use as an ID. The database adaptor determines
-   * the exact type, but it is guaranteed to have at least unsigned 32-bit
-   * integer range.
-   */
+  /** An column type suitable for use as an ID. */
   ID,
   /**
-   * A boolean type. Only 0 and 1 should be considered valid values for boolean
+   * A boolean column. Only 0 and 1 should be considered valid values for boolean
    * columns.
    */
   BOOLEAN,
-  /**
-   * An unsigned integer type. The `size` property on the column definition
-   * specifies the minimum required size, in bits, of the column.
-   */
-  UNSIGNED_INT,
-  /**
-   * A variable-size character type. The `size` property on the column
-   * definition specifies the maximum length, in number of Unicode code points,
-   * of the column.
-   */
-  VARCHAR,
+  /** An integer column. */
+  INT,
+  /** A text column. */
+  TEXT,
   /**
    * A type suitable for storing JSON-serialized data. The JSON data is passed
-   * to the adaptor as a string. The `size` property is *not* applicable to
-   * columns of this type.
+   * to the database as a string.
    */
   JSON,
   /**
