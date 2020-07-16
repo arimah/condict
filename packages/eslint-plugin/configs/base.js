@@ -101,6 +101,12 @@ module.exports = {
       },
     ],
 
+    "require-await": "error",
+
+    // Warning rather than error because externally typed libraries may trigger
+    // this rule.
+    "@typescript-eslint/await-thenable": "warn",
+
     // The following rules interfere with various TypeScript features.
     "no-undef": "off", // Taken care of by the type system.
     "no-dupe-class-members": "off", // Doesn't work well with overloading.

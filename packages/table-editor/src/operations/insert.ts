@@ -1,5 +1,3 @@
-import {Draft} from 'immer';
-
 import {Table, RowKey, Cell, CellKey, Layout, Selection} from '../value';
 
 export const enum InsertLocation {

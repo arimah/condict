@@ -4,5 +4,8 @@
   ],
   "plugins": [
     "@condict"
-  ]
+  ],
+  "parserOptions": {
+    "project": "tsconfig.json"
+  }
 }

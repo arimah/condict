@@ -23,7 +23,7 @@
     "graphql": "^15.1.0"
   },
   "devDependencies": {
-    "@condict/eslint-plugin": "^0.1.2",
+    "@condict/eslint-plugin": "^0.2.0",
     "@types/command-line-args": "^5.0.0",
     "@types/node": "^12.12.12",
     "chalk": "^4.1.0",

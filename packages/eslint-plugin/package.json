@@ -1,6 +1,6 @@
 {
   "name": "@condict/eslint-plugin",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "ESLint configurations for Condict.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",

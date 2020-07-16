@@ -9,7 +9,6 @@
     "project": "tsconfig.json"
   },
   "rules": {
-    "require-await": "error",
     "@typescript-eslint/await-thenable": "error"
   }
 }
