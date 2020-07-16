@@ -10,11 +10,11 @@ import React, {
   useRef,
 } from 'react';
 
-import genId from '@condict/gen-id';
 import {SROnly} from '@condict/a11y-utils';
 
 import DescendantCollection from '../descendant-collection';
 import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
+import genUniqueId from '../unique-id';
 
 import * as S from './styles';
 
@@ -275,8 +275,8 @@ export class TagInput extends Component<Props, State> {
     ref => ref.elem
   );
   private wrapper = React.createRef<HTMLSpanElement>();
-  private mainDescId = genId();
-  private tagDescId = genId();
+  private mainDescId = genUniqueId();
+  private tagDescId = genUniqueId();
   private hasFocus = false;
 
   public constructor(props: Props) {
@@ -467,7 +467,7 @@ export class TagInput extends Component<Props, State> {
   private announce(text: string) {
     this.setState({
       announcement: {
-        key: genId(),
+        key: genUniqueId(),
         text,
       },
     });

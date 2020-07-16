@@ -1,6 +1,6 @@
-import {RefObject, useState, useMemo, useEffect} from 'react';
+import {RefObject, useMemo, useEffect} from 'react';
 
-import genId from '@condict/gen-id';
+import {useUniqueId} from '../unique-id';
 
 import {getTabReachable} from './targets';
 import {tryFocus, getNearestFocusable} from './utils';
@@ -468,7 +468,7 @@ const manager = (() => {
 })();
 
 export const useManagedFocus = (props: FocusScopeProps): RefObject<Element> => {
-  const [key] = useState(genId);
+  const key = useUniqueId();
 
   manager.set(key, props);
 

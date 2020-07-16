@@ -1,10 +1,9 @@
 import React, {ChangeEvent, PureComponent} from 'react';
 import produce from 'immer';
 
-import {FocusTrap} from '@condict/ui';
+import {FocusTrap, genUniqueId} from '@condict/ui';
 import {inflectWord} from '@condict/inflect';
 import {SROnly} from '@condict/a11y-utils';
-import genId from '@condict/gen-id';
 
 import CellDialog from '../../cell-dialog';
 import {CellWithData, CellEditorProps} from '../../types';
@@ -27,7 +26,7 @@ type State = {
 export default class CellEditor extends PureComponent<Props, State> {
   public static readonly contextType = StemsContext;
 
-  private readonly dialogId = genId();
+  private readonly dialogId = genUniqueId();
   private readonly inputRef = React.createRef<HTMLInputElement>();
 
   public constructor(props: Readonly<Props>, context: StemsContextValue) {

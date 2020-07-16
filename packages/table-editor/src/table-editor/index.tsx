@@ -8,13 +8,13 @@ import React, {
 import {Draft} from 'immer';
 import shallowEqual from 'shallowequal';
 
-import genId from '@condict/gen-id';
 import {
   Command,
   CommandGroup,
   CommandSpecMap,
   MenuType,
   RelativeParent,
+  genUniqueId,
 } from '@condict/ui';
 
 import TableRow from '../table-row';
@@ -62,7 +62,7 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
   };
 
   private table = React.createRef<HTMLTableElement>();
-  private tableId = genId();
+  private tableId = genUniqueId();
   private contextMenuRef = React.createRef<MenuType>();
   private contextMenuParent: MutableRefObject<RelativeParent> = {
     current: {x: 0, y: 0},

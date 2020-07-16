@@ -22,7 +22,6 @@
     "lint": "eslint --ext .ts src/"
   },
   "dependencies": {
-    "@condict/gen-id": "^0.1.1",
     "@condict/inflect": "^0.1.2",
     "apollo-server": "^2.15.0",
     "bcrypt": "^5.0.0",

@@ -1,14 +1,8 @@
-import React, {
-  Ref,
-  useState,
-  useRef,
-  useCallback,
-} from 'react';
-
-import genId from '@condict/gen-id';
+import React, {Ref, useRef, useCallback} from 'react';
 
 import combineRefs from '../combine-refs';
 import {RelativeParent} from '../placement';
+import {useUniqueId} from '../unique-id';
 
 import {MenuElement} from '.';
 import MenuManager from './manager';
@@ -35,7 +29,7 @@ const MenuTrigger = (props: Props): JSX.Element => {
     children,
   } = props;
 
-  const [menuId] = useState(genId);
+  const menuId = useUniqueId();
   const menuRef = useRef<ManagedMenu>(null);
   const childRef = useRef<ChildType>(null);
   const openMenu = useCallback(() => {

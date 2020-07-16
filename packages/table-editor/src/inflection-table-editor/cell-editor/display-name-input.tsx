@@ -1,11 +1,6 @@
-import React, {
-  Ref,
-  ChangeEventHandler,
-  MouseEventHandler,
-  useMemo,
-} from 'react';
+import React, {Ref, ChangeEventHandler, MouseEventHandler} from 'react';
 
-import genId from '@condict/gen-id';
+import {useUniqueId} from '@condict/ui';
 
 import {Messages} from '../types';
 
@@ -25,7 +20,7 @@ const DisplayNameInput = React.forwardRef((
 ): JSX.Element => {
   const {value, hasCustomName, messages, onChange, onDeriveName} = props;
 
-  const descId = useMemo(genId, []);
+  const descId = useUniqueId();
 
   return (
     <S.CellSettingsGroup>

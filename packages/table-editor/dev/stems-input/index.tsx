@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 import produce from 'immer';
 
-import genId from '@condict/gen-id';
+import {useUniqueId} from '@condict/ui';
 
 import * as S from './styles';
 
@@ -15,7 +15,7 @@ export type Props = {
 const StemsInput = (props: Props): JSX.Element => {
   const {value, stemNames, term, onChange} = props;
 
-  const [id] = useState(genId);
+  const id = useUniqueId;
 
   return (
     <div role='group' aria-labelledby={`${id}-desc`}>

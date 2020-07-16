@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@condict/a11y-utils": "^0.2.0",
-    "@condict/gen-id": "^0.1.1",
     "@condict/inflect": "^0.1.1",
     "@types/shallowequal": "^1.1.1",
     "immer": "^7.0.3",
@@ -30,7 +29,7 @@
   "devDependencies": {
     "@condict/dev-server": "^0.2.0",
     "@condict/eslint-plugin": "^0.2.0",
-    "@condict/ui": "^0.8.3",
+    "@condict/ui": "^0.8.4",
     "@types/react": "^16.9.38",
     "@types/react-dom": "^16.9.8",
     "@types/styled-components": "^5.1.0",

@@ -1,8 +1,7 @@
 import {Server as HttpServer} from 'http';
 
 import {ApolloServer} from 'apollo-server';
-
-import genId from '@condict/gen-id';
+import {customAlphabet} from 'nanoid';
 
 import CondictServer from './server';
 import {Context} from './graphql';
@@ -11,6 +10,8 @@ import {Logger} from './types';
 export type ServerInfo = {
   url: string;
 };
+
+const genRequestId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 8);
 
 export default class CondictHttpServer {
   private readonly server: CondictServer;
@@ -27,7 +28,7 @@ export default class CondictHttpServer {
       context: async ({req, res}): Promise<Context> => {
         const {logger, server} = this;
 
-        const requestId = genId();
+        const requestId = genRequestId();
         const startTime = Date.now();
         logger.info(`Start request ${requestId}`);
 

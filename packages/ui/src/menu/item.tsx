@@ -1,11 +1,10 @@
-import React, {ReactNode, useState, useRef} from 'react';
+import React, {ReactNode, useRef} from 'react';
 import ChevronRightIcon from 'mdi-react/ChevronRightIcon';
-
-import genId from '@condict/gen-id';
 
 import {useCommand} from '../command';
 import {ShortcutType} from '../command/shortcut';
 import combineRefs from '../combine-refs';
+import {useUniqueId} from '../unique-id';
 
 import * as S from './styles';
 import ManagedMenu from './managed-menu';
@@ -41,7 +40,7 @@ const Item = React.forwardRef<HTMLDivElement, Props>((
   const effectiveDisabled = command ? command.disabled || disabled : disabled;
   const effectiveShortcut = command ? command.shortcut : shortcut;
 
-  const [ownId] = useState(genId);
+  const ownId = useUniqueId();
   const ownRef = useRef<HTMLDivElement>(null);
   const submenuRef = useRef<ManagedMenu>(null);
   const {hasFocus, submenuPlacement} = useNearestMenu(

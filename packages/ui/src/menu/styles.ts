@@ -20,6 +20,7 @@ export const Menu = styled.div.attrs({
   background-color: ${p => p.theme.general.altBg};
   color: ${p => p.theme.general.altFg};
   box-shadow: 3px 2px 4px 1px rgba(0, 0, 0, 0.45);
+  user-select: none;
 
   &:focus {
     outline: none;

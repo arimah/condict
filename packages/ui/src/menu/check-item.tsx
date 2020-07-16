@@ -1,10 +1,9 @@
-import React, {ReactNode, useState, useRef} from 'react';
-
-import genId from '@condict/gen-id';
+import React, {ReactNode, useRef} from 'react';
 
 import {useCommand} from '../command';
 import {ShortcutType} from '../command/shortcut';
 import combineRefs from '../combine-refs';
+import {useUniqueId} from '../unique-id';
 
 import * as S from './styles';
 import {useNearestMenu} from './context';
@@ -41,7 +40,7 @@ const CheckItem = React.forwardRef<HTMLDivElement, Props>((
   const effectiveDisabled = command ? command.disabled || disabled : disabled;
   const effectiveShortcut = command ? command.shortcut : shortcut;
 
-  const [ownId] = useState(genId);
+  const ownId = useUniqueId();
   const ownRef = useRef<HTMLDivElement>(null);
   const {hasFocus} = useNearestMenu(
     ownRef,

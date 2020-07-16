@@ -76,3 +76,5 @@ export {
   default as DescendantCollection,
   GetElementFunc,
 } from './descendant-collection';
+
+export {default as genUniqueId, useUniqueId} from './unique-id';

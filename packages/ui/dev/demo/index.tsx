@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 
-import genId from '@condict/gen-id';
+import {genUniqueId} from '../../src';
 
 import {
   ControlsRenderFunc,
@@ -34,7 +34,7 @@ class Demo extends PureComponent<Props, State> {
   public static List = S.List;
   public static Row = S.Row;
 
-  private headingId = genId();
+  private headingId = genUniqueId();
 
   public state: State = {
     error: null,

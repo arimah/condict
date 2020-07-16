@@ -2,9 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import genId from '@condict/gen-id';
-
-import {BodyText} from '../../src';
+import {BodyText, genUniqueId} from '../../src';
 
 import {ComponentDemo} from './types';
 
@@ -12,7 +10,7 @@ const Main = styled(BodyText)`
   max-width: 50em;
 `;
 
-const randomHref = `#${genId()}`;
+const randomHref = `#${genUniqueId()}`;
 
 const demo: ComponentDemo<{}> = {
   name: 'Typography',

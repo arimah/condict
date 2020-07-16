@@ -8,9 +8,9 @@ import React, {
 } from 'react';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
-import genId from '@condict/gen-id';
 
 import Intent from '../intent';
+import genUniqueId from '../unique-id';
 
 import * as S from './styles';
 
@@ -36,7 +36,9 @@ type ContextValue = {
   namePrefix: string;
 };
 
-export const RadioGroupContext = React.createContext<ContextValue>({namePrefix: ''});
+export const RadioGroupContext = React.createContext<ContextValue>({
+  namePrefix: '',
+});
 
 export const Radio = (props: Props): JSX.Element => {
   const {
@@ -81,7 +83,7 @@ export const Radio = (props: Props): JSX.Element => {
 };
 
 const getContextValue = (name: string | undefined | null): ContextValue => ({
-  namePrefix: name != null ? name : `${genId()}-`,
+  namePrefix: name != null ? name : `${genUniqueId()}-`,
 });
 
 const RadioGroup = ({name, children}: GroupProps) => {

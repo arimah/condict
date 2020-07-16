@@ -1,6 +1,6 @@
 import produce, {Draft, castDraft} from 'immer';
 
-import genId from '@condict/gen-id';
+import {genUniqueId} from '@condict/ui';
 
 import buildLayout from './build-layout';
 import buildSelectionShape from './build-selection-shape';
@@ -40,7 +40,7 @@ export type IsCellEmptyFn<D> = (data: D) => boolean;
 export type CellKey = string;
 
 /** Generates a cell key. */
-export const CellKey = genId;
+export const CellKey = genUniqueId;
 
 /**
  * A single row in the table. Note that this contains the cell key only - the
@@ -55,7 +55,7 @@ export interface Row {
 export type RowKey = string;
 
 /** Generates a row key. */
-export const RowKey = genId;
+export const RowKey = genUniqueId;
 
 /** A single cell. */
 export interface Cell {
