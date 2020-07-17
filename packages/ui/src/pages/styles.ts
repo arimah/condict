@@ -35,7 +35,7 @@ export const Item = styled.li`
 export const Page = styled(Button).attrs({
   type: 'button',
   slim: false,
-  intent: Intent.SECONDARY as Intent,
+  intent: Intent.SECONDARY,
 })<PageProps>`
   display: block;
   padding: 6px 4px;

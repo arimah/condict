@@ -2,14 +2,11 @@
 import React from 'react';
 
 import {Button, LinkButton, Checkbox, Select, Intent} from '../../src';
-import Demo from '../demo';
-import {ComponentDemo} from './types';
 
-const Intents = [
-  {value: 'primary', name: 'primary'},
-  {value: 'secondary', name: 'secondary'},
-  {value: 'danger', name: 'danger'},
-];
+import Demo from '../demo';
+
+import {ComponentDemo} from './types';
+import Intents from './intent-options';
 
 export type State = {
   intent: Intent;

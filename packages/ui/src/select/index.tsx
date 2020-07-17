@@ -4,20 +4,20 @@ import * as S from './styles';
 
 export type Props = {
   value?: string | number;
-  options?: Option[];
+  options?: readonly Option[];
 } & S.Props & Omit<
   SelectHTMLAttributes<HTMLSelectElement>,
   'value'
 >;
 
 export type Option = {
-  value: string | number;
-  name: ReactNode;
+  readonly value: string | number;
+  readonly name: ReactNode;
 };
 
 const renderOptions = (
   children: ReactNode,
-  options: Option[] | undefined
+  options: readonly Option[] | undefined
 ): ReactNode => {
   if (process.env.NODE_ENV === 'development' && children && options) {
     // eslint-disable-next-line no-console

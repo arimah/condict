@@ -1,16 +1,12 @@
 /* eslint-disable react/jsx-key, react/display-name */
 import React from 'react';
 
-import Demo from '../demo';
 import {Radio, Select, Checkbox, Button, Intent} from '../../src';
 
-import {ComponentDemo} from './types';
+import Demo from '../demo';
 
-const Intents = [
-  {value: 'primary', name: Intent.PRIMARY},
-  {value: 'secondary', name: Intent.SECONDARY},
-  {value: 'danger', name: Intent.DANGER},
-];
+import {ComponentDemo} from './types';
+import Intents from './intent-options';
 
 const Options = ['1', '2', '3', '4'];
 
