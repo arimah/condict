@@ -54,19 +54,21 @@ export {
 } from './command/shortcut';
 export {Shortcuts} from './command/shortcuts';
 
-export {Theme, createTheme, extendTheme, intentVar, transition} from './theme';
 export {
-  makeColorFn,
-  primaryColor,
-  secondaryColor,
-  dangerColor,
-  generalColor,
-  focusColor,
-  selectionColor,
+  Theme,
+  IntentTheme,
+  LinkTheme,
+  FocusTheme,
+  SelectionTheme,
+  TimingTheme,
+  ShadowTheme,
   Saturation,
-} from './theme/shared';
-export {default as DarkTheme} from './theme/dark';
-export {default as LightTheme} from './theme/light';
+  LightTheme,
+  DarkTheme,
+  intentVar,
+  transition,
+  makeColorFn,
+} from './theme';
 
 export {default as Intent} from './intent';
 export {default as Placement, RelativeParent, placeElement} from './placement';

@@ -1,4 +1,3 @@
-import {createTheme} from './';
 import {
   primaryColor,
   secondaryColor,
@@ -8,8 +7,12 @@ import {
   selectionColor,
   Saturation,
 } from './shared';
+import DefaultTheme from './default';
+import {Theme} from './types';
 
-const DarkTheme = createTheme({
+const DarkTheme: Theme = {
+  ...DefaultTheme,
+
   dark: true,
 
   primary: {
@@ -107,6 +110,6 @@ const DarkTheme = createTheme({
     elevation2: '0 3px 8px rgba(0, 0, 0, 0.35)',
     elevation3: '0 4px 10px rgba(0, 0, 0, 0.35)',
   },
-});
+};
 
 export default DarkTheme;

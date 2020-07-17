@@ -1,4 +1,3 @@
-import {createTheme} from './';
 import {
   primaryColor,
   secondaryColor,
@@ -8,8 +7,12 @@ import {
   selectionColor,
   Saturation,
 } from './shared';
+import DefaultTheme from './default';
+import {Theme} from './types';
 
-const LightTheme = createTheme({
+const LightTheme: Theme = {
+  ...DefaultTheme,
+
   dark: false,
 
   primary: {
@@ -107,6 +110,6 @@ const LightTheme = createTheme({
     elevation2: '0 3px 8px rgba(0, 0, 0, 0.175)',
     elevation3: '0 4px 10px rgba(0, 0, 0, 0.175)',
   },
-});
+};
 
 export default LightTheme;
