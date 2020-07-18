@@ -1,5 +1,4 @@
-export {Button, Props as ButtonProps} from './button';
-export {LinkButton, Props as LinkButtonProps} from './button/link-button';
+export {Button, ButtonProps, LinkButton, LinkButtonProps} from './button';
 export {Checkbox, Props as CheckboxProps} from './checkbox';
 export {ConlangFlag, Props as ConlangFlagProps} from './conlang-flag';
 export {

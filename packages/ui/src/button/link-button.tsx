@@ -23,7 +23,7 @@ const cancelClickEvent: MouseEventHandler = e => {
   e.preventDefault();
 };
 
-export const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref) => {
+const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref) => {
   const {
     label,
     command: commandName,
@@ -60,3 +60,5 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref
 });
 
 LinkButton.displayName = 'LinkButton';
+
+export default LinkButton;
