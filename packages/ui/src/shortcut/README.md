@@ -128,7 +128,7 @@ Example values:
 * `'Primary+Shift+F12'`
 * `'Shift+ +'`
 * `['Ctrl+W', 'Primary+ A', 'Shift +S', 'Alt + D']`
-* `Ctrl + Alt + Delete`.
+* `'Ctrl + Alt + Delete'`.
 
 ### `Shortcut.matches`
 
@@ -164,8 +164,8 @@ Determines whether two shortcuts are equal. The two shortcuts are equivalent if:
 
 Formats the shortcut into a user-friendly string. The exact format varies depending on platform. Some examples:
 
-| Shortcut | Linx | Windows | macOS |
-| --- | --- | --- |
+| Shortcut | Linux | Windows | macOS |
+| --- | --- | --- | --- |
 | Primary+T | `'Ctrl+T'` | `'Ctrl+T'` | `'⌘T'` |
 | Primary+Shift+F | `'Ctrl+Shift+F'` | `'Ctrl+Shift+F'` | `'⇧⌘F'` |
 | Alt+9 | `'Alt+9'` | `'Alt+9'` | `'⌥9'` |
@@ -179,7 +179,7 @@ If the shortcut responds to multiple keys, only the first is included in the out
 
 Formats the shortcut as an ARIA-compatible shortcut string. If the shortcut repsonds to multiple keys, only the first key is included in the output. If the shortcut is a group, all of its shortcuts are included.
 
-### `ShortcutMap`
+## `ShortcutMap`
 
 * [constructor](#shortcutmap-constructor)
 * [`ShortcutMap.prototype.get()`](#shortcutmapprototypeget)
