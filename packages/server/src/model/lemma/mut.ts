@@ -1,13 +1,16 @@
 import {LemmaId, LanguageId} from '../../graphql/types';
 
-import Mutator from '../mutator';
+import {Connection} from '../../database';
 
+import {Lemma} from './model';
 import {ValidTerm} from './validators';
 
-class LemmaMut extends Mutator {
-  public ensureExists(languageId: LanguageId, term: ValidTerm): LemmaId {
-    const {db} = this;
-
+const LemmaMut = {
+  ensureExists(
+    db: Connection,
+    languageId: LanguageId,
+    term: ValidTerm
+  ): LemmaId {
     const result = db.get<{id: LemmaId}>`
       select id
       from lemmas
@@ -22,11 +25,12 @@ class LemmaMut extends Mutator {
       insert into lemmas (language_id, term_unique, term_display)
       values (${languageId}, ${term}, ${term})
     `;
-    this.updateLemmaCount(languageId);
+    this.updateLemmaCount(db, languageId);
     return insertId;
-  }
+  },
 
-  public ensureAllExist(
+  ensureAllExist(
+    db: Connection,
     languageId: LanguageId,
     terms: ValidTerm[]
   ): Map<string, LemmaId> {
@@ -34,8 +38,6 @@ class LemmaMut extends Mutator {
       id: LemmaId;
       term: string;
     };
-
-    const {db} = this;
 
     if (terms.length === 0) {
       return new Map();
@@ -68,16 +70,13 @@ class LemmaMut extends Mutator {
 
     if (hasNewTerms) {
       // At least one term was inserted, so we need to update the count.
-      this.updateLemmaCount(languageId);
+      this.updateLemmaCount(db, languageId);
     }
 
     return termToId;
-  }
+  },
 
-  public deleteEmpty(languageId: LanguageId): void {
-    const {db} = this;
-    const {Lemma} = this.model;
-
+  deleteEmpty(db: Connection, languageId: LanguageId): void {
     const emptyIds = db.all<{id: LemmaId}>`
       select l.id as id
       from lemmas l
@@ -95,12 +94,12 @@ class LemmaMut extends Mutator {
         delete from lemmas
         where id in (${emptyIds.map(row => row.id)})
       `;
-      this.updateLemmaCount(languageId);
+      this.updateLemmaCount(db, languageId);
     }
-  }
+  },
 
-  private updateLemmaCount(languageId: LanguageId): void {
-    this.db.exec`
+  updateLemmaCount(db: Connection, languageId: LanguageId): void {
+    db.exec`
       update languages
       set lemma_count = (
         select count(*)
@@ -109,7 +108,7 @@ class LemmaMut extends Mutator {
       )
       where id = ${languageId}
     `;
-  }
-}
+  },
+} as const;
 
-export default {LemmaMut};
+export {LemmaMut};

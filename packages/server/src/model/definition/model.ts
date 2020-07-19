@@ -1,6 +1,8 @@
 import {UserInputError} from 'apollo-server';
 import {GraphQLResolveInfo} from 'graphql';
 
+import {Connection} from '../../database';
+import {validatePageParams} from '../../graphql/helpers';
 import {
   DefinitionId,
   DefinitionInflectionTableId,
@@ -10,11 +12,9 @@ import {
   InflectionTableLayoutId,
   PageParams,
 } from '../../graphql/types';
-import {validatePageParams} from '../../graphql/helpers';
 
-import Model from '../model';
 import paginate from '../paginate';
-import {Connection} from '../types';
+import {ItemConnection} from '../types';
 
 import {
   DefinitionRow,
@@ -25,17 +25,17 @@ import {
   DerivedDefinitionRow,
 } from './types';
 
-class Definition extends Model {
-  public readonly byIdKey = 'Definition.byId';
-  public readonly allByLemmaKey = 'Definition.allByLemma';
-  public readonly defaultPagination: Readonly<PageParams> = {
+const Definition = {
+  byIdKey: 'Definition.byId',
+  allByLemmaKey: 'Definition.allByLemma',
+  defaultPagination: {
     page: 0,
     perPage: 50,
-  };
-  public readonly maxPerPage = 200;
+  },
+  maxPerPage: 200,
 
-  public byId(id: DefinitionId): Promise<DefinitionRow | null> {
-    return this.db.batchOneToOne(
+  byId(db: Connection, id: DefinitionId): Promise<DefinitionRow | null> {
+    return db.batchOneToOne(
       this.byIdKey,
       id,
       (db, ids) =>
@@ -49,23 +49,24 @@ class Definition extends Model {
         `,
       row => row.id
     );
-  }
+  },
 
-  public async byIdRequired(
+  async byIdRequired(
+    db: Connection,
     id: DefinitionId,
     paramName = 'id'
   ): Promise<DefinitionRow> {
-    const definition = await this.byId(id);
+    const definition = await this.byId(db, id);
     if (!definition) {
       throw new UserInputError(`Definition not found: ${id}`, {
         invalidArgs: [paramName],
       });
     }
     return definition;
-  }
+  },
 
-  public allByLemma(lemmaId: LemmaId): Promise<DefinitionRow[]> {
-    return this.db.batchOneToMany(
+  allByLemma(db: Connection, lemmaId: LemmaId): Promise<DefinitionRow[]> {
+    return db.batchOneToMany(
       this.allByLemmaKey,
       lemmaId,
       (db, lemmaIds) =>
@@ -80,10 +81,10 @@ class Definition extends Model {
         `,
       row => row.lemma_id
     );
-  }
+  },
 
-  private anyUsesInflectionTableCond(condition: any): boolean {
-    const {used} = this.db.getRequired<{used: number}>`
+  anyUsesInflectionTableCond(db: Connection, condition: any): boolean {
+    const {used} = db.getRequired<{used: number}>`
       select exists (
         select 1
         from definition_inflection_tables
@@ -91,28 +92,31 @@ class Definition extends Model {
       ) as used
     `;
     return used === 1;
-  }
+  },
 
-  public anyUsesInflectionTable(tableId: InflectionTableId): boolean {
+  anyUsesInflectionTable(db: Connection, tableId: InflectionTableId): boolean {
     return this.anyUsesInflectionTableCond(
-      this.db.raw`inflection_table_id = ${tableId}`
+      db,
+      db.raw`inflection_table_id = ${tableId}`
     );
-  }
+  },
 
-  public anyUsesInflectionTableLayout(
+  anyUsesInflectionTableLayout(
+    db: Connection,
     versionId: InflectionTableLayoutId
   ): boolean {
     return this.anyUsesInflectionTableCond(
-      this.db.raw`inflection_table_version_id = ${versionId}`
+      db,
+      db.raw`inflection_table_version_id = ${versionId}`
     );
-  }
+  },
 
-  private allByInflectionTableCond(
+  allByInflectionTableCond(
+    db: Connection,
     condition: any,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Connection<DefinitionRow> {
-    const {db} = this;
+  ): ItemConnection<DefinitionRow> {
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
       () => {
@@ -137,36 +141,41 @@ class Definition extends Model {
       `,
       info
     );
-  }
+  },
 
-  public allByInflectionTable(
+  allByInflectionTable(
+    db: Connection,
     tableId: InflectionTableId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Connection<DefinitionRow> {
+  ): ItemConnection<DefinitionRow> {
     return this.allByInflectionTableCond(
-      this.db.raw`dit.inflection_table_id = ${tableId}`,
+      db,
+      db.raw`dit.inflection_table_id = ${tableId}`,
       page,
       info
     );
-  }
+  },
 
-  public allByInflectionTableLayout(
+  allByInflectionTableLayout(
+    db: Connection,
     versionId: InflectionTableLayoutId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Connection<DefinitionRow> {
+  ): ItemConnection<DefinitionRow> {
     return this.allByInflectionTableCond(
-      this.db.raw`dit.inflection_table_version_id = ${versionId}`,
+      db,
+      db.raw`dit.inflection_table_version_id = ${versionId}`,
       page,
       info
     );
-  }
+  },
 
-  public anyUsesPartOfSpeech(
+  anyUsesPartOfSpeech(
+    db: Connection,
     partOfSpeechId: PartOfSpeechId
   ): boolean {
-    const {used} = this.db.getRequired<{used: number}>`
+    const {used} = db.getRequired<{used: number}>`
       select exists (
         select 1
         from definitions
@@ -174,14 +183,14 @@ class Definition extends Model {
       ) as used
     `;
     return used === 1;
-  }
+  },
 
-  public allByPartOfSpeech(
+  allByPartOfSpeech(
+    db: Connection,
     partOfSpeechId: PartOfSpeechId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Connection<DefinitionRow> {
-    const {db} = this;
+  ): ItemConnection<DefinitionRow> {
     const condition = db.raw`
       d.part_of_speech_id = ${partOfSpeechId}
     `;
@@ -207,14 +216,14 @@ class Definition extends Model {
       `,
       info
     );
-  }
-}
+  },
+} as const;
 
-class DefinitionDescription extends Model {
-  public readonly rawByDefinitionKey = 'DefinitionDescription.rawByDefinition';
+const DefinitionDescription = {
+  rawByDefinitionKey: 'DefinitionDescription.rawByDefinition',
 
-  public rawByDefinition(definitionId: DefinitionId): Promise<string> {
-    return this.db
+  rawByDefinition(db: Connection, definitionId: DefinitionId): Promise<string> {
+    return db
       .batchOneToOne(
         this.rawByDefinitionKey,
         definitionId,
@@ -229,16 +238,17 @@ class DefinitionDescription extends Model {
       // The string 'null' is a valid JSON value. In theory we should never
       // find any null values here, but I guess being defensive doesn't hurt.
       .then(row => row ? row.description : 'null');
-  }
-}
+  },
+} as const;
 
-class DefinitionStem extends Model {
-  public readonly allByDefinitionKey = 'DefinitionStem.allByDefinition';
+const DefinitionStem = {
+  allByDefinitionKey: 'DefinitionStem.allByDefinition',
 
-  public allByDefinition(
+  allByDefinition(
+    db: Connection,
     definitionId: DefinitionId
   ): Promise<DefinitionStemRow[]> {
-    return this.db.batchOneToMany(
+    return db.batchOneToMany(
       this.allByDefinitionKey,
       definitionId,
       (db, definitionIds) =>
@@ -250,17 +260,18 @@ class DefinitionStem extends Model {
         `,
       row => row.definition_id
     );
-  }
-}
+  },
+} as const;
 
-class DefinitionInflectionTable extends Model {
-  public readonly byIdKey = 'DefinitionInflectionTable.byId';
-  public readonly allByDefinitionKey = 'DefinitionInflectionTable.allByDefinition';
+const DefinitionInflectionTable = {
+  byIdKey: 'DefinitionInflectionTable.byId',
+  allByDefinitionKey: 'DefinitionInflectionTable.allByDefinition',
 
-  public byId(
+  byId(
+    db: Connection,
     id: DefinitionInflectionTableId
   ): Promise<DefinitionInflectionTableRow | null> {
-    return this.db.batchOneToOne(
+    return db.batchOneToOne(
       this.byIdKey,
       id,
       (db, ids) =>
@@ -271,25 +282,27 @@ class DefinitionInflectionTable extends Model {
         `,
       row => row.id
     );
-  }
+  },
 
-  public async byIdRequired(
+  async byIdRequired(
+    db: Connection,
     id: DefinitionInflectionTableId,
     paramName = 'id'
   ): Promise<DefinitionInflectionTableRow> {
-    const table = await this.byId(id);
+    const table = await this.byId(db, id);
     if (!table) {
       throw new UserInputError(`Definition inflection table not found: ${id}`, {
         invalidArgs: [paramName],
       });
     }
     return table;
-  }
+  },
 
-  public allByDefinition(
+  allByDefinition(
+    db: Connection,
     definitionId: DefinitionId
   ): Promise<DefinitionInflectionTableRow[]> {
-    return this.db.batchOneToMany(
+    return db.batchOneToMany(
       this.allByDefinitionKey,
       definitionId,
       (db, definitionIds) =>
@@ -301,16 +314,17 @@ class DefinitionInflectionTable extends Model {
         `,
       row => row.definition_id
     );
-  }
-}
+  },
+} as const;
 
-class CustomInflectedForm extends Model {
-  public readonly allByTableKey = 'CustomInflectedForm.allByTable';
+const CustomInflectedForm = {
+  allByTableKey: 'CustomInflectedForm.allByTable',
 
-  public allByTable(
+  allByTable(
+    db: Connection,
     tableId: DefinitionInflectionTableId
   ): Promise<CustomInflectedFormRow[]> {
-    return this.db.batchOneToMany(
+    return db.batchOneToMany(
       this.allByTableKey,
       tableId,
       (db, tableIds) =>
@@ -322,19 +336,22 @@ class CustomInflectedForm extends Model {
         `,
       row => row.definition_inflection_table_id
     );
-  }
-}
+  },
+} as const;
 
-class DerivedDefinition extends Model {
-  public readonly allByLemmaKey = 'DerivedDefinition.allByLemma';
-  public readonly defaultPagination: Readonly<PageParams> = {
+const DerivedDefinition = {
+  allByLemmaKey: 'DerivedDefinition.allByLemma',
+  defaultPagination: {
     page: 0,
     perPage: 50,
-  };
-  public readonly maxPerPage = 200;
+  },
+  maxPerPage: 200,
 
-  public allByLemma(lemmaId: LemmaId): Promise<DerivedDefinitionRow[]> {
-    return this.db.batchOneToMany(
+  allByLemma(
+    db: Connection,
+    lemmaId: LemmaId
+  ): Promise<DerivedDefinitionRow[]> {
+    return db.batchOneToMany(
       this.allByLemmaKey,
       lemmaId,
       (db, lemmaIds) =>
@@ -350,14 +367,14 @@ class DerivedDefinition extends Model {
         `,
       row => row.lemma_id
     );
-  }
+  },
 
-  public allByDerivedFrom(
+  allByDerivedFrom(
+    db: Connection,
     definitionId: DefinitionId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Connection<DerivedDefinitionRow> {
-    const {db} = this;
+  ): ItemConnection<DerivedDefinitionRow> {
     const condition = db.raw`
       dd.original_definition_id = ${definitionId}
     `;
@@ -384,10 +401,10 @@ class DerivedDefinition extends Model {
       `,
       info
     );
-  }
-}
+  },
+} as const;
 
-export default {
+export {
   Definition,
   DefinitionDescription,
   DefinitionStem,

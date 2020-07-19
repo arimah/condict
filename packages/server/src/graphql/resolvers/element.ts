@@ -1,3 +1,4 @@
+import {Language, Lemma, Definition, PartOfSpeech} from '../../model';
 import {
   BlockElementJson,
   InlineElementJson,
@@ -74,29 +75,29 @@ const InternalLinkTarget: ResolversFor<InternalLinkTargetType, CondictLink> = {
 };
 
 const LanguageLinkTarget: ResolversFor<LanguageLinkTargetType, LanguageLink> = {
-  language: (p, _args, {model: {Language}}) =>
-    Language.byId(p.id),
+  language: (p, _args, {db}) =>
+    Language.byId(db, p.id),
 };
 
 const LemmaLinkTarget: ResolversFor<LemmaLinkTargetType, LemmaLink> = {
-  lemma: (p, _args, {model: {Lemma}}) =>
-    Lemma.byId(p.id),
+  lemma: (p, _args, {db}) =>
+    Lemma.byId(db, p.id),
 };
 
 const DefinitionLinkTarget: ResolversFor<
   DefinitionLinkTargetType,
   DefinitionLink
 > = {
-  definition: (p, _args, {model: {Definition}}) =>
-    Definition.byId(p.id),
+  definition: (p, _args, {db}) =>
+    Definition.byId(db, p.id),
 };
 
 const PartOfSpeechLinkTarget: ResolversFor<
   PartOfSpeechLinkTargetType,
   PartOfSpeechLink
 > = {
-  partOfSpeech: (p, _args, {model: {PartOfSpeech}}) =>
-    PartOfSpeech.byId(p.id),
+  partOfSpeech: (p, _args, {db}) =>
+    PartOfSpeech.byId(db, p.id),
 };
 
 export default {

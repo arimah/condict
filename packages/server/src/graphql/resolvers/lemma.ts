@@ -1,4 +1,11 @@
-import {LemmaRow} from '../../model/lemma/types';
+import {
+  Lemma as LemmaModel,
+  Definition,
+  DerivedDefinition,
+  Tag,
+  Language,
+  LemmaRow,
+} from '../../model';
 
 import {Lemma as LemmaType, LemmaId, Query as QueryType} from '../types';
 
@@ -9,21 +16,18 @@ const Lemma: ResolversFor<LemmaType, LemmaRow> = {
   // feels more fitting for display.
   term: p => p.term_display,
 
-  definitions: (p, _args, {model: {Definition}}) =>
-    Definition.allByLemma(p.id),
+  definitions: (p, _args, {db}) => Definition.allByLemma(db, p.id),
 
-  derivedDefinitions: (p, _args, {model: {DerivedDefinition}}) =>
-    DerivedDefinition.allByLemma(p.id),
+  derivedDefinitions: (p, _args, {db}) =>
+    DerivedDefinition.allByLemma(db, p.id),
 
-  tags: (p, _args, {model: {Tag}}) => Tag.allByLemma(p.id),
+  tags: (p, _args, {db}) => Tag.allByLemma(db, p.id),
 
-  language: (p, _args, {model: {Language}}) =>
-    Language.byId(p.language_id),
+  language: (p, _args, {db}) => Language.byId(db, p.language_id),
 };
 
 const Query: ResolversFor<QueryType, unknown> = {
-  lemma: (_root, {id}: IdArg<LemmaId>, {model: {Lemma}}) =>
-    Lemma.byId(id),
+  lemma: (_root, {id}: IdArg<LemmaId>, {db}) => LemmaModel.byId(db, id),
 };
 
 export default {

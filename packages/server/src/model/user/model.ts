@@ -1,66 +1,66 @@
-import Model from '../model';
+import {Connection} from '../../database';
 
 import {UserId, UserRow, UserSessionRow} from './types';
 
 // Batching is unnecessary; these methods are only ever called internally,
 // and only with one ID at a time.
 
-class User extends Model {
-  public byId(id: UserId): UserRow | null {
-    return this.db.get<UserRow>`
+const User = {
+  byId(db: Connection, id: UserId): UserRow | null {
+    return db.get<UserRow>`
       select *
       from users
       where id = ${id}
     `;
-  }
+  },
 
-  public byIdRequired(id: UserId): UserRow {
-    const user = this.byId(id);
+  byIdRequired(db: Connection, id: UserId): UserRow {
+    const user = this.byId(db, id);
     if (!user) {
       throw new Error(`User not found: ${id}`);
     }
     return user;
-  }
+  },
 
-  public byName(name: string): UserRow | null {
-    return this.db.get<UserRow>`
+  byName(db: Connection, name: string): UserRow | null {
+    return db.get<UserRow>`
       select *
       from users
       where name = ${name}
     `;
-  }
+  },
 
-  public byNameRequired(name: string): UserRow {
-    const user = this.byName(name);
+  byNameRequired(db: Connection, name: string): UserRow {
+    const user = this.byName(db, name);
     if (!user) {
       throw new Error(`User not found: ${name}`);
     }
     return user;
-  }
-}
+  },
+} as const;
 
-class UserSession extends Model {
-  public byId(id: string): UserSessionRow | null {
-    return this.db.get<UserSessionRow>`
+const UserSession = {
+  byId(db: Connection, id: string): UserSessionRow | null {
+    return db.get<UserSessionRow>`
       select *
       from user_sessions
       where id = ${id}
     `;
-  }
+  },
 
-  public byIdRequired(id: string): UserSessionRow {
-    const session = this.byId(id);
+  byIdRequired(db: Connection, id: string): UserSessionRow {
+    const session = this.byId(db, id);
     if (!session) {
       throw new Error(`User session not found: ${id}`);
     }
     return session;
-  }
+  },
 
-  public verify(sessionId: string): boolean {
-    const session = this.byId(sessionId);
+  verify(db: Connection, sessionId: string): boolean {
+    const session = this.byId(db, sessionId);
     const now = Date.now();
     return session !== null && now < session.expires_at;
-  }
-}
+  },
+} as const;
 
-export default {User, UserSession};
+export {User, UserSession};

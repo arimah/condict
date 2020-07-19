@@ -1,21 +1,19 @@
+import {Connection} from '../../database';
 import {
   LanguageId,
   NewLanguageInput,
   EditLanguageInput,
 } from '../../graphql/types';
 
-import Mutator from '../mutator';
 import FieldSet from '../field-set';
 
+import {Language} from './model';
 import {LanguageRow} from './types';
 import {validateName} from './validators';
 
-class LanguageMut extends Mutator {
-  public insert(
-    {name}: NewLanguageInput
-  ): Promise<LanguageRow> {
-    const {db} = this;
-    const {Language} = this.model;
+const LanguageMut = {
+  insert(db: Connection, data: NewLanguageInput): Promise<LanguageRow> {
+    let {name} = data;
 
     name = validateName(db, null, name);
 
@@ -23,17 +21,17 @@ class LanguageMut extends Mutator {
       insert into languages (name)
       values (${name})
     `;
-    return Language.byIdRequired(insertId);
-  }
+    return Language.byIdRequired(db, insertId);
+  },
 
-  public async update(
+  async update(
+    db: Connection,
     id: LanguageId,
-    {name}: EditLanguageInput
+    data: EditLanguageInput
   ): Promise<LanguageRow> {
-    const {db} = this;
-    const {Language} = this.model;
+    const {name} = data;
 
-    const language = await Language.byIdRequired(id);
+    const language = await Language.byIdRequired(db, id);
 
     const newFields = new FieldSet<LanguageRow>();
     if (name != null) {
@@ -48,8 +46,8 @@ class LanguageMut extends Mutator {
       `;
       db.clearCache(Language.byIdKey, language.id);
     }
-    return Language.byIdRequired(id);
-  }
-}
+    return Language.byIdRequired(db, id);
+  },
+} as const;
 
-export default {LanguageMut};
+export {LanguageMut};

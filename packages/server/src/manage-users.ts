@@ -1,10 +1,9 @@
 import readline from 'readline';
 import {Writable} from 'stream';
 
-import {createPool} from './database';
+import {Connection, createPool} from './database';
 import performStartupChecks from './startup-checks';
-import createModelResolvers, {Resolvers} from './model';
-import {UserId} from './model/user/types';
+import {User, UserMut, UserId} from './model';
 import {ServerConfig, Logger} from './types';
 
 type Prompt = {
@@ -56,10 +55,10 @@ const withPrompt = async <T>(fn: (prompt: Prompt) => Promise<T>) => {
   }
 };
 
-const withResolvers = async (
+const withDatabase = async (
   logger: Logger,
   config: ServerConfig,
-  fn: (resolvers: Resolvers) => Promise<void>
+  fn: (db: Connection) => Promise<void>
 ) => {
   const databasePool = createPool(logger, config.database);
 
@@ -68,8 +67,7 @@ const withResolvers = async (
 
     const db = await databasePool.getConnection();
     try {
-      const resolvers = createModelResolvers(db, logger);
-      await fn(resolvers);
+      await fn(db);
     } finally {
       db.release();
     }
@@ -94,10 +92,10 @@ export const addUser = async (
   });
 
   try {
-    await withResolvers(logger, config, async ({mut: {UserMut}}) => {
+    await withDatabase(logger, config, async db => {
       logger.info(`Creating user: ${args.name}`);
 
-      const user = await UserMut.insert(args);
+      const user = await UserMut.insert(db, args);
 
       logger.info(`User created: ${user.name} (id = ${user.id})`);
     });
@@ -135,13 +133,10 @@ export const editUser = async (
   });
 
   try {
-    await withResolvers(logger, config, async ({
-      model: {User},
-      mut: {UserMut},
-    }) => {
+    await withDatabase(logger, config, async db => {
       const user = typeof userNameOrId === 'string'
-        ? User.byName(userNameOrId)
-        : User.byId(userNameOrId as UserId);
+        ? User.byName(db, userNameOrId)
+        : User.byId(db, userNameOrId as UserId);
 
       if (!user) {
         throw new Error(`User not found: ${userNameOrId}`);
@@ -149,7 +144,7 @@ export const editUser = async (
 
       logger.info(`Editing user: ${user.name} (id = ${user.id})`);
 
-      const newUser = await UserMut.update(user.id, args);
+      const newUser = await UserMut.update(db, user.id, args);
 
       if (newUser.name !== user.name) {
         logger.debug(`User renamed: ${user.name} => ${newUser.name}`);
@@ -170,15 +165,12 @@ export const deleteUser = async (
   userNameOrId: string | number
 ): Promise<void> => {
   try {
-    await withResolvers(logger, config, ({
-      model: {User},
-      mut: {UserMut},
-    }) => {
+    await withDatabase(logger, config, db => {
       let userId: UserId;
       if (typeof userNameOrId === 'number') {
         userId = userNameOrId as UserId;
       } else {
-        const user = User.byName(userNameOrId);
+        const user = User.byName(db, userNameOrId);
         if (!user) {
           logger.warn(`User does not exist: ${userNameOrId}`);
           return Promise.resolve();
@@ -186,7 +178,7 @@ export const deleteUser = async (
         userId = user.id;
       }
 
-      const deleted = UserMut.delete(userId);
+      const deleted = UserMut.delete(db, userId);
       if (deleted) {
         logger.info(`User deleted: ${userNameOrId}`);
       } else {

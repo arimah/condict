@@ -7,7 +7,7 @@ import {PageInfo} from '../graphql/types';
  * A generic connection type, matching the various GraphQL connections types
  * that exist in the schema. It must be synchronized with the GraphQL schema.
  */
-export type Connection<T> = {
+export type ItemConnection<T> = {
   page: Pick<PageInfo, 'page' | 'perPage' | 'totalCount'>;
   nodes: T[];
 };

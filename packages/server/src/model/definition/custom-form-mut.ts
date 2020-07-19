@@ -1,5 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
+import {Connection} from '../../database';
 import {
   DefinitionInflectionTableId,
   CustomInflectedFormInput,
@@ -7,21 +8,20 @@ import {
   InflectedFormId,
 } from '../../graphql/types';
 
-import Mutator from '../mutator';
+import {InflectedForm} from '../inflection-table';
 
-export default class CustomFormMut extends Mutator {
-  public async insert(
+const CustomFormMut = {
+  async insert(
+    db: Connection,
     definitionTableId: DefinitionInflectionTableId,
     inflectionTableLayoutId: InflectionTableLayoutId,
     customForms: CustomInflectedFormInput[]
   ): Promise<Map<InflectedFormId, string>> {
-    const {db} = this;
-    const {InflectedForm} = this.model;
-
     const allCustomForms = new Map<InflectedFormId, string>(
       await Promise.all(
         customForms.map(async form => {
           const inflectedForm = await InflectedForm.byIdRequired(
+            db,
             form.inflectedFormId,
             'inflectedFormId'
           );
@@ -53,12 +53,14 @@ export default class CustomFormMut extends Mutator {
     }
 
     return allCustomForms;
-  }
+  },
 
-  public deleteAll(tableId: DefinitionInflectionTableId): void {
-    this.db.exec`
+  deleteAll(db: Connection, tableId: DefinitionInflectionTableId): void {
+    db.exec`
       delete from definition_forms
       where definition_inflection_table_id = ${tableId}
     `;
-  }
-}
+  },
+} as const;
+
+export default CustomFormMut;

@@ -30,7 +30,7 @@ export default validator;
 export type MinLengthMessage<T> = (value: T, minLength: number) => string;
 
 const defaultMinLengthMessage =
-  <T>(value: T, minLength: number) =>
+  <T>(_value: T, minLength: number) =>
     `must have at least ${minLength} character${minLength !== 1 ? 's' : ''}`;
 
 export const minLength = <T extends {length: number}>(

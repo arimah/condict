@@ -1,6 +1,7 @@
 import {UserInputError} from 'apollo-server';
 import {GraphQLResolveInfo} from 'graphql';
 
+import {Connection} from '../../database';
 import {validatePageParams} from '../../graphql/helpers';
 import {
   TagId,
@@ -10,28 +11,27 @@ import {
   PageParams,
 } from '../../graphql/types';
 
-import Model from '../model';
 import paginate from '../paginate';
-import {Connection} from '../types';
+import {ItemConnection} from '../types';
 
 import {TagRow, DefinitionTagRow, LemmaTagRow} from './types';
 
-class Tag extends Model {
-  public readonly byIdKey = 'Tag.byId';
-  public readonly byNameKey = 'Tag.byName';
-  public readonly allByLemmaKey = 'Tags.allByLemma';
-  public readonly allByDefinitionKey = 'Tags.allByDefinition';
-  public readonly defaultPagination: Readonly<PageParams> = {
+const Tag = {
+  byIdKey: 'Tag.byId',
+  byNameKey: 'Tag.byName',
+  allByLemmaKey: 'Tags.allByLemma',
+  allByDefinitionKey: 'Tags.allByDefinition',
+  defaultPagination: {
     page: 0,
     perPage: 50,
-  };
-  public readonly maxPerPage = 200;
+  },
+  maxPerPage: 200,
 
-  public all(
+  all(
+    db: Connection,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Connection<TagRow> {
-    const {db} = this;
+  ): ItemConnection<TagRow> {
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
       () => {
@@ -50,14 +50,14 @@ class Tag extends Model {
         `,
       info
     );
-  }
+  },
 
-  public allByLanguage(
+  allByLanguage(
+    db: Connection,
     languageId: LanguageId,
     page?: PageParams | null,
     info?: GraphQLResolveInfo
-  ): Connection<TagRow> {
-    const {db} = this;
+  ): ItemConnection<TagRow> {
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
       () => {
@@ -83,10 +83,10 @@ class Tag extends Model {
         `,
       info
     );
-  }
+  },
 
-  public byId(id: TagId): Promise<TagRow | null> {
-    return this.db.batchOneToOne(
+  byId(db: Connection, id: TagId): Promise<TagRow | null> {
+    return db.batchOneToOne(
       this.byIdKey,
       id,
       (db, ids) =>
@@ -97,23 +97,24 @@ class Tag extends Model {
         `,
       row => row.id
     );
-  }
+  },
 
-  public async byIdRequired(
+  async byIdRequired(
+    db: Connection,
     id: TagId,
     paramName = 'id'
   ): Promise<TagRow> {
-    const tag = await this.byId(id);
+    const tag = await this.byId(db, id);
     if (!tag) {
       throw new UserInputError(`Tag not found: ${id}`, {
         invalidArgs: [paramName],
       });
     }
     return tag;
-  }
+  },
 
-  public byName(name: string): Promise<TagRow | null> {
-    return this.db.batchOneToOne(
+  byName(db: Connection, name: string): Promise<TagRow | null> {
+    return db.batchOneToOne(
       this.byNameKey,
       name,
       (db, names) =>
@@ -124,10 +125,10 @@ class Tag extends Model {
         `,
       row => row.name
     );
-  }
+  },
 
-  public allByLemma(lemmaId: LemmaId): Promise<TagRow[]> {
-    return this.db.batchOneToMany(
+  allByLemma(db: Connection, lemmaId: LemmaId): Promise<TagRow[]> {
+    return db.batchOneToMany(
       this.allByLemmaKey,
       lemmaId,
       (db, lemmaIds) =>
@@ -144,10 +145,13 @@ class Tag extends Model {
         `,
       row => row.lemma_id
     );
-  }
+  },
 
-  public allByDefinition(definitionId: DefinitionId): Promise<TagRow[]> {
-    return this.db.batchOneToMany(
+  allByDefinition(
+    db: Connection,
+    definitionId: DefinitionId
+  ): Promise<TagRow[]> {
+    return db.batchOneToMany(
       this.allByDefinitionKey,
       definitionId,
       (db, definitionIds) =>
@@ -162,7 +166,7 @@ class Tag extends Model {
         `,
       row => row.definition_id
     );
-  }
-}
+  },
+} as const;
 
-export default {Tag};
+export {Tag};

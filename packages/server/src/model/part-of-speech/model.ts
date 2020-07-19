@@ -1,17 +1,16 @@
 import {UserInputError} from 'apollo-server';
 
+import {Connection} from '../../database';
 import {LanguageId, PartOfSpeechId} from '../../graphql/types';
-
-import Model from '../model';
 
 import {PartOfSpeechRow} from './types';
 
-class PartOfSpeech extends Model {
-  public readonly byIdKey = 'PartOfSpeech.byId';
-  public readonly allByLanguageKey = 'PartOfSpeech.allByLanguage';
+const PartOfSpeech = {
+  byIdKey: 'PartOfSpeech.byId',
+  allByLanguageKey: 'PartOfSpeech.allByLanguage',
 
-  public byId(id: PartOfSpeechId): Promise<PartOfSpeechRow | null> {
-    return this.db.batchOneToOne(
+  byId(db: Connection, id: PartOfSpeechId): Promise<PartOfSpeechRow | null> {
+    return db.batchOneToOne(
       this.byIdKey,
       id,
       (db, ids) =>
@@ -22,23 +21,27 @@ class PartOfSpeech extends Model {
         `,
       row => row.id
     );
-  }
+  },
 
-  public async byIdRequired(
+  async byIdRequired(
+    db: Connection,
     id: PartOfSpeechId,
     paramName = 'id'
   ): Promise<PartOfSpeechRow> {
-    const partOfSpeech = await this.byId(id);
+    const partOfSpeech = await this.byId(db, id);
     if (!partOfSpeech) {
       throw new UserInputError(`Part of speech not found: ${id}`, {
         invalidArgs: [paramName],
       });
     }
     return partOfSpeech;
-  }
+  },
 
-  public allByLanguage(languageId: LanguageId): Promise<PartOfSpeechRow[]> {
-    return this.db.batchOneToMany(
+  allByLanguage(
+    db: Connection,
+    languageId: LanguageId
+  ): Promise<PartOfSpeechRow[]> {
+    return db.batchOneToMany(
       this.allByLanguageKey,
       languageId,
       (db, languageIds) =>
@@ -50,7 +53,7 @@ class PartOfSpeech extends Model {
         `,
       row => row.language_id
     );
-  }
-}
+  },
+} as const;
 
-export default {PartOfSpeech};
+export {PartOfSpeech};

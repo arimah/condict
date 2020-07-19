@@ -1,22 +1,22 @@
 import {compare, hash} from 'bcrypt';
 import {nanoid} from 'nanoid';
 
+import {Connection} from '../../database';
 import {
   LoginResult,
   LoginFailureReason,
   UserSession as UserSessionType,
 } from '../../graphql/types';
 
-import Mutator from '../mutator';
 import FieldSet from '../field-set';
 
+import {User, UserSession} from './model';
 import {UserId, UserRow, NewUserInput, EditUserInput} from './types';
 import {validateName, validatePassword, BcryptRounds} from './validators';
 
-class UserMut extends Mutator {
-  public async insert({name, password}: NewUserInput): Promise<UserRow> {
-    const {db} = this;
-    const {User} = this.model;
+const UserMut = {
+  async insert(db: Connection, data: NewUserInput): Promise<UserRow> {
+    const {name, password} = data;
 
     // Note: validatePassword also hashes the password.
     const validName = validateName(db, null, name);
@@ -27,17 +27,17 @@ class UserMut extends Mutator {
       values (${validName}, ${validPassword})
     `;
 
-    return User.byIdRequired(id);
-  }
+    return User.byIdRequired(db, id);
+  },
 
-  public async update(
+  async update(
+    db: Connection,
     id: UserId,
-    {name, password}: EditUserInput
+    data: EditUserInput
   ): Promise<UserRow> {
-    const {db} = this;
-    const {User} = this.model;
+    const {name, password} = data;
 
-    const user = User.byIdRequired(id);
+    const user = User.byIdRequired(db, id);
 
     const newFields = new FieldSet<UserRow>();
     if (name && name !== user.name) {
@@ -54,35 +54,31 @@ class UserMut extends Mutator {
         where id = ${id}
       `;
     }
-    return User.byIdRequired(id);
-  }
+    return User.byIdRequired(db, id);
+  },
 
-  public delete(id: UserId): boolean {
-    const {db} = this;
-
+  delete(db: Connection, id: UserId): boolean {
     const {affectedRows} = db.exec`
       delete from users
       where id = ${id}
     `;
     return affectedRows > 0;
-  }
-}
+  },
+} as const;
 
-class UserSessionMut extends Mutator {
+const UserSessionMut = {
   /**
    * The default session duration. Sessions can be extended by `resumeSession`.
    * Equal to 30 days in milliseconds.
    */
-  public readonly sessionDuration = 30 * 24 * 60 * 60 * 1000;
+  sessionDuration: 30 * 24 * 60 * 60 * 1000,
 
-  public async logIn(
+  async logIn(
+    db: Connection,
     username: string,
     password: string
   ): Promise<LoginResult> {
-    const {db} = this;
-    const {User} = this.model;
-
-    const user = User.byName(username);
+    const user = User.byName(db, username);
     if (!user) {
       // Forcefully hash the submitted password, to make brute-force user
       // discovery much more difficult. It's basically just a delay.
@@ -108,25 +104,22 @@ class UserSessionMut extends Mutator {
       username: user.name,
       expiresAt,
     };
-  }
+  },
 
-  public logOut(sessionId: string): boolean {
-    const {affectedRows} = this.db.exec`
+  logOut(db: Connection, sessionId: string): boolean {
+    const {affectedRows} = db.exec`
       delete from user_sessions
       where id = ${sessionId}
     `;
     return affectedRows > 0;
-  }
+  },
 
-  public resumeSession(sessionId: string): UserSessionType | null {
-    const {db} = this;
-    const {User, UserSession} = this.model;
-
+  resumeSession(db: Connection, sessionId: string): UserSessionType | null {
     const now = Date.now();
-    const session = UserSession.byId(sessionId);
+    const session = UserSession.byId(db, sessionId);
 
     if (session && now < session.expires_at) {
-      const user = User.byIdRequired(session.user_id);
+      const user = User.byIdRequired(db, session.user_id);
 
       const expiresAt = now + this.sessionDuration;
       db.exec`
@@ -142,7 +135,7 @@ class UserSessionMut extends Mutator {
       };
     }
     return null;
-  }
-}
+  },
+} as const;
 
-export default {UserMut, UserSessionMut};
+export {UserMut, UserSessionMut};

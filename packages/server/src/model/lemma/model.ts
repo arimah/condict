@@ -1,5 +1,6 @@
 import {GraphQLResolveInfo} from 'graphql';
 
+import {Connection} from '../../database';
 import {validatePageParams} from '../../graphql/helpers';
 import {
   LanguageId,
@@ -8,22 +9,21 @@ import {
   PageParams,
 } from '../../graphql/types';
 
-import Model from '../model';
 import paginate from '../paginate';
-import {Connection} from '../types';
+import {ItemConnection} from '../types';
 
 import {LemmaRow} from './types';
 
-class Lemma extends Model {
-  public readonly byIdKey = 'Lemma.byId';
-  public readonly defaultPagination: Readonly<PageParams> = {
+const Lemma = {
+  byIdKey: 'Lemma.byId',
+  defaultPagination: {
     page: 0,
     perPage: 50,
-  };
-  public readonly maxPerPage = 500;
+  },
+  maxPerPage: 500,
 
-  public byId(id: LemmaId): Promise<LemmaRow | null> {
-    return this.db.batchOneToOne(
+  byId(db: Connection, id: LemmaId): Promise<LemmaRow | null> {
+    return db.batchOneToOne(
       this.byIdKey,
       id,
       (db, ids) =>
@@ -34,10 +34,14 @@ class Lemma extends Model {
         `,
       row => row.id
     );
-  }
+  },
 
-  public byTerm(languageId: LanguageId, term: string): Promise<LemmaRow | null> {
-    return this.db.batchOneToOne(
+  byTerm(
+    db: Connection,
+    languageId: LanguageId,
+    term: string
+  ): Promise<LemmaRow | null> {
+    return db.batchOneToOne(
       this.byTermKey(languageId),
       term,
       (db, terms, languageId) =>
@@ -50,19 +54,19 @@ class Lemma extends Model {
       row => row.term_unique,
       languageId
     );
-  }
+  },
 
-  public byTermKey(languageId: LanguageId): string {
+  byTermKey(languageId: LanguageId): string {
     return `Lemma.byTerm(${languageId})`;
-  }
+  },
 
-  public allByLanguage(
+  allByLanguage(
+    db: Connection,
     languageId: LanguageId,
     page: PageParams | undefined | null,
     filter: LemmaFilter,
     info?: GraphQLResolveInfo
-  ): Connection<LemmaRow> {
-    const {db} = this;
+  ): ItemConnection<LemmaRow> {
     const condition = db.raw`
       l.language_id = ${languageId}
         ${
@@ -100,7 +104,7 @@ class Lemma extends Model {
       `,
       info
     );
-  }
-}
+  },
+} as const;
 
-export default {Lemma};
+export {Lemma};

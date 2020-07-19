@@ -1,6 +1,7 @@
 import {UserInputError} from 'apollo-server';
 import {GraphQLResolveInfo} from 'graphql';
 
+import {Connection} from '../../database';
 import {validatePageParams} from '../../graphql/helpers';
 import {
   PartOfSpeechId,
@@ -10,9 +11,8 @@ import {
   PageParams,
 } from '../../graphql/types';
 
-import Model from '../model';
 import paginate from '../paginate';
-import {Connection} from '../types';
+import {ItemConnection} from '../types';
 
 import {
   InflectionTableRow,
@@ -20,12 +20,15 @@ import {
   InflectedFormRow,
 } from './types';
 
-class InflectionTable extends Model {
-  public readonly byIdKey = 'InflectionTable.byId';
-  public readonly allByPartOfSpeechKey = 'InflectionTable.allByPartOfSpeechKey';
+const InflectionTable = {
+  byIdKey: 'InflectionTable.byId',
+  allByPartOfSpeechKey: 'InflectionTable.allByPartOfSpeechKey',
 
-  public byId(id: InflectionTableId): Promise<InflectionTableRow | null> {
-    return this.db.batchOneToOne(
+  byId(
+    db: Connection,
+    id: InflectionTableId
+  ): Promise<InflectionTableRow | null> {
+    return db.batchOneToOne(
       this.byIdKey,
       id,
       (db, ids) =>
@@ -36,25 +39,27 @@ class InflectionTable extends Model {
         `,
       row => row.id
     );
-  }
+  },
 
-  public async byIdRequired(
+  async byIdRequired(
+    db: Connection,
     id: InflectionTableId,
     paramName = 'id'
   ): Promise<InflectionTableRow> {
-    const inflectionTable = await this.byId(id);
+    const inflectionTable = await this.byId(db, id);
     if (!inflectionTable) {
       throw new UserInputError(`Inflection table not found: ${id}`, {
         invalidArgs: [paramName],
       });
     }
     return inflectionTable;
-  }
+  },
 
-  public allByPartOfSpeech(
+  allByPartOfSpeech(
+    db: Connection,
     partOfSpeechId: PartOfSpeechId
   ): Promise<InflectionTableRow[]> {
-    return this.db.batchOneToMany(
+    return db.batchOneToMany(
       this.allByPartOfSpeechKey,
       partOfSpeechId,
       (db, partOfSpeechIds) =>
@@ -66,15 +71,15 @@ class InflectionTable extends Model {
         `,
       row => row.part_of_speech_id
     );
-  }
-}
+  },
+} as const;
 
-class InflectedForm extends Model {
-  public readonly byIdKey = 'InflectedForm.byId';
-  public readonly allByTableLayoutKey = 'InflectedForm.allByTableLayout';
+const InflectedForm = {
+  byIdKey: 'InflectedForm.byId',
+  allByTableLayoutKey: 'InflectedForm.allByTableLayout',
 
-  public byId(id: InflectedFormId): Promise<InflectedFormRow | null> {
-    return this.db.batchOneToOne(
+  byId(db: Connection, id: InflectedFormId): Promise<InflectedFormRow | null> {
+    return db.batchOneToOne(
       this.byIdKey,
       id,
       (db, ids) =>
@@ -85,25 +90,27 @@ class InflectedForm extends Model {
         `,
       row => row.id
     );
-  }
+  },
 
-  public async byIdRequired(
+  async byIdRequired(
+    db: Connection,
     id: InflectedFormId,
     paramName = 'id'
   ): Promise<InflectedFormRow> {
-    const inflectedForm = await this.byId(id);
+    const inflectedForm = await this.byId(db, id);
     if (!inflectedForm) {
       throw new UserInputError(`Inflected form not found: ${id}`, {
         invalidArgs: [paramName],
       });
     }
     return inflectedForm;
-  }
+  },
 
-  public allByTableLayout(
+  allByTableLayout(
+    db: Connection,
     versionId: InflectionTableLayoutId
   ): Promise<InflectedFormRow[]> {
-    return this.db.batchOneToMany(
+    return db.batchOneToMany(
       this.allByTableLayoutKey,
       versionId,
       (db, versionId) =>
@@ -115,33 +122,35 @@ class InflectedForm extends Model {
         `,
       row => row.inflection_table_version_id
     );
-  }
+  },
 
-  public allDerivableByTableLayout(
+  allDerivableByTableLayout(
+    db: Connection,
     versionId: InflectionTableLayoutId
   ): InflectedFormRow[] {
-    return this.db.all<InflectedFormRow>`
+    return db.all<InflectedFormRow>`
       select *
       from inflected_forms
       where inflection_table_version_id = ${versionId}
         and derive_lemma = 1
     `;
-  }
-}
+  },
+} as const;
 
-class InflectionTableLayout extends Model {
-  public readonly byIdKey = 'InflectionTableLayout.byId';
-  public readonly currentByTableKey = 'InflectionTableLayout.currentByTable';
-  public readonly defaultPagination: Readonly<PageParams> = {
+const InflectionTableLayout = {
+  byIdKey: 'InflectionTableLayout.byId',
+  currentByTableKey: 'InflectionTableLayout.currentByTable',
+  defaultPagination: {
     page: 0,
     perPage: 50,
-  };
-  public readonly maxPerPage = 200;
+  },
+  maxPerPage: 200,
 
-  public byId(
+  byId(
+    db: Connection,
     id: InflectionTableLayoutId
   ): Promise<InflectionTableLayoutRow | null> {
-    return this.db.batchOneToOne(
+    return db.batchOneToOne(
       this.byIdKey,
       id,
       (db, ids) =>
@@ -156,25 +165,27 @@ class InflectionTableLayout extends Model {
         `,
       row => row.id
     );
-  }
+  },
 
-  public async byIdRequired(
+  async byIdRequired(
+    db: Connection,
     id: InflectionTableLayoutId,
     paramName = 'id'
   ): Promise<InflectionTableLayoutRow> {
-    const layout = await this.byId(id);
+    const layout = await this.byId(db, id);
     if (!layout) {
       throw new UserInputError(`Inflection table layout not found: ${id}`, {
         invalidArgs: [paramName],
       });
     }
     return layout;
-  }
+  },
 
-  public currentByTable(
+  currentByTable(
+    db: Connection,
     tableId: InflectionTableId
   ): Promise<InflectionTableLayoutRow | null> {
-    return this.db.batchOneToOne(
+    return db.batchOneToOne(
       this.currentByTableKey,
       tableId,
       (db, tableIds) =>
@@ -190,27 +201,28 @@ class InflectionTableLayout extends Model {
         `,
       row => row.inflection_table_id
     );
-  }
+  },
 
-  public async currentByTableRequired(
+  async currentByTableRequired(
+    db: Connection,
     tableId: InflectionTableId,
     paramName = 'tableId'
   ): Promise<InflectionTableLayoutRow> {
-    const layout = await this.currentByTable(tableId);
+    const layout = await this.currentByTable(db, tableId);
     if (!layout) {
       throw new UserInputError(`Table has no current layout: ${tableId}`, {
         invalidArgs: [paramName],
       });
     }
     return layout;
-  }
+  },
 
-  public allOldByTable(
+  allOldByTable(
+    db: Connection,
     tableId: InflectionTableId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
-  ): Connection<InflectionTableLayoutRow> {
-    const {db} = this;
+  ): ItemConnection<InflectionTableLayoutRow> {
     const condition = db.raw`
       itv.inflection_table_id = ${tableId} and is_current = 0
     `;
@@ -237,10 +249,10 @@ class InflectionTableLayout extends Model {
       `,
       info
     );
-  }
-}
+  },
+} as const;
 
-export default {
+export {
   InflectionTable,
   InflectedForm,
   InflectionTableLayout,

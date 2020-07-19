@@ -1,23 +1,23 @@
 import {UserInputError} from 'apollo-server';
 
+import {Connection} from '../../database';
 import {LanguageId} from '../../graphql/types';
 
 import {LanguageRow} from './types';
-import Model from '../model';
 
-class Language extends Model {
-  public readonly byIdKey = 'Language.byId';
+const Language = {
+  byIdKey: 'Language.byId',
 
-  public all(): LanguageRow[] {
-    return this.db.all<LanguageRow>`
+  all(db: Connection): LanguageRow[] {
+    return db.all<LanguageRow>`
       select *
       from languages
       order by name
     `;
-  }
+  },
 
-  public byId(id: LanguageId): Promise<LanguageRow | null> {
-    return this.db.batchOneToOne(
+  byId(db: Connection, id: LanguageId): Promise<LanguageRow | null> {
+    return db.batchOneToOne(
       this.byIdKey,
       id,
       (db, ids) => db.all<LanguageRow>`
@@ -27,28 +27,29 @@ class Language extends Model {
       `,
       row => row.id
     );
-  }
+  },
 
-  public async byIdRequired(
+  async byIdRequired(
+    db: Connection,
     id: LanguageId,
     paramName = 'id'
   ): Promise<LanguageRow> {
-    const language = await this.byId(id);
+    const language = await this.byId(db, id);
     if (!language) {
       throw new UserInputError(`Language not found: ${id}`, {
         invalidArgs: [paramName],
       });
     }
     return language;
-  }
+  },
 
-  public byName(name: string): LanguageRow | null {
-    return this.db.get<LanguageRow>`
+  byName(db: Connection, name: string): LanguageRow | null {
+    return db.get<LanguageRow>`
       select *
       from languages
       where name = ${name}
     `;
-  }
-}
+  },
+} as const;
 
-export default {Language};
+export {Language};

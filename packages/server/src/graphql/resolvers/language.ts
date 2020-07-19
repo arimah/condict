@@ -1,4 +1,11 @@
-import {LanguageRow} from '../../model/language/types';
+import {
+  Language as LanguageModel,
+  LanguageMut,
+  PartOfSpeech,
+  Lemma,
+  Tag,
+  LanguageRow,
+} from '../../model';
 
 import {
   Language as LanguageType,
@@ -10,39 +17,35 @@ import {
 } from '../types';
 import {mutator} from '../helpers';
 
-import {ResolversFor, Mutators, PageArg} from './types';
+import {ResolversFor, Mutators, IdArg, PageArg} from './types';
 
 type LemmasArgs = PageArg & {
   filter?: LemmaFilter | null;
 };
 
 const Language: ResolversFor<LanguageType, LanguageRow> = {
-  partsOfSpeech: (p, _args, {model: {PartOfSpeech}}) =>
-    PartOfSpeech.allByLanguage(p.id),
+  partsOfSpeech: (p, _args, {db}) => PartOfSpeech.allByLanguage(db, p.id),
 
   lemmaCount: p => p.lemma_count,
 
-  lemmas: (p, {page, filter}: LemmasArgs, {model: {Lemma}}, info) =>
+  lemmas: (p, {page, filter}: LemmasArgs, {db}, info) =>
     Lemma.allByLanguage(
+      db,
       p.id,
       page,
       filter || LemmaFilter.ALL_LEMMAS,
       info
     ),
 
-  tags: (p, {page}: PageArg, {model: {Tag}}, info) =>
-    Tag.allByLanguage(p.id, page, info),
-};
-
-type LanguageArgs = {
-  id: LanguageId;
+  tags: (p, {page}: PageArg, {db}, info) =>
+    Tag.allByLanguage(db, p.id, page, info),
 };
 
 const Query: ResolversFor<QueryType, unknown> = {
-  languages: (_root, _args, {model: {Language}}) => Language.all(),
+  languages: (_root, _args, {db}) => LanguageModel.all(db),
 
-  language: (_root, {id}: LanguageArgs, {model: {Language}}) =>
-    Language.byId(id),
+  language: (_root, {id}: IdArg<LanguageId>, {db}) =>
+    LanguageModel.byId(db, id),
 };
 
 type AddLanguageArgs = {
@@ -56,13 +59,13 @@ type EditLanguageArgs = {
 
 const Mutation: Mutators = {
   addLanguage: mutator(
-    (_root, {data}: AddLanguageArgs, {mut: {LanguageMut}}) =>
-      LanguageMut.insert(data)
+    (_root, {data}: AddLanguageArgs, {db}) =>
+      LanguageMut.insert(db, data)
   ),
 
   editLanguage: mutator(
-    (_root, {id, data}: EditLanguageArgs, {mut: {LanguageMut}}) =>
-      LanguageMut.update(id, data)
+    (_root, {id, data}: EditLanguageArgs, {db}) =>
+      LanguageMut.update(db, id, data)
   ),
 };
 

@@ -1,4 +1,4 @@
-import validator, {minLength, Valid} from '../validator';
+import validator, {Valid, minLength} from '../validator';
 
 export type ValidTag = Valid<string, 'Tag'>;
 

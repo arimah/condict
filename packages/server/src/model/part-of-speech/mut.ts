@@ -1,24 +1,28 @@
 import {UserInputError} from 'apollo-server';
 
+import {Connection} from '../../database';
 import {
   PartOfSpeechId,
   NewPartOfSpeechInput,
   EditPartOfSpeechInput,
 } from '../../graphql/types';
 
-import Mutator from '../mutator';
+import {Language} from '../language';
+import {Definition} from '../definition';
 
+import {PartOfSpeech} from './model';
 import {PartOfSpeechRow} from './types';
 import {validateName} from './validators';
 
-class PartOfSpeechMut extends Mutator {
-  public async insert(
-    {languageId, name}: NewPartOfSpeechInput
+const PartOfSpeechMut = {
+  async insert(
+    db: Connection,
+    data: NewPartOfSpeechInput
   ): Promise<PartOfSpeechRow> {
-    const {db} = this;
-    const {PartOfSpeech, Language} = this.model;
+    const {languageId} = data;
+    let {name} = data;
 
-    const language = await Language.byIdRequired(languageId);
+    const language = await Language.byIdRequired(db, languageId);
 
     name = validateName(db, null, language.id, name);
 
@@ -26,17 +30,17 @@ class PartOfSpeechMut extends Mutator {
       insert into parts_of_speech (language_id, name)
       values (${language.id}, ${name})
     `;
-    return PartOfSpeech.byIdRequired(insertId);
-  }
+    return PartOfSpeech.byIdRequired(db, insertId);
+  },
 
-  public async update(
+  async update(
+    db: Connection,
     id: PartOfSpeechId,
-    {name}: EditPartOfSpeechInput
+    data: EditPartOfSpeechInput
   ): Promise<PartOfSpeechRow> {
-    const {db} = this;
-    const {PartOfSpeech} = this.model;
+    const {name} = data;
 
-    const partOfSpeech = await PartOfSpeech.byIdRequired(id);
+    const partOfSpeech = await PartOfSpeech.byIdRequired(db, id);
 
     if (name != null) {
       const newName = validateName(
@@ -54,29 +58,26 @@ class PartOfSpeechMut extends Mutator {
       db.clearCache(PartOfSpeech.byIdKey, partOfSpeech.id);
     }
 
-    return PartOfSpeech.byIdRequired(partOfSpeech.id);
-  }
+    return PartOfSpeech.byIdRequired(db, partOfSpeech.id);
+  },
 
-  public delete(id: PartOfSpeechId): boolean {
-    const {db} = this;
-
-    this.ensureUnused(id);
+  delete(db: Connection, id: PartOfSpeechId): boolean {
+    this.ensureUnused(db, id);
 
     const {affectedRows} = db.exec`
       delete from parts_of_speech
       where id = ${id}
     `;
     return affectedRows > 0;
-  }
+  },
 
-  private ensureUnused(id: PartOfSpeechId) {
-    const {Definition} = this.model;
-    if (Definition.anyUsesPartOfSpeech(id)) {
+  ensureUnused(db: Connection, id: PartOfSpeechId) {
+    if (Definition.anyUsesPartOfSpeech(db, id)) {
       throw new UserInputError(
         `Part of speech ${id} cannot be deleted because it is used by one or more lemmas`
       );
     }
-  }
-}
+  },
+} as const;
 
-export default {PartOfSpeechMut};
+export {PartOfSpeechMut};

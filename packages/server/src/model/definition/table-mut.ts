@@ -1,5 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
+import {Connection} from '../../database';
 import {
   DefinitionId,
   DefinitionInflectionTableId,
@@ -12,12 +13,16 @@ import {
 } from '../../graphql/types';
 import {validateTableCaption} from '../../rich-text/validate';
 
-import Mutator from '../mutator';
 import {
+  InflectionTable,
+  InflectionTableLayout,
+  InflectedForm,
   InflectionTableRow,
   InflectionTableLayoutRow,
-} from '../inflection-table/types';
+} from '../inflection-table';
 
+import {DefinitionInflectionTable} from './model';
+import CustomFormMut from './custom-form-mut';
 import deriveForms from './derive-forms';
 
 export type DefinitionInflectionTableResult = {
@@ -37,16 +42,20 @@ type ValidateInflectionTableResult = {
   currentLayout: InflectionTableLayoutRow;
 };
 
-export default class DefinitionInflectionTableMut extends Mutator {
-  public async insert(
+const DefinitionInflectionTableMut = {
+  async insert(
+    db: Connection,
     definition: DefinitionData,
-    {inflectionTableId, caption, customForms}: NewDefinitionInflectionTableInput,
+    data: NewDefinitionInflectionTableInput,
     index: number
   ): Promise<DefinitionInflectionTableResult> {
-    const {db} = this;
-    const {CustomFormMut} = this.mut;
+    const {inflectionTableId, caption, customForms} = data;
 
-    const {inflectionTable, currentLayout} = await this.validateInflectionTableId(
+    const {
+      inflectionTable,
+      currentLayout,
+    } = await this.validateInflectionTableId(
+      db,
       inflectionTableId,
       definition.partOfSpeechId
     );
@@ -70,12 +79,14 @@ export default class DefinitionInflectionTableMut extends Mutator {
     `;
 
     const customFormMap = await CustomFormMut.insert(
+      db,
       tableId,
       currentLayout.id,
       customForms
     );
 
     const derivedForms = this.deriveAllForms(
+      db,
       tableId,
       definition.term,
       definition.stemMap,
@@ -84,19 +95,18 @@ export default class DefinitionInflectionTableMut extends Mutator {
     );
 
     return {id: tableId as DefinitionInflectionTableId, derivedForms};
-  }
+  },
 
-  public async update(
+  async update(
+    db: Connection,
     id: DefinitionInflectionTableId,
     definition: DefinitionData,
-    {caption, customForms, upgradeTableLayout}: EditDefinitionInflectionTableInput,
+    data: EditDefinitionInflectionTableInput,
     index: number
   ): Promise<DefinitionInflectionTableResult> {
-    const {db} = this;
-    const {DefinitionInflectionTable, InflectionTableLayout} = this.model;
-    const {CustomFormMut} = this.mut;
+    const {caption, customForms, upgradeTableLayout} = data;
 
-    const table = await DefinitionInflectionTable.byIdRequired(id);
+    const table = await DefinitionInflectionTable.byIdRequired(db, id);
     if (table.definition_id !== definition.id) {
       throw new UserInputError(
         `Definition inflection table ${id} belongs to the wrong definition`,
@@ -105,11 +115,13 @@ export default class DefinitionInflectionTableMut extends Mutator {
     }
 
     const {currentLayout} = await this.validateInflectionTableId(
+      db,
       table.inflection_table_id,
       definition.partOfSpeechId
     );
 
     let tableLayout = await InflectionTableLayout.byIdRequired(
+      db,
       table.inflection_table_version_id
     );
     if (tableLayout.is_current === 0 && upgradeTableLayout) {
@@ -131,14 +143,16 @@ export default class DefinitionInflectionTableMut extends Mutator {
     // We could compute a custom forms delta, but it's kind of messy.
     // It's much easier to just delete all old forms and insert the new.
     // This all happens inside a transaction anyway.
-    CustomFormMut.deleteAll(id);
+    CustomFormMut.deleteAll(db, id);
     const customFormMap = await CustomFormMut.insert(
+      db,
       id,
       tableLayout.id,
       customForms
     );
 
     const derivedForms = this.deriveAllForms(
+      db,
       table.id,
       definition.term,
       definition.stemMap,
@@ -147,15 +161,15 @@ export default class DefinitionInflectionTableMut extends Mutator {
     );
 
     return {id, derivedForms};
-  }
+  },
 
-  private async validateInflectionTableId(
+  async validateInflectionTableId(
+    db: Connection,
     inflectionTableId: InflectionTableId,
     partOfSpeechId: PartOfSpeechId
   ): Promise<ValidateInflectionTableResult> {
-    const {InflectionTable, InflectionTableLayout} = this.model;
-
     const inflectionTable = await InflectionTable.byIdRequired(
+      db,
       inflectionTableId,
       'inflectionTableId'
     );
@@ -167,24 +181,23 @@ export default class DefinitionInflectionTableMut extends Mutator {
     }
 
     const currentLayout =
-      await InflectionTableLayout.currentByTableRequired(inflectionTable.id);
+      await InflectionTableLayout.currentByTableRequired(db, inflectionTable.id);
 
     return {inflectionTable, currentLayout};
-  }
+  },
 
-  public deriveAllForms(
+  deriveAllForms(
+    db: Connection,
     tableId: DefinitionInflectionTableId,
     term: string,
     stemMap: Map<string, string>,
     inflectionTableLayoutId: InflectionTableLayoutId,
     customForms: Map<InflectedFormId, string>
   ): Map<InflectedFormId, string> {
-    const {InflectedForm} = this.model;
-
     const derivedForms = deriveForms(
       term,
       stemMap,
-      InflectedForm.allDerivableByTableLayout(inflectionTableLayoutId)
+      InflectedForm.allDerivableByTableLayout(db, inflectionTableLayoutId)
     );
 
     customForms.forEach((formValue, formId) => {
@@ -194,13 +207,13 @@ export default class DefinitionInflectionTableMut extends Mutator {
     });
 
     return derivedForms;
-  }
+  },
 
-  public deleteOld(
+  deleteOld(
+    db: Connection,
     definitionId: DefinitionId,
     currentIds: DefinitionInflectionTableId[]
   ): void {
-    const {db} = this;
     db.exec`
       delete from definition_inflection_tables
       where definition_id = ${definitionId}
@@ -210,5 +223,7 @@ export default class DefinitionInflectionTableMut extends Mutator {
             : ''
         }
     `;
-  }
-}
+  },
+};
+
+export default DefinitionInflectionTableMut;

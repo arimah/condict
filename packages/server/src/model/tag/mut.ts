@@ -1,14 +1,12 @@
+import {Connection} from '../../database';
 import {TagId} from '../../graphql/types';
 
-import Mutator from '../mutator';
-
+import {Tag} from './model';
 import {TagRow} from './types';
 import {ValidTag} from './validators';
 
-class TagMut extends Mutator {
-  public ensureAllExist(tags: ValidTag[]): Map<string, TagId> {
-    const {db} = this;
-
+const TagMut = {
+  ensureAllExist(db: Connection, tags: ValidTag[]): Map<string, TagId> {
     if (tags.length === 0) {
       // Nothing to do
       return new Map();
@@ -35,12 +33,9 @@ class TagMut extends Mutator {
     }
 
     return tagToId;
-  }
+  },
 
-  public deleteOrphaned(): void {
-    const {db} = this;
-    const {Tag} = this.model;
-
+  deleteOrphaned(db: Connection): void {
     const emptyIds = db.all<{id: TagId}>`
       select t.id
       from tags t
@@ -57,7 +52,7 @@ class TagMut extends Mutator {
         where id in (${emptyIds.map(row => row.id)})
       `;
     }
-  }
-}
+  },
+} as const;
 
-export default {TagMut};
+export {TagMut};

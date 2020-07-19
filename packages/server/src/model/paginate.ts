@@ -2,7 +2,7 @@ import {GraphQLResolveInfo, SelectionSetNode} from 'graphql';
 
 import {PageParams} from '../graphql/types';
 
-import {Connection} from './types';
+import {ItemConnection} from './types';
 
 type SelectedFields = {
   page: boolean;
@@ -77,7 +77,7 @@ const paginate = <T>(
   getTotal: () => number,
   getNodes: (limit: number, offset: number) => T[],
   info?: GraphQLResolveInfo
-): Connection<T> => {
+): ItemConnection<T> => {
   const selected = findSelectedFields(info);
 
   const offset = page.page * page.perPage;

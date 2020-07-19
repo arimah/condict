@@ -1,6 +1,9 @@
 .env*
 !.env.example
 *.sqlite
+*.db
+*-shm
+*-wal
 *.dump
 
 .npm

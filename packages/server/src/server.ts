@@ -3,8 +3,8 @@ import {makeExecutableSchema} from 'graphql-tools';
 
 import performStartupChecks from './startup-checks';
 import {Connection, ConnectionPool, createPool} from './database';
-import {getTypeDefs, getResolvers, getDirectives, Context} from './graphql';
-import createModelResolvers, {Resolvers} from './model';
+import {Context, getTypeDefs, getResolvers, getDirectives} from './graphql';
+import {UserSession} from './model';
 import {ServerConfig, Logger} from './types';
 
 export interface ContextResult {
@@ -78,43 +78,35 @@ export default class CondictServer {
 
     const {logger, databasePool} = this;
 
-    let modelResolvers: Resolvers | undefined;
-    let db: Connection | undefined;
+    let db: Connection | null = null;
     try {
       db = await databasePool.getConnection();
-      modelResolvers = createModelResolvers(db, logger);
     } catch (e) {
       if (db) {
         db.release();
-        db = undefined;
+        db = null;
       }
       throw e;
     }
 
     const hasValidSession =
-      sessionId == undefined ? noSession :
-      sessionId === LocalSession ? validSession :
-      () => {
-        if (db && modelResolvers) {
-          const {UserSession} = modelResolvers.model;
-          return UserSession.verify(sessionId);
-        }
-        return noSession();
-      };
+      sessionId === LocalSession
+        ? validSession
+        : sessionId == undefined
+          ? noSession
+          : () => db !== null && UserSession.verify(db, sessionId);
 
     return {
       context: {
         db,
         logger,
-        model: modelResolvers.model,
-        mut: modelResolvers.mut,
         sessionId: typeof sessionId === 'string' ? sessionId : null,
         hasValidSession,
       },
       finish: () => {
         if (db) {
           db.release();
-          db = undefined;
+          db = null;
         }
       },
     };

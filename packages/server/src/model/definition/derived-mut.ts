@@ -1,18 +1,16 @@
+import {Connection} from '../../database';
 import MultiMap from '../../utils/multi-map';
 import {DefinitionId, LanguageId, InflectedFormId} from '../../graphql/types';
 
-import Mutator from '../mutator';
-import {validateTerm, ValidTerm} from '../lemma/validators';
+import {LemmaMut, ValidTerm, validateTerm} from '../lemma';
 
-export default class DerivedDefinitionMut extends Mutator {
-  public insertAll(
+const DerivedDefinitionMut = {
+  insertAll(
+    db: Connection,
     languageId: LanguageId,
     originalDefinitionId: DefinitionId,
     derivedDefinitions: MultiMap<string, InflectedFormId>
   ): void {
-    const {db} = this;
-    const {LemmaMut} = this.mut;
-
     // validateTerm may normalize the term, for example by trimming away
     // white space. When we insert our derived definitions, we must ensure
     // we use the normalized values, so build a map from validated term
@@ -20,9 +18,8 @@ export default class DerivedDefinitionMut extends Mutator {
     //
     // If validation fails for any given derived definition, we simply
     // ignore it. This can happen if the term is empty (in which case we
-    // don't want it in the dictionary anyway), or if it's too long (in
-    // which case we *can't* add it without risking truncation). Generally
-    // it's preferable to add what we can.
+    // don't want it in the dictionary anyway). Generally it's preferable
+    // to add what we can.
 
     const validDerivedDefinitions = derivedDefinitions
       .map((term, inflectedFormId) => {
@@ -32,14 +29,15 @@ export default class DerivedDefinitionMut extends Mutator {
         } catch (e) {
           // Add invalid terms to '', which we know isn't valid.
           // We'll filter it out later.
-          return ['', 0 as InflectedFormId];
+          return ['' as ValidTerm, 0 as InflectedFormId];
         }
       })
       .filter(Boolean);
 
     const termToLemmaId = LemmaMut.ensureAllExist(
+      db,
       languageId,
-      Array.from(validDerivedDefinitions.keys()) as ValidTerm[]
+      Array.from(validDerivedDefinitions.keys())
     );
 
     const values: any[] = [];
@@ -63,12 +61,14 @@ export default class DerivedDefinitionMut extends Mutator {
         values ${values}
       `;
     }
-  }
+  },
 
-  public deleteAll(originalDefinitionId: DefinitionId): void {
-    this.db.exec`
+  deleteAll(db: Connection, originalDefinitionId: DefinitionId): void {
+    db.exec`
       delete from derived_definitions
       where original_definition_id = ${originalDefinitionId}
     `;
-  }
-}
+  },
+} as const;
+
+export default DerivedDefinitionMut;

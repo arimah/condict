@@ -1,4 +1,11 @@
-import {PartOfSpeechRow} from '../../model/part-of-speech/types';
+import {
+  PartOfSpeech as PartOfSpeechModel,
+  PartOfSpeechMut,
+  InflectionTable,
+  Language,
+  Definition,
+  PartOfSpeechRow,
+} from '../../model';
 
 import {
   PartOfSpeech as PartOfSpeechType,
@@ -12,22 +19,20 @@ import {mutator} from '../helpers';
 import {ResolversFor, Mutators, IdArg, PageArg} from './types';
 
 const PartOfSpeech: ResolversFor<PartOfSpeechType, PartOfSpeechRow> = {
-  inflectionTables: (p, _args, {model: {InflectionTable}}) =>
-    InflectionTable.allByPartOfSpeech(p.id),
+  inflectionTables: (p, _args, {db}) =>
+    InflectionTable.allByPartOfSpeech(db, p.id),
 
-  language: (p, _args, {model: {Language}}) =>
-    Language.byId(p.language_id),
+  language: (p, _args, {db}) => Language.byId(db, p.language_id),
 
-  isInUse: (p, _args, {model: {Definition}}) =>
-    Definition.anyUsesPartOfSpeech(p.id),
+  isInUse: (p, _args, {db}) => Definition.anyUsesPartOfSpeech(db, p.id),
 
-  usedByDefinitions: (p, {page}: PageArg, {model: {Definition}}, info) =>
-    Definition.allByPartOfSpeech(p.id, page, info),
+  usedByDefinitions: (p, {page}: PageArg, {db}, info) =>
+    Definition.allByPartOfSpeech(db, p.id, page, info),
 };
 
 const Query: ResolversFor<QueryType, unknown> = {
-  partOfSpeech: (_root, args: IdArg<PartOfSpeechId>, {model: {PartOfSpeech}}) =>
-    PartOfSpeech.byId(args.id),
+  partOfSpeech: (_root, args: IdArg<PartOfSpeechId>, {db}) =>
+    PartOfSpeechModel.byId(db, args.id),
 };
 
 type AddPartOfSpeechArgs = {
@@ -41,18 +46,18 @@ type EditPartOfSpeechArgs = {
 
 const Mutation: Mutators = {
   addPartOfSpeech: mutator(
-    (_root, {data}: AddPartOfSpeechArgs, {mut: {PartOfSpeechMut}}) =>
-      PartOfSpeechMut.insert(data)
+    (_root, {data}: AddPartOfSpeechArgs, {db}) =>
+      PartOfSpeechMut.insert(db, data)
   ),
 
   editPartOfSpeech: mutator(
-    (_root, {id, data}: EditPartOfSpeechArgs, {mut: {PartOfSpeechMut}}) =>
-      PartOfSpeechMut.update(id, data)
+    (_root, {id, data}: EditPartOfSpeechArgs, {db}) =>
+      PartOfSpeechMut.update(db, id, data)
   ),
 
   deletePartOfSpeech: mutator(
-    (_root, {id}: IdArg<PartOfSpeechId>, {mut: {PartOfSpeechMut}}) =>
-      PartOfSpeechMut.delete(id)
+    (_root, {id}: IdArg<PartOfSpeechId>, {db}) =>
+      PartOfSpeechMut.delete(db, id)
   ),
 };
 

@@ -1,7 +1,6 @@
 import {IFieldResolver} from 'apollo-server';
 
 import {Connection} from '../../database';
-import {ModelResolver, MutatorResolver} from '../../model';
 import {Logger} from '../../types';
 
 import {IdOf, PageParams, Mutation} from '../types';
@@ -9,8 +8,6 @@ import {IdOf, PageParams, Mutation} from '../types';
 export interface Context {
   readonly db: Connection;
   readonly logger: Logger;
-  readonly model: ModelResolver;
-  readonly mut: MutatorResolver;
   readonly sessionId: string | null;
   readonly hasValidSession: () => boolean;
 }
