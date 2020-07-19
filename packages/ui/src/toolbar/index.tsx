@@ -9,7 +9,7 @@ import React, {
   useEffect,
 } from 'react';
 
-import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
+import {Shortcut, ShortcutMap} from '../shortcut';
 import DescendantCollection from '../descendant-collection';
 
 import {Context, ContextValue, Descendants, ItemElement} from './focus-manager';
@@ -23,7 +23,7 @@ import * as S from './styles';
 const DOCUMENT_POSITION_PRECEDING = 2;
 
 type KeyCommand = {
-  key: ShortcutType | null;
+  key: Shortcut | null;
   exec(context: ContextValue): void;
 };
 

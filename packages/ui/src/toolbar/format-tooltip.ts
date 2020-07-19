@@ -1,19 +1,19 @@
-import {ShortcutType} from '../command/shortcut';
+import {Shortcut} from '../shortcut';
 
 const formatTooltip = (
   label: string | null,
-  shortcut: ShortcutType | undefined | null
+  shortcut: Shortcut | undefined | null
 ): string | undefined => {
   if (!label) {
     if (shortcut) {
       // A shortcut with no label? Display the shortcut on its own.
-      return String(shortcut);
+      return Shortcut.format(shortcut);
     }
     return undefined;
   }
 
   if (shortcut) {
-    return `${label} (${shortcut})`;
+    return `${label} (${Shortcut.format(shortcut)})`;
   }
   return label;
 };

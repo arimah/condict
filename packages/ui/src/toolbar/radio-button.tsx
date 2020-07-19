@@ -3,7 +3,7 @@ import React, {ButtonHTMLAttributes, useContext, useRef} from 'react';
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import {useCommand} from '../command';
-import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
+import {Shortcut, ShortcutMap} from '../shortcut';
 import combineRefs from '../combine-refs';
 
 import {Context as FocusContext, ContextValue, useManagedFocus} from './focus-manager';
@@ -12,7 +12,7 @@ import Group, {Props as GroupBaseProps} from './group';
 import * as S from './styles';
 
 type KeyCommand = {
-  key: ShortcutType | null;
+  key: Shortcut | null;
   exec(context: ContextValue, parent: HTMLDivElement): void;
 };
 
@@ -84,7 +84,7 @@ RadioGroup.displayName = 'RadioGroup';
 export type Props = {
   checked?: boolean;
   label?: string;
-  shortcut?: ShortcutType | null;
+  shortcut?: Shortcut | null;
   command?: string | null;
 } & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -129,7 +129,7 @@ const RadioButton = React.forwardRef<HTMLButtonElement, Props>((
       checked={checked}
       aria-keyshortcuts={
         effectiveShortcut
-          ? effectiveShortcut.toAriaString()
+          ? Shortcut.formatAria(effectiveShortcut)
           : undefined
       }
       tabIndex={isCurrent ? 0 : -1}

@@ -111,7 +111,7 @@ Toolbar buttons forward their ref to the underlying `<button>` element.
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
 | `checked` | boolean | `undefined` | If present and not null or undefined, the button becomes a toggle button, and this prop determines whether the toggle button is pressed. |
 | `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
-| `shortcut` | [Shortcut][] or [ShortcutGroup][] | `null` | The shortcut associated with the button. This value is used for display and accessibility only; it does not attach any behaviour. If the button has a [command][], this prop is ignored. |
+| `shortcut` | [Shortcut][] | `null` | The shortcut associated with the button. This value is used for display and accessibility only; it does not attach any behaviour. If the button has a [command][], this prop is ignored. |
 | `disabled` | boolean | `false` | If true, the button is disabled. If the button has a [command][], the command can also disable the button. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `disabled`, `shortcut` and `onClick` props. |
 | `onClick` | function | no-op | Attaches the `click` event handler to the button. If the button has a [command][], this prop is ignored. |
@@ -169,7 +169,7 @@ See [`<Toolbar.Button>`] for additional details.
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
 | `checked` | boolean | `undefined` | Determines whether the radio button is pressed. |
 | `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
-| `shortcut` | [Shortcut][] or [ShortcutGroup][] | `null` | The shortcut associated with the button. This value is used for display and accessibility only; it does not attach any behaviour. If the button has a [command][], this prop is ignored. |
+| `shortcut` | [Shortcut][] | `null` | The shortcut associated with the button. This value is used for display and accessibility only; it does not attach any behaviour. If the button has a [command][], this prop is ignored. |
 | `disabled` | boolean | `false` | If true, the button is disabled. If the button has a [command][], the command can also disable the radio button. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `disabled`, `shortcut` and `onClick` props. |
 | `onClick` | function | no-op | Attaches the `click` event handler to the button. If the button has a [command][], this prop is ignored. |
@@ -225,5 +225,4 @@ None declared. Accepts anything that can be given to a [styled component][styled
 [mdi-react]: https://www.npmjs.com/package/mdi-react
 [styled-components]: https://www.styled-components.com/
 [command]: ../command
-[shortcut]: ../command#shortcut
-[shortcutgroup]: ../command#shortcutgroup
+[shortcut]: ../shortcut

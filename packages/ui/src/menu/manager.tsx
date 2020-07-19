@@ -1,12 +1,12 @@
 import React, {Component, MouseEvent as SyntheticMouseEvent} from 'react';
 import memoizeOne from 'memoize-one';
 
-import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
+import {Shortcut, ShortcutMap} from '../shortcut';
 import {disableFocusManager, enableFocusManager} from '../focus';
 
 import {MenuItem, ManagedTreeContext, ManagedTreeContextValue} from './context';
 import ManagedMenu from './managed-menu';
-import MenuStack from './menu-stack';
+import {MenuStack, EmptyStack} from './menu-stack';
 import PhantomItem, {Props as PhantomProps} from './phantom-item';
 import {PhantomFadeTime} from './styles';
 
@@ -93,7 +93,7 @@ if (process.env.NODE_ENV === 'development') {
 const INTENT_TIME = 350;
 
 type KeyCommand = {
-  key: ShortcutType | null;
+  key: Shortcut | null;
   exec(stack: MenuStack, manager: MenuManager): MenuStack;
 };
 
@@ -101,12 +101,12 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
     {
       key: Shortcut.parse('Escape'),
-      exec: stack => stack.closeOne(),
+      exec: MenuStack.closeOne,
     },
     {
       key: Shortcut.parse('ArrowUp'),
       exec: stack =>
-        stack.moveFocus((items, current) =>
+        MenuStack.moveFocus(stack, (items, current) =>
           current
             ? items.getPrevious(current)
             : items.getLast()
@@ -115,7 +115,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
     {
       key: Shortcut.parse('ArrowDown'),
       exec: stack =>
-        stack.moveFocus((items, current) =>
+        MenuStack.moveFocus(stack, (items, current) =>
           current
             ? items.getNext(current)
             : items.getFirst()
@@ -127,7 +127,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
         const {currentFocus} = stack;
         if (currentFocus && currentFocus.submenu && !currentFocus.disabled) {
           manager.firstNeedsFocus = true;
-          return stack.openSubmenu(currentFocus);
+          return MenuStack.openSubmenu(stack, currentFocus);
         }
         return stack;
       },
@@ -138,7 +138,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
         // Pressing the left arrow key causes the menu to close, effectively
         // moving you up one level.
         if (stack.openMenus.length > 1) {
-          return stack.closeOne();
+          return MenuStack.closeOne(stack);
         }
         return stack;
       },
@@ -147,7 +147,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
       key: Shortcut.parse('Enter'),
       exec: (stack, manager) => {
         manager.firstNeedsFocus = true;
-        return stack.activateCurrent(manager);
+        return MenuStack.activateCurrent(stack, manager);
       },
     },
     {
@@ -174,7 +174,7 @@ export default class MenuManager extends Component<Props, State> {
   };
 
   public state: State = {
-    stack: new MenuStack(),
+    stack: EmptyStack,
     phantomProps: null,
   };
 
@@ -186,9 +186,7 @@ export default class MenuManager extends Component<Props, State> {
     const {stack} = this.state;
     if (stack.openMenus.length === 0) {
       this.firstNeedsFocus = fromKeyboard;
-      this.setState({
-        stack: stack.openRoot(rootMenu),
-      });
+      this.setState({stack: MenuStack.openRoot(rootMenu)});
       disableFocusManager();
     }
   }
@@ -224,8 +222,10 @@ export default class MenuManager extends Component<Props, State> {
           const {openMenus} = nextStack;
           const deepestMenu = openMenus[openMenus.length - 1];
           this.setState({
-            stack: nextStack
-              .withCurrentFocus(deepestMenu.menu.items.getFirst()),
+            stack: MenuStack.setCurrentFocus(
+              nextStack,
+              deepestMenu.menu.items.getFirst()
+            ),
           });
         }
       } else {
@@ -298,23 +298,23 @@ export default class MenuManager extends Component<Props, State> {
     const target = e.target as Element;
 
     // Find the currently hovered menu, if any.
-    const currentMenu = openMenus.find(m => m.menu.contains(target));
-    if (currentMenu) {
+    const hoveredMenu = openMenus.find(m => m.menu.contains(target));
+    if (hoveredMenu) {
       // We are somewhere inside the menu tree, so we need to Do Some Things™.
-      const currentItem = currentMenu.elemToItem(target);
+      const currentItem = hoveredMenu.elemToItem(target);
 
       // Even if we aren't on top of an item (e.g. the mouse is on a separator
       // or the menu's padding area), we need wait a bit, as any open submenus
       // need to be closed after a delay.
       this.awaitIntent(stack => {
         if (currentItem && currentItem.submenu && !currentItem.disabled) {
-          return stack.openSubmenu(currentItem);
+          return MenuStack.openSubmenu(stack, currentItem);
         } else {
-          return stack.closeUpTo(currentMenu);
+          return MenuStack.closeUpTo(stack, hoveredMenu);
         }
       });
 
-      stack = stack.withCurrentFocus(currentItem);
+      stack = MenuStack.setCurrentFocus(stack, currentItem);
     } else {
       // lastMouseTarget is the last hovered element, which we can use to find
       // what the last hovered *menu* was.
@@ -325,10 +325,10 @@ export default class MenuManager extends Component<Props, State> {
       // If the mouse was indeed inside one of the menus, start an intent
       // timer that closes everything up to the last menu.
       if (lastMenu) {
-        this.awaitIntent(stack => stack.closeUpTo(lastMenu));
+        this.awaitIntent(stack => MenuStack.closeUpTo(stack, lastMenu));
       }
 
-      stack = stack.withCurrentFocus(null);
+      stack = MenuStack.setCurrentFocus(stack, null);
     }
 
     this.lastMouseTarget = target;
@@ -344,14 +344,14 @@ export default class MenuManager extends Component<Props, State> {
     const isInsideMenu = openMenus.some(m => m.menu.contains(e.target as Element));
     if (!isInsideMenu) {
       this.cancelIntent();
-      this.setState({stack: stack.closeAll()});
+      this.setState({stack: EmptyStack});
     }
   };
 
   private handleClick = () => {
     const {stack} = this.state;
     this.cancelIntent();
-    this.setState({stack: stack.activateCurrent(this)});
+    this.setState({stack: MenuStack.activateCurrent(stack, this)});
   };
 
   private handleKeyDown = (e: KeyboardEvent) => {
@@ -386,9 +386,10 @@ export default class MenuManager extends Component<Props, State> {
         // If there is exactly one matching item, it becomes activated.
         this.firstNeedsFocus = true;
         this.setState({
-          stack: stack
-            .withCurrentFocus(matchingItems[0])
-            .activateCurrent(this),
+          stack: MenuStack.activateCurrent(
+            MenuStack.setCurrentFocus(stack, matchingItems[0]),
+            this
+          ),
         });
       } else if (matchingItems.length > 1) {
         // If there are multiple matching items, then continue after the
@@ -401,7 +402,7 @@ export default class MenuManager extends Component<Props, State> {
         // up selecting the first item.
         const nextIndex = (currentIndex + 1) % matchingItems.length;
         this.setState({
-          stack: stack.withCurrentFocus(matchingItems[nextIndex]),
+          stack: MenuStack.setCurrentFocus(stack, matchingItems[nextIndex]),
         });
       }
     }
@@ -415,8 +416,7 @@ export default class MenuManager extends Component<Props, State> {
     }
 
     // When the window loses focus, the entire menu tree closes immediately.
-    const {stack} = this.state;
-    this.setState({stack: stack.closeAll()});
+    this.setState({stack: EmptyStack});
   };
 
   public render(): JSX.Element {

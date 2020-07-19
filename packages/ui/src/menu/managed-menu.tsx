@@ -6,7 +6,7 @@ import DescendantCollection from '../descendant-collection';
 import Placement, {RelativeParent, placeElement} from '../placement';
 
 import * as S from './styles';
-import MenuStack from './menu-stack';
+import {MenuStack} from './menu-stack';
 import {MenuContext, MenuContextValue, MenuItem} from './context';
 import MenuManager from './manager';
 import EventSink from './event-sink';
@@ -34,45 +34,6 @@ const inRaf = (fn: () => void) => {
       });
     }
   };
-};
-
-const getDepth = (stack: MenuStack, menu: ManagedMenu) => {
-  return stack.openMenus.findIndex(m => m.menu === menu);
-};
-
-const isMenuOpen = (stack: MenuStack, menu: ManagedMenu) => {
-  return stack.openMenus.some(m => m.menu === menu);
-};
-
-const isRootMenu = (stack: MenuStack, menu: ManagedMenu) => {
-  const {openMenus} = stack;
-  return openMenus.length > 0 && openMenus[0].menu === menu;
-};
-
-const isDeepestMenu = (stack: MenuStack, menu: ManagedMenu) => {
-  const {openMenus} = stack;
-  return (
-    openMenus.length > 0 &&
-    openMenus[openMenus.length - 1].menu === menu
-  );
-};
-
-const getFocusedItem = (stack: MenuStack, menu: ManagedMenu) => {
-  const {openMenus, currentFocus} = stack;
-  // If the currently hovered item is within this menu, it always has focus,
-  // even if there is an open submenu.
-  if (currentFocus && menu.contains(currentFocus.self)) {
-    return currentFocus;
-  }
-
-  // The last open menu cannot have an open submenu: if it did, it wouldn't
-  // be the last open menu.
-  for (let i = 0; i < openMenus.length - 1; i++) {
-    if (openMenus[i].menu === menu) {
-      return openMenus[i + 1].parentItem;
-    }
-  }
-  return null;
 };
 
 const getSubmenuPlacement = (ownPlacement: Placement) => {
@@ -119,8 +80,8 @@ class ManagedMenu extends Component<Props> {
   public componentDidUpdate(prevProps: Readonly<Props>): void {
     const nextProps = this.props;
     if (prevProps.stack !== nextProps.stack) {
-      const prevOpen = isMenuOpen(prevProps.stack, this);
-      const nextOpen = isMenuOpen(nextProps.stack, this);
+      const prevOpen = MenuStack.isMenuOpen(prevProps.stack, this);
+      const nextOpen = MenuStack.isMenuOpen(nextProps.stack, this);
 
       if (!prevOpen && nextOpen) {
         this.attachEvents();
@@ -130,7 +91,7 @@ class ManagedMenu extends Component<Props> {
       // Move keyboard focus when it is the deepest menu.
       // This is done *after* the menu has been placed, to prevent
       // unpleasant jumping around.
-      this.needFocus = isDeepestMenu(nextProps.stack, this);
+      this.needFocus = MenuStack.isDeepestMenu(nextProps.stack, this);
     }
 
     this.updatePlacement();
@@ -163,7 +124,7 @@ class ManagedMenu extends Component<Props> {
       return;
     }
 
-    if (isMenuOpen(this.props.stack, this)) {
+    if (MenuStack.isMenuOpen(this.props.stack, this)) {
       const menu = this.menuRef.current;
       const {placement} = this.props;
 
@@ -179,9 +140,9 @@ class ManagedMenu extends Component<Props> {
   public render(): JSX.Element {
     const {id, name, placement, stack, children} = this.props;
 
-    const open = isMenuOpen(stack, this);
-    const depth = getDepth(stack, this);
-    const currentChild = getFocusedItem(stack, this);
+    const open = MenuStack.isMenuOpen(stack, this);
+    const depth = MenuStack.getDepth(stack, this);
+    const currentChild = MenuStack.getFocusedItem(stack, this);
     const contextValue = this.getMenuContextValue(
       this.items,
       currentChild,
@@ -211,7 +172,7 @@ class ManagedMenu extends Component<Props> {
     return ReactDOM.createPortal(
       // If this is the root menu, we must install an EventSink around it,
       // to ensure synthetic events don't escape the menu system.
-      isRootMenu(stack, this)
+      MenuStack.isRootMenu(stack, this)
         ? <EventSink>{menu}</EventSink>
         : menu,
       getContainer()

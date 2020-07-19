@@ -14,10 +14,15 @@ export {
   enableFocusManager,
 } from './focus';
 export {GlobalStyles} from './global-styles';
-export {Menu, Props as MenuProps, MenuElement, MenuRef, MenuType} from './menu';
-export {default as MenuTrigger} from './menu/trigger';
-export {default as ContextMenuTrigger} from './menu/context-trigger';
-export {default as MenuManager} from './menu/manager';
+export {
+  Menu,
+  MenuProps,
+  MenuElement,
+  MenuType,
+  MenuTrigger,
+  ContextMenuTrigger,
+  MenuManager,
+} from './menu';
 export {NonIdealState, Props as NonIdealStateProps} from './non-ideal-state';
 export {
   TextInput,
@@ -47,11 +52,11 @@ export {
 } from './command';
 export {
   Shortcut,
+  SingleShortcut,
   ShortcutGroup,
-  ShortcutType,
   ShortcutMap,
-} from './command/shortcut';
-export {Shortcuts} from './command/shortcuts';
+  Shortcuts,
+} from './shortcut';
 
 export {
   Theme,

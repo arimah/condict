@@ -2,7 +2,7 @@ import React, {ReactNode, useRef} from 'react';
 import ChevronRightIcon from 'mdi-react/ChevronRightIcon';
 
 import {useCommand} from '../command';
-import {ShortcutType} from '../command/shortcut';
+import {Shortcut} from '../shortcut';
 import combineRefs from '../combine-refs';
 import {useUniqueId} from '../unique-id';
 
@@ -13,7 +13,7 @@ import {useManagedTree, useNearestMenu} from './context';
 export type Props = {
   label: string;
   icon?: ReactNode;
-  shortcut?: ShortcutType | null;
+  shortcut?: Shortcut | null;
   disabled?: boolean;
   command?: string | null;
   onActivate?: () => void;
@@ -70,7 +70,7 @@ const Item = React.forwardRef<HTMLDivElement, Props>((
       aria-haspopup={children ? 'menu' : undefined}
       aria-keyshortcuts={
         effectiveShortcut
-          ? effectiveShortcut.toAriaString()
+          ? Shortcut.formatAria(effectiveShortcut)
           : undefined
       }
       ref={combineRefs(ref, ownRef)}
@@ -79,7 +79,7 @@ const Item = React.forwardRef<HTMLDivElement, Props>((
       <S.ItemLabel>{label}</S.ItemLabel>
       {effectiveShortcut &&
         <S.ItemShortcut>
-          {String(effectiveShortcut)}
+          {Shortcut.format(effectiveShortcut)}
         </S.ItemShortcut>}
       <S.ItemSubmenu>
         {children != null && <ChevronRightIcon/>}
@@ -106,7 +106,7 @@ Item.displayName = 'Item';
 type PhantomProps = {
   icon: ReactNode;
   label: string;
-  shortcut?: ShortcutType | null;
+  shortcut?: Shortcut | null;
   hasSubmenu: boolean;
 };
 
@@ -116,7 +116,7 @@ const PhantomItem = ({icon, label, shortcut, hasSubmenu}: PhantomProps) =>
     <S.ItemLabel>{label}</S.ItemLabel>
     {shortcut &&
       <S.ItemShortcut>
-        {String(shortcut)}
+        {Shortcut.format(shortcut)}
       </S.ItemShortcut>}
     <S.ItemSubmenu>
       {hasSubmenu && <ChevronRightIcon/>}

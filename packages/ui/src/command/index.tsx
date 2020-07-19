@@ -1,5 +1,4 @@
 import React, {
-  Component,
   KeyboardEvent,
   KeyboardEventHandler,
   ReactNode,
@@ -7,20 +6,19 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
-import memoizeOne from 'memoize-one';
 
-import {Shortcut, ShortcutGroup, ShortcutMap, ShortcutType} from './shortcut';
+import {Shortcut, ShortcutMap} from '../shortcut';
 
 export type Command = {
   disabled: boolean;
   exec: (...args: any[]) => any;
-  shortcut: ShortcutType | null;
+  shortcut: Shortcut | null;
 };
 
 export type CommandSpec = {
   disabled?: boolean;
   exec: (...args: any[]) => any;
-  shortcut?: ShortcutType | string | string[] | null;
+  shortcut?: Shortcut | string | string[] | null;
 };
 
 export type CommandSpecMap = {
@@ -36,7 +34,7 @@ type ContextValue = {
 export type BoundCommand = {
   readonly disabled: boolean;
   readonly exec: () => void;
-  readonly shortcut: ShortcutType | null;
+  readonly shortcut: Shortcut | null;
 };
 
 const Context = React.createContext<ContextValue | null>(null);
@@ -52,10 +50,9 @@ function buildCommandMap(
       disabled: !!(groupDisabled || cmd.disabled),
       exec: cmd.exec,
       shortcut:
-        typeof shortcut === 'string' ? Shortcut.parse(shortcut) :
-        Array.isArray(shortcut) ? ShortcutGroup.parse(shortcut) :
-        (shortcut instanceof Shortcut || shortcut instanceof ShortcutGroup) ? shortcut :
-        null,
+        typeof shortcut === 'string' || Array.isArray(shortcut)
+          ? Shortcut.parse(shortcut)
+          : shortcut || null,
     });
     return result;
   }, new Map<string, Command>());
@@ -152,6 +149,28 @@ export function CommandGroup<
   );
 }
 
+export type ConsumerProps = {
+  name: string;
+  children: (command: BoundCommand | null) => JSX.Element;
+};
+
+export const CommandConsumer = (props: ConsumerProps): JSX.Element => {
+  const {name, children} = props;
+
+  const context = useContext(Context);
+  const command = useMemo(() => getCommand(name, context), [name, context]);
+  return useMemo(() => children(command), [children, command]);
+};
+
+export const useCommand = (name: string | undefined | null): BoundCommand | null => {
+  const context = useContext(Context);
+  const command = useMemo(
+    () => name != null ? getCommand(name, context) : null,
+    [name, context]
+  );
+  return command;
+};
+
 const getCommand = (
   name: string,
   context: ContextValue | null
@@ -171,37 +190,4 @@ const getCommand = (
     }
   }
   return null;
-};
-
-const renderChildren = (
-  children: (command: BoundCommand | null) => JSX.Element,
-  command: BoundCommand | null
-) => children(command);
-
-export type ConsumerProps = {
-  name: string;
-  children: (command: BoundCommand | null) => JSX.Element;
-};
-
-export class CommandConsumer extends Component<ConsumerProps> {
-  public static contextType = Context;
-
-  public context!: React.ContextType<typeof Context>;
-  private getCommand = memoizeOne(getCommand);
-  private renderChildren = memoizeOne(renderChildren);
-
-  public render(): JSX.Element {
-    const {name, children} = this.props;
-    const command = this.getCommand(name, this.context);
-    return this.renderChildren(children, command);
-  }
-}
-
-export const useCommand = (name: string | undefined | null): BoundCommand | null => {
-  const context = useContext(Context);
-  const command = useMemo(
-    () => name != null ? getCommand(name, context) : null,
-    [name, context]
-  );
-  return command;
 };

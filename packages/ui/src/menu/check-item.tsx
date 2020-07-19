@@ -1,7 +1,7 @@
 import React, {ReactNode, useRef} from 'react';
 
 import {useCommand} from '../command';
-import {ShortcutType} from '../command/shortcut';
+import {Shortcut} from '../shortcut';
 import combineRefs from '../combine-refs';
 import {useUniqueId} from '../unique-id';
 
@@ -11,7 +11,7 @@ import {useNearestMenu} from './context';
 export type Props = {
   label: string;
   icon?: ReactNode;
-  shortcut?: ShortcutType | null;
+  shortcut?: Shortcut | null;
   checked?: boolean;
   radio?: boolean;
   disabled?: boolean;
@@ -68,7 +68,7 @@ const CheckItem = React.forwardRef<HTMLDivElement, Props>((
       aria-disabled={effectiveDisabled}
       aria-keyshortcuts={
         effectiveShortcut
-          ? effectiveShortcut.toAriaString()
+          ? Shortcut.formatAria(effectiveShortcut)
           : undefined
       }
       ref={combineRefs(ref, ownRef)}
@@ -77,7 +77,7 @@ const CheckItem = React.forwardRef<HTMLDivElement, Props>((
       <S.ItemLabel>{label}</S.ItemLabel>
       {effectiveShortcut &&
         <S.ItemShortcut>
-          {String(effectiveShortcut)}
+          {Shortcut.format(effectiveShortcut)}
         </S.ItemShortcut>}
       <S.ItemCheck checked={checked} radio={radio}>
         {checked && (radio ? <S.RadioDot/> : <S.CheckMark/>)}
@@ -91,7 +91,7 @@ CheckItem.displayName = 'CheckItem';
 type PhantomProps = {
   icon: ReactNode;
   label: string;
-  shortcut?: ShortcutType | null;
+  shortcut?: Shortcut | null;
   checked: boolean;
   radio: boolean;
 };
@@ -102,7 +102,7 @@ const PhantomItem = ({icon, label, shortcut, checked, radio}: PhantomProps) =>
     <S.ItemLabel>{label}</S.ItemLabel>
     {shortcut &&
       <S.ItemShortcut>
-        {String(shortcut)}
+        {Shortcut.format(shortcut)}
       </S.ItemShortcut>}
     <S.ItemCheck checked={checked} radio={radio}>
       {checked && (radio ? <S.RadioDot/> : <S.CheckMark/>)}

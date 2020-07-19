@@ -13,7 +13,7 @@ import React, {
 import {SROnly} from '@condict/a11y-utils';
 
 import DescendantCollection from '../descendant-collection';
-import {Shortcut, ShortcutMap, ShortcutType} from '../command/shortcut';
+import {Shortcut, ShortcutMap} from '../shortcut';
 import genUniqueId from '../unique-id';
 
 import * as S from './styles';
@@ -44,7 +44,7 @@ const isEmptySelectionAtEnd = (input: HTMLInputElement) =>
   input.selectionEnd === input.value.length;
 
 type KeyCommand = {
-  key: ShortcutType | null;
+  key: Shortcut | null;
   exec: (tagInput: TagInput) => boolean;
 };
 

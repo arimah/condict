@@ -2,7 +2,7 @@ import {isWindows} from '@condict/platform';
 
 import {Shortcut} from './shortcut';
 
-export const Shortcuts = Object.freeze({
+const Shortcuts = {
   undo: Shortcut.parse('Primary+Z z'),
   redo: Shortcut.parse(isWindows ? 'Primary+Y y' : 'Primary+Shift+Z z'),
 
@@ -11,4 +11,6 @@ export const Shortcuts = Object.freeze({
   paste: Shortcut.parse('Primary+V v'),
 
   selectAll: Shortcut.parse('Primary+A a'),
-});
+} as const;
+
+export default Shortcuts;

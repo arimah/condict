@@ -2,8 +2,7 @@ import React, {ButtonHTMLAttributes, useState, useRef} from 'react';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 
-import {MenuElement} from '../menu';
-import MenuTrigger from '../menu/trigger';
+import {MenuElement, MenuTrigger} from '../menu';
 import combineRefs from '../combine-refs';
 
 import {useManagedFocus} from './focus-manager';

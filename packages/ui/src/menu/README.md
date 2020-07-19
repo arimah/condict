@@ -161,7 +161,7 @@ The `<Menu.Item>` component forwards its ref to the outer element (a `<div>`).
 | --- | --- | --- | --- |
 | `label` | string | _none; required_ | The text label of the menu item. |
 | `icon` | node | `null` | The icon of the menu item, shown before the label. The menu item is specifically designed to work with icons from the [mdi-react][] package; other icon sets will not be correctly styled. |
-| `shortcut` | [Shortcut][] or [ShortcutGroup][] | `null` | The shortcut associated with the menu item. This value is used for display and accessibility only; it does not attach any behaviour. If the menu item has a [command][], this prop is ignored. |
+| `shortcut` | [Shortcut][] | `null` | The shortcut associated with the menu item. This value is used for display and accessibility only; it does not attach any behaviour. If the menu item has a [command][], this prop is ignored. |
 | `disabled` | boolean | `false` | If true, the menu item is disabled. If the menu item has a [command][], the command can also disable the menu item. |
 | `command` | string | `null` | Attaches the named [command][] to the menu item. The command overrides the `disabled`, `shortcut` and `onActivate` props. |
 | `onActivate` | function | no-op | Event handler function for when the menu item is activated. It receives no arguments, and the return value is ignored. If the menu item has a [command][], this prop is ignored. This function is not invoked on items with submenus. |
@@ -185,7 +185,7 @@ The `<Menu.CheckItem>` component forwards its ref to the outer element (a `<div>
 | --- | --- | --- | --- |
 | `label` | string | _none; required_ | The text label of the menu item. |
 | `icon` | node | `null` | The icon of the menu item, shown before the label. The menu item is specifically designed to work with icons from the [mdi-react][] package; other icon sets will not be correctly styled. |
-| `shortcut` | [Shortcut][] or [ShortcutGroup][] | `null` | The shortcut associated with the menu item. This value is used for display and accessibility only; it does not attach any behaviour. If the menu item has a [command][], this prop is ignored. |
+| `shortcut` | [Shortcut][] | `null` | The shortcut associated with the menu item. This value is used for display and accessibility only; it does not attach any behaviour. If the menu item has a [command][], this prop is ignored. |
 | `checked` | boolean | `false` | Determines whether the menu item is checked. |
 | `radio` | boolean | `false` | If true, the menu item is drawn as a radio button instead of a checkbox. Radio menu items should be placed inside an element with `role="group"` for accessibility. |
 | `disabled` | boolean | `false` | If true, the menu item is disabled. If the menu item has a [command][], the command can also disable the menu item. |
@@ -282,5 +282,4 @@ Other props are _not_ forwarded to any underlying element.
 [portal]: https://reactjs.org/docs/portals.html
 [cloneelement]: https://reactjs.org/docs/react-api.html#cloneelement
 [command]: ../command
-[shortcut]: ../command#shortcut
-[shortcutgroup]: ../command#shortcutgroup
+[shortcut]: ../shortcut

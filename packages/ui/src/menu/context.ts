@@ -3,7 +3,7 @@ import React, {RefObject, useState, useContext, useEffect} from 'react';
 import DescendantCollection from '../descendant-collection';
 import Placement from '../placement';
 
-import MenuStack from './menu-stack';
+import {MenuStack} from './menu-stack';
 import ManagedMenu from './managed-menu';
 import MenuManager from './manager';
 
