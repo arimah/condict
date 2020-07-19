@@ -67,7 +67,7 @@ type AnyKeyboardEvent = KeyboardEvent | SyntheticKeyboardEvent;
 const ModifiersPattern = /(Primary|Secondary|Shift|Alt|Ctrl|Control)\s*\+\s*/gi;
 
 export const Shortcut = {
-  parse(shortcutStrings: string | string[]): Shortcut | null {
+  parse(shortcutStrings: string | string[]): Shortcut {
     if (!Array.isArray(shortcutStrings)) {
       shortcutStrings = [shortcutStrings];
     }
@@ -108,9 +108,6 @@ export const Shortcut = {
       })
       .filter(shortcut => shortcut.keys.length > 0);
 
-    if (shortcuts.length === 0) {
-      return null;
-    }
     if (shortcuts.length === 1) {
       return shortcuts[0];
     }
