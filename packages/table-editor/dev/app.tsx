@@ -14,6 +14,7 @@ import {
   Switch,
   Toolbar,
   Menu,
+  Command,
   CommandGroup,
   Shortcuts,
   DarkTheme,
@@ -166,6 +167,10 @@ class EditorDemo<D>
     onChange(HistoryStack.redo(value));
   };
 
+  private handleCommand(cmd: Command) {
+    cmd.exec();
+  }
+
   private handleToggleDisabled = () => {
     this.setState({disabled: !this.state.disabled});
   };
@@ -205,6 +210,7 @@ class EditorDemo<D>
             disabled: !HistoryStack.canRedo(value),
           },
         }}
+        onExec={this.handleCommand}
       >
         {controls && controls({
           disabled,

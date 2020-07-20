@@ -102,6 +102,9 @@ export interface StemsContextValue {
   readonly stems: ReadonlyMap<string, string>;
 }
 
+export type DefinitionTableCommandFn =
+  (table: DefinitionTable) => DefinitionTable;
+
 export interface Messages extends EditorMessages {
   /** "Form is inflected automatically.", SR-only description of a cell. */
   formIsInflected(): string;

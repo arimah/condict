@@ -32,9 +32,11 @@ export type Props<D, M extends Messages> = {
   disabled: boolean;
   contextMenuExtra?: ReactNode;
   messages: M;
-  commands: CommandSpecMap;
+  commands: CommandSpecMap<TableCommandFn<D>>;
   onChange: (table: Table<D>) => void;
 };
+
+export type TableCommandFn<D> = (table: Table<D>) => Table<D>;
 
 type State<D> = {
   mouseDown: boolean;
@@ -68,7 +70,7 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
     current: {x: 0, y: 0},
   };
 
-  private handleCommand = (cmd: Command) => {
+  private handleCommand = (cmd: Command<TableCommandFn<D>>) => {
     if (this.props.disabled || this.state.editing) {
       return;
     }

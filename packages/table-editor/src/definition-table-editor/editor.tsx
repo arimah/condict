@@ -18,9 +18,14 @@ import DefinitionTableCommands from './commands';
 import DefaultMessages from './messages';
 import {describeCell} from './operations';
 import StemsContext from './stems-context';
-import {DefinitionTable, DefinitionTableData, Messages} from './types';
+import {
+  DefinitionTable,
+  DefinitionTableData,
+  DefinitionTableCommandFn,
+  Messages,
+} from './types';
 
-const AllCommands: CommandSpecMap = {
+const AllCommands: CommandSpecMap<DefinitionTableCommandFn> = {
   ...NavigationCommands,
   ...DefinitionTableCommands,
 };

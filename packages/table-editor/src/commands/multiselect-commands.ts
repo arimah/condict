@@ -1,9 +1,11 @@
-import {CommandSpecMap, Shortcut, ShortcutGroup} from '@condict/ui';
+import {CommandSpecMap, Shortcut} from '@condict/ui';
 
 import {Table} from '../value';
 import {MoveDelta, move, selectAll} from '../operations';
 
-const commands: CommandSpecMap = {
+import {TableCommandFn} from './types';
+
+const commands: CommandSpecMap<TableCommandFn> = {
   selectEntireTable: {
     shortcut: Shortcut.parse('Primary+A a'),
     exec: selectAll,
@@ -60,7 +62,7 @@ const commands: CommandSpecMap = {
   },
 
   selectToFirstColumn: {
-    shortcut: ShortcutGroup.parse(['Primary+Shift+ArrowLeft', 'Shift+Home']),
+    shortcut: Shortcut.parse(['Primary+Shift+ArrowLeft', 'Shift+Home']),
     exec: <D>(table: Table<D>): Table<D> => move(
       table,
       MoveDelta.NONE,
@@ -80,7 +82,7 @@ const commands: CommandSpecMap = {
   },
 
   selectToLastColumn: {
-    shortcut: ShortcutGroup.parse(['Primary+Shift+ArrowRight', 'Shift+End']),
+    shortcut: Shortcut.parse(['Primary+Shift+ArrowRight', 'Shift+End']),
     exec: <D>(table: Table<D>): Table<D> => move(
       table,
       MoveDelta.NONE,

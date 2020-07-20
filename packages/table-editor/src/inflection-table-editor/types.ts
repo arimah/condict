@@ -126,6 +126,9 @@ const DefaultData: InflectionTableData = {
   inflectedFormId: null,
 };
 
+export type InflectionTableCommandFn =
+  (table: InflectionTable) => InflectionTable;
+
 export interface Messages extends EditorMessages {
   /** "Not added to the dictionary.", SR-only description of a cell. */
   noDerivedLemma(): string;

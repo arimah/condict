@@ -12,7 +12,9 @@ import {
   separateSelected,
 } from '../operations';
 
-const commands: CommandSpecMap = {
+import {TableCommandFn} from './types';
+
+const commands: CommandSpecMap<TableCommandFn> = {
   deleteSelectedRows: {
     shortcut: Shortcut.parse('Primary+Delete'),
     exec: deleteSelectedRows,

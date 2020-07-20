@@ -1,9 +1,11 @@
-import {CommandSpecMap, Shortcut, ShortcutGroup} from '@condict/ui';
+import {CommandSpecMap, Shortcut} from '@condict/ui';
 
 import {Table} from '../value';
 import {MoveDelta, move} from '../operations';
 
-const commands: CommandSpecMap = {
+import {TableCommandFn} from './types';
+
+const commands: CommandSpecMap<TableCommandFn> = {
   moveUp: {
     shortcut: Shortcut.parse('ArrowUp'),
     exec: <D>(table: Table<D>): Table<D> => move(
@@ -50,7 +52,7 @@ const commands: CommandSpecMap = {
   },
 
   moveToFirstColumn: {
-    shortcut: ShortcutGroup.parse(['Primary+ArrowLeft', 'Home']),
+    shortcut: Shortcut.parse(['Primary+ArrowLeft', 'Home']),
     exec: <D>(table: Table<D>): Table<D> => move(
       table,
       MoveDelta.NONE,
@@ -68,7 +70,7 @@ const commands: CommandSpecMap = {
   },
 
   moveToLastColumn: {
-    shortcut: ShortcutGroup.parse(['Primary+ArrowRight', 'End']),
+    shortcut: Shortcut.parse(['Primary+ArrowRight', 'End']),
     exec: <D>(table: Table<D>): Table<D> => move(
       table,
       MoveDelta.NONE,

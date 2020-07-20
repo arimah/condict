@@ -21,16 +21,21 @@ import ContextMenu from './context-menu';
 import InflectionTableCommands from './commands';
 import DefaultMessages from './messages';
 import {describeCell} from './operations';
-import {InflectionTable, InflectionTableData, Messages} from './types';
+import {
+  InflectionTable,
+  InflectionTableData,
+  InflectionTableCommandFn,
+  Messages,
+} from './types';
 
-const AllCommands: CommandSpecMap = {
+const AllCommands: CommandSpecMap<InflectionTableCommandFn> = {
   ...NavigationCommands,
   ...MultiselectCommands,
   ...StructureCommands,
   ...InflectionTableCommands,
 };
 
-const ExposedCommands: CommandSpecMap = {
+const ExposedCommands: CommandSpecMap<InflectionTableCommandFn> = {
   ...StructureCommands,
   ...InflectionTableCommands,
 };

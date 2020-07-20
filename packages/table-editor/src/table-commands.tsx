@@ -18,9 +18,11 @@ export type Props<D, E extends CommandsElement> = {
   'value' | 'disabled' | 'children' | 'onChange' | 'onKeyDown'
 >;
 
+export type TableCommandFn<D> = (table: Table<D>) => Table<D>;
+
 const TableCommands = <D, E extends CommandsElement = 'div'>(
   props: Props<D, E> & {
-    commands: CommandSpecMap;
+    commands: CommandSpecMap<TableCommandFn<D>>;
     as?: E;
   }
 ): JSX.Element => {
@@ -33,7 +35,7 @@ const TableCommands = <D, E extends CommandsElement = 'div'>(
     ...otherProps
   } = props;
 
-  const handleExec = useCallback((cmd: Command) => {
+  const handleExec = useCallback((cmd: Command<TableCommandFn<D>>) => {
     const nextValue = cmd.exec(value);
     onChange(nextValue);
   }, [value, onChange]);
