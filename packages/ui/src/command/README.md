@@ -44,11 +44,12 @@ import {CommandGroup, Shortcuts} from '@condict/ui';
       shortcut: Shortcuts.redo,
     },
   }}
+  onExec={cmd => cmd.exec()}
 >
   {/* Command consumers go here */}
 </CommandGroup>
 
-// Use onExec to intercept commands being executed:
+// Passing values into the command's exec function:
 <CommandGroup
   commands={{
     toUpper: {
@@ -119,7 +120,7 @@ The `commands` prop takes an object that defines the available commands. The key
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `exec` | function | A function that is called when the command is executed. By default, this callback receives no arguments and the return value is ignored. However, the command group's `onExec` can intercept command executions and inject arguments and/or use the return value. See [props](#props) for details. |
+| `exec` | any | A value that contains the command's behavior, typically a function. The command group's `onExec` prop is responsible for handling this value. See [props](#props) for details. |
 | `shortcut` | string, string[], [`Shortcut`][shortcut], null or undefined | Keyboard shortcuts attached to the command. If the value is a string or array, it will be passed to [`Shortcut.parse()`][shortcutparse]; see that function for more details. If set to null or undefined, the command has no keyboard shortcut. |
 | `disabled` | boolean | If true, the command is disabled. A disabled command cannot be triggered by its keyboard shortcut, and components that use it are automatically disabled. Commands are enabled by default. |
 
@@ -134,7 +135,7 @@ See more under [examples](#examples).
 | `as` | string or component type | `'div'` | An HTML element name or a React component type that decides what the command group is rendered as. |
 | `disabled` | boolean | `false` | If true, disables all commands in the group. Nested `<CommandConsumer>`s still receive their commands, and can invoke the `exec` function on the command irrespective of whether it's enabled. However, when the group is disabled, each command's `disabled` property will also be `true`. |
 | `commands` | object | _none; required_ | Defines the command group's commands. See above for format and details. |
-| `onExec` | function | `cmd => cmd.exec()` | A function that is called when a command is executed, whether by keyboard shortcut or by calling the command's `exec` function inside a `<CommandConsumer>`. It receives the command. The return value is ignored. The default value calls the command's `exec` function. |
+| `onExec` | function | _none; required_ | A function that is called when a command is executed, whether by keyboard shortcut or by calling the bound command's `exec` function inside a `<CommandConsumer>`. It receives the command. The return value is ignored. |
 | `onKeyDown` | function | `null` | Receives key events that were not handled by the shortcut key of any command. |
 | `children` | node | `null` | Children that are passed to the command group element. |
 
@@ -153,21 +154,21 @@ A command consumer receives a single command as defined by a [command group](#co
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `name` | string | _none; required_ | The name of the command to bind to. |
-| `children` | function | _none; required_ | A render function that receives the command, or null if the command does not exist. |
+| `children` | function | _none; required_ | A render function that receives the bound command, or null if the command could not be found. |
 
-The command object passed to `children` has the following properties:
+The bound command object passed to `children` has the following properties:
 
 | Name | Type | Description |
 | --- | --- | --- |
 | `exec` | function | Executes the command. This function takes no arguments and returns no value. |
-| `shortcut` | [`Shortcut`][shortcut] or null | The keyboard shortcut(s) bound to the command. This should mainly be used for formatting a string description of the shortcut, such as "Ctrl+Z". |
+| `shortcut` | [`Shortcut`][shortcut] or null | The keyboard shortcut(s) bound to the command. This should mainly be used for formatting a string description of the shortcut. |
 | `disabled` | boolean | If true, the command is disabled. The bound component should be enabled or disabled according to this value. |
 
-If the command's defining group has an `onExec` prop, then the bound command's `exec` function will delegate to the `onExec` function. Basically, you never have to worry about calling `onExec` yourself.
+The `exec` function on the bound command automatically delegates to the `onExec` function of the command's defining group. Basically, you never have to worry about calling `onExec` yourself.
 
 ## `useCommand`
 
-> `useCommand(name: string | null): BoundCommand | null`
+> `useCommand(name: string | undefined | null): BoundCommand | null`
 
 `useCommand()` is a [hook][hook] that translates a command name to a command object.
 

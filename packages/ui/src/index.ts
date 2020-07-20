@@ -44,10 +44,11 @@ export {
   Command,
   CommandSpec,
   CommandSpecMap,
+  BoundCommand,
   CommandGroup,
-  Props as CommandGroupProps,
+  CommandGroupProps,
   CommandConsumer,
-  ConsumerProps as CommandConsumerProps,
+  CommandConsumerProps,
   useCommand,
 } from './command';
 export {

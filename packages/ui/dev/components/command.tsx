@@ -67,26 +67,26 @@ const CommandDemo = React.memo((props: Props) => {
     toggleState,
   } = props;
 
-  const outerCommands = useMemo((): CommandSpecMap => ({
+  const outerCommands = useMemo((): CommandSpecMap<keyof State> => ({
     toggleItalic: {
       shortcut: 'Primary+I i',
-      exec: () => 'italicOuter',
+      exec: 'italicOuter',
     },
     toggleBold: {
       shortcut: 'Primary+B b',
-      exec: () => 'bold',
+      exec: 'bold',
     },
   }), []);
 
-  const innerCommands = useMemo((): CommandSpecMap => ({
+  const innerCommands = useMemo((): CommandSpecMap<keyof State> => ({
     toggleItalic: {
       shortcut: 'Primary+I i',
-      exec: () => 'italicInner',
+      exec: 'italicInner',
     },
   }), []);
 
-  const execCommand = useCallback((cmd: Command) => {
-    toggleState(cmd.exec());
+  const execCommand = useCallback((cmd: Command<keyof State>) => {
+    toggleState(cmd.exec);
   }, [toggleState]);
 
   return (
