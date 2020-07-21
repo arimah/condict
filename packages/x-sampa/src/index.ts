@@ -103,6 +103,24 @@ const convert = (xsampa: string): string => {
   let base: XsampaChar | null = null;
   const modifiers: Modifier[] = [];
   for (let i = 0; i < xsampa.length; ) {
+    // `*` is the escape character.
+    if (xsampa[i] === '*') {
+      if (base !== null) {
+        ipa += flush(base, modifiers);
+        base = null;
+      }
+
+      i++;
+      // At the end of the string and before a space, return the '*'. There is
+      // nothing visible to escape.
+      if (i === xsampa.length || xsampa[i] === ' ') {
+        ipa += '*';
+      } else {
+        ipa += xsampa[i++];
+      }
+      continue;
+    }
+
     const char = matchChar(xsampa, i);
 
     if (char.base) {
