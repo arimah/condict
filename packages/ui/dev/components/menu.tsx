@@ -41,7 +41,8 @@ const OpenShortcut = Shortcut.parse('Primary+O o');
 const SaveShortcut = Shortcut.parse('Primary+S s');
 const PrintShortcut = Shortcut.parse('Primary+P p');
 const CloseShortcut = Shortcut.parse('Primary+W w');
-const ClearRecentShortcut = Shortcut.parse('Primary+Shift+Delete');
+const ClearRecentShortcut = Shortcut.parse('Ctrl+Shift+Delete');
+const GridLinesShortcut = Shortcut.parse('Alt+G');
 
 export type State = {
   placement: Placement;
@@ -126,6 +127,7 @@ const DemoMenu = React.forwardRef<MenuType, DemoMenuProps>((
         <CheckItem
           label='Grid lines'
           checked={state.printGridLines}
+          shortcut={GridLinesShortcut}
           onActivate={() => toggleState('printGridLines')}
         />
         <CheckItem

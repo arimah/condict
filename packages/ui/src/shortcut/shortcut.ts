@@ -233,8 +233,8 @@ const formatModifiers: ModifierFormatter = selectPlatform({
     // U+2325 = ⌥ Option Key
     // U+21E7 = ⇧ Upwards White Arrow, aka shift
     // U+2318 = ⌘ Place Of Interest Sign, aka Cmd
-    // ^ = Ctrl
-    joinMods(secondary && '^', alt && '\u2325', shift && '\u21E7', primary && '\u2318'),
+    // U+2023 = ⌃ Up Arrowhead, aka Ctrl
+    joinMods(secondary && '\u2303', alt && '\u2325', shift && '\u21E7', primary && '\u2318'),
   windows: ({primary, secondary, shift, alt}) =>
     // Windows order: Win+Ctrl+Alt+Shift+(key)
     joinMods(secondary && 'Win+', primary && 'Ctrl+', alt && 'Alt+', shift && 'Shift+'),
