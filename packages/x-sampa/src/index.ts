@@ -1,21 +1,31 @@
-import Data from './data.json';
-import {DataFile, XsampaChar} from './types';
+import {
+  replacements as RawReplacements,
+  charData as RawCharData,
+} from './data.json';
+import {Replacements, XsampaChar, XsampaChars} from './types';
 
-// TODO: Figure out a way to make the `as unknown` cast unnecessary,
+interface CharMatch {
+  readonly char: XsampaChar,
+  readonly length: number,
+}
+
+interface Modifier {
+  readonly originalIndex: number;
+  readonly char: XsampaChar;
+}
+
+// FIXME: Figure out a way to make the `as unknown` cast unnecessary,
 // if at all possible.
-const {
-  replacements: RawReplacements,
-  charData: RawCharData,
-} = Data as unknown as DataFile;
-
-const Replacements = new Map(Object.entries(RawReplacements));
-const CharData = new Map(Object.entries(RawCharData));
+const Replacements = new Map(Object.entries(
+  RawReplacements as unknown as Replacements
+));
+const CharData = new Map(Object.entries(RawCharData as XsampaChars));
 
 const substringEquals = (
   string: string,
   startIndex: number,
   substring: string
-) => {
+): boolean => {
   if (string.length - startIndex < substring.length) {
     return false;
   }
@@ -29,7 +39,7 @@ const substringEquals = (
   return true;
 };
 
-const matchChar = (xsampa: string, index: number): XsampaChar => {
+const matchChar = (xsampa: string, index: number): CharMatch => {
   const nextChar = xsampa[index];
 
   const replacements = Replacements.get(nextChar);
@@ -39,19 +49,19 @@ const matchChar = (xsampa: string, index: number): XsampaChar => {
     for (let i = 0; i < replacements.length; i++) {
       const [input, char] = replacements[i];
       if (substringEquals(xsampa, index, input)) {
-        return char;
+        return {char, length: input.length};
       }
     }
   }
 
-  const charData = CharData.get(nextChar);
-  if (charData) {
-    return charData;
+  const char = CharData.get(nextChar);
+  if (char) {
+    return {char, length: 1};
   }
 
   // If we couldn't match it against anything, treat it like
   // an unknown base character.
-  return {ipa: nextChar, base: true};
+  return {char: {ipa: nextChar, base: true}, length: 1};
 };
 
 const placeModifier = (base: XsampaChar, modifier: XsampaChar): XsampaChar => {
@@ -72,11 +82,6 @@ const placeModifier = (base: XsampaChar, modifier: XsampaChar): XsampaChar => {
 
   // Unable to satisfy preferred placement - return default.
   return modifier;
-};
-
-type Modifier = {
-  readonly originalIndex: number;
-  readonly char: XsampaChar;
 };
 
 const flush = (base: XsampaChar, modifiers: Modifier[]): string => {
@@ -121,7 +126,7 @@ const convert = (xsampa: string): string => {
       continue;
     }
 
-    const char = matchChar(xsampa, i);
+    const {char, length} = matchChar(xsampa, i);
 
     if (char.base) {
       if (base !== null) {
@@ -143,7 +148,7 @@ const convert = (xsampa: string): string => {
       ipa += char.ipa;
     }
 
-    i += char.xsLength || 1;
+    i += length;
   }
 
   if (base !== null) {

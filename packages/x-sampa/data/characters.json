@@ -231,6 +231,10 @@
       "after": "˩"
     }
   },
+  "_B\\": {
+    "modifier": true,
+    "ipa": "˩"
+  },
   "_c": {
     "diacritic": true,
     "ipa": "\u031C"
@@ -259,6 +263,10 @@
       "after": "˦"
     }
   },
+  "_H\\": {
+    "modifier": true,
+    "ipa": "˦"
+  },
   "_h": {
     "modifier": true,
     "ipa": "ʰ"
@@ -279,6 +287,10 @@
       "after": "˨"
     }
   },
+  "_L\\": {
+    "modifier": true,
+    "ipa": "˨"
+  },
   "_l": {
     "modifier": true,
     "ipa": "ˡ"
@@ -290,6 +302,10 @@
       "above": "\u0304",
       "after": "˧"
     }
+  },
+  "_M\\": {
+    "modifier": true,
+    "ipa": "˧"
   },
   "_m": {
     "diacritic": true,
@@ -338,6 +354,10 @@
       "above": "\u030B",
       "after": "˥"
     }
+  },
+  "_T\\": {
+    "modifier": true,
+    "ipa": "˥"
   },
   "_t": {
     "diacritic": true,

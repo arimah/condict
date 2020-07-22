@@ -20,13 +20,11 @@ const normalizeChar = (xsampa, char) => {
     return {
       base: true,
       ipa: char,
-      xsLength: xsampa.length > 1 ? xsampa.length : undefined,
     };
   }
 
   const result = {
     ipa: char.ipa,
-    xsLength: xsampa.length > 1 ? xsampa.length : undefined,
   };
   if (char.diacritic) {
     result.diacritic = true;
@@ -35,7 +33,6 @@ const normalizeChar = (xsampa, char) => {
         .reduce((placements, [place, ipa]) => {
           placements[place] = {
             ipa,
-            xsLength: result.xsLength,
             modifier: place === 'after' || undefined,
             diacritic: place !== 'after' || undefined,
           };
