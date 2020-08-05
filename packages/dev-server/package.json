@@ -5,6 +5,10 @@
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
+  "files": [
+    "dist/",
+    "templates/"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
