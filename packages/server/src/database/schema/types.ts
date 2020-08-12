@@ -1,5 +1,3 @@
-import {Connection} from '../sqlite';
-
 export interface TableSchema {
   /** The name of the table. */
   readonly name: string;
@@ -21,17 +19,9 @@ export interface TableSchema {
    * array can be a single column name or a list of multiple columns.
    */
   readonly index?: IndexedColumn[];
-  /**
-   * A function that performs additional validation on a row before it is
-   * imported, such as checking that a unique value constraint is not violated.
-   * @param db The database connection.
-   * @param row The row to be imported.
-   */
-  readonly preImport?: (db: Connection, row: any) => void;
   /** If true, the rows in this table are not exported. */
   readonly skipExport?: boolean;
 }
-
 
 /**
  * One or more columns to be indexed. This can be either a single column name
@@ -39,17 +29,6 @@ export interface TableSchema {
  * or more.
  */
 export type IndexedColumn = string | string[];
-
-/**
- * A function that transforms a column value during import or export.
- * @param value The column value to be imported or exported.
- * @param newIds New values of ID columns for previously imported or exported
- *        tables. See the {@link NewIdMap} type for more details.
- * @return The new column value. When importing, the type must match the type
- *         of the column. When exporting, the type must be JSON serializable
- *         (arrays and objects are fine).
- */
-export type ImportExportFunction = (value: any, newIds: NewIdMap) => any;
 
 export type ColumnSchema =
   | IdColumnSchema
@@ -65,10 +44,6 @@ export interface BaseColumnSchema {
   readonly name: string;
   /** If true, null values are permitted in the column. */
   readonly allowNull?: boolean;
-  /** A function that transforms the column value before it is exported. */
-  readonly export?: ImportExportFunction;
-  /** A function that transforms the column value before it is imported. */
-  readonly import?: ImportExportFunction;
 }
 
 /**
@@ -139,14 +114,6 @@ export interface EnumColumnSchema extends OwnColumnSchema {
 export interface JsonColumnSchema extends OwnColumnSchema {
   /** The type of the column. */
   readonly type: ColumnType.JSON;
-  /**
-   * Foreign keys referenced by some part of the content of the column. This is
-   * used for JSON columns that may contain IDs of foreign columns. For example,
-   * an inflection table's layout (a JSON object) references inflected forms by
-   * ID. This property must list *all* tables that could be referenced by the
-   * column.
-   */
-  readonly contentReferences?: ForeignKeyContentRef[];
 }
 
 /** A column that references another row's `id` column. */
@@ -247,13 +214,3 @@ export interface ForeignKeyContentRef {
    */
   readonly column: 'id';
 }
-
-/**
- * When the database is exported, auto-incremented IDs are not preserved. Rather
- * than messing up references to ID columns, the exporter and importer rewrite IDs
- * to their new values. This type contains a mapping from old ID to new ID, for
- * each table. The key is the table name, the value is the ID mapping.
- */
-export type NewIdMap = {
-  [k: string]: Map<number, number>;
-};

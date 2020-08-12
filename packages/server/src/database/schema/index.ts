@@ -1,12 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-// ^ For functions defined inside `TableSchema`s. We can infer their parameter
-// and return types from `TableSchema`, and specifying them here adds clutter.
-
-import {InflectedFormId} from '../../graphql/types';
-
-import {InflectionTableRowJson} from '../../model/inflection-table/types';
-import {BlockElementJson} from '../../rich-text/types';
-
 import {
   TableSchema,
   ColumnSchema,
@@ -14,7 +5,6 @@ import {
   Collation,
   ReferenceAction,
 } from './types';
-import {InlineElementReferences, updateInlineReferences} from './inline-refs';
 
 export const schemaVersion = 1;
 
@@ -81,20 +71,6 @@ const tables: TableSchema[] = [
     unique: [
       'name',
     ],
-    preImport(db, row) {
-      const result = db.getRequired<{name_taken: number}>`
-        select exists (
-          select 1
-          from languages
-          where name = ${row.name}
-        ) as name_taken
-      `;
-      if (result.name_taken === 1) {
-        throw new Error(
-          `Cannot continue import: there is already a language named '${row.name}'`
-        );
-      }
-    },
   },
 
   // Parts of speech defined for a language. A part of speech is associated with
@@ -255,37 +231,6 @@ const tables: TableSchema[] = [
       {
         name: 'layout',
         type: ColumnType.JSON,
-        contentReferences: [
-          {
-            table: 'inflected_forms',
-            column: 'id',
-          },
-        ],
-        export(value, {inflected_forms: newFormIds}) {
-          const rows = JSON.parse(value) as InflectionTableRowJson[];
-          rows.forEach(({cells}) => {
-            cells.forEach(cell => {
-              if (cell.inflectedFormId) {
-                cell.inflectedFormId = newFormIds.get(cell.inflectedFormId) as InflectedFormId;
-              }
-            });
-          });
-          // Return the raw JSON object; we're encoding this as JSON anyway.
-          return rows;
-        },
-        import(value, {inflected_forms: newFormIds}) {
-          // It's okay to mutate the value here, no need to make a copy.
-          const rows = value as InflectionTableRowJson[];
-          rows.forEach(({cells}) => {
-            cells.forEach(cell => {
-              if (cell.inflectedFormId != null) {
-                cell.inflectedFormId = newFormIds.get(cell.inflectedFormId) as InflectedFormId;
-              }
-            });
-          });
-          // Don't forget to serialize it as JSON!
-          return JSON.stringify(rows);
-        },
       },
       // A JSON array that contains the unique stem names present in the table
       // layout. This is calculated when the layout is updated, and is stored
@@ -294,10 +239,6 @@ const tables: TableSchema[] = [
       {
         name: 'stems',
         type: ColumnType.JSON,
-        // We can export this as a JSON object, since it's a JSON column.
-        export: value => JSON.parse(value),
-        // Mustn't forget to import it as JSON though.
-        import: value => JSON.stringify(value),
       },
     ],
     primaryKey: 'inflection_table_version_id',
@@ -430,20 +371,6 @@ const tables: TableSchema[] = [
       {
         name: 'description',
         type: ColumnType.JSON,
-        export(value, newIds) {
-          const blocks = JSON.parse(value) as BlockElementJson[];
-          blocks.forEach(block => updateInlineReferences(block.inlines, newIds));
-          return blocks;
-        },
-        import(blocks, newIds) {
-          (blocks as BlockElementJson[]).forEach(block =>
-            updateInlineReferences(block.inlines, newIds)
-          );
-          return JSON.stringify(blocks);
-        },
-        contentReferences: [
-          ...InlineElementReferences,
-        ],
       },
     ],
     primaryKey: 'definition_id',
@@ -527,8 +454,6 @@ const tables: TableSchema[] = [
         type: ColumnType.JSON,
         allowNull: true,
         default: null,
-        export: value => value !== null ? JSON.parse(value) : null,
-        import: value => value !== null ? JSON.stringify(value) : null,
       },
     ],
     primaryKey: 'id',

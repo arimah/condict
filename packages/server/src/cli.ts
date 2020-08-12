@@ -6,8 +6,6 @@ import createLogger from './create-logger';
 import loadConfig from './config';
 import CondictServer from './server';
 import CondictHttpServer from './http-server';
-import importDatabase from './import-database';
-import exportDatabase from './export-database';
 import getTableSchema from './table-schema';
 import {addUser, editUser, deleteUser} from './manage-users';
 import {ServerConfig, ServerConfigWithLogger, Logger} from './types';
@@ -24,12 +22,6 @@ const globalOptions: OptionDefinition[] = [
 ];
 
 const commandOptions: Record<string, OptionDefinition[]> = {
-  export: [
-    {name: 'target', alias: 't', type: String, defaultOption: true},
-  ],
-  import: [
-    {name: 'source', alias: 's', type: String, defaultOption: true},
-  ],
   'view-table-schema': [
     {name: 'table', alias: 't', type: String, defaultOption: true},
   ],
@@ -101,12 +93,6 @@ const main = async () => {
       case 'start':
       case undefined:
         await start(logger, config);
-        break;
-      case 'export':
-        await exportDatabase(logger, config, cmdArgs.target as string);
-        break;
-      case 'import':
-        await importDatabase(logger, config, cmdArgs.source as string);
         break;
       case 'view-table-schema': {
         const table = (cmdArgs.table as string | null | undefined) || null;
