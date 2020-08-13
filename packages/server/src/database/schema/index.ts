@@ -1,75 +1,36 @@
-import {
-  TableSchema,
-  ColumnSchema,
-  ColumnType,
-  Collation,
-  ReferenceAction,
-} from './types';
+export interface TableSchema {
+  readonly name: string;
+  readonly commands: readonly string[];
+}
 
 export const schemaVersion = 1;
 
-// When making changes to the schema, the following invariants MUST hold:
-//
-// 1. If a table has a column named `id`, it must be the primary key, and no
-//    other column can be in the primary key.
-// 2. Any column named `id` must also be auto-incremented.
-//
-// The exporter relies on this. Moreover, SQLite has no support for auto-
-// incremented columns that are not the sole PK.
-//
-// Use the shorthand object defined literally right below this comment if you
-// need an `id` column.
-
-// A shorthand object for the `id` column. This does not automagically become
-// the primary key; don't forget to set `primaryKey`!
-const id: ColumnSchema = {
-  name: 'id',
-  type: ColumnType.ID,
-  autoIncrement: true,
-};
-
-const tables: TableSchema[] = [
-  // Schema metadata.
+const tables: readonly TableSchema[] = [
   {
     name: 'schema_info',
-    columns: [
-      // The metadata key.
-      {
-        name: 'name',
-        type: ColumnType.TEXT,
-        collate: Collation.BINARY,
-      },
-      // The metadata value.
-      {
-        name: 'value',
-        type: ColumnType.TEXT,
-        collate: Collation.BINARY,
-      },
+    commands: [`
+      create table schema_info (
+        -- The metadata key.
+        name text not null collate binary,
+        -- The metadata value.
+        value text not null collate binary,
+        primary key (name)
+      )`,
     ],
-    primaryKey: 'name',
-    skipExport: true,
   },
 
   // Languages that are defined in the dictionary.
   {
     name: 'languages',
-    columns: [
-      id,
-      // The total number of lemmas in the language. Cached for performance.
-      {
-        name: 'lemma_count',
-        type: ColumnType.INT,
-        default: 0,
-      },
-      // The full display name of the language.
-      {
-        name: 'name',
-        type: ColumnType.TEXT,
-      },
-    ],
-    primaryKey: 'id',
-    unique: [
-      'name',
+    commands: [`
+      create table languages (
+        id integer not null primary key,
+        -- The total number of lemmas in the language. Cached for performance.
+        lemma_count integer not null default 0,
+        -- The full display name of the language.
+        name text not null
+      )`,
+      `create unique index \`unq:languages.name\` on languages(name)`,
     ],
   },
 
@@ -77,58 +38,38 @@ const tables: TableSchema[] = [
   // every definition, and can define any number of inflection tables.
   {
     name: 'parts_of_speech',
-    columns: [
-      id,
-      // The language that the part of speech belongs to.
-      {
-        name: 'language_id',
-        references: {
-          table: 'languages',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // The display name of the part of speech.
-      {
-        name: 'name',
-        type: ColumnType.TEXT,
-      },
-    ],
-    primaryKey: 'id',
-    unique: [
-      ['language_id', 'name'],
-    ],
-    index: [
-      'language_id',
+    commands: [`
+      create table parts_of_speech (
+        id integer not null primary key,
+        -- The language that the part of speech belongs to.
+        language_id integer not null,
+        -- The display name of the part of speech.
+        name text not null,
+        foreign key (language_id)
+          references languages(id)
+          on delete cascade
+      )`,
+      `create unique index \`unq:parts_of_speech.language_id-name\` on parts_of_speech(language_id, name)`,
+      `create index \`idx:parts_of_speech.language_id\` on parts_of_speech(language_id)`,
     ],
   },
 
   // Inflection tables for each part of speech.
   {
     name: 'inflection_tables',
-    columns: [
-      id,
-      // The parent part of speech.
-      {
-        name: 'part_of_speech_id',
-        references: {
-          table: 'parts_of_speech',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // The name of the inflection table, shown in admin UIs.
-      {
-        name: 'name',
-        type: ColumnType.TEXT,
-      },
-    ],
-    primaryKey: 'id',
-    unique: [
-      ['part_of_speech_id', 'name'],
-    ],
-    index: [
-      'part_of_speech_id',
+    commands: [`
+      create table inflection_tables (
+        id integer not null primary key,
+        -- The parent part of speech.
+        part_of_speech_id integer not null,
+        -- The name of the inflection table, shown in admin UIs.
+        name text not null,
+        foreign key (part_of_speech_id)
+          references parts_of_speech(id)
+          on delete cascade
+      )`,
+      `create unique index \`unq:inflection_tables.part_of_speech_id-name\` on inflection_tables(part_of_speech_id, name)`,
+      `create index \`idx:inflection_tables.part_of_speech_id\` on inflection_tables(part_of_speech_id)`,
     ],
   },
 
@@ -136,77 +77,18 @@ const tables: TableSchema[] = [
   // data is stored in `inflection_table_layouts`.
   {
     name: 'inflection_table_versions',
-    columns: [
-      id,
-      // The parent inflection table.
-      {
-        name: 'inflection_table_id',
-        references: {
-          table: 'inflection_tables',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // Indicates whether this is the current layout of the table.
-      {
-        name: 'is_current',
-        type: ColumnType.BOOLEAN,
-      },
-    ],
-    primaryKey: 'id',
-    index: [
-      'is_current',
-    ],
-  },
-
-  // Individual cells in an inflection table, which correspond to single
-  // inflected forms. The position of a cell is determined by the layout
-  // of the inflection table.
-  {
-    name: 'inflected_forms',
-    columns: [
-      id,
-      // The parent inflection table version.
-      {
-        name: 'inflection_table_version_id',
-        references: {
-          table: 'inflection_table_versions',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // Determines whether the inflected form, once computed for a definition,
-      // should be added as a separate lemma.
-      {
-        name: 'derive_lemma',
-        type: ColumnType.BOOLEAN,
-        default: true,
-      },
-      // Determines whether the `display_name` was entered specifically by the
-      // user, or derived automatically from the header cells in the containing
-      // table.
-      {
-        name: 'custom_display_name',
-        type: ColumnType.BOOLEAN,
-        default: false,
-      },
-      // A pattern, such as '{~}s', which describes how to construct the
-      // inflected form. Placeholders are replaced by the lemma form and/or
-      // custom stems defined for the definition.
-      {
-        name: 'inflection_pattern',
-        type: ColumnType.TEXT,
-      },
-      // The display name of the inflected form, which is usually derived from
-      // the cell's position in its table, and may be edited by the user.
-      {
-        name: 'display_name',
-        type: ColumnType.TEXT,
-      },
-    ],
-    primaryKey: 'id',
-    index: [
-      'inflection_table_version_id',
+    commands: [`
+      create table inflection_table_versions (
+        id integer not null primary key,
+        -- The parent inflection table.
+        inflection_table_id integer not null,
+        -- Indicates whether this is the current layout of the table.
+        is_current integer not null,
+        foreign key (inflection_table_id)
+          references inflection_tables(id)
+          on delete cascade
+      )`,
+      `create index \`idx:inflection_table_versions.is_current\` on inflection_table_versions(is_current)`,
     ],
   },
 
@@ -216,51 +98,56 @@ const tables: TableSchema[] = [
   // in each cell so the data export/import works.
   {
     name: 'inflection_table_layouts',
-    columns: [
-      // The parent inflection table version.
-      {
-        name: 'inflection_table_version_id',
-        references: {
-          table: 'inflection_table_versions',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // A JSON object that describes the layout of the table. See app
-      // documentation for details.
-      {
-        name: 'layout',
-        type: ColumnType.JSON,
-      },
-      // A JSON array that contains the unique stem names present in the table
-      // layout. This is calculated when the layout is updated, and is stored
-      // here primarily for performance reasons (so we don't have to walk the
-      // table and parse inflection patterns in the admin UI).
-      {
-        name: 'stems',
-        type: ColumnType.JSON,
-      },
+    commands: [`
+      create table inflection_table_layouts (
+        -- The parent inflection table version.
+        inflection_table_version_id integer not null primary key,
+        -- A JSON object that describes the layout of the table. See app
+        -- documentation for details.
+        layout text not null,
+        -- A JSON array that contains the unique stem names present in the table
+        -- layout. This is calculated when the layout is updated, and is stored
+        -- here primarily for performance reasons (so we don't have to walk the
+        -- table and parse inflection patterns in the admin UI).
+        stems text not null,
+
+        foreign key (inflection_table_version_id)
+          references inflection_table_versions(id)
+          on delete cascade
+      )`,
     ],
-    primaryKey: 'inflection_table_version_id',
   },
 
-  // The tags that exist in the dictionary. Tags may be attached to any number
-  // of definitions (see `definition_tags`), and are not specific to any
-  // language (that is, they are global). Tags names are stored separately to
-  // avoid duplicating textual data.
+  // Individual cells in an inflection table, which correspond to single
+  // inflected forms. The position of a cell is determined by the layout
+  // of the inflection table.
   {
-    name: 'tags',
-    columns: [
-      id,
-      // The name of the tag.
-      {
-        name: 'name',
-        type: ColumnType.TEXT,
-      },
-    ],
-    primaryKey: 'id',
-    unique: [
-      'name',
+    name: 'inflected_forms',
+    commands: [`
+      create table inflected_forms (
+        id integer not null primary key,
+        -- The parent inflection table version.
+        inflection_table_version_id integer not null,
+        -- Determines whether the inflected form, once computed for a definition,
+        -- should be added as a separate lemma.
+        derive_lemma integer not null default 1,
+        -- Determines whether the 'display_name' was entered specifically by the
+        -- user, or derived automatically from the header cells in the containing
+        -- table.
+        custom_display_name integer not null default 0,
+        -- A pattern, such as '{~}s', which describes how to construct the
+        -- inflected form. Placeholders are replaced by the lemma form and/or
+        -- custom stems defined for the definition.
+        inflection_pattern text not null,
+        -- The display name of the inflected form, which is usually derived from
+        -- the cell's position in its table, and may be edited by the user.
+        display_name text not null,
+
+        foreign key (inflection_table_version_id)
+          references inflection_table_versions(id)
+          on delete cascade
+      )`,
+      `create index \`idx:inflected_forms.inflection_table_version_id\` on inflected_forms(inflection_table_version_id)`,
     ],
   },
 
@@ -270,83 +157,55 @@ const tables: TableSchema[] = [
   // have at least one of either kind.
   {
     name: 'lemmas',
-    columns: [
-      id,
-      // The language that the lemma belongs to.
-      {
-        name: 'language_id',
-        references: {
-          table: 'languages',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // The term being defined. This field uses binary collation, for "correct"
-      // uniqueness (we want accented letters to be distinct from their
-      // non-accented counterparts, and case matters). This value must be equal
-      // to `term_display`.
-      {
-        name: 'term_unique',
-        type: ColumnType.TEXT,
-        collate: Collation.BINARY,
-      },
-      // The term being defined. This field uses the default Unicode collation,
-      // for quick sorting. This value must be equal to `term_unique`.
-      {
-        name: 'term_display',
-        type: ColumnType.TEXT,
-      },
-    ],
-    primaryKey: 'id',
-    unique: [
-      ['language_id', 'term_unique'],
-    ],
-    index: [
-      'language_id',
-      'term_display',
+    commands: [`
+      create table lemmas (
+        id integer not null primary key,
+        -- The language that the lemma belongs to.
+        language_id integer not null,
+        -- The term being defined. This field uses binary collation, for "correct"
+        -- uniqueness (we want accented letters to be distinct from their
+        -- non-accented counterparts, and case matters). This value must be equal
+        -- to 'term_display'.
+        term_unique text not null collate binary,
+        -- The term being defined. This field uses the default Unicode collation,
+        -- for quick sorting. This value must be equal to 'term_unique'.
+        term_display text not null,
+
+        foreign key (language_id)
+          references languages(id)
+          on delete cascade
+      )`,
+      `create unique index \`unq:lemmas.language_id-term_unique\` on lemmas(language_id, term_unique)`,
+      `create index \`idx:lemmas.language_id\` on lemmas(language_id)`,
+      `create index \`idx:lemmas.term_display\` on lemmas(term_display)`,
     ],
   },
 
-  // Definitions attached to a single lemma. A lemma may have multiple
-  // definitions, and can also include forms that are derived by inflecting a
-  // definition from this table (see `derived_definitions`).
   {
     name: 'definitions',
-    columns: [
-      id,
-      // The lemma that this definition belongs to.
-      {
-        name: 'lemma_id',
-        references: {
-          table: 'lemmas',
-          column: 'id',
-          onDelete: ReferenceAction.RESTRICT,
-        },
-      },
-      // The language that the definition belongs to.
-      {
-        name: 'language_id',
-        references: {
-          table: 'languages',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // The part of speech of the definition.
-      {
-        name: 'part_of_speech_id',
-        references: {
-          table: 'parts_of_speech',
-          column: 'id',
-          onDelete: ReferenceAction.RESTRICT,
-        },
-      },
-    ],
-    primaryKey: 'id',
-    index: [
-      'lemma_id',
-      'language_id',
-      'part_of_speech_id',
+    commands: [`
+      create table definitions (
+        id integer not null primary key,
+        -- The lemma that this definition belongs to.
+        lemma_id integer not null,
+        -- The language that the definition belongs to.
+        language_id integer not null,
+        -- The part of speech of the definition.
+        part_of_speech_id integer not null,
+
+        foreign key (lemma_id)
+          references lemmas(id)
+          on delete restrict,
+        foreign key (language_id)
+          references languages(id)
+          on delete cascade,
+        foreign key (part_of_speech_id)
+          references parts_of_speech(id)
+          on delete restrict
+      )`,
+      `create index \`idx:definitions.lemma_id\` on definitions(lemma_id)`,
+      `create index \`idx:definitions.language_id\` on definitions(language_id)`,
+      `create index \`idx:definitions.part_of_speech_id\` on definitions(part_of_speech_id)`,
     ],
   },
 
@@ -357,173 +216,130 @@ const tables: TableSchema[] = [
   // works.
   {
     name: 'definition_descriptions',
-    columns: [
-      // The definition that this description belongs to.
-      {
-        name: 'definition_id',
-        references: {
-          table: 'definitions',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // The definition text itself. See app documentation for details.
-      {
-        name: 'description',
-        type: ColumnType.JSON,
-      },
+    commands: [`
+      create table definition_descriptions (
+        -- The definition that this description belongs to.
+        definition_id integer not null primary key,
+        -- The definition text itself. See app documentation for details.
+        description text not null,
+
+        foreign key (definition_id)
+          references definitions(id)
+          on delete cascade
+      )`,
     ],
-    primaryKey: 'definition_id',
   },
 
   // Inflection stems for individual definitions.
   {
     name: 'definition_stems',
-    columns: [
-      // The definition that this stem belongs to.
-      {
-        name: 'definition_id',
-        references: {
-          table: 'definitions',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // The name (key) of the stem.
-      {
-        name: 'name',
-        type: ColumnType.TEXT,
-      },
-      // The value of the stem.
-      {
-        name: 'value',
-        type: ColumnType.TEXT,
-      },
-    ],
-    primaryKey: ['definition_id', 'name'],
-    index: [
-      'definition_id',
+    commands: [`
+      create table definition_stems (
+        -- The definition that this stem belongs to.
+        definition_id integer not null,
+        -- The name (key) of the stem.
+        name text not null,
+        -- The value of the stem.
+        value text not null,
+
+        primary key (definition_id, name),
+
+        foreign key (definition_id)
+          references definitions(id)
+          on delete cascade
+      )`,
+      `create index \`idx:definition_stems.definition_id\` on definition_stems(definition_id)`,
     ],
   },
 
+  // Specifies which inflection tables a definition uses. Within a single
+  // definition, the same inflection_table_id may occur multiple times:
+  // sometimes a word has different inflected forms depending on context or
+  // usage.
   {
     name: 'definition_inflection_tables',
-    // Specifies which inflection tables a definition uses. Within a single
-    // definition, the same inflection_table_id may occur multiple times:
-    // sometimes a word has different inflected forms depending on context or
-    // usage.
-    columns: [
-      id,
-      // The definition that this table belongs to.
-      {
-        name: 'definition_id',
-        references: {
-          table: 'definitions',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // The inflection table that inflected forms are generated from.
-      {
-        name: 'inflection_table_id',
-        references: {
-          table: 'inflection_tables',
-          column: 'id',
-          onDelete: ReferenceAction.RESTRICT,
-        },
-      },
-      // The inflection table version that inflected forms are generated from.
-      {
-        name: 'inflection_table_version_id',
-        references: {
-          table: 'inflection_table_versions',
-          column: 'id',
-          onDelete: ReferenceAction.RESTRICT,
-        },
-      },
-      // The sort order of the inflection table within its definition.
-      {
-        name: 'sort_order',
-        type: ColumnType.INT,
-      },
-      // A short, optional caption of the table, such as "In the sense so-and-so".
-      // A single formatted paragraph. See app documentation for details. Links
-      // are not permitted inside the table caption.
-      {
-        name: 'caption',
-        type: ColumnType.JSON,
-        allowNull: true,
-        default: null,
-      },
-    ],
-    primaryKey: 'id',
-    index: [
-      'definition_id',
-      'inflection_table_id',
-      'inflection_table_version_id',
-      ['definition_id', 'sort_order'],
+    commands: [`
+      create table definition_inflection_tables (
+        id integer not null primary key,
+        -- The definition that this table belongs to.
+        definition_id integer not null,
+        -- The inflection table that inflected forms are generated from.
+        inflection_table_id integer not null,
+        -- The inflection table version that inflected forms are generated from.
+        inflection_table_version_id integer not null,
+        -- The sort order of the inflection table within its definition.
+        sort_order integer not null,
+        -- A short, optional caption of the table, such as "In the sense so-and-so".
+        -- A single formatted paragraph. See app documentation for details. Links
+        -- are not permitted inside the table caption.
+        caption text,
+
+        foreign key (definition_id)
+          references definitions(id)
+          on delete cascade,
+        foreign key (inflection_table_id)
+          references inflection_tables(id)
+          on delete restrict,
+        foreign key (inflection_table_version_id)
+          references inflection_table_versions(id)
+          on delete restrict
+      )`,
+      `create index \`idx:definition_inflection_tables.definition_id\` on definition_inflection_tables(definition_id)`,
+      `create index \`idx:definition_inflection_tables.inflection_table_id\` on definition_inflection_tables(inflection_table_id)`,
+      `create index \`idx:definition_inflection_tables.inflection_table_version_id\` on definition_inflection_tables(inflection_table_version_id)`,
+      `create index \`idx:definition_inflection_tables.definition_id-sort_order\` on definition_inflection_tables(definition_id, sort_order)`,
     ],
   },
 
-  // Irregular or otherwise custom inflected forms for individual definitions.
+  // Irregular or otherwise custom inflected forms for individual definitions
+  // inflection tables.
   {
     name: 'definition_forms',
-    columns: [
-      // The definition inflection table that this form belongs to.
-      {
-        name: 'definition_inflection_table_id',
-        references: {
-          table: 'definition_inflection_tables',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // The inflected form that this value overrides.
-      {
-        name: 'inflected_form_id',
-        references: {
-          table: 'inflected_forms',
-          column: 'id',
-          onDelete: ReferenceAction.RESTRICT,
-        },
-      },
-      // The inflected form, without stem placeholders.
-      {
-        name: 'inflected_form',
-        type: ColumnType.TEXT,
-      },
-    ],
-    primaryKey: ['definition_inflection_table_id', 'inflected_form_id'],
-    index: [
-      'definition_inflection_table_id',
-      'inflected_form_id',
+    commands: [`
+      create table definition_forms (
+        -- The definition inflection table that this form belongs to.
+        definition_inflection_table_id integer not null,
+        -- The inflected form that this value overrides.
+        inflected_form_id integer not null,
+        -- The inflected form, without stem placeholders.
+        inflected_form text not null,
+
+        primary key (definition_inflection_table_id, inflected_form_id),
+
+        foreign key (definition_inflection_table_id)
+          references definition_inflection_tables(id)
+          on delete cascade,
+        foreign key (inflected_form_id)
+          references inflected_forms(id)
+          on delete restrict
+      )`,
+      `create index \`idx:definition_forms.definition_inflection_table_id\` on definition_forms(definition_inflection_table_id)`,
+      `create index \`idx:definition_forms.inflected_form_id\` on definition_forms(inflected_form_id)`,
     ],
   },
 
-  // Tags attached to individual definitions. A definition can have any number of tags.
+  // Tags attached to individual definitions. A definition can have any number
+  // of tags.
   {
     name: 'definition_tags',
-    columns: [
-      // The definition this tag is attached to.
-      {
-        name: 'definition_id',
-        references: {
-          table: 'definitions',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // The tag used by the definition.
-      {
-        name: 'tag_id',
-        references: {
-          table: 'tags',
-          column: 'id',
-          onDelete: ReferenceAction.RESTRICT,
-        },
-      },
+    commands: [`
+      create table definition_tags (
+        -- The definition this tag is attached to.
+        definition_id integer not null,
+        -- The tag used by the definition.
+        tag_id integer not null,
+
+        primary key (definition_id, tag_id),
+
+        foreign key (definition_id)
+          references definitions(id)
+          on delete cascade,
+
+        foreign key (tag_id)
+          references tags(id)
+          on delete restrict
+      )`,
     ],
-    primaryKey: ['definition_id', 'tag_id'],
   },
 
   // Definitions that are derived by inflecting a non-derived definition. These
@@ -535,41 +351,42 @@ const tables: TableSchema[] = [
   // definition.
   {
     name: 'derived_definitions',
-    columns: [
-      // The lemma that this definition is listed under.
-      {
-        name: 'lemma_id',
-        references: {
-          table: 'lemmas',
-          column: 'id',
-          onDelete: ReferenceAction.RESTRICT,
-        },
-      },
-      // The definition that this form was derived from, so that we can link
-      // back to it, e.g. "Nominative singular of ...".
-      {
-        name: 'original_definition_id',
-        references: {
-          table: 'definitions',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // The inflected form that this form was derived from.
-      {
-        name: 'inflected_form_id',
-        references: {
-          table: 'inflected_forms',
-          column: 'id',
-          onDelete: ReferenceAction.RESTRICT,
-        },
-      },
+    commands: [`
+      create table derived_definitions (
+        -- The lemma that this definition is listed under.
+        lemma_id integer not null,
+        -- The definition that this form was derived from, so that we can link
+        -- back to it, e.g. "Nominative singular of ...".
+        original_definition_id integer not null,
+        -- The inflected form that this form was derived from.
+        inflected_form_id integer not null,
+
+        primary key (lemma_id, original_definition_id, inflected_form_id),
+
+        foreign key (lemma_id) references lemmas(id) on delete restrict,
+        foreign key (original_definition_id) references definitions(id) on delete cascade,
+        foreign key (inflected_form_id) references inflected_forms(id) on delete restrict
+      )`,
+      `create index \`idx:derived_definitions.lemma_id\` on derived_definitions(lemma_id)`,
+      `create index \`idx:derived_definitions.original_definition_id\` on derived_definitions(original_definition_id)`,
+      `create index \`idx:derived_definitions.inflected_form_id\` on derived_definitions(inflected_form_id)`,
     ],
-    primaryKey: ['lemma_id', 'original_definition_id', 'inflected_form_id'],
-    index: [
-      'lemma_id',
-      'original_definition_id',
-      'inflected_form_id',
+  },
+
+  // The tags that exist in the dictionary. Tags may be attached to any number
+  // of definitions (see `definition_tags`), and are not specific to any
+  // language (that is, they are global). Tags names are stored separately to
+  // avoid duplicating textual data.
+  {
+    name: 'tags',
+    commands: [`
+      create table tags (
+        id integer not null,
+        -- The name of the tag.
+        name text not null,
+        primary key (id)
+      )`,
+      `create unique index \`unq:tags.name\` on tags(name)`,
     ],
   },
 
@@ -578,53 +395,37 @@ const tables: TableSchema[] = [
   // when Condict runs completely locally, authentication is not necessary.
   {
     name: 'users',
-    columns: [
-      id,
-      // The name of the user. Usernames are case-sensitive and unique.
-      {
-        name: 'name',
-        type: ColumnType.TEXT,
-      },
-      // A hashed version of the user's password. Passwords are hashed using
-      // bcrypt.
-      {
-        name: 'password_hash',
-        type: ColumnType.TEXT,
-      },
+    commands: [`
+      create table users (
+        id integer not null primary key,
+        -- The name of the user. Usernames are case-sensitive and unique.
+        name text not null,
+        -- A hashed version of the user's password.
+        password_hash text not null
+      )`,
+      `create unique index \`unq:users.name\` on users(name)`,
     ],
-    primaryKey: 'id',
-    unique: ['name'],
-    skipExport: true,
   },
 
   // Sessions associated with each user. Sessions are identified by a string ID,
   // and expire after some time.
   {
     name: 'user_sessions',
-    columns: [
-      // The ID of the session, which is an arbitrary string value.
-      {
-        name: 'id',
-        type: ColumnType.TEXT,
-      },
-      // The user that the session belongs to.
-      {
-        name: 'user_id',
-        references: {
-          table: 'users',
-          column: 'id',
-          onDelete: ReferenceAction.CASCADE,
-        },
-      },
-      // The date and time that the session expires, as the number of
-      // milliseconds since midnight 1 January, 1970, UTC.
-      {
-        name: 'expires_at',
-        type: ColumnType.INT,
-      },
+    commands: [`
+      create table user_sessions (
+        -- The ID of the session, which is an arbitrary string value.
+        id text not null primary key,
+        -- The user that the session belongs to.
+        user_id integer not null,
+        -- The date and time that the session expires, as the number of
+        -- milliseconds since midnight 1 January, 1970, UTC.
+        expires_at integer not null,
+
+        foreign key (user_id)
+          references users(id)
+          on delete cascade
+      )`,
     ],
-    primaryKey: 'id',
-    skipExport: true,
   },
 ];
 

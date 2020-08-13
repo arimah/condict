@@ -8,4 +8,3 @@ export {
 } from './types';
 export {default as Connection} from './connection';
 export {default as ConnectionPool} from './pool';
-export {default as generateSchema} from './schema';

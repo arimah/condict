@@ -1,7 +1,7 @@
 import readline from 'readline';
 import {Writable} from 'stream';
 
-import {Connection, createPool} from './database';
+import {Connection, ConnectionPool} from './database';
 import performStartupChecks from './startup-checks';
 import {User, UserMut, UserId} from './model';
 import {ServerConfig, Logger} from './types';
@@ -60,7 +60,7 @@ const withDatabase = async (
   config: ServerConfig,
   fn: (db: Connection) => Promise<void>
 ) => {
-  const databasePool = createPool(logger, config.database);
+  const databasePool = new ConnectionPool(logger, config.database);
 
   try {
     await performStartupChecks(logger, config, databasePool);

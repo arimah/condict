@@ -1,11 +1,11 @@
-import {generateSchema} from './database';
+import {schema as fullSchema} from './database';
 import reindentQuery from './database/reindent-query';
 
 const getTableSchema = (tableName: string | null): string | null => {
-  let schema = generateSchema();
+  let schema = fullSchema;
 
   if (tableName !== null) {
-    schema = schema.filter(([name]) => name === tableName);
+    schema = schema.filter(t => t.name === tableName);
   }
 
   if (schema.length === 0) {
@@ -13,10 +13,10 @@ const getTableSchema = (tableName: string | null): string | null => {
   }
 
   return schema
-    .map(([name, statements]) =>
+    .map(({name, commands}) =>
       [
         `-- Schema for ${name}:`,
-        ...statements.map(stmt => `${reindentQuery(stmt)};`),
+        ...commands.map(cmd => `${reindentQuery(cmd)};`),
       ].join('\n')
     )
     .join('\n\n');

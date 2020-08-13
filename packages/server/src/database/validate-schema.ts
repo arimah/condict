@@ -1,8 +1,7 @@
 import {ServerConfig, Logger} from '../types';
 
-import {generateSchema} from '.';
 import {Connection, ConnectionPool} from './sqlite';
-import {schemaVersion as serverSchemaVersion} from './schema';
+import schema, {schemaVersion as serverSchemaVersion} from './schema';
 
 const getSchemaVersion = (db: Connection) => {
   type Row = { value: string };
@@ -30,23 +29,21 @@ const createSchema = (
   config: ServerConfig,
   isNewSchema: boolean
 ) => {
-  const schema = generateSchema();
-
-  for (const [tableName, statements] of schema) {
-    const tableExists = db.tableExists(tableName);
+  for (const {name, commands} of schema) {
+    const tableExists = db.tableExists(name);
     if (tableExists) {
       if (isNewSchema) {
-        logger.warn(`Skipping existing table: ${tableName}`);
+        logger.warn(`Skipping existing table: ${name}`);
       }
       continue;
     }
 
     if (!isNewSchema) {
-      logger.warn(`Creating missing table: ${tableName}`);
+      logger.warn(`Creating missing table: ${name}`);
     }
 
-    for (const statement of statements) {
-      db.exec(statement);
+    for (const command of commands) {
+      db.exec(command);
     }
   }
 

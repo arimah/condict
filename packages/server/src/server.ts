@@ -2,7 +2,7 @@ import {GraphQLSchema} from 'graphql';
 import {makeExecutableSchema} from 'graphql-tools';
 
 import performStartupChecks from './startup-checks';
-import {Connection, ConnectionPool, createPool} from './database';
+import {Connection, ConnectionPool} from './database';
 import {Context, getTypeDefs, getResolvers, getDirectives} from './graphql';
 import {UserSession} from './model';
 import {ServerConfig, Logger} from './types';
@@ -27,7 +27,7 @@ export default class CondictServer {
   public constructor(logger: Logger, config: ServerConfig) {
     this.logger = logger;
     this.config = config;
-    this.databasePool = createPool(logger, config.database);
+    this.databasePool = new ConnectionPool(logger, config.database);
     this.schema = makeExecutableSchema({
       typeDefs: getTypeDefs(),
       resolvers: getResolvers(),
