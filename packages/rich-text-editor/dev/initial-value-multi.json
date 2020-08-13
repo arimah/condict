@@ -1,0 +1,66 @@
+[
+  {
+    "type": "paragraph",
+    "children": [
+      {"text": "A line of text in a paragraph."}
+    ]
+  },
+  {
+    "type": "bulletListItem",
+    "indent": 1,
+    "children": [
+      {"text": "A list item in a "},
+      {"text": "bullet", "bold": true},
+      {"text": " list."}
+    ]
+  },
+  {
+    "type": "bulletListItem",
+    "indent": 1,
+    "children": [
+      {"text": "A second list item in the same bullet list."}
+    ]
+  },
+  {
+    "type": "numberListItem",
+    "indent": 2,
+    "children": [
+      {"text": "First "},
+      {"text": "numbered", "underline": true},
+      {"text": " item, oh me."}
+    ]
+  },
+  {
+    "type": "numberListItem",
+    "indent": 2,
+    "children": [
+      {"text": "Second numbered item, oh my."}
+    ]
+  },
+  {
+    "type": "bulletListItem",
+    "indent": 1,
+    "children": [
+      {"text": "A third bullet "},
+      {
+        "type": "link",
+        "target": {
+          "url": "https://example.com",
+          "name": "https://example.com"
+        },
+        "children": [
+          {"text": "list item"}
+        ]
+      },
+      {"text": "!"}
+    ]
+  },
+  {
+    "type": "paragraph",
+    "children": [
+      {"text": "And a final, finishing touch: "},
+      {"text": "some italic text", "italic": true},
+      {"text": "."}
+    ]
+  }
+]

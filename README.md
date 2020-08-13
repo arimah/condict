@@ -37,6 +37,7 @@ The eventual goal of Condict is to be distributable as a standalone Electron app
 * [ipa](./packages/ipa): Utilities for searching and listing [IPA][] characters.
 * [ipa-input](./packages/ipa-input): A fancy textbox that searches [IPA][] characters.
 * [platform](./packages/platform): Basic platform detection, with support for overrides.
+* [rich-text-editor](./packages/rich-text-editor): The rich text editor component for definition descriptions and inflection table captions.
 * [server](./packages/server): The storage backend.
 * [table-editor](./packages/table-editor): UI components for editing inflection tables. Separate package because of its size and complexity.
 * [ui](./packages/ui): Mostly-general-purpose reusable UI components.

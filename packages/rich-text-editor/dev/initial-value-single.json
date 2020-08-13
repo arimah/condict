@@ -1,0 +1,19 @@
+[
+  {
+    "type": "paragraph",
+    "children": [
+      {"text": "A", "bold": true},
+      {"text": " "},
+      {"text": "line", "italic": true},
+      {"text": " "},
+      {"text": "of", "underline": true},
+      {"text": " "},
+      {"text": "text", "strikethrough": true},
+      {"text": " "},
+      {"text": "in", "superscript": true},
+      {"text": " "},
+      {"text": "a", "subscript": true},
+      {"text": " paragraph."}
+    ]
+  }
+]
