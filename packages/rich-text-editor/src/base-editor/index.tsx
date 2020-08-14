@@ -4,7 +4,6 @@ import React, {
   KeyboardEvent,
   MouseEvent,
   useCallback,
-  useRef,
   useEffect,
 } from 'react';
 import {Transforms} from 'slate';
@@ -42,17 +41,15 @@ const BaseEditor = React.forwardRef((
 
   const editor = useCondictEditor();
 
-  const lastValidSelection = useRef(editor.selection);
-
   useEffect(() => {
     if (editor.selection !== null) {
-      lastValidSelection.current = editor.selection;
+      editor.blurSelection = editor.selection;
     }
   }, [editor.selection]);
 
   const handleFocus = useCallback(() => {
-    if (!editor.selection && lastValidSelection.current) {
-      Transforms.select(editor, lastValidSelection.current);
+    if (!editor.selection && editor.blurSelection) {
+      Transforms.select(editor, editor.blurSelection);
     }
   }, []);
 

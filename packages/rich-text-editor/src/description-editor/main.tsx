@@ -4,10 +4,10 @@ import React, {
   useMemo,
   useCallback,
   useRef,
+  useEffect,
 } from 'react';
 import {Transforms, Node as SlateNode, Range} from 'slate';
-import {HistoryEditor} from 'slate-history';
-import {Slate} from 'slate-react';
+import {Slate, ReactEditor} from 'slate-react';
 
 import {ShortcutMap} from '@condict/ui';
 
@@ -53,10 +53,23 @@ const DescriptionEditor = (props: Props): JSX.Element => {
   const [editor] = useState(() => createEditor(false));
 
   const [linkProps, setLinkProps] = useState<LinkProps | null>(null);
+  // If true, call openLinkDialog on the next render.
+  const [shouldEditLink, setShouldEditLink] = useState(false);
 
   const editorRef = useRef<HTMLDivElement>(null);
 
-  const openLinkDialog = useCallback(() => {
+  const openLinkDialog = useCallback(() => setShouldEditLink(shouldEdit => {
+    if (!editor.selection && editor.blurSelection) {
+      // We tried last render and it did nothing, so no point trying again.
+      if (shouldEdit) {
+        return false;
+      }
+
+      ReactEditor.focus(editor);
+      // Try to open the link dialog again after the next render.
+      return true;
+    }
+
     const {selection} = editor;
     const domSelection = window.getSelection();
     if (selection && domSelection && editorRef.current) {
@@ -77,7 +90,9 @@ const DescriptionEditor = (props: Props): JSX.Element => {
         },
       });
     }
-  }, []);
+    // Either no valid selection or dialog is open - don't try again.
+    return false;
+  }), []);
 
   const keyboardMap = useMemo(() => new ShortcutMap(
     [
@@ -96,6 +111,12 @@ const DescriptionEditor = (props: Props): JSX.Element => {
       cmd.exec(editor, openLinkDialog);
     }
   }, [keyboardMap]);
+
+  useEffect(() => {
+    if (shouldEditLink) {
+      openLinkDialog();
+    }
+  }, [shouldEditLink]);
 
   return (
     <Slate editor={editor} value={value} onChange={onChange}>

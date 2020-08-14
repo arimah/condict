@@ -17,8 +17,14 @@ export const isBlock = (n: Node, editor: Editor): n is Element =>
 export const isLink = (n: Node): n is Element =>
   Element.isElement(n) && n.type === 'link';
 
-export const blocks = (editor: Editor): Iterable<NodeEntry<Element>> =>
+export const blocks = (
+  editor: Editor,
+  options: {
+    at?: Location | Span;
+  } = {}
+): Iterable<NodeEntry<Element>> =>
   Editor.nodes(editor, {
+    ...options,
     match: (n): n is Element => isBlock(n, editor),
   });
 
@@ -27,8 +33,14 @@ const anyMatch = (iterable: Iterable<any>): boolean => {
   return !iter.next().done;
 };
 
-export const canIndent = (editor: Editor): boolean =>
+export const canIndent = (
+  editor: Editor,
+  options: {
+    at?: Location | Span;
+  } = {}
+): boolean =>
   anyMatch(Editor.nodes(editor, {
+    ...options,
     match: n =>
       isBlock(n, editor) && (
         n.indent === undefined ||
@@ -36,30 +48,50 @@ export const canIndent = (editor: Editor): boolean =>
       ),
   }));
 
-export const canUnindent = (editor: Editor): boolean =>
+export const canUnindent = (
+  editor: Editor,
+  options: {
+    at?: Location | Span;
+  } = {}
+): boolean =>
   anyMatch(Editor.nodes(editor, {
+    ...options,
     match: n =>
       isBlock(n, editor) &&
       n.indent !== undefined &&
       n.indent > getMinIndent(n),
   }));
 
-export const isBlockActive = (editor: Editor, type: BlockType): boolean =>
+export const isBlockActive = (
+  editor: Editor,
+  type: BlockType,
+  options: {
+    at?: Location | Span;
+  } = {}
+): boolean =>
   anyMatch(Editor.nodes(editor, {
+    ...options,
     match: n => n.type === type,
     mode: 'all',
   }));
 
-export const isInlineActive = (editor: Editor, type: InlineType): boolean =>
+export const isInlineActive = (
+  editor: Editor,
+  type: InlineType,
+  options: {
+    at?: Location | Span;
+  } = {}
+): boolean =>
   anyMatch(Editor.nodes(editor, {
+    ...options,
     match: n => n.type === type,
   }));
 
 export const firstMatchingNode = <T extends Node = Node>(
   editor: Editor,
   options: {
-    at?: Location | Span,
-    match?: ((node: Node) => node is T) | ((node: Node) => boolean)
+    at?: Location | Span;
+    match?: ((node: Node) => node is T) | ((node: Node) => boolean);
   } = {}
 ): T | null => {
   const iter = Editor.nodes(editor, options)[Symbol.iterator]();

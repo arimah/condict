@@ -40,21 +40,24 @@ export const HeadingsGroup = (
   {shortcuts}: Props<BlockShortcuts>
 ): JSX.Element => {
   const editor = useCondictEditor();
+  const options = {
+    at: editor.selection || editor.blurSelection || undefined,
+  };
   return (
     <Toolbar.Group name='Headings'>
       <Toolbar.Button
         label='Heading 1'
-        checked={isBlockActive(editor, 'heading1')}
+        checked={isBlockActive(editor, 'heading1', options)}
         shortcut={shortcuts.heading1}
-        onClick={() => editor.formatBlock('heading1')}
+        onClick={() => editor.formatBlock('heading1', options)}
       >
         <H1Icon/>
       </Toolbar.Button>
       <Toolbar.Button
         label='Heading 2'
-        checked={isBlockActive(editor, 'heading2')}
+        checked={isBlockActive(editor, 'heading2', options)}
         shortcut={shortcuts.heading2}
-        onClick={() => editor.formatBlock('heading2')}
+        onClick={() => editor.formatBlock('heading2', options)}
       >
         <H2Icon/>
       </Toolbar.Button>
@@ -142,17 +145,16 @@ export const LinkGroup = (
   }
 ): JSX.Element => {
   const editor = useCondictEditor();
-  const hasLink = isInlineActive(editor, 'link');
+  const at = editor.selection || editor.blurSelection || undefined;
+  const options = {at};
+  const hasLink = isInlineActive(editor, 'link', options);
   return (
     <Toolbar.Group name='Link'>
       <Toolbar.Button
         label='Add/edit link'
         shortcut={shortcuts.addLink}
         checked={hasLink}
-        disabled={
-          !hasLink &&
-          (editor.selection === null || Range.isCollapsed(editor.selection))
-        }
+        disabled={!hasLink && (at === undefined || Range.isCollapsed(at))}
         onClick={onSetLink}
       >
         <LinkIcon/>
@@ -161,7 +163,7 @@ export const LinkGroup = (
         label='Remove link'
         shortcut={shortcuts.removeLink}
         disabled={!hasLink}
-        onClick={() => editor.removeLink()}
+        onClick={() => editor.removeLink(options)}
       >
         <RemoveLinkIcon/>
       </Toolbar.Button>
@@ -173,21 +175,24 @@ export const BlockFormatGroup = (
   {shortcuts}: Props<BlockShortcuts>
 ): JSX.Element => {
   const editor = useCondictEditor();
+  const options = {
+    at: editor.selection || editor.blurSelection || undefined,
+  };
   return <>
     <Toolbar.Group name='List style'>
       <Toolbar.Button
         label='Bulleted list'
-        checked={isBlockActive(editor, 'bulletListItem')}
+        checked={isBlockActive(editor, 'bulletListItem', options)}
         shortcut={shortcuts.bulletList}
-        onClick={() => editor.formatBlock('bulletListItem')}
+        onClick={() => editor.formatBlock('bulletListItem', options)}
       >
         <BulletedListIcon/>
       </Toolbar.Button>
       <Toolbar.Button
         label='Numbered list'
-        checked={isBlockActive(editor, 'numberListItem')}
+        checked={isBlockActive(editor, 'numberListItem', options)}
         shortcut={shortcuts.numberList}
-        onClick={() => editor.formatBlock('numberListItem')}
+        onClick={() => editor.formatBlock('numberListItem', options)}
       >
         <NumberedListIcon/>
       </Toolbar.Button>
@@ -197,16 +202,16 @@ export const BlockFormatGroup = (
       <Toolbar.Button
         label='Increase indentation'
         shortcut={shortcuts.indent}
-        disabled={!canIndent(editor)}
-        onClick={() => editor.indent()}
+        disabled={!canIndent(editor, options)}
+        onClick={() => editor.indent(options)}
       >
         <IndentMoreIcon/>
       </Toolbar.Button>
       <Toolbar.Button
         label='Decrease indentation'
         shortcut={shortcuts.unindent}
-        disabled={!canUnindent(editor)}
-        onClick={() => editor.unindent()}
+        disabled={!canUnindent(editor, options)}
+        onClick={() => editor.unindent(options)}
       >
         <IndentLessIcon/>
       </Toolbar.Button>

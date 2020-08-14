@@ -1,4 +1,4 @@
-import {Range} from 'slate';
+import {Location, Range} from 'slate';
 import {ReactEditor} from 'slate-react';
 import {HistoryEditor} from 'slate-history';
 
@@ -57,9 +57,31 @@ export interface CondictEditor extends ReactEditor, HistoryEditor {
   /** The selection that the editor had before losing focus. */
   blurSelection: Range | null;
 
-  formatBlock(format: BlockType): void;
-  indent(): void;
-  unindent(): void;
-  wrapLink(target: LinkTarget, at?: Range | null): void;
-  removeLink(): void;
+  formatBlock(
+    format: BlockType,
+    options?: {
+      at?: Location;
+    }
+  ): void;
+  indent(
+    options?: {
+      at?: Location;
+    }
+  ): void;
+  unindent(
+    options?: {
+      at?: Location;
+    }
+  ): void;
+  wrapLink(
+    target: LinkTarget,
+    options?: {
+      at?: Location;
+    }
+  ): void;
+  removeLink(
+    options?: {
+      at?: Location;
+    }
+  ): void;
 }

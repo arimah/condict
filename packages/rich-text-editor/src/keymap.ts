@@ -6,6 +6,9 @@ import {blocks} from './node-utils';
 import {InlineShortcuts, BlockShortcuts, LinkShortcuts} from './shortcuts';
 import {MarkType, CondictEditor, isListType, isHeadingType} from './types';
 
+// Note: We don't have to worry about editor.blurSelection here, as you can't
+// trigger keyboard shortcuts without focusing the editor.
+
 export type KeyCommand = {
   readonly shortcut: Shortcut | null;
   readonly exec: (editor: CondictEditor, openLinkDialog: () => void) => void;

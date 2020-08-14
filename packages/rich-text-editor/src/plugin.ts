@@ -21,12 +21,15 @@ import {CondictEditor, BlockType, LinkTarget, isListType} from './types';
 const LineBreak = /[\n\r\u2028\u2029]/g;
 
 const withCondict = (
-  editor: ReactEditor & HistoryEditor,
+  baseEditor: ReactEditor & HistoryEditor,
   options: {
     singleLine?: boolean;
   } = {}
 ): CondictEditor => {
   const {singleLine = false} = options;
+
+  // Let's get correct typings for Condict-specific functionality.
+  const editor = baseEditor as CondictEditor;
 
   editor.blurSelection = editor.selection;
 
@@ -78,14 +81,14 @@ const withCondict = (
     apply(operation);
   };
 
-  editor.formatBlock = (format: BlockType) => {
-    const targetType = isBlockActive(editor, format)
+  editor.formatBlock = (format, options) => {
+    const targetType = isBlockActive(editor, format, options)
       ? 'paragraph'
       : format;
     const isList = isListType(targetType);
 
     Editor.withoutNormalizing(editor, () => {
-      for (const [block, path] of blocks(editor)) {
+      for (const [block, path] of blocks(editor, options)) {
         const wasList = isListType(block.type || 'paragraph');
 
         const oldIndent = block.indent || 0;
@@ -103,8 +106,8 @@ const withCondict = (
     });
   };
 
-  editor.indent = () => Editor.withoutNormalizing(editor, () => {
-    for (const [block, path] of blocks(editor)) {
+  editor.indent = (options) => Editor.withoutNormalizing(editor, () => {
+    for (const [block, path] of blocks(editor, options)) {
       const indent = block.indent || 0;
       if (indent < MaxIndent) {
         Transforms.setNodes(editor, {indent: indent + 1}, {at: path});
@@ -112,8 +115,8 @@ const withCondict = (
     }
   });
 
-  editor.unindent = () => Editor.withoutNormalizing(editor, () => {
-    for (const [block, path] of blocks(editor)) {
+  editor.unindent = (options) => Editor.withoutNormalizing(editor, () => {
+    for (const [block, path] of blocks(editor, options)) {
       const indent = block.indent || 0;
       if (indent > getMinIndent(block)) {
         Transforms.setNodes(editor, {indent: indent - 1}, {at: path});
@@ -121,30 +124,31 @@ const withCondict = (
     }
   });
 
-  editor.wrapLink = (target: LinkTarget, at: Range | null = null) => {
-    const selection = at || editor.selection;
-    if (!selection) {
+  editor.wrapLink = (target, options = {}) => {
+    const {at = editor.selection} = options;
+    if (!at) {
       return;
     }
 
-    if (Range.isCollapsed(selection)) {
-      // Empty selection range: update existing selected link.
-      Transforms.setNodes(editor, {target}, {match: isLink});
+    if (Range.isRange(at) && Range.isCollapsed(at)) {
+      // Empty range: update existing selected link.
+      Transforms.setNodes(editor, {target}, {at, match: isLink});
     } else {
-      // The selection spans multiple characters - wrap in a link.
+      // The range potentially spans multiple characters - wrap in a link.
       Editor.withoutNormalizing(editor, () => {
         // Links cannot be nested.
-        Transforms.unwrapNodes(editor, {split: true, match: isLink});
+        Transforms.unwrapNodes(editor, {at, split: true, match: isLink});
 
         const link: Element = {type: 'link', target, children: []};
-        Transforms.wrapNodes(editor, link, {mode: 'lowest', split: true});
+        Transforms.wrapNodes(editor, link, {at, mode: 'lowest', split: true});
       });
     }
   };
 
-  editor.removeLink = () => {
+  editor.removeLink = (options) => {
     const {selection} = editor;
     Transforms.unwrapNodes(editor, {
+      ...options,
       split: selection !== null && !Range.isCollapsed(selection),
       match: isLink,
     });
