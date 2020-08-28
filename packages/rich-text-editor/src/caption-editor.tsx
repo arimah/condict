@@ -40,12 +40,10 @@ const TableCaptionEditor = (props: Props): JSX.Element => {
     cmd => cmd.shortcut
   ), [shortcuts]);
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     const cmd = keyboardMap.get(e);
     if (cmd) {
-      e.preventDefault();
-      e.stopPropagation();
-      cmd.exec(editor, noop);
+      cmd.exec(e, editor, noop);
     }
   }, [keyboardMap]);
 

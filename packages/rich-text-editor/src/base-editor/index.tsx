@@ -47,6 +47,12 @@ const BaseEditor = React.forwardRef((
     }
   }, [editor.selection]);
 
+  const handleMouseDown = useCallback(() => {
+    // When the user clicks inside the editor, don't re-select the previous
+    // selection. Let the mouse decide where to place the cursor.
+    editor.blurSelection = null;
+  }, []);
+
   const handleFocus = useCallback(() => {
     if (!editor.selection && editor.blurSelection) {
       Transforms.select(editor, editor.blurSelection);
@@ -72,6 +78,7 @@ const BaseEditor = React.forwardRef((
         $toolbarAlwaysVisible={toolbarAlwaysVisible}
         renderElement={renderElement}
         renderLeaf={renderLeaf}
+        onMouseDown={handleMouseDown}
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
       />
