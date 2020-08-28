@@ -13,8 +13,10 @@ import {FocusTrap, Shortcut, useUniqueId} from '@condict/ui';
 
 import {LinkTarget} from '../../types';
 
+import {PlacementRect} from '../popup';
+
 import SearchResultItem from './search-result';
-import {SearchResult, PlacementRect} from './types';
+import {SearchResult} from './types';
 import * as S from './styles';
 
 export type Props = {
@@ -272,17 +274,13 @@ const LinkDialog = (props: Props): JSX.Element => {
     }
   }, [state]);
 
-  const idealX = placement.x + (placement.width - S.Width) / 2;
-  const x = Math.max(Math.min(idealX, placement.parentWidth - S.Width), 0);
-  const y = placement.y + placement.height;
   const hasError = state.showError && state.index === -1;
 
   return (
     <FocusTrap onPointerDownOutside={onCancel}>
       <S.Main
-        hasSearchResults={state.results.length > 0}
+        placement={placement}
         aria-label='Link target'
-        style={{left: `${x}px`, top: `${y}px`}}
         onSubmit={handleSubmit}
         onKeyDown={handleFormKeyDown}
       >

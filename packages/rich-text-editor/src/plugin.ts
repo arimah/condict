@@ -16,7 +16,7 @@ import {
   isBlockActive,
   blocks,
 } from './node-utils';
-import {CondictEditor, BlockType, LinkTarget, isListType} from './types';
+import {CondictEditor, isListType} from './types';
 
 const LineBreak = /[\n\r\u2028\u2029]/g;
 

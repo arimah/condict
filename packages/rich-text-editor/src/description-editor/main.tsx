@@ -23,7 +23,9 @@ import {getInlineCommands, getBlockCommands, getLinkCommands} from '../keymap';
 import {isLink, firstMatchingNode} from '../node-utils';
 import {LinkTarget} from '../types';
 
-import LinkDialog, {SearchResult, PlacementRect} from './link-dialog';
+import ContextualPopup from './contextual-popup';
+import LinkDialog, {SearchResult} from './link-dialog';
+import {PlacementRect} from './popup';
 import * as S from './styles';
 
 export type Props = {
@@ -73,19 +75,24 @@ const DescriptionEditor = (props: Props): JSX.Element => {
     const {selection} = editor;
     const domSelection = window.getSelection();
     if (selection && domSelection && editorRef.current) {
-      const nativeRange = domSelection.getRangeAt(0);
-      const rect = nativeRange.getBoundingClientRect();
-      const editorRect = editorRef.current.getBoundingClientRect();
-
       const link = firstMatchingNode(editor, {at: selection, match: isLink});
+
+      let rect: DOMRect;
+      if (link && Range.isCollapsed(selection)) {
+        const anchor = ReactEditor.toDOMNode(editor, link);
+        rect = anchor.getBoundingClientRect();
+      } else {
+        const nativeRange = domSelection.getRangeAt(0);
+        rect = nativeRange.getBoundingClientRect();
+      }
+
+      const editorRect = editorRef.current.getBoundingClientRect();
       setLinkProps({
         initialValue: link?.target,
         selection,
         placement: {
           x: rect.x - editorRect.x,
-          y: rect.y - editorRect.y,
-          width: rect.width,
-          height: rect.height,
+          y: rect.bottom - editorRect.y,
           parentWidth: editorRect.width,
         },
       });
@@ -151,6 +158,11 @@ const DescriptionEditor = (props: Props): JSX.Element => {
                 Transforms.select(editor, linkProps.selection);
               }, 1);
             }}
+          />}
+        {!linkProps &&
+          <ContextualPopup
+            editorRef={editorRef}
+            onOpenLinkDialog={openLinkDialog}
           />}
       </S.Editor>
     </Slate>

@@ -48,8 +48,8 @@ export type EditorContainerProps = {
 
 const SingleLineStyles = `
   p {
-    margin-top: 2px;
-    margin-bottom: 2px;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 `;
 

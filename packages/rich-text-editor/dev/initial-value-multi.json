@@ -1,6 +1,7 @@
 [
   {
     "type": "paragraph",
+    "indent": 0,
     "children": [
       {"text": "A line of text in a paragraph."}
     ]
@@ -58,6 +59,7 @@
   },
   {
     "type": "paragraph",
+    "indent": 0,
     "children": [
       {"text": "And a final, finishing touch: "},
       {"text": "some italic text", "italic": true},

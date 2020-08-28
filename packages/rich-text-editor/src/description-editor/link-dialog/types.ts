@@ -7,11 +7,3 @@ export type SearchResult = {
   readonly name: ReactNode;
   readonly snippet?: ReactNode;
 };
-
-export type PlacementRect = {
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-  readonly parentWidth: number;
-};

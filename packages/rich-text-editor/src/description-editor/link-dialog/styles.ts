@@ -2,31 +2,15 @@ import styled from 'styled-components';
 
 import {Button, TextInput, Intent} from '@condict/ui';
 
+import Popup from '../popup';
+
 export const Width = 375; // px
 
-export type MainProps = {
-  hasSearchResults: boolean;
-};
-
-export const Main = styled.form.attrs({
+export const Main = styled(Popup).attrs({
+  width: Width,
   role: 'dialog',
   tabIndex: -1,
-})<MainProps>`
-  box-sizing: border-box;
-  width: ${Width}px;
-  overflow: hidden;
-  position: absolute;
-  z-index: 5;
-  border-radius: 7px;
-  border: 2px solid ${p => p.theme.general.borderColor};
-  background-color: ${p => p.theme.general.altBg};
-  color: ${p => p.theme.general.altFg};
-  box-shadow: ${p => p.theme.shadow.elevation2};
-
-  &:focus {
-    outline: none;
-  }
-`;
+})``;
 
 export const InputWrapper = styled.div.attrs({
   role: 'combobox',
