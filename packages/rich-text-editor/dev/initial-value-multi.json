@@ -46,7 +46,8 @@
         "type": "link",
         "target": {
           "url": "https://example.com",
-          "name": "https://example.com"
+          "name": "https://example.com",
+          "type": "web address"
         },
         "children": [
           {"text": "list item"}
