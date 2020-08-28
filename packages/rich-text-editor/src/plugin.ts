@@ -4,6 +4,7 @@ import {
   Element,
   Text,
   Range,
+  Path,
   createEditor as createSlateEditor,
 } from 'slate';
 import {ReactEditor, useSlate, withReact} from 'slate-react';
@@ -106,7 +107,7 @@ const withCondict = (
     });
   };
 
-  editor.indent = (options) => Editor.withoutNormalizing(editor, () => {
+  editor.indent = options => Editor.withoutNormalizing(editor, () => {
     for (const [block, path] of blocks(editor, options)) {
       const indent = block.indent || 0;
       if (indent < MaxIndent) {
@@ -115,7 +116,7 @@ const withCondict = (
     }
   });
 
-  editor.unindent = (options) => Editor.withoutNormalizing(editor, () => {
+  editor.unindent = options => Editor.withoutNormalizing(editor, () => {
     for (const [block, path] of blocks(editor, options)) {
       const indent = block.indent || 0;
       if (indent > getMinIndent(block)) {
@@ -136,16 +137,31 @@ const withCondict = (
     } else {
       // The range potentially spans multiple characters - wrap in a link.
       Editor.withoutNormalizing(editor, () => {
+        const atRef =
+          Range.isRange(at) ? Editor.rangeRef(editor, at) :
+          Path.isPath(at) ? Editor.pathRef(editor, at) :
+          Editor.pointRef(editor, at);
+
         // Links cannot be nested.
-        Transforms.unwrapNodes(editor, {at, split: true, match: isLink});
+        Transforms.unwrapNodes(editor, {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          at: atRef.current!,
+          split: true,
+          match: isLink,
+        });
 
         const link: Element = {type: 'link', target, children: []};
-        Transforms.wrapNodes(editor, link, {at, mode: 'lowest', split: true});
+        Transforms.wrapNodes(editor, link, {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          at: atRef.unref()!,
+          mode: 'lowest',
+          split: true,
+        });
       });
     }
   };
 
-  editor.removeLink = (options) => {
+  editor.removeLink = options => {
     const {selection} = editor;
     Transforms.unwrapNodes(editor, {
       ...options,
