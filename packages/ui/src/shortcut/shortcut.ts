@@ -66,6 +66,10 @@ type AnyKeyboardEvent = KeyboardEvent | SyntheticKeyboardEvent;
 
 const ModifiersPattern = /(Primary|Secondary|Shift|Alt|Ctrl|Control)\s*\+\s*/gi;
 
+// Allow 'Space' as a synonym for ' '; otherwise it doesn't work with
+// Shortcut.parse().
+const normalizeKey = (key: string): string => key === 'Space' ? ' ' : key;
+
 export const Shortcut = {
   parse(shortcutStrings: string | string[]): Shortcut {
     if (!Array.isArray(shortcutStrings)) {
@@ -103,7 +107,10 @@ export const Shortcut = {
           }
           return '';
         });
-        const keys = keysString.split(/\s+/).filter(Boolean);
+        const keys = keysString
+          .split(/\s+/)
+          .map(normalizeKey)
+          .filter(Boolean);
         return {keys, primary, secondary, shift, alt};
       })
       .filter(shortcut => shortcut.keys.length > 0);

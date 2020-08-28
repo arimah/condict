@@ -110,13 +110,13 @@ const MyComponent = () =>
 
 > `Shortcut.parse(shortcutString: string | string[]): Shortcut | null`
 
-Parses a string into a `Shortcut`, or an array of strings into a `ShortcutGroup`. A shortcut string contains any number of modifiers, followed by a space-separated list of [key values][key].
+Parses a string or array of strings into a `Shortcut`. A shortcut string contains any number of modifiers, followed by a space-separated list of [key values][key]. `Space` is recognized as a synonym for `' '`, which would not otherwise be possible.
 
 The following modifiers are recognised:
 
 * `Primary+` (<kbd>Ctrl</kbd> on Linux and Windows, <kbd>⌘ Command</kbd> on macOS);
-* `Secondary+` (<kbd>Ctrl</kbd> on macOS, <kbd>Super</kbd> on Linux, <kbd>Windows</kbd> on Windows);
-* `Ctrl+` or `Control+` (<kbd>Ctrl</kbd> on every OS);
+* `Secondary+` (<kbd>^ Ctrl</kbd> on macOS, <kbd>Super</kbd> on Linux, <kbd>Windows</kbd> on Windows);
+* `Ctrl+` or `Control+` (<kbd>Ctrl</kbd>/<kbd>^ Ctrl</kbd> on every OS);
 * `Shift+`;
 * `Alt+` (<kbd>Alt</kbd> on Linux and Windows, <kbd>⌥ Option</kbd> on macOS).
 
@@ -128,7 +128,7 @@ Example values:
 * `'Primary+Shift+F12'`
 * `'Shift+ +'`
 * `['Ctrl+W', 'Primary+ A', 'Shift +S', 'Alt + D']`
-* `'Ctrl + Alt + Delete'`.
+* `'Ctrl + Alt + Delete'`
 
 ### `Shortcut.matches`
 
