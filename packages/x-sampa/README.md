@@ -21,7 +21,7 @@ The following features are _not_ implemented:
 * The generic separator `-`, because it has no IPA equivalent.
 * The language-specific tone diacritics `_1` to `_6`, since they are language-specific.
 
-The asterisk, `*`, _is_ implemented as an escape character. Any character after it is preserved literally, and the asterisk is removed: `*Bir*D` becomes _BirD_.
+The asterisk, `*`, _is_ implemented as an escape character. Any character after it is preserved literally, and the asterisk is removed: `*Bir*D` becomes _BirD_. Note that the asterisk only escapes the one character following it: in `A*_B`, we only escape the `_`, not the entire `_B` sequence, resulting in _ɑ\_β_.
 
 ## Example
 
@@ -29,7 +29,7 @@ The asterisk, `*`, _is_ implemented as an escape character. Any character after 
 import xsampaToIpa from '@condict/x-sampa';
 
 console.log(xsampaToIpa(`,foUn@'tIS@n`)); // ˌfoʊnəˈtɪʃən
-console.log(xsampaToIpa('r\\I.&kt')); // ɹɪ.ækt
+console.log(xsampaToIpa('r\\I.{kt')); // ɹɪ.ækt
 ```
 
 ## API
