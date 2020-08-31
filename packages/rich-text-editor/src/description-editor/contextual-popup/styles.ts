@@ -2,12 +2,26 @@ import styled from 'styled-components';
 
 import {Button, Intent} from '@condict/ui';
 
-export const LinkMain = styled.div`
+import PopupBase from '../popup';
+
+export const Popup = styled(PopupBase)`
+  animation-name: enter;
+  animation-duration: 100ms;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+
+  @keyframes enter {
+    from { opacity: 0; }
+    to { opactiy: 1 }
+  }
+`;
+
+export const Columns = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
-export const LinkTarget = styled.span`
+export const PrimaryLabel = styled.span`
   flex: 1 1 auto;
   padding: 8px;
   white-space: nowrap;
@@ -15,23 +29,24 @@ export const LinkTarget = styled.span`
   overflow: hidden;
 `;
 
-export const LinkType = styled.span`
+export const SecondaryLabel = styled.span`
   flex: none;
   padding: 8px 8px 8px 0;
   white-space: nowrap;
   opacity: 0.7;
 `;
 
-export const LinkActions = styled.span`
+export const Actions = styled.span`
   flex: none;
   padding: 2px 2px 2px 0;
 `;
 
-export const LinkButton = styled(Button).attrs({
+export const Action = styled(Button).attrs({
   intent: Intent.SECONDARY,
   tabIndex: -1,
 })`
   padding: 4px 8px;
+  border-radius: 5px;
   border-color: ${p => p.theme.general.altBg};
   background-color: ${p => p.theme.general.altBg};
 
@@ -43,5 +58,41 @@ export const LinkButton = styled(Button).attrs({
   &:active:not(:focus):not(.force-focus) {
     border-color: ${p => p.theme.general.activeAltBg};
     background-color: ${p => p.theme.general.activeAltBg};
+  }
+`;
+
+export const PrimaryAction = styled(Action)`
+  display: flex;
+  margin: 2px;
+  padding: 4px;
+  flex: 1 1 auto;
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+
+  > .mdi-icon {
+    &:first-child {
+      margin-left: -2px;
+    }
+
+    &:not(:first-child) {
+      margin-left: 6px;
+    }
+
+    &:last-child {
+      margin-right: -2px;
+    }
+
+    &:not(:last-child) {
+      margin-right: 6px;
+    }
+  }
+
+  > ${PrimaryLabel} {
+    padding: 0;
+  }
+
+  > ${SecondaryLabel} {
+    padding: 0 0 0 8px;
   }
 `;

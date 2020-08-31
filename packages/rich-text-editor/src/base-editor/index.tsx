@@ -7,6 +7,7 @@ import React, {
   useEffect,
 } from 'react';
 import {Transforms} from 'slate';
+import {ReactEditor} from 'slate-react';
 
 import {useCondictEditor} from '../plugin';
 
@@ -23,6 +24,7 @@ export type Props = {
   toolbarAlwaysVisible?: boolean;
   singleLine: boolean;
   onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => void;
+  onFocusedChange?: (focused: boolean) => void;
   children?: ReactNode;
 };
 
@@ -36,16 +38,11 @@ const BaseEditor = React.forwardRef((
     toolbarAlwaysVisible = true,
     singleLine,
     onKeyDown,
+    onFocusedChange,
     children,
   } = props;
 
   const editor = useCondictEditor();
-
-  useEffect(() => {
-    if (editor.selection !== null) {
-      editor.blurSelection = editor.selection;
-    }
-  }, [editor.selection]);
 
   const handleMouseDown = useCallback(() => {
     // When the user clicks inside the editor, don't re-select the previous
@@ -53,11 +50,41 @@ const BaseEditor = React.forwardRef((
     editor.blurSelection = null;
   }, []);
 
-  const handleFocus = useCallback(() => {
-    if (!editor.selection && editor.blurSelection) {
-      Transforms.select(editor, editor.blurSelection);
-    }
-  }, []);
+  // Slate does not always invoke the onFocus event, e.g. if the editor is busy
+  // updating its selection, which means we need to fall back to native events
+  // in order to track focusedness correctly.
+  useEffect(() => {
+    const root = ReactEditor.toDOMNode(editor, editor);
+
+    // Slate does not appreciate re-renders during focus and blur, so these must
+    // be executed on the next tick.
+    const handleFocus = () => {
+      if (!editor.selection && editor.blurSelection) {
+        Transforms.select(editor, editor.blurSelection);
+      }
+
+      window.setTimeout(() => {
+        onFocusedChange?.(true);
+      }, 0);
+    };
+    const handleBlur = () => {
+      if (editor.selection !== null) {
+        editor.blurSelection = editor.selection;
+      }
+
+      window.setTimeout(() => {
+        onFocusedChange?.(false);
+      }, 0);
+    };
+
+    root.addEventListener('focus', handleFocus);
+    root.addEventListener('blur', handleBlur);
+
+    return () => {
+      root.removeEventListener('focus', handleFocus);
+      root.removeEventListener('blur', handleBlur);
+    };
+  }, [editor, onFocusedChange]);
 
   return (
     <S.EditorContainer
@@ -80,7 +107,6 @@ const BaseEditor = React.forwardRef((
         renderLeaf={renderLeaf}
         onMouseDown={handleMouseDown}
         onKeyDown={onKeyDown}
-        onFocus={handleFocus}
       />
 
       {children}

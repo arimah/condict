@@ -46,7 +46,7 @@ const withCondict = (
 
       if (Text.isText(node) && LineBreak.test(node.text)) {
         const newText = node.text.replace(LineBreak, '');
-        Transforms.setNodes(editor, {text: newText}, {at: path});
+        Transforms.insertText(editor, newText, {at: path});
         return;
       }
 

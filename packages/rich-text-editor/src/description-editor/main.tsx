@@ -57,6 +57,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
   const [linkProps, setLinkProps] = useState<LinkProps | null>(null);
   // If true, call openLinkDialog on the next render.
   const [shouldEditLink, setShouldEditLink] = useState(false);
+  const [focused, setFocused] = useState(false);
 
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -136,6 +137,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
         </>}
         $linkDialogOpen={linkProps !== null}
         onKeyDown={handleKeyDown}
+        onFocusedChange={setFocused}
         ref={editorRef}
       >
         {linkProps &&
@@ -149,17 +151,17 @@ const DescriptionEditor = (props: Props): JSX.Element => {
               window.setTimeout(() => {
                 Transforms.select(editor, linkProps.selection);
                 editor.wrapLink(target);
-              }, 1);
+              }, 0);
             }}
             onCancel={() => {
               setLinkProps(null);
               // TODO: Get rid of setTimeout
               window.setTimeout(() => {
                 Transforms.select(editor, linkProps.selection);
-              }, 1);
+              }, 0);
             }}
           />}
-        {!linkProps &&
+        {!linkProps && focused &&
           <ContextualPopup
             editorRef={editorRef}
             onOpenLinkDialog={openLinkDialog}

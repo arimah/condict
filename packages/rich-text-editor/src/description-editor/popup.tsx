@@ -13,6 +13,16 @@ export type PlacementRect = {
   readonly parentWidth: number;
 };
 
+export const PlacementRect = {
+  equals(left: PlacementRect, right: PlacementRect): boolean {
+    return (
+      left.x === right.x &&
+      left.y === right.y &&
+      left.parentWidth === right.parentWidth
+    );
+  },
+};
+
 /** Distance from edge of container. */
 const Margin = 6;
 

@@ -1,133 +1,90 @@
-import React, {RefObject, useState, useEffect} from 'react';
-import {Editor, Point, Range, Element} from 'slate';
-import {ReactEditor} from 'slate-react';
+import React, {RefObject, MouseEvent, useState, useEffect} from 'react';
+import {Element} from 'slate';
 
 import {useCondictEditor} from '../../plugin';
-import {isLink} from '../../node-utils';
-import {CondictEditor} from '../../types';
+import {useDebouncedCallback} from '../../debounce';
 
 import {PlacementRect} from '../popup';
 
-import LinkPopup from './link-popup';
+import LinkContext, {
+  ContextValue as LinkContextValue,
+  getContextValue as getLinkContextValue,
+} from './link-context';
+import PhoneticContext, {
+  ContextValue as PhoneticContextValue,
+  getContextValue as getPhoneticContextValue,
+} from './phonetic-context';
+import * as S from './styles';
 
 export type Props = {
   editorRef: RefObject<HTMLDivElement>;
   onOpenLinkDialog: () => void;
 };
 
-type Context = NoContext | LinkContext;
+const getPlacement = (
+  ...placements: (PlacementRect | undefined)[]
+): PlacementRect | undefined =>
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  placements.reduce((prev, next) => {
+    if (!prev) {
+      return next;
+    }
+    if (!next) {
+      return prev;
+    }
+    return {
+      x: Math.min(prev.x, next.x),
+      y: Math.max(prev.y, next.y),
+      parentWidth: prev.parentWidth,
+    };
+  });
 
-type NoContext = {
-  readonly type: 'none';
-};
+const Width = 340;
 
-const NoContext: NoContext = {type: 'none'};
-
-type LinkContext = {
-  readonly type: 'link';
-  readonly link: Element;
-  readonly placement: PlacementRect;
-};
-
-const placementEquals = (a: PlacementRect, b: PlacementRect): boolean =>
-  a.x === b.x &&
-  a.y === b.y &&
-  a.parentWidth === b.parentWidth;
-
-const getNearestLink = (editor: CondictEditor): Element | null => {
-  const {selection} = editor;
-  if (!selection) {
-    return null;
-  }
-
-  const [linkEntry] = Editor.nodes(editor, {match: isLink});
-  if (!linkEntry) {
-    return null;
-  }
-
-  const [link, linkPath] = linkEntry;
-  const linkStart = Editor.start(editor, linkPath);
-  const linkEnd = Editor.end(editor, linkPath);
-
-  const selStart = Range.start(selection);
-  const selEnd = Range.end(selection);
-
-  // If the selection is entirely contained within the link, we can use it.
-  // In other words, in these cases we can show the link popup:
-  //
-  //   lorem ipsum <a>dolor| sit</a> amet
-  //                       - cursor
-  //   loreum ipsum <a>do[lor sit]</a> amet
-  //                     --------- selection
-  //
-  // But not here:
-  //
-  //   lorem [ipsum <a>dolor] sit</a> amet
-  //   lorem ipsum <a>dolor [sit</a> amet]
-  if (
-    Point.isBefore(selStart, linkStart) ||
-    Point.isAfter(selEnd, linkEnd)
-  ) {
-    return null;
-  }
-  return link;
-};
+const preventMouseFocus = (e: MouseEvent) => e.preventDefault();
 
 const ContextualPopup = (props: Props): JSX.Element | null => {
   const {editorRef, onOpenLinkDialog} = props;
 
   const editor = useCondictEditor();
 
-  const [context, setContext] = useState<Context>(NoContext);
+  const [link, setLink] = useState<LinkContextValue | null>(null);
+  const [phonetic, setPhonetic] = useState<PhoneticContextValue | null>(null);
+
+  const updateContext = useDebouncedCallback(400, () => {
+    const editorElem = editorRef.current;
+    if (!editorElem) {
+      return;
+    }
+
+    setLink(prev => getLinkContextValue(editor, editorElem, prev));
+    setPhonetic(prev => getPhoneticContextValue(editor, editorElem, prev));
+  }, []);
 
   useEffect(() => {
-    if (!editorRef.current) {
-      setContext(NoContext);
-      return;
-    }
+    // Hide the popups while editing the document.
+    setLink(null);
+    setPhonetic(null);
 
-    const link = getNearestLink(editor);
-    if (link) {
-      const anchor = ReactEditor.toDOMNode(editor, link);
-      const rect = anchor.getBoundingClientRect();
+    updateContext();
+  }, [editor.children, editor.selection]);
 
-      const editorRect = editorRef.current.getBoundingClientRect();
+  const placement = getPlacement(link?.placement, phonetic?.placement);
 
-      setContext(context => {
-        const placement: PlacementRect = {
-          x: rect.x - editorRect.x,
-          y: rect.bottom - editorRect.y,
-          parentWidth: editorRect.width,
-        };
-        // Prevent infinite update loops
-        if (
-          context.type === 'link' &&
-          context.link === link &&
-          placementEquals(context.placement, placement)
-        ) {
-          return context;
-        }
-        return {type: 'link', link, placement};
-      });
-      return;
-    }
-
-    setContext(NoContext);
-  });
-
-  switch (context.type) {
-    case 'link':
-      return (
-        <LinkPopup
-          link={context.link}
-          placement={context.placement}
-          onEditLink={onOpenLinkDialog}
-          onRemoveLink={editor.removeLink}
-        />
-      );
-    case 'none':
-      return null;
+  if (!placement) {
+    return null;
   }
+
+  return (
+    <S.Popup
+      width={Width}
+      placement={placement}
+      onMouseDown={preventMouseFocus}
+    >
+      {link && <LinkContext link={link.link} onEditLink={onOpenLinkDialog}/>}
+      {phonetic && <PhoneticContext range={phonetic.range}/>}
+    </S.Popup>
+  );
 };
 
 export default ContextualPopup;

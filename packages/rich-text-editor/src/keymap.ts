@@ -196,7 +196,7 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
         const {focus} = selection;
 
         // The text node that the cursor is inside of.
-        const text = Node.get(editor, focus.path);
+        const text = Node.get(editor, focus.path) as Text;
 
         // The nearest block.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -205,42 +205,40 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
           match: n => isBlock(n, editor),
         })!;
 
-        if (Text.isText(text)) {
-          const isFirstAndOnlyText =
-            block.children.length === 1 &&
-            block.children[0] === text;
+        const isFirstAndOnlyText =
+          block.children.length === 1 &&
+          block.children[0] === text;
 
-          if (
-            isFirstAndOnlyText &&
-            block.type === 'paragraph' &&
-            focus.offset === text.text.length &&
-            ListStart.test(text.text)
-          ) {
-            handle(e);
+        if (
+          isFirstAndOnlyText &&
+          block.type === 'paragraph' &&
+          focus.offset === text.text.length &&
+          ListStart.test(text.text)
+        ) {
+          handle(e);
 
-            // HistoryEditor.withoutMerging prevents merging into the *previous*
-            // history state. The ' ' should be its own history state, so you
-            // can undo back to `* `, `1. ` or whatever you typed. The deletion
-            // and the block formatting are merged into one action, so that you
-            // *can't* get back to an empty block.
+          // HistoryEditor.withoutMerging prevents merging into the *previous*
+          // history state. The ' ' should be its own history state, so you
+          // can undo back to `* `, `1. ` or whatever you typed. The deletion
+          // and the block formatting are merged into one action, so that you
+          // *can't* get back to an empty block.
 
-            HistoryEditor.withoutMerging(editor, () => {
-              editor.insertText(' ');
+          HistoryEditor.withoutMerging(editor, () => {
+            editor.insertText(' ');
+          });
+
+          HistoryEditor.withoutMerging(editor, () => {
+            Transforms.delete(editor, {
+              distance: focus.offset + 1, // +1 for newly inserted ' '
+              reverse: true,
+              unit: 'character',
             });
-
-            HistoryEditor.withoutMerging(editor, () => {
-              Transforms.delete(editor, {
-                distance: focus.offset + 1, // +1 for newly inserted ' '
-                reverse: true,
-                unit: 'character',
-              });
-            });
-            const listType = BulletListStart.test(text.text)
-              ? 'bulletListItem'
-              : 'numberListItem';
-            editor.formatBlock(listType, {at: blockPath});
-            return;
-          }
+          });
+          const listType = BulletListStart.test(text.text)
+            ? 'bulletListItem'
+            : 'numberListItem';
+          editor.formatBlock(listType, {at: blockPath});
+          return;
         }
       }
     },

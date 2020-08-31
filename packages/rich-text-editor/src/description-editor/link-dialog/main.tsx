@@ -212,6 +212,14 @@ const LinkDialog = (props: Props): JSX.Element => {
 
   const [state, dispatch] = useReducer(reduce, props, initState);
 
+  const mainRef = useRef<HTMLFormElement>(null);
+  const cancel = useCallback(() => {
+    mainRef.current?.focus();
+    window.setTimeout(() => {
+      onCancel();
+    }, 1);
+  }, [onCancel]);
+
   const searchRequest = useRef(0);
   const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target;
@@ -251,9 +259,9 @@ const LinkDialog = (props: Props): JSX.Element => {
     if (Shortcut.matches(CancelKey, e)) {
       e.preventDefault();
       e.stopPropagation();
-      onCancel();
+      cancel();
     }
-  }, [onCancel]);
+  }, [cancel]);
 
   const handleSubmit = useCallback((e: FormEvent) => {
     e.preventDefault();
@@ -261,6 +269,7 @@ const LinkDialog = (props: Props): JSX.Element => {
     if (state.index === -1) {
       dispatch({type: 'showError'});
     } else {
+      mainRef.current?.focus();
       onSubmit(state.results[state.index].target);
     }
   }, [onSubmit, state]);
@@ -277,12 +286,13 @@ const LinkDialog = (props: Props): JSX.Element => {
   const hasError = state.showError && state.index === -1;
 
   return (
-    <FocusTrap onPointerDownOutside={onCancel}>
+    <FocusTrap onPointerDownOutside={cancel}>
       <S.Main
         placement={placement}
         aria-label='Link target'
         onSubmit={handleSubmit}
         onKeyDown={handleFormKeyDown}
+        ref={mainRef}
       >
         <S.InputWrapper
           aria-expanded={state.results.length > 0}
