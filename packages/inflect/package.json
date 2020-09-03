@@ -9,13 +9,9 @@
     "dist/"
   ],
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "check": "tsc --noEmit",
-    "clean": "rimraf dist",
-    "compile": "tsc",
-    "build": "npm run clean && npm run compile",
-    "prepublishOnly": "npm install && npm run build",
     "lint": "eslint --ext .ts,.tsx src/",
     "test": "mocha"
   },
@@ -23,8 +19,6 @@
     "@condict/eslint-plugin": "^0.2.0",
     "chalk": "^4.1.0",
     "eslint": "^7.3.0",
-    "mocha": "^8.0.1",
-    "rimraf": "^3.0.2",
-    "typescript": "^3.9.5"
+    "mocha": "^8.1.3"
   }
 }

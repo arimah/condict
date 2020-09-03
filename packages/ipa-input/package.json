@@ -9,15 +9,12 @@
     "dist/"
   ],
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "check": "tsc --noEmit",
-    "clean": "rimraf dist",
-    "compile": "tsc -p tsconfig.build.json",
     "fix:types": "rimraf node_modules/@types/react-native",
-    "build": "npm run fix:types && npm run clean && npm run compile",
+    "build": "npm run fix:types",
     "dev": "cross-env NODE_ENV=development node dev/server.js",
-    "prepublishOnly": "npm install && npm run build",
     "lint": "eslint --ext .ts,.tsx src/ dev/"
   },
   "dependencies": {
@@ -40,8 +37,7 @@
     "react-dom": "^16.13.1",
     "react-is": "^16.13.1",
     "rimraf": "^3.0.2",
-    "styled-components": "^5.1.1",
-    "typescript": "^3.9.5"
+    "styled-components": "^5.1.1"
   },
   "peerDependencies": {
     "@condict/ui": "^0.9.0",

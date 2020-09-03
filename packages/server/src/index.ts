@@ -21,3 +21,4 @@ export {
   ConnectionPool,
   Options as DatabaseConfig,
 } from './database';
+export {addUser, editUser, deleteUser} from './manage-users';

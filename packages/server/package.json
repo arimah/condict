@@ -9,19 +9,16 @@
     "dist/"
   ],
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
   "bin": {
     "condict-server": "./dist/cli.js"
   },
   "scripts": {
     "start": "node dist/cli.js",
-    "check": "tsc --noEmit",
-    "clean": "rimraf dist",
     "copyGraphql": "copyfiles --up 3 ../../graphql-schema/*.graphql dist/graphql/schema",
-    "compile": "tsc",
-    "build": "npm run build:graphqlTypes && npm run clean && npm run build:main",
+    "build": "npm run build:graphqlTypes && npm run copyGraphql",
     "build:graphqlTypes": "condict-graphql-typer --schema-dir ../../graphql-schema --target=server --output ./src/graphql/types.ts",
-    "build:main": "npm run compile && npm run copyGraphql",
-    "prepublishOnly": "npm install && npm run build",
     "lint": "eslint --ext .ts src/"
   },
   "dependencies": {
@@ -35,7 +32,7 @@
     "deepmerge": "^4.2.2",
     "generic-pool": "^3.7.1",
     "graphql": "^15.1.0",
-    "graphql-tools": "^6.0.10",
+    "graphql-tools": "^6.2.0",
     "nanoid": "^3.1.10",
     "winston": "^3.2.1"
   },
@@ -48,8 +45,6 @@
     "@types/generic-pool": "^3.1.9",
     "@types/node": "^14.0.13",
     "copyfiles": "^2.3.0",
-    "eslint": "^7.3.0",
-    "rimraf": "^3.0.2",
-    "typescript": "^3.9.5"
+    "eslint": "^7.3.0"
   }
 }

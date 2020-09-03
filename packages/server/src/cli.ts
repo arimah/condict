@@ -1,20 +1,18 @@
-#!/usr/bin/env node
-
 import parseCliArgs, {OptionDefinition} from 'command-line-args';
 
-import createLogger from './create-logger';
-import loadConfig from './config';
-import CondictServer from './server';
-import CondictHttpServer from './http-server';
-import getTableSchema from './table-schema';
-import {addUser, editUser, deleteUser} from './manage-users';
-import {ServerConfig, ServerConfigWithLogger, Logger} from './types';
-
-// Fall back to development if missing. Ensures we get proper console
-// logging and other nice things.
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = 'development';
-}
+import {
+  CondictServer,
+  CondictHttpServer,
+  Logger,
+  ServerConfig,
+  ServerConfigWithLogger,
+  createLogger,
+  loadConfigFile,
+  getTableSchema,
+  addUser,
+  editUser,
+  deleteUser,
+} from '.';
 
 const globalOptions: OptionDefinition[] = [
   {name: 'config', alias: 'c', type: String},
@@ -74,7 +72,7 @@ const main = async () => {
   const configFile = args.config || 'config.json';
   let config: ServerConfigWithLogger;
   try {
-    config = loadConfig(configFile);
+    config = loadConfigFile(configFile);
   } catch (e) {
     console.error(`Failed to read config from ${configFile}: ${e}`);
     process.exitCode = 1;

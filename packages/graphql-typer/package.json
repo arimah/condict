@@ -9,16 +9,12 @@
     "dist/"
   ],
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "bin": {
     "condict-graphql-typer": "./dist/cli.js"
   },
   "scripts": {
-    "check": "tsc --noEmit",
-    "clean": "rimraf dist",
-    "compile": "tsc",
-    "build": "npm run clean && npm run compile",
-    "prepublishOnly": "npm install && npm run build",
     "lint": "eslint --ext .ts,.tsx src/"
   },
   "dependencies": {
@@ -30,8 +26,6 @@
     "@types/command-line-args": "^5.0.0",
     "@types/node": "^12.12.12",
     "chalk": "^4.1.0",
-    "eslint": "^7.3.0",
-    "rimraf": "^3.0.0",
-    "typescript": "^3.9.5"
+    "eslint": "^7.3.0"
   }
 }
