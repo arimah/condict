@@ -84,7 +84,7 @@ declare global {
   }
 }
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
   window.__CONDICT_DEV_KEEP_MENUS_OPEN__ = false;
 }
 
