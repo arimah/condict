@@ -14,7 +14,7 @@
     "watch:ui": "node scripts/build -w -g ui",
     "watch:server": "node scripts/build -w -g server",
     "serve": "cd ./dev && npx --no-install next",
-    "dev": "npm-run-all --parallel --print-label watch:utils watch:ui serve",
+    "dev:ui": "cross-env NODE_ENV=development npm-run-all --parallel --print-label watch:utils watch:ui serve",
     "lint": "eslint --ext .ts,.tsx dev/ packages/"
   },
   "devDependencies": {

@@ -89,7 +89,7 @@ export const getPlugins = (options = {}) => {
   ];
 };
 
-export const configureTarget = (pkg, format, output, options = {}) => {
+export const configureTarget = (pkg, output, options = {}) => {
   const env = process.env.NODE_ENV || 'production';
   const {
     entry,
@@ -112,7 +112,7 @@ export const configureTarget = (pkg, format, output, options = {}) => {
     input,
 
     output: {
-      format,
+      format: 'cjs',
       exports: 'named',
       sourcemap: false,
       ...declarations ? {
@@ -137,12 +137,11 @@ const configureDefault = (pkg, options = {}) => {
   const external = getExternal(pkg);
 
   let targets = [
-    configureTarget(pkg, 'cjs', pkg.main, {
+    configureTarget(pkg, pkg.main, {
       external,
       declarations: true,
       ...options,
     }),
-    configureTarget(pkg, 'es', pkg.module, {external, ...options}),
   ];
 
   const {binEntries} = options;
@@ -165,7 +164,7 @@ const configureDefault = (pkg, options = {}) => {
       Object.entries(binEntries)
         .map(([binName, input]) => {
           const output = pkg.bin[binName];
-          const config = configureTarget(pkg, 'cjs', output, {
+          const config = configureTarget(pkg, output, {
             ...options,
             external: binExternal,
             entry: input,
