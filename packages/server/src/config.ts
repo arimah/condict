@@ -10,6 +10,10 @@ import {
 } from './types';
 import {validateOptions as validateDatabaseOptions} from './database';
 
+// This entire file is about taking unsafe `any` values and turning them into
+// safe objects.
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 const isObject = (value: any): value is { [key: string]: any } =>
   value != null && typeof value === 'object' && !Array.isArray(value);
 

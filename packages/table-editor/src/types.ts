@@ -12,11 +12,11 @@ export interface EditorContextValue<D, M extends Messages> {
   /** Determines whether multiple cells can be selected. */
   readonly multiSelect: boolean;
   /** Determines whether the specified cell can be edited. */
-  canEditCell(cell: Cell, data: D): boolean;
+  readonly canEditCell: (cell: Cell, data: D) => boolean;
   /** Describes the specified cell. */
-  describeCell(messages: M, cell: Cell, data: D): string;
+  readonly describeCell: (messages: M, cell: Cell, data: D) => string;
   /** Determines whether the table has a context value. */
-  hasContextMenu(table: Table<D>): boolean;
+  readonly hasContextMenu: (table: Table<D>) => boolean;
 }
 
 export type CellEditorProps<D, M extends Messages> = {

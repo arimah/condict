@@ -285,6 +285,7 @@ export const Table: TableOps = {
       nextTable.cells !== prevTable.cells ||
       nextTable.rows !== prevTable.rows
     ) {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       nextTable = produce(nextTable, Layout.update);
     }
 
@@ -292,6 +293,7 @@ export const Table: TableOps = {
       nextTable.selection !== prevTable.selection ||
       nextTable.layout !== prevTable.layout
     ) {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       nextTable = produce(nextTable, SelectionShape.update);
     }
 
@@ -334,7 +336,7 @@ export const Table: TableOps = {
     const {layout} = table;
 
     for (let leftCol = column - 1; leftCol >= 0; leftCol--) {
-      const layoutCell = Layout.getCellAt(layout, row, leftCol) as LayoutCell;
+      const layoutCell = Layout.getCellAt(layout, row, leftCol);
       if (layoutCell.homeRow === row) {
         // The cell starts in (i.e. belongs to) this row, so the new cell will
         // be inserted to the right of it.

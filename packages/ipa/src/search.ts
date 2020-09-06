@@ -174,7 +174,7 @@ const search = (query: string): Match[] => {
       allMatches.set(char, {
         totalScore: score,
         terms: [termMatch],
-        queryWordScores: new Map().set(query, score),
+        queryWordScores: new Map<string, number>().set(query, score),
       });
     }
   };

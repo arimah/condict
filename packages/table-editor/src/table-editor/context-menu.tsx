@@ -36,8 +36,7 @@ const ContextMenu = React.forwardRef(<D, M extends Messages>(
       onClose={onClose}
       ref={ref}
     >
-      {hasTableContextMenu &&
-        <ContextMenu table={table} messages={messages}/>}
+      {hasTableContextMenu && <ContextMenu table={table} messages={messages}/>}
       {hasTableContextMenu && extraItems && <Menu.Separator/>}
       {extraItems}
     </Menu>

@@ -9,6 +9,7 @@ export const validateOptions = (options: any): Options => {
     throw new Error('Database config must be an object.');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
   const file = options.file;
   if (typeof file !== 'string') {
     throw new Error('Database file name must be a string.');

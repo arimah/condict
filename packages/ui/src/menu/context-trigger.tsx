@@ -66,6 +66,7 @@ const ContextMenuTrigger = (props: Props): JSX.Element => {
     ref: combineRefs(menuRef, menu.ref),
   });
   const childWithMenu = React.cloneElement(children, {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     'aria-owns': `${menuId} ${children.props['aria-owns'] || ''}`,
     onContextMenu: openMenu,
     ref: combineRefs(childRef, children.ref),

@@ -28,9 +28,11 @@ type ParentRect = {
 }
 
 const isElement = (parent: RelativeParent): parent is Element =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   (parent as any).nodeType != undefined;
 
 const isDomRect = (parent: RelativeParent): parent is DOMRect | ClientRect =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   (parent as any).left != undefined && (parent as any).width != undefined;
 
 const getParentRect = (parent: RelativeParent): ParentRect => {

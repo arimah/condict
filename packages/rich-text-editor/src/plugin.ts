@@ -170,7 +170,7 @@ const withCondict = (
     });
   };
 
-  return editor as CondictEditor;
+  return editor;
 };
 
 const createEditor = (singleLine: boolean): CondictEditor =>

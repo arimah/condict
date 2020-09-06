@@ -6,7 +6,8 @@
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
   "files": [
-    "dist/"
+    "dist/",
+    "graphql-schema/"
   ],
   "main": "dist/index.js",
   "module": "dist/index.es.js",
@@ -16,10 +17,10 @@
   },
   "scripts": {
     "start": "node dist/cli.js",
-    "copyGraphql": "copyfiles --up 3 ../../graphql-schema/*.graphql dist/graphql/schema",
+    "copyGraphql": "copyfiles --up 3 ../../graphql-schema/*.graphql ./graphql-schema",
     "build": "npm run build:graphqlTypes && npm run copyGraphql",
     "build:graphqlTypes": "condict-graphql-typer --schema-dir ../../graphql-schema --target=server --output ./src/graphql/types.ts",
-    "lint": "eslint --ext .ts src/"
+    "build:native": "npm rebuild better-sqlite3"
   },
   "dependencies": {
     "@condict/inflect": "^0.1.2",
@@ -37,14 +38,12 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@condict/eslint-plugin": "^0.2.0",
     "@condict/graphql-typer": "^0.3.1",
     "@types/bcrypt": "^3.0.0",
     "@types/better-sqlite3": "^5.4.0",
     "@types/command-line-args": "^5.0.0",
     "@types/generic-pool": "^3.1.9",
     "@types/node": "^14.0.13",
-    "copyfiles": "^2.3.0",
-    "eslint": "^7.3.0"
+    "copyfiles": "^2.3.0"
   }
 }

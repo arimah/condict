@@ -9,7 +9,7 @@ import {ServerConfig, Logger} from './types';
 
 export interface ContextResult {
   readonly context: Context;
-  readonly finish: () => void;
+  readonly finish: () => Promise<void>;
 }
 
 export const LocalSession = Symbol();
@@ -83,7 +83,7 @@ export default class CondictServer {
       db = await databasePool.getConnection();
     } catch (e) {
       if (db) {
-        db.release();
+        await db.release();
         db = null;
       }
       throw e;
@@ -103,9 +103,9 @@ export default class CondictServer {
         sessionId: typeof sessionId === 'string' ? sessionId : null,
         hasValidSession,
       },
-      finish: () => {
+      finish: async () => {
         if (db) {
-          db.release();
+          await db.release();
           db = null;
         }
       },

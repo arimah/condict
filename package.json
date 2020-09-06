@@ -12,7 +12,10 @@
     "compile": "rollup --config config/rollup.config.js",
     "watch:utils": "node scripts/build -w -g utils",
     "watch:ui": "node scripts/build -w -g ui",
-    "watch:server": "node scripts/build -w -g server"
+    "watch:server": "node scripts/build -w -g server",
+    "serve": "cd ./dev && npx --no-install next",
+    "dev": "npm-run-all --parallel --print-label watch:utils watch:ui serve",
+    "lint": "eslint --ext .ts,.tsx dev/ packages/"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.0.0",
@@ -20,11 +23,16 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-replace": "^2.3.3",
     "@rollup/plugin-typescript": "^5.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "@typescript-eslint/parser": "^4.0.1",
     "chalk": "^4.1.0",
     "command-line-args": "^5.1.1",
     "cross-env": "^7.0.2",
     "eslint": "^7.8.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.6",
     "lerna": "^3.22.1",
+    "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.26.9",
     "tslib": "^2.0.1",

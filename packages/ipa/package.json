@@ -12,12 +12,9 @@
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "node build",
-    "lint": "eslint --ext .ts,.tsx src/"
+    "build": "node build"
   },
   "devDependencies": {
-    "@condict/eslint-plugin": "^0.2.0",
-    "chalk": "^4.1.0",
-    "eslint": "^7.3.0"
+    "chalk": "^4.1.0"
   }
 }

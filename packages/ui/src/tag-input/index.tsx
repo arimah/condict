@@ -23,13 +23,13 @@ const Separators = /[,;]/;
 const normalizeTag = (tag: string) => tag.replace(/\s+/g, ' ').trim();
 
 const uniqueTags = (tags: string[]) => {
-  const seenTags = Object.create(null);
+  const seenTags = new Set<string>();
   return tags.reduce((result, tag) => {
     const lowerTag = tag.toLowerCase();
-    if (seenTags[lowerTag]) {
+    if (seenTags.has(lowerTag)) {
       return result;
     }
-    seenTags[lowerTag] = true;
+    seenTags.add(lowerTag);
     result.push(tag);
     return result;
   }, [] as string[]);
@@ -389,7 +389,7 @@ export class TagInput extends Component<Props, State> {
       input.setSelectionRange(
         (selectionStart as number) - removed,
         (selectionEnd as number) - removed,
-        (selectionDirection || 'none') as 'forward' | 'backward' | 'none'
+        selectionDirection || 'none'
       );
     } else {
       input.value = '';
@@ -444,7 +444,10 @@ export class TagInput extends Component<Props, State> {
 
   public deleteTag(
     tag: string,
-    getNextSelected: (items: Descendants, current: TagInputChild) => any
+    getNextSelected: (
+      items: Descendants,
+      current: TagInputChild
+    ) => TagInputChild | null
   ): void {
     const {tags: prevTags} = this.props;
     const nextTags = prevTags.filter(t => t !== tag);
@@ -452,7 +455,8 @@ export class TagInput extends Component<Props, State> {
     const {selected} = this.state;
     let nextSelected = getNextSelected(this.items, selected);
     if (!nextSelected) {
-      nextSelected = this.items.getLast();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      nextSelected = this.items.getLast()!;
     }
     nextSelected.elem.focus();
 

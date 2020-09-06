@@ -1,8 +1,10 @@
 import {UserInputError} from 'apollo-server';
 
 export type Validator<I, R> = {
-  do<U>(step: (value: R, paramName: string) => U): Validator<I, U>;
-  validate(value: I): R;
+  readonly do: <U>(
+    step: (value: R, paramName: string) => U
+  ) => Validator<I, U>;
+  readonly validate: (value: I) => R;
 };
 
 const validator = <T>(paramName: string): Validator<T, T> => {

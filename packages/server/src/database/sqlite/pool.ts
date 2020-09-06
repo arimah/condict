@@ -41,6 +41,6 @@ export default class ConnectionPool {
 
   public async close(): Promise<void> {
     await this.pool.drain();
-    this.pool.clear();
+    await this.pool.clear();
   }
 }

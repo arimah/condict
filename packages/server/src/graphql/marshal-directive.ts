@@ -17,9 +17,13 @@ type MarshalImpl = {
   parseLiteral: GraphQLScalarLiteralParser<any>;
 };
 
+type MarshalArgs = {
+  as: MarshalTypeName;
+};
+
 const MarshalImpls: Record<MarshalTypeName, MarshalImpl> = {
   INT_TYPE: {
-    serialize: value => value,
+    serialize: Number,
     parseValue: value => {
       if (typeof value === 'number' && Number.isInteger(value)) {
         return value;
@@ -34,7 +38,7 @@ const MarshalImpls: Record<MarshalTypeName, MarshalImpl> = {
     },
   },
   FLOAT_TYPE: {
-    serialize: value => value,
+    serialize: Number,
     parseValue: value => {
       if (typeof value === 'number') {
         return value;
@@ -51,7 +55,7 @@ const MarshalImpls: Record<MarshalTypeName, MarshalImpl> = {
     },
   },
   STRING_TYPE: {
-    serialize: value => value,
+    serialize: String,
     parseValue: value => {
       if (typeof value === 'string') {
         return value;
@@ -67,9 +71,9 @@ const MarshalImpls: Record<MarshalTypeName, MarshalImpl> = {
   },
 };
 
-export default class MarshalDirective extends SchemaDirectiveVisitor {
+export default class MarshalDirective extends SchemaDirectiveVisitor<MarshalArgs> {
   public visitScalar(scalar: GraphQLScalarType): GraphQLScalarType | void | null {
-    const type = this.args.as as MarshalTypeName;
+    const type = this.args.as;
     const impl = MarshalImpls[type];
     if (!impl) {
       // This should never happen.

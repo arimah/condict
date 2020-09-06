@@ -31,6 +31,7 @@ export const InflectionTable = {
     return convertStandardTable(
       rows,
       DefaultData,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       InflectionTableData.isCellEmpty,
       inputCell => {
         const cell: Cell = {

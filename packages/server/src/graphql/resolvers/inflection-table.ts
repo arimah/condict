@@ -50,12 +50,12 @@ const InflectionTableLayout: ResolversFor<
 > = {
   isCurrent: p => p.is_current === 1,
 
-  rows: p => JSON.parse(p.layout),
+  rows: p => JSON.parse(p.layout) as unknown,
 
   inflectedForms: (p, _args, {db}) =>
     InflectedFormModel.allByTableLayout(db, p.id),
 
-  stems: p => JSON.parse(p.stems),
+  stems: p => JSON.parse(p.stems) as unknown,
 
   inflectionTable: (p, _args, {db}) =>
     InflectionTableModel.byId(db, p.inflection_table_id),

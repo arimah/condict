@@ -231,8 +231,8 @@ export default class Connection {
    * Returns the database connection to its pool. The connection should not be
    * used by the request after calling this method.
    */
-  public release(): void {
-    this.pool.release(this.database);
+  public async release(): Promise<void> {
+    await this.pool.release(this.database);
   }
 
   /**

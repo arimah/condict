@@ -1,7 +1,7 @@
 import {GraphQLScalarType, ValueNode, Kind} from 'graphql';
 import {SchemaDirectiveVisitor} from 'graphql-tools';
 
-const serialize = (value: any) => value;
+const serialize = (value: any) => value as unknown;
 
 const parseValue = (value: any) => {
   if (typeof value === 'number') {

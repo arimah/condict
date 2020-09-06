@@ -82,7 +82,7 @@ export const Shortcut = {
         let secondary = false;
         let shift = false;
         let alt = false;
-        const keysString = text.replace(ModifiersPattern, (_, mod) => {
+        const keysString = text.replace(ModifiersPattern, (_, mod: string) => {
           switch (mod.toLowerCase()) {
             case 'primary':
               primary = true;
@@ -188,6 +188,7 @@ export const Shortcut = {
 
   formatAria(shortcut: Shortcut): string {
     if (shortcut.shortcuts) {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       return shortcut.shortcuts.map(Shortcut.formatAria).join(' ');
     }
 

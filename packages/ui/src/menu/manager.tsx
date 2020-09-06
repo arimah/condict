@@ -101,6 +101,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
     {
       key: Shortcut.parse('Escape'),
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       exec: MenuStack.closeOne,
     },
     {

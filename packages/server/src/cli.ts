@@ -53,13 +53,13 @@ const start = async (logger: Logger, config: ServerConfig) => {
   const server = new CondictServer(logger, config);
   const httpServer = new CondictHttpServer(server);
 
-  process.on('SIGINT', async () => {
+  process.on('SIGINT', () => {
     logger.info('Exit: Ctrl+C');
 
     logger.info('Stopping server...');
-    await httpServer.stop();
-
-    logger.info('Goodbye!');
+    void httpServer.stop().then(() => {
+      logger.info('Goodbye!');
+    });
   });
 
   const {url} = await httpServer.start();
@@ -69,7 +69,8 @@ const start = async (logger: Logger, config: ServerConfig) => {
 const main = async () => {
   const args = parseCliArgs(globalOptions, {stopAtFirstUnknown: true});
 
-  const configFile = args.config || 'config.json';
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const configFile: string = args.config || 'config.json';
   let config: ServerConfigWithLogger;
   try {
     config = loadConfigFile(configFile);
@@ -81,6 +82,7 @@ const main = async () => {
 
   const logger = createLogger(config.log);
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const cmdArgs = parseCliArgs(commandOptions[args.command] || [], {
     argv: args._unknown || [],
   });
@@ -141,9 +143,10 @@ const main = async () => {
         break;
     }
   } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     logger.error(`Unhandled server error: ${e}\n${e.stack}`);
     process.exitCode = 1;
   }
 };
 
-main();
+void main();

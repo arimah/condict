@@ -14,18 +14,13 @@
   "bin": {
     "condict-graphql-typer": "./dist/cli.js"
   },
-  "scripts": {
-    "lint": "eslint --ext .ts,.tsx src/"
-  },
   "dependencies": {
     "command-line-args": "^5.1.1",
     "graphql": "^15.1.0"
   },
   "devDependencies": {
-    "@condict/eslint-plugin": "^0.2.0",
     "@types/command-line-args": "^5.0.0",
     "@types/node": "^12.12.12",
-    "chalk": "^4.1.0",
-    "eslint": "^7.3.0"
+    "chalk": "^4.1.0"
   }
 }

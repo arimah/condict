@@ -111,7 +111,7 @@ let writeSelectionSet: (
 
 const writeField = (result: TextBuilder, field: FieldNode) => {
   if (field.alias) {
-    result.append(`${field.alias}:`);
+    result.append(`${field.alias.value}:`);
   }
   result.append(field.name.value);
   if (field.arguments && field.arguments.length > 0) {

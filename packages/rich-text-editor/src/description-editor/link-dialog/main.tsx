@@ -231,7 +231,7 @@ const LinkDialog = (props: Props): JSX.Element => {
     // Don't search if it's empty or all white space.
     if (!/^\s*$/.test(value)) {
       const requestId = searchRequest.current;
-      onFindLinkTarget(value).then(results => {
+      void onFindLinkTarget(value).then(results => {
         if (searchRequest.current === requestId) {
           dispatch({type: 'results', results});
         }

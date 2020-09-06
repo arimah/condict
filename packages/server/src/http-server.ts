@@ -38,7 +38,7 @@ export default class CondictHttpServer {
         res.once('finish', () => {
           const requestTime = Date.now() - startTime;
           logger.info(`Request ${requestId} finished in ${requestTime} ms`);
-          finish();
+          void finish();
         });
 
         return context;

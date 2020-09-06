@@ -485,8 +485,10 @@ export const useManagedFocus = (props: FocusScopeProps): RefObject<Element> => {
   return rootRef;
 };
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
 export const disableFocusManager = manager.disable;
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
 export const enableFocusManager = manager.enable;
 
 export const getLastPointerDownTarget = manager.getLastPointerDownTarget;

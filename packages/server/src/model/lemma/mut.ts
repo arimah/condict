@@ -34,12 +34,15 @@ const LemmaMut = {
     languageId: LanguageId,
     terms: ValidTerm[]
   ): Map<string, LemmaId> {
+    // FIXME: https://github.com/typescript-eslint/typescript-eslint/issues/2452
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     type Row = {
       id: LemmaId;
       term: string;
     };
 
     if (terms.length === 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return new Map();
     }
 

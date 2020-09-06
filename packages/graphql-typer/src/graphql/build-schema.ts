@@ -44,7 +44,7 @@ const buildGraphqlSchema = (dir: string): GraphQLSchema => {
     throw new Error(`The GraphQL schema is invalid:\n${errors.map(err => {
       const node = err.nodes && err.nodes[0];
       return `- ${formatLoc(node && node.loc)}: ${err.message}`;
-    })}`);
+    }).join('\n')}`);
   }
   return fullSchema;
 };

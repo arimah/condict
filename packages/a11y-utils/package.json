@@ -13,15 +13,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "fix:types": "rimraf node_modules/@types/react-native",
-    "build": "npm run fix:types",
-    "lint": "eslint --ext .ts,.tsx src/"
+    "build": "npm run fix:types"
   },
   "devDependencies": {
-    "@condict/eslint-plugin": "^0.2.0",
     "@types/react": "^16.9.38",
     "@types/styled-components": "^5.1.0",
-    "eslint": "^7.3.0",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "styled-components": "^5.1.1"
   },
   "peerDependencies": {
     "styled-components": "^5.1.1"

@@ -94,7 +94,7 @@ const DefinitionInflectionTableMut = {
       customFormMap
     );
 
-    return {id: tableId as DefinitionInflectionTableId, derivedForms};
+    return {id: tableId, derivedForms};
   },
 
   async update(

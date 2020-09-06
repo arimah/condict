@@ -14,6 +14,7 @@ export type BlockElementJson = {
 
 export const BlockElementJson = {
   isEmpty(block: BlockElementJson): boolean {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     return block.inlines.every(InlineElementJson.isEmpty);
   },
 };
@@ -22,6 +23,7 @@ export type InlineElementJson = FormattedTextJson | LinkInlineJson;
 
 export const InlineElementJson = {
   isLink(inline: InlineElementJson): inline is LinkInlineJson {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     return typeof (inline as any).linkTarget === 'string';
   },
 
@@ -59,6 +61,7 @@ export const LinkInlineJson = {
   isEmpty(link: LinkInlineJson): boolean {
     return (
       link.inlines.length === 0 ||
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       link.inlines.every(FormattedTextJson.isEmpty)
     );
   },
@@ -72,6 +75,7 @@ export const TableCaptionJson = {
   isEmpty(caption: TableCaptionJson): boolean {
     return (
       caption.inlines.length === 0 ||
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       caption.inlines.every(FormattedTextJson.isEmpty)
     );
   },

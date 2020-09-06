@@ -13,13 +13,10 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "node build",
-    "lint": "eslint --ext .ts,.tsx src/",
     "test": "mocha"
   },
   "devDependencies": {
-    "@condict/eslint-plugin": "^0.2.0",
     "chalk": "^4.1.0",
-    "eslint": "^7.3.0",
     "mocha": "^8.1.3"
   }
 }

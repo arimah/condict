@@ -115,6 +115,7 @@ const main = () => {
       }
     }
   } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     console.error(e.message);
     process.exitCode = 1;
     return;

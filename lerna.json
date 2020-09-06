@@ -2,6 +2,17 @@
   "version": "independent",
   "npmClient": "npm",
   "packages": [
+    "dev",
     "packages/*"
-  ]
+  ],
+  "commands": {
+    "bootstrap": {
+      "nohoist": [
+        "bcrypt",
+        "better-sqlite3",
+        "electron",
+        "electron-rebuild"
+      ]
+    }
+  }
 }

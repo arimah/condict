@@ -106,6 +106,7 @@ function CommandGroup<
     [disabled, keyMap, onExec, onKeyDown]
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const Inner = (as || 'div') as any;
   // disabled is passed to the inner component, since it's a
   // standard HTML attribute.
