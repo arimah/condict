@@ -72,10 +72,10 @@ Stems are normalized by trimming away white space at the start and end, and by c
 
 Tokenizes the specified pattern.
 
-This classifies the components of a pattern according to their kind. Each pattern can contain three kinds of components:
+This classifies the components of a pattern according to their kind. There are three kinds of components:
 
 * Placeholders – `{~}`, `{Verb root}`, etc.
 * Escaped braces – `{{` and `}}`, which are turned into the characters "{" and "}", respectively.
 * Plain text, which is not treated specially in any way.
 
-This can be used for highlighting parts of an inflection pattern in a UI or similar.
+This can be used for highlighting parts of an inflection pattern in a UI.

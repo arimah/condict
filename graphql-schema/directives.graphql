@@ -14,7 +14,7 @@ Without this directive or `@marshal`, a custom scalar value will be typed as
 directive @id(of: String) on SCALAR
 
 """
-Represents the marshalling type of a custom scalar. See the docuemtnation of
+Represents the marshalling type of a custom scalar. See the documentation of
 the `@marshal` directive.
 """
 enum MarshalType {

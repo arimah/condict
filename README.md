@@ -31,8 +31,6 @@ In lieu of a proper timeline or to-do list, here are some of the features that a
 The eventual goal of Condict is to be distributable as a standalone Electron app, as well as separate server and admin area components for websites. Condict is made up of many packages, which are found in [packages/](./packages).
 
 * [a11y-utils](./packages/a11y-utils): Various small utility functions and React components for accessibility features.
-* [dev-server](./packages/dev-server): A small wrapper around Webpack dev server, used by other packages for testing UI components.
-* [eslint-plugin](./packages/eslint-plugin): ESLint configuration.
 * [graphql-typer](./packages/graphql-typer): Generates TypeScript type definitions from a GraphQL schema.
 * [ipa](./packages/ipa): Utilities for searching and listing [IPA][] characters.
 * [ipa-input](./packages/ipa-input): A fancy textbox that searches [IPA][] characters.

@@ -83,7 +83,7 @@ All props except `value` and `onChange` are forwarded to the inner [`<CommandGro
 
 ## `InflectionTable`
 
-> `type InflectionTable`
+> `type InflectionTable`  
 > `const InflectionTable`
 
 This is the shape of an inflection table, containing its rows and cells, as well as the currently selected cells. The exported constant contains two methods for interacting with inflection tables:
@@ -183,7 +183,7 @@ All props except `value` and `onChange` are forwarded to the inner [`<CommandGro
 
 ## `DefinitionTable`
 
-> `type DefinitionTable`
+> `type DefinitionTable`  
 > `const DefinitionTable`
 
 This is the shape of a definition table, containing its rows and cells, as well as the currently selected cells. The exported constant contains two methods for interacting with inflection tables:
