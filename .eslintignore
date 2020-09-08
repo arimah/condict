@@ -3,5 +3,4 @@ packages/*/dist/*
 # This package is not compiled with TypeScript.
 packages/platform/*
 
-# TODO: TEMPORARY! Remove when no longer necessary.
-packages/*/dev/*
+**/*.js
