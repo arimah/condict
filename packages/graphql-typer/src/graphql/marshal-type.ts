@@ -4,17 +4,16 @@ import formatLoc from '../format-loc';
 
 import {getDirective, getArgument} from './helpers';
 
-export const enum MarshalType {
-  INT = 'INT',
-  FLOAT = 'FLOAT',
-  STRING = 'STRING',
-}
+export type MarshalType =
+  | 'int'
+  | 'float'
+  | 'string';
 
 const convertTypeName = (graphqlValue: string): MarshalType => {
   switch (graphqlValue) {
-    case 'INT_TYPE': return MarshalType.INT;
-    case 'FLOAT_TYPE': return MarshalType.FLOAT;
-    case 'STRING_TYPE': return MarshalType.STRING;
+    case 'INT_TYPE': return 'int';
+    case 'FLOAT_TYPE': return 'float';
+    case 'STRING_TYPE': return 'string';
     default:
       throw new Error(`Unknown marshal type: ${graphqlValue}`);
   }

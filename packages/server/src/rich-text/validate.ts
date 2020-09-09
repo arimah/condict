@@ -2,7 +2,6 @@ import {UserInputError} from 'apollo-server';
 
 import {
   BlockElementInput,
-  BlockKind,
   InlineElementInput,
   FormattedTextInput,
   TableCaptionInput,
@@ -27,7 +26,7 @@ export type LinkRefCollector = (target: CondictLink) => void;
 // thing and perform only other kinds of validation.
 
 const EmptyParagraph: BlockElementJson = {
-  kind: BlockKind.PARAGRAPH,
+  kind: 'PARAGRAPH',
   inlines: [{text: ''}],
 };
 

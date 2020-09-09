@@ -20,11 +20,7 @@ import {
   fieldAlreadyTakenError,
 } from './selected-field';
 import {collectFields as collectObjectFields} from './object-selection';
-import {
-  SelectionInclusion,
-  isSelectionIncluded,
-  validateFragmentType,
-} from './utils';
+import {isSelectionIncluded, validateFragmentType} from './utils';
 import {TypeWriterParams} from './types';
 
 type OutputFields = {
@@ -96,12 +92,12 @@ const collectFragmentFields = (
 collectFields = (params, outputFields, selections) => {
   for (const sel of selections) {
     const included = isSelectionIncluded(sel);
-    if (included === SelectionInclusion.DEPENDS) {
+    if (included === 'depends') {
       throw new Error(
         `${formatLoc(sel.loc)}: Conditional fields are not yet supported`
       );
     }
-    if (included === SelectionInclusion.SKIP) {
+    if (included === 'skip') {
       continue;
     }
 

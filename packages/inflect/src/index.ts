@@ -3,7 +3,6 @@ export {normalizeStem, normalizePattern} from './normalize';
 export {
   default as tokenizePattern,
   Token,
-  TokenKind,
   TextToken,
   BraceToken,
   PlaceholderToken,

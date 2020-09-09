@@ -66,7 +66,7 @@ type Props = {
 // eslint-disable-next-line react/display-name
 const MoreOptionsMenu = React.forwardRef<MenuType, Props>(
   ({state, set, ...otherProps}, ref) =>
-    <Menu {...otherProps} placement={'BELOW_RIGHT' as Placement} ref={ref}>
+    <Menu {...otherProps} placement='BELOW_RIGHT' ref={ref}>
       <Menu.Item label='Example menu'/>
       <Menu.Item label='Not suitable for real world'/>
       <Menu.Separator/>

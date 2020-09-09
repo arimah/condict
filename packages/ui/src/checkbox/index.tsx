@@ -8,7 +8,6 @@ import React, {
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import combineRefs from '../combine-refs';
-import Intent from '../intent';
 
 import * as S from './styles';
 
@@ -29,7 +28,7 @@ export type Props = {
 export const Checkbox = (props: Props): JSX.Element => {
   const {
     className,
-    intent = Intent.PRIMARY,
+    intent = 'primary',
     indeterminate = false,
     label,
     disabled,

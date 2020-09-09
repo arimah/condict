@@ -1,6 +1,6 @@
 import React, {Fragment, useState} from 'react';
 
-import {FocusScope, FocusTrap, Button, Radio, Intent} from '@condict/ui';
+import {FocusScope, FocusTrap, Button, Radio} from '@condict/ui';
 
 import * as S from './styles';
 
@@ -27,7 +27,7 @@ const Demo = (): JSX.Element => {
               <Button
                 slim
                 label='Deactivate trap'
-                intent={'secondary' as Intent}
+                intent='secondary'
                 onClick={() => setTrapActive(false)}
               />
             </p>
@@ -51,7 +51,7 @@ const Demo = (): JSX.Element => {
                     <Button
                       slim
                       label={`Do thing #${s}`}
-                      intent={'secondary' as Intent}
+                      intent='secondary'
                     />
                   </S.Scope>
                 </FocusScope>

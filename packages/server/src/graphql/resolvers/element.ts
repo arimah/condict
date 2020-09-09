@@ -5,7 +5,6 @@ import {
   LinkInlineJson,
   FormattedTextJson,
   CondictLink,
-  CondictLinkType,
   LanguageLink,
   LemmaLink,
   DefinitionLink,
@@ -62,13 +61,13 @@ const LinkInline: ResolversFor<LinkInlineType, LinkInlineJson> = {
 const InternalLinkTarget: ResolversFor<InternalLinkTargetType, CondictLink> = {
   __resolveType(p) {
     switch (p.type) {
-      case CondictLinkType.LANGUAGE:
+      case 'language':
         return 'LanguageLinkTarget';
-      case CondictLinkType.LEMMA:
+      case 'lemma':
         return 'LemmaLinkTarget';
-      case CondictLinkType.DEFINITION:
+      case 'definition':
         return 'DefinitionLinkTarget';
-      case CondictLinkType.PART_OF_SPEECH:
+      case 'part-of-speech':
         return 'PartOfSpeechLinkTarget';
     }
   },

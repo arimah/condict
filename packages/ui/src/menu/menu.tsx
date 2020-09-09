@@ -32,7 +32,7 @@ const Menu = Object.assign(
   ) => {
     const {
       children,
-      placement = Placement.BELOW_LEFT,
+      placement = 'BELOW_LEFT',
       parentRef,
       ...otherProps
     } = props;

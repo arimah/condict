@@ -19,10 +19,7 @@ import {
 import formatLoc from '../../format-loc';
 import getPermittedEnumValues from '../../graphql/enum-values';
 
-import {
-  getBuiltin as getBuiltinScalar,
-  TypePosition,
-} from '../builtin-scalars';
+import {getBuiltin as getBuiltinScalar} from '../builtin-scalars';
 import {TextBuilder} from '../utils';
 
 import {getObjectLikeInnerType} from './utils';
@@ -135,18 +132,18 @@ export const writeSelectedFieldType = (
     case 'field': {
       writeFieldType(result, field.field.type, (_, type) => {
         if (isScalarType(type)) {
-          const builtin = getBuiltinScalar(type, TypePosition.CLIENT_OUTPUT);
+          const builtin = getBuiltinScalar(type, 'clientRequest');
           result.append(builtin || params.useType(type));
         } else if (isEnumType(type)) {
-          const typeName = params.useType(type);
           const permitted = getPermittedEnumValues(field.field);
           if (permitted) {
             result.append(
               permitted.values
-                .map(v => `${typeName}.${v.name}`)
+                .map(v => `'${v.name}'`)
                 .join(' | ')
             );
           } else {
+            const typeName = params.useType(type);
             result.append(typeName);
           }
         } else  {

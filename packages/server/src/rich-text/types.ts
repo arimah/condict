@@ -81,12 +81,11 @@ export const TableCaptionJson = {
   },
 };
 
-export const enum CondictLinkType {
-  LANGUAGE = 'language',
-  LEMMA = 'lemma',
-  DEFINITION = 'definition',
-  PART_OF_SPEECH = 'part-of-speech',
-}
+export type CondictLinkType =
+  | 'language'
+  | 'lemma'
+  | 'definition'
+  | 'part-of-speech';
 
 export type CondictLink =
   | LanguageLink
@@ -95,21 +94,21 @@ export type CondictLink =
   | PartOfSpeechLink;
 
 export type LanguageLink = {
-  type: CondictLinkType.LANGUAGE;
+  type: 'language';
   id: LanguageId;
 };
 
 export type LemmaLink = {
-  type: CondictLinkType.LEMMA;
+  type: 'lemma';
   id: LemmaId;
 };
 
 export type DefinitionLink = {
-  type: CondictLinkType.DEFINITION;
+  type: 'definition';
   id: DefinitionId;
 };
 
 export type PartOfSpeechLink = {
-  type: CondictLinkType.PART_OF_SPEECH;
+  type: 'part-of-speech';
   id: PartOfSpeechId;
 };

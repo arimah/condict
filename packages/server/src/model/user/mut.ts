@@ -4,7 +4,6 @@ import {nanoid} from 'nanoid';
 import {Connection} from '../../database';
 import {
   LoginResult,
-  LoginFailureReason,
   UserSession as UserSessionType,
 } from '../../graphql/types';
 
@@ -83,12 +82,12 @@ const UserSessionMut = {
       // Forcefully hash the submitted password, to make brute-force user
       // discovery much more difficult. It's basically just a delay.
       await hash(password, BcryptRounds);
-      return {reason: LoginFailureReason.USER_NOT_FOUND};
+      return {reason: 'USER_NOT_FOUND'};
     }
 
     const passwordMatches = await compare(password, user.password_hash);
     if (!passwordMatches) {
-      return {reason: LoginFailureReason.PASSWORD_MISMATCH};
+      return {reason: 'PASSWORD_MISMATCH'};
     }
 
     // Username and password match. We can create the session.

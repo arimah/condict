@@ -7,7 +7,6 @@ import {
   TextInput,
   Menu,
   MenuTrigger,
-  Intent,
 } from '@condict/ui';
 
 import * as S from './styles';
@@ -32,7 +31,7 @@ const Demo = (): JSX.Element => {
             <Button
               slim
               label='Deactivate both traps'
-              intent={'secondary' as Intent}
+              intent='secondary'
               onClick={() => setActive(false)}
             />
           </p>
@@ -56,7 +55,7 @@ const Demo = (): JSX.Element => {
               <Button
                 slim
                 label='Menu button in first trap'
-                intent={'secondary' as Intent}
+                intent='secondary'
               />
             </MenuTrigger>
           </p>
@@ -80,7 +79,7 @@ const Demo = (): JSX.Element => {
             <Button
               slim
               label='Button in second trap'
-              intent={'secondary' as Intent}
+              intent='secondary'
             />
           </p>
         </S.Scope>

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {FocusTrap, Button, TextInput, Intent} from '@condict/ui';
+import {FocusTrap, Button, TextInput} from '@condict/ui';
 
 import * as S from './styles';
 
@@ -24,7 +24,7 @@ const Demo = (): JSX.Element => {
             <Button
               slim
               label='Deactivate outer trap'
-              intent={'secondary' as Intent}
+              intent='secondary'
               onClick={() => setOuter(false)}
             />
           </p>
@@ -32,7 +32,7 @@ const Demo = (): JSX.Element => {
             <Button
               slim
               label='Activate inner trap'
-              intent={'secondary' as Intent}
+              intent='secondary'
               onClick={() => setInner(true)}
             />
           </p>
@@ -46,7 +46,7 @@ const Demo = (): JSX.Element => {
                 <Button
                   slim
                   label='Deactivate inner trap'
-                  intent={'secondary' as Intent}
+                  intent='secondary'
                   onClick={() => setInner(false)}
                 />
               </p>
@@ -57,7 +57,7 @@ const Demo = (): JSX.Element => {
             <Button
               slim
               label='A button after the inner trap'
-              intent={'secondary' as Intent}
+              intent='secondary'
             />
           </p>
         </S.Scope>

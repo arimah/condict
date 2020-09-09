@@ -14,7 +14,7 @@ type State = {
 };
 
 const InitialState: State = {
-  intent: 'primary' as Intent,
+  intent: 'primary',
   disabled: false,
   bold: false,
   slim: false,

@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key, react/display-name */
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import FileIcon from 'mdi-react/FileOutlineIcon';
 import OpenIcon from 'mdi-react/FolderOpenIcon';
 import SaveIcon from 'mdi-react/FloppyIcon';
@@ -34,7 +34,7 @@ type State = {
 };
 
 const InitialState: State = {
-  placement: 'BELOW_LEFT' as Placement,
+  placement: 'BELOW_LEFT',
   keepOpen: false,
   // Checkable menu item states
   lineStyle: 'dashed',
@@ -48,14 +48,14 @@ const InitialState: State = {
 const StorageKey = 'condict/ui/menu';
 
 const Placements = [
-  {value: 'BELOW_LEFT' as Placement, name: 'Below left'},
-  {value: 'BELOW_RIGHT' as Placement, name: 'Below right'},
-  {value: 'ABOVE_LEFT' as Placement, name: 'Above left'},
-  {value: 'ABOVE_RIGHT' as Placement, name: 'Above right'},
-  {value: 'LEFT_TOP' as Placement, name: 'Left top'},
-  {value: 'LEFT_BOTTOM' as Placement, name: 'Left bottom'},
-  {value: 'RIGHT_TOP' as Placement, name: 'Right top'},
-  {value: 'RIGHT_BOTTOM' as Placement, name: 'Right bottom'},
+  {value: 'BELOW_LEFT', name: 'Below left'},
+  {value: 'BELOW_RIGHT', name: 'Below right'},
+  {value: 'ABOVE_LEFT', name: 'Above left'},
+  {value: 'ABOVE_RIGHT', name: 'Above right'},
+  {value: 'LEFT_TOP', name: 'Left top'},
+  {value: 'LEFT_BOTTOM', name: 'Left bottom'},
+  {value: 'RIGHT_TOP', name: 'Right top'},
+  {value: 'RIGHT_BOTTOM', name: 'Right bottom'},
 ];
 
 const NewShortcut = Shortcut.parse('Primary+N n');
@@ -165,7 +165,7 @@ const Main = (): JSX.Element => {
 
   useEffect(() => {
     window.__CONDICT_DEV_KEEP_MENUS_OPEN__ = state.keepOpen;
-  }, []);
+  }, [state.keepOpen]);
 
   return (
     <Demo
@@ -181,10 +181,7 @@ const Main = (): JSX.Element => {
         <Checkbox
           label='Keep menu open when window loses focus (dev only)'
           checked={state.keepOpen}
-          onChange={e => {
-            window.__CONDICT_DEV_KEEP_MENUS_OPEN__ = e.target.checked;
-            set('keepOpen', e.target.checked);
-          }}
+          onChange={e => set('keepOpen', e.target.checked)}
         />,
       ]}
       onReset={reset}

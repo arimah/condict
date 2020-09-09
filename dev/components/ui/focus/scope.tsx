@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {FocusScope, Checkbox, Button, TextInput, Intent} from '@condict/ui';
+import {FocusScope, Checkbox, Button, TextInput} from '@condict/ui';
 
 import * as S from './styles';
 
@@ -22,10 +22,10 @@ const Demo = (): JSX.Element => {
       <FocusScope active={scope1}>
         <S.Scope kind='scope' active={scope1}>
           <p>
-            <Button slim label='I am clickable' intent={'secondary' as Intent}/>
+            <Button slim label='I am clickable' intent='secondary'/>
           </p>
           <p>
-            <Button slim label='Hello, focus!' intent={'secondary' as Intent}/>
+            <Button slim label='Hello, focus!' intent='secondary'/>
           </p>
         </S.Scope>
       </FocusScope>
@@ -43,14 +43,14 @@ const Demo = (): JSX.Element => {
             <Button
               slim
               label='I am focusable and tabbable'
-              intent={'secondary' as Intent}
+              intent='secondary'
             />
           </p>
           <p>
             <Button
               slim
               label='I am focusable but not tabbable'
-              intent={'secondary' as Intent}
+              intent='secondary'
               tabIndex={-1}
             />
           </p>

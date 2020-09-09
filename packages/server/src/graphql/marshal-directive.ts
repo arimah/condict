@@ -9,8 +9,6 @@ import {SchemaDirectiveVisitor} from 'graphql-tools';
 
 import {MarshalType} from './types';
 
-type MarshalTypeName = keyof typeof MarshalType;
-
 type MarshalImpl = {
   serialize: GraphQLScalarSerializer<any>;
   parseValue: GraphQLScalarValueParser<any>;
@@ -18,10 +16,10 @@ type MarshalImpl = {
 };
 
 type MarshalArgs = {
-  as: MarshalTypeName;
+  as: MarshalType;
 };
 
-const MarshalImpls: Record<MarshalTypeName, MarshalImpl> = {
+const MarshalImpls: Record<MarshalType, MarshalImpl> = {
   INT_TYPE: {
     serialize: Number,
     parseValue: value => {

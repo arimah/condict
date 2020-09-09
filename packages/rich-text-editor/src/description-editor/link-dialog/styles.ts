@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import {Button, TextInput, Intent} from '@condict/ui';
+import {Button, TextInput} from '@condict/ui';
 
 import Popup from '../popup';
 
@@ -41,7 +41,7 @@ export const Input = styled(TextInput).attrs({
 `;
 
 export const OkButton = styled(Button).attrs({
-  intent: Intent.PRIMARY,
+  intent: 'primary',
   bold: true,
   minimal: true,
   slim: true,

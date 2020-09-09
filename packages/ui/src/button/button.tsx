@@ -3,7 +3,6 @@ import React, {ButtonHTMLAttributes} from 'react';
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import {useCommand} from '../command';
-import Intent from '../intent';
 
 import * as S from './styles';
 
@@ -23,7 +22,7 @@ const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
     command: commandName,
     slim = false,
     bold = false,
-    intent = Intent.PRIMARY,
+    intent = 'primary',
     disabled,
     onClick,
     children,

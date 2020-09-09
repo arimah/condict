@@ -39,17 +39,17 @@ const inRaf = (fn: () => void) => {
 const getSubmenuPlacement = (ownPlacement: Placement) => {
   // The basic idea: keep growing in the same horizontal direction.
   switch (ownPlacement) {
-    case Placement.BELOW_LEFT:
-    case Placement.ABOVE_LEFT:
-    case Placement.RIGHT_TOP:
-    case Placement.RIGHT_BOTTOM:
-      return Placement.RIGHT_TOP;
-    case Placement.BELOW_RIGHT:
-    case Placement.ABOVE_RIGHT:
-    case Placement.LEFT_TOP:
-    case Placement.LEFT_BOTTOM:
+    case 'BELOW_LEFT':
+    case 'ABOVE_LEFT':
+    case 'RIGHT_TOP':
+    case 'RIGHT_BOTTOM':
+      return 'RIGHT_TOP';
+    case 'BELOW_RIGHT':
+    case 'ABOVE_RIGHT':
+    case 'LEFT_TOP':
+    case 'LEFT_BOTTOM':
     default:
-      return Placement.LEFT_TOP;
+      return 'LEFT_TOP';
   }
 };
 

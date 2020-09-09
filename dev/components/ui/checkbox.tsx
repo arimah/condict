@@ -13,7 +13,7 @@ type State = {
 };
 
 const InitialState: State = {
-  intent: 'primary' as Intent,
+  intent: 'primary',
   disabled: false,
   checked: [true, false, false],
 };

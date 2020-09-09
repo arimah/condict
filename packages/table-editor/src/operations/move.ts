@@ -1,12 +1,11 @@
 import {Table, Layout, Selection} from '../value';
 
-export const enum MoveDelta {
-  FIRST = -2,
-  PREV = -1,
-  NONE = 0,
-  NEXT = 1,
-  LAST = 2,
-}
+export type MoveDelta =
+  | 'first'
+  | 'prev'
+  | 'stay'
+  | 'next'
+  | 'last';
 
 const navigate = (
   current: number,
@@ -15,15 +14,15 @@ const navigate = (
   max: number
 ) => {
   switch (delta) {
-    case MoveDelta.FIRST:
+    case 'first':
       return 0;
-    case MoveDelta.PREV:
+    case 'prev':
       return Math.max(current - 1, 0);
-    case MoveDelta.NONE:
+    case 'stay':
       return current;
-    case MoveDelta.NEXT:
+    case 'next':
       return Math.min(current + span, max);
-    case MoveDelta.LAST:
+    case 'last':
       return max;
   }
 };

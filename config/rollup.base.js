@@ -64,6 +64,7 @@ export const getPlugins = (options = {}) => {
       rootDir: `./src`,
       // TODO: Remove this when it's no longer necessary
       exclude: [`${packagePath}/dev/**/*`],
+      noEmitOnError: false,
       ...declarationDir ? {
         declaration: true,
         declarationDir,
@@ -130,6 +131,32 @@ export const configureTarget = (pkg, output, options = {}) => {
       declarationDir: declarations && path.dirname(realOutput),
       packagePath,
     }),
+
+    onwarn: (warning, warn) => {
+      // Circular dependencies are common in TS when importing types, and
+      // are not detrimental in any way.
+      if (warning.code === 'CIRCULAR_DEPENDENCY') {
+        return;
+      }
+
+      // The TypeScript plugin does not prepend the source location of errors
+      // for whatever reason. So let's add them ourselves.
+      if (
+        warning.code === 'PLUGIN_WARNING' &&
+        warning.plugin === 'typescript' &&
+        warning.loc
+      ) {
+        const {file, column, line} = warning.loc;
+        const relativePath = path.relative(process.cwd(), file);
+        // NB: warning.frame starts with a newline.
+        warning = {
+          ...warning,
+          frame: `${relativePath}:${line}:${column}${warning.frame}`,
+        };
+      }
+
+      warn(warning);
+    },
   };
 };
 

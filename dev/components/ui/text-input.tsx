@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import {TextInput, TextInputType, Checkbox, Select} from '@condict/ui';
 
-import Demo, {List, Row, useDemoState} from '../demo';
+import Demo, {useDemoState} from '../demo';
 
 type State = {
   type: TextInputType;

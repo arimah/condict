@@ -1,6 +1,6 @@
 import styled, {css} from 'styled-components';
 
-import {Button, TextInput, Intent} from '@condict/ui';
+import {Button, TextInput} from '@condict/ui';
 
 import {CellPopup as CellPopupBase} from '../../cell-dialog';
 
@@ -95,7 +95,7 @@ export const DisplayNameInput = styled(TextInput)`
 export const DeriveDisplayNameButton = styled(Button).attrs({
   slim: true,
   bold: true,
-  intent: Intent.SECONDARY,
+  intent: 'secondary',
 })`
   display: block;
   width: 260px;

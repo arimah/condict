@@ -9,7 +9,6 @@ import React, {
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 
-import Intent from '../intent';
 import genUniqueId from '../unique-id';
 
 import * as S from './styles';
@@ -43,7 +42,7 @@ export const RadioGroupContext = React.createContext<ContextValue>({
 export const Radio = (props: Props): JSX.Element => {
   const {
     className,
-    intent = Intent.PRIMARY,
+    intent = 'primary',
     label,
     disabled,
     name = '',

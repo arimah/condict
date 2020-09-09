@@ -56,30 +56,30 @@ export type BlockElementInput = {
 /**
  * The kind of a block element.
  */
-export const enum BlockKind {
+export type BlockKind =
   /**
    * A paragraph of text without any additional meaning.
    */
-  PARAGRAPH = 'PARAGRAPH',
+  | 'PARAGRAPH'
   /**
    * A first-level heading.
    */
-  HEADING_1 = 'HEADING_1',
+  | 'HEADING_1'
   /**
    * A second-level heading.
    */
-  HEADING_2 = 'HEADING_2',
+  | 'HEADING_2'
   /**
    * An ordered list item. All consecutive ordered list items on the same level
    * belong to the same list.
    */
-  OLIST_ITEM = 'OLIST_ITEM',
+  | 'OLIST_ITEM'
   /**
    * An unordered list item. All consecutive unordered list items on the same
    * level belong to the same list.
    */
-  ULIST_ITEM = 'ULIST_ITEM',
-}
+  | 'ULIST_ITEM'
+;
 
 /**
  * A custom inflected form, typically an irregular form. It overrides a single cell
@@ -1029,22 +1029,22 @@ export type LemmaConnection = {
 /**
  * Determines how to filter lemmas.
  */
-export const enum LemmaFilter {
+export type LemmaFilter =
   /**
    * All lemmas are included in the result.
    */
-  ALL_LEMMAS = 'ALL_LEMMAS',
+  | 'ALL_LEMMAS'
   /**
    * Include only lemmas that have at least one own definition (that is, where
    * `Lemma.definitions` is not the empty list).
    */
-  DEFINED_LEMMAS_ONLY = 'DEFINED_LEMMAS_ONLY',
+  | 'DEFINED_LEMMAS_ONLY'
   /**
    * Include only lemmas that have at least one derived definition (that is, where
    * `Lemma.derivedDefinitions` is not the empty list).
    */
-  DERIVED_LEMMAS_ONLY = 'DERIVED_LEMMAS_ONLY',
-}
+  | 'DERIVED_LEMMAS_ONLY'
+;
 
 /**
  * Represents a lemma ID.
@@ -1113,16 +1113,16 @@ export type LinkInlineInput = {
 /**
  * Describes why a login failed.
  */
-export const enum LoginFailureReason {
+export type LoginFailureReason =
   /**
    * The user could not be found.
    */
-  USER_NOT_FOUND = 'USER_NOT_FOUND',
+  | 'USER_NOT_FOUND'
   /**
    * The password did not match.
    */
-  PASSWORD_MISMATCH = 'PASSWORD_MISMATCH',
-}
+  | 'PASSWORD_MISMATCH'
+;
 
 /**
  * Represents the result of a login attempt.
@@ -1132,30 +1132,30 @@ export type LoginResult =
   | FailedLogin;
 
 /**
- * Represents the marshalling type of a custom scalar. See the docuemtnation of
+ * Represents the marshalling type of a custom scalar. See the documentation of
  * the `@marshal` directive.
  */
-export const enum MarshalType {
+export type MarshalType =
   /**
    * The type is marshalled as an integer. In the JSON payload, it is a numeric
    * value with no fractional component. In queries, the type accepts integer
    * literals. The TypeScript representation is `number`.
    */
-  INT_TYPE = 'INT_TYPE',
+  | 'INT_TYPE'
   /**
    * The type is marshalled as a floating-point value. In the JSON payload, it is
    * a numeric value with an optional fractional component. In queries, the type
    * accepts integer and floating-point literals. The TypeScript representation
    * is `number`.
    */
-  FLOAT_TYPE = 'FLOAT_TYPE',
+  | 'FLOAT_TYPE'
   /**
    * The type is marshalled as a string value. In the JSON payload, it is a string.
    * In queries, the type accepts string literals. The TypeScript representation
    * is `string`.
    */
-  STRING_TYPE = 'STRING_TYPE',
-}
+  | 'STRING_TYPE'
+;
 
 /**
  * The root mutation type.

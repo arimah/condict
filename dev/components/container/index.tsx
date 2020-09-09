@@ -88,7 +88,7 @@ const Container = (props: Props): JSX.Element | null => {
           <S.HeaderSwitch>
             <Switch
               label='Dark theme'
-              intent={'secondary' as Intent}
+              intent='secondary'
               checked={theme === 'dark'}
               onChange={handleChangeTheme}
             />

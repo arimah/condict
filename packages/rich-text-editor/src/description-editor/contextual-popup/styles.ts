@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import {Button, Intent} from '@condict/ui';
+import {Button} from '@condict/ui';
 
 import PopupBase from '../popup';
 
@@ -42,7 +42,7 @@ export const Actions = styled.span`
 `;
 
 export const Action = styled(Button).attrs({
-  intent: Intent.SECONDARY,
+  intent: 'secondary',
   tabIndex: -1,
 })`
   padding: 4px 8px;
