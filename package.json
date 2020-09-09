@@ -5,7 +5,7 @@
   "repository": "github:arimah/condict",
   "license": "MIT",
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap --hoist",
     "clean": "rimraf packages/*/dist",
     "build": "node scripts/build -g build-tools && node scripts/build -g utils && node scripts/build -g server && node scripts/build -g ui",
     "build:children": "lerna run build",
