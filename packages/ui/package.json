@@ -12,9 +12,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "fix:types": "rimraf node_modules/@types/react-native",
-    "build": "npm run fix:types",
+    "build": "npm run -s fix:types",
     "dev": "cross-env NODE_ENV=development node dev/server.js",
-    "prepublishOnly": "npm install && npm run build"
+    "prepublishOnly": "npm install && npm run -s build"
   },
   "dependencies": {
     "@condict/a11y-utils": "^0.2.0",

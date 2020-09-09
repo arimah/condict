@@ -12,7 +12,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "fix:types": "rimraf node_modules/@types/react-native",
-    "build": "npm run fix:types"
+    "build": "npm run -s fix:types"
   },
   "devDependencies": {
     "@types/react": "^16.9.38",
