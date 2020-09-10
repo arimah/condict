@@ -3,7 +3,7 @@
     "file": "condict.sqlite"
   },
   "log": {
-    "stdout": "info",
+    "stdout": "debug",
     "files": [
       {"path": "server.log", "level": "info"},
       {"path": "error.log", "level": "error"},

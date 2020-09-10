@@ -19,7 +19,7 @@
     "copyGraphql": "copyfiles --up 3 ../../graphql-schema/*.graphql ./graphql-schema",
     "build": "npm run -s build:graphqlTypes && npm run -s copyGraphql",
     "build:graphqlTypes": "condict-graphql-typer --schema-dir ../../graphql-schema --target=server --output ./src/graphql/types.ts",
-    "build:native": "npm rebuild better-sqlite3"
+    "build:native": "npm rebuild bcrypt,better-sqlite3"
   },
   "dependencies": {
     "@condict/inflect": "^0.1.2",
