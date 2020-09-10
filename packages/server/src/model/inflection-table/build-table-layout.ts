@@ -1,6 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
-import {TokenKind, tokenizePattern, normalizeStem} from '@condict/inflect';
+import {tokenizePattern, normalizeStem} from '@condict/inflect';
 
 import {
   InflectedFormId,
@@ -18,7 +18,7 @@ export type TableLayoutResult = {
 // Collects stem names that are present in an inflection pattern.
 const collectStemNames = (pattern: string, stems: Set<string>) => {
   for (const tok of tokenizePattern(pattern)) {
-    if (tok.kind === TokenKind.PLACEHOLDER) {
+    if (tok.kind === 'placeholder') {
       const stem = normalizeStem(tok.stem);
       // ~ is a special stem that always refers to the lemma.
       if (stem !== '~') {

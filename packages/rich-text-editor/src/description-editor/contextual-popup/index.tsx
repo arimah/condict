@@ -1,5 +1,4 @@
 import React, {RefObject, MouseEvent, useState, useEffect} from 'react';
-import {Element} from 'slate';
 
 import {useCondictEditor} from '../../plugin';
 import {useDebouncedCallback} from '../../debounce';

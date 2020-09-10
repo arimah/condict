@@ -1,13 +1,12 @@
-const enum Placement {
-  BELOW_LEFT = 'BELOW_LEFT',
-  BELOW_RIGHT = 'BELOW_RIGHT',
-  ABOVE_LEFT = 'ABOVE_LEFT',
-  ABOVE_RIGHT = 'ABOVE_RIGHT',
-  LEFT_TOP = 'LEFT_TOP',
-  LEFT_BOTTOM = 'LEFT_BOTTOM',
-  RIGHT_TOP = 'RIGHT_TOP',
-  RIGHT_BOTTOM = 'RIGHT_BOTTOM',
-}
+type Placement =
+  | 'BELOW_LEFT'
+  | 'BELOW_RIGHT'
+  | 'ABOVE_LEFT'
+  | 'ABOVE_RIGHT'
+  | 'LEFT_TOP'
+  | 'LEFT_BOTTOM'
+  | 'RIGHT_TOP'
+  | 'RIGHT_BOTTOM';
 
 export default Placement;
 
@@ -28,9 +27,11 @@ type ParentRect = {
 }
 
 const isElement = (parent: RelativeParent): parent is Element =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   (parent as any).nodeType != undefined;
 
 const isDomRect = (parent: RelativeParent): parent is DOMRect | ClientRect =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   (parent as any).left != undefined && (parent as any).width != undefined;
 
 const getParentRect = (parent: RelativeParent): ParentRect => {
@@ -64,7 +65,7 @@ const clamp = (value: number, min: number, max: number) =>
   value > max ? max :
   value;
 
-// The Placement enum combines two properties in single value.
+// The Placement union combines two properties in single value.
 //
 // The first component is the attachment; that is, which edge of the relative
 // parent our element is glued to. For ABOVE and BELOW, the words describe
@@ -103,25 +104,25 @@ export const placeElement = (
   let top = NaN;
   switch (placement) {
     // Attachment
-    case Placement.BELOW_LEFT:
-    case Placement.BELOW_RIGHT:
+    case 'BELOW_LEFT':
+    case 'BELOW_RIGHT':
       top = parentRect.bottom + elemRect.height <= viewport.height
         ? parentRect.bottom
         : parentRect.top - elemRect.height;
       break;
-    case Placement.ABOVE_LEFT:
-    case Placement.ABOVE_RIGHT:
+    case 'ABOVE_LEFT':
+    case 'ABOVE_RIGHT':
       top = parentRect.top - elemRect.height >= 0
         ? parentRect.top - elemRect.height
         : parentRect.bottom;
       break;
     // Alignment
-    case Placement.LEFT_TOP:
-    case Placement.RIGHT_TOP:
+    case 'LEFT_TOP':
+    case 'RIGHT_TOP':
       top = parentRect.top;
       break;
-    case Placement.LEFT_BOTTOM:
-    case Placement.RIGHT_BOTTOM:
+    case 'LEFT_BOTTOM':
+    case 'RIGHT_BOTTOM':
       top = parentRect.bottom - elemRect.height;
       break;
   }
@@ -131,23 +132,23 @@ export const placeElement = (
   let left = NaN;
   switch (placement) {
     // Alignment
-    case Placement.BELOW_LEFT:
-    case Placement.ABOVE_LEFT:
+    case 'BELOW_LEFT':
+    case 'ABOVE_LEFT':
       left = parentRect.left;
       break;
-    case Placement.BELOW_RIGHT:
-    case Placement.ABOVE_RIGHT:
+    case 'BELOW_RIGHT':
+    case 'ABOVE_RIGHT':
       left = parentRect.right - elemRect.width;
       break;
     // Attachment
-    case Placement.LEFT_TOP:
-    case Placement.LEFT_BOTTOM:
+    case 'LEFT_TOP':
+    case 'LEFT_BOTTOM':
       left = parentRect.left - elemRect.width >= 0
         ? parentRect.left - elemRect.width
         : parentRect.right;
       break;
-    case Placement.RIGHT_TOP:
-    case Placement.RIGHT_BOTTOM:
+    case 'RIGHT_TOP':
+    case 'RIGHT_BOTTOM':
       left = parentRect.right + elemRect.width <= viewport.width
         ? parentRect.right
         : parentRect.left - elemRect.width;

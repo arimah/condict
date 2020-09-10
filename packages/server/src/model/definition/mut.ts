@@ -330,6 +330,8 @@ const DefinitionMut = {
     term: string,
     stemMap: Map<string, string>
   ): MultiMap<string, InflectedFormId> {
+    // FIXME: https://github.com/typescript-eslint/typescript-eslint/issues/2452
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     type Row = {
       id: DefinitionInflectionTableId;
       inflection_table_version_id: InflectionTableLayoutId;
@@ -370,6 +372,8 @@ const DefinitionMut = {
     db: Connection,
     definitionTableIds: DefinitionInflectionTableId[]
   ): Map<DefinitionInflectionTableId, Map<InflectedFormId, string>> {
+    // FIXME: https://github.com/typescript-eslint/typescript-eslint/issues/2452
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     type Row = {
       parent_id: DefinitionInflectionTableId;
       inflected_form_id: InflectedFormId;

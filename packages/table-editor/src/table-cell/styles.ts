@@ -70,14 +70,14 @@ export const CellBorder = styled.div<CellBorderProps>`
   ${Table}:focus &,
   ${Table}.force-focus & {
     ${p => p.focused && p.theme.focus.style}
-    border-color: ${props =>
-      props.focused ? props.theme.focus.color :
-      props.selected ? props.theme.selection.borderColor :
+    border-color: ${p =>
+      p.focused ? p.theme.focus.color :
+      p.selected ? p.theme.selection.borderColor :
       undefined
     };
-    z-index: ${props =>
-      props.focused ? '2' :
-      props.selected ? '1' :
+    z-index: ${p =>
+      p.focused ? '2' :
+      p.selected ? '1' :
       undefined
     };
   }

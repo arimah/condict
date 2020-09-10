@@ -1,7 +1,6 @@
 import styled, {css} from 'styled-components';
 
 import {Button} from '../button';
-import Intent from '../intent';
 
 export type DisabledProps = {
   disabled: boolean;
@@ -35,7 +34,7 @@ export const Item = styled.li`
 export const Page = styled(Button).attrs({
   type: 'button',
   slim: false,
-  intent: Intent.SECONDARY,
+  intent: 'secondary',
 })<PageProps>`
   display: block;
   padding: 6px 4px;

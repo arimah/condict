@@ -1,20 +1,18 @@
-#!/usr/bin/env node
-
 import parseCliArgs, {OptionDefinition} from 'command-line-args';
 
-import createLogger from './create-logger';
-import loadConfig from './config';
-import CondictServer from './server';
-import CondictHttpServer from './http-server';
-import getTableSchema from './table-schema';
-import {addUser, editUser, deleteUser} from './manage-users';
-import {ServerConfig, ServerConfigWithLogger, Logger} from './types';
-
-// Fall back to development if missing. Ensures we get proper console
-// logging and other nice things.
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = 'development';
-}
+import {
+  CondictServer,
+  CondictHttpServer,
+  Logger,
+  ServerConfig,
+  ServerConfigWithLogger,
+  createLogger,
+  loadConfigFile,
+  getTableSchema,
+  addUser,
+  editUser,
+  deleteUser,
+} from '.';
 
 const globalOptions: OptionDefinition[] = [
   {name: 'config', alias: 'c', type: String},
@@ -55,13 +53,13 @@ const start = async (logger: Logger, config: ServerConfig) => {
   const server = new CondictServer(logger, config);
   const httpServer = new CondictHttpServer(server);
 
-  process.on('SIGINT', async () => {
+  process.on('SIGINT', () => {
     logger.info('Exit: Ctrl+C');
 
     logger.info('Stopping server...');
-    await httpServer.stop();
-
-    logger.info('Goodbye!');
+    void httpServer.stop().then(() => {
+      logger.info('Goodbye!');
+    });
   });
 
   const {url} = await httpServer.start();
@@ -71,10 +69,11 @@ const start = async (logger: Logger, config: ServerConfig) => {
 const main = async () => {
   const args = parseCliArgs(globalOptions, {stopAtFirstUnknown: true});
 
-  const configFile = args.config || 'config.json';
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const configFile: string = args.config || 'config.json';
   let config: ServerConfigWithLogger;
   try {
-    config = loadConfig(configFile);
+    config = loadConfigFile(configFile);
   } catch (e) {
     console.error(`Failed to read config from ${configFile}: ${e}`);
     process.exitCode = 1;
@@ -83,6 +82,7 @@ const main = async () => {
 
   const logger = createLogger(config.log);
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const cmdArgs = parseCliArgs(commandOptions[args.command] || [], {
     argv: args._unknown || [],
   });
@@ -143,9 +143,10 @@ const main = async () => {
         break;
     }
   } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     logger.error(`Unhandled server error: ${e}\n${e.stack}`);
     process.exitCode = 1;
   }
 };
 
-main();
+void main();

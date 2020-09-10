@@ -1,11 +1,10 @@
 import {Table, RowKey, Cell, CellKey, Layout, Selection} from '../value';
 
-export const enum InsertLocation {
-  START = -2,
-  BEFORE = -1,
-  AFTER = 1,
-  END = 2,
-}
+export type InsertLocation =
+  | 'start'
+  | 'before'
+  | 'after'
+  | 'end';
 
 const getInsertIndex = (
   location: InsertLocation,
@@ -14,16 +13,19 @@ const getInsertIndex = (
   tableSize: number
 ): [number, number] => {
   switch (location) {
-    case InsertLocation.START:
+    case 'start':
       return [0, 0];
-    case InsertLocation.BEFORE:
+    case 'before':
       return [selMin, 0];
-    case InsertLocation.AFTER:
+    case 'after':
       return [selMax, 1];
-    case InsertLocation.END:
+    case 'end':
       return [tableSize - 1, 1];
   }
 };
+
+const isBeforeSelection = (location: InsertLocation): boolean =>
+  location === 'start' || location === 'before';
 
 export const insertRow = <D>(
   table: Table<D>,
@@ -50,7 +52,7 @@ export const insertRow = <D>(
     const protoCell = Table.getCell(table, layoutCell.key);
 
     const needsExtension = layoutCell.rowSpan > 1 && (
-      location < 0
+      isBeforeSelection(location)
         // Trying to insert a row *before* - extend if the cell starts in
         // a row before originRow
         ? layoutCell.homeRow < originRow
@@ -130,7 +132,7 @@ export const insertColumn = <D>(
     const protoCell = Table.getCell(table, layoutCell.key);
 
     const needsExtension = layoutCell.columnSpan > 1 && (
-      location < 0
+      isBeforeSelection(location)
         // Trying to insert a column *before* - extend if the cell starts in
         // a column before originColumn
         ? layoutCell.homeColumn < originColumn

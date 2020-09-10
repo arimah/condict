@@ -1,0 +1,6 @@
+packages/*/dist/*
+
+# This package is not compiled with TypeScript.
+packages/platform/*
+
+**/*.js

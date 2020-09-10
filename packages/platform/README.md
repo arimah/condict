@@ -4,7 +4,7 @@ A small package that detects the current platform (really, operating system). Th
 
 This package has two entry points:
 
-* There is a browser-only entry point that uses the [platform][], for testing packages in the browser. When used in this way, the `platform` package _must_ be installed (it is a peer dependency). For testing purposes, if `localStorage` contais a key named `platform`, that will be preferred. It is expected to contain an OS family string from [platform][].
+* There is a browser-only entry point that uses the [platform][] package, for testing packages in the browser. When used in this way, the [platform][] package _must_ be installed (it is a peer dependency). For testing purposes, if `localStorage` contais a key named `platform`, that will be preferred. It is expected to contain an OS family string from [platform][].
 * The main entry point only works in Node, and is intended to be used in Electron (and works in both the main process and the renderer). The platform can be overridden using the environment variable `NODE_PLATFORM`, which is expected to contain a Node.js platform name, as found in [`process.platform`][process-platform].
 
 Note that the browser platform names are different from those in Node.
@@ -37,8 +37,8 @@ const prevTabShortcut = selectPlatform({
 
 ## `isMacOS`, `isWindows`, `isOther`
 
-> `const isMacOS: boolean`
-> `const isWindows: boolean`
+> `const isMacOS: boolean`  
+> `const isWindows: boolean`  
 > `const isOther: boolean`
 
 These constants are true according to the current platform. Exactly one of these constants is true at any time.
@@ -47,7 +47,7 @@ These constants are true according to the current platform. Exactly one of these
 
 This function has two overloads:
 
-> `selectPlatform<T>(options: { macOS: T; windows: T; other: T }): T`
+> `selectPlatform<T>(options: { macOS: T; windows: T; other: T }): T`  
 > `selectPlatform<T>(options: { macOS?: T; windows?: T; other?: T; default: T }): T`
 
 The first overload requires exactly the three attributes `macOS`, `windows` and `other` and selects one of them. The second overload permits any of them to be omitted, as long as there is a `default` fallback.

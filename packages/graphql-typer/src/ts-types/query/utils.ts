@@ -44,16 +44,15 @@ const getConditionValue = (directive: DirectiveNode): 'yes' | 'no' | 'maybe' => 
   return 'maybe';
 };
 
-export const enum SelectionInclusion {
-  INCLUDE = 'yes',
-  SKIP = 'no',
-  DEPENDS = 'maybe',
-}
+export type SelectionInclusion =
+  | 'include'
+  | 'skip'
+  | 'depends';
 
 export const isSelectionIncluded = (sel: SelectionNode): SelectionInclusion => {
   // Fast path: if there are no directives, the node is always includeed.
   if (!sel.directives || sel.directives.length === 0) {
-    return SelectionInclusion.INCLUDE;
+    return 'include';
   }
 
   const skipDirective = getDirective(sel, 'skip');
@@ -64,14 +63,14 @@ export const isSelectionIncluded = (sel: SelectionNode): SelectionInclusion => {
 
   // @skip(if: true) and @include(if: false) always result in omission.
   if (skip === 'yes' || include === 'no') {
-    return SelectionInclusion.SKIP;
+    return 'skip';
   }
   // At this point, skip = 'no' | 'maybe', include = 'yes' | 'maybe'.
   // If either is 'maybe', then we won't know until the query is excuted.
   if (skip === 'maybe' || include === 'maybe') {
-    return SelectionInclusion.DEPENDS;
+    return 'depends';
   }
-  return SelectionInclusion.INCLUDE;
+  return 'include';
 };
 
 export const validateFragmentType = (

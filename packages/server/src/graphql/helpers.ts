@@ -20,6 +20,7 @@ export const mutator = <Args>(
       if (!context.hasValidSession()) {
         throw new AuthenticationError('Session ID is missing, expired or invalid');
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return resolver(p, args, context, info);
     };
   return fn as MutatorFn<Args>;

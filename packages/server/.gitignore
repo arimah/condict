@@ -4,5 +4,8 @@ package-lock.json
 # Source files are compiled before publish, and are not otherwise needed
 dist
 
+# These files are copied on build
+graphql-schema
+
 # Config files should obviously not be committed
 config*.json

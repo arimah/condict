@@ -70,13 +70,13 @@ const Lemma = {
     const condition = db.raw`
       l.language_id = ${languageId}
         ${
-          filter === LemmaFilter.DEFINED_LEMMAS_ONLY ? db.raw`
+          filter === 'DEFINED_LEMMAS_ONLY' ? db.raw`
             and exists (
               select 1
               from definitions d
               where d.lemma_id = l.id
             )` :
-          filter === LemmaFilter.DERIVED_LEMMAS_ONLY ? db.raw`
+          filter === 'DERIVED_LEMMAS_ONLY' ? db.raw`
             and exists (
               select 1
               from derived_definitions dd

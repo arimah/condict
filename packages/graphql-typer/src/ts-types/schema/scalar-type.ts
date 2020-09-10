@@ -4,7 +4,7 @@ import getIdKind from '../../graphql/id-kind';
 import getMarshalType, {MarshalType} from '../../graphql/marshal-type';
 
 import {TextBuilder, formatDescription} from '../utils';
-import {TypePosition, isBuiltin, getBuiltin} from '../builtin-scalars';
+import {isBuiltin, getBuiltin} from '../builtin-scalars';
 
 const formatIdKind = (idKind: string): string => {
   // If the ID kind is all alphanumeric, we never need to do anything fancy.
@@ -17,10 +17,10 @@ const formatIdKind = (idKind: string): string => {
 
 const formatMarshalType = (type: MarshalType): string => {
   switch (type) {
-    case MarshalType.INT:
-    case MarshalType.FLOAT:
+    case 'int':
+    case 'float':
       return 'number';
-    case MarshalType.STRING:
+    case 'string':
       return 'string';
   }
 };
@@ -53,4 +53,4 @@ export const defineScalarType = (
 };
 
 export const writeScalarType = (type: GraphQLScalarType): string =>
-  getBuiltin(type, TypePosition.SERVER) || type.name;
+  getBuiltin(type, 'server') || type.name;

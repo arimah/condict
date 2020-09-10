@@ -25,7 +25,7 @@ export const normalizePattern = (pattern: string): string =>
   pattern
     .replace(
       getReplacePattern(),
-      (_, escapedBrace, stem) => {
+      (_, escapedBrace: string, stem: string) => {
         if (escapedBrace) {
           return escapedBrace;
         }

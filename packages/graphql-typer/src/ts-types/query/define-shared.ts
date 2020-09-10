@@ -21,7 +21,6 @@ import {defineInputType} from '../schema/input-type';
 
 import {TextBuilder} from '../utils';
 import {
-  TypePosition,
   isBuiltin as isBuiltinScalar,
   getBuiltin as getBuiltinScalar,
 } from '../builtin-scalars';
@@ -33,7 +32,7 @@ import {ImportedType} from './types';
 let writeType: (type: GraphQLType) => string;
 
 const writeScalarType = (type: GraphQLScalarType): string =>
-  getBuiltinScalar(type, TypePosition.CLIENT_INPUT) || type.name;
+  getBuiltinScalar(type, 'clientRequest') || type.name;
 
 const writeListType = (type: GraphQLList<any>): string => {
   const innerType = writeType(type.ofType);

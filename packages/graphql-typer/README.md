@@ -27,7 +27,7 @@ In addition to the `@id` directive, this package also supports custom marshallin
 Marshalling affects how values of the type are transferred in JSON payloads (requests and responses), and determines which literal types the scalar accepts in queries and mutations. The table below summarises the `@marshal` types.
 
 | GraphQL schema | Query literal type | JSON payload type | TypeScript type |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | `@marshal(as: INT_TYPE)` | integer | number | `number` |
 | `@marshal(as: FLOAT_TYPE)` | integer, floating-point | number | `number` |
 | `@marshal(as: STRING_TYPE)` | string | string | `string` |

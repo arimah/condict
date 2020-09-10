@@ -141,6 +141,7 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
         // NB: editor.formatBlock removes indentation when going from list
         // to non-list. That's exactly what we *don't* want here!
         Transforms.setNodes(editor, {type: 'paragraph'}, {
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           match: Element.isElement,
         });
       });

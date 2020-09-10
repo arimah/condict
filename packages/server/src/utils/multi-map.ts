@@ -4,7 +4,7 @@
  * key are not stored in a particular order.
  */
 export default class MultiMap<K, V> {
-  private collection: Map<K, Set<V>> = new Map();
+  private collection = new Map<K, Set<V>>();
 
   /** Gets the total number of keys stored in the map. */
   public get keyCount(): number {

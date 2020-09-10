@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {TokenKind, tokenizePattern} from '@condict/inflect';
+import {tokenizePattern} from '@condict/inflect';
 
 import * as S from './styles';
 
@@ -29,15 +29,15 @@ const InflectionPattern = React.memo((props: Props) => {
   const parts = tokenizePattern(pattern).map(t => {
     key += 1;
     switch (t.kind) {
-      case TokenKind.TEXT:
+      case 'text':
         return t.value;
-      case TokenKind.BRACE:
+      case 'brace':
         return (
           <S.EscapedBrace key={key} disabled={disabled}>
             {t.value}
           </S.EscapedBrace>
         );
-      case TokenKind.PLACEHOLDER:
+      case 'placeholder':
         return (
           <S.InflectionStem key={key} disabled={disabled}>
             {t.value}

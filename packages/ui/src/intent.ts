@@ -1,7 +1,6 @@
-const enum Intent {
-  PRIMARY = 'primary',
-  SECONDARY = 'secondary',
-  DANGER = 'danger',
-}
+type Intent =
+  | 'primary'
+  | 'secondary'
+  | 'danger';
 
 export default Intent;

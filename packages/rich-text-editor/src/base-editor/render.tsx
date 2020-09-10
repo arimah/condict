@@ -1,11 +1,11 @@
 import React, {ComponentType} from 'react';
-import {Element} from 'slate';
 import {RenderElementProps, RenderLeafProps} from 'slate-react';
 
 import * as B from './block-styles';
 import * as S from './styles';
 
 export const renderElement = (props: RenderElementProps): JSX.Element => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const {element, attributes, children} = props;
   let Component: string | ComponentType<any>;
   switch (element.type) {
@@ -39,6 +39,7 @@ export const renderElement = (props: RenderElementProps): JSX.Element => {
 };
 
 export const renderLeaf = (props: RenderLeafProps): JSX.Element => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const {leaf, attributes, children} = props;
   const {
     bold,
@@ -49,6 +50,7 @@ export const renderLeaf = (props: RenderLeafProps): JSX.Element => {
     superscript,
   } = leaf;
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   let content = children;
   // Subscript and superscript are mutually exclusive.
   if (subscript) {

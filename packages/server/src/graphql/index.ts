@@ -2,8 +2,11 @@ import fs from 'fs';
 import path from 'path';
 
 import {DocumentNode} from 'graphql';
-import {gql, IResolvers} from 'apollo-server';
+import {SchemaDirectiveVisitorClass} from 'graphql-tools';
+import {IResolvers, gql} from 'apollo-server';
 import merge from 'deepmerge';
+
+import {getGraphqlSchemaDir} from '../paths';
 
 import DefinitionResolvers from './resolvers/definition';
 import ElementResolvers from './resolvers/element';
@@ -21,8 +24,8 @@ import MarshalDirective from './marshal-directive';
 export {Context} from './resolvers/types';
 
 export type Directives = {
-  readonly id: typeof IdDirective,
-  readonly marshal: typeof MarshalDirective,
+  readonly id: SchemaDirectiveVisitorClass,
+  readonly marshal: SchemaDirectiveVisitorClass,
 };
 
 export const getResolvers = (): IResolvers<any, any> =>
@@ -42,18 +45,20 @@ export const getResolvers = (): IResolvers<any, any> =>
 
 // GraphQL schema type definitions are read from the .graphql files
 // within the schema folder.
-export const getTypeDefs = (): DocumentNode[] =>
-  fs.readdirSync(path.join(__dirname, 'schema'))
+export const getTypeDefs = (): DocumentNode[] => {
+  const schemaDir = getGraphqlSchemaDir();
+  return fs.readdirSync(schemaDir)
     .filter(file => file.endsWith('.graphql'))
     .map(file =>
       fs.readFileSync(
-        path.join(__dirname, 'schema', file),
+        path.join(schemaDir, file),
         {encoding: 'utf-8'}
       )
     )
     .map(schema => gql(schema));
+};
 
 export const getDirectives = (): Directives => ({
   id: IdDirective,
-  marshal: MarshalDirective,
+  marshal: MarshalDirective as SchemaDirectiveVisitorClass,
 });

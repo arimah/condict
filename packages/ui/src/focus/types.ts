@@ -9,6 +9,7 @@ export type FocusableElement = Element & {
 };
 
 export const isFocusableElement = (elem: Element): elem is FocusableElement =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   typeof (elem as any).focus === 'function';
 
 export type ElementSource<E extends Element = Element> =

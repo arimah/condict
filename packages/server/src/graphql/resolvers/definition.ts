@@ -41,7 +41,7 @@ const Definition: ResolversFor<DefinitionType, DefinitionRow> = {
 
   async description(p, _args, {db}) {
     const description = await DefinitionDescription.rawByDefinition(db, p.id);
-    return JSON.parse(description);
+    return JSON.parse(description) as unknown;
   },
 
   descriptionRaw: (p, _args, {db}) =>
@@ -71,7 +71,7 @@ const DefinitionInflectionTable: ResolversFor<
   DefinitionInflectionTableType,
   DefinitionInflectionTableRow
 > = {
-  caption: p => p.caption && JSON.parse(p.caption),
+  caption: p => p.caption && JSON.parse(p.caption) as unknown,
 
   captionRaw: p => p.caption,
 

@@ -11,23 +11,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "check": "tsc --noEmit",
-    "clean": "rimraf dist",
-    "compile": "tsc",
-    "build": "npm run build:data && npm run clean && npm run build:main",
-    "build:data": "node build",
-    "build:main": "npm run compile && npm run copyData",
-    "copyData": "copyfiles --up 1 src/data.json dist/",
-    "prepublishOnly": "npm install && npm run build",
-    "lint": "eslint --ext .ts,.tsx src/"
+    "build": "node build"
   },
   "devDependencies": {
-    "@condict/eslint-plugin": "^0.2.0",
-    "chalk": "^4.1.0",
-    "copyfiles": "^2.3.0",
-    "cross-env": "^7.0.2",
-    "eslint": "^7.3.0",
-    "rimraf": "^3.0.2",
-    "typescript": "^3.9.5"
+    "chalk": "^4.1.0"
   }
 }

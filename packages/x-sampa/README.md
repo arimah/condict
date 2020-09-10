@@ -10,7 +10,7 @@ There are several noteworthy differences between standard X-SAMPA and what this 
 * Both `'` and `"` represent \[ˈ\] (primary stress).
 * Both `,` and `%` represent \[ˌ\] (secondary stress).
 * Palatalisation \[ʲ\] is expressed through `_j` and `;`. The standard X-SAMPA `'` is used for primary stress instead.
-* The new characters `_T\`, `_H\`, `_M\`, `_L\` and `_B\` unambiguously represent the tone characters \[˥ ˦ ˧ ˨ ˩\]. They never become accents.
+* The Condict-specific characters `_T\`, `_H\`, `_M\`, `_L\` and `_B\` unambiguously represent the tone characters \[˥ ˦ ˧ ˨ ˩\]. They never become accents.
 
 The following features are _not_ implemented:
 

@@ -33,7 +33,7 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
       db,
       p.id,
       page,
-      filter || LemmaFilter.ALL_LEMMAS,
+      filter || 'ALL_LEMMAS',
       info
     ),
 

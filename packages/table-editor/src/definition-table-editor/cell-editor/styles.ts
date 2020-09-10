@@ -1,6 +1,6 @@
 import styled, {css} from 'styled-components';
 
-import {Button, TextInput, Intent} from '@condict/ui';
+import {Button, TextInput} from '@condict/ui';
 
 import {CellPopup as CellPopupBase} from '../../cell-dialog';
 
@@ -32,7 +32,7 @@ export const CellPopup = styled(CellPopupBase)`
 export const RevertButton = styled(Button).attrs({
   slim: true,
   bold: true,
-  intent: Intent.SECONDARY,
+  intent: 'secondary',
 })`
   display: block;
   width: 180px;

@@ -69,7 +69,7 @@ const withDatabase = async (
     try {
       await fn(db);
     } finally {
-      db.release();
+      await db.release();
     }
   } finally {
     await databasePool.close();
@@ -100,6 +100,7 @@ export const addUser = async (
       logger.info(`User created: ${user.name} (id = ${user.id})`);
     });
   } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     console.error(`An error occurred: ${e.message || e}`);
     process.exitCode = 1;
   }
@@ -154,6 +155,7 @@ export const editUser = async (
       }
     });
   } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     console.error(`An error occurred: ${e.message || e}`);
     process.exitCode = 1;
   }
@@ -188,6 +190,7 @@ export const deleteUser = async (
       return Promise.resolve();
     });
   } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     console.error(`An error occurred: ${e.message || e}`);
     process.exitCode = 1;
   }

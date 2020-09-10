@@ -11,23 +11,16 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "check": "tsc --noEmit",
-    "clean": "rimraf dist",
-    "compile": "tsc",
     "fix:types": "rimraf node_modules/@types/react-native",
-    "build": "npm run fix:types && npm run clean && npm run compile",
-    "prepublishOnly": "npm install && npm run build",
-    "lint": "eslint --ext .ts,.tsx src/"
+    "build": "npm run -s fix:types"
   },
   "devDependencies": {
-    "@condict/eslint-plugin": "^0.2.0",
     "@types/react": "^16.9.38",
     "@types/styled-components": "^5.1.0",
-    "eslint": "^7.3.0",
     "rimraf": "^3.0.2",
-    "typescript": "^3.9.5"
+    "styled-components": "5.1.1"
   },
   "peerDependencies": {
-    "styled-components": "^5.1.1"
+    "styled-components": "5.1.1"
   }
 }

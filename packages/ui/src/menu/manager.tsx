@@ -84,7 +84,7 @@ declare global {
   }
 }
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
   window.__CONDICT_DEV_KEEP_MENUS_OPEN__ = false;
 }
 
@@ -101,6 +101,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
     {
       key: Shortcut.parse('Escape'),
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       exec: MenuStack.closeOne,
     },
     {

@@ -13,11 +13,7 @@ import {
   selectTypename,
   writeSelectedFieldType,
 } from './selected-field';
-import {
-  SelectionInclusion,
-  isSelectionIncluded,
-  validateFragmentType,
-} from './utils';
+import {isSelectionIncluded, validateFragmentType} from './utils';
 import {TypeWriterParams} from './types';
 
 export const collectFields = (
@@ -28,12 +24,12 @@ export const collectFields = (
 ): void => {
   for (const sel of selections) {
     const included = isSelectionIncluded(sel);
-    if (included === SelectionInclusion.DEPENDS) {
+    if (included === 'depends') {
       throw new Error(
         `${formatLoc(sel.loc)}: Conditional fields are not yet supported`
       );
     }
-    if (included === SelectionInclusion.SKIP) {
+    if (included === 'skip') {
       continue;
     }
 

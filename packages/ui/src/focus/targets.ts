@@ -67,6 +67,7 @@ const isHidden = (element: Element) =>
   getComputedStyle(element).visibility === 'hidden';
 
 const isCandidateFocusable = (element: Element): boolean =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   !(element as any).disabled &&
   !isHiddenInput(element) &&
   !isHidden(element);
@@ -108,7 +109,7 @@ const getTabIndex = (element: Element): number => {
     }
     return 0;
   }
-  return (element as any).tabIndex;
+  return (element as HTMLElement).tabIndex;
 };
 
 const isCandidateTabReachable = (element: Element): boolean =>

@@ -23,7 +23,7 @@ const inflectWord = (pattern: string, term: string, stems: StemMap): string =>
   pattern
     .replace(
       getReplacePattern(),
-      (_, escapedBrace, stem) => {
+      (_, escapedBrace: string, stem: string) => {
         if (escapedBrace) {
           return escapedBrace[0];
         }
@@ -32,7 +32,8 @@ const inflectWord = (pattern: string, term: string, stems: StemMap): string =>
         }
         // Note: Don't try to "simplify" this to `stems.get(stem) || term`.
         // You are allowed to specify empty stem values, e.g. for null affixes.
-        return stems.has(stem) ? stems.get(stem) : term;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return stems.has(stem) ? stems.get(stem)! : term;
       }
     )
     .trim();

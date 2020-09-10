@@ -9,7 +9,7 @@ const TagMut = {
   ensureAllExist(db: Connection, tags: ValidTag[]): Map<string, TagId> {
     if (tags.length === 0) {
       // Nothing to do
-      return new Map();
+      return new Map<string, TagId>();
     }
 
     const result = db.all<TagRow>`

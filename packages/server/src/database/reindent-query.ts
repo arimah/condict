@@ -17,7 +17,8 @@ export default (query: string): string => {
 
     // This is the first non-empty line. Find its indentation. Every subsequent
     // line is indented relative to it.
-    indent = (line.match(/^\s*/) as RegExpMatchArray)[0];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    indent = /^\s*/.exec(line)![0];
     return true;
   });
 

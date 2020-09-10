@@ -2,8 +2,6 @@ import React, {InputHTMLAttributes, LabelHTMLAttributes} from 'react';
 
 import {getContentAndLabel} from '@condict/a11y-utils';
 
-import Intent from '../intent';
-
 import * as S from './styles';
 
 export type Props = {
@@ -20,7 +18,7 @@ export type Props = {
 export const Switch = (props: Props): JSX.Element => {
   const {
     className,
-    intent = Intent.PRIMARY,
+    intent = 'primary',
     checked,
     label,
     disabled,

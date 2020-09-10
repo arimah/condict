@@ -2,7 +2,6 @@ import {CommandSpecMap, Shortcut} from '@condict/ui';
 
 import {Table} from '../value';
 import {
-  InsertLocation,
   deleteSelectedColumns,
   deleteSelectedRows,
   insertColumn,
@@ -27,66 +26,42 @@ const commands: CommandSpecMap<TableCommandFn> = {
 
   insertRowAbove: {
     shortcut: Shortcut.parse('Primary+I i'),
-    exec: <D>(table: Table<D>): Table<D> => insertRow(
-      table,
-      InsertLocation.BEFORE
-    ),
+    exec: <D>(table: Table<D>): Table<D> => insertRow(table, 'before'),
   },
 
   insertRowAtTop: {
     shortcut: Shortcut.parse('Primary+Shift+I i'),
-    exec: <D>(table: Table<D>): Table<D> => insertRow(
-      table,
-      InsertLocation.START
-    ),
+    exec: <D>(table: Table<D>): Table<D> => insertRow(table, 'start'),
   },
 
   insertRowBelow: {
     shortcut: Shortcut.parse('Primary+K k'),
-    exec: <D>(table: Table<D>): Table<D> => insertRow(
-      table,
-      InsertLocation.AFTER
-    ),
+    exec: <D>(table: Table<D>): Table<D> => insertRow(table, 'after'),
   },
 
   insertRowAtBottom: {
     shortcut: Shortcut.parse('Primary+Shift+K k'),
-    exec: <D>(table: Table<D>): Table<D> => insertRow(
-      table,
-      InsertLocation.END
-    ),
+    exec: <D>(table: Table<D>): Table<D> => insertRow(table, 'end'),
   },
 
   insertColumnBefore: {
     shortcut: Shortcut.parse('Primary+J j'),
-    exec: <D>(table: Table<D>): Table<D> => insertColumn(
-      table,
-      InsertLocation.BEFORE
-    ),
+    exec: <D>(table: Table<D>): Table<D> => insertColumn(table, 'before'),
   },
 
   insertColumnAtStart: {
     shortcut: Shortcut.parse('Primary+Shift+J j'),
-    exec: <D>(table: Table<D>): Table<D> => insertColumn(
-      table,
-      InsertLocation.START
-    ),
+    exec: <D>(table: Table<D>): Table<D> => insertColumn(table, 'start'),
   },
 
   insertColumnAfter: {
     shortcut: Shortcut.parse('Primary+L l'),
-    exec: <D>(table: Table<D>): Table<D> => insertColumn(
-      table,
-      InsertLocation.AFTER
-    ),
+    exec: <D>(table: Table<D>): Table<D> => insertColumn(table, 'after'),
   },
 
   insertColumnAtEnd: {
     shortcut: Shortcut.parse('Primary+Shift+L l'),
-    exec: <D>(table: Table<D>): Table<D> => insertColumn(
-      table,
-      InsertLocation.END
-    ),
+    exec: <D>(table: Table<D>): Table<D> => insertColumn(table, 'end'),
   },
 
   toggleHeader: {

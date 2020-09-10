@@ -10,10 +10,7 @@ import {
 
 import formatLoc from '../../format-loc';
 
-import {
-  TypePosition,
-  getBuiltin as getBuiltinScalar,
-} from '../builtin-scalars';
+import {getBuiltin as getBuiltinScalar} from '../builtin-scalars';
 import {TextBuilder} from '../utils';
 
 import {TypeWriterParams} from './types';
@@ -49,7 +46,7 @@ const writeNullableType = (
     );
   }
   if (isScalarType(actualType)) {
-    const builtin = getBuiltinScalar(actualType, TypePosition.CLIENT_INPUT);
+    const builtin = getBuiltinScalar(actualType, 'clientRequest');
     return builtin || params.useType(actualType);
   }
   if (isEnumType(actualType) || isInputObjectType(actualType)) {

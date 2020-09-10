@@ -9,17 +9,19 @@ import {SchemaDirectiveVisitor} from 'graphql-tools';
 
 import {MarshalType} from './types';
 
-type MarshalTypeName = keyof typeof MarshalType;
-
 type MarshalImpl = {
   serialize: GraphQLScalarSerializer<any>;
   parseValue: GraphQLScalarValueParser<any>;
   parseLiteral: GraphQLScalarLiteralParser<any>;
 };
 
-const MarshalImpls: Record<MarshalTypeName, MarshalImpl> = {
+type MarshalArgs = {
+  as: MarshalType;
+};
+
+const MarshalImpls: Record<MarshalType, MarshalImpl> = {
   INT_TYPE: {
-    serialize: value => value,
+    serialize: Number,
     parseValue: value => {
       if (typeof value === 'number' && Number.isInteger(value)) {
         return value;
@@ -34,7 +36,7 @@ const MarshalImpls: Record<MarshalTypeName, MarshalImpl> = {
     },
   },
   FLOAT_TYPE: {
-    serialize: value => value,
+    serialize: Number,
     parseValue: value => {
       if (typeof value === 'number') {
         return value;
@@ -51,7 +53,7 @@ const MarshalImpls: Record<MarshalTypeName, MarshalImpl> = {
     },
   },
   STRING_TYPE: {
-    serialize: value => value,
+    serialize: String,
     parseValue: value => {
       if (typeof value === 'string') {
         return value;
@@ -67,9 +69,9 @@ const MarshalImpls: Record<MarshalTypeName, MarshalImpl> = {
   },
 };
 
-export default class MarshalDirective extends SchemaDirectiveVisitor {
+export default class MarshalDirective extends SchemaDirectiveVisitor<MarshalArgs> {
   public visitScalar(scalar: GraphQLScalarType): GraphQLScalarType | void | null {
-    const type = this.args.as as MarshalTypeName;
+    const type = this.args.as;
     const impl = MarshalImpls[type];
     if (!impl) {
       // This should never happen.

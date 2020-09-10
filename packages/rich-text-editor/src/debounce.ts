@@ -1,4 +1,4 @@
-import {useMemo, useEffect} from 'react';
+import {DependencyList, useMemo, useEffect} from 'react';
 
 interface Debounced {
   readonly func: () => void;
@@ -52,12 +52,13 @@ export const debounce = (timeout: number, func: () => void): (() => void) => {
 export const useDebouncedCallback = (
   timeout: number,
   func: () => void,
-  deps: any[] = []
+  deps: DependencyList = []
 ): (() => void) => {
   const debounced = useMemo(
     () => debounceImpl(timeout, func),
     // func specifically excluded from here: otherwise we'd update on every
     // render, which would totally negate the usefulness of deps.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     [timeout, ...deps]
   );
 

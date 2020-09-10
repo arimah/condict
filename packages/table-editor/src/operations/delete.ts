@@ -26,7 +26,7 @@ const getEmptyTable = <D>(prototype: Table<D>): Table<D> => {
     header: false,
   };
   return Table.fromBase({
-    defaultData: prototype.defaultData as D,
+    defaultData: prototype.defaultData,
     isCellEmpty: prototype.isCellEmpty,
     cells: new Map([[cell.key, cell]]),
     cellData: new Map(),

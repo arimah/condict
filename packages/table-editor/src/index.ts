@@ -13,5 +13,5 @@ export {
   SelectionShape,
 } from './value';
 
-// Sigh
+// Sigh.
 Immer.enableMapSet();

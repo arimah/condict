@@ -3,7 +3,6 @@ import React, {MouseEventHandler, AnchorHTMLAttributes} from 'react';
 import {getContentAndLabel} from '@condict/a11y-utils';
 
 import {useCommand} from '../command';
-import Intent from '../intent';
 
 import * as S from './styles';
 
@@ -29,7 +28,7 @@ const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref) => {
     command: commandName,
     slim = false,
     bold = false,
-    intent = Intent.PRIMARY,
+    intent = 'primary',
     onClick,
     children,
     ...otherProps

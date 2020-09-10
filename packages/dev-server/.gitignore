@@ -1,5 +1,0 @@
-# This is basically a library; don't commit this file.
-package-lock.json
-
-# Source files are compiled before publish, and are not otherwise needed
-dist/

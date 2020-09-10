@@ -4,6 +4,8 @@ import {Connection, ConnectionPool} from './sqlite';
 import schema, {schemaVersion as serverSchemaVersion} from './schema';
 
 const getSchemaVersion = (db: Connection) => {
+  // FIXME: https://github.com/typescript-eslint/typescript-eslint/issues/2452
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type Row = { value: string };
 
   const hasSchemaInfo = db.tableExists('schema_info');
@@ -107,7 +109,7 @@ const ensureSchemaIsValid = async (
     }
   } finally {
     // Always return the db connection even if something goes wrong
-    db.release();
+    await db.release();
   }
 };
 
