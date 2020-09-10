@@ -83,19 +83,33 @@ const main = () => {
 
   const packageNames = packages.map(p => p.name);
 
-  console.log(LogPrefix, 'Matching packages:', ...packageNames);
+  console.log(LogPrefix, 'Matching packages:', packageNames.join(', '));
 
   console.log(LogPrefix, 'Running build command in matching packages');
 
   const lernaScope = packageNames.length > 1
     ? `@condict/{${packageNames.join(',')}}`
     : `@condict/${packageNames[0]}`;
-  runCommand('npm', ['run', 'build:children', '--', '--scope', lernaScope]);
+  runCommand('npm', [
+    'run',
+    // Arguments to npm run in root
+    '-s',
+    'build:children',
+    '--',
+    // Arguments to lerna run in root
+    '--loglevel=warn',
+    '--scope',
+    lernaScope,
+    // Arguments to npm run in each package
+    '--',
+    '-s'
+  ]);
 
   console.log(LogPrefix, 'Running compile command');
 
   const rollupArgs = [
     'run',
+    '-s',
     'compile',
     '--',
     '--configName',
