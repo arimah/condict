@@ -18,9 +18,9 @@
     "@types/react": "^16.9.38",
     "@types/styled-components": "^5.1.0",
     "rimraf": "^3.0.2",
-    "styled-components": "^5.1.1"
+    "styled-components": "5.1.1"
   },
   "peerDependencies": {
-    "styled-components": "^5.1.1"
+    "styled-components": "5.1.1"
   }
 }
