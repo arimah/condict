@@ -1,7 +1,6 @@
 import React, {RefObject, MouseEvent, useState, useEffect} from 'react';
 
 import {useCondictEditor} from '../../plugin';
-import {useDebouncedCallback} from '../../debounce';
 
 import {PlacementRect} from '../popup';
 
@@ -50,23 +49,22 @@ const ContextualPopup = (props: Props): JSX.Element | null => {
   const [link, setLink] = useState<LinkContextValue | null>(null);
   const [phonetic, setPhonetic] = useState<PhoneticContextValue | null>(null);
 
-  const updateContext = useDebouncedCallback(400, () => {
+  useEffect(() => {
     const editorElem = editorRef.current;
     if (!editorElem) {
       return;
     }
 
-    setLink(prev => getLinkContextValue(editor, editorElem, prev));
-    setPhonetic(prev => getPhoneticContextValue(editor, editorElem, prev));
-  }, []);
+    const nextLink = getLinkContextValue(editor, editorElem, link);
+    if (nextLink !== link) {
+      setLink(nextLink);
+    }
 
-  useEffect(() => {
-    // Hide the popups while editing the document.
-    setLink(null);
-    setPhonetic(null);
-
-    updateContext();
-  }, [editor.children, editor.selection]);
+    const nextPhonetic = getPhoneticContextValue(editor, editorElem, phonetic);
+    if (nextPhonetic !== phonetic) {
+      setPhonetic(nextPhonetic);
+    }
+  });
 
   const placement = getPlacement(link?.placement, phonetic?.placement);
 
@@ -81,7 +79,11 @@ const ContextualPopup = (props: Props): JSX.Element | null => {
       onMouseDown={preventMouseFocus}
     >
       {link && <LinkContext link={link.link} onEditLink={onOpenLinkDialog}/>}
-      {phonetic && <PhoneticContext range={phonetic.range}/>}
+      {phonetic &&
+        <PhoneticContext
+          range={phonetic.range}
+          text={phonetic.text}
+        />}
     </S.Popup>
   );
 };

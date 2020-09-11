@@ -67,10 +67,13 @@ export const PrimaryAction = styled(Action)`
   padding: 4px;
   flex: 1 1 auto;
   flex-direction: row;
+  overflow: hidden;
   align-items: center;
   text-align: left;
 
   > .mdi-icon {
+    flex: none;
+
     &:first-child {
       margin-left: -2px;
     }

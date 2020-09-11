@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {Transforms, Editor, Node, Text, Range, Path} from 'slate';
+import {Transforms, Editor, Node, Text, Range as SlateRange, Path} from 'slate';
 import {ReactEditor} from 'slate-react';
 
 import xsampaToIpa from '@condict/x-sampa';
@@ -13,15 +13,15 @@ import {SearchIpaIcon, ConvertToIpaIcon} from '../icons';
 import * as S from './styles';
 
 export type Props = {
-  range: Range;
+  range: SlateRange;
+  text: string;
 };
 
 const PhoneticPopup = (props: Props): JSX.Element | null => {
-  const {range} = props;
+  const {range, text} = props;
 
   const editor = useCondictEditor();
 
-  const text = Editor.string(editor, range);
   const ipa = xsampaToIpa(text);
 
   const applyConversion = useCallback(() => {
@@ -30,7 +30,7 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
     Transforms.insertText(editor, ipa, {at: rangeRef.current!});
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     Transforms.select(editor, rangeRef.unref()!);
-  }, [range]);
+  }, [range, ipa]);
 
   return (
     <S.Columns>
@@ -64,13 +64,14 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
 export default PhoneticPopup;
 
 export interface ContextValue {
-  readonly range: Range;
+  readonly range: SlateRange;
+  readonly text: string;
   readonly placement: PlacementRect;
 }
 
 const mightContainPhonetics = (text: string) => /[/[\]]/.test(text);
 
-const getPhoneticsRange = (editor: Editor): Range | null => {
+const getPhoneticsRange = (editor: Editor): SlateRange | null => {
   const {selection} = editor;
   if (!selection) {
     return null;
@@ -92,34 +93,54 @@ const getPhoneticsRange = (editor: Editor): Range | null => {
     return null;
   }
 
-  const selStart = Range.start(selection).offset;
-  const selEnd = Range.end(selection).offset;
+  const selStart = SlateRange.start(selection).offset;
+  const selEnd = SlateRange.end(selection).offset;
 
   // Group 1: `[` preceded by a space or start-of-line, not followed by a space.
   //          Runs up to end-of-line or the first `]`. Square brackets do not
   //          generally occur within phonetic transcription, so X-SAMPA escapes
   //          are not relevant for those characters. Captures the content within
   //          the brackets.
-  // Group 2: `/` preceded by a space or start-of-line, not followed by a space.
+  // Group 2: The closing `]` for group 1, if there is one.
+  // Group 3: `/` preceded by a space or start-of-line, not followed by a space.
   //          Runs up to end-of-line, the first `[` or `]`, or the first `/`
   //          that *isn't* part of the sequence `_/`. `*` is recognised as an
   //          escape character, so `*_/` is treated as the literal character `_`
   //          followed by a terminating `/`. Likewise, `*/` is treated as a
   //          literal `/`, rather than a terminator. Captures the content within
   //          the slashes.
-  const phoneticsPattern = /(?<=^|\s)(?:\[(?!\s)([^\]\r\n]*)(?:]|$)|\/(?!\s)((?:\*.|_\/|[^/[\]\r\n])*)(?:[[\]/]|$))/gm;
+  // Group 4: The closing `/` for group 3, if there is one.
+  const phoneticsPattern = /(?<=^|\s)(?:\[(?!\s)([^\]\r\n]*)(]|$)|\/(?!\s)((?:\*.|_\/|[^/[\]\r\n])*)(\/|(?=[[\]])|$))/gm;
 
   let m: RegExpExecArray | null;
   while ((m = phoneticsPattern.exec(text.text))) {
-    const group = m[1] != null ? m[1] : m[2];
-    const matchStart = m.index + 1; // +1 to skip `[` or `/`
-    const matchEnd = matchStart + group.length;
-    if (matchStart > selEnd) {
+    let group: string;
+    let closing: string;
+    if (m[1] != null) {
+      group = m[1];
+      closing = m[2];
+    } else {
+      group = m[3];
+      closing = m[4];
+    }
+
+    const fullStart = m.index;
+    const fullEnd = m.index + m[0].length;
+    if (fullStart > selEnd) {
       // We've passed the selection. Further groups could not possibly match.
       break;
     }
 
-    if (matchStart <= selStart && selEnd <= matchEnd) {
+    if (fullStart <= selStart && selEnd <= fullEnd) {
+      const matchStart = fullStart + 1; // +1 to skip `[` or `/`
+      // If there is no closing character, trim off trailing white space.
+      // The X-SAMPA to IPA translation won't influence them anyway, and in
+      // situations like `/foo [bar]`, they're not likely to be part of the
+      // phonetic transcription.
+      const matchEnd = closing
+        ? matchStart + group.length
+        : matchStart + group.trimEnd().length;
+
       const path = selection.focus.path;
       return {
         anchor: {path, offset: matchStart},
@@ -141,7 +162,14 @@ export const getContextValue = (
     return null;
   }
 
-  const domRange = ReactEditor.toDOMRange(editor, phoneticsRange);
+  let domRange: Range;
+  try {
+    // This call sometimes throws for mysterious reasons. In that case, there
+    // isn't much we can do.
+    domRange = ReactEditor.toDOMRange(editor, phoneticsRange);
+  } catch (_e) {
+    return null;
+  }
   const rect = domRange.getBoundingClientRect();
 
   const editorRect = editorElem.getBoundingClientRect();
@@ -151,13 +179,20 @@ export const getContextValue = (
     y: rect.bottom - editorRect.y,
     parentWidth: editorRect.width,
   };
+
+  const text = Editor.string(editor, phoneticsRange);
   // Prevent infinite update loops
   if (
     prev &&
-    Range.equals(prev.range, phoneticsRange) &&
+    SlateRange.equals(prev.range, phoneticsRange) &&
+    prev.text === text &&
     PlacementRect.equals(prev.placement, placement)
   ) {
     return prev;
   }
-  return {range: phoneticsRange, placement};
+  return {
+    range: phoneticsRange,
+    text,
+    placement,
+  };
 };
