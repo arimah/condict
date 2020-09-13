@@ -98,8 +98,7 @@ const main = () => {
     '--',
     // Arguments to lerna run in root
     '--loglevel=warn',
-    '--scope',
-    lernaScope,
+    `--scope=${lernaScope}`,
     // Arguments to npm run in each package
     '--',
     '-s'
