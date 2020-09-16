@@ -24,6 +24,7 @@ const SearchResultItem = React.forwardRef((
     <S.SearchResult
       id={id}
       selected={selected}
+      aria-selected={selected}
       onMouseEnter={() => onMouseEnter(index)}
       onClick={() => onClick(result.target)}
       ref={ref}

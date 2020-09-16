@@ -63,7 +63,6 @@ The eventual goal of Condict is to be distributable as a standalone Electron app
 * [a11y-utils](./packages/a11y-utils): Various small utility functions and React components for accessibility features.
 * [graphql-typer](./packages/graphql-typer): Generates TypeScript type definitions from a GraphQL schema.
 * [ipa](./packages/ipa): Utilities for searching and listing [IPA][] characters.
-* [ipa-input](./packages/ipa-input): A fancy textbox that searches [IPA][] characters.
 * [platform](./packages/platform): Basic platform detection, with support for overrides.
 * [rich-text-editor](./packages/rich-text-editor): The rich text editor component for definition descriptions and inflection table captions.
 * [server](./packages/server): The storage backend.

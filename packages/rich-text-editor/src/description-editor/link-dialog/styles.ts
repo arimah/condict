@@ -1,56 +1,5 @@
 import styled from 'styled-components';
 
-import {Button, TextInput} from '@condict/ui';
-
-import Popup from '../popup';
-
-export const Width = 375; // px
-
-export const Main = styled(Popup).attrs({
-  width: Width,
-  role: 'dialog',
-  tabIndex: -1,
-})``;
-
-export const InputWrapper = styled.div.attrs({
-  role: 'combobox',
-})`
-  display: flex;
-  margin: 2px;
-  flex-direction: row;
-
-  border-radius: 3px;
-  border: 2px solid ${p => p.theme.general.bg};
-  background-color: ${p => p.theme.general.bg};
-`;
-
-export const Input = styled(TextInput).attrs({
-  size: 1,
-  minimal: true,
-})`
-  flex: 1 1 auto;
-  padding: 4px;
-  min-width: 100px;
-  border-radius: 3px 0 0 3px;
-
-  &:focus {
-    padding: 4px;
-    border: none;
-    box-shadow: none;
-  }
-`;
-
-export const OkButton = styled(Button).attrs({
-  intent: 'primary',
-  bold: true,
-  minimal: true,
-  slim: true,
-})`
-  padding: 1px 12px;
-  flex: none;
-  border-radius: 3px;
-`;
-
 export const Error = styled.div`
   margin: 8px;
   color: ${p => p.theme.danger.fg};

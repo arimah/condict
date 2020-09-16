@@ -1,20 +1,14 @@
 import IpaData from './data.json';
-import {DataFile, IpaChar} from './types';
+import {DataFile, IpaGroup} from './types';
 
 const {chars: Chars, groups: Groups} = IpaData as DataFile;
 
-export type ResolvedGroup = {
-  readonly name: string;
-  readonly base: IpaChar | null;
-  readonly members: IpaChar[];
-};
-
 // Cached value for speedy reuse, as it isn't supposed to change.
-let allGroups: ResolvedGroup[] | null = null;
+let allGroups: readonly IpaGroup[] | null = null;
 
-const getGroups = (): ResolvedGroup[] => {
+const getGroups = (): readonly IpaGroup[] => {
   if (!allGroups) {
-    allGroups = Groups.map<ResolvedGroup>(g => ({
+    allGroups = Groups.map<IpaGroup>(g => ({
       name: g.name,
       base: g.base != null ? Chars[g.base] : null,
       // Group members are already sorted.

@@ -6,7 +6,7 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
-import {Transforms, Node as SlateNode, Range} from 'slate';
+import {Transforms, Editor, Node as SlateNode, Range} from 'slate';
 import {Slate, ReactEditor} from 'slate-react';
 
 import {ShortcutMap} from '@condict/ui';
@@ -24,8 +24,9 @@ import {isLink, firstMatchingNode} from '../node-utils';
 import {LinkTarget} from '../types';
 
 import ContextualPopup from './contextual-popup';
-import LinkDialog, {SearchResult} from './link-dialog';
 import {PlacementRect} from './popup';
+import LinkDialog, {SearchResult} from './link-dialog';
+import IpaDialog from './ipa-dialog';
 import * as S from './styles';
 
 export type Props = {
@@ -37,11 +38,27 @@ export type Props = {
   onFindLinkTarget: (query: string) => Promise<readonly SearchResult[]>;
 };
 
+type DialogType = 'link' | 'ipa';
+type DialogProps = LinkProps | IpaProps;
+
 interface LinkProps {
+  readonly type: 'link';
   readonly initialValue: LinkTarget | undefined;
   readonly selection: Range;
   readonly placement: PlacementRect;
 }
+
+interface IpaProps {
+  readonly type: 'ipa';
+  readonly selection: Range;
+  readonly placement: PlacementRect;
+}
+
+type GetDialogProps<T extends DialogType> = (
+  selection: Range,
+  domSelection: Selection,
+  editorRect: DOMRect
+) => Extract<DialogProps, {type: T}>;
 
 const DescriptionEditor = (props: Props): JSX.Element => {
   const {
@@ -54,28 +71,47 @@ const DescriptionEditor = (props: Props): JSX.Element => {
 
   const [editor] = useState(() => createEditor(false));
 
-  const [linkProps, setLinkProps] = useState<LinkProps | null>(null);
-  // If true, call openLinkDialog on the next render.
-  const [shouldEditLink, setShouldEditLink] = useState(false);
+  const [dialogProps, setDialogProps] = useState<DialogProps | null>(null);
+  // If true, open a dialog on the next render.
+  const [
+    shouldOpenDialog,
+    setShouldOpenDialog,
+  ] = useState<false | DialogType>(false);
   const [focused, setFocused] = useState(false);
 
   const editorRef = useRef<HTMLDivElement>(null);
 
-  const openLinkDialog = useCallback(() => setShouldEditLink(shouldEdit => {
+  const tryOpenDialog = useCallback(<T extends DialogType>(
+    type: T,
+    getProps: GetDialogProps<T>
+  ) => setShouldOpenDialog(shouldOpen => {
     if (!editor.selection && editor.blurSelection) {
       // We tried last render and it did nothing, so no point trying again.
-      if (shouldEdit) {
+      if (shouldOpen) {
         return false;
       }
 
       ReactEditor.focus(editor);
       // Try to open the link dialog again after the next render.
-      return true;
+      return type;
     }
 
     const {selection} = editor;
     const domSelection = window.getSelection();
     if (selection && domSelection && editorRef.current) {
+      setDialogProps(getProps(
+        selection,
+        domSelection,
+        editorRef.current.getBoundingClientRect()
+      ));
+    }
+
+    // Either no valid selection or dialog is open - don't try again.
+    return false;
+  }), []);
+
+  const openLinkDialog = useCallback(() => {
+    tryOpenDialog('link', (selection, domSelection, editorRect) => {
       const link = firstMatchingNode(editor, {at: selection, match: isLink});
 
       let rect: DOMRect;
@@ -87,8 +123,8 @@ const DescriptionEditor = (props: Props): JSX.Element => {
         rect = nativeRange.getBoundingClientRect();
       }
 
-      const editorRect = editorRef.current.getBoundingClientRect();
-      setLinkProps({
+      return {
+        type: 'link',
         initialValue: link?.target,
         selection,
         placement: {
@@ -96,11 +132,26 @@ const DescriptionEditor = (props: Props): JSX.Element => {
           y: rect.bottom - editorRect.y,
           parentWidth: editorRect.width,
         },
-      });
-    }
-    // Either no valid selection or dialog is open - don't try again.
-    return false;
-  }), []);
+      };
+    });
+  }, [tryOpenDialog]);
+
+  const openIpaDialog = useCallback(() => {
+    tryOpenDialog('ipa', (selection, domSelection, editorRect) => {
+      const nativeRange = domSelection.getRangeAt(0);
+      const rect = nativeRange.getBoundingClientRect();
+
+      return {
+        type: 'ipa',
+        selection,
+        placement: {
+          x: rect.x - editorRect.x,
+          y: rect.bottom - editorRect.y,
+          parentWidth: editorRect.width,
+        },
+      };
+    });
+  }, [tryOpenDialog]);
 
   const keyboardMap = useMemo(() => new ShortcutMap(
     [
@@ -118,11 +169,26 @@ const DescriptionEditor = (props: Props): JSX.Element => {
     }
   }, [keyboardMap]);
 
+  const handleCloseDialog = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    editor.blurSelection = dialogProps!.selection;
+    setDialogProps(null);
+    // COMPAT: Condict's FocusTrap sets focus in a way Slate doesn't like, which
+    // for some reason causes the blurSelection not to be applied on focus. But
+    // calling this function here somehow fixes that.
+    ReactEditor.focus(editor);
+  }, [dialogProps]);
+
   useEffect(() => {
-    if (shouldEditLink) {
-      openLinkDialog();
+    switch (shouldOpenDialog) {
+      case 'link':
+        openLinkDialog();
+        break;
+      case 'ipa':
+        openIpaDialog();
+        break;
     }
-  }, [shouldEditLink]);
+  }, [shouldOpenDialog]);
 
   return (
     <Slate editor={editor} value={value} onChange={onChange}>
@@ -135,36 +201,48 @@ const DescriptionEditor = (props: Props): JSX.Element => {
           <LinkGroup shortcuts={shortcuts} onSetLink={openLinkDialog}/>
           <BlockFormatGroup shortcuts={shortcuts}/>
         </>}
-        $linkDialogOpen={linkProps !== null}
+        $dialogOpen={dialogProps !== null}
         onKeyDown={handleKeyDown}
         onFocusedChange={setFocused}
         ref={editorRef}
       >
-        {linkProps &&
+        {dialogProps && dialogProps.type === 'link' &&
           <LinkDialog
-            initialValue={linkProps.initialValue}
-            placement={linkProps.placement}
+            initialValue={dialogProps.initialValue}
+            placement={dialogProps.placement}
             onFindLinkTarget={onFindLinkTarget}
             onSubmit={target => {
-              setLinkProps(null);
-              // TODO: Get rid of setTimeout
-              window.setTimeout(() => {
-                Transforms.select(editor, linkProps.selection);
-                editor.wrapLink(target);
-              }, 0);
+              const at = dialogProps.selection;
+              editor.blurSelection = at;
+              setDialogProps(null);
+              // TODO: Why is this next-tick stuff necessary? Can we do without
+              // this hack?
+              void Promise.resolve().then(() => {
+                ReactEditor.focus(editor);
+                editor.wrapLink(target, {at});
+              });
             }}
-            onCancel={() => {
-              setLinkProps(null);
-              // TODO: Get rid of setTimeout
-              window.setTimeout(() => {
-                Transforms.select(editor, linkProps.selection);
-              }, 0);
-            }}
+            onCancel={handleCloseDialog}
           />}
-        {!linkProps && focused &&
+        {dialogProps && dialogProps.type === 'ipa' &&
+          <IpaDialog
+            placement={dialogProps.placement}
+            onEmit={ipa => {
+              const selection = Editor.rangeRef(editor, dialogProps.selection, {
+                affinity: 'forward',
+              });
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              Transforms.insertText(editor, ipa, {at: selection.current!});
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              setDialogProps({...dialogProps, selection: selection.unref()!});
+            }}
+            onClose={handleCloseDialog}
+          />}
+        {!dialogProps && focused &&
           <ContextualPopup
             editorRef={editorRef}
             onOpenLinkDialog={openLinkDialog}
+            onOpenIpaDialog={openIpaDialog}
           />}
       </S.Editor>
     </Slate>

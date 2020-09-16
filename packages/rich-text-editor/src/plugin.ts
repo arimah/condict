@@ -7,7 +7,7 @@ import {
   Path,
   createEditor as createSlateEditor,
 } from 'slate';
-import {ReactEditor, useSlate, withReact} from 'slate-react';
+import {ReactEditor, useSlate, useEditor, withReact} from 'slate-react';
 import {HistoryEditor, withHistory} from 'slate-history';
 
 import {
@@ -185,3 +185,6 @@ export default createEditor;
 
 export const useCondictEditor = (): CondictEditor =>
   useSlate() as CondictEditor;
+
+export const useStaticCondictEditor = (): CondictEditor =>
+  useEditor() as CondictEditor;

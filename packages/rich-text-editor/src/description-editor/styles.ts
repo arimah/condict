@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import BaseEditor from '../base-editor';
 
 export type EditorProps = {
-  $linkDialogOpen: boolean;
+  $dialogOpen: boolean;
 };
 
 export const Editor = styled(BaseEditor)<EditorProps>`
-  ${p => p.$linkDialogOpen && 'z-index: 1;'}
+  ${p => p.$dialogOpen && 'z-index: 1;'}
 `;
 
 export const Popup = styled.form`

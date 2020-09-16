@@ -5,7 +5,6 @@
   "repository": "github:arimah/condict",
   "license": "MIT",
   "devDependencies": {
-    "@condict/ipa-input": "*",
     "@condict/rich-text-editor": "*",
     "@condict/table-editor": "*",
     "@condict/ui": "*",

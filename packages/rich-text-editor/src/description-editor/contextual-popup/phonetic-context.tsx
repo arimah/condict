@@ -4,7 +4,7 @@ import {ReactEditor} from 'slate-react';
 
 import xsampaToIpa from '@condict/x-sampa';
 
-import {useCondictEditor} from '../../plugin';
+import {useStaticCondictEditor} from '../../plugin';
 import {CondictEditor} from '../../types';
 
 import {PlacementRect} from '../popup';
@@ -15,12 +15,13 @@ import * as S from './styles';
 export type Props = {
   range: SlateRange;
   text: string;
+  onInsertIpa: () => void;
 };
 
 const PhoneticPopup = (props: Props): JSX.Element | null => {
-  const {range, text} = props;
+  const {range, text, onInsertIpa} = props;
 
-  const editor = useCondictEditor();
+  const editor = useStaticCondictEditor();
 
   const ipa = xsampaToIpa(text);
 
@@ -47,12 +48,13 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
           <S.Action
             label='Insert IPA character'
             title='Insert IPA character'
+            onClick={onInsertIpa}
           >
             <SearchIpaIcon/>
           </S.Action>
         </S.Actions>
       </> : (
-        <S.PrimaryAction>
+        <S.PrimaryAction onClick={onInsertIpa}>
           <SearchIpaIcon/>
           <span>Insert IPA character</span>
         </S.PrimaryAction>
@@ -71,7 +73,20 @@ export interface ContextValue {
 
 const mightContainPhonetics = (text: string) => /[/[\]]/.test(text);
 
-const getPhoneticsRange = (editor: Editor): SlateRange | null => {
+interface PhoneticsRange {
+  /**
+   * The "outer" range of the phonetic transcription, including the start and
+   * potential end delimiters.
+   */
+  outer: SlateRange;
+  /**
+   * The "inner" range of the phonetic transcription, excluding the start and
+   * potential end delimiters.
+   */
+  inner: SlateRange;
+}
+
+const getPhoneticsRange = (editor: Editor): PhoneticsRange | null => {
   const {selection} = editor;
   if (!selection) {
     return null;
@@ -143,8 +158,14 @@ const getPhoneticsRange = (editor: Editor): SlateRange | null => {
 
       const path = selection.focus.path;
       return {
-        anchor: {path, offset: matchStart},
-        focus: {path, offset: matchEnd},
+        outer: {
+          anchor: {path, offset: fullStart},
+          focus: {path, offset: fullEnd},
+        },
+        inner: {
+          anchor: {path, offset: matchStart},
+          focus: {path, offset: matchEnd},
+        },
       };
     }
   }
@@ -166,7 +187,7 @@ export const getContextValue = (
   try {
     // This call sometimes throws for mysterious reasons. In that case, there
     // isn't much we can do.
-    domRange = ReactEditor.toDOMRange(editor, phoneticsRange);
+    domRange = ReactEditor.toDOMRange(editor, phoneticsRange.outer);
   } catch (_e) {
     return null;
   }
@@ -180,18 +201,18 @@ export const getContextValue = (
     parentWidth: editorRect.width,
   };
 
-  const text = Editor.string(editor, phoneticsRange);
+  const text = Editor.string(editor, phoneticsRange.inner);
   // Prevent infinite update loops
   if (
     prev &&
-    SlateRange.equals(prev.range, phoneticsRange) &&
+    SlateRange.equals(prev.range, phoneticsRange.inner) &&
     prev.text === text &&
     PlacementRect.equals(prev.placement, placement)
   ) {
     return prev;
   }
   return {
-    range: phoneticsRange,
+    range: phoneticsRange.inner,
     text,
     placement,
   };

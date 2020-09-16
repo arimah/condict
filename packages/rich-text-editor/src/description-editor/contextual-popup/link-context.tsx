@@ -4,7 +4,7 @@ import {ReactEditor} from 'slate-react';
 import EditIcon from 'mdi-react/PencilIcon';
 import RemoveLinkIcon from 'mdi-react/LinkOffIcon';
 
-import {useCondictEditor} from '../../plugin';
+import {useStaticCondictEditor} from '../../plugin';
 import {isLink} from '../../node-utils';
 import {CondictEditor} from '../../types';
 
@@ -20,7 +20,7 @@ export type Props = {
 const LinkContext = (props: Props): JSX.Element => {
   const {link, onEditLink} = props;
 
-  const editor = useCondictEditor();
+  const editor = useStaticCondictEditor();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const target = link.target!;

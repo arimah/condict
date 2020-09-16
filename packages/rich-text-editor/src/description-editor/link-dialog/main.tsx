@@ -14,6 +14,14 @@ import {FocusTrap, Shortcut, useUniqueId} from '@condict/ui';
 import {LinkTarget} from '../../types';
 
 import {PlacementRect} from '../popup';
+import Dialog, {
+  SearchWrapper,
+  SearchInput,
+  SubmitButton,
+  CloseKey,
+  PrevResultKey,
+  NextResultKey,
+} from '../dialog';
 
 import SearchResultItem from './search-result';
 import {SearchResult} from './types';
@@ -197,10 +205,6 @@ const getWebResult = (value: string): SearchResult | null => {
   };
 };
 
-const CancelKey = Shortcut.parse('Escape');
-const PrevResultKey = Shortcut.parse('ArrowUp');
-const NextResultKey = Shortcut.parse('ArrowDown');
-
 const cancelMouseEvent = (e: MouseEvent) => {
   e.preventDefault();
 };
@@ -214,6 +218,7 @@ const LinkDialog = (props: Props): JSX.Element => {
 
   const mainRef = useRef<HTMLFormElement>(null);
   const cancel = useCallback(() => {
+    // HACK: Get around problems with Slate, focus and selection management.
     mainRef.current?.focus();
     window.setTimeout(() => {
       onCancel();
@@ -249,14 +254,14 @@ const LinkDialog = (props: Props): JSX.Element => {
       e.stopPropagation();
       dispatch({type: 'next'});
     }
-  }, [state]);
+  }, []);
 
   const handleHoverResult = useCallback((index: number) => {
     dispatch({type: 'hover', index});
   }, []);
 
   const handleFormKeyDown = useCallback((e: KeyboardEvent) => {
-    if (Shortcut.matches(CancelKey, e)) {
+    if (Shortcut.matches(CloseKey, e)) {
       e.preventDefault();
       e.stopPropagation();
       cancel();
@@ -286,20 +291,25 @@ const LinkDialog = (props: Props): JSX.Element => {
   const hasError = state.showError && state.index === -1;
 
   return (
-    <FocusTrap onPointerDownOutside={cancel}>
-      <S.Main
+    <FocusTrap
+      // COMPAT: We need to call ReactEditor.focus on the editor instead of
+      // letting FocusTrap handle it for us. I don't know why.
+      return={false}
+      onPointerDownOutside={cancel}
+    >
+      <Dialog
         placement={placement}
         aria-label='Link target'
         onSubmit={handleSubmit}
         onKeyDown={handleFormKeyDown}
         ref={mainRef}
       >
-        <S.InputWrapper
+        <SearchWrapper
           aria-expanded={state.results.length > 0}
           aria-owns={`${id}-results`}
           aria-haspopup='listbox'
         >
-          <S.Input
+          <SearchInput
             placeholder='Web address or search term'
             value={state.value}
             aria-autocomplete='list'
@@ -313,8 +323,8 @@ const LinkDialog = (props: Props): JSX.Element => {
             onChange={handleInput}
             onKeyDown={handleInputKeyDown}
           />
-          <S.OkButton label='Save' type='submit'/>
-        </S.InputWrapper>
+          <SubmitButton label='Save'/>
+        </SearchWrapper>
 
         {hasError &&
           <S.Error id={`${id}-error`}>
@@ -339,7 +349,7 @@ const LinkDialog = (props: Props): JSX.Element => {
             />
           )}
         </S.SearchResultList>
-      </S.Main>
+      </Dialog>
     </FocusTrap>
   );
 };

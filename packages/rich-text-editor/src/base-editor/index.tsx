@@ -6,10 +6,10 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import {Transforms} from 'slate';
+import {Transforms, Editor} from 'slate';
 import {ReactEditor} from 'slate-react';
 
-import {useCondictEditor} from '../plugin';
+import {useStaticCondictEditor} from '../plugin';
 
 import {renderElement, renderLeaf} from './render';
 import * as S from './styles';
@@ -42,7 +42,7 @@ const BaseEditor = React.forwardRef((
     children,
   } = props;
 
-  const editor = useCondictEditor();
+  const editor = useStaticCondictEditor();
 
   const handleMouseDown = useCallback(() => {
     // When the user clicks inside the editor, don't re-select the previous
@@ -56,25 +56,30 @@ const BaseEditor = React.forwardRef((
   useEffect(() => {
     const root = ReactEditor.toDOMNode(editor, editor);
 
-    // Slate does not appreciate re-renders during focus and blur, so these must
-    // be executed on the next tick.
+    // Slate does not appreciate re-renders during focus and blur, so we must
+    // execute onFocusedChange on the next tick.
     const handleFocus = () => {
-      if (!editor.selection && editor.blurSelection) {
-        Transforms.select(editor, editor.blurSelection);
+      if (!editor.selection) {
+        let selection = editor.blurSelection;
+        if (!selection) {
+          const start = Editor.start(editor, []);
+          selection = {anchor: start, focus: start};
+        }
+        Transforms.select(editor, selection);
       }
 
-      window.setTimeout(() => {
+      void Promise.resolve().then(() => {
         onFocusedChange?.(true);
-      }, 0);
+      });
     };
     const handleBlur = () => {
       if (editor.selection !== null) {
         editor.blurSelection = editor.selection;
       }
 
-      window.setTimeout(() => {
+      void Promise.resolve().then(() => {
         onFocusedChange?.(false);
-      }, 0);
+      });
     };
 
     root.addEventListener('focus', handleFocus);

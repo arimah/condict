@@ -1,12 +1,3 @@
-import search from './search';
-import getGroups from './groups';
-
-export {
-  search,
-  getGroups,
-};
-
-export default Object.freeze({
-  search,
-  getGroups,
-});
+export {default as search} from './search';
+export {default as getGroups} from './groups';
+export {IpaChar, IpaGroup, Match, MatchInfo, TermMatch} from './types';

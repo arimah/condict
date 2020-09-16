@@ -17,6 +17,7 @@ import * as S from './styles';
 export type Props = {
   editorRef: RefObject<HTMLDivElement>;
   onOpenLinkDialog: () => void;
+  onOpenIpaDialog: () => void;
 };
 
 const getPlacement = (
@@ -42,7 +43,7 @@ const Width = 340;
 const preventMouseFocus = (e: MouseEvent) => e.preventDefault();
 
 const ContextualPopup = (props: Props): JSX.Element | null => {
-  const {editorRef, onOpenLinkDialog} = props;
+  const {editorRef, onOpenLinkDialog, onOpenIpaDialog} = props;
 
   const editor = useCondictEditor();
 
@@ -83,6 +84,7 @@ const ContextualPopup = (props: Props): JSX.Element | null => {
         <PhoneticContext
           range={phonetic.range}
           text={phonetic.text}
+          onInsertIpa={onOpenIpaDialog}
         />}
     </S.Popup>
   );

@@ -36,7 +36,6 @@ const AllPackages = [
   // UI packages.
   {group: 'ui', name: 'a11y-utils'},
   {group: 'ui', name: 'ui'},
-  {group: 'ui', name: 'ipa-input'},
   {group: 'ui', name: 'rich-text-editor'},
   {group: 'ui', name: 'table-editor'},
 ];

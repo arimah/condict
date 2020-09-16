@@ -1,18 +1,5 @@
 import IpaData from './data.json';
-import {DataFile, IpaChar, IpaSearchNode} from './types';
-
-export type Match = [IpaChar, MatchInfo];
-
-export type MatchInfo = {
-  totalScore: number;
-  terms: TermMatch[];
-};
-
-export type TermMatch = {
-  term: string;
-  query: string;
-  score: number;
-};
+import {DataFile, IpaSearchNode, Match, TermMatch} from './types';
 
 type MatchConsumer = (char: number, term: string, query: string, score: number) => void;
 
