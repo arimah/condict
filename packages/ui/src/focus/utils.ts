@@ -22,7 +22,11 @@ export const tryFocus = (...elements: (Element | null)[]): void => {
 export const getNearestFocusable = (
   element: Element | null
 ): Element | null => {
-  if (!element || element === document.body) {
+  if (
+    !element ||
+    element === document.body ||
+    element === document.documentElement
+  ) {
     return null;
   }
   if (isFocusable(element)) {

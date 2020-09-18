@@ -24,7 +24,7 @@ type PositiveTabIndexElement = {
   originalPosition: number;
 };
 
-const candidateSelector = `
+const CandidateSelector = `
   button:enabled,
   input:enabled,
   textarea:enabled,
@@ -41,9 +41,9 @@ const getCandidates = (
   includeRoot: boolean
 ): Element[] => {
   const candidates = Array.from(root.querySelectorAll(
-    candidateSelector
+    CandidateSelector
   ));
-  if (includeRoot && root.matches(candidateSelector)) {
+  if (includeRoot && root.matches(CandidateSelector)) {
     candidates.unshift(root);
   }
   return candidates;
@@ -166,7 +166,7 @@ export const getFocusable = (
 };
 
 export const isFocusable = (element: Element): boolean =>
-  element.matches(candidateSelector) &&
+  element.matches(CandidateSelector) &&
   isCandidateFocusable(element);
 
 export const getTabReachable = (
@@ -181,5 +181,5 @@ export const getTabReachable = (
 };
 
 export const isTabReachable = (element: Element): boolean =>
-  element.matches(candidateSelector) &&
+  element.matches(CandidateSelector) &&
   isCandidateTabReachable(element);
