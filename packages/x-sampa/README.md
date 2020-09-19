@@ -1,14 +1,14 @@
 # @condict/x-sampa
 
-The [X-SAMPA][xsampa] is a method of encoding phonetic transcriptions, designed to be compatible with the [IPA][]. This package provides a function that converts most X-SAMPA text to IPA.
+The [X-SAMPA][xsampa] is a method of encoding phonetic transcriptions, designed to be compatible with the [IPA][]. This package provides a function that converts most X-SAMPA text to IPA. In general, the conversion function in this package aims to be _ergonomic_ and to do (probably) the right thing most of the time, rather than to be a completely compliant solution.
 
-There are several noteworthy differences between standard X-SAMPA and what this package implements. Some extensions from the [Conlang X-SAMPA (CXS)][cxs] variant have been incorporated. The following are changes from standard X-SAMPA:
+There are several noteworthy differences between standard X-SAMPA and what this package implements. Some extensions from the [Conlang X-SAMPA (CXS)][cxs] variant have been incorporated. Additionally, some special cases exist for ergonomic reasons. The following are changes from standard X-SAMPA:
 
 * Both `1` and `i\` represent \[ɨ\].
 * Both `}` and `u\` represent \[ʉ\].
 * But note: CXS `&` is encoded by standard X-SAMPA `{` \[æ\]; `&` represents \[ɶ\], as in standard X-SAMPA, not \[æ\] as in CXS; and `&\` \[ɶ\] from CXS is absent.
 * Both `'` and `"` represent \[ˈ\] (primary stress).
-* Both `,` and `%` represent \[ˌ\] (secondary stress).
+* Both `,` and `%` represent \[ˌ\] (secondary stress). However, `,` is not converted at the end of a line or before a space, to make situations like `wVn, tu:, Tr\i:` require fewer escapes (the comma would otherwise have to be written `*,`).
 * Palatalisation \[ʲ\] is expressed through `_j` and `;`. The standard X-SAMPA `'` is used for primary stress instead.
 * The Condict-specific characters `_T\`, `_H\`, `_M\`, `_L\` and `_B\` unambiguously represent the tone characters \[˥ ˦ ˧ ˨ ˩\]. They never become accents.
 

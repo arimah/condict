@@ -39,8 +39,21 @@ const substringEquals = (
   return true;
 };
 
+/**
+ * Determines whether the specified index is at the end of the input or at a
+ * space character.
+ */
+const isEndOrSpace = (xsampa: string, index: number): boolean =>
+  index === xsampa.length || xsampa[index] == ' ';
+
 const matchChar = (xsampa: string, index: number): CharMatch => {
   const nextChar = xsampa[index];
+
+  // Special case: `,` at EOL or before a space is treated literally, to make
+  // situations like `wVn, tu:, Tr\i:` more ergonomic.
+  if (nextChar === ',' && isEndOrSpace(xsampa, index + 1)) {
+    return {char: {ipa: nextChar, base: true}, length: 1};
+  }
 
   const replacements = Replacements.get(nextChar);
   if (replacements) {
@@ -118,7 +131,7 @@ const convert = (xsampa: string): string => {
       i++;
       // At the end of the string and before a space, return the '*'. There is
       // nothing visible to escape.
-      if (i === xsampa.length || xsampa[i] === ' ') {
+      if (isEndOrSpace(xsampa, i)) {
         ipa += '*';
       } else {
         ipa += xsampa[i++];

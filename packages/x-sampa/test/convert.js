@@ -189,6 +189,27 @@ describe('convert', () => {
     });
   });
 
+  describe('comma', () => {
+    // U+02CC Modifier Letter Low Vertical Line, aka secondary stress
+    it('should transform `,` to secondary stress before a letter', () => {
+      assertConversion(',a', '\u02CCa');
+      assertConversion(',,,x', '\u02CC\u02CC\u02CCx');
+    });
+
+    it('should not convert `,` before space', () => {
+      assertConversion(', ', ', ');
+      assertConversion(' , ', ' , ');
+      assertConversion('a, b', 'a, b');
+    });
+
+    it('should not convert `,` at end of line', () => {
+      assertConversion(',', ',');
+      assertConversion(',,', '\u02CC,');
+      assertConversion(',,,', '\u02CC\u02CC,');
+      assertConversion('x,', 'x,');
+    });
+  });
+
   describe('escape sequences', () => {
     it('should escape characters after *', () => {
       assertConversion('*g', 'g');
