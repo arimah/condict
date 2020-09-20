@@ -20,7 +20,7 @@ function buildKeyMap<C>(
   for (const command of commands) {
     const outer = getShortcut(command);
     if (!outer) {
-      break;
+      continue;
     }
 
     // If this is a group, we need to walk through each of the group's members.
