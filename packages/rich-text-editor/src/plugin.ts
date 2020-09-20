@@ -80,6 +80,16 @@ const withCondict = (
       };
     }
     apply(operation);
+
+    // If there is a blurSelection, make sure it's kept up to date after each
+    // operation. Otherwise problems can occur if the node tree is manipulated
+    // on an unfocused editor, when e.g. the toolbar tries to access paths that
+    // no longer resolve.
+    if (operation.type !== 'set_selection' && editor.blurSelection) {
+      editor.blurSelection = Range.transform(editor.blurSelection, operation, {
+        affinity: 'inward',
+      });
+    }
   };
 
   editor.formatBlock = (format, options) => {

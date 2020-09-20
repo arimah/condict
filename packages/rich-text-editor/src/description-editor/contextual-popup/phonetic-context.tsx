@@ -27,19 +27,11 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
   const ipa = xsampaToIpa(text);
 
   const applyConversion = useCallback(() => {
-    const blurSelRef =
-      editor.blurSelection &&
-      Editor.rangeRef(editor, editor.blurSelection);
-
     const rangeRef = Editor.rangeRef(editor, range);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     Transforms.insertText(editor, ipa, {at: rangeRef.current!});
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     Transforms.select(editor, rangeRef.unref()!);
-
-    if (blurSelRef) {
-      editor.blurSelection = blurSelRef.unref();
-    }
   }, [range, ipa]);
 
   const tabIndex = focusable ? undefined : -1;
