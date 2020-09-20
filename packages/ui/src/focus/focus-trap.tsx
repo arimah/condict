@@ -29,7 +29,7 @@ const getBehavior = (active: Active) =>
     ? FocusScopeBehavior.NORMAL
     : FocusScopeBehavior.CONTAIN;
 
-const FocusScope = (props: Props): JSX.Element => {
+const FocusTrap = (props: Props): JSX.Element => {
   const {
     active = true,
     return: restore = true,
@@ -90,4 +90,4 @@ const FocusScope = (props: Props): JSX.Element => {
   return childWithRef;
 };
 
-export default FocusScope;
+export default FocusTrap;
