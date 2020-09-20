@@ -4,7 +4,11 @@ import {Button} from '@condict/ui';
 
 import PopupBase from '../popup';
 
-export const Popup = styled(PopupBase)`
+const Width = 340;
+
+export const Popup = styled(PopupBase).attrs({
+  width: Width,
+})`
   animation-name: enter;
   animation-duration: 100ms;
   animation-iteration-count: 1;
@@ -43,7 +47,6 @@ export const Actions = styled.span`
 
 export const Action = styled(Button).attrs({
   intent: 'secondary',
-  tabIndex: -1,
 })`
   padding: 4px 8px;
   border-radius: 5px;

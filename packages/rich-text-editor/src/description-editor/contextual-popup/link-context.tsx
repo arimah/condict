@@ -14,22 +14,26 @@ import * as S from './styles';
 
 export type Props = {
   link: Element;
+  focusable: boolean;
   onEditLink: () => void;
 };
 
 const LinkContext = (props: Props): JSX.Element => {
-  const {link, onEditLink} = props;
+  const {link, focusable, onEditLink} = props;
 
   const editor = useStaticCondictEditor();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const target = link.target!;
 
+  const tabIndex = focusable ? undefined : -1;
+
   return (
     <S.Columns>
       <S.PrimaryAction
         label={`Edit link: ${target.name || target.url} - ${target.type}`}
         title='Edit link'
+        tabIndex={tabIndex}
         onClick={onEditLink}
       >
         <EditIcon/>
@@ -40,6 +44,7 @@ const LinkContext = (props: Props): JSX.Element => {
         <S.Action
           label='Remove link'
           title='Remove link'
+          tabIndex={tabIndex}
           onClick={() => editor.removeLink()}
         >
           <RemoveLinkIcon/>

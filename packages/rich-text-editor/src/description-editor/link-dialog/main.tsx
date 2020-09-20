@@ -9,7 +9,7 @@ import React, {
   useEffect,
 } from 'react';
 
-import {FocusTrap, Shortcut, useUniqueId} from '@condict/ui';
+import {Shortcut, useUniqueId} from '@condict/ui';
 
 import {LinkTarget} from '../../types';
 
@@ -219,10 +219,7 @@ const LinkDialog = (props: Props): JSX.Element => {
   const mainRef = useRef<HTMLFormElement>(null);
   const cancel = useCallback(() => {
     // HACK: Get around problems with Slate, focus and selection management.
-    mainRef.current?.focus();
-    window.setTimeout(() => {
-      onCancel();
-    }, 1);
+    void Promise.resolve().then(onCancel);
   }, [onCancel]);
 
   const searchRequest = useRef(0);
@@ -291,66 +288,61 @@ const LinkDialog = (props: Props): JSX.Element => {
   const hasError = state.showError && state.index === -1;
 
   return (
-    <FocusTrap
-      // COMPAT: We need to call ReactEditor.focus on the editor instead of
-      // letting FocusTrap handle it for us. I don't know why.
-      return={false}
+    <Dialog
+      placement={placement}
+      aria-label='Link target'
+      trapFocus
+      onSubmit={handleSubmit}
+      onKeyDown={handleFormKeyDown}
       onPointerDownOutside={cancel}
+      ref={mainRef}
     >
-      <Dialog
-        placement={placement}
-        aria-label='Link target'
-        onSubmit={handleSubmit}
-        onKeyDown={handleFormKeyDown}
-        ref={mainRef}
+      <SearchWrapper
+        aria-expanded={state.results.length > 0}
+        aria-owns={`${id}-results`}
+        aria-haspopup='listbox'
       >
-        <SearchWrapper
-          aria-expanded={state.results.length > 0}
-          aria-owns={`${id}-results`}
-          aria-haspopup='listbox'
-        >
-          <SearchInput
-            placeholder='Web address or search term'
-            value={state.value}
-            aria-autocomplete='list'
-            aria-controls={`${id}-results`}
-            aria-activedescendant={
-              state.index !== -1
-                ? `${id}-result-${state.index}`
-                : undefined
-            }
-            aria-describedby={hasError ? `${id}-error` : undefined}
-            onChange={handleInput}
-            onKeyDown={handleInputKeyDown}
+        <SearchInput
+          placeholder='Web address or search term'
+          value={state.value}
+          aria-autocomplete='list'
+          aria-controls={`${id}-results`}
+          aria-activedescendant={
+            state.index !== -1
+              ? `${id}-result-${state.index}`
+              : undefined
+          }
+          aria-describedby={hasError ? `${id}-error` : undefined}
+          onChange={handleInput}
+          onKeyDown={handleInputKeyDown}
+        />
+        <SubmitButton label='Save'/>
+      </SearchWrapper>
+
+      {hasError &&
+        <S.Error id={`${id}-error`}>
+          Please enter a web address, or a search term to select an item from the dictionary.
+        </S.Error>}
+
+      <S.SearchResultList
+        id={`${id}-results`}
+        hasResults={state.results.length > 0}
+        onMouseDown={cancelMouseEvent}
+      >
+        {state.results.map((result, index) =>
+          <SearchResultItem
+            key={index}
+            id={`${id}-result-${index}`}
+            index={index}
+            result={result}
+            selected={index === state.index}
+            onMouseEnter={handleHoverResult}
+            onClick={onSubmit}
+            ref={index === state.index ? currentResultRef : undefined}
           />
-          <SubmitButton label='Save'/>
-        </SearchWrapper>
-
-        {hasError &&
-          <S.Error id={`${id}-error`}>
-            Please enter a web address, or a search term to select an item from the dictionary.
-          </S.Error>}
-
-        <S.SearchResultList
-          id={`${id}-results`}
-          hasResults={state.results.length > 0}
-          onMouseDown={cancelMouseEvent}
-        >
-          {state.results.map((result, index) =>
-            <SearchResultItem
-              key={index}
-              id={`${id}-result-${index}`}
-              index={index}
-              result={result}
-              selected={index === state.index}
-              onMouseEnter={handleHoverResult}
-              onClick={onSubmit}
-              ref={index === state.index ? currentResultRef : undefined}
-            />
-          )}
-        </S.SearchResultList>
-      </Dialog>
-    </FocusTrap>
+        )}
+      </S.SearchResultList>
+    </Dialog>
   );
 };
 

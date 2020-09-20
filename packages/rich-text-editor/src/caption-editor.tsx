@@ -19,8 +19,9 @@ export type Props = {
   onChange: (value: SlateNode[]) => void;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {};
+const fail = () => {
+  throw new Error('Invalid command for caption editor');
+};
 
 const TableCaptionEditor = (props: Props): JSX.Element => {
   const {
@@ -43,7 +44,12 @@ const TableCaptionEditor = (props: Props): JSX.Element => {
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     const cmd = keyboardMap.get(e);
     if (cmd) {
-      cmd.exec(e, editor, noop);
+      cmd.exec(e, {
+        editor,
+        openLinkDialog: fail,
+        openIpaDialog: fail,
+        focusPopup: fail,
+      });
     }
   }, [keyboardMap]);
 

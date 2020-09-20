@@ -1,5 +1,6 @@
 import React, {
   KeyboardEvent,
+  FocusEvent,
   useState,
   useMemo,
   useCallback,
@@ -18,12 +19,18 @@ import {
   InlineFormatGroup,
   LinkGroup,
   BlockFormatGroup,
+  HelpersGroup,
 } from '../toolbar';
-import {getInlineCommands, getBlockCommands, getLinkCommands} from '../keymap';
+import {
+  getInlineCommands,
+  getBlockCommands,
+  getLinkCommands,
+  getHelperCommands,
+} from '../keymap';
 import {isLink, firstMatchingNode} from '../node-utils';
 import {LinkTarget} from '../types';
 
-import ContextualPopup from './contextual-popup';
+import ContextualPopup, {ContextualPopupHandle} from './contextual-popup';
 import {PlacementRect} from './popup';
 import LinkDialog, {SearchResult} from './link-dialog';
 import IpaDialog from './ipa-dialog';
@@ -72,12 +79,11 @@ const DescriptionEditor = (props: Props): JSX.Element => {
   const [editor] = useState(() => createEditor(false));
 
   const [dialogProps, setDialogProps] = useState<DialogProps | null>(null);
-  // If true, open a dialog on the next render.
+  // If not false, open a dialog on the next render.
   const [
     shouldOpenDialog,
     setShouldOpenDialog,
-  ] = useState<false | DialogType>(false);
-  const [focused, setFocused] = useState(false);
+  ] = useState<DialogType | false>(false);
 
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -153,11 +159,41 @@ const DescriptionEditor = (props: Props): JSX.Element => {
     });
   }, [tryOpenDialog]);
 
+  const [showPopup, setShowPopup] = useState(false);
+
+  const popupRef = useRef<ContextualPopupHandle>(null);
+
+  const handleFocus = useCallback((e: FocusEvent<HTMLDivElement>) => {
+    const editorElem = ReactEditor.toDOMNode(editor, editor);
+    if (
+      editorElem.contains(e.target) ||
+      popupRef.current?.contains(e.target)
+    ) {
+      setShowPopup(true);
+    }
+  }, []);
+
+  const handleBlur = useCallback((e: FocusEvent<HTMLDivElement>) => {
+    const editorElem = ReactEditor.toDOMNode(editor, editor);
+    // relatedTarget is the element that *gained* focus
+    if (
+      !editorElem.contains(e.relatedTarget as Node | null) &&
+      !popupRef.current?.contains(e.relatedTarget as Node | null)
+    ) {
+      setShowPopup(false);
+    }
+  }, []);
+
+  const focusPopup = useCallback(() => {
+    popupRef.current?.focus();
+  }, []);
+
   const keyboardMap = useMemo(() => new ShortcutMap(
     [
       ...getInlineCommands(shortcuts),
       ...getBlockCommands(shortcuts),
       ...getLinkCommands(shortcuts),
+      ...getHelperCommands(shortcuts),
     ],
     cmd => cmd.shortcut
   ), [shortcuts]);
@@ -165,7 +201,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     const cmd = keyboardMap.get(e);
     if (cmd) {
-      cmd.exec(e, editor, openLinkDialog);
+      cmd.exec(e, {editor, openLinkDialog, openIpaDialog, focusPopup});
     }
   }, [keyboardMap]);
 
@@ -200,10 +236,12 @@ const DescriptionEditor = (props: Props): JSX.Element => {
           <InlineFormatGroup shortcuts={shortcuts}/>
           <LinkGroup shortcuts={shortcuts} onSetLink={openLinkDialog}/>
           <BlockFormatGroup shortcuts={shortcuts}/>
+          <HelpersGroup shortcuts={shortcuts} onOpenIpaDialog={openIpaDialog}/>
         </>}
         $dialogOpen={dialogProps !== null}
         onKeyDown={handleKeyDown}
-        onFocusedChange={setFocused}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         ref={editorRef}
       >
         {dialogProps && dialogProps.type === 'link' &&
@@ -238,11 +276,12 @@ const DescriptionEditor = (props: Props): JSX.Element => {
             }}
             onClose={handleCloseDialog}
           />}
-        {!dialogProps && focused &&
+        {!dialogProps && showPopup &&
           <ContextualPopup
             editorRef={editorRef}
             onOpenLinkDialog={openLinkDialog}
             onOpenIpaDialog={openIpaDialog}
+            ref={popupRef}
           />}
       </S.Editor>
     </Slate>

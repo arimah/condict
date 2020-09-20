@@ -1,29 +1,55 @@
 import {Shortcut} from '@condict/ui';
+import {isMacOS} from '@condict/platform';
 
-export type InlineShortcuts = {
+export interface InlineShortcuts {
+  /** Toggles bold. */
   readonly bold: Shortcut | null;
+  /** Toggles italic. */
   readonly italic: Shortcut | null;
+  /** Toggles underline. */
   readonly underline: Shortcut | null;
+  /** Toggles strikethrough. */
   readonly strikethrough: Shortcut | null;
+  /** Toggles subscript. */
   readonly subscript: Shortcut | null;
+  /** Toggles superscript. */
   readonly superscript: Shortcut | null;
-};
+}
 
-export type BlockShortcuts = {
+export interface BlockShortcuts {
+  /** Formats the selected block(s) as a level 1 heading. */
   readonly heading1: Shortcut | null;
+  /** Formats the selected block(s) as a level 2 heading. */
   readonly heading2: Shortcut | null;
+  /** Formats the selected block(s) as a bullet list. */
   readonly bulletList: Shortcut | null;
+  /** Formats the selected block(s) as a numbered list. */
   readonly numberList: Shortcut | null;
+  /** Indents the selected block(s). */
   readonly indent: Shortcut | null;
+  /** Unindents the selected block(s). */
   readonly unindent: Shortcut | null;
-};
+}
 
-export type LinkShortcuts = {
+export interface LinkShortcuts {
+  /** Wraps the selected text in a link, or edits the selected link. */
   readonly addLink: Shortcut | null;
+  /** Removes links from the selected text. */
   readonly removeLink: Shortcut | null;
-};
+}
 
-export type AllShortcuts = InlineShortcuts & BlockShortcuts & LinkShortcuts;
+export interface HelperShortcuts {
+  /** Opens the IPA input helper. */
+  readonly insertIpa: Shortcut | null;
+  /** Focuses the contextual popup. */
+  readonly focusPopup: Shortcut | null;
+}
+
+export type AllShortcuts =
+  InlineShortcuts &
+  BlockShortcuts &
+  LinkShortcuts &
+  HelperShortcuts;
 
 const DefaultShortcuts: AllShortcuts = {
   // Mark shortcuts
@@ -45,6 +71,14 @@ const DefaultShortcuts: AllShortcuts = {
   // Link shortcuts
   addLink: Shortcut.parse('Primary+K k'),
   removeLink: Shortcut.parse('Primary+Shift+K k'),
+
+  // Helper shortcuts
+  insertIpa: null,
+  focusPopup: isMacOS
+    // Cmd+M is "minimize window" and Cmd+Down is "go to end of document",
+    // according to Wikipedia's _Table of keyboard shortcuts_.
+    ? Shortcut.parse('Secondary+ArrowDown')
+    : Shortcut.parse('Primary+ArrowDown M m'),
 };
 
 export default DefaultShortcuts;

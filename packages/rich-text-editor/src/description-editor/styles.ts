@@ -10,7 +10,10 @@ export const Editor = styled(BaseEditor)<EditorProps>`
   ${p => p.$dialogOpen && 'z-index: 1;'}
 `;
 
-export const Popup = styled.form`
+export const Popup = styled.form.attrs({
+  role: 'dialog',
+  tabIndex: -1,
+})`
   box-sizing: border-box;
   overflow: hidden;
   position: absolute;

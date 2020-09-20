@@ -161,11 +161,16 @@ const withCondict = (
     }
   };
 
-  editor.removeLink = options => {
-    const {selection} = editor;
+  editor.removeLink = (options = {}) => {
+    const {at = editor.selection} = options;
+    if (!at) {
+      return;
+    }
+
+    const range = Editor.range(editor, at);
     Transforms.unwrapNodes(editor, {
       ...options,
-      split: selection !== null && !Range.isCollapsed(selection),
+      split: range !== null && !Range.isCollapsed(range),
       match: isLink,
     });
   };

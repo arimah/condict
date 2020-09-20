@@ -49,7 +49,7 @@ const CharacterListing = (props: Props): JSX.Element => {
             const charIndex = nextCharIndex++;
             return (
               <Character
-                id={`${dialogId}-result-${i}`}
+                id={`${dialogId}-result-${charIndex}`}
                 key={i}
                 char={char}
                 index={charIndex}

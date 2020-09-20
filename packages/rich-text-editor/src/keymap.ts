@@ -5,7 +5,12 @@ import {HistoryEditor} from 'slate-history';
 import {Shortcut} from '@condict/ui';
 
 import {blocks, isBlock} from './node-utils';
-import {InlineShortcuts, BlockShortcuts, LinkShortcuts} from './shortcuts';
+import {
+  InlineShortcuts,
+  BlockShortcuts,
+  LinkShortcuts,
+  HelperShortcuts,
+} from './shortcuts';
 import {MarkType, CondictEditor, isListType, isHeadingType} from './types';
 
 // Note: We don't have to worry about editor.blurSelection here, as you can't
@@ -15,8 +20,12 @@ export type KeyCommand = {
   readonly shortcut: Shortcut | null;
   readonly exec: (
     event: KeyboardEvent<HTMLDivElement>,
-    editor: CondictEditor,
-    openLinkDialog: () => void
+    args: {
+      editor: CondictEditor;
+      openLinkDialog: () => void;
+      openIpaDialog: () => void;
+      focusPopup: () => void;
+    }
   ) => void;
 };
 
@@ -42,35 +51,35 @@ const toggleMark = (editor: CondictEditor, key: MarkType) => {
 export const getInlineCommands = (shortcuts: InlineShortcuts): KeyCommand[] => [
   {
     shortcut: shortcuts.bold,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       toggleMark(editor, 'bold');
     },
   },
   {
     shortcut: shortcuts.italic,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       toggleMark(editor, 'italic');
     },
   },
   {
     shortcut: shortcuts.underline,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       toggleMark(editor, 'underline');
     },
   },
   {
     shortcut: shortcuts.strikethrough,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       toggleMark(editor, 'strikethrough');
     },
   },
   {
     shortcut: shortcuts.subscript,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       toggleMark(editor, 'subscript');
       editor.removeMark('superscript');
@@ -78,7 +87,7 @@ export const getInlineCommands = (shortcuts: InlineShortcuts): KeyCommand[] => [
   },
   {
     shortcut: shortcuts.superscript,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       toggleMark(editor, 'superscript');
       editor.removeMark('subscript');
@@ -99,7 +108,7 @@ const BulletListStart = /^[-*+]/;
 export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
   {
     shortcut: Shortcut.parse('Enter'),
-    exec: (e, editor) => Editor.withoutNormalizing(editor, () => {
+    exec: (e, {editor}) => Editor.withoutNormalizing(editor, () => {
       const {selection} = editor;
       if (selection && Range.isCollapsed(selection)) {
         const [[block, blockPath]] = blocks(editor);
@@ -125,14 +134,14 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
   },
   {
     shortcut: Shortcut.parse('Shift+Enter'),
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       editor.insertText('\n');
     },
   },
   {
     shortcut: Shortcut.parse('Ctrl+Enter'),
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       Editor.withoutNormalizing(editor, () => {
         // Ctrl+Enter inserts a new paragraph at the current indentation.
@@ -149,49 +158,49 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
   },
   {
     shortcut: shortcuts.heading1,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       editor.formatBlock('heading1');
     },
   },
   {
     shortcut: shortcuts.heading2,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       editor.formatBlock('heading2');
     },
   },
   {
     shortcut: shortcuts.bulletList,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       editor.formatBlock('bulletListItem');
     },
   },
   {
     shortcut: shortcuts.numberList,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       editor.formatBlock('numberListItem');
     },
   },
   {
     shortcut: shortcuts.indent,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       editor.indent();
     },
   },
   {
     shortcut: shortcuts.unindent,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       editor.unindent();
     },
   },
   {
     shortcut: Shortcut.parse(['Space', 'Shift+Space']),
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       const {selection} = editor;
       if (selection && Range.isCollapsed(selection)) {
         const {focus} = selection;
@@ -246,7 +255,7 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
   },
   {
     shortcut: Shortcut.parse(['Backspace', 'Shift+Backspace']),
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       const {selection} = editor;
       if (selection && Range.isCollapsed(selection)) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -270,16 +279,33 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
 export const getLinkCommands = (shortcuts: LinkShortcuts): KeyCommand[] => [
   {
     shortcut: shortcuts.addLink,
-    exec: (e, _editor, openLinkDialog) => {
+    exec: (e, {openLinkDialog}) => {
       handle(e);
       openLinkDialog();
     },
   },
   {
     shortcut: shortcuts.removeLink,
-    exec: (e, editor) => {
+    exec: (e, {editor}) => {
       handle(e);
       editor.removeLink();
+    },
+  },
+];
+
+export const getHelperCommands = (shortcuts: HelperShortcuts): KeyCommand[] => [
+  {
+    shortcut: shortcuts.insertIpa,
+    exec: (e, {openIpaDialog}) => {
+      handle(e);
+      openIpaDialog();
+    },
+  },
+  {
+    shortcut: shortcuts.focusPopup,
+    exec: (e, {focusPopup}) => {
+      handle(e);
+      focusPopup();
     },
   },
 ];

@@ -1,11 +1,18 @@
 import React, {Ref, HTMLAttributes} from 'react';
 
+import {FocusTrap} from '@condict/ui';
+
 import * as S from './styles';
 
 export type Props = {
   width: number;
   placement: PlacementRect;
-} & Omit<HTMLAttributes<HTMLFormElement>, 'width' | 'placement'>;
+  trapFocus?: boolean;
+  onPointerDownOutside?: (target: Element) => void;
+} & Omit<
+  HTMLAttributes<HTMLFormElement>,
+  'width' | 'placement' | 'role' | 'tabIndex'
+>;
 
 export type PlacementRect = {
   readonly x: number;
@@ -30,7 +37,15 @@ const Popup = React.forwardRef((
   props: Props,
   ref: Ref<HTMLFormElement>
 ): JSX.Element => {
-  const {width, placement, style, children, ...otherProps} = props;
+  const {
+    width,
+    placement,
+    style,
+    trapFocus = false,
+    onPointerDownOutside,
+    children,
+    ...otherProps
+  } = props;
 
   const x = Math.max(
     Math.min(
@@ -41,18 +56,26 @@ const Popup = React.forwardRef((
   );
 
   return (
-    <S.Popup
-      {...otherProps}
-      style={{
-        ...style,
-        left: `${x}px`,
-        top: `${placement.y}px`,
-        width: `${width}px`,
-      }}
-      ref={ref}
+    <FocusTrap
+      // COMPAT: We need to call ReactEditor.focus on the editor instead of
+      // letting FocusTrap handle it for us. I don't know why.
+      return={false}
+      active={trapFocus}
+      onPointerDownOutside={onPointerDownOutside}
     >
-      {children}
-    </S.Popup>
+      <S.Popup
+        {...otherProps}
+        style={{
+          ...style,
+          left: `${x}px`,
+          top: `${placement.y}px`,
+          width: `${width}px`,
+        }}
+        ref={ref}
+      >
+        {children}
+      </S.Popup>
+    </FocusTrap>
   );
 });
 

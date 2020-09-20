@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import memoizeOne from 'memoize-one';
 
-import {FocusTrap, Shortcut, useUniqueId} from '@condict/ui';
+import {Shortcut, useUniqueId} from '@condict/ui';
 import {IpaChar, Match, search, getGroups} from '@condict/ipa';
 
 import {PlacementRect} from '../popup';
@@ -136,7 +136,6 @@ const IpaDialog = (props: Props): JSX.Element => {
   const [state, dispatch] = useReducer(reduce, InitialState);
   const {query, results, index} = state;
 
-  const mainRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const emit = useCallback((ipa: string) => {
@@ -147,10 +146,7 @@ const IpaDialog = (props: Props): JSX.Element => {
 
   const close = useCallback(() => {
     // HACK: Get around problems with Slate, focus and selection management.
-    mainRef.current?.focus();
-    window.setTimeout(() => {
-      onClose();
-    }, 1);
+    void Promise.resolve().then(onClose);
   }, [onClose]);
 
   const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -201,67 +197,61 @@ const IpaDialog = (props: Props): JSX.Element => {
   }, [state]);
 
   return (
-    <FocusTrap
-      // COMPAT: We need to call ReactEditor.focus on the editor instead of
-      // letting FocusTrap handle it for us. I don't know why.
-      return={false}
+    <Dialog
+      aria-label='IPA'
+      placement={placement}
+      trapFocus
+      onSubmit={handleSubmit}
+      onKeyDown={handleFormKeyDown}
       onPointerDownOutside={close}
     >
-      <Dialog
-        aria-label='IPA'
-        placement={placement}
-        onSubmit={handleSubmit}
-        onKeyDown={handleFormKeyDown}
-        ref={mainRef}
+      <SearchWrapper
+        // If results is null, then we show the full character listing, which
+        // gives the box some contents.
+        aria-expanded={results == null || results.length > 0}
+        aria-owns={`${id}-list`}
+        aria-haspopup='listbox'
       >
-        <SearchWrapper
-          // If results is null, then we show the full character listing, which
-          // gives the box some contents.
-          aria-expanded={results == null || results.length > 0}
-          aria-owns={`${id}-list`}
-          aria-haspopup='listbox'
-        >
-          <SearchInput
-            value={query}
-            placeholder='f, ng, alveolar sibilant, high tone, ...'
-            aria-autocomplete='list'
-            aria-controls={`${id}-list`}
-            aria-activedescendant={
-              index !== -1 ? `${id}-result-${index}` : undefined
-            }
-            aria-describedby={
-              results && results.length === 0 ? `${id}-no-results` : undefined
-            }
-            onChange={handleInput}
-            onKeyDown={handleInputKeyDown}
-            ref={inputRef}
+        <SearchInput
+          value={query}
+          placeholder='f, ng, alveolar sibilant, high tone, ...'
+          aria-autocomplete='list'
+          aria-controls={`${id}-list`}
+          aria-activedescendant={
+            index !== -1 ? `${id}-result-${index}` : undefined
+          }
+          aria-describedby={
+            results && results.length === 0 ? `${id}-no-results` : undefined
+          }
+          onChange={handleInput}
+          onKeyDown={handleInputKeyDown}
+          ref={inputRef}
+        />
+        <SubmitButton label='Insert'/>
+      </SearchWrapper>
+      <S.CharacterList id={`${id}-list`} onMouseDown={cancelMouseEvent}>
+        {results ? (
+          <SearchResultList
+            dialogId={id}
+            query={query}
+            results={results}
+            currentIndex={index}
+            currentResultRef={currentResultRef}
+            onHover={handleHover}
+            onEmit={emit}
           />
-          <SubmitButton label='Insert'/>
-        </SearchWrapper>
-        <S.CharacterList id={`${id}-list`} onMouseDown={cancelMouseEvent}>
-          {results ? (
-            <SearchResultList
-              dialogId={id}
-              query={query}
-              results={results}
-              currentIndex={index}
-              currentResultRef={currentResultRef}
-              onHover={handleHover}
-              onEmit={emit}
-            />
-          ) : (
-            <CharacterListing
-              dialogId={id}
-              groups={getGroups()}
-              currentIndex={index}
-              currentResultRef={currentResultRef}
-              onHover={handleHover}
-              onEmit={emit}
-            />
-          )}
-        </S.CharacterList>
-      </Dialog>
-    </FocusTrap>
+        ) : (
+          <CharacterListing
+            dialogId={id}
+            groups={getGroups()}
+            currentIndex={index}
+            currentResultRef={currentResultRef}
+            onHover={handleHover}
+            onEmit={emit}
+          />
+        )}
+      </S.CharacterList>
+    </Dialog>
   );
 };
 

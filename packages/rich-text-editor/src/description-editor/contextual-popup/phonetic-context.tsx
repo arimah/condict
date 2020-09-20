@@ -5,39 +5,51 @@ import {ReactEditor} from 'slate-react';
 import xsampaToIpa from '@condict/x-sampa';
 
 import {useStaticCondictEditor} from '../../plugin';
+import {SearchIpaIcon, ConvertToIpaIcon} from '../../icons';
 import {CondictEditor} from '../../types';
 
 import {PlacementRect} from '../popup';
-import {SearchIpaIcon, ConvertToIpaIcon} from '../icons';
 
 import * as S from './styles';
 
 export type Props = {
   range: SlateRange;
   text: string;
+  focusable: boolean;
   onInsertIpa: () => void;
 };
 
 const PhoneticPopup = (props: Props): JSX.Element | null => {
-  const {range, text, onInsertIpa} = props;
+  const {range, text, focusable, onInsertIpa} = props;
 
   const editor = useStaticCondictEditor();
 
   const ipa = xsampaToIpa(text);
 
   const applyConversion = useCallback(() => {
+    const blurSelRef =
+      editor.blurSelection &&
+      Editor.rangeRef(editor, editor.blurSelection);
+
     const rangeRef = Editor.rangeRef(editor, range);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     Transforms.insertText(editor, ipa, {at: rangeRef.current!});
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     Transforms.select(editor, rangeRef.unref()!);
+
+    if (blurSelRef) {
+      editor.blurSelection = blurSelRef.unref();
+    }
   }, [range, ipa]);
+
+  const tabIndex = focusable ? undefined : -1;
 
   return (
     <S.Columns>
       {text !== ipa ? <>
         <S.PrimaryAction
           label={`Convert to IPA: ${ipa}`}
+          tabIndex={tabIndex}
           onClick={applyConversion}
         >
           <ConvertToIpaIcon/>
@@ -48,13 +60,14 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
           <S.Action
             label='Insert IPA character'
             title='Insert IPA character'
+            tabIndex={tabIndex}
             onClick={onInsertIpa}
           >
             <SearchIpaIcon/>
           </S.Action>
         </S.Actions>
       </> : (
-        <S.PrimaryAction onClick={onInsertIpa}>
+        <S.PrimaryAction tabIndex={tabIndex} onClick={onInsertIpa}>
           <SearchIpaIcon/>
           <span>Insert IPA character</span>
         </S.PrimaryAction>

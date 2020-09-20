@@ -1,8 +1,22 @@
-import React, {RefObject, MouseEvent, useState, useEffect} from 'react';
+import React, {
+  Ref,
+  RefObject,
+  MouseEvent,
+  KeyboardEvent,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useImperativeHandle,
+} from 'react';
+import {ReactEditor} from 'slate-react';
+
+import {Shortcut} from '@condict/ui';
 
 import {useCondictEditor} from '../../plugin';
 
 import {PlacementRect} from '../popup';
+import {CloseKey} from '../dialog';
 
 import LinkContext, {
   ContextValue as LinkContextValue,
@@ -19,6 +33,11 @@ export type Props = {
   onOpenLinkDialog: () => void;
   onOpenIpaDialog: () => void;
 };
+
+export interface ContextualPopupHandle {
+  readonly focus: () => void;
+  readonly contains: (node: Node | null) => boolean;
+}
 
 const getPlacement = (
   ...placements: (PlacementRect | undefined)[]
@@ -38,17 +57,45 @@ const getPlacement = (
     };
   });
 
-const Width = 340;
-
 const preventMouseFocus = (e: MouseEvent) => e.preventDefault();
 
-const ContextualPopup = (props: Props): JSX.Element | null => {
+const ContextualPopup = React.forwardRef((
+  props: Props,
+  ref: Ref<ContextualPopupHandle>
+): JSX.Element | null => {
   const {editorRef, onOpenLinkDialog, onOpenIpaDialog} = props;
 
   const editor = useCondictEditor();
 
+  const rootRef = useRef<HTMLFormElement>(null);
+
   const [link, setLink] = useState<LinkContextValue | null>(null);
   const [phonetic, setPhonetic] = useState<PhoneticContextValue | null>(null);
+
+  const [trapActive, setTrapActive] = useState(false);
+
+  const cancelTrap = useCallback(() => {
+    setTrapActive(false);
+    void Promise.resolve().then(() => {
+      ReactEditor.focus(editor);
+    });
+  }, []);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (Shortcut.matches(CloseKey, e)) {
+      e.preventDefault();
+      cancelTrap();
+    }
+  }, [cancelTrap]);
+
+  useImperativeHandle(ref, () => ({
+    contains: node => rootRef.current?.contains(node) || false,
+    focus() {
+      if (rootRef.current) {
+        setTrapActive(true);
+      }
+    },
+  }), []);
 
   useEffect(() => {
     const editorElem = editorRef.current;
@@ -65,6 +112,12 @@ const ContextualPopup = (props: Props): JSX.Element | null => {
     if (nextPhonetic !== phonetic) {
       setPhonetic(nextPhonetic);
     }
+
+    // If a focused popup is about to disappear, e.g. because the link it's for
+    // was removed, we must deactivate the trap and refocus the editor.
+    if (trapActive && !nextLink && !nextPhonetic) {
+      cancelTrap();
+    }
   });
 
   const placement = getPlacement(link?.placement, phonetic?.placement);
@@ -75,19 +128,31 @@ const ContextualPopup = (props: Props): JSX.Element | null => {
 
   return (
     <S.Popup
-      width={Width}
       placement={placement}
+      trapFocus={trapActive}
+      aria-label='Contextual tools'
       onMouseDown={preventMouseFocus}
+      onKeyDown={handleKeyDown}
+      onPointerDownOutside={cancelTrap}
+      ref={rootRef}
     >
-      {link && <LinkContext link={link.link} onEditLink={onOpenLinkDialog}/>}
+      {link &&
+        <LinkContext
+          link={link.link}
+          focusable={trapActive}
+          onEditLink={onOpenLinkDialog}
+        />}
       {phonetic &&
         <PhoneticContext
           range={phonetic.range}
           text={phonetic.text}
+          focusable={trapActive}
           onInsertIpa={onOpenIpaDialog}
         />}
     </S.Popup>
   );
-};
+});
+
+ContextualPopup.displayName = 'ContextualPopup';
 
 export default ContextualPopup;

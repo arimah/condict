@@ -21,7 +21,12 @@ import IndentLessIcon from 'mdi-react/FormatIndentDecreaseIcon';
 
 import {Toolbar} from '@condict/ui';
 
-import {BlockShortcuts, InlineShortcuts, LinkShortcuts} from './shortcuts';
+import {
+  BlockShortcuts,
+  InlineShortcuts,
+  LinkShortcuts,
+  HelperShortcuts,
+} from './shortcuts';
 
 import {useCondictEditor} from './plugin';
 import {
@@ -30,6 +35,7 @@ import {
   canIndent,
   canUnindent,
 } from './node-utils';
+import {SearchIpaIcon} from './icons';
 import {MarkType} from './types';
 
 export type Props<S> = {
@@ -217,4 +223,22 @@ export const BlockFormatGroup = (
       </Toolbar.Button>
     </Toolbar.Group>
   </>;
+};
+
+export const HelpersGroup = (
+  {shortcuts, onOpenIpaDialog}: Props<HelperShortcuts> & {
+    onOpenIpaDialog: () => void;
+  }
+): JSX.Element => {
+  const editor = useCondictEditor();
+  return (
+    <Toolbar.Button
+      label='Insert IPA character'
+      disabled={editor.selection === null && editor.blurSelection === null}
+      shortcut={shortcuts.insertIpa}
+      onClick={onOpenIpaDialog}
+    >
+      <SearchIpaIcon/>
+    </Toolbar.Button>
+  );
 };
