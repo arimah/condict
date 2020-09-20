@@ -97,6 +97,7 @@ const Character = React.memo(React.forwardRef((
       isBase={isBase}
       title={char.name}
       selected={selected}
+      aria-selected={selected}
       onMouseEnter={() => onMouseEnter(index)}
       onClick={() => onClick(char.input)}
       ref={ref}

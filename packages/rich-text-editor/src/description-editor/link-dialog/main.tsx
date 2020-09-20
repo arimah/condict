@@ -336,6 +336,7 @@ const LinkDialog = (props: Props): JSX.Element => {
             index={index}
             result={result}
             selected={index === state.index}
+            aria-selected={index === state.index}
             onMouseEnter={handleHoverResult}
             onClick={onSubmit}
             ref={index === state.index ? currentResultRef : undefined}

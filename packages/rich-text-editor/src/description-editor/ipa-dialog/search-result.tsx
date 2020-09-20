@@ -76,6 +76,7 @@ const SearchResult = React.memo(React.forwardRef((
     <S.SearchResult
       id={id}
       selected={selected}
+      aria-selected={selected}
       onMouseEnter={() => onMouseEnter(index)}
       onClick={() => onClick(char.input)}
       ref={ref as Ref<HTMLDivElement>}
