@@ -5,8 +5,7 @@ import React, {
   LabelHTMLAttributes,
 } from 'react';
 
-import {getContentAndLabel} from '@condict/a11y-utils';
-
+import {getContentAndLabel} from '../a11y-utils';
 import combineRefs from '../combine-refs';
 
 import * as S from './styles';

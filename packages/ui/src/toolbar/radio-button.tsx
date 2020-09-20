@@ -1,9 +1,8 @@
 import React, {ButtonHTMLAttributes, useContext, useRef} from 'react';
 
-import {getContentAndLabel} from '@condict/a11y-utils';
-
 import {useCommand} from '../command';
 import {Shortcut, ShortcutMap} from '../shortcut';
+import {getContentAndLabel} from '../a11y-utils';
 import combineRefs from '../combine-refs';
 
 import {Context as FocusContext, ContextValue, useManagedFocus} from './focus-manager';

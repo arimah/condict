@@ -1,9 +1,8 @@
 import React, {ChangeEvent, PureComponent} from 'react';
 import produce from 'immer';
 
-import {FocusTrap, genUniqueId} from '@condict/ui';
+import {FocusTrap, SROnly, genUniqueId} from '@condict/ui';
 import {inflectWord} from '@condict/inflect';
-import {SROnly} from '@condict/a11y-utils';
 
 import CellDialog from '../../cell-dialog';
 import {CellWithData, CellEditorProps} from '../../types';

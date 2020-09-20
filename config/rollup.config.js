@@ -31,7 +31,6 @@ const AllPackages = [
   },
 
   // UI packages
-  {name: 'a11y-utils'},
   {name: 'ui'},
   {name: 'rich-text-editor'},
   {name: 'table-editor'},

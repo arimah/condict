@@ -34,7 +34,6 @@ const AllPackages = [
   {group: 'server', name: 'server'},
 
   // UI packages.
-  {group: 'ui', name: 'a11y-utils'},
   {group: 'ui', name: 'ui'},
   {group: 'ui', name: 'rich-text-editor'},
   {group: 'ui', name: 'table-editor'},

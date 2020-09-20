@@ -10,10 +10,9 @@ import React, {
   useRef,
 } from 'react';
 
-import {SROnly} from '@condict/a11y-utils';
-
 import DescendantCollection from '../descendant-collection';
 import {Shortcut, ShortcutMap} from '../shortcut';
+import {SROnly} from '../a11y-utils';
 import genUniqueId from '../unique-id';
 
 import * as S from './styles';

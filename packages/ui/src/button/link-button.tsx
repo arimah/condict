@@ -1,7 +1,6 @@
 import React, {MouseEventHandler, AnchorHTMLAttributes} from 'react';
 
-import {getContentAndLabel} from '@condict/a11y-utils';
-
+import {getContentAndLabel} from '../a11y-utils';
 import {useCommand} from '../command';
 
 import * as S from './styles';

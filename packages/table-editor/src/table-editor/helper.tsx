@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {SROnly} from '@condict/a11y-utils';
+import {SROnly} from '@condict/ui';
 
 import {Table} from '../value';
 import {useEditor} from '../context';

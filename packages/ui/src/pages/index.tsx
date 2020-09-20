@@ -2,8 +2,7 @@ import React, {Key, ReactNode} from 'react';
 import ChevronLeft from 'mdi-react/ChevronLeftIcon';
 import ChevronRight from 'mdi-react/ChevronRightIcon';
 
-import {SROnly} from '@condict/a11y-utils';
-
+import {SROnly} from '../a11y-utils';
 import {Spinner} from '../spinner';
 
 import * as S from './styles';

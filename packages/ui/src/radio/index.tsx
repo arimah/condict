@@ -7,8 +7,7 @@ import React, {
   useMemo,
 } from 'react';
 
-import {getContentAndLabel} from '@condict/a11y-utils';
-
+import {getContentAndLabel} from '../a11y-utils';
 import genUniqueId from '../unique-id';
 
 import * as S from './styles';

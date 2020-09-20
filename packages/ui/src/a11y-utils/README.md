@@ -1,6 +1,6 @@
-# @condict/a11y-utils
+# Accessibility utilities
 
-This tiny package exports reusable functions and React components for various accessibility-related tasks.
+This module exports reusable functions and React components for various accessibility-related tasks.
 
 * [`getContentAndLabel()`](#getcontentandlabel)
 * [`SROnly`](#sronly)

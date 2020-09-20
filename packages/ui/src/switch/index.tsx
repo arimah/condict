@@ -1,6 +1,6 @@
 import React, {InputHTMLAttributes, LabelHTMLAttributes} from 'react';
 
-import {getContentAndLabel} from '@condict/a11y-utils';
+import {getContentAndLabel} from '../a11y-utils';
 
 import * as S from './styles';
 

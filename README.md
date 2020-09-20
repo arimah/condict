@@ -60,7 +60,6 @@ When the server is running, a GraphQL playground will be accessible at _http://l
 
 The eventual goal of Condict is to be distributable as a standalone Electron app, as well as separate server and admin area components for websites. Condict is made up of many packages, which are found in [packages/](./packages).
 
-* [a11y-utils](./packages/a11y-utils): Various small utility functions and React components for accessibility features.
 * [graphql-typer](./packages/graphql-typer): Generates TypeScript type definitions from a GraphQL schema.
 * [ipa](./packages/ipa): Utilities for searching and listing [IPA][] characters.
 * [platform](./packages/platform): Basic platform detection, with support for overrides.
