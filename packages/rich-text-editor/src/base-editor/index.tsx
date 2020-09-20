@@ -66,7 +66,6 @@ const BaseEditor = React.forwardRef((
           const start = Editor.start(editor, []);
           selection = {anchor: start, focus: start};
         }
-        console.log('Restoring selection to', selection, 'from', editor.selection);
         Transforms.select(editor, selection);
       }
     };
