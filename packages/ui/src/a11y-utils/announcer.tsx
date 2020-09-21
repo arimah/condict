@@ -27,7 +27,7 @@ const Listeners = new WeakMap<Announcements, Listener>();
 /**
  * Implements an announcer for screen reader-only messages. This component is
  * used when other components need to announce state changes that cannot easily
- * be announced through visible text or ARIA ttributes. The messages that an
+ * be communictaed through visible text or ARIA attributes. The messages that an
  * announcer manages are inherently ephemeral and temporary. They cannot be
  * repeated and disappear from the DOM after a short time.
  */
