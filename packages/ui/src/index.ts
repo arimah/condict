@@ -44,7 +44,11 @@ export {Radio, Props as RadioProps} from './radio';
 export {Select, Props as SelectProps} from './select';
 export {Spinner, Props as SpinnerProps} from './spinner';
 export {Switch, Props as SwitchProps} from './switch';
-export {TagInput, Props as TagInputProps} from './tag-input';
+export {
+  TagInput,
+  Props as TagInputProps,
+  Messages as TagInputMessages,
+} from './tag-input';
 export {Toolbar, Props as ToolbarProps} from './toolbar';
 export {BodyText} from './typography';
 
