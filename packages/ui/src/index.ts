@@ -1,4 +1,11 @@
-export {SROnly, getContentAndLabel} from './a11y-utils';
+export {
+  Announcer,
+  AnnouncerProps,
+  Announcements,
+  SROnly,
+  getContentAndLabel,
+  useAnnouncements,
+} from './a11y-utils';
 export {Button, ButtonProps, LinkButton, LinkButtonProps} from './button';
 export {Checkbox, Props as CheckboxProps} from './checkbox';
 export {ConlangFlag, Props as ConlangFlagProps} from './conlang-flag';

@@ -12,7 +12,7 @@ import React, {
 
 import DescendantCollection from '../descendant-collection';
 import {Shortcut, ShortcutMap} from '../shortcut';
-import {SROnly} from '../a11y-utils';
+import {Announcer, Announcements, SROnly} from '../a11y-utils';
 import genUniqueId from '../unique-id';
 
 import * as S from './styles';
@@ -254,10 +254,6 @@ export type Props = {
 type State = {
   inputFocused: boolean;
   selected: TagInputChild;
-  announcement: {
-    key: string;
-    text: string;
-  };
 };
 
 export class TagInput extends Component<Props, State> {
@@ -276,6 +272,7 @@ export class TagInput extends Component<Props, State> {
   private wrapper = React.createRef<HTMLSpanElement>();
   private mainDescId = genUniqueId();
   private tagDescId = genUniqueId();
+  private announcements = Announcements.create();
   private hasFocus = false;
 
   public constructor(props: Props) {
@@ -286,7 +283,6 @@ export class TagInput extends Component<Props, State> {
     this.state = {
       inputFocused: false,
       selected: inputChild,
-      announcement: {key: '', text: ''},
     };
   }
 
@@ -403,7 +399,7 @@ export class TagInput extends Component<Props, State> {
 
     const actualNewTags = nextTags.filter(t => !prevTags.includes(t));
     if (actualNewTags.length > 0) {
-      this.announce(
+      this.announcements.announce(
         (actualNewTags.length === 1
           ? 'Tag added: '
           : `${actualNewTags.length} tags added: `
@@ -411,7 +407,7 @@ export class TagInput extends Component<Props, State> {
         actualNewTags.join(', ')
       );
     } else {
-      this.announce('No new tags added.');
+      this.announcements.announce('No new tags added.');
     }
   }
 
@@ -436,7 +432,7 @@ export class TagInput extends Component<Props, State> {
     input.focus();
 
     this.setTags(nextTags);
-    this.announce(
+    this.announcements.announce(
       `Editing tag: ${tag}. ${newTag ? `Tag added: ${newTag}.` : ''}`
     );
   }
@@ -460,20 +456,11 @@ export class TagInput extends Component<Props, State> {
     nextSelected.elem.focus();
 
     this.setTags(nextTags);
-    this.announce(`Tag removed: ${tag}.`);
+    this.announcements.announce(`Tag removed: ${tag}.`);
   }
 
   private setTags(tags: string[]) {
     this.props.onChange(tags);
-  }
-
-  private announce(text: string) {
-    this.setState({
-      announcement: {
-        key: genUniqueId(),
-        text,
-      },
-    });
   }
 
   public render(): JSX.Element {
@@ -485,7 +472,7 @@ export class TagInput extends Component<Props, State> {
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
     } = this.props;
-    const {inputFocused, selected, announcement} = this.state;
+    const {inputFocused, selected} = this.state;
 
     return (
       <S.Main
@@ -510,11 +497,7 @@ export class TagInput extends Component<Props, State> {
         <SROnly id={this.tagDescId}>
           {this.getTagDescription()}
         </SROnly>
-        <SROnly aria-live={this.hasFocus ? 'polite' : 'off'}>
-          <span key={announcement.key}>
-            {announcement.text}
-          </span>
-        </SROnly>
+        <Announcer controller={this.announcements} silent={!this.hasFocus}/>
         {tags.map((tag) =>
           <TagButton
             key={tag}
