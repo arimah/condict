@@ -99,7 +99,7 @@ const Main = (): JSX.Element => {
       dt,
       DefinitionTable.fromJson(inflectionTableData, definitionTableData)
     ));
-  }, []);
+  }, [definitionTable]);
 
   return (
     <section>
