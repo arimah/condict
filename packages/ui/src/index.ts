@@ -39,7 +39,7 @@ export {
   NumberInput,
   NumberInputProps,
 } from './input';
-export {Pages, Props as PagesProps} from './pages';
+export {Pages, Props as PagesProps, Messages as PagesMessages} from './pages';
 export {Radio, Props as RadioProps} from './radio';
 export {Select, Props as SelectProps} from './select';
 export {Spinner, Props as SpinnerProps} from './spinner';
