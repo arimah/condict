@@ -1,17 +1,12 @@
 import styled, {css} from 'styled-components';
 
-import {Saturation, makeColorFn} from '@condict/ui';
-
-const stemColor = makeColorFn(291, {
-  high: 70,
-  low: 45,
-});
+import {PrimaryHue} from '@condict/ui';
 
 // 'light' and 'dark' here mean for light and dark themes, respectively.
-const lightStemColor = stemColor(Saturation.HIGH, 35);
-const disabledLightStemColor = stemColor(Saturation.LOW, 80);
-const darkStemColor = stemColor(Saturation.HIGH, 65);
-const disabledDarkStemColor = stemColor(Saturation.LOW, 35);
+const lightStemColor = `hsl(${PrimaryHue}, 70%, 35%)`;
+const disabledLightStemColor = `hsl(${PrimaryHue}, 45%, 80%)`;
+const darkStemColor = `hsl(${PrimaryHue}, 70%, 65%)`;
+const disabledDarkStemColor = `hsl(${PrimaryHue}, 45%, 35%)`;
 
 export type CellDataProps = {
   inflected?: boolean;

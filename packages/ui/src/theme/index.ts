@@ -10,4 +10,12 @@ export {
 export {default as DefaultTheme} from './default';
 export {default as LightTheme} from './light';
 export {default as DarkTheme} from './dark';
-export {Saturation, intentVar, transition, makeColorFn} from './shared';
+export {
+  PrimaryHue,
+  GeneralHue,
+  DangerHue,
+  FocusHue,
+  SelectionHue,
+  intentVar,
+  transition,
+} from './shared';

@@ -79,12 +79,15 @@ export {
   SelectionTheme,
   TimingTheme,
   ShadowTheme,
-  Saturation,
   LightTheme,
   DarkTheme,
+  PrimaryHue,
+  GeneralHue,
+  DangerHue,
+  FocusHue,
+  SelectionHue,
   intentVar,
   transition,
-  makeColorFn,
 } from './theme';
 
 export {default as Intent} from './intent';

@@ -1,21 +1,16 @@
 import styled from 'styled-components';
 
-import {Saturation, makeColorFn} from '@condict/ui';
+import {PrimaryHue} from '@condict/ui';
 
 export type DisabledProps = {
   disabled: boolean;
 };
 
-const stemColor = makeColorFn(291, {
-  high: 70,
-  low: 45,
-});
-
 // 'light' and 'dark' here mean for light and dark themes, respectively.
-const lightStemColor = stemColor(Saturation.HIGH, 35);
-const disabledLightStemColor = stemColor(Saturation.LOW, 80);
-const darkStemColor = stemColor(Saturation.HIGH, 65);
-const disabledDarkStemColor = stemColor(Saturation.LOW, 35);
+const lightStemColor = `hsl(${PrimaryHue}, 70%, 35%)`;
+const disabledLightStemColor = `hsl(${PrimaryHue}, 45%, 80%)`;
+const darkStemColor = `hsl(${PrimaryHue}, 70%, 65%)`;
+const disabledDarkStemColor = `hsl(${PrimaryHue}, 45%, 35%)`;
 
 export const InflectionStem = styled.span<DisabledProps>`
   color: ${p => p.theme.dark
@@ -24,15 +19,13 @@ export const InflectionStem = styled.span<DisabledProps>`
   };
 `;
 
-const braceColor = makeColorFn(174, {
-  high: 65,
-  low: 40,
-});
+/** Turquoise. */
+const BraceHue = 174;
 
-const lightBraceColor = braceColor(Saturation.HIGH, 35);
-const disabledLightBraceColor = braceColor(Saturation.LOW, 80);
-const darkBraceColor = braceColor(Saturation.HIGH, 60);
-const disabledDarkBraceColor = braceColor(Saturation.LOW, 30);
+const lightBraceColor = `hsl(${BraceHue}, 65%, 35%)`;
+const disabledLightBraceColor = `hsl(${BraceHue}, 40%, 80%)`;
+const darkBraceColor = `hsl(${BraceHue}, 65%, 60%)`;
+const disabledDarkBraceColor = `hsl(${BraceHue}, 40%, 30%)`;
 
 export const EscapedBrace = styled.span<DisabledProps>`
   color: ${p => p.theme.dark
