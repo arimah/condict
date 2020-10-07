@@ -11,7 +11,7 @@ export type Props = {
   onPointerDownOutside?: (target: Element) => void;
 } & Omit<
   HTMLAttributes<HTMLFormElement>,
-  'width' | 'placement' | 'role' | 'tabIndex'
+  'width' | 'placement' | 'role' | 'tabIndex' | 'aria-modal'
 >;
 
 export type PlacementRect = {

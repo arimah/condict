@@ -13,6 +13,7 @@ export const Editor = styled(BaseEditor)<EditorProps>`
 export const Popup = styled.form.attrs({
   role: 'dialog',
   tabIndex: -1,
+  'aria-modal': true,
 })`
   box-sizing: border-box;
   overflow: hidden;
