@@ -16,23 +16,23 @@ import {MarkType, CondictEditor, isListType, isHeadingType} from './types';
 // Note: We don't have to worry about editor.blurSelection here, as you can't
 // trigger keyboard shortcuts without focusing the editor.
 
-export type KeyCommand = {
+export interface KeyCommand<A = {}> {
   readonly shortcut: Shortcut | null;
   readonly exec: (
     event: KeyboardEvent<HTMLDivElement>,
-    args: {
+    args: A & {
       editor: CondictEditor;
-      openLinkDialog: () => void;
-      openIpaDialog: () => void;
-      focusPopup: () => void;
+      //openLinkDialog: () => void;
+      //openIpaDialog: () => void;
+      //focusPopup: () => void;
     }
   ) => void;
-};
+}
 
-export type KeyboardMapConfig = {
+export interface KeyboardMapConfig {
   singleLine: boolean;
   allowLinks: boolean;
-};
+}
 
 const handle = (event: KeyboardEvent) => {
   event.preventDefault();
@@ -276,7 +276,11 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
   },
 ];
 
-export const getLinkCommands = (shortcuts: LinkShortcuts): KeyCommand[] => [
+export interface LinkArgs {
+  openLinkDialog: () => void;
+}
+
+export const getLinkCommands = (shortcuts: LinkShortcuts): KeyCommand<LinkArgs>[] => [
   {
     shortcut: shortcuts.addLink,
     exec: (e, {openLinkDialog}) => {
@@ -293,7 +297,12 @@ export const getLinkCommands = (shortcuts: LinkShortcuts): KeyCommand[] => [
   },
 ];
 
-export const getHelperCommands = (shortcuts: HelperShortcuts): KeyCommand[] => [
+export interface HelperArgs {
+  openIpaDialog: () => void;
+  focusPopup: () => void;
+}
+
+export const getHelperCommands = (shortcuts: HelperShortcuts): KeyCommand<HelperArgs>[] => [
   {
     shortcut: shortcuts.insertIpa,
     exec: (e, {openIpaDialog}) => {

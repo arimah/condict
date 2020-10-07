@@ -19,10 +19,6 @@ export type Props = {
   onChange: (value: SlateNode[]) => void;
 };
 
-const fail = () => {
-  throw new Error('Invalid command for caption editor');
-};
-
 const TableCaptionEditor = (props: Props): JSX.Element => {
   const {
     value,
@@ -44,12 +40,7 @@ const TableCaptionEditor = (props: Props): JSX.Element => {
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     const cmd = keyboardMap.get(e);
     if (cmd) {
-      cmd.exec(e, {
-        editor,
-        openLinkDialog: fail,
-        openIpaDialog: fail,
-        focusPopup: fail,
-      });
+      cmd.exec(e, {editor});
     }
   }, [keyboardMap]);
 
