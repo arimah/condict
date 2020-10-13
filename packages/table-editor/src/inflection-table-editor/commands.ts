@@ -6,12 +6,12 @@ import {InflectionTableCommandFn} from './types';
 const commands: CommandSpecMap<InflectionTableCommandFn> = {
   clearSelectedCells: {
     shortcut: Shortcut.parse('Delete Backspace'),
-    exec: clearSelected,
+    action: clearSelected,
   },
 
   toggleDeriveLemma: {
     shortcut: Shortcut.parse('Primary+D d'),
-    exec: toggleDeriveLemma,
+    action: toggleDeriveLemma,
   },
 };
 

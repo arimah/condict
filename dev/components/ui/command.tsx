@@ -1,13 +1,14 @@
 /* eslint-disable react/jsx-key */
-import React, {useMemo, useCallback} from 'react';
+import React, {KeyboardEvent, useCallback} from 'react';
 import styled from 'styled-components';
 
 import {
-  Command,
   CommandSpecMap,
   CommandGroup,
+  CommandProvider,
   Button,
   Checkbox,
+  useCommandGroup,
 } from '@condict/ui';
 
 import Demo, {useDemoState} from '../demo';
@@ -60,40 +61,61 @@ const InitialState: State = {
 
 const StorageKey = 'condict/ui/command';
 
+const OuterCommands: CommandSpecMap<keyof State> = {
+  toggleItalic: {
+    shortcut: 'Primary+I i',
+    action: 'italicOuter',
+  },
+  toggleBold: {
+    shortcut: 'Primary+B b',
+    action: 'bold',
+  },
+};
+
+const InnerCommands: CommandSpecMap<keyof State> = {
+  toggleItalic: {
+    shortcut: 'Primary+I i',
+    action: 'italicInner',
+  },
+};
+
 const Main = (): JSX.Element => {
   const {state, set, reset} = useDemoState(StorageKey, InitialState);
   const {
     outerDisabled,
     innerDisabled,
     italicOuter,
-    italicInner,
     bold,
+    italicInner,
   } = state;
 
-  const outerCommands = useMemo((): CommandSpecMap<keyof State> => ({
-    toggleItalic: {
-      shortcut: 'Primary+I i',
-      exec: 'italicOuter',
-    },
-    toggleBold: {
-      shortcut: 'Primary+B b',
-      exec: 'bold',
-    },
-  }), []);
-
-  const innerCommands = useMemo((): CommandSpecMap<keyof State> => ({
-    toggleItalic: {
-      shortcut: 'Primary+I i',
-      exec: 'italicInner',
-    },
-  }), []);
-
-  const execCommand = useCallback((cmd: Command<keyof State>) => {
-    set(cmd.exec, !state[cmd.exec]);
+  const execCommand = useCallback((cmd: keyof State) => {
+    set(cmd, !state[cmd]);
   }, [state, set]);
+
+  const outerCommands = useCommandGroup({
+    commands: OuterCommands,
+    disabled: outerDisabled,
+    exec: execCommand,
+  });
+
+  const handleOuterKeyDown = useCallback((e: KeyboardEvent) => {
+    CommandGroup.handleKey(outerCommands, e);
+  }, [outerCommands]);
+
+  const innerCommands = useCommandGroup({
+    commands: InnerCommands,
+    disabled: innerDisabled,
+    exec: execCommand,
+  });
+
+  const handleInnerKeyDown = useCallback((e: KeyboardEvent) => {
+    CommandGroup.handleKey(innerCommands, e);
+  }, [innerCommands]);
 
   return (
     <Demo
+      name='Command'
       controls={[
         <Checkbox
           checked={state.outerDisabled}
@@ -108,54 +130,46 @@ const Main = (): JSX.Element => {
       ]}
       onReset={reset}
     >
-      <CommandGroup
-        as={Group}
-        tabIndex={0}
-        disabled={outerDisabled}
-        commands={outerCommands}
-        onExec={execCommand}
-      >
-        <div>
-          <Button
-            slim
-            label='Toggle italic'
-            command='toggleItalic'
-          />
-          {' '}
-          <Button
-            slim
-            label='Toggle bold'
-            command='toggleBold'
-          />
-        </div>
-        <ResultDisplay italic={italicOuter} bold={bold}>
-          outer state: italic={String(italicOuter)}, bold={String(bold)}
-        </ResultDisplay>
-        <CommandGroup
-          as={Group}
-          tabIndex={0}
-          disabled={innerDisabled}
-          commands={innerCommands}
-          onExec={execCommand}
-        >
+      <Group tabIndex={0} onKeyDown={handleOuterKeyDown}>
+        <CommandProvider commands={outerCommands}>
           <div>
             <Button
               slim
-              label='Toggle italic (inner)'
+              label='Toggle italic'
               command='toggleItalic'
             />
             {' '}
             <Button
               slim
-              label='Toggle bold (outer)'
+              label='Toggle bold'
               command='toggleBold'
             />
           </div>
-          <ResultDisplay italic={italicInner}>
-            inner state: italic={String(italicInner)}
+          <ResultDisplay italic={italicOuter} bold={bold}>
+            outer state: italic={String(italicOuter)}, bold={String(bold)}
           </ResultDisplay>
-        </CommandGroup>
-      </CommandGroup>
+          <Group tabIndex={0} onKeyDown={handleInnerKeyDown}>
+            <CommandProvider commands={innerCommands}>
+              <div>
+                <Button
+                  slim
+                  label='Toggle italic (inner)'
+                  command='toggleItalic'
+                />
+                {' '}
+                <Button
+                  slim
+                  label='Toggle bold (outer)'
+                  command='toggleBold'
+                />
+              </div>
+              <ResultDisplay italic={italicInner}>
+                inner state: italic={String(italicInner)}
+              </ResultDisplay>
+            </CommandProvider>
+          </Group>
+        </CommandProvider>
+      </Group>
     </Demo>
   );
 };

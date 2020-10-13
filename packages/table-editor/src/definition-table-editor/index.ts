@@ -1,7 +1,8 @@
 export {
   default as DefinitionTableEditor,
   Props as DefinitionTableEditorProps,
-  CommandsProps as DefinitionTableEditorCommandsProps,
+  DefinitionTableCommandsOptions,
+  useDefinitionTableCommands,
 } from './editor';
 export {
   DefinitionTable,

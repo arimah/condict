@@ -1,11 +1,11 @@
 # @condict/table-editor
 
 * [`<InflectionTableEditor>`](#inflectiontableeditor)
-* [`<InflectionTableEditor.Commands>`](#inflectiontableeditorcommands)
+* [`useInflectionTableCommands()`](#useinflectiontablecommands)
 * [`InflectionTable`](#inflectiontable)
 * [`InflectionTableMessages`](#inflectiontablemessages)
 * [`<DefinitionTableEditor>`](#definitiontableeditor)
-* [`<DefinitionTableEditor.Commands>`](#definitiontableeditorcommands)
+* [`useDefinitionTableCommands()>`](#usedefinitiontablecommands)
 * [`DefinitionTable`](#definitiontable)
 * [`DefinitionTableMessages`](#definitiontablemessages)
 
@@ -57,9 +57,19 @@ const tableData = InflectionTable.export(table);
 
 Other props are ignored and _not_ forwarded to any underlying component. This component does not forward its ref to anything.
 
-## `<InflectionTableEditor.Commands>`
+## `useInflectionTableCommands()`
 
-This component exposes various [commands][ui/commands] for manipulating inflection tables. The component can be put around toolbars, buttons, menus, and anything else that supports Condict UI commands. The following commands are available:
+> `useInflectionTableCommands(options: InflectionTableCommandsOptions): CommandGroup`
+
+This hook returns a [command group][ui/commands/group] with commands for manipulating inflection tables. The options object takes the following properties:
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | [InflectionTable](#inflectiontable) | _none; required_ | The inflection table that the commands operate on.
+| `disabled` | boolean | `false` | If true, disables all table commands. This property should be synchronised with the table's disabledness. |
+| `onChange` | function | _none; required_ | Receives changes to the table, as a result of executing one of the commands. |
+
+The following commands are available:
 
 * `deleteSelectedRows`, `deleteSelectedColumns`: Deletes selected rows and columns, respectively.
 * `insertRowAbove`, `insertRowAtTop`, `insertRowBelow`, `insertRowAtBottom`: Inserts rows in the specified locations. "Above" and "below" are relative to the current selection.
@@ -70,16 +80,7 @@ This component exposes various [commands][ui/commands] for manipulating inflecti
 * `clearSelectedCells`: Removes the text content from each selected cell. Other cell data, such as custom display names, is kept.
 * `toggleDeriveLemma`: Sets the "derive lemma" setting of all selected cells to the opposite of the focused cell, or the first data cell if the focus is on a header cell.
 
-### Props
-
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `as` | string or component type | `'div'` | An HTML element name or a React component type that decides what the command group is rendered as. |
-| `value` | [InflectionTable](#inflectiontable) | _none; required_ | The inflection table that the commands operate on.
-| `disabled` | boolean | `false` | If true, disables all table commands. |
-| `onChange` | function | _none; required_ | Receives changes to the table, as a result of executing one of the commands. |
-
-All props except `value` and `onChange` are forwarded to the inner [`<CommandGroup>`][ui/commands/group]. See that documentation for more details.
+The returned command group should be exposed to components using a [`<CommandProvider>`][ui/commands/provider].
 
 ## `InflectionTable`
 
@@ -163,23 +164,24 @@ Other props are ignored and _not_ forwarded to any underlying component. This co
 
 If `term` and `stems` are changed, all automatically inflected forms will be updated, while custom forms will be kept.
 
-## `<DefinitionTableEditor.Commands>`
+## `useDefinitionTableCommands()`
 
-This component exposes various [commands][ui/commands] for manipulating inflection tables. The component can be put around toolbars, buttons, menus, and anything else that supports Condict UI commands. The following commands are available:
+> `useDefinitionTableCommands(options: DefinitionTableCommandsOptions): CommandGroup`
+
+This hook returns a [command group][ui/commands/group] with commands for manipulating definition tables. The options object takes the following properties:
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | [DefinitionTable](#definitiontable) | _none; required_ | The definition table that the commands operate on.
+| `disabled` | boolean | `false` | If true, disables all table commands. |
+| `onChange` | function | _none; required_ | Receives changes to the table, as a result of executing one of the commands. |
+
+The following commands are available:
 
 * `deleteSelectedForms`: Marks the selected forms as deleted. The cells' text is replaced by a line, like "—". Note that being deleted is still a custom form.
 * `restoreSelectedForms`: Restores all selected forms to the automatically inflected form, thereby removing any custom forms there may be.
 
-### Props
-
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `as` | string or component type | `'div'` | An HTML element name or a React component type that decides what the command group is rendered as. |
-| `value` | [InflectionTable](#inflectiontable) | _none; required_ | The inflection table that the commands operate on.
-| `disabled` | boolean | `false` | If true, disables all table commands. |
-| `onChange` | function | _none; required_ | Receives changes to the table, as a result of executing one of the commands. |
-
-All props except `value` and `onChange` are forwarded to the inner [`<CommandGroup>`][ui/commands/group]. See that documentation for more details.
+The returned command group should be exposed to components using a [`<CommandProvider>`][ui/commands/provider].
 
 ## `DefinitionTable`
 
@@ -202,6 +204,6 @@ Converts a `DefinitionTable` into a map of custom forms. Deleted forms _are_ pre
 
 Contains a number of functions that must be overridden to correctly customize the [definition table editor](#definitiontableeditor)'s UI messages. These include normally invisible messages that are only exposed to screen readers.
 
-[ui/commands]: ../ui/src/command
+[ui/commands/provider]: ../ui/src/command#commandprovider
 [ui/commands/group]: ../ui/src/command#commandgroup
 [inflect]: ../inflect

@@ -53,10 +53,7 @@ const Editor = (props: Props): JSX.Element => {
     <p>
       <label>
         {'Term: '}
-        <S.TermInput
-          value={term}
-          onChange={handleChangeTerm}
-        />
+        <S.TermInput value={term} onChange={handleChangeTerm}/>
       </label>
     </p>
     <StemsInput
@@ -66,10 +63,7 @@ const Editor = (props: Props): JSX.Element => {
       onChange={onChangeStems}
     />
 
-    <HistoryCommands
-      value={value}
-      onChange={onChange}
-    >
+    <HistoryCommands value={value} onChange={onChange}>
       <S.ToolbarWrapper>
         <Toolbar>
           <Toolbar.Group>

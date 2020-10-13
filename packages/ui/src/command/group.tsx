@@ -1,126 +1,91 @@
-import React, {
-  KeyboardEvent,
-  KeyboardEventHandler,
-  ReactNode,
-  useContext,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, {ReactNode, useMemo, useCallback, useRef, useContext} from 'react';
 
 import {Shortcut, ShortcutMap} from '../shortcut';
 
-import {Command, CommandSpecMap, ContextValue, DefaultExecFn} from './types';
+import {
+  Command,
+  CommandSpecMap,
+  CommandGroup,
+  CommandGroupChain,
+  DefaultExecFn,
+} from './types';
 
-export type Props<T> = {
+export const Context = React.createContext<CommandGroupChain | null>(null);
+
+export type Options<T> = {
+  /** Specifies the commands in this group. */
   commands: CommandSpecMap<T>;
-  onExec: (cmd: Command<T>) => void;
+  /**
+   * Executes a command in this group. The command's `exec` property is passed
+   * as the argument, and this function is responsible for handling it in an
+   * appropriate manner.
+   */
+  exec: (cmd: T) => void;
+  /** If true, every command in the group is disabled. */
   disabled?: boolean;
-  className?: string;
-  onKeyDown?: KeyboardEventHandler<HTMLElement> | null;
-  children: ReactNode;
 };
 
-export const Context = React.createContext<ContextValue<any> | null>(null);
+export function useCommandGroup<T = DefaultExecFn>(
+  options: Options<T>
+): CommandGroup {
+  const {commands, exec, disabled: groupDisabled = false} = options;
 
-function buildCommandMap<T>(
-  commands: CommandSpecMap<T>,
-  groupDisabled: boolean
-): [Map<string, Command<T>>, ShortcutMap<Command<T>>] {
-  const commandMap = Object.keys(commands).reduce((result, name) => {
-    const cmd = commands[name];
-    const {shortcut} = cmd;
-    result.set(name, {
-      disabled: !!(groupDisabled || cmd.disabled),
-      exec: cmd.exec,
-      shortcut:
-        typeof shortcut === 'string' || Array.isArray(shortcut)
-          ? Shortcut.parse(shortcut)
-          : shortcut || null,
-    });
-    return result;
-  }, new Map<string, Command<T>>());
+  // The exec function often captures things like current input value, which is
+  // liable to change often. Store that in a ref so we don't need to recompute
+  // the command map when e.g. users type.
+  const execRef = useRef(exec);
+  execRef.current = exec;
+  const handleExec = useCallback((cmd: T) => {
+    execRef.current(cmd);
+  }, []);
 
-  const keyMap = new ShortcutMap<Command<T>>(
-    Array.from(commandMap.values()),
-    cmd => cmd.shortcut
-  );
+  return useMemo<CommandGroup>(() => {
+    const commandMap = Object.keys(commands).reduce((map, name) => {
+      const {action, disabled = false, shortcut = null} = commands[name];
 
-  return [commandMap, keyMap];
+      map.set(name, {
+        exec: () => handleExec(action),
+        disabled: groupDisabled || disabled,
+        shortcut:
+          typeof shortcut === 'string' || Array.isArray(shortcut)
+            ? Shortcut.parse(shortcut)
+            : shortcut,
+      });
+      return map;
+    }, new Map<string, Command>());
+
+    const keyMap = new ShortcutMap<Command>(
+      Array.from(commandMap.values()),
+      cmd => cmd.shortcut
+    );
+
+    return {
+      commands: commandMap,
+      keyMap,
+    };
+  }, [commands, handleExec, groupDisabled]);
 }
 
-function getContextValue<T>(
-  commandMap: Map<string, Command<T>>,
-  onExec: (cmd: Command<T>) => void,
-  parent: ContextValue<any> | null
-): ContextValue<T> {
-  return {
-    commandMap,
-    onExec,
-    parent,
-  };
-}
+export type CommandProviderProps = {
+  commands: CommandGroup;
+  children?: ReactNode;
+};
 
-function CommandGroup<
-  T = DefaultExecFn,
-  E extends keyof JSX.IntrinsicElements | React.ComponentType<unknown> = 'div'
->(
-  props: Props<T> & Omit<React.ComponentPropsWithoutRef<E>, 'onKeyDown'> & {
-    as?: E;
-  }
-): JSX.Element {
-  const {
-    as,
-    commands,
-    disabled = false,
-    onExec,
-    onKeyDown,
-    children,
-    // className deliberately included here
-    ...otherProps
-  } = props;
+export const CommandProvider = React.memo((props: CommandProviderProps) => {
+  const {commands, children} = props;
 
   const parent = useContext(Context);
-  const [commandMap, keyMap] = useMemo(
-    () => buildCommandMap(commands, disabled),
-    [commands, disabled]
-  );
-  const contextValue = useMemo(
-    () => getContextValue(commandMap, onExec, parent),
-    [commandMap, onExec, parent]
-  );
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLElement>) => {
-      if (!disabled && !e.isDefaultPrevented()) {
-        const cmd = keyMap.get(e);
-        if (cmd && !cmd.disabled) {
-          e.preventDefault();
-          e.stopPropagation();
-          onExec(cmd);
-          return;
-        }
-      }
-      if (onKeyDown) {
-        onKeyDown(e);
-      }
-    },
-    [disabled, keyMap, onExec, onKeyDown]
-  );
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const Inner = (as || 'div') as any;
-  // disabled is passed to the inner component, since it's a
-  // standard HTML attribute.
+  const value = useMemo<CommandGroupChain>(() => ({
+    commands,
+    parent,
+  }), [commands, parent]);
+
   return (
-    <Context.Provider value={contextValue}>
-      <Inner
-        {...otherProps}
-        disabled={disabled}
-        onKeyDown={handleKeyDown}
-      >
-        {children}
-      </Inner>
+    <Context.Provider value={value}>
+      {children}
     </Context.Provider>
   );
-}
+});
 
-export default CommandGroup;
+CommandProvider.displayName = 'CommandProvider';

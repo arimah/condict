@@ -53,15 +53,16 @@ export {Toolbar, Props as ToolbarProps} from './toolbar';
 export {BodyText} from './typography';
 
 export {
-  Command,
   CommandSpec,
   CommandSpecMap,
-  BoundCommand,
+  Command,
   CommandGroup,
-  CommandGroupProps,
+  CommandGroupOptions,
+  CommandProvider,
   CommandConsumer,
   CommandConsumerProps,
   useCommand,
+  useCommandGroup,
 } from './command';
 export {
   Shortcut,

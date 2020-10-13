@@ -9,9 +9,8 @@ import {Draft} from 'immer';
 import shallowEqual from 'shallowequal';
 
 import {
-  Command,
   CommandGroup,
-  CommandSpecMap,
+  CommandProvider,
   MenuType,
   RelativeParent,
   genUniqueId,
@@ -32,7 +31,7 @@ export type Props<D, M extends Messages> = {
   disabled: boolean;
   contextMenuExtra?: ReactNode;
   messages: M;
-  commands: CommandSpecMap<TableCommandFn<D>>;
+  commands: CommandGroup;
   onChange: (table: Table<D>) => void;
 };
 
@@ -70,15 +69,6 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
     current: {x: 0, y: 0},
   };
 
-  private handleCommand = (cmd: Command<TableCommandFn<D>>) => {
-    if (this.props.disabled || this.state.editing) {
-      return;
-    }
-
-    const nextTable = cmd.exec(this.props.table);
-    this.emitChange(nextTable);
-  };
-
   private handleKeyDown = (e: KeyboardEvent) => {
     if (this.props.disabled || this.state.editing) {
       return;
@@ -93,6 +83,9 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
           e.preventDefault();
           this.editFocusedCell();
         }
+        break;
+      default:
+        CommandGroup.handleKey(this.props.commands, e);
         break;
     }
   };
@@ -320,97 +313,89 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
   public render(): JSX.Element {
     const {
       className,
+      commands,
       disabled,
       table,
       messages,
-      commands,
       contextMenuExtra,
     } = this.props;
-    const {
-      mouseDown,
-      editing,
-      editingTypedValue,
-      contextMenuOpen,
-    } = this.state;
+    const {mouseDown, editing, editingTypedValue, contextMenuOpen} = this.state;
     const {multiSelect} = this.context;
     const {rows, selectionShape: sel, layout} = table;
     const editedLayoutCell = editing && Layout.getCellByKey(layout, sel.focus);
 
     return (
-      <CommandGroup
-        as={S.TableWrapper}
-        commands={commands}
-        className={className}
-        disabled={disabled || editing !== null}
-        onExec={this.handleCommand}
-        onKeyDown={this.handleKeyDown}
-      >
-        <S.Table
-          tabIndex={disabled ? undefined : 0}
-          aria-activedescendant={
-            !disabled && sel.focus
-              ? `${this.tableId}-${sel.focus}`
-              : undefined
-          }
-          aria-disabled={disabled}
-          aria-multiselectable={multiSelect}
-          aria-describedby={`${this.tableId}-tableHint`}
-          className={contextMenuOpen ? 'force-focus' : undefined}
-          onKeyDown={this.handleKeyDown}
-          onKeyPress={this.handleKeyPress}
-          onMouseDown={this.handleMouseDown}
-          onMouseMove={mouseDown ? this.handleMouseMove : undefined}
-          onContextMenu={this.handleContextMenu}
-          ref={this.table}
-        >
-          <tbody>
-            {rows.map((row, index) => {
-              const containsEditor =
-                editedLayoutCell &&
-                editedLayoutCell.homeRow === index;
-              const cells = row.cells.map(key => ({
-                cell: Table.getCell(table, key),
-                data: Table.getData(table, key),
-              }));
-              return (
-                <TableRow
-                  key={row.key}
-                  cells={cells}
-                  tableId={this.tableId}
-                  disabled={this.props.disabled}
-                  selection={
-                    index >= sel.minRow && index <= sel.maxRow
-                      ? sel
-                      : null
-                  }
-                  editing={containsEditor ? editing : null}
-                  editingTable={containsEditor ? table : null}
-                  editingTypedValue={containsEditor ? editingTypedValue : null}
-                  messages={messages}
-                  onInput={this.handleEditInput}
-                  onCommit={this.handleEditCommit}
-                />
-              );
-            })}
-          </tbody>
-        </S.Table>
-        <Helper
-          tableId={this.tableId}
-          editing={editing !== null}
-          disabled={disabled}
-          table={table}
-          messages={messages}
-        />
-        <ContextMenu
-          tableId={this.tableId}
-          table={table}
-          extraItems={contextMenuExtra}
-          parentRef={this.contextMenuParent}
-          messages={messages}
-          onClose={this.handleContextMenuClose}
-          ref={this.contextMenuRef}
-        />
-      </CommandGroup>
+      <S.TableWrapper className={className}>
+        <CommandProvider commands={commands}>
+          <S.Table
+            tabIndex={disabled ? undefined : 0}
+            aria-activedescendant={
+              !disabled && sel.focus
+                ? `${this.tableId}-${sel.focus}`
+                : undefined
+            }
+            aria-disabled={disabled}
+            aria-multiselectable={multiSelect}
+            aria-describedby={`${this.tableId}-tableHint`}
+            className={contextMenuOpen ? 'force-focus' : undefined}
+            onKeyDown={this.handleKeyDown}
+            onKeyPress={this.handleKeyPress}
+            onMouseDown={this.handleMouseDown}
+            onMouseMove={mouseDown ? this.handleMouseMove : undefined}
+            onContextMenu={this.handleContextMenu}
+            ref={this.table}
+          >
+            <tbody>
+              {rows.map((row, index) => {
+                const containsEditor =
+                  editedLayoutCell &&
+                  editedLayoutCell.homeRow === index;
+                const cells = row.cells.map(key => ({
+                  cell: Table.getCell(table, key),
+                  data: Table.getData(table, key),
+                }));
+                return (
+                  <TableRow
+                    key={row.key}
+                    cells={cells}
+                    tableId={this.tableId}
+                    disabled={this.props.disabled}
+                    selection={
+                      index >= sel.minRow && index <= sel.maxRow
+                        ? sel
+                        : null
+                    }
+                    editing={containsEditor ? editing : null}
+                    editingTable={containsEditor ? table : null}
+                    editingTypedValue={
+                      containsEditor ? editingTypedValue : null
+                    }
+                    messages={messages}
+                    onInput={this.handleEditInput}
+                    onCommit={this.handleEditCommit}
+                  />
+                );
+              })}
+            </tbody>
+          </S.Table>
+          <Helper
+            tableId={this.tableId}
+            editing={editing !== null}
+            disabled={disabled}
+            table={table}
+            messages={messages}
+          />
+          <ContextMenu
+            tableId={this.tableId}
+            table={table}
+            extraItems={contextMenuExtra}
+            parentRef={this.contextMenuParent}
+            messages={messages}
+            onClose={this.handleContextMenuClose}
+            ref={this.contextMenuRef}
+          />
+        </CommandProvider>
+      </S.TableWrapper>
     );
   }
 }

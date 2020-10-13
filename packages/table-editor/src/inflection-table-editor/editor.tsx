@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react';
 
-import {CommandSpecMap} from '@condict/ui';
+import {CommandSpecMap, CommandGroup} from '@condict/ui';
 
 import TableEditor from '../table-editor';
 import EditorContext from '../context';
@@ -9,10 +9,7 @@ import {
   NavigationCommands,
   StructureCommands,
 } from '../commands';
-import TableCommands, {
-  Props as TableCommandsProps,
-  CommandsElement,
-} from '../table-commands';
+import useTableCommands from '../table-commands';
 import {EditorContextValue} from '../types';
 
 import CellEditor from './cell-editor';
@@ -50,19 +47,6 @@ const Context: EditorContextValue<InflectionTableData, Messages> = {
   hasContextMenu: () => true,
 };
 
-export type CommandsProps<E extends CommandsElement> = TableCommandsProps<
-  InflectionTableData,
-  E
->;
-
-const Commands = <E extends CommandsElement = 'div'>(
-  props: CommandsProps<E> & { as?: E }
-): JSX.Element =>
-  <TableCommands<InflectionTableData, E>
-    {...props}
-    commands={ExposedCommands}
-  />;
-
 export type Props = {
   value: InflectionTable;
   className?: string;
@@ -72,34 +56,46 @@ export type Props = {
   onChange: (value: InflectionTable) => void;
 };
 
-const InflectionTableEditor = Object.assign(
-  (props: Props): JSX.Element => {
-    const {
-      value,
-      className,
-      disabled = false,
-      contextMenuExtra,
-      messages = DefaultMessages,
-      onChange,
-    } = props;
+const InflectionTableEditor = (props: Props): JSX.Element => {
+  const {
+    value,
+    className,
+    disabled = false,
+    contextMenuExtra,
+    messages = DefaultMessages,
+    onChange,
+  } = props;
 
-    return (
-      <EditorContext.Provider value={Context}>
-        <TableEditor
-          table={value}
-          className={className}
-          disabled={disabled}
-          contextMenuExtra={contextMenuExtra}
-          messages={messages}
-          commands={AllCommands}
-          onChange={onChange}
-        />
-      </EditorContext.Provider>
-    );
-  },
-  {
-    Commands,
-  }
-);
+  const commands = useTableCommands({value, onChange, commands: AllCommands});
+
+  return (
+    <EditorContext.Provider value={Context}>
+      <TableEditor
+        table={value}
+        className={className}
+        disabled={disabled}
+        contextMenuExtra={contextMenuExtra}
+        messages={messages}
+        commands={commands}
+        onChange={onChange}
+      />
+    </EditorContext.Provider>
+  );
+};
 
 export default InflectionTableEditor;
+
+export type InflectionTableCommandsOptions = {
+  value: InflectionTable;
+  onChange: (value: InflectionTable) => void;
+  disabled?: boolean;
+};
+
+export const useInflectionTableCommands = (
+  options: InflectionTableCommandsOptions
+): CommandGroup => {
+  return useTableCommands({
+    ...options,
+    commands: ExposedCommands,
+  });
+};

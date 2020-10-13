@@ -6,11 +6,11 @@ import {DefinitionTableCommandFn} from './types';
 const commands: CommandSpecMap<DefinitionTableCommandFn> = {
   deleteSelectedForms: {
     shortcut: Shortcut.parse('Delete Backspace'),
-    exec: deleteSelected,
+    action: deleteSelected,
   },
 
   restoreSelectedForms: {
-    exec: restoreSelected,
+    action: restoreSelected,
   },
 };
 

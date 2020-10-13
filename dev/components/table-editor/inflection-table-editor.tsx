@@ -6,8 +6,12 @@ import InsertColumnBeforeIcon from 'mdi-react/TableColumnPlusBeforeIcon';
 import InsertColumnAfterIcon from 'mdi-react/TableColumnPlusAfterIcon';
 import DeleteColumnIcon from 'mdi-react/TableColumnRemoveIcon';
 
-import {Toolbar, Menu} from '@condict/ui';
-import {InflectionTable, InflectionTableEditor} from '@condict/table-editor';
+import {Toolbar, Menu, CommandProvider} from '@condict/ui';
+import {
+  InflectionTable,
+  InflectionTableEditor,
+  useInflectionTableCommands,
+} from '@condict/table-editor';
 
 import {HistoryStack} from './history-stack';
 import HistoryCommands from './history-commands';
@@ -37,71 +41,71 @@ const Editor = (props: Props): JSX.Element | null => {
     }
   }, [value]);
 
+  const tableCommands = useInflectionTableCommands({
+    value: value.value,
+    onChange: handleChange,
+    disabled,
+  });
+
   return (
-    <HistoryCommands
-      value={value}
-      onChange={onChange}
-    >
-      <InflectionTableEditor.Commands
-        as={S.ToolbarWrapper}
-        disabled={disabled}
-        value={value.value}
-        onChange={handleChange}
-      >
-        <Toolbar>
-          <Toolbar.Group name='Edit row'>
-            <Toolbar.Button
-              label='Insert row above'
-              command='insertRowAbove'
-            >
-              <InsertRowAboveIcon/>
-            </Toolbar.Button>
-            <Toolbar.Button
-              label='Insert row below'
-              command='insertRowBelow'
-            >
-              <InsertRowBelowIcon/>
-            </Toolbar.Button>
-            <Toolbar.Button
-              label='Delete selected row(s)'
-              command='deleteSelectedRows'
-            >
-              <DeleteRowIcon/>
-            </Toolbar.Button>
-          </Toolbar.Group>
-          <Toolbar.Group name='Edit column'>
-            <Toolbar.Button
-              label='Insert column before'
-              command='insertColumnBefore'
-            >
-              <InsertColumnBeforeIcon/>
-            </Toolbar.Button>
-            <Toolbar.Button
-              label='Insert column after'
-              command='insertColumnAfter'
-            >
-              <InsertColumnAfterIcon/>
-            </Toolbar.Button>
-            <Toolbar.Button
-              label='Delete selected column(s)'
-              command='deleteSelectedColumns'
-            >
-              <DeleteColumnIcon/>
-            </Toolbar.Button>
-          </Toolbar.Group>
-          <Toolbar.Group>
-            <Toolbar.Button label='Undo' command='undo'/>
-            <Toolbar.Button label='Redo' command='redo'/>
-          </Toolbar.Group>
-          <Toolbar.Group>
-            <Toolbar.Button
-              label='Disabled'
-              checked={disabled}
-              onClick={() => setDisabled(d => !d)}
-            />
-          </Toolbar.Group>
-        </Toolbar>
-      </InflectionTableEditor.Commands>
+    <HistoryCommands value={value} onChange={onChange}>
+      <S.ToolbarWrapper>
+        <CommandProvider commands={tableCommands}>
+          <Toolbar>
+            <Toolbar.Group name='Edit row'>
+              <Toolbar.Button
+                label='Insert row above'
+                command='insertRowAbove'
+              >
+                <InsertRowAboveIcon/>
+              </Toolbar.Button>
+              <Toolbar.Button
+                label='Insert row below'
+                command='insertRowBelow'
+              >
+                <InsertRowBelowIcon/>
+              </Toolbar.Button>
+              <Toolbar.Button
+                label='Delete selected row(s)'
+                command='deleteSelectedRows'
+              >
+                <DeleteRowIcon/>
+              </Toolbar.Button>
+            </Toolbar.Group>
+            <Toolbar.Group name='Edit column'>
+              <Toolbar.Button
+                label='Insert column before'
+                command='insertColumnBefore'
+              >
+                <InsertColumnBeforeIcon/>
+              </Toolbar.Button>
+              <Toolbar.Button
+                label='Insert column after'
+                command='insertColumnAfter'
+              >
+                <InsertColumnAfterIcon/>
+              </Toolbar.Button>
+              <Toolbar.Button
+                label='Delete selected column(s)'
+                command='deleteSelectedColumns'
+              >
+                <DeleteColumnIcon/>
+              </Toolbar.Button>
+            </Toolbar.Group>
+            <Toolbar.Group>
+              <Toolbar.Button label='Undo' command='undo'/>
+              <Toolbar.Button label='Redo' command='redo'/>
+            </Toolbar.Group>
+            <Toolbar.Group>
+              <Toolbar.Button
+                label='Disabled'
+                checked={disabled}
+                onClick={() => setDisabled(d => !d)}
+              />
+            </Toolbar.Group>
+          </Toolbar>
+        </CommandProvider>
+      </S.ToolbarWrapper>
 
       <InflectionTableEditor
         disabled={disabled}

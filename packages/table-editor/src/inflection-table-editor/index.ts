@@ -1,7 +1,8 @@
 export {
   default as InflectionTableEditor,
   Props as InflectionTableEditorProps,
-  CommandsProps as InflectionTableEditorCommandsProps,
+  InflectionTableCommandsOptions,
+  useInflectionTableCommands,
 } from './editor';
 export {
   InflectionTable,

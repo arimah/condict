@@ -16,67 +16,67 @@ import {TableCommandFn} from './types';
 const commands: CommandSpecMap<TableCommandFn> = {
   deleteSelectedRows: {
     shortcut: Shortcut.parse('Primary+Delete'),
-    exec: deleteSelectedRows,
+    action: deleteSelectedRows,
   },
 
   deleteSelectedColumns: {
     shortcut: Shortcut.parse('Primary+Shift+Delete'),
-    exec: deleteSelectedColumns,
+    action: deleteSelectedColumns,
   },
 
   insertRowAbove: {
     shortcut: Shortcut.parse('Primary+I i'),
-    exec: <D>(table: Table<D>): Table<D> => insertRow(table, 'before'),
+    action: <D>(table: Table<D>): Table<D> => insertRow(table, 'before'),
   },
 
   insertRowAtTop: {
     shortcut: Shortcut.parse('Primary+Shift+I i'),
-    exec: <D>(table: Table<D>): Table<D> => insertRow(table, 'start'),
+    action: <D>(table: Table<D>): Table<D> => insertRow(table, 'start'),
   },
 
   insertRowBelow: {
     shortcut: Shortcut.parse('Primary+K k'),
-    exec: <D>(table: Table<D>): Table<D> => insertRow(table, 'after'),
+    action: <D>(table: Table<D>): Table<D> => insertRow(table, 'after'),
   },
 
   insertRowAtBottom: {
     shortcut: Shortcut.parse('Primary+Shift+K k'),
-    exec: <D>(table: Table<D>): Table<D> => insertRow(table, 'end'),
+    action: <D>(table: Table<D>): Table<D> => insertRow(table, 'end'),
   },
 
   insertColumnBefore: {
     shortcut: Shortcut.parse('Primary+J j'),
-    exec: <D>(table: Table<D>): Table<D> => insertColumn(table, 'before'),
+    action: <D>(table: Table<D>): Table<D> => insertColumn(table, 'before'),
   },
 
   insertColumnAtStart: {
     shortcut: Shortcut.parse('Primary+Shift+J j'),
-    exec: <D>(table: Table<D>): Table<D> => insertColumn(table, 'start'),
+    action: <D>(table: Table<D>): Table<D> => insertColumn(table, 'start'),
   },
 
   insertColumnAfter: {
     shortcut: Shortcut.parse('Primary+L l'),
-    exec: <D>(table: Table<D>): Table<D> => insertColumn(table, 'after'),
+    action: <D>(table: Table<D>): Table<D> => insertColumn(table, 'after'),
   },
 
   insertColumnAtEnd: {
     shortcut: Shortcut.parse('Primary+Shift+L l'),
-    exec: <D>(table: Table<D>): Table<D> => insertColumn(table, 'end'),
+    action: <D>(table: Table<D>): Table<D> => insertColumn(table, 'end'),
   },
 
   toggleHeader: {
     shortcut: Shortcut.parse('Primary+H h'),
-    exec: toggleHeaderSelected,
+    action: toggleHeaderSelected,
   },
 
   mergeSelection: {
     shortcut: Shortcut.parse('Primary+M m'),
-    exec: mergeSelected,
+    action: mergeSelected,
   },
 
   separateSelection: {
     shortcut: Shortcut.parse('Primary+U u'),
-    exec: separateSelected,
+    action: separateSelected,
   },
 };
 
