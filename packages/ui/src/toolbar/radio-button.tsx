@@ -1,11 +1,23 @@
-import React, {ButtonHTMLAttributes, useContext, useRef} from 'react';
+import React, {
+  Ref,
+  RefObject,
+  ButtonHTMLAttributes,
+  useContext,
+  useRef,
+} from 'react';
 
 import {useCommand} from '../command';
 import {Shortcut, ShortcutMap} from '../shortcut';
+import {Descendants} from '../descendants';
 import {getContentAndLabel} from '../a11y-utils';
 import combineRefs from '../combine-refs';
 
-import {Context as FocusContext, ContextValue, useManagedFocus} from './focus-manager';
+import {
+  Context as FocusContext,
+  ContextValue,
+  ItemElement,
+  useManagedFocus,
+} from './focus-manager';
 import formatTooltip from './format-tooltip';
 import Group, {Props as GroupBaseProps} from './group';
 import * as S from './styles';
@@ -15,6 +27,14 @@ type KeyCommand = {
   exec(context: ContextValue, parent: HTMLDivElement): void;
 };
 
+const isEnabledInParent = (
+  parent: HTMLDivElement,
+  item: RefObject<ItemElement>
+): boolean =>
+  item.current !== null &&
+  !item.current.disabled &&
+  parent.contains(item.current);
+
 const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
     {
@@ -23,7 +43,11 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
         const prev =
           currentFocus &&
           currentFocus.current &&
-          descendants.getPreviousInParent(parent, currentFocus);
+          Descendants.prevWrapping(
+            descendants,
+            currentFocus,
+            item => isEnabledInParent(parent, item)
+          );
         if (prev && prev.current) {
           prev.current.focus();
         }
@@ -35,7 +59,11 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
         const next =
           currentFocus &&
           currentFocus.current &&
-          descendants.getNextInParent(parent, currentFocus);
+          Descendants.nextWrapping(
+            descendants,
+            currentFocus,
+            item => isEnabledInParent(parent, item)
+          );
         if (next && next.current) {
           next.current.focus();
         }
@@ -47,9 +75,9 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
 
 export type GroupProps = Omit<GroupBaseProps, 'onKeyDown' | 'role'>;
 
-export const RadioGroup = React.forwardRef<HTMLDivElement, GroupProps>((
+export const RadioGroup = React.forwardRef((
   props: GroupProps,
-  ref
+  ref: Ref<HTMLDivElement>
 ) => {
   const {
     children,

@@ -1,4 +1,5 @@
 import {Shortcut, ShortcutMap} from '../shortcut';
+import {Descendants} from '../descendants';
 
 import TagInput from './main';
 
@@ -49,8 +50,8 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
           // Delete the selected tag
           tagInput.deleteTag(tag, (items, current) =>
             tag === tagInput.props.tags[0]
-              ? items.getNext(current)
-              : items.getPrevious(current)
+              ? Descendants.nextWrapping(items, current)
+              : Descendants.prevWrapping(items, current)
           );
           return true;
         }
@@ -73,9 +74,8 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
       exec(tagInput: TagInput) {
         const {selected: {tag}} = tagInput.state;
         if (tag !== null) {
-          tagInput.deleteTag(tag, (items, current) =>
-            items.getNext(current)
-          );
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          tagInput.deleteTag(tag, Descendants.nextWrapping);
           return true;
         }
         return false;
@@ -90,7 +90,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
         const {selected} = tagInput.state;
         const input = tagInput.input.current;
         if (selected.tag !== null || input && isEmptySelectionAtStart(input)) {
-          tagInput.items.getPrevious(selected).elem.focus();
+          Descendants.prevWrapping(tagInput.items, selected).elem.focus();
           return true;
         }
         return false;
@@ -105,7 +105,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
         const {selected} = tagInput.state;
         const input = tagInput.input.current;
         if (selected.tag !== null || input && isEmptySelectionAtEnd(input)) {
-          tagInput.items.getNext(selected).elem.focus();
+          Descendants.nextWrapping(tagInput.items, selected).elem.focus();
           return true;
         }
         return false;
@@ -118,7 +118,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
         const input = tagInput.input.current;
         if (tag !== null || input && isEmptySelectionAtStart(input)) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          tagInput.items.getFirst()!.elem.focus();
+          Descendants.first(tagInput.items)!.elem.focus();
           return true;
         }
         return false;
@@ -133,10 +133,8 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
         if (tag !== null || input && isEmptySelectionAtEnd(input)) {
           const lastTag = tags[tags.length - 1];
           const nextSelected = tag === lastTag
-            ? tagInput.items.getLast()
-            : tagInput.items.find(
-              r => r.tag === lastTag
-            );
+            ? Descendants.last(tagInput.items)
+            : Descendants.first(tagInput.items, r => r.tag === lastTag);
           if (nextSelected) {
             nextSelected.elem.focus();
           }

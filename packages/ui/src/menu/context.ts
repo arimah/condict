@@ -1,6 +1,6 @@
 import React, {RefObject, useState, useContext, useEffect} from 'react';
 
-import DescendantCollection from '../descendant-collection';
+import {Descendants} from '../descendants';
 import Placement from '../placement';
 
 import {MenuStack} from './menu-stack';
@@ -16,7 +16,7 @@ export const ManagedTreeContext =
   React.createContext<ManagedTreeContextValue | null>(null);
 
 export type MenuContextValue = {
-  items: DescendantCollection<MenuItem, HTMLElement>;
+  items: Descendants<MenuItem>;
   currentFocus: MenuItem | null;
   submenuPlacement: Placement;
 };
@@ -80,8 +80,11 @@ export const useNearestMenu = (
   item.onActivate = onActivate;
   item.renderPhantom = renderPhantom;
 
-  context.items.register(item);
-  useEffect(() => () => context.items.unregister(item), []);
+  // HACK: componentDidUpdate in MenuManager runs before useEffect. :(
+  // This means we can't focus the first menu item reliably, unless we
+  // register the menu item during render.
+  Descendants.register(context.items, item);
+  useEffect(() => () => Descendants.unregister(context.items, item), []);
 
   return {
     hasFocus: context.currentFocus === item,

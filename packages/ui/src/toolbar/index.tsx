@@ -10,9 +10,9 @@ import React, {
 } from 'react';
 
 import {Shortcut, ShortcutMap} from '../shortcut';
-import DescendantCollection from '../descendant-collection';
+import {Descendants, compareNodes} from '../descendants';
 
-import {Context, ContextValue, Descendants, ItemElement} from './focus-manager';
+import {Context, ContextValue, ItemElement} from './focus-manager';
 import Button from './button';
 import Group from './group';
 import MenuButton from './menu-button';
@@ -20,19 +20,24 @@ import RadioButton, {RadioGroup} from './radio-button';
 import Select from './select';
 import * as S from './styles';
 
-const DOCUMENT_POSITION_PRECEDING = 2;
-
 type KeyCommand = {
   key: Shortcut | null;
   exec(context: ContextValue): void;
 };
+
+const isEnabled = (item: RefObject<ItemElement>): boolean =>
+  item.current !== null && !item.current.disabled;
 
 const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
     {
       key: Shortcut.parse('ArrowLeft'),
       exec({descendants, currentFocus}) {
-        const prev = currentFocus && descendants.getPrevious(currentFocus);
+        const prev = currentFocus && Descendants.prevWrapping(
+          descendants,
+          currentFocus,
+          isEnabled
+        );
         if (prev && prev.current) {
           prev.current.focus();
         }
@@ -41,7 +46,11 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
     {
       key: Shortcut.parse('ArrowRight'),
       exec({descendants, currentFocus}) {
-        const next = currentFocus && descendants.getNext(currentFocus);
+        const next = currentFocus && Descendants.nextWrapping(
+          descendants,
+          currentFocus,
+          isEnabled
+        );
         if (next && next.current) {
           next.current.focus();
         }
@@ -50,7 +59,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
     {
       key: Shortcut.parse(['Home', 'Shift+Home']),
       exec({descendants}) {
-        const first = descendants.getFirstEnabled();
+        const first = Descendants.first(descendants, isEnabled);
         if (first && first.current) {
           first.current.focus();
         }
@@ -59,7 +68,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
     {
       key: Shortcut.parse(['End', 'Shift+End']),
       exec({descendants}) {
-        const last = descendants.getLastEnabled();
+        const last = Descendants.last(descendants, isEnabled);
         if (last && last.current) {
           last.current.focus();
         }
@@ -70,37 +79,27 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
 );
 
 const getValidFocus = (
-  descendants: Descendants,
+  descendants: Descendants<RefObject<ItemElement>>,
   currentFocus: RefObject<ItemElement> | null
 ): RefObject<ItemElement> | null => {
   if (
     !currentFocus ||
     !currentFocus.current ||
-    !descendants.findManagedRef(currentFocus.current)
+    !Descendants.first(descendants, r => r.current == currentFocus.current)
   ) {
     // Either there is no current focus, or the current focus is not a child
     // of this toolbar. Focus the first element.
-    return descendants.getFirstEnabled();
+    return Descendants.first(descendants, isEnabled);
   } else if (currentFocus.current.disabled) {
     // The current focus has become disabled. Move focus to the another
-    // element. We try to first to find the previous toolbar item, which
-    // *may* wrap around the end - e.g. if there are no previous enabled
-    // items. If the previous item comes *after* the current item (which
-    // we find out by comparing document order), move to the *next* item
-    // instead. This prevents needless wrapping and in most cases should
-    // keep the new focus as close as possible to the previous.
-    let nextFocus = descendants.getPrevious(currentFocus);
-    const relativePos =
-      nextFocus &&
-      nextFocus.current &&
-      nextFocus.current.compareDocumentPosition(currentFocus.current) ||
-      0;
-    if (nextFocus && (relativePos & DOCUMENT_POSITION_PRECEDING) !== 0) {
-      // currentFocus comes before nextFocus; use the next focusable instead.
-      nextFocus = descendants.getNext(currentFocus);
-    }
-
-    return nextFocus;
+    // element. We try to first to find the previous toolbar item. If there
+    // are no previous enabled items, move to the *next* item instead. This
+    // prevents needless wrapping and in most cases should keep the new
+    // focus as close as possible to the previous.
+    return (
+      Descendants.prev(descendants, currentFocus, isEnabled) ||
+      Descendants.next(descendants, currentFocus, isEnabled)
+    );
   }
   return currentFocus;
 };
@@ -116,13 +115,9 @@ export const Toolbar = Object.assign(
     const {onFocus, onKeyDown, children, ...otherProps} = props;
 
     const [descendants] = useState(() =>
-      new DescendantCollection<RefObject<ItemElement>, ItemElement>(
-        d => {
-          if (!d.current) {
-            throw new Error('Toolbar item has been unmounted but not removed from descendant collection');
-          }
-          return d.current;
-        }
+      Descendants.create<RefObject<ItemElement>>(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        (a, b) => compareNodes(a.current!, b.current!)
       )
     );
     const [currentFocus, setCurrentFocus] = useState<RefObject<ItemElement> | null>(null);
@@ -133,7 +128,10 @@ export const Toolbar = Object.assign(
     }), [currentFocus]);
 
     const handleFocus = useCallback((e: FocusEvent<HTMLDivElement>) => {
-      const ref = descendants.findManagedRef(e.target);
+      const ref = Descendants.first(
+        descendants,
+        r => r.current !== null && r.current.contains(e.target)
+      );
       if (ref) {
         setCurrentFocus(ref);
       }

@@ -2,7 +2,7 @@ import React, {Component, ReactNode, RefObject} from 'react';
 import ReactDOM from 'react-dom';
 import memoizeOne from 'memoize-one';
 
-import DescendantCollection from '../descendant-collection';
+import {Descendants, compareNodes} from '../descendants';
 import Placement, {RelativeParent, placeElement} from '../placement';
 
 import * as S from './styles';
@@ -13,7 +13,7 @@ import EventSink from './event-sink';
 import getContainer from './container';
 
 const getMenuContextValue = (
-  items: DescendantCollection<MenuItem, HTMLElement>,
+  items: Descendants<MenuItem>,
   currentFocus: MenuItem | null,
   submenuPlacement: Placement
 ): MenuContextValue => ({
@@ -65,7 +65,9 @@ export type Props = {
 };
 
 class ManagedMenu extends Component<Props> {
-  public readonly items = new DescendantCollection<MenuItem, HTMLElement>(item => item.self);
+  public readonly items = Descendants.create<MenuItem>((a, b) =>
+    compareNodes(a.self, b.self)
+  );
   private readonly menuRef = React.createRef<HTMLDivElement>();
   private readonly getMenuContextValue = memoizeOne(getMenuContextValue);
   private needFocus = false;

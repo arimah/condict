@@ -1,4 +1,4 @@
-import React, {ButtonHTMLAttributes, useRef} from 'react';
+import React, {Ref, ButtonHTMLAttributes, useRef} from 'react';
 
 import {useCommand} from '../command';
 import {Shortcut} from '../shortcut';
@@ -24,9 +24,9 @@ export type Props = {
   | 'type'
 >;
 
-const Button = React.forwardRef<HTMLButtonElement, Props>((
+const Button = React.forwardRef((
   props: Props,
-  ref
+  ref: Ref<HTMLButtonElement>
 ) => {
   const {
     checked,

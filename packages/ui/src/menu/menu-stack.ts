@@ -1,4 +1,4 @@
-import DescendantCollection from '../descendant-collection';
+import {Descendants} from '../descendants';
 
 import {MenuItem} from './context';
 import ManagedMenu from './managed-menu';
@@ -18,13 +18,11 @@ class OpenMenu {
   }
 
   public elemToItem(elem: Element) {
-    return this.menu.items.find(
-      item => item.self.contains(elem)
-    ) || null;
+    return Descendants.first(this.menu.items, ({self}) => self.contains(elem));
   }
 
   public filterItems(pred: (item: MenuItem) => boolean): MenuItem[] {
-    return this.menu.items.filter(pred);
+    return Descendants.filter(this.menu.items, pred);
   }
 }
 
@@ -56,7 +54,7 @@ export const MenuStack = {
   moveFocus(
     stack: MenuStack,
     cb: (
-      items: DescendantCollection<MenuItem, HTMLElement>,
+      items: Descendants<MenuItem>,
       current: MenuItem | null
     ) => MenuItem | null
   ): MenuStack {

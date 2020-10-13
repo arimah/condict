@@ -1,4 +1,4 @@
-import React, {KeyboardEventHandler, useRef} from 'react';
+import React, {Ref, KeyboardEventHandler, useRef} from 'react';
 
 import {Select as RegularSelect, Props as SelectProps} from '../select';
 import combineRefs from '../combine-refs';
@@ -17,9 +17,9 @@ export type Props = {
   label?: string;
 } & Omit<SelectProps, 'minimal' | 'onKeyDown' | 'tabIndex'>;
 
-const Select = React.forwardRef<HTMLSelectElement, Props>((
+const Select = React.forwardRef((
   props: Props,
-  ref
+  ref: Ref<HTMLSelectElement>
 ) => {
   const {label, children, ...otherProps} = props;
 

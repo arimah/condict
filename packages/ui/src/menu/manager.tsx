@@ -3,6 +3,7 @@ import memoizeOne from 'memoize-one';
 
 import {Shortcut, ShortcutMap} from '../shortcut';
 import {disableFocusManager, enableFocusManager} from '../focus';
+import {Descendants} from '../descendants';
 
 import {MenuItem, ManagedTreeContext, ManagedTreeContextValue} from './context';
 import ManagedMenu from './managed-menu';
@@ -109,8 +110,8 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
       exec: stack =>
         MenuStack.moveFocus(stack, (items, current) =>
           current
-            ? items.getPrevious(current)
-            : items.getLast()
+            ? Descendants.prevWrapping(items, current)
+            : Descendants.last(items)
         ),
     },
     {
@@ -118,8 +119,8 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
       exec: stack =>
         MenuStack.moveFocus(stack, (items, current) =>
           current
-            ? items.getNext(current)
-            : items.getFirst()
+            ? Descendants.nextWrapping(items, current)
+            : Descendants.first(items)
         ),
     },
     {
@@ -225,7 +226,7 @@ export default class MenuManager extends Component<Props, State> {
           this.setState({
             stack: MenuStack.setCurrentFocus(
               nextStack,
-              deepestMenu.menu.items.getFirst()
+              Descendants.first(deepestMenu.menu.items)
             ),
           });
         }

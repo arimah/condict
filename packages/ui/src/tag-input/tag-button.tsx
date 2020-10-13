@@ -1,13 +1,15 @@
-import React, {MouseEventHandler, useRef, useState, useEffect} from 'react';
+import React, {MouseEventHandler, useRef, useState} from 'react';
 
-import {Descendants, TagInputChild} from './types';
+import {Descendants, useDescendant} from '../descendants';
+
+import {TagInputChild} from './types';
 import * as S from './styles';
 
 export type Props = {
   tag: string;
   disabled: boolean | undefined;
   isSelected: boolean;
-  parentItems: Descendants;
+  parentItems: Descendants<TagInputChild>;
   'aria-describedby': string;
   onClick: MouseEventHandler<HTMLButtonElement>;
 };
@@ -24,8 +26,7 @@ const TagButton = React.memo((props: Props) => {
 
   const elemRef = useRef<HTMLButtonElement>(null);
   const [item] = useState(() => new TagInputChild(elemRef, tag));
-  parentItems.register(item);
-  useEffect(() => () => parentItems.unregister(item), []);
+  useDescendant(parentItems, item);
 
   return (
     <S.Tag

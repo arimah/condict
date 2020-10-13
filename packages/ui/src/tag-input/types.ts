@@ -1,7 +1,5 @@
 import {RefObject} from 'react';
 
-import DescendantCollection from '../descendant-collection';
-
 export class TagInputChild {
   private elemRef: RefObject<HTMLButtonElement | HTMLInputElement>;
   public tag: string | null;
@@ -16,16 +14,11 @@ export class TagInputChild {
 
   public get elem(): HTMLButtonElement | HTMLInputElement {
     if (this.elemRef.current === null) {
-      throw new Error('Element has been unmounted but not removed from DescendantCollection');
+      throw new Error('Element has been unmounted but not unregistered');
     }
     return this.elemRef.current;
   }
 }
-
-export type Descendants = DescendantCollection<
-  TagInputChild,
-  HTMLButtonElement | HTMLInputElement
->;
 
 export interface Messages {
   /** "Tag input", SR-only name of the component itself. */

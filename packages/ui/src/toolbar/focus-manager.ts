@@ -1,16 +1,14 @@
-import React, {RefObject, useContext, useEffect} from 'react';
+import React, {RefObject, useContext} from 'react';
 
-import DescendantCollection from '../descendant-collection';
+import {Descendants, useDescendant} from '../descendants';
 
 export type ItemElement = Node & {
   disabled?: boolean;
   focus(): void;
 };
 
-export type Descendants = DescendantCollection<RefObject<ItemElement>, ItemElement>;
-
 export type ContextValue = {
-  descendants: Descendants;
+  descendants: Descendants<RefObject<ItemElement>>;
   currentFocus: RefObject<ItemElement> | null;
 };
 
@@ -22,9 +20,7 @@ export const useManagedFocus = (itemRef: RefObject<ItemElement>): boolean => {
     throw new Error('Toolbar item must be placed inside a <Toolbar>');
   }
   const {descendants, currentFocus} = context;
-
-  descendants.register(itemRef);
-  useEffect(() => () => descendants.unregister(itemRef), []);
+  useDescendant(descendants, itemRef);
 
   return currentFocus === itemRef;
 };

@@ -6,14 +6,14 @@ import React, {
   MouseEventHandler,
 } from 'react';
 
-import DescendantCollection from '../descendant-collection';
+import {Descendants, compareNodes} from '../descendants';
 import {Announcer, Announcements, SROnly} from '../a11y-utils';
 import genUniqueId from '../unique-id';
 
 import KeyboardMap from './keymap';
 import TagButton from './tag-button';
 import DefaultMessages from './messages';
-import {Descendants, TagInputChild, Messages} from './types';
+import {TagInputChild, Messages} from './types';
 import * as S from './styles';
 
 const Separators = /[,;]/;
@@ -57,11 +57,8 @@ export default class TagInput extends Component<Props, State> {
   };
 
   public input = React.createRef<HTMLInputElement>();
-  public items: Descendants = new DescendantCollection<
-    TagInputChild,
-    HTMLButtonElement | HTMLInputElement
-  >(
-    ref => ref.elem
+  public items = Descendants.create<TagInputChild>(
+    (a, b) => compareNodes(a.elem, b.elem)
   );
   private wrapper = React.createRef<HTMLSpanElement>();
   private mainDescId = genUniqueId();
@@ -73,7 +70,7 @@ export default class TagInput extends Component<Props, State> {
     super(props);
 
     const inputChild = new TagInputChild(this.input, null);
-    this.items.register(inputChild);
+    Descendants.register(this.items, inputChild);
     this.state = {
       inputFocused: false,
       selected: inputChild,
@@ -83,7 +80,10 @@ export default class TagInput extends Component<Props, State> {
   private handleFocus: FocusEventHandler<HTMLButtonElement | HTMLInputElement> = e => {
     this.hasFocus = true;
 
-    const selected = this.items.findManagedRef(e.target);
+    const selected = Descendants.first(
+      this.items,
+      ({elem}) => elem.contains(e.target)
+    );
     if (!selected) {
       return;
     }
@@ -135,11 +135,13 @@ export default class TagInput extends Component<Props, State> {
   };
 
   private handleTagClick: MouseEventHandler = e => {
-    const child = this.items.findManagedRef(e.target as HTMLButtonElement);
+    const child = this.items.items.find(item =>
+      item.elem.contains(e.target as Node)
+    );
     if (!child || child.tag === null) {
       return;
     }
-    this.deleteTag(child.tag, items => items.getLast());
+    this.deleteTag(child.tag, items => Descendants.last(items));
   };
 
   private handleInput: FormEventHandler = e => {
@@ -227,7 +229,7 @@ export default class TagInput extends Component<Props, State> {
   public deleteTag(
     tag: string,
     getNextSelected: (
-      items: Descendants,
+      items: Descendants<TagInputChild>,
       current: TagInputChild
     ) => TagInputChild | null
   ): void {
@@ -238,7 +240,7 @@ export default class TagInput extends Component<Props, State> {
     let nextSelected = getNextSelected(this.items, selected);
     if (!nextSelected) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      nextSelected = this.items.getLast()!;
+      nextSelected = Descendants.last(this.items)!;
     }
     nextSelected.elem.focus();
 
