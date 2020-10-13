@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key */
-import React from 'react';
+import React, {Ref} from 'react';
 import BoldIcon from 'mdi-react/FormatBoldIcon';
 import ItalicIcon from 'mdi-react/FormatItalicIcon';
 import UnderlineIcon from 'mdi-react/FormatUnderlineIcon';
@@ -17,7 +17,6 @@ import {
   Menu,
   MenuProps,
   MenuType,
-  Placement,
   Shortcut,
   Shortcuts,
 } from '@condict/ui';
@@ -64,90 +63,92 @@ type Props = {
 } & Omit<MenuProps, 'children'>;
 
 // eslint-disable-next-line react/display-name
-const MoreOptionsMenu = React.forwardRef<MenuType, Props>(
-  ({state, set, ...otherProps}, ref) =>
-    <Menu {...otherProps} placement='BELOW_RIGHT' ref={ref}>
-      <Menu.Item label='Example menu'/>
-      <Menu.Item label='Not suitable for real world'/>
+const MoreOptionsMenu = React.forwardRef((
+  {state, set, ...otherProps}: Props,
+  ref: Ref<MenuType>
+) =>
+  <Menu {...otherProps} placement='BELOW_RIGHT' ref={ref}>
+    <Menu.Item label='Example menu'/>
+    <Menu.Item label='Not suitable for real world'/>
+    <Menu.Separator/>
+    <Menu.CheckItem
+      label='Bold'
+      icon={<BoldIcon/>}
+      checked={state.bold}
+      shortcut={BoldShortcut}
+      onActivate={() => set('bold', !state.bold)}
+    />
+    <Menu.CheckItem
+      label='Italic'
+      icon={<ItalicIcon/>}
+      checked={state.italic}
+      shortcut={ItalicShortcut}
+      onActivate={() => set('italic', !state.italic)}
+    />
+    <Menu.CheckItem
+      label='Underline'
+      icon={<UnderlineIcon/>}
+      checked={state.underline}
+      shortcut={UnderlineShortcut}
+      onActivate={() => set('underline', !state.underline)}
+    />
+    <Menu.CheckItem
+      label='Subscript'
+      icon={<SubscriptIcon/>}
+      checked={state.subscript}
+      onActivate={() => {
+        set('subscript', !state.subscript);
+        set('superscript', false);
+      }}
+    />
+    <Menu.CheckItem
+      label='Superscript'
+      icon={<SuperscriptIcon/>}
+      checked={state.superscript}
+      onActivate={() => {
+        set('superscript', !state.superscript);
+        set('subscript', false);
+      }}
+    />
+    <Menu.Separator/>
+    <Menu.Item label='Block formatting'>
+      <div role='group'>
+        <Menu.CheckItem
+          radio
+          checked={state.blockStyle === 'paragraph'}
+          label='Paragraph'
+          onActivate={() => set('blockStyle', 'paragraph')}
+        />
+        <Menu.CheckItem
+          radio
+          checked={state.blockStyle === 'heading1'}
+          label='Heading 1'
+          onActivate={() => set('blockStyle', 'heading1')}
+        />
+        <Menu.CheckItem
+          radio
+          checked={state.blockStyle === 'heading2'}
+          label='Heading 2'
+          onActivate={() => set('blockStyle', 'heading2')}
+        />
+        <Menu.CheckItem
+          radio
+          checked={state.blockStyle === 'bullist'}
+          label='Bullet list'
+          onActivate={() => set('blockStyle', 'bullist')}
+        />
+        <Menu.CheckItem
+          radio
+          checked={state.blockStyle === 'ordlist'}
+          label='Numbered list'
+          onActivate={() => set('blockStyle', 'ordlist')}
+        />
+      </div>
       <Menu.Separator/>
-      <Menu.CheckItem
-        label='Bold'
-        icon={<BoldIcon/>}
-        checked={state.bold}
-        shortcut={BoldShortcut}
-        onActivate={() => set('bold', !state.bold)}
-      />
-      <Menu.CheckItem
-        label='Italic'
-        icon={<ItalicIcon/>}
-        checked={state.italic}
-        shortcut={ItalicShortcut}
-        onActivate={() => set('italic', !state.italic)}
-      />
-      <Menu.CheckItem
-        label='Underline'
-        icon={<UnderlineIcon/>}
-        checked={state.underline}
-        shortcut={UnderlineShortcut}
-        onActivate={() => set('underline', !state.underline)}
-      />
-      <Menu.CheckItem
-        label='Subscript'
-        icon={<SubscriptIcon/>}
-        checked={state.subscript}
-        onActivate={() => {
-          set('subscript', !state.subscript);
-          set('superscript', false);
-        }}
-      />
-      <Menu.CheckItem
-        label='Superscript'
-        icon={<SuperscriptIcon/>}
-        checked={state.superscript}
-        onActivate={() => {
-          set('superscript', !state.superscript);
-          set('subscript', false);
-        }}
-      />
-      <Menu.Separator/>
-      <Menu.Item label='Block formatting'>
-        <div role='group'>
-          <Menu.CheckItem
-            radio
-            checked={state.blockStyle === 'paragraph'}
-            label='Paragraph'
-            onActivate={() => set('blockStyle', 'paragraph')}
-          />
-          <Menu.CheckItem
-            radio
-            checked={state.blockStyle === 'heading1'}
-            label='Heading 1'
-            onActivate={() => set('blockStyle', 'heading1')}
-          />
-          <Menu.CheckItem
-            radio
-            checked={state.blockStyle === 'heading2'}
-            label='Heading 2'
-            onActivate={() => set('blockStyle', 'heading2')}
-          />
-          <Menu.CheckItem
-            radio
-            checked={state.blockStyle === 'bullist'}
-            label='Bullet list'
-            onActivate={() => set('blockStyle', 'bullist')}
-          />
-          <Menu.CheckItem
-            radio
-            checked={state.blockStyle === 'ordlist'}
-            label='Numbered list'
-            onActivate={() => set('blockStyle', 'ordlist')}
-          />
-        </div>
-        <Menu.Separator/>
-        <Menu.Item label='Increase indentation'/>
-        <Menu.Item label='Decrease indentation'/>
-      </Menu.Item>
-    </Menu>
+      <Menu.Item label='Increase indentation'/>
+      <Menu.Item label='Decrease indentation'/>
+    </Menu.Item>
+  </Menu>
 );
 
 const {

@@ -1,4 +1,4 @@
-import React, {HTMLAttributes, ReactNode} from 'react';
+import React, {ReactNode, Ref, HTMLAttributes} from 'react';
 
 import * as S from './styles';
 
@@ -7,10 +7,7 @@ export type Props = {
   children: ReactNode;
 } & Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'>;
 
-const Group = React.forwardRef<HTMLDivElement, Props>((
-  props: Props,
-  ref
-) => {
+const Group = React.forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
   const {
     name,
     children,

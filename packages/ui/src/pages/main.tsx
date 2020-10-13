@@ -1,4 +1,4 @@
-import React, {ReactNode, useMemo} from 'react';
+import React, {ReactNode, Ref, useMemo} from 'react';
 import ChevronLeft from 'mdi-react/ChevronLeftIcon';
 import ChevronRight from 'mdi-react/ChevronRightIcon';
 
@@ -22,10 +22,7 @@ export type Props = {
   onChange: (page: number) => void;
 };
 
-export const Pages = React.forwardRef<HTMLElement, Props>((
-  props: Props,
-  ref
-) => {
+export const Pages = React.forwardRef((props: Props, ref: Ref<HTMLElement>) => {
   const {
     className,
     page = 0,

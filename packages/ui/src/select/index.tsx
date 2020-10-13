@@ -1,4 +1,4 @@
-import React, {ReactNode, SelectHTMLAttributes} from 'react';
+import React, {ReactNode, Ref, SelectHTMLAttributes} from 'react';
 
 import * as S from './styles';
 
@@ -50,9 +50,9 @@ const renderOptions = (
   return null;
 };
 
-export const Select = React.forwardRef<HTMLSelectElement, Props>((
+export const Select = React.forwardRef((
   props: Props,
-  ref
+  ref: Ref<HTMLSelectElement>
 ) => {
   const {
     className,

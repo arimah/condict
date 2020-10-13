@@ -1,4 +1,4 @@
-import React, {ReactNode, useRef} from 'react';
+import React, {ReactNode, Ref, useRef} from 'react';
 import ChevronRightIcon from 'mdi-react/ChevronRightIcon';
 
 import {useCommand} from '../command';
@@ -22,10 +22,7 @@ export type Props = {
 
 const DefaultOnActivate = () => { /* no-op */ };
 
-const Item = React.forwardRef<HTMLDivElement, Props>((
-  props: Props,
-  ref
-) => {
+const Item = React.forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
   const {
     label,
     icon,

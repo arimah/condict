@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Ref} from 'react';
 
 import * as S from './styles';
 
@@ -7,9 +7,9 @@ export type Props = {
   size?: number;
 };
 
-export const Spinner = React.forwardRef<HTMLSpanElement, Props>((
+export const Spinner = React.forwardRef((
   props: Props,
-  ref
+  ref: Ref<HTMLSpanElement>
 ) => {
   const {className, size = 24} = props;
 

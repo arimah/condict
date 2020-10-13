@@ -1,4 +1,4 @@
-import React, {MouseEventHandler, AnchorHTMLAttributes} from 'react';
+import React, {Ref, MouseEventHandler, AnchorHTMLAttributes} from 'react';
 
 import {getContentAndLabel} from '../a11y-utils';
 import {useCommand} from '../command';
@@ -21,7 +21,10 @@ const cancelClickEvent: MouseEventHandler = e => {
   e.preventDefault();
 };
 
-const LinkButton = React.forwardRef<HTMLAnchorElement, Props>((props, ref) => {
+const LinkButton = React.forwardRef((
+  props: Props,
+  ref: Ref<HTMLAnchorElement>
+) => {
   const {
     label,
     command: commandName,

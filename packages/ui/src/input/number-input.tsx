@@ -1,4 +1,4 @@
-import React, {InputHTMLAttributes} from 'react';
+import React, {Ref, InputHTMLAttributes} from 'react';
 
 import * as S from './styles';
 
@@ -10,9 +10,9 @@ export type Props = {
   'children' | 'value' | 'type'
 >;
 
-export const NumberInput = React.forwardRef<HTMLInputElement, Props>((
+export const NumberInput = React.forwardRef((
   props: Props,
-  ref
+  ref: Ref<HTMLInputElement>
 ) => {
   const {
     step = 1,

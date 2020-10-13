@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Ref} from 'react';
 
 export type Props = {
   className?: string;
@@ -6,9 +6,9 @@ export type Props = {
   height?: number;
 };
 
-export const ConlangFlag = React.forwardRef<SVGSVGElement, Props>((
+export const ConlangFlag = React.forwardRef((
   {className, width = 94, height = 58}: Props,
-  ref
+  ref: Ref<SVGSVGElement>
 ) =>
   <svg
     className={className}

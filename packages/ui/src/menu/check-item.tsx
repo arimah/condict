@@ -1,4 +1,4 @@
-import React, {ReactNode, useRef} from 'react';
+import React, {ReactNode, Ref, useRef} from 'react';
 
 import {useCommand} from '../command';
 import {Shortcut} from '../shortcut';
@@ -21,10 +21,7 @@ export type Props = {
 
 const DefaultOnActivate = () => { /* no-op */ };
 
-const CheckItem = React.forwardRef<HTMLDivElement, Props>((
-  props: Props,
-  ref
-) => {
+const CheckItem = React.forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
   const {
     label,
     icon,

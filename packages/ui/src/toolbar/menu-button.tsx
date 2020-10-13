@@ -1,4 +1,4 @@
-import React, {ButtonHTMLAttributes, useState, useRef} from 'react';
+import React, {Ref, ButtonHTMLAttributes, useState, useRef} from 'react';
 
 import {MenuElement, MenuTrigger} from '../menu';
 import {getContentAndLabel} from '../a11y-utils';
@@ -16,9 +16,9 @@ export type Props = {
   'aria-label' | 'tabIndex' | 'title' | 'type'
 >;
 
-const MenuButton = React.forwardRef<HTMLButtonElement, Props>((
+const MenuButton = React.forwardRef((
   props: Props,
-  ref
+  ref: Ref<HTMLButtonElement>
 ) => {
   const {
     label = '',

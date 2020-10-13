@@ -1,8 +1,9 @@
 import React, {
+  Ref,
+  RefObject,
   HTMLAttributes,
   FocusEvent,
   KeyboardEvent,
-  RefObject,
   useState,
   useMemo,
   useCallback,
@@ -108,10 +109,7 @@ export type Props = Omit<HTMLAttributes<HTMLDivElement>, 'role'>;
 
 export const Toolbar = Object.assign(
   // eslint-disable-next-line react/display-name
-  React.forwardRef<HTMLDivElement, Props>((
-    props: Props,
-    ref
-  ) => {
+  React.forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
     const {onFocus, onKeyDown, children, ...otherProps} = props;
 
     const [descendants] = useState(() =>

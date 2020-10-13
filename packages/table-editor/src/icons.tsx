@@ -1,13 +1,13 @@
-import React, {SVGAttributes} from 'react';
+import React, {Ref, SVGAttributes} from 'react';
 
 export type Props = Omit<
   SVGAttributes<SVGSVGElement>,
   'width' | 'height' | 'viewBox'
 >;
 
-export const DoNotDeriveLemmaIcon = React.forwardRef<SVGSVGElement, Props>((
+export const DoNotDeriveLemmaIcon = React.forwardRef((
   props: Props,
-  ref
+  ref: Ref<SVGSVGElement>
 ) =>
   <svg
     {...props}
@@ -21,9 +21,9 @@ export const DoNotDeriveLemmaIcon = React.forwardRef<SVGSVGElement, Props>((
 
 DoNotDeriveLemmaIcon.displayName = 'DoNotDeriveLemmaIcon';
 
-export const CustomDisplayNameIcon = React.forwardRef<SVGSVGElement, Props>((
+export const CustomDisplayNameIcon = React.forwardRef((
   props: Props,
-  ref
+  ref: Ref<SVGSVGElement>
 ) =>
   <svg
     {...props}

@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React, {ReactNode, Ref} from 'react';
 
 import {useUniqueId} from '../unique-id';
 
@@ -27,9 +27,9 @@ const getHeadingTag = (level: HeadingLevel): HeadingTag => {
   }
 };
 
-export const NonIdealState = React.forwardRef<HTMLDivElement, Props>((
+export const NonIdealState = React.forwardRef((
   props: Props,
-  ref
+  ref: Ref<HTMLDivElement>
 ) => {
   const {
     className,

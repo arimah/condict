@@ -17,10 +17,7 @@ export type Props = {
   label?: string;
 } & Omit<SelectProps, 'minimal' | 'onKeyDown' | 'tabIndex'>;
 
-const Select = React.forwardRef((
-  props: Props,
-  ref: Ref<HTMLSelectElement>
-) => {
+const Select = React.forwardRef((props: Props, ref: Ref<HTMLSelectElement>) => {
   const {label, children, ...otherProps} = props;
 
   const ownRef = useRef<HTMLSelectElement>(null);

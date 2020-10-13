@@ -124,9 +124,9 @@ export type Props = {
   | 'type'
 >;
 
-const RadioButton = React.forwardRef<HTMLButtonElement, Props>((
+const RadioButton = React.forwardRef((
   props: Props,
-  ref
+  ref: Ref<HTMLButtonElement>
 ) => {
   const {
     checked = false,

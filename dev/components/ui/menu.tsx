@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key, react/display-name */
-import React, {useEffect} from 'react';
+import React, {Ref, useEffect} from 'react';
 import FileIcon from 'mdi-react/FileOutlineIcon';
 import OpenIcon from 'mdi-react/FolderOpenIcon';
 import SaveIcon from 'mdi-react/FloppyIcon';
@@ -73,9 +73,9 @@ type DemoMenuProps = {
   set: <K extends keyof State>(key: K, value: State[K]) => void;
 } & Omit<MenuProps, 'children'>;
 
-const DemoMenu = React.forwardRef<MenuType, DemoMenuProps>((
+const DemoMenu = React.forwardRef((
   {state, set, ...otherProps}: DemoMenuProps,
-  ref
+  ref: Ref<MenuType>
 ) =>
   // Please never design a menu like this in real life.
   <Menu {...otherProps} placement={state.placement} ref={ref}>

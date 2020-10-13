@@ -1,4 +1,4 @@
-import React, {ButtonHTMLAttributes} from 'react';
+import React, {Ref, ButtonHTMLAttributes} from 'react';
 
 import {getContentAndLabel} from '../a11y-utils';
 import {useCommand} from '../command';
@@ -14,7 +14,7 @@ export type Props = {
   'type' | 'aria-label'
 >;
 
-const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
+const Button = React.forwardRef((props: Props, ref: Ref<HTMLButtonElement>) => {
   const {
     label = '',
     type = 'button',
