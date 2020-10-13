@@ -1,5 +1,7 @@
 import React, {ReactNode} from 'react';
 
+import {useUniqueId} from '../unique-id';
+
 import * as S from './styles';
 
 export type HeadingLevel = 2 | 3 | 4 | 5 | 6;
@@ -39,15 +41,25 @@ export const NonIdealState = React.forwardRef<HTMLDivElement, Props>((
     action,
   } = props;
 
+  const id = useUniqueId();
+
   return (
     <S.Main
       className={className}
       minimal={minimal}
+      aria-labelledby={`${id}-title`}
+      aria-describedby={description ? `${id}-desc` : undefined}
+      // If the component has no actions, make the outer element focusable,
+      // so it can be discovered by screen readers.
+      tabIndex={!action ? 0 : undefined}
       ref={ref}
     >
       {image && <S.Image>{image}</S.Image>}
-      <S.Title as={getHeadingTag(headingLevel)}>{title}</S.Title>
-      {description && <S.Description>{description}</S.Description>}
+      <S.Title as={getHeadingTag(headingLevel)} id={`${id}-title`}>
+        {title}
+      </S.Title>
+      {description &&
+        <S.Description id={`${id}-desc`}>{description}</S.Description>}
       {action && <S.Action>{action}</S.Action>}
     </S.Main>
   );

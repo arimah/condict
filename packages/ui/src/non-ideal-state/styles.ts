@@ -4,7 +4,9 @@ export type Props = {
   minimal?: boolean;
 };
 
-export const Main = styled.div<Props>`
+export const Main = styled.div.attrs({
+  role: 'group',
+})<Props>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,6 +23,11 @@ export const Main = styled.div<Props>`
     border: 2px solid ${p => p.theme.general.borderColor};
     box-shadow: ${p => p.theme.shadow.elevation1};
   `}
+
+  &:focus {
+    ${p => p.theme.focus.style}
+    border-color: ${p => p.theme.focus.color};
+  }
 `;
 
 export const Image = styled.div`
