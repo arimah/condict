@@ -54,6 +54,13 @@ const validateLogFile = (config: any): LogFile => {
   return {path, level: level || 'info'};
 };
 
+/**
+ * Validates an object with logger options.
+ * @param config The configuration value.
+ * @return The final logger configuration.
+ * @throws {Error} The config value is not an object, or contains an invalid
+ *         configuration.
+ */
 export const validateLoggerOptions = (config: any): LoggerOptions => {
   if (config == null) {
     return {stdout: false, files: []};
@@ -74,6 +81,13 @@ export const validateLoggerOptions = (config: any): LoggerOptions => {
   return {stdout, files: validFiles};
 };
 
+/**
+ * Validates an object with server configuration.
+ * @param config The configuration value.
+ * @return The final server configuration.
+ * @throws {Error} The config value is not an object, or contains an invalid
+ *         configuration.
+ */
 export const validateConfig = (config: any): ServerConfig => {
   if (!isObject(config)) {
     throw new Error('Config must be an object.');
@@ -82,6 +96,13 @@ export const validateConfig = (config: any): ServerConfig => {
   return {database};
 };
 
+/**
+ * Validates an object with server and logger configuration.
+ * @param config The server and logger configuration value.
+ * @return The final server and logger configuration.
+ * @throws {Error} The config value is not an object, or contains an invalid
+ *         configuration.
+ */
 export const validateConfigWithLogger = (
   config: any
 ): ServerConfigWithLogger => {
@@ -93,6 +114,14 @@ export const validateConfigWithLogger = (
   return {...basicConfig, log};
 };
 
+/**
+ * Opens, parses and validates a JSON-based configuration file. Note: this
+ * function is synchronous.
+ * @param fileName The file name to read the configuration from.
+ * @return The server and logger configuration.
+ * @throws The file could not be opened, or the file contains an invalid
+ *         configuration.
+ */
 const loadConfigFile = (fileName: string): ServerConfigWithLogger => {
   const configText = fs.readFileSync(fileName, {
     encoding: 'utf-8',

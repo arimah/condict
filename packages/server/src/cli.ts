@@ -14,6 +14,9 @@ import {
   deleteUser,
 } from '.';
 
+type MaybeString = string | null | undefined;
+type MaybeNumber = number | null | undefined;
+
 const globalOptions: OptionDefinition[] = [
   {name: 'config', alias: 'c', type: String},
   {name: 'command', type: String, defaultOption: true},
@@ -95,7 +98,7 @@ const main = async () => {
         await start(logger, config);
         break;
       case 'view-table-schema': {
-        const table = (cmdArgs.table as string | null | undefined) || null;
+        const table = (cmdArgs.table as MaybeString) || null;
         printSchema(config, table);
         break;
       }
@@ -103,13 +106,13 @@ const main = async () => {
         await addUser(
           logger,
           config,
-          cmdArgs.name as string | null | undefined,
-          cmdArgs.password as string | null | undefined
+          cmdArgs.name as MaybeString,
+          cmdArgs.password as MaybeString
         );
         break;
       case 'edit-user': {
-        const userName = cmdArgs.user as string | null | undefined;
-        const userId = cmdArgs.id as number | null | undefined;
+        const userName = cmdArgs.user as MaybeString;
+        const userId = cmdArgs.id as MaybeNumber;
         const userNameOrId = userId != null ? userId : userName;
         if (userNameOrId == null) {
           console.error(`Please specify a user to edit (by name or '--id')`);
@@ -120,14 +123,14 @@ const main = async () => {
           logger,
           config,
           userNameOrId,
-          cmdArgs['new-name'] as string | null | undefined,
-          cmdArgs['new-password'] as string | null | undefined
+          cmdArgs['new-name'] as MaybeString,
+          cmdArgs['new-password'] as MaybeString
         );
         break;
       }
       case 'delete-user': {
-        const userName = cmdArgs.user as string | null | undefined;
-        const userId = cmdArgs.id as number | null | undefined;
+        const userName = cmdArgs.user as MaybeString;
+        const userId = cmdArgs.id as MaybeNumber;
         const userNameOrId = userId != null ? userId : userName;
         if (userNameOrId == null) {
           console.error(`Please specify a user to delete (by name or '--id')`);

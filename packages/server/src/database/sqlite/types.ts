@@ -1,6 +1,10 @@
 import FieldSet from '../../model/field-set';
 
+/** Contains database configuration. */
 export interface Options {
+  /**
+   * The path to the database file. The file is created if it does not exist.
+   */
   readonly file: string;
 }
 

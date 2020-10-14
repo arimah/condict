@@ -1,6 +1,6 @@
 import chalk, {Chalk} from 'chalk';
-import * as winston from 'winston';
-import * as Transport from 'winston-transport';
+import winston from 'winston';
+import Transport from 'winston-transport';
 
 import {Logger, LoggerOptions, LogLevel} from './types';
 
@@ -34,14 +34,12 @@ const fileFormat = winston.format.combine(
   winston.format.json()
 );
 
-const NullLogger: Logger = {
-  error() { /* no-op */ },
-  warn() { /* no-op */ },
-  info() { /* no-op */ },
-  debug() { /* no-op */ },
-};
-
-export default (config: LoggerOptions): Logger => {
+/**
+ * Creates a logger from the specified options.
+ * @param config Specifies logging options for stdout and files.
+ * @return A logger.
+ */
+const createLogger = (config: LoggerOptions): Logger => {
   const transports: Transport[] = [];
 
   if (config.stdout) {
@@ -60,8 +58,21 @@ export default (config: LoggerOptions): Logger => {
   });
 
   if (transports.length === 0) {
-    return NullLogger;
+    return createNullLogger();
   }
 
   return winston.createLogger({levels, transports});
 };
+
+export default createLogger;
+
+/**
+ * Creates a logger that discards all incoming messages.
+ * @return A logger that does nothing.
+ */
+export const createNullLogger = (): Logger => ({
+  error() { /* no-op */ },
+  warn() { /* no-op */ },
+  info() { /* no-op */ },
+  debug() { /* no-op */ },
+});
