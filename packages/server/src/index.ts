@@ -1,6 +1,7 @@
 export {default as createLogger} from './create-logger';
 export {default as CondictServer, LocalSession} from './server';
 export {default as CondictHttpServer} from './http-server';
+export {default as executeLocalOperation} from './execute-local';
 export {default as getTableSchema} from './table-schema';
 export {
   default as loadConfigFile,
