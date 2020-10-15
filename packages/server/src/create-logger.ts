@@ -1,5 +1,5 @@
 import chalk, {Chalk} from 'chalk';
-import winston from 'winston';
+import * as winston from 'winston';
 import Transport from 'winston-transport';
 
 import {Logger, LoggerOptions, LogLevel} from './types';
