@@ -19,7 +19,8 @@
     "copyGraphql": "copyfiles --up 3 ../../graphql-schema/*.graphql ./graphql-schema",
     "build": "npm run -s build:graphqlTypes && npm run -s copyGraphql",
     "build:graphqlTypes": "condict-graphql-typer --schema-dir ../../graphql-schema --target=server --output ./src/graphql/types.ts",
-    "build:native": "npm rebuild bcrypt,better-sqlite3"
+    "build:native": "npm rebuild bcrypt better-sqlite3",
+    "test": "mocha --recursive --ignore test/helpers.js"
   },
   "dependencies": {
     "@condict/inflect": "^0.1.2",
@@ -43,6 +44,7 @@
     "@types/command-line-args": "^5.0.0",
     "@types/generic-pool": "^3.1.9",
     "@types/node": "^14.0.13",
-    "copyfiles": "^2.3.0"
+    "copyfiles": "^2.3.0",
+    "mocha": "^8.1.3"
   }
 }
