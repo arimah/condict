@@ -4,7 +4,7 @@ import validator, {minLength} from '../validator';
 
 export const validateStemName =
   validator<string>('name')
-    .do(minLength(1))
+    .do(minLength(1, 'Stem name cannot be empty'))
     .validate;
 
 export const validateStems = (stems: StemInput[]): StemInput[] =>

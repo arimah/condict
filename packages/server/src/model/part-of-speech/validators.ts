@@ -11,7 +11,7 @@ export const validateName = (
 ): string =>
   validator<string>('name')
     .do(value => value.trim())
-    .do(minLength(1))
+    .do(minLength(1, 'Part of speech name cannot be empty'))
     .do(unique(
       currentId,
       name => {
@@ -23,6 +23,6 @@ export const validateName = (
         `;
         return row ? row.id : null;
       },
-      name => `the language already has a part of speech named '${name}'`
+      name => `The language already has a part of speech named '${name}'`
     ))
     .validate(value);

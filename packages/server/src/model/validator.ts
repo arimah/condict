@@ -7,6 +7,8 @@ export type Validator<I, R> = {
   readonly validate: (value: I) => R;
 };
 
+export type Message<T> = string | ((value: T) => string);
+
 const validator = <T>(paramName: string): Validator<T, T> => {
   const chain = <A, B, C>(
     prev: (value: A) => B,
@@ -29,19 +31,18 @@ const validator = <T>(paramName: string): Validator<T, T> => {
 
 export default validator;
 
-export type MinLengthMessage<T> = (value: T, minLength: number) => string;
-
-const defaultMinLengthMessage =
-  <T>(_value: T, minLength: number) =>
-    `must have at least ${minLength} character${minLength !== 1 ? 's' : ''}`;
+const getMessage = <T>(message: Message<T>, value: T): string =>
+  typeof message === 'function'
+    ? message(value)
+    : message;
 
 export const minLength = <T extends {length: number}>(
   minLength: number,
-  message: MinLengthMessage<T> = defaultMinLengthMessage
+  message: Message<T>
 ) =>
   (value: T, paramName: string): T => {
     if (value.length < minLength) {
-      throw new UserInputError(`${paramName}: ${message(value, minLength)}`, {
+      throw new UserInputError(getMessage(message, value), {
         invalidArgs: [paramName],
       });
     }
@@ -50,11 +51,11 @@ export const minLength = <T extends {length: number}>(
 
 export const matches = (
   regex: RegExp,
-  message: (value: string) => string
+  message: Message<string>
 ) =>
   (value: string, paramName: string): string => {
     if (!regex.test(value)) {
-      throw new UserInputError(`${paramName}: ${message(value)}`, {
+      throw new UserInputError(getMessage(message, value), {
         invalidArgs: [paramName],
       });
     }
@@ -64,12 +65,12 @@ export const matches = (
 export const unique = <T, K>(
   currentId: K | null,
   getExistingId: (value: T) => K | null,
-  message: (value: T) => string
+  message: Message<T>
 ) =>
   (value: T, paramName: string): T => {
     const existingId = getExistingId(value);
     if (existingId !== null && existingId !== currentId) {
-      throw new UserInputError(`${paramName}: ${message(value)}`, {
+      throw new UserInputError(getMessage(message, value), {
         invalidArgs: [paramName],
         existingId,
       });

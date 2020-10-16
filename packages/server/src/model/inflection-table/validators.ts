@@ -13,7 +13,7 @@ export const validateName = (
 ): string =>
   validator<string>('name')
     .do(value => value.trim())
-    .do(minLength(1))
+    .do(minLength(1, 'Inflection table name cannot be empty'))
     .do(unique(
       currentId,
       name => {
@@ -25,7 +25,7 @@ export const validateName = (
         `;
         return row ? row.id : null;
       },
-      name => `the part of speech already has a table named '${name}'`
+      name => `The part of speech already has a table named '${name}'`
     ))
     .validate(value);
 

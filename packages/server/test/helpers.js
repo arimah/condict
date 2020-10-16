@@ -1,27 +1,52 @@
 const assert = require('assert');
+const util = require('util');
 
 const {CondictServer, createLogger, executeLocalOperation} = require('../dist');
 
 const {AssertionError} = assert;
 
 const Optional = Symbol();
+const ObjectMatcher = Symbol();
 
 const isArray = Array.isArray;
 
-const isPlainObject = value => {
-  if (value == null || typeof value !== 'object') {
+const isSameObjectKind = (expected, actual) => {
+  if (actual == null || typeof actual !== 'object') {
     return false;
   }
-  if (Array.isArray(value)) {
-    return false;
+
+  const expectedProto = Object.getPrototypeOf(expected);
+  const actualProto = Object.getPrototypeOf(actual);
+
+  // If expected has null or Object as its prototype, allow actual to have
+  // either null or Object. That way, "plain object" values can be compared
+  // as equal whether they have the Object prototype or not.
+  if (expectedProto === null || expectedProto === Object.prototype) {
+    return actualProto === null || actualProto === Object.prototype;
   }
-  const proto = Object.getPrototypeOf(value);
-  return proto === Object.prototype || proto === null;
+
+  // In other cases, the two prototypes must match.
+  return expectedProto === actualProto;
 };
 
 const isOptional = expected => expected != null && expected[Optional];
 
+const isObjectMatcher = expected => expected != null && expected[ObjectMatcher];
+
 const hasOwn = Object.prototype.hasOwnProperty;
+
+const inspect = value => util.inspect(value, {
+  // util.inspect may have its defaults overridden; these options match what
+  // NodeJS's assert module uses internally.
+  compact: false,
+  customInspect: false,
+  depth: 1000,
+  maxArrayLength: Infinity,
+  showHidden: false,
+  showProxy: false,
+  sorted: true,
+  getters: true,
+});
 
 const describeType = value => {
   const type = typeof value;
@@ -34,14 +59,30 @@ const describeType = value => {
     case 'symbol':
     case 'function':
       return type;
-    case 'object':
+    case 'object': {
       if (value === null) {
         return 'null';
       }
       if (isArray(value)) {
         return 'array';
       }
-      return 'object';
+      const proto = Object.getPrototypeOf(value);
+      if (proto === null || proto === Object.prototype) {
+        return 'object';
+      }
+      if (
+        hasOwn.call(proto, Symbol.toStringTag) &&
+        // 'Object' is the default for some transpiled ES classes.
+        proto[Symbol.toStringTag] !== 'Object'
+      ) {
+        return proto[Symbol.toStringTag];
+      }
+      return (
+        proto.constructor.name ||
+        proto.name ||
+        Object.prototype.toString.call(value)
+      );
+    }
     default:
       throw new Error(`unreachable: ${type}`);
   }
@@ -63,7 +104,7 @@ const formatPath = path => {
   return `\`${pathText}\``;
 }
 
-const compareResult = (expected, actual, path, captures) => {
+const assertResultMatches = (expected, actual, path, captures) => {
   switch (typeof expected) {
     case 'undefined':
     case 'boolean':
@@ -80,9 +121,12 @@ const compareResult = (expected, actual, path, captures) => {
       if (expected === null) {
         assert.strictEqual(actual, expected);
       } else if (isArray(expected)) {
-        compareArrays(expected, actual, path, captures);
+        assertIsArray(actual, path);
+        assertArraysMatch(expected, actual, path, captures);
       } else {
-        compareObjects(expected, actual, path, captures);
+        assertSameObjectKind(expected, actual, path);
+        assertPropsMatch(expected, actual, path, captures);
+        assertNoExtraProps(expected, actual, path);
       }
       break;
     default:
@@ -90,46 +134,57 @@ const compareResult = (expected, actual, path, captures) => {
   }
 };
 
-const compareArrays = (expected, actual, path, captures) => {
+const assertIsArray = (actual, path) => {
   if (!isArray(actual)) {
-    throw new AssertionError({
-      message: `Expected ${formatPath(path)} to be an array, got ${
+    assert.fail(
+      `Expected ${formatPath(path)} to be an array, got ${
         describeType(actual)
-      }`,
-      actual,
-    });
-  }
-  if (actual.length !== expected.length) {
-    throw new AssertionError({
-      message: `Expected ${
-        formatPath(path)
-      } to be an array of length ${expected.length}, got ${actual.length}`,
-      actual,
-    });
-  }
-
-  for (let i = 0; i < expected.length; i++) {
-    compareResult(expected[i], actual[i], path.concat(i), captures);
+      }\n\n${inspect(actual)}`
+    );
   }
 };
 
-const compareObjects = (
-  expected,
-  actual,
-  path,
-  captures,
-  allowExtraProps = false
-) => {
-  if (!isPlainObject(actual)) {
-    throw new AssertionError({
-      message: `Expected ${formatPath(path)} to be an object, got ${
-        describeType(actual)
-      }`,
-      actual,
-    });
+const assertArraysMatch = (expected, actual, path, captures) => {
+  if (actual.length !== expected.length) {
+    assert.fail(
+      `Expected ${
+        formatPath(path)
+      } to be an array of length ${expected.length}, got ${actual.length}\n\n${
+        inspect(actual)
+      }`
+    );
   }
 
-  const seenKeys = new Set();
+  for (let i = 0; i < expected.length; i++) {
+    assertResultMatches(expected[i], actual[i], path.concat(i), captures);
+  }
+};
+
+const assertSameObjectKind = (expected, actual, path) => {
+  if (!isSameObjectKind(expected, actual)) {
+    assert.fail(
+      `Expected ${formatPath(path)} to be ${
+        describeType(expected)
+      }, got ${
+        describeType(actual)
+      }\n\n${inspect(actual)}`
+    );
+  }
+};
+
+const assertInstanceOf = (expectedType, actual, path) => {
+  if (!(actual instanceof expectedType)) {
+    assert.fail(
+      `Expected ${formatPath(path)} to be an instance of ${
+        expectedType.name
+      }, got ${
+        describeType(actual)
+      }\n\n${inspect(actual)}`
+    );
+  }
+};
+
+const assertPropsMatch = (expected, actual, path, captures) => {
   for (const key of Object.keys(expected)) {
     if (!hasOwn.call(actual, key)) {
       if (isOptional(expected[key])) {
@@ -138,25 +193,24 @@ const compareObjects = (
       }
 
       // Required and missing - that's an error.
-      throw new AssertionError({
-        messages: `Expected ${formatPath(path)} to contain the key \`${key}\``,
-        actual,
-      });
+      assert.fail(
+        `Expected ${formatPath(path)} to contain the key \`${key}\`\n\n${
+          inspect(actual)
+        }`
+      );
     }
-    compareResult(expected[key], actual[key], path.concat(key), captures);
-    seenKeys.add(key);
+    assertResultMatches(expected[key], actual[key], path.concat(key), captures);
   }
+};
 
-  if (!allowExtraProps) {
-    const extraKeys = Object.keys(actual).filter(k => !seenKeys.has(k));
-    if (extraKeys.length > 0) {
-      throw new AssertionError({
-        message: `Unexpected extra keys in ${formatPath(path)}: ${
-          extraKeys.join(', ')
-        }`,
-        actual,
-      });
-    }
+const assertNoExtraProps = (expected, actual, path) => {
+  const extraKeys = Object.keys(actual).filter(k => !hasOwn.call(expected, k));
+  if (extraKeys.length > 0) {
+    assert.fail(
+      `Unexpected extra keys in ${formatPath(path)}: ${
+        extraKeys.join(', ')
+      }\n\n${inspect(actual)}`
+    );
   }
 };
 
@@ -168,7 +222,7 @@ const assertOperationResult = async (
 ) => {
   const actual = await executeLocalOperation(server, operation, variableValues);
   const captures = Object.create(null);
-  compareResult(expected, actual, [], captures);
+  assertResultMatches(expected, actual, [], captures);
   return captures;
 };
 
@@ -180,13 +234,39 @@ const capture = name => (value, path, captures) => {
 };
 
 const optional = expected => Object.assign(
-  (actual, path, captures) => compareResult(expected, actual, path, captures),
+  (actual, path, captures) => assertResultMatches(expected, actual, path, captures),
   {[Optional]: true}
 );
 
-const allowExtraProps = expected => (actual, path, captures) => {
-  compareObjects(expected, actual, path, captures, true);
+const createObjectMatcher = (expected, matcherProps) => {
+  let matcher;
+  if (isObjectMatcher(expected)) {
+    matcher = expected;
+  } else {
+    matcher = (actual, path, captures) => {
+      if (matcher.instanceOf) {
+        assertInstanceOf(matcher.instanceOf, actual, path);
+      } else {
+        assertSameObjectKind(expected, actual, path);
+      }
+
+      assertPropsMatch(expected, actual, path, captures);
+
+      if (!matcher.allowExtraProps) {
+        assertNoExtraProps(expected, actual, path);
+      }
+    };
+    matcher[ObjectMatcher] = true;
+  }
+  Object.assign(matcher, matcherProps);
+  return matcher;
 };
+
+const instanceOf = (expectedType, expectedProps) =>
+  createObjectMatcher(expectedProps, {instanceOf: expectedType,});
+
+const allowExtraProps = expected =>
+  createObjectMatcher(expected, {allowExtraProps: true});
 
 const nullLogger = createLogger({stdout: false, files: []});
 
@@ -201,5 +281,6 @@ const startServer = async () => {
 exports.assertOperationResult = assertOperationResult;
 exports.capture = capture;
 exports.optional = optional;
+exports.instanceOf = instanceOf;
 exports.allowExtraProps = allowExtraProps;
 exports.startServer = startServer;

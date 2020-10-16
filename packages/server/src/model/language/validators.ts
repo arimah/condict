@@ -10,7 +10,7 @@ export const validateName = (
 ): string =>
   validator<string>('name')
     .do(name => name.trim())
-    .do(minLength(1))
+    .do(minLength(1, 'Language name cannot be empty'))
     .do(unique(
       currentId,
       name => {
@@ -21,6 +21,6 @@ export const validateName = (
         `;
         return row ? row.id : null;
       },
-      name => `there is already a language with the name '${name}'`
+      name => `There is already a language with the name '${name}'`
     ))
     .validate(value);

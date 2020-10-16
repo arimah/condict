@@ -19,7 +19,10 @@ export const validateName = (
 ): string =>
   validator<string>('name')
     .do(name => name.trim())
-    .do(minLength(UserNameMinLength))
+    .do(minLength(
+      UserNameMinLength,
+      `User name must be at least ${UserNameMinLength} characters long`
+    ))
     .do(unique(
       currentId,
       name => {
@@ -30,7 +33,7 @@ export const validateName = (
         `;
         return row ? row.id : null;
       },
-      name => `there is already a user with the name '${name}'`
+      name => `There is already a user with the name '${name}'`
     ))
     .validate(value);
 
@@ -41,12 +44,12 @@ export const validatePassword =
   validator<string>('password')
     .do((password, paramName) => {
       if (password.length < 8) {
-        throw new UserInputError('password must be at least 8 characters long', {
+        throw new UserInputError('User password must be at least 8 characters long', {
           invalidArgs: [paramName],
         });
       }
       if (/^\s+$/.test(password)) {
-        throw new UserInputError('password cannot consist of only white space characters', {
+        throw new UserInputError('User password cannot consist of only white space characters', {
           invalidArgs: [paramName],
         });
       }
