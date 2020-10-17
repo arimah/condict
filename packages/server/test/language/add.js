@@ -1,11 +1,8 @@
-const {GraphQLError} = require('graphql');
-
 const {
   assertOperationResult,
   capture,
   optional,
-  instanceOf,
-  allowExtraProps,
+  inputError,
   startServer,
 } = require('../helpers');
 
@@ -139,14 +136,11 @@ describe('Language: addLanguage', () => {
       {},
       {
         data: null,
-        errors: [allowExtraProps(instanceOf(GraphQLError, {
-          message: 'Language name cannot be empty',
-          path: ['addLanguage'],
-          extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: ['name'],
-          },
-        }))],
+        errors: [inputError(
+          'Language name cannot be empty',
+          'addLanguage',
+          'name'
+        )],
       }
     );
     await assertOperationResult(
@@ -172,14 +166,11 @@ describe('Language: addLanguage', () => {
       {},
       {
         data: null,
-        errors: [allowExtraProps(instanceOf(GraphQLError, {
-          message: 'Language name cannot be empty',
-          path: ['addLanguage'],
-          extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: ['name'],
-          },
-        }))],
+        errors: [inputError(
+          'Language name cannot be empty',
+          'addLanguage',
+          'name'
+        )],
       }
     );
     await assertOperationResult(
@@ -218,15 +209,12 @@ describe('Language: addLanguage', () => {
       {},
       {
         data: null,
-        errors: [allowExtraProps(instanceOf(GraphQLError, {
-          message: "There is already a language with the name 'Hello'",
-          path: ['addLanguage'],
-          extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: ['name'],
-            existingId: id,
-          },
-        }))],
+        errors: [inputError(
+          "There is already a language with the name 'Hello'",
+          'addLanguage',
+          'name',
+          {existingId: id}
+        )],
       }
     );
     await assertOperationResult(

@@ -1,6 +1,8 @@
 const assert = require('assert');
 const util = require('util');
 
+const {GraphQLError} = require('graphql');
+
 const {CondictServer, createLogger, executeLocalOperation} = require('../dist');
 
 const {AssertionError} = assert;
@@ -268,6 +270,17 @@ const instanceOf = (expectedType, expectedProps) =>
 const allowExtraProps = expected =>
   createObjectMatcher(expected, {allowExtraProps: true});
 
+const inputError = (message, path, args, extensions = null) =>
+  allowExtraProps(instanceOf(GraphQLError, {
+    message,
+    path: typeof path === 'string' ? [path] : path,
+    extensions: {
+      code: 'BAD_USER_INPUT',
+      invalidArgs: typeof args === 'string' ? [args] : args,
+      ...extensions,
+    },
+  }));
+
 const nullLogger = createLogger({stdout: false, files: []});
 
 const startServer = async () => {
@@ -283,4 +296,5 @@ exports.capture = capture;
 exports.optional = optional;
 exports.instanceOf = instanceOf;
 exports.allowExtraProps = allowExtraProps;
+exports.inputError = inputError;
 exports.startServer = startServer;
