@@ -1,4 +1,9 @@
-import {GraphQLObjectType, GraphQLField} from 'graphql';
+import {
+  GraphQLObjectType,
+  GraphQLField,
+  GraphQLArgument,
+  isNonNullType,
+} from 'graphql';
 
 import getPermittedEnumValues from '../../graphql/enum-values';
 
@@ -20,6 +25,26 @@ const writeFieldType = (
   return writeType(field.type);
 };
 
+const defineArgTypes = (
+  t: TextBuilder,
+  args: readonly GraphQLArgument[],
+  writeType: TypeWriter
+) => {
+  t.appendLine('{');
+  t.indented(() => {
+    for (const arg of args) {
+      if (arg.description) {
+        t.appendLine(formatDescription(arg.description));
+      }
+      const optional = !isNonNullType(arg.type);
+      t.appendLine(
+        `${arg.name}${optional ? '?' : ''}: ${writeType(arg.type)};`
+      );
+    }
+  });
+  t.append('}');
+};
+
 const defineField = (
   t: TextBuilder,
   field: GraphQLField<any, any>,
@@ -28,7 +53,15 @@ const defineField = (
   if (field.description) {
     t.appendLine(formatDescription(field.description));
   }
-  t.appendLine(`${field.name}: ${writeFieldType(field, writeType)};`);
+  t.append(`${field.name}: `);
+  if (field.args.length > 0) {
+    t.append('WithArgs<');
+    defineArgTypes(t, field.args, writeType);
+    t.append(`, ${writeFieldType(field, writeType)}>`);
+  } else {
+    t.append(writeFieldType(field, writeType));
+  }
+  t.appendLine(';');
 };
 
 export const defineObjectType = (

@@ -8,7 +8,7 @@ import {
   isInterfaceType,
 } from 'graphql';
 
-import {CommonHeader, IdOfDefinition} from '../shared';
+import {CommonHeader, IdOfDefinition, ArgsDefinition} from '../shared';
 import {TextBuilder} from '../utils';
 import {isBuiltin as isBuiltinScalar} from '../builtin-scalars';
 
@@ -23,10 +23,11 @@ import writeType from './write-type';
 const defineTypes = (schema: GraphQLSchema): string => {
   const result = new TextBuilder();
 
-  // Define some basic things for IdOf.
+  // Define some basic types first.
   result
     .appendLine(CommonHeader)
-    .appendLine(IdOfDefinition);
+    .appendLine(IdOfDefinition)
+    .appendLine(ArgsDefinition);
 
   const types =
     Object.values(schema.getTypeMap())
