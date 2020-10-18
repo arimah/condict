@@ -10,10 +10,7 @@ import {
   DefinitionLink,
   PartOfSpeechLink,
 } from '../../rich-text/types';
-import {
-  isCondictLink,
-  parseCondictLink,
-} from '../../rich-text/condict-link';
+import {isCondictLink, parseCondictLink} from '../../rich-text/condict-link';
 
 import {
   BlockElement as BlockElementType,

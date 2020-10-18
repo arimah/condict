@@ -9,14 +9,9 @@ const LoginResult: ResolversFor<LoginResultType, LoginResultType> = {
   __resolveType: p => 'reason' in p ? 'FailedLogin' : 'UserSession',
 };
 
-type LoginArgs = {
-  username: string;
-  password: string;
-};
-
 const Mutation: Mutators = {
   logIn: publicMutator(
-    (_root, {username, password}: LoginArgs, {db}) =>
+    (_root, {username, password}, {db}) =>
       UserSessionMut.logIn(db, username, password)
   ),
 

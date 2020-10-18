@@ -22,19 +22,15 @@ import {
 
 import {
   Definition as DefinitionType,
-  DefinitionId,
   DefinitionStem as DefinitionStemType,
   DefinitionInflectionTable as DefinitionInflectionTableType,
-  DefinitionInflectionTableId,
   CustomInflectedForm as CustomInflectedFormType,
   DerivedDefinition as DerivedDefinitionType,
-  NewDefinitionInput,
-  EditDefinitionInput,
   Query as QueryType,
 } from '../types';
 import {mutator} from '../helpers';
 
-import {ResolversFor, Mutators, IdArg, PageArg} from './types';
+import {ResolversFor, Mutators} from './types';
 
 const Definition: ResolversFor<DefinitionType, DefinitionRow> = {
   partOfSpeech: (p, _args, {db}) => PartOfSpeech.byId(db, p.part_of_speech_id),
@@ -54,7 +50,7 @@ const Definition: ResolversFor<DefinitionType, DefinitionRow> = {
 
   tags: (p, _args, {db}) => Tag.allByDefinition(db, p.id),
 
-  derivedDefinitions: (p, {page}: PageArg, {db}, info) =>
+  derivedDefinitions: (p, {page}, {db}, info) =>
     DerivedDefinitionModel.allByDerivedFrom(db, p.id, page, info),
 
   lemma: (p, _args, {db}) => Lemma.byId(db, p.lemma_id),
@@ -115,41 +111,29 @@ const DerivedDefinition: ResolversFor<
   language: (p, _args, {db}) => Language.byId(db, p.language_id),
 };
 
-const Query: ResolversFor<QueryType, unknown> = {
-  definition: (_root, {id}: IdArg<DefinitionId>, {db}) =>
+const Query: ResolversFor<QueryType, null> = {
+  definition: (_root, {id}, {db}) =>
     DefinitionModel.byId(db, id),
 
   definitionInflectionTable: (
     _root,
-    {id}: IdArg<DefinitionInflectionTableId>,
+    {id},
     {db}
   ) =>
     DefinitionInflectionTableModel.byId(db, id),
 };
 
-type AddDefinitionArgs = {
-  data: NewDefinitionInput;
-};
-
-type EditDefinitionArgs = {
-  id: DefinitionId;
-  data: EditDefinitionInput;
-};
-
 const Mutation: Mutators = {
   addDefinition: mutator(
-    (_root, {data}: AddDefinitionArgs, {db}) =>
-      DefinitionMut.insert(db, data)
+    (_root, {data}, {db}) => DefinitionMut.insert(db, data)
   ),
 
   editDefinition: mutator(
-    (_root, {id, data}: EditDefinitionArgs, {db}) =>
-      DefinitionMut.update(db, id, data)
+    (_root, {id, data}, {db}) => DefinitionMut.update(db, id, data)
   ),
 
   deleteDefinition: mutator(
-    (_root, {id}: IdArg<DefinitionId>, {db}) =>
-      DefinitionMut.delete(db, id)
+    (_root, {id}, {db}) => DefinitionMut.delete(db, id)
   ),
 };
 

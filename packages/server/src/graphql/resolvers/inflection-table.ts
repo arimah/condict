@@ -13,34 +13,29 @@ import {
 
 import {
   InflectionTable as InflectionTableType,
-  InflectionTableId,
   InflectionTableLayout as InflectionTableLayoutType,
-  InflectionTableLayoutId,
   InflectionTableCell as InflectionTableCellType,
   InflectionTableHeaderCell as InflectionTableHeaderCellType,
   InflectionTableDataCell as InflectionTableDataCellType,
   InflectedForm as InflectedFormType,
-  InflectedFormId,
-  NewInflectionTableInput,
-  EditInflectionTableInput,
   Query as QueryType,
 } from '../types';
 import {mutator} from '../helpers';
 
-import {ResolversFor, Mutators, IdArg, PageArg} from './types';
+import {ResolversFor, Mutators} from './types';
 
 const InflectionTable: ResolversFor<InflectionTableType, InflectionTableRow> = {
   layout: (p, _args, {db}) =>
     InflectionTableLayoutModel.currentByTable(db, p.id),
 
-  oldLayouts: (p, {page}: PageArg, {db}, info) =>
+  oldLayouts: (p, {page}, {db}, info) =>
     InflectionTableLayoutModel.allOldByTable(db, p.id, page, info),
 
   partOfSpeech: (p, _args, {db}) => PartOfSpeech.byId(db, p.part_of_speech_id),
 
   isInUse: (p, _args, {db}) => Definition.anyUsesInflectionTable(db, p.id),
 
-  usedByDefinitions: (p, {page}: PageArg, {db}, info) =>
+  usedByDefinitions: (p, {page}, {db}, info) =>
     Definition.allByInflectionTable(db, p.id, page, info),
 };
 
@@ -63,7 +58,7 @@ const InflectionTableLayout: ResolversFor<
   isInUse: (p, _args, {db}) =>
     Definition.anyUsesInflectionTableLayout(db, p.id),
 
-  usedByDefinitions: (p, {page}: PageArg, {db}, info) =>
+  usedByDefinitions: (p, {page}, {db}, info) =>
     Definition.allByInflectionTableLayout(db, p.id, page, info),
 };
 
@@ -117,40 +112,28 @@ const InflectedForm: ResolversFor<InflectedFormType, InflectedFormRow> = {
     InflectionTableLayoutModel.byId(db, p.inflection_table_version_id),
 };
 
-const Query: ResolversFor<QueryType, unknown> = {
-  inflectionTable: (_root, {id}: IdArg<InflectionTableId>, {db}) =>
+const Query: ResolversFor<QueryType, null> = {
+  inflectionTable: (_root, {id}, {db}) =>
     InflectionTableModel.byId(db, id),
 
-  inflectionTableLayout: (_root, {id}: IdArg<InflectionTableLayoutId>, {db}) =>
+  inflectionTableLayout: (_root, {id}, {db}) =>
     InflectionTableLayoutModel.byId(db, id),
 
-  inflectedForm: (_root, {id}: IdArg<InflectedFormId>, {db}) =>
+  inflectedForm: (_root, {id}, {db}) =>
     InflectedFormModel.byId(db, id),
-};
-
-type AddInflectionTableArgs = {
-  data: NewInflectionTableInput;
-};
-
-type EditInflectionTableArgs = {
-  id: InflectionTableId;
-  data: EditInflectionTableInput;
 };
 
 const Mutation: Mutators = {
   addInflectionTable: mutator(
-    (_root, {data}: AddInflectionTableArgs, {db}) =>
-      InflectionTableMut.insert(db, data)
+    (_root, {data}, {db}) => InflectionTableMut.insert(db, data)
   ),
 
   editInflectionTable: mutator(
-    (_root, {id, data}: EditInflectionTableArgs, {db}) =>
-      InflectionTableMut.update(db, id, data)
+    (_root, {id, data}, {db}) => InflectionTableMut.update(db, id, data)
   ),
 
   deleteInflectionTable: mutator(
-    (_root, {id}: IdArg<InflectionTableId>, {db}) =>
-      InflectionTableMut.delete(db, id)
+    (_root, {id}, {db}) => InflectionTableMut.delete(db, id)
   ),
 };
 

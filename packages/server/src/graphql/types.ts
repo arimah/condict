@@ -9,9 +9,24 @@ const IdKind = Symbol();
 // pretending there's an extra property that is unique to each type, we can
 // get TypeScript to reject invalid ID uses, such as attempting to assign
 // a DefinitionId to a LemmaId.
+
+/** Represents an ID of the specified kind. */
 export type IdOf<T extends string> = number & {
   [IdKind]: T;
 };
+
+const ArgsType = Symbol();
+
+/**
+ * Specifies that a field has one or more arguments. The field's argument
+ * type can be extracted using FieldArgs.
+ */
+export type WithArgs<A, T> = T & {
+  [ArgsType]: A;
+};
+
+/** Extracts a field's argument types. */
+export type FieldArgs<F> = F extends WithArgs<infer A, unknown> ? A : {};
 
 /**
  * A block element. Block elements make up the top-level nodes of formatted text.
@@ -174,7 +189,9 @@ export type Definition = {
    * Since there may be many derived definitions, this field is paginated. If
    * provided, `page.perPage` cannot exceed 200.
    */
-  derivedDefinitions: DerivedDefinitionConnection;
+  derivedDefinitions: WithArgs<{
+    page?: PageParams | null;
+  }, DerivedDefinitionConnection>;
   /**
    * The lemma that the definition belongs to.
    */
@@ -677,7 +694,9 @@ export type InflectionTable = {
    * Since there may be many old layouts, this field always paginated. If provided,
    * `page.perPage` cannot exceed 200.
    */
-  oldLayouts: InflectionTableLayoutConnection;
+  oldLayouts: WithArgs<{
+    page?: PageParams | null;
+  }, InflectionTableLayoutConnection>;
   /**
    * The part of speech that this inflection table belongs to.
    */
@@ -699,7 +718,9 @@ export type InflectionTable = {
    * Since the table may be used by many definitions, this field always paginated.
    * If provided, `page.perPage` cannot exceed 200.
    */
-  usedByDefinitions: DefinitionConnection;
+  usedByDefinitions: WithArgs<{
+    page?: PageParams | null;
+  }, DefinitionConnection>;
 };
 
 /**
@@ -830,7 +851,9 @@ export type InflectionTableLayout = {
    * Since the table may be used by many definitions, this field always paginated.
    * If provided, `page.perPage` cannot exceed 200.
    */
-  usedByDefinitions: DefinitionConnection;
+  usedByDefinitions: WithArgs<{
+    page?: PageParams | null;
+  }, DefinitionConnection>;
 };
 
 /**
@@ -945,12 +968,17 @@ export type Language = {
    * lemmas, this field is always paginated. If provided, `page.perPage` cannot
    * exceed 200.
    */
-  lemmas: LemmaConnection;
+  lemmas: WithArgs<{
+    page?: PageParams | null;
+    filter?: LemmaFilter | null;
+  }, LemmaConnection>;
   /**
    * The tags used by this language. Since a language may use many tags, this field
    * is always paginated. If provided, `page.perPage` cannot exceed 200.
    */
-  tags: TagConnection;
+  tags: WithArgs<{
+    page?: PageParams | null;
+  }, TagConnection>;
 };
 
 /**
@@ -1168,73 +1196,102 @@ export type Mutation = {
    * 
    * Requires authentication.
    */
-  addDefinition: Definition;
+  addDefinition: WithArgs<{
+    data: NewDefinitionInput;
+  }, Definition>;
   /**
    * Edits an existing definition.
    * 
    * Requires authentication.
    */
-  editDefinition: Definition;
+  editDefinition: WithArgs<{
+    id: DefinitionId;
+    data: EditDefinitionInput;
+  }, Definition>;
   /**
    * Deletes a definition.
    * 
    * Requires authentication.
    */
-  deleteDefinition: boolean;
+  deleteDefinition: WithArgs<{
+    id: DefinitionId;
+  }, boolean>;
   /**
    * Adds an inflection table.
    * 
    * Requires authentication.
    */
-  addInflectionTable: InflectionTable;
+  addInflectionTable: WithArgs<{
+    data: NewInflectionTableInput;
+  }, InflectionTable>;
   /**
    * Edits an inflection table.
    * 
    * Requires authentication.
    */
-  editInflectionTable: InflectionTable;
+  editInflectionTable: WithArgs<{
+    id: InflectionTableId;
+    data: EditInflectionTableInput;
+  }, InflectionTable>;
   /**
    * Deletes an inflection table. It is not possible to delete a table that is used
    * by one or more definitions.
    * 
    * Requires authentication.
    */
-  deleteInflectionTable: boolean;
+  deleteInflectionTable: WithArgs<{
+    id: InflectionTableId;
+  }, boolean>;
   /**
    * Adds a language.
    * 
    * Requires authentication.
    */
-  addLanguage: Language;
+  addLanguage: WithArgs<{
+    data: NewLanguageInput;
+  }, Language>;
   /**
    * Edits a language.
    * 
    * Requires authentication.
    */
-  editLanguage: Language;
+  editLanguage: WithArgs<{
+    id: LanguageId;
+    data: EditLanguageInput;
+  }, Language>;
   /**
    * Adds a part of speech.
    * 
    * Requires authentication.
    */
-  addPartOfSpeech: PartOfSpeech;
+  addPartOfSpeech: WithArgs<{
+    data: NewPartOfSpeechInput;
+  }, PartOfSpeech>;
   /**
    * Edits a part of speech.
    * 
    * Requires authentication.
    */
-  editPartOfSpeech: PartOfSpeech;
+  editPartOfSpeech: WithArgs<{
+    id: PartOfSpeechId;
+    data: EditPartOfSpeechInput;
+  }, PartOfSpeech>;
   /**
    * Deletes a part of speech. It is not possible to delete a part of speech that
    * is in use by any definition.
    * 
    * Requires authentication.
    */
-  deletePartOfSpeech: boolean;
+  deletePartOfSpeech: WithArgs<{
+    id: PartOfSpeechId;
+  }, boolean>;
   /**
    * Attempts to log in on the server using the specified username and password.
    */
-  logIn: LoginResult;
+  logIn: WithArgs<{
+    username: string;
+    password: string;
+  }, LoginResult>;
   /**
    * Logs out of the current session. Returns true if the session was terminated,
    * false if there is no current session.
@@ -1430,7 +1487,9 @@ export type PartOfSpeech = {
    * Since the part of speech may be used by many definitions, this field always
    * paginated. If provided, `page.perPage` cannot exceed 200.
    */
-  usedByDefinitions: DefinitionConnection;
+  usedByDefinitions: WithArgs<{
+    page?: PageParams | null;
+  }, DefinitionConnection>;
 };
 
 /**
@@ -1460,23 +1519,33 @@ export type Query = {
   /**
    * Finds a definition by ID.
    */
-  definition: Definition | null;
+  definition: WithArgs<{
+    id: DefinitionId;
+  }, Definition | null>;
   /**
    * Finds a definition inflection table by ID.
    */
-  definitionInflectionTable: DefinitionInflectionTable | null;
+  definitionInflectionTable: WithArgs<{
+    id: DefinitionInflectionTableId;
+  }, DefinitionInflectionTable | null>;
   /**
    * Finds an inflection table by ID.
    */
-  inflectionTable: InflectionTable | null;
+  inflectionTable: WithArgs<{
+    id: InflectionTableId;
+  }, InflectionTable | null>;
   /**
    * Finds an inflection table layout by ID.
    */
-  inflectionTableLayout: InflectionTableLayout | null;
+  inflectionTableLayout: WithArgs<{
+    id: InflectionTableLayoutId;
+  }, InflectionTableLayout | null>;
   /**
    * Finds an inflected form by ID.
    */
-  inflectedForm: InflectedForm | null;
+  inflectedForm: WithArgs<{
+    id: InflectedFormId;
+  }, InflectedForm | null>;
   /**
    * Lists all languages in the dictionary.
    */
@@ -1484,26 +1553,37 @@ export type Query = {
   /**
    * Finds a language by ID.
    */
-  language: Language | null;
+  language: WithArgs<{
+    id: LanguageId;
+  }, Language | null>;
   /**
    * Finds a lemma by ID. For richer lemma search, see the `Language` type.
    */
-  lemma: Lemma | null;
+  lemma: WithArgs<{
+    id: LemmaId;
+  }, Lemma | null>;
   /**
    * Finds a part of speech by ID.
    */
-  partOfSpeech: PartOfSpeech | null;
+  partOfSpeech: WithArgs<{
+    id: PartOfSpeechId;
+  }, PartOfSpeech | null>;
   /**
    * The tags that exist in the dictionary. Since a dictionary may contain many
    * tags, this field is always paginated. If provided, `page.perPage` cannot
    * exceed 200.
    */
-  tags: TagConnection;
+  tags: WithArgs<{
+    page?: PageParams | null;
+  }, TagConnection>;
   /**
    * Finds a tag by ID or name. You must specify either `id` or `name`. If you
    * specify both, only `id` will be used.
    */
-  tag: Tag | null;
+  tag: WithArgs<{
+    id?: TagId | null;
+    name?: string | null;
+  }, Tag | null>;
 };
 
 /**

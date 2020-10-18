@@ -33,6 +33,7 @@ const executeLocalOperation = async (
       schema,
       document,
       variableValues,
+      rootValue: null,
       contextValue: context,
     });
   } catch (e) {

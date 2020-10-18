@@ -7,16 +7,10 @@ import {
   PartOfSpeechRow,
 } from '../../model';
 
-import {
-  PartOfSpeech as PartOfSpeechType,
-  PartOfSpeechId,
-  NewPartOfSpeechInput,
-  EditPartOfSpeechInput,
-  Query as QueryType,
-} from '../types';
+import {PartOfSpeech as PartOfSpeechType, Query as QueryType} from '../types';
 import {mutator} from '../helpers';
 
-import {ResolversFor, Mutators, IdArg, PageArg} from './types';
+import {ResolversFor, Mutators} from './types';
 
 const PartOfSpeech: ResolversFor<PartOfSpeechType, PartOfSpeechRow> = {
   inflectionTables: (p, _args, {db}) =>
@@ -26,37 +20,27 @@ const PartOfSpeech: ResolversFor<PartOfSpeechType, PartOfSpeechRow> = {
 
   isInUse: (p, _args, {db}) => Definition.anyUsesPartOfSpeech(db, p.id),
 
-  usedByDefinitions: (p, {page}: PageArg, {db}, info) =>
+  usedByDefinitions: (p, {page}, {db}, info) =>
     Definition.allByPartOfSpeech(db, p.id, page, info),
 };
 
-const Query: ResolversFor<QueryType, unknown> = {
-  partOfSpeech: (_root, args: IdArg<PartOfSpeechId>, {db}) =>
-    PartOfSpeechModel.byId(db, args.id),
-};
-
-type AddPartOfSpeechArgs = {
-  data: NewPartOfSpeechInput;
-};
-
-type EditPartOfSpeechArgs = {
-  id: PartOfSpeechId;
-  data: EditPartOfSpeechInput;
+const Query: ResolversFor<QueryType, null> = {
+  partOfSpeech: (_root, args, {db}) => PartOfSpeechModel.byId(db, args.id),
 };
 
 const Mutation: Mutators = {
   addPartOfSpeech: mutator(
-    (_root, {data}: AddPartOfSpeechArgs, {db}) =>
+    (_root, {data}, {db}) =>
       PartOfSpeechMut.insert(db, data)
   ),
 
   editPartOfSpeech: mutator(
-    (_root, {id, data}: EditPartOfSpeechArgs, {db}) =>
+    (_root, {id, data}, {db}) =>
       PartOfSpeechMut.update(db, id, data)
   ),
 
   deletePartOfSpeech: mutator(
-    (_root, {id}: IdArg<PartOfSpeechId>, {db}) =>
+    (_root, {id}, {db}) =>
       PartOfSpeechMut.delete(db, id)
   ),
 };

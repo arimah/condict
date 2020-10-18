@@ -35,6 +35,7 @@ export default class CondictHttpServer {
 
     this.apolloServer = new ApolloServer({
       schema: server.getSchema(),
+      rootValue: null,
       context: async ({req, res}): Promise<Context> => {
         const {logger, server} = this;
 

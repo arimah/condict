@@ -7,28 +7,17 @@ import {
   LanguageRow,
 } from '../../model';
 
-import {
-  Language as LanguageType,
-  LanguageId,
-  LemmaFilter,
-  NewLanguageInput,
-  EditLanguageInput,
-  Query as QueryType,
-} from '../types';
+import {Language as LanguageType, Query as QueryType} from '../types';
 import {mutator} from '../helpers';
 
-import {ResolversFor, Mutators, IdArg, PageArg} from './types';
-
-type LemmasArgs = PageArg & {
-  filter?: LemmaFilter | null;
-};
+import {ResolversFor, Mutators} from './types';
 
 const Language: ResolversFor<LanguageType, LanguageRow> = {
   partsOfSpeech: (p, _args, {db}) => PartOfSpeech.allByLanguage(db, p.id),
 
   lemmaCount: p => p.lemma_count,
 
-  lemmas: (p, {page, filter}: LemmasArgs, {db}, info) =>
+  lemmas: (p, {page, filter}, {db}, info) =>
     Lemma.allByLanguage(
       db,
       p.id,
@@ -37,35 +26,23 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
       info
     ),
 
-  tags: (p, {page}: PageArg, {db}, info) =>
+  tags: (p, {page}, {db}, info) =>
     Tag.allByLanguage(db, p.id, page, info),
 };
 
-const Query: ResolversFor<QueryType, unknown> = {
+const Query: ResolversFor<QueryType, null> = {
   languages: (_root, _args, {db}) => LanguageModel.all(db),
 
-  language: (_root, {id}: IdArg<LanguageId>, {db}) =>
-    LanguageModel.byId(db, id),
-};
-
-type AddLanguageArgs = {
-  data: NewLanguageInput;
-};
-
-type EditLanguageArgs = {
-  id: LanguageId;
-  data: EditLanguageInput;
+  language: (_root, {id}, {db}) => LanguageModel.byId(db, id),
 };
 
 const Mutation: Mutators = {
   addLanguage: mutator(
-    (_root, {data}: AddLanguageArgs, {db}) =>
-      LanguageMut.insert(db, data)
+    (_root, {data}, {db}) => LanguageMut.insert(db, data)
   ),
 
   editLanguage: mutator(
-    (_root, {id, data}: EditLanguageArgs, {db}) =>
-      LanguageMut.update(db, id, data)
+    (_root, {id, data}, {db}) => LanguageMut.update(db, id, data)
   ),
 };
 

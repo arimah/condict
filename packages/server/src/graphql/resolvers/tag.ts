@@ -2,19 +2,14 @@ import {UserInputError} from 'apollo-server';
 
 import {Tag} from '../../model';
 
-import {TagId, Query as QueryType} from '../types';
+import {Query as QueryType} from '../types';
 
-import {ResolversFor, PageArg} from './types';
+import {ResolversFor} from './types';
 
-type TagArgs = {
-  id?: TagId | null;
-  name?: string | null;
-};
+const Query: ResolversFor<QueryType, null> = {
+  tags: (_root, {page}, {db}, info) => Tag.all(db, page, info),
 
-const Query: ResolversFor<QueryType, unknown> = {
-  tags: (_root, {page}: PageArg, {db}, info) => Tag.all(db, page, info),
-
-  tag(_root, args: TagArgs, {db}) {
+  tag(_root, args, {db}) {
     if (args.id != null) {
       return Tag.byId(db, args.id);
     }
