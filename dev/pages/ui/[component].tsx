@@ -9,13 +9,18 @@ const Page = (): JSX.Element => {
   const {query} = useRouter();
   const {component} = query;
 
-  const Demo = typeof component === 'string'
-    ? Components[component].demo
+  const selectedComponent = typeof component === 'string'
+    ? Components[component]
     : null;
+  const Demo = selectedComponent && selectedComponent.demo;
 
   return <>
     <Head>
-      <title>Component &ndash; Condict UI components</title>
+      <title>
+        {selectedComponent?.name || 'Unknown component'}
+        {' '}
+        &ndash; Condict UI components
+      </title>
     </Head>
 
     <Container>
