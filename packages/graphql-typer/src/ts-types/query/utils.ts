@@ -13,7 +13,7 @@ import {
 } from 'graphql';
 
 import formatLoc from '../../format-loc';
-import {getDirective, getArgument} from '../../graphql/helpers';
+import {getDirective, getArgument} from '../../graphql';
 
 import {ObjectLikeType, TypeWriterParams} from './types';
 

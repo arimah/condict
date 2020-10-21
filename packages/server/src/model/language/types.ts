@@ -1,4 +1,4 @@
-import {LanguageId} from '../../graphql/types';
+import {LanguageId} from '../../graphql';
 
 export type LanguageRow = {
   id: LanguageId;

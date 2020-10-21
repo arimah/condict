@@ -1,4 +1,4 @@
-import {StemInput} from '../../graphql/types';
+import {StemInput} from '../../graphql';
 
 import validator, {minLength} from '../validator';
 

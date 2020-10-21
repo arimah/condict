@@ -1,4 +1,4 @@
-import FieldSet from '../../model/field-set';
+import {FieldSet} from '../../model';
 
 /** Contains database configuration. */
 export interface Options {

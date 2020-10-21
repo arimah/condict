@@ -7,17 +7,17 @@ import {
 } from 'graphql';
 import {SchemaDirectiveVisitor} from 'graphql-tools';
 
-import {MarshalType} from './types';
+import {MarshalType} from '../types';
 
-type MarshalImpl = {
-  serialize: GraphQLScalarSerializer<any>;
-  parseValue: GraphQLScalarValueParser<any>;
-  parseLiteral: GraphQLScalarLiteralParser<any>;
-};
+interface MarshalImpl {
+  readonly serialize: GraphQLScalarSerializer<any>;
+  readonly parseValue: GraphQLScalarValueParser<any>;
+  readonly parseLiteral: GraphQLScalarLiteralParser<any>;
+}
 
-type MarshalArgs = {
+interface MarshalArgs {
   as: MarshalType;
-};
+}
 
 const MarshalImpls: Record<MarshalType, MarshalImpl> = {
   INT_TYPE: {
@@ -75,7 +75,7 @@ export default class MarshalDirective extends SchemaDirectiveVisitor<MarshalArgs
     const impl = MarshalImpls[type];
     if (!impl) {
       // This should never happen.
-      throw new Error(`Unexpected error: unrecognised MarshalType: ${type}`);
+      throw new Error(`Unrecognised MarshalType: ${type}`);
     }
     scalar.serialize = impl.serialize;
     scalar.parseValue = impl.parseValue;

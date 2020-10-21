@@ -2,7 +2,7 @@ import {Database} from 'better-sqlite3';
 import {Pool} from 'generic-pool';
 import DataLoader from 'dataloader';
 
-import FieldSet from '../../model/field-set';
+import {FieldSet} from '../../model';
 import {Logger} from '../../types';
 
 import reindentQuery from '../reindent-query';

@@ -6,7 +6,7 @@ import {
   CustomInflectedFormInput,
   InflectionTableLayoutId,
   InflectedFormId,
-} from '../../graphql/types';
+} from '../../graphql';
 
 import {InflectedForm} from '../inflection-table';
 

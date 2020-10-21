@@ -1,5 +1,5 @@
 import {Connection} from '../../database';
-import {DefinitionId, StemInput} from '../../graphql/types';
+import {DefinitionId, StemInput} from '../../graphql';
 
 import {DefinitionStem} from './model';
 import {validateStems} from './validators';

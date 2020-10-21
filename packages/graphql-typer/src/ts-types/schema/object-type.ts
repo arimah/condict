@@ -5,7 +5,7 @@ import {
   isNonNullType,
 } from 'graphql';
 
-import getPermittedEnumValues from '../../graphql/enum-values';
+import {getPermittedEnumValues} from '../../graphql';
 
 import {TextBuilder, formatDescription} from '../utils';
 

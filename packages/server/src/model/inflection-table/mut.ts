@@ -9,7 +9,7 @@ import {
   EditInflectionTableInput,
   InflectionTableRowInput,
   InflectedFormInput,
-} from '../../graphql/types';
+} from '../../graphql';
 
 import {Definition} from '../definition';
 import {PartOfSpeech} from '../part-of-speech';

@@ -1,9 +1,5 @@
 import {Connection} from '../../database';
-import {
-  LanguageId,
-  NewLanguageInput,
-  EditLanguageInput,
-} from '../../graphql/types';
+import {LanguageId, NewLanguageInput, EditLanguageInput} from '../../graphql';
 
 import FieldSet from '../field-set';
 

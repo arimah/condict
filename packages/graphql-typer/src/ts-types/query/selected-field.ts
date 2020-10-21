@@ -17,7 +17,7 @@ import {
 } from 'graphql';
 
 import formatLoc from '../../format-loc';
-import getPermittedEnumValues from '../../graphql/enum-values';
+import {getPermittedEnumValues} from '../../graphql';
 
 import {getBuiltin as getBuiltinScalar} from '../builtin-scalars';
 import {TextBuilder} from '../utils';

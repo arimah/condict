@@ -5,7 +5,7 @@ import {
 } from 'graphql';
 
 import formatLoc from '../../format-loc';
-import {minifyOperation, minifyFragment} from '../../graphql/minify';
+import {minifyFragment, minifyOperation} from '../../graphql';
 
 import {TextBuilder} from '../utils';
 

@@ -5,3 +5,5 @@ export * from './lemma';
 export * from './part-of-speech';
 export * from './tag';
 export * from './user';
+
+export {default as FieldSet} from './field-set';

@@ -15,9 +15,7 @@ import {
   isInputObjectType,
 } from 'graphql';
 
-import {defineScalarType} from '../schema/scalar-type';
-import {defineEnumType} from '../schema/enum-type';
-import {defineInputType} from '../schema/input-type';
+import {defineEnumType, defineInputType, defineScalarType} from '../schema';
 
 import {TextBuilder} from '../utils';
 import {

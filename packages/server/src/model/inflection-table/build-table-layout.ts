@@ -6,7 +6,7 @@ import {
   InflectedFormId,
   InflectionTableRowInput,
   InflectedFormInput,
-} from '../../graphql/types';
+} from '../../graphql';
 
 import {InflectionTableRowJson, InflectionTableCellJson} from './types';
 

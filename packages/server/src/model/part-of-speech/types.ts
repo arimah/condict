@@ -1,4 +1,4 @@
-import {PartOfSpeechId, LanguageId} from '../../graphql/types';
+import {PartOfSpeechId, LanguageId} from '../../graphql';
 
 export type PartOfSpeechRow = {
   id: PartOfSpeechId;

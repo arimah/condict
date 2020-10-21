@@ -1,8 +1,8 @@
 import {inflectWord} from '@condict/inflect';
 
-import {InflectedFormId} from '../../graphql/types';
+import {InflectedFormId} from '../../graphql';
 
-import {InflectedFormRow} from '../inflection-table/types';
+import {InflectedFormRow} from '../inflection-table';
 
 const deriveForms = (
   term: string,

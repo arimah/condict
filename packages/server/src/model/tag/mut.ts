@@ -1,5 +1,5 @@
 import {Connection} from '../../database';
-import {TagId} from '../../graphql/types';
+import {TagId} from '../../graphql';
 
 import {Tag} from './model';
 import {TagRow} from './types';

@@ -2,10 +2,7 @@ import {compare, hash} from 'bcrypt';
 import {nanoid} from 'nanoid';
 
 import {Connection} from '../../database';
-import {
-  LoginResult,
-  UserSession as UserSessionType,
-} from '../../graphql/types';
+import {LoginResult, UserSession as UserSessionType} from '../../graphql';
 
 import FieldSet from '../field-set';
 

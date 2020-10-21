@@ -1,4 +1,4 @@
-import {PageInfo} from '../graphql/types';
+import {PageInfo} from '../graphql';
 
 // NOTE: The below type is a generic version of various connection types from
 // the GraphQL schema. It must be synchronised with the GraphQL schema.

@@ -1,6 +1,6 @@
 import {Connection} from '../../database';
-import MultiMap from '../../utils/multi-map';
-import {validateDescription} from '../../rich-text/validate';
+import {MultiMap} from '../../utils';
+import {validateDescription} from '../../rich-text';
 import {
   DefinitionId,
   DefinitionInflectionTableId,
@@ -11,7 +11,7 @@ import {
   NewDefinitionInput,
   EditDefinitionInput,
   EditDefinitionInflectionTableInput,
-} from '../../graphql/types';
+} from '../../graphql';
 
 import {Language} from '../language';
 import {Definition} from '../definition';

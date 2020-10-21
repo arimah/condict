@@ -1,4 +1,4 @@
-import {TagId, LemmaId, DefinitionId} from '../../graphql/types';
+import {TagId, LemmaId, DefinitionId} from '../../graphql';
 
 export type TagRow = {
   id: TagId;

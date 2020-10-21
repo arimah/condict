@@ -1,6 +1,6 @@
 import {GraphQLResolveInfo, SelectionSetNode} from 'graphql';
 
-import {PageParams} from '../graphql/types';
+import {PageParams} from '../graphql';
 
 import {ItemConnection} from './types';
 

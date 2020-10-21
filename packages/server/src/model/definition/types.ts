@@ -7,7 +7,7 @@ import {
   InflectionTableId,
   InflectionTableLayoutId,
   InflectedFormId,
-} from '../../graphql/types';
+} from '../../graphql';
 
 export type DefinitionRow = {
   id: DefinitionId;

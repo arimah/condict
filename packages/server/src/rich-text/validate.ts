@@ -5,7 +5,7 @@ import {
   InlineElementInput,
   FormattedTextInput,
   TableCaptionInput,
-} from '../graphql/types';
+} from '../graphql';
 
 import {
   CondictLink,

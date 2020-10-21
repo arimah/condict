@@ -1,5 +1,4 @@
-import {LemmaId, LanguageId} from '../../graphql/types';
-
+import {LemmaId, LanguageId} from '../../graphql';
 import {Connection} from '../../database';
 
 import {Lemma} from './model';

@@ -1,5 +1,5 @@
 import {Connection} from '../../database';
-import {PartOfSpeechId, LanguageId} from '../../graphql/types';
+import {PartOfSpeechId, LanguageId} from '../../graphql';
 
 import validator, {minLength, unique} from '../validator';
 

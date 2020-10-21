@@ -9,8 +9,9 @@ import {
   LemmaLink,
   DefinitionLink,
   PartOfSpeechLink,
-} from '../../rich-text/types';
-import {isCondictLink, parseCondictLink} from '../../rich-text/condict-link';
+  isCondictLink,
+  parseCondictLink,
+} from '../../rich-text';
 
 import {
   BlockElement as BlockElementType,

@@ -1,5 +1,5 @@
 import {Connection} from '../../database';
-import {DefinitionId} from '../../graphql/types';
+import {DefinitionId} from '../../graphql';
 
 import {TagMut, validateTag} from '../tag';
 

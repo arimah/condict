@@ -14,7 +14,7 @@ import {
 
 import formatLoc from '../../format-loc';
 
-import findGraphqlFiles from '../../graphql/find-files';
+import {findAllGraphqlFiles} from '../../graphql';
 
 import defineOperations from './define-operations';
 import defineShared from './define-shared';
@@ -66,7 +66,7 @@ const collectGraphqlData = (
   operationFiles: [string, DocumentNode][],
   srcDir: string
 ) => {
-  const graphqlFiles = findGraphqlFiles(srcDir);
+  const graphqlFiles = findAllGraphqlFiles(srcDir);
 
   for (const filePath of graphqlFiles) {
     const fileText = fs.readFileSync(filePath, {encoding: 'utf-8'});

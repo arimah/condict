@@ -3,7 +3,7 @@ import {
   InflectionTableLayoutId,
   InflectedFormId,
   PartOfSpeechId,
-} from '../../graphql/types';
+} from '../../graphql';
 
 export type InflectionTableRow = {
   id: InflectionTableId;

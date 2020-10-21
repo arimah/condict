@@ -5,7 +5,7 @@ import {
 } from 'apollo-server';
 
 import {PageParams} from './types';
-import {Context, MutatorFn} from './resolvers/types';
+import {Context, MutatorFn} from './resolvers';
 
 /**
  * Creates a mutator resolver. The request must have a valid session ID.

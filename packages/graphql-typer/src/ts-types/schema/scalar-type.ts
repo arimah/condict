@@ -1,7 +1,6 @@
 import {GraphQLScalarType} from 'graphql';
 
-import getIdKind from '../../graphql/id-kind';
-import getMarshalType, {MarshalType} from '../../graphql/marshal-type';
+import {MarshalType, getIdKind, getMarshalType} from '../../graphql';
 
 import {TextBuilder, formatDescription} from '../utils';
 import {isBuiltin, getBuiltin} from '../builtin-scalars';

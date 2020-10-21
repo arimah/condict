@@ -5,7 +5,7 @@ import {
   PartOfSpeechId,
   NewPartOfSpeechInput,
   EditPartOfSpeechInput,
-} from '../../graphql/types';
+} from '../../graphql';
 
 import {Language} from '../language';
 import {Definition} from '../definition';

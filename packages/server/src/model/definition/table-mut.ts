@@ -10,8 +10,8 @@ import {
   PartOfSpeechId,
   NewDefinitionInflectionTableInput,
   EditDefinitionInflectionTableInput,
-} from '../../graphql/types';
-import {validateTableCaption} from '../../rich-text/validate';
+} from '../../graphql';
+import {validateTableCaption} from '../../rich-text';
 
 import {
   InflectionTable,

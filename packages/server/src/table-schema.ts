@@ -1,5 +1,4 @@
-import {schema as fullSchema} from './database';
-import reindentQuery from './database/reindent-query';
+import {schema as fullSchema, reindentQuery} from './database';
 
 /**
  * Gets the SQL schema statments for a specific table or all tables.

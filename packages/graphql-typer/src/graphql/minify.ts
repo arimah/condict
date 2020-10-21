@@ -11,7 +11,7 @@ import {
   ValueNode,
 } from 'graphql';
 
-import {TextBuilder} from '../ts-types/utils';
+import {TextBuilder} from '../ts-types';
 
 import formatString from './format-string';
 

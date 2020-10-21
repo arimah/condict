@@ -1,4 +1,4 @@
-import {LemmaId, LanguageId} from '../../graphql/types';
+import {LemmaId, LanguageId} from '../../graphql';
 
 export type LemmaRow = {
   id: LemmaId;

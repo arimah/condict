@@ -1,7 +1,7 @@
 import {normalizePattern} from '@condict/inflect';
 
 import {Connection} from '../../database';
-import {InflectionTableId, PartOfSpeechId} from '../../graphql/types';
+import {InflectionTableId, PartOfSpeechId} from '../../graphql';
 
 import validator, {minLength, unique} from '../validator';
 

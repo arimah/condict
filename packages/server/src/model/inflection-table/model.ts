@@ -2,14 +2,14 @@ import {UserInputError} from 'apollo-server';
 import {GraphQLResolveInfo} from 'graphql';
 
 import {Connection} from '../../database';
-import {validatePageParams} from '../../graphql/helpers';
 import {
   PartOfSpeechId,
   InflectionTableId,
   InflectionTableLayoutId,
   InflectedFormId,
   PageParams,
-} from '../../graphql/types';
+  validatePageParams,
+} from '../../graphql';
 
 import paginate from '../paginate';
 import {ItemConnection} from '../types';

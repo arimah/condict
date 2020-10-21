@@ -1,13 +1,13 @@
 import {GraphQLResolveInfo} from 'graphql';
 
 import {Connection} from '../../database';
-import {validatePageParams} from '../../graphql/helpers';
 import {
   LanguageId,
   LemmaId,
   LemmaFilter,
   PageParams,
-} from '../../graphql/types';
+  validatePageParams,
+} from '../../graphql';
 
 import paginate from '../paginate';
 import {ItemConnection} from '../types';

@@ -6,7 +6,7 @@
 // * condict://definition/{id} links to a definition.
 // * condict://part-of-speech/{id} links to a part of speech.
 
-import {IdOf} from '../graphql/types';
+import {IdOf} from '../graphql';
 
 import {CondictLink, CondictLinkType} from './types';
 

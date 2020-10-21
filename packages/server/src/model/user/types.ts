@@ -1,4 +1,4 @@
-import {IdOf} from '../../graphql/types';
+import {IdOf} from '../../graphql';
 
 // Users are not exposed directly in the GraphQL schema. Only mutations for
 // logging in, logging out and resuming a session are available. For that

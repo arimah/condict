@@ -4,6 +4,7 @@ export {
   Options,
   validateOptions,
 } from './sqlite';
+export {default as reindentQuery} from './reindent-query';
 export {
   TableSchema,
   default as schema,

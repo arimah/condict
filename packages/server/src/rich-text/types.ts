@@ -4,7 +4,7 @@ import {
   LanguageId,
   LemmaId,
   PartOfSpeechId,
-} from '../graphql/types';
+} from '../graphql';
 
 export type BlockElementJson = {
   kind: BlockKind;

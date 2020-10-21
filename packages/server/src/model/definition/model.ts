@@ -2,7 +2,6 @@ import {UserInputError} from 'apollo-server';
 import {GraphQLResolveInfo} from 'graphql';
 
 import {Connection} from '../../database';
-import {validatePageParams} from '../../graphql/helpers';
 import {
   DefinitionId,
   DefinitionInflectionTableId,
@@ -11,7 +10,8 @@ import {
   InflectionTableId,
   InflectionTableLayoutId,
   PageParams,
-} from '../../graphql/types';
+  validatePageParams,
+} from '../../graphql';
 
 import paginate from '../paginate';
 import {ItemConnection} from '../types';

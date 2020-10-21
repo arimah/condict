@@ -1,6 +1,6 @@
 import {Connection} from '../../database';
-import MultiMap from '../../utils/multi-map';
-import {DefinitionId, LanguageId, InflectedFormId} from '../../graphql/types';
+import {MultiMap} from '../../utils';
+import {DefinitionId, LanguageId, InflectedFormId} from '../../graphql';
 
 import {LemmaMut, ValidTerm, validateTerm} from '../lemma';
 
