@@ -37,8 +37,8 @@ export const Page = styled(Button).attrs({
   intent: 'secondary',
 })<PageProps>`
   display: block;
-  padding: 6px 4px;
-  min-width: 36px;
+  padding: 6px 2px;
+  min-width: 32px;
   border-color: transparent;
   background-color: transparent;
 
@@ -71,7 +71,7 @@ export const Ellipsis = styled.span.attrs({
   display: block;
   box-sizing: border-box;
   padding: 8px;
-  min-width: 36px;
+  min-width: 32px;
   text-align: center;
 
   &:focus {

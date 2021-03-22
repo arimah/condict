@@ -48,8 +48,8 @@ export type EditorContainerProps = {
 
 const SingleLineStyles = `
   p {
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: 2px;
+    margin-bottom: 2px;
   }
 `;
 
@@ -59,7 +59,7 @@ export type EditableProps = {
 };
 
 export const Editable = styled(BaseEditable)<EditableProps>`
-  padding: 6px;
+  padding: ${p => p.$singleLine ? '0 2px' : '0 6px'};
   position: relative;
   z-index: 2;
   background-color: ${p => p.theme.general.bg};

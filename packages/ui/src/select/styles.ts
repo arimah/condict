@@ -19,10 +19,10 @@ export const Select = styled.select<Props>`
   color: ${p => p.theme.general.fg};
 
   ${p => p.minimal ? css`
-    padding: 6px 28px 6px 9px;
+    padding: 4px 24px 4px 8px;
     border-style: none;
   ` : css`
-    padding: 4px 26px 4px 7px;
+    padding: 2px 22px 2px 6px;
     border-width: 2px;
     border-style: solid;
   `}
@@ -34,7 +34,7 @@ export const Select = styled.select<Props>`
   &:focus,
   &.force-focus {
     ${p => p.theme.focus.style}
-    padding: ${p => p.minimal && '4px 26px 4px 7px'};
+    padding: ${p => p.minimal && '2px 22px 2px 6px'};
     border: 2px solid ${p => p.theme.focus.color};
   }
 

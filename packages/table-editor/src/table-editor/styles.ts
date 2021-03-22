@@ -20,7 +20,5 @@ export type HelperProps = {
 
 export const Helper = styled.div<HelperProps>`
   margin-top: 8px;
-  font-size: 14px;
-
   color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
 `;

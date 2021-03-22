@@ -14,11 +14,11 @@ export type DisabledProps = {
 export const RadioContainer = styled.span`
   display: inline-block;
   box-sizing: border-box;
-  margin-right: 5px;
+  margin-right: 8px;
   vertical-align: -3px;
 
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   position: relative;
 
   border: 2px solid ${p => p.theme.general.borderColor};

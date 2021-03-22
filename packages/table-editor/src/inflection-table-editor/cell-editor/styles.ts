@@ -5,7 +5,7 @@ import {Button, TextInput} from '@condict/ui';
 import {CellPopup as CellPopupBase} from '../../cell-dialog';
 
 export const CellPopup = styled(CellPopupBase)`
-  max-width: 280px;
+  max-width: 292px;
   white-space: nowrap;
 `;
 
@@ -71,25 +71,24 @@ export const CellInput = styled(TextInput).attrs({
 
 export const CellSettingsGroup = styled.div`
   &:not(:first-child) {
-    margin-top: 5px;
+    margin-top: 8px;
   }
 `;
 
 export const CellSettingsSeparator = styled.div`
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border-top: 1px solid ${p => p.theme.general.borderColor};
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-top: 2px solid ${p => p.theme.general.borderColor};
 `;
 
 export const DisplayNameLabel = styled.label`
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 `;
 
 export const DisplayNameInput = styled(TextInput)`
   display: block;
-  margin-top: 3px;
-  width: 260px;
+  width: 256px;
 `;
 
 export const DeriveDisplayNameButton = styled(Button).attrs({
@@ -98,7 +97,7 @@ export const DeriveDisplayNameButton = styled(Button).attrs({
   intent: 'secondary',
 })`
   display: block;
-  width: 260px;
+  width: 256px;
 `;
 
 DeriveDisplayNameButton.defaultProps = undefined;

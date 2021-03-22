@@ -7,7 +7,8 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-size: 11pt;
+    font-size: 14px;
+    line-height: 16px;
     font-family: 'Inter', sans-serif;
     font-feature-settings:
       'cv07', /* alternative ß */
@@ -20,44 +21,49 @@ export const GlobalStyles = createGlobalStyle`
   h1 {
     margin-top: 8px;
     margin-bottom: 24px;
-    font-size: 2rem;
+    font-size: 28px;
+    line-height: 32px;
     font-weight: bold;
   }
 
   h2 {
-    margin-top: 38px;
-    margin-bottom: 16px;
-    font-size: 1.5rem;
+    margin-top: 30px;
+    margin-bottom: 8px;
+    font-size: 24px;
+    line-height: 28px;
     font-weight: bold;
   }
 
   h3 {
-    margin-top: 32px;
+    margin-top: 26px;
     margin-bottom: 8px;
-    font-size: 1.25rem;
+    font-size: 21px;
+    line-height: 24px;
     font-weight: bold;
   }
 
   h4 {
     margin-top: 24px;
     margin-bottom: 8px;
-    font-size: 1.175em;
+    font-size: 18px;
+    line-height: 21px;
     font-weight: bold;
   }
 
   h5 {
-    margin-top: 24px;
+    margin-top: 22px;
     margin-bottom: 8px;
-    font-size: 1.1em;
+    font-size: 17px;
+    line-height: 19px;
     font-weight: bold;
   }
 
   h6 {
-    margin-top: 24px;
+    margin-top: 16px;
     margin-bottom: 8px;
-    font-size: 0.9em;
+    font-size: 15px;
+    line-height: 17px;
     font-weight: bold;
-    text-transform: uppercase;
   }
 
   h1,

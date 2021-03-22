@@ -46,8 +46,8 @@ export const Tag = styled.button.attrs({
   display: inline-block;
   box-sizing: border-box;
   flex: none;
-  margin: 1px;
-  padding: 1px 20px 1px 8px;
+  margin: 2px;
+  padding: 2px 24px 2px 8px;
   position: relative;
   max-width: calc(100% - 2px);
   font: inherit;
@@ -60,8 +60,8 @@ export const Tag = styled.button.attrs({
 
   ${p => p.disabled && css`
     &&& {
-      padding-left: 14px;
-      padding-right: 14px;
+      padding-left: 16px;
+      padding-right: 16px;
       background-color: ${p => p.theme.general.disabledAltBg};
       border-color: ${p => p.theme.general.disabledAltBg};
       color: ${p => p.theme.general.disabledAltFg};
@@ -107,9 +107,9 @@ export const Input = styled.input.attrs({
 })`
   box-sizing: border-box;
   flex: 1 1 auto;
-  padding: 4px;
+  padding: 6px 4px;
   font: inherit;
-  min-width: 75px;
+  min-width: 72px;
   border: none;
   border-radius: 0;
   background-color: ${p => p.theme.general.bg};

@@ -74,7 +74,7 @@ export const Select = React.forwardRef((
         {renderOptions(children, options)}
       </S.Select>
       <S.Arrow disabled={disabled}>
-        <path d='M0 2 H8 L4 8 Z' fill='currentColor'/>
+        <path d='M0,1 H8 L4,7 Z' fill='currentColor'/>
       </S.Arrow>
     </S.Wrapper>
   );

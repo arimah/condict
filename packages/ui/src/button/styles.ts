@@ -12,7 +12,7 @@ export type Props = {
 export const ButtonStyle = css<Props>`
   display: inline-block;
   box-sizing: border-box;
-  padding: ${p => p.slim ? '4px 10px' : '6px 14px'};
+  padding: ${p => p.slim ? '2px 10px' : '6px 14px'};
   font: inherit;
   font-weight: normal;
   text-align: center;
@@ -71,7 +71,7 @@ export const ButtonStyle = css<Props>`
   }
 
   > .mdi-icon:first-child {
-    margin-left: -6px;
+    margin-left: -8px;
   }
 
   > .mdi-icon:not(:first-child) {
@@ -79,7 +79,7 @@ export const ButtonStyle = css<Props>`
   }
 
   > .mdi-icon:last-child {
-    margin-right: -6px;
+    margin-right: -8px;
   }
 
   > .mdi-icon:not(:last-child) {

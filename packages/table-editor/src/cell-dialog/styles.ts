@@ -20,7 +20,7 @@ export const CellDialog = styled.div.attrs({
 export const CellPopup = styled.div`
   box-sizing: border-box;
   margin-top: 5px;
-  padding: 8px;
+  padding: 14px;
   position: absolute;
   top: 100%;
   left: -8px;

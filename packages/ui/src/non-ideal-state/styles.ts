@@ -38,7 +38,8 @@ export const Image = styled.div`
 export const Title = styled.h2`
   margin-top: 8px;
   margin-bottom: 8px;
-  font-size: 1.25em;
+  font-size: 20px;
+  line-height: 24px;
   font-weight: bold;
   text-align: center;
 `;

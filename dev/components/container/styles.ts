@@ -31,13 +31,13 @@ export const Header = styled.header`
 
 export const HeaderSwitch = styled.div`
   flex: 0 0 200px;
-  margin: 20px 16px 16px 16px;
+  margin: 16px;
   vertical-align: 3px;
 `;
 
 export const MainNav = styled.nav`
   margin: 16px;
-  font-size: 1.2em;
+  font-size: 18px;
   text-align: center;
 `;
 

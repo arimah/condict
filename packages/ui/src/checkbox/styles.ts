@@ -14,11 +14,11 @@ export type DisabledProps = {
 export const CheckmarkContainer = styled.span`
   display: inline-block;
   box-sizing: border-box;
-  margin-right: 5px;
+  margin-right: 8px;
   vertical-align: -3px;
 
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   position: relative;
 
   border: 2px solid ${p => p.theme.general.borderColor};
@@ -31,7 +31,7 @@ export const IndeterminateMark = styled.span`
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 12px;
+  width: 10px;
   height: 2px;
   background-color: ${p => p.theme.general.bg};
   transform: translate(-50%, -50%);
@@ -44,7 +44,7 @@ export const CheckMark = styled.span`
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 12px;
+  width: 10px;
   height: 6px;
   border-left: 2px solid ${p => p.theme.general.bg};
   border-bottom: 2px solid ${p => p.theme.general.bg};

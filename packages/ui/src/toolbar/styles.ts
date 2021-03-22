@@ -10,9 +10,9 @@ export const Toolbar = styled.div.attrs({
 })`
   display: flex;
   flex-direction: row;
-  padding: 4px;
+  padding: 2px;
   flex-wrap: wrap;
-  border-radius: 6px;
+  border-radius: 5px;
   background-color: ${p => p.theme.general.altBg};
   color: ${p => p.theme.general.altFg};
 `;
@@ -49,9 +49,9 @@ export const Button = styled.button.attrs({
 
   &:focus,
   &.force-focus {
+    ${p => p.theme.focus.style}
     padding: 4px 6px;
     border: 2px solid ${p => p.theme.focus.color};
-    ${p => p.theme.focus.style};
   }
 
   &:hover {
@@ -89,9 +89,9 @@ export const Button = styled.button.attrs({
   }
 
   > .mdi-icon {
-    margin-top: -3px;
-    margin-bottom: -3px;
-    vertical-align: -4px;
+    margin-top: -4px;
+    margin-bottom: -4px;
+    vertical-align: -3px;
 
     :first-child {
       margin-left: -4px;
@@ -104,4 +104,10 @@ export const Button = styled.button.attrs({
 
 export const Spacer = styled.div`
   flex: 1 0 auto;
+`;
+
+export const SelectLabel = styled.label`
+  flex: none;
+  padding-top: 2px;
+  padding-bottom: 2px;
 `;

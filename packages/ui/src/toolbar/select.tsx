@@ -4,6 +4,7 @@ import {Select as RegularSelect, Props as SelectProps} from '../select';
 import combineRefs from '../combine-refs';
 
 import {useManagedFocus} from './focus-manager';
+import * as S from './styles';
 
 const handleKeyDown: KeyboardEventHandler = e => {
   // Override the toolbar's home/end keys, so we can use them
@@ -24,7 +25,7 @@ const Select = React.forwardRef((props: Props, ref: Ref<HTMLSelectElement>) => {
   const isCurrent = useManagedFocus(ownRef);
 
   return (
-    <label>
+    <S.SelectLabel>
       {label}
       <RegularSelect
         {...otherProps}
@@ -35,7 +36,7 @@ const Select = React.forwardRef((props: Props, ref: Ref<HTMLSelectElement>) => {
       >
         {children}
       </RegularSelect>
-    </label>
+    </S.SelectLabel>
   );
 });
 

@@ -26,7 +26,7 @@ export const CellInput = styled(TextInput).attrs({
 `;
 
 export const CellPopup = styled(CellPopupBase)`
-  width: 200px;
+  width: 216px;
 `;
 
 export const RevertButton = styled(Button).attrs({
@@ -35,7 +35,7 @@ export const RevertButton = styled(Button).attrs({
   intent: 'secondary',
 })`
   display: block;
-  width: 180px;
+  width: 184px;
 `;
 
 RevertButton.defaultProps = undefined;

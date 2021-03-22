@@ -1,17 +1,9 @@
 import styled from 'styled-components';
 
 export const BodyText = styled.div`
-  line-height: 1.5;
+  line-height: 20px;
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    /* Headings have enough spacing around them as it is. */
-    line-height: normal;
-  }
+  /* Headings have their own line-height that is good enough. */
 
   a:link,
   a:visited,

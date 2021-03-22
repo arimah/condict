@@ -14,12 +14,12 @@ export type DisabledProps = {
 export const Switch = styled.span`
   display: inline-block;
   box-sizing: border-box;
-  margin-right: 5px;
+  margin-right: 8px;
   position: relative;
   overflow: hidden;
   width: 32px;
-  height: 20px;
-  vertical-align: -4px;
+  height: 16px;
+  vertical-align: -3px;
   border: 2px solid ${p => p.theme.general.borderColor};
   border-radius: 10px;
   background-color: ${p => p.theme.general.bg};
@@ -29,9 +29,9 @@ export const Dot = styled.span`
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   background-color: ${p => p.theme.general.borderColor};
 
   ${transition('left')}
@@ -41,7 +41,7 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
   appearance: none;
   position: absolute;
   top: 0;
-  left: 0;
+  left: 2px;
   width: 100%;
   height: 100%;
 
@@ -50,7 +50,7 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
     background-color: ${intentVar('altBg')};
 
     > ${Dot} {
-      left: 14px;
+      left: 18px;
       background-color: ${p => p.theme.general.bg};
     }
   }
@@ -62,7 +62,6 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
 
       > ${Dot} {
         background-color: ${p => p.theme.general.disabledBg};
-        left: 2px;
       }
     }
 
@@ -72,7 +71,6 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
 
       > ${Dot} {
         background-color: ${p => p.theme.general.bg};
-        left: 14px;
       }
     }
   }
@@ -119,7 +117,7 @@ export const Label = styled.label<DisabledProps & IntentProps>`
       background-color: ${intentVar('activeAltBg')};
 
       > ${Dot} {
-        left: 12px;
+        left: 16px;
       }
     }
   }

@@ -14,10 +14,10 @@ export const Input = styled.input<Props>`
   color: ${p => p.theme.general.fg};
 
   ${p => p.minimal ? css`
-    padding: 6px;
+    padding: 4px;
     border-style: none;
   ` : css`
-    padding: 4px;
+    padding: 2px;
     border-width: 2px;
     border-style: solid;
   `}
@@ -25,7 +25,7 @@ export const Input = styled.input<Props>`
   &:focus,
   &.force-focus {
     ${p => p.theme.focus.style}
-    padding: ${p => p.minimal && '4px'};
+    padding: ${p => p.minimal && '2px'};
     border: 2px solid ${p => p.theme.focus.color};
   }
 

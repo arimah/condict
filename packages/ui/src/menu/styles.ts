@@ -63,7 +63,7 @@ export const Item = styled.div<ItemProps>`
 export const ItemIcon = styled.span`
   display: block;
   flex: none;
-  padding: 1px 0 1px 6px;
+  padding-left: 8px;
   width: 24px;
 
   > .mdi-icon {
@@ -74,7 +74,7 @@ export const ItemIcon = styled.span`
 export const ItemLabel = styled.span`
   display: block;
   flex: 1 1 auto;
-  padding: 4px 6px;
+  padding: 4px 8px;
 `;
 
 export const ItemShortcut = styled.span`
@@ -86,7 +86,8 @@ export const ItemShortcut = styled.span`
 export const ItemSubmenu = styled.span`
   display: block;
   flex: none;
-  padding: 1px 4px;
+  padding-left: 4px;
+  padding-right: 4px;
   width: 24px;
 
   > .mdi-icon {
@@ -102,16 +103,16 @@ export type ItemCheckProps = {
 export const ItemCheck = styled.span<ItemCheckProps>`
   display: block;
   box-sizing: border-box;
-  margin: 4px 7px;
+  margin: 4px 8px;
   position: relative;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 
   border-style: solid;
   border-width: 2px;
 
   ${p => p.radio ? css<ItemCheckProps>`
-    border-radius: 9px;
+    border-radius: 8px;
     border-color: ${p => p.checked
       ? p.theme.primary.altBg
       : p.theme.general.borderColor
@@ -136,7 +137,7 @@ export const CheckMark = styled.span`
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 12px;
+  width: 10px;
   height: 6px;
   border-left: 2px solid ${p => p.theme.general.bg};
   border-bottom: 2px solid ${p => p.theme.general.bg};
@@ -158,8 +159,8 @@ export const RadioDot = styled.span`
 export const Separator = styled.div.attrs({
   role: 'separator',
 })`
-  margin-top: 4px;
-  margin-bottom: 4px;
+  margin-top: 3px;
+  margin-bottom: 3px;
   border-top: 2px solid ${p => p.theme.general.borderColor};
 `;
 

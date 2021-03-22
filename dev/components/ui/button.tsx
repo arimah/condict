@@ -1,5 +1,11 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
+import HandHeartIcon from 'mdi-react/HandHeartIcon';
+import RobotLoveIcon from 'mdi-react/RobotIcon';
+import CakeIcon from 'mdi-react/CakeVariantIcon';
+import DeathStarIcon from 'mdi-react/DeathStarVariantIcon';
+import PuzzleIcon from 'mdi-react/PuzzleIcon';
+import PaletteIcon from 'mdi-react/PaletteIcon';
 
 import {Button, LinkButton, Select, Checkbox, Intent} from '@condict/ui';
 
@@ -63,6 +69,26 @@ const Main = (): JSX.Element => {
             slim={slim}
             label='Regular button'
           />
+        </Row>
+        <Row>
+          <Button intent={intent} disabled={disabled} bold={bold}>
+            <HandHeartIcon/>
+            <span>Icon before</span>
+          </Button>
+          <Button intent={intent} disabled={disabled} bold={bold}>
+            <span>Icon after</span>
+            <RobotLoveIcon/>
+          </Button>
+          <Button
+            intent={intent}
+            disabled={disabled}
+            bold={bold}
+            label='Icon only'
+          >
+            <CakeIcon/>
+          </Button>
+        </Row>
+        <Row>
           <LinkButton
             intent={intent}
             bold={bold}
@@ -70,6 +96,24 @@ const Main = (): JSX.Element => {
             label='Link button'
             href='#'
           />
+        </Row>
+        <Row>
+          <LinkButton intent={intent} bold={bold} href='#'>
+            <DeathStarIcon/>
+            <span>Icon before</span>
+          </LinkButton>
+          <LinkButton intent={intent} bold={bold} href='#'>
+            <span>Icon after</span>
+            <PuzzleIcon/>
+          </LinkButton>
+          <LinkButton
+            intent={intent}
+            bold={bold}
+            href='#'
+            label='Icon only'
+          >
+            <PaletteIcon/>
+          </LinkButton>
         </Row>
       </List>
     </Demo>
