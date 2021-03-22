@@ -23,7 +23,7 @@ Using this function allows components to render their `label` property as conten
 ### Example
 
 ```jsx
-import {getContentAndLabel} from '@condict/a11y-utils';
+import {getContentAndLabel} from '@condict/ui';
 
 const MyButton = ({children, label, ...rest}) => {
   const [content, ariaLabel] = getContentAndLabel(children, label);
@@ -65,6 +65,32 @@ The `<Announcer>` component does _not_ forward its ref to anything.
 
 Other props are _not_ forwarded to any underlying element.
 
+### Example
+
+```jsx
+import {Announcer, useAnnouncements} from '@condict/ui';
+
+const MyThing = (...) => {
+  const [focused, ...] = useState(...);
+
+  const messages = useAnnouncements();
+
+  return (
+    <Wrapper>
+      ...
+      <Button
+        label='Add the thing'
+        onClick={() => {
+          addTheThing();
+          messages.announce('Added the thing');
+        }}
+      />
+      <Announcer controller={messages} silent={!focused}/>
+    </Wrapper>
+  );
+};
+```
+
 ## Announcements
 
 The `Announcements` type is an opaque type that is used for sending announcements. It is created by the [`useAnnouncements()`](#useannouncements) hook, or by [`Announcements.create()`](#announcementscreate). Values of this type only manage messages to be announced; it does not in itself cause the screen reader to say anything. It must be attached to an [`<Announcer>`](#announcer).
@@ -89,6 +115,8 @@ This static method creates an announcements controller, for use in class-based c
 
 Implements a hook that returns an [`Announcements` controller](#announcements), through which messages can be sent. The value is stable across renders.
 
+See example under [`<Announcer>`](#announcer).
+
 ## `<SROnly>`
 
 A [styled component][styled-components] that renders a hidden element (by default a `<span>`) whose text contents can be picked up by screen readers, to provide additional accessible text where required.
@@ -108,7 +136,7 @@ Normally you should not give this any props other than `id`. Children should be 
 ### Example
 
 ```jsx
-import {SROnly} from '@condict/a11y-utils';
+import {SROnly} from '@condict/ui';
 
 const SearchField = props => (
   <Wrapper>
