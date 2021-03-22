@@ -10,11 +10,6 @@
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "scripts": {
-    "fix:types": "rimraf node_modules/@types/react-native",
-    "build": "npm run -s fix:types",
-    "prepublishOnly": "npm install && npm run -s build"
-  },
   "dependencies": {
     "@condict/platform": "^0.1.0",
     "mdi-react": "^7.3.0",
@@ -25,7 +20,7 @@
     "@types/react": "^16.9.38",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
-    "@types/styled-components": "^5.1.0",
+    "@types/styled-components": "^5.1.7",
     "platform": "^1.3.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
