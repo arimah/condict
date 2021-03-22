@@ -39,6 +39,15 @@ export {
   NumberInput,
   NumberInputProps,
 } from './input';
+export {
+  Grid,
+  GridProps,
+  Cell,
+  CellProps,
+  CellAlignment,
+  Panel,
+  PanelProps,
+} from './layout';
 export {Pages, Props as PagesProps, Messages as PagesMessages} from './pages';
 export {Radio, Props as RadioProps} from './radio';
 export {Select, Props as SelectProps} from './select';

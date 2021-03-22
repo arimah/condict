@@ -1,5 +1,7 @@
 import styled, {StyledProps} from 'styled-components';
 
+import {Panel} from '@condict/ui';
+
 export type ScopeProps = {
   kind?: 'scope' | 'trap';
   active?: boolean | 'paused';
@@ -20,19 +22,8 @@ const getBorderColor = (props: StyledProps<ScopeProps>) => {
   return props.theme.general.borderColor;
 };
 
-export const Scope = styled.div<ScopeProps>`
-  padding: 8px;
-  border: 2px solid ${getBorderColor};
-  border-radius: 3px;
-  background-color: ${p => p.theme.general.bg};
-
-  > :first-child {
-    margin-top: 0;
-  }
-
-  > :last-child {
-    margin-bottom: 0;
-  }
+export const Scope = styled(Panel)<ScopeProps>`
+  border-color: ${getBorderColor};
 `;
 
 export const Container = styled.div`

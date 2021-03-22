@@ -8,22 +8,11 @@ import {
   CommandProvider,
   Button,
   Checkbox,
+  Panel,
   useCommandGroup,
 } from '@condict/ui';
 
 import Demo, {useDemoState} from '../demo';
-
-const Group = styled.div`
-  padding: 16px;
-  border: 2px solid ${p => p.theme.general.borderColor};
-  border-radius: 3px;
-
-  &:focus,
-  &.force-focus {
-    ${p => p.theme.focus.style}
-    border-color: ${p => p.theme.focus.color};
-  }
-`;
 
 type ResultDisplayProps = {
   italic?: boolean;
@@ -31,16 +20,10 @@ type ResultDisplayProps = {
 };
 
 const ResultDisplay = styled.div<ResultDisplayProps>`
+  margin-top: 8px;
+  margin-bottom: 8px;
   font-style: ${p => p.italic && 'italic'};
   font-weight: ${p => p.bold && 'bold'};
-
-  :not(:first-child) {
-    margin-top: 8px;
-  }
-
-  :not(:last-child) {
-    margin-bottom: 8px;
-  }
 `;
 
 type State = {
@@ -130,7 +113,7 @@ const Main = (): JSX.Element => {
       ]}
       onReset={reset}
     >
-      <Group tabIndex={0} onKeyDown={handleOuterKeyDown}>
+      <Panel tabIndex={0} onKeyDown={handleOuterKeyDown}>
         <CommandProvider commands={outerCommands}>
           <div>
             <Button
@@ -148,7 +131,7 @@ const Main = (): JSX.Element => {
           <ResultDisplay italic={italicOuter} bold={bold}>
             outer state: italic={String(italicOuter)}, bold={String(bold)}
           </ResultDisplay>
-          <Group tabIndex={0} onKeyDown={handleInnerKeyDown}>
+          <Panel tabIndex={0} onKeyDown={handleInnerKeyDown}>
             <CommandProvider commands={innerCommands}>
               <div>
                 <Button
@@ -167,9 +150,9 @@ const Main = (): JSX.Element => {
                 inner state: italic={String(italicInner)}
               </ResultDisplay>
             </CommandProvider>
-          </Group>
+          </Panel>
         </CommandProvider>
-      </Group>
+      </Panel>
     </Demo>
   );
 };
