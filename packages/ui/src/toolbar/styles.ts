@@ -66,14 +66,14 @@ export const Button = styled.button.attrs({
     && {
       background-color: ${p => p.theme.primary.bg};
       box-shadow:
-        inset 0 1px 3px rgba(0, 0, 0, ${p => p.theme.dark ? '0.75' : '0.4'});
+        inset 0 1px 2px rgba(0, 0, 0, ${p => p.theme.dark ? '0.75' : '0.4'});
     }
 
     &&:focus,
     &&.force-focus {
       box-shadow:
         0 0 4px ${p => p.theme.focus.color},
-        inset 0 1px 3px rgba(0, 0, 0, ${p => p.theme.dark ? '0.75' : '0.4'});
+        inset 0 1px 2px rgba(0, 0, 0, ${p => p.theme.dark ? '0.75' : '0.4'});
     }
   `}
 
