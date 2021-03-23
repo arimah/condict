@@ -7,6 +7,7 @@ import {
   InflectedFormJson,
   DefinitionTable,
 } from '@condict/table-editor';
+import {tokenizePattern, normalizeStem} from '@condict/inflect';
 
 import InflectionTableEditorDemo from './inflection-table-editor';
 import DefinitionTableEditorDemo from './definition-table-editor';
@@ -38,14 +39,9 @@ const InitialStemNames: readonly string[] = ['Plural root'];
 
 // Logic taken from the server-side code.
 const collectStemNames = (pattern: string, stems: Set<string>) => {
-  // Group 1: '{{' and '}}' (escape; ignored)
-  // Group 2: The stem name, without the curly brackets
-  const stemRegex = /(\{\{|\}\})|\{([^{}]+)\}/g;
-  let m;
-  while ((m = stemRegex.exec(pattern)) !== null) {
-    // ~ is a special stem that always refers to the lemma.
-    if (m[2] && m[2] !== '~') {
-      stems.add(m[2]);
+  for (const token of tokenizePattern(pattern)) {
+    if (token.kind === 'placeholder') {
+      stems.add(normalizeStem(token.stem));
     }
   }
 };

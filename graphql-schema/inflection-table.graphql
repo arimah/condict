@@ -204,8 +204,7 @@ A single inflected form. Each form belongs to exactly one table.
 An inflected form has an _inflection pattern_, which describes how to construct
 the form when applied to a word. Inflection patterns contain placeholders inside
 curly brackets, such as `{Plural root}`, which are replaced by the definition's
-stems. See `Definition.stems` and `DefinitionStem` for more. The placeholder
-`{~}` always refers to the definition's lemma form.
+stems. See `Definition.stems` and `DefinitionStem` for more.
 
 In addition to this, the `deriveLemma` field determines whether the inflected
 form, once computed for a word, is added to the dictionary as its own lemma.

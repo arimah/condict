@@ -19,11 +19,7 @@ export type TableLayoutResult = {
 const collectStemNames = (pattern: string, stems: Set<string>) => {
   for (const tok of tokenizePattern(pattern)) {
     if (tok.kind === 'placeholder') {
-      const stem = normalizeStem(tok.stem);
-      // ~ is a special stem that always refers to the lemma.
-      if (stem !== '~') {
-        stems.add(stem);
-      }
+      stems.add(normalizeStem(tok.stem));
     }
   }
 };

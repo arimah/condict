@@ -13,9 +13,8 @@ export type StemMap = {
  * whether the pattern is normalized, call `normalizePattern` on it first.
  * @param pattern The inflection pattern, which may contain placeholders like
  *        `{~}` or `{Plural root}`.
- * @param term The lemma form of the word. This form is used as the substitution
- *        for `{~}` placeholders, as well as for any stem that is not present in
- *        the `stems` map.
+ * @param term The lemma form of the word. This form is used as the fallback for
+ *        any stem that is not present in the `stems` map.
  * @param stems A map-like value that contains the word's stems.
  * @return The inflected word.
  */
@@ -26,9 +25,6 @@ const inflectWord = (pattern: string, term: string, stems: StemMap): string =>
       (_, escapedBrace: string, stem: string) => {
         if (escapedBrace) {
           return escapedBrace[0];
-        }
-        if (stem === '~') {
-          return term;
         }
         // Note: Don't try to "simplify" this to `stems.get(stem) || term`.
         // You are allowed to specify empty stem values, e.g. for null affixes.

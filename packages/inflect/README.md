@@ -1,6 +1,6 @@
 # @condict/inflect
 
-This package provides APIs for handling Condict inflection pattern. As the name may suggest, an _inflection pattern_ describes how to inflect a word. The inflection pattern contains any number of placeholders inside curly bracketes, like `{Plural root}`, which are replaced by the word's correspondingly named stems. The special placeholder `{~}` always refers to a word's lemma form.
+This package provides APIs for handling Condict inflection pattern. As the name may suggest, an _inflection pattern_ describes how to inflect a word. The inflection pattern contains any number of placeholders inside curly bracketes, like `{Plural root}`, which are replaced by the word's correspondingly named stems.
 
 As an example, the general pattern for forming English plurals is `{~}s` – that is, append an _s_ to the word. Some words follow the pattern `{~}es`. The plural of Arabic _kitāb_ "book" could be expressed as `{C1}u{C2}u{C3}`: when given the stems C1 = k, C2 = t, C3 = b (the three consonants of the root), the inflected form becomes _kutub_.
 
@@ -42,7 +42,7 @@ console.log(normalPattern); // {Root}en{Plural suffix}
 
 > `inflectWord(pattern: string, term: string, stems: StemMap): string`
 
-Inflects a word according to the specified pattern. The `term` is used to replace `{~}` placeholders as well as any named stem placeholder that doesn't have an entry in `stems`.
+Inflects a word according to the specified pattern. The `term` is used as a fallback for any stem placeholder that doesn't have an entry in `stems`.
 
 **Note:** This function _assumes_ that the pattern has been normalized. Stem names are looked up with exactly the values that are present in the pattern. If you don't know whether the pattern is normalized, call [`normalizePattern()`](#normalizepattern) on it first.
 
@@ -64,7 +64,7 @@ Patterns are normalized by trimming away white space at the start and end, and b
 
 Normalizes the specified stem name.
 
-Stems are normalized by trimming away white space at the start and end, and by collapsing sequences of internal white space to single spaces (U+0020).
+Stems are normalized by trimming away white space at the start and end, and by collapsing sequences of internal white space to single spaces (U+0020). Normalization does _not_ perform any kind of case folding: `{root}` is different from `{Root}`.
 
 ## `tokenizePattern()`
 
@@ -78,4 +78,4 @@ This classifies the components of a pattern according to their kind. There are t
 * Escaped braces – `{{` and `}}`, which are turned into the characters "{" and "}", respectively.
 * Plain text, which is not treated specially in any way.
 
-This can be used for highlighting parts of an inflection pattern in a UI.
+This can be used for highlighting parts of an inflection pattern in a UI, or for extracting the stem names from a pattern.
