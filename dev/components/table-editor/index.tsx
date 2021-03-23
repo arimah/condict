@@ -35,7 +35,7 @@ const InitialStems: ReadonlyMap<string, string> = new Map([
   ['Plural root', 'nerk'],
 ]);
 
-const InitialStemNames: readonly string[] = ['Plural root'];
+const InitialStemNames: readonly string[] = ['~', 'Plural root'];
 
 // Logic taken from the server-side code.
 const collectStemNames = (pattern: string, stems: Set<string>) => {
