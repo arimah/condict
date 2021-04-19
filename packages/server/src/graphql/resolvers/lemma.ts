@@ -12,10 +12,6 @@ import {Lemma as LemmaType, Query as QueryType} from '../types';
 import {ResolversFor} from './types';
 
 const Lemma: ResolversFor<LemmaType, LemmaRow> = {
-  // term_display and term_unique have the same contents, but the former just
-  // feels more fitting for display.
-  term: p => p.term_display,
-
   definitions: (p, _args, {db}) => Definition.allByLemma(db, p.id),
 
   derivedDefinitions: (p, _args, {db}) =>

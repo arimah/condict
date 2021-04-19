@@ -49,9 +49,9 @@ const Lemma = {
           select *
           from lemmas
           where language_id = ${languageId}
-            and term_unique in (${terms})
+            and term in (${terms})
         `,
-      row => row.term_unique,
+      row => row.term,
       languageId
     );
   },
@@ -99,7 +99,7 @@ const Lemma = {
         select l.*
         from lemmas l
         where ${condition}
-        order by l.term_display
+        order by l.term
         limit ${limit} offset ${offset}
       `,
       info

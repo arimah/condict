@@ -162,22 +162,23 @@ const tables: readonly TableSchema[] = [
         id integer not null primary key,
         -- The language that the lemma belongs to.
         language_id integer not null,
-        -- The term being defined. This field uses binary collation, for "correct"
-        -- uniqueness (we want accented letters to be distinct from their
-        -- non-accented counterparts, and case matters). This value must be equal
-        -- to 'term_display'.
-        term_unique text not null collate binary,
-        -- The term being defined. This field uses the default Unicode collation,
-        -- for quick sorting. This value must be equal to 'term_unique'.
-        term_display text not null,
+        -- The term being defined.
+        term text not null collate unicode,
 
         foreign key (language_id)
           references languages(id)
           on delete cascade
       )`,
-      `create unique index \`unq:lemmas.language_id-term_unique\` on lemmas(language_id, term_unique)`,
       `create index \`idx:lemmas.language_id\` on lemmas(language_id)`,
-      `create index \`idx:lemmas.term_display\` on lemmas(term_display)`,
+      // For the unique index, we need to use *binary* collation, not Unicode,
+      // to ensure "correct" uniqueness (we want accented letters to be distinct
+      // from their non-accented counterparts, case matters, and so on).
+      `create unique index \`unq:lemmas.language_id-term\` on lemmas(language_id, term collate binary)`,
+      // For the sorting index, we use the unicode collation, as specified on
+      // the column itself. Note that the collation is on the column in the
+      // table definition so we never accidentally sort by the wrong collation.
+      // Hopefully we'll hit this index when we need things in order.
+      `create index \`idx:lemmas.term\` on lemmas(term)`,
     ],
   },
 

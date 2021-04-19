@@ -49,7 +49,7 @@ const PartOfSpeech = {
           select *
           from parts_of_speech
           where language_id in (${languageIds})
-          order by name
+          order by name collate unicode
         `,
       row => row.language_id
     );
