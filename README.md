@@ -36,7 +36,7 @@ That said, **bug reports and bug fix PRs are welcome**, even at this stage. To g
 
 1. `npm install`
 2. Bootstrap dependencies with [Lerna][]: `npm run bootstrap` or, alternatively if you have a globally installed Lerna, `lerna bootstrap --hoist`. Hoisting is strongly recommended, especially on Windows, as module resolution may otherwise fail due to symlinked packages with identical dependencies. Additionally, without hoisting, [styled-components][] may end up with multiple instances, which breaks UI components.
-3. On Windows: build the build tools, `node scripts/build -g build-tools`, then bootstrap packages again as above. This is needed because npm cannot correctly install the `condict-graphql-typer` binary if the compiled JS file is missing.
+3. **On Windows:** build the build tools, `node scripts/build -g build-tools`, then bootstrap packages again as above. This is needed because npm cannot correctly install the `condict-graphql-typer` binary if the compiled JS file is missing.
 4. Build everything: `npm run build`
 
 **To test and/or develop UI components,** run `npm run dev:ui`, then navigate to _http://localhost:3000_ and have at it. Source files for the UI component test server are in [dev/](./dev).
@@ -45,9 +45,9 @@ That said, **bug reports and bug fix PRs are welcome**, even at this stage. To g
 
 1. `npm run dev:server`
 2. In a different terminal, `cd packages/server`
-3. First time only: `cp config.json.example config.json` – please edit this file if you wish to customize logging and the database location.
+3. First time only: `cp config.json.example config.json`. Please edit `config.json` file if you wish to customize logging and the database location.
 4. `npm start`
-5. If the server fails to start with errors around [better-sqlite3][] or [bcrypt][], you may also need to run `npm run build:native`.
+5. If the server fails to start with errors around [better-sqlite3][] or [bcrypt][], you may also need to run `npm run build:native-deps`.
 
 When the server is running, a GraphQL playground will be accessible at _http://localhost:4000_. The server does _not_ automatically reload on recompilation; you must restart it manually.
 

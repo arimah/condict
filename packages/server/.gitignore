@@ -2,7 +2,8 @@
 package-lock.json
 
 # Source files are compiled before publish, and are not otherwise needed
-dist
+dist/
+build/
 
 # These files are copied on build
 graphql-schema
