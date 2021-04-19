@@ -3,8 +3,12 @@ import {createPool, Pool, Factory} from 'generic-pool';
 
 import {Logger} from '../../types';
 
-import SqliteAdaptor from './connection';
+import Connection from './connection';
+import registerUnicodeCollation from './unicode-collation';
 import {Options} from './types';
+
+// NB: "db" refers to instances of better-sqlite3's Database, and "connection"
+// to our own wrapper.
 
 export default class ConnectionPool {
   private readonly logger: Logger;
@@ -15,16 +19,17 @@ export default class ConnectionPool {
 
     const factory: Factory<Database> = {
       create() {
-        const connection = new Sqlite(options.file);
-        connection.pragma('journal_mode = WAL');
-        return Promise.resolve(connection);
+        const db = new Sqlite(options.file);
+        db.pragma('journal_mode = WAL');
+        registerUnicodeCollation(db);
+        return Promise.resolve(db);
       },
-      destroy(connection) {
-        connection.close();
+      destroy(db) {
+        db.close();
         return Promise.resolve();
       },
-      validate(connection) {
-        return Promise.resolve(connection.open);
+      validate(db) {
+        return Promise.resolve(db.open);
       },
     };
     this.pool = createPool(factory, {
@@ -33,9 +38,9 @@ export default class ConnectionPool {
     });
   }
 
-  public getConnection(): PromiseLike<SqliteAdaptor> {
+  public getConnection(): PromiseLike<Connection> {
     return this.pool.acquire().then(connection =>
-      new SqliteAdaptor(this.logger, connection, this.pool)
+      new Connection(this.logger, connection, this.pool)
     );
   }
 

@@ -67,7 +67,7 @@ const InflectionTable = {
           select *
           from inflection_tables
           where part_of_speech_id in (${partOfSpeechIds})
-          order by part_of_speech_id, name
+          order by part_of_speech_id, name collate unicode
         `,
       row => row.part_of_speech_id
     );

@@ -11,7 +11,8 @@
         "bcrypt",
         "better-sqlite3",
         "electron",
-        "electron-rebuild"
+        "electron-rebuild",
+        "node-abi"
       ]
     }
   }

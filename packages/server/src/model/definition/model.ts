@@ -42,7 +42,7 @@ const Definition = {
         db.all<DefinitionRow>`
           select
             d.*,
-            l.term_display as term
+            l.term as term
           from definitions d
           inner join lemmas l on l.id = d.lemma_id
           where d.id in (${ids})
@@ -73,7 +73,7 @@ const Definition = {
         db.all<DefinitionRow>`
           select
             d.*,
-            l.term_display as term
+            l.term as term
           from definitions d
           inner join lemmas l on l.id = d.lemma_id
           where d.lemma_id in (${lemmaIds})
@@ -130,13 +130,13 @@ const Definition = {
       (limit, offset) => db.all<DefinitionRow>`
         select
           d.*,
-          l.term_display as term
+          l.term as term
         from definition_inflection_tables dit
         inner join definitions d on d.id = dit.definition_id
         inner join lemmas l on l.id = d.lemma_id
         where ${condition}
         group by d.id
-        order by l.term_display, d.id
+        order by l.term, d.id
         limit ${limit} offset ${offset}
       `,
       info
@@ -207,11 +207,11 @@ const Definition = {
       (limit, offset) => db.all<DefinitionRow>`
         select
           d.*,
-          l.term_display as term
+          l.term as term
         from definitions d
         inner join lemmas l on l.id = d.lemma_id
         where ${condition}
-        order by l.term_display, d.id
+        order by l.term, d.id
         limit ${limit} offset ${offset}
       `,
       info
@@ -256,7 +256,7 @@ const DefinitionStem = {
           select *
           from definition_stems
           where definition_id in (${definitionIds})
-          order by definition_id, name
+          order by definition_id, name collate unicode
         `,
       row => row.definition_id
     );
@@ -358,7 +358,7 @@ const DerivedDefinition = {
         db.all<DerivedDefinitionRow>`
           select
             dd.*,
-            l.term_display as term,
+            l.term as term,
             l.language_id
           from derived_definitions dd
           inner join lemmas l on l.id = dd.lemma_id
@@ -391,12 +391,12 @@ const DerivedDefinition = {
       (limit, offset) => db.all<DerivedDefinitionRow>`
         select
           dd.*,
-          l.term_display as term,
+          l.term as term,
           l.language_id
         from derived_definitions dd
         inner join lemmas l on l.id = dd.lemma_id
         where ${condition}
-        order by l.term_display, dd.inflected_form_id
+        order by l.term, dd.inflected_form_id
         limit ${limit} offset ${offset}
       `,
       info

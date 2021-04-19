@@ -30,7 +30,7 @@ const tables: readonly TableSchema[] = [
         -- The full display name of the language.
         name text not null
       )`,
-      `create unique index \`unq:languages.name\` on languages(name)`,
+      `create unique index \`languages(name)\` on languages(name)`,
     ],
   },
 
@@ -49,8 +49,7 @@ const tables: readonly TableSchema[] = [
           references languages(id)
           on delete cascade
       )`,
-      `create unique index \`unq:parts_of_speech.language_id-name\` on parts_of_speech(language_id, name)`,
-      `create index \`idx:parts_of_speech.language_id\` on parts_of_speech(language_id)`,
+      `create unique index \`parts_of_speech(language_id,name)\` on parts_of_speech(language_id, name)`,
     ],
   },
 
@@ -68,8 +67,7 @@ const tables: readonly TableSchema[] = [
           references parts_of_speech(id)
           on delete cascade
       )`,
-      `create unique index \`unq:inflection_tables.part_of_speech_id-name\` on inflection_tables(part_of_speech_id, name)`,
-      `create index \`idx:inflection_tables.part_of_speech_id\` on inflection_tables(part_of_speech_id)`,
+      `create unique index \`inflection_tables(part_of_speech_id,name)\` on inflection_tables(part_of_speech_id, name)`,
     ],
   },
 
@@ -88,7 +86,7 @@ const tables: readonly TableSchema[] = [
           references inflection_tables(id)
           on delete cascade
       )`,
-      `create index \`idx:inflection_table_versions.is_current\` on inflection_table_versions(is_current)`,
+      `create index \`inflection_table_versions(is_current)\` on inflection_table_versions(is_current)`,
     ],
   },
 
@@ -147,7 +145,7 @@ const tables: readonly TableSchema[] = [
           references inflection_table_versions(id)
           on delete cascade
       )`,
-      `create index \`idx:inflected_forms.inflection_table_version_id\` on inflected_forms(inflection_table_version_id)`,
+      `create index \`inflected_forms(inflection_table_version_id)\` on inflected_forms(inflection_table_version_id)`,
     ],
   },
 
@@ -162,22 +160,22 @@ const tables: readonly TableSchema[] = [
         id integer not null primary key,
         -- The language that the lemma belongs to.
         language_id integer not null,
-        -- The term being defined. This field uses binary collation, for "correct"
-        -- uniqueness (we want accented letters to be distinct from their
-        -- non-accented counterparts, and case matters). This value must be equal
-        -- to 'term_display'.
-        term_unique text not null collate binary,
-        -- The term being defined. This field uses the default Unicode collation,
-        -- for quick sorting. This value must be equal to 'term_unique'.
-        term_display text not null,
+        -- The term being defined.
+        term text not null collate unicode,
 
         foreign key (language_id)
           references languages(id)
           on delete cascade
       )`,
-      `create unique index \`unq:lemmas.language_id-term_unique\` on lemmas(language_id, term_unique)`,
-      `create index \`idx:lemmas.language_id\` on lemmas(language_id)`,
-      `create index \`idx:lemmas.term_display\` on lemmas(term_display)`,
+      // For the unique index, we need to use *binary* collation, not Unicode,
+      // to ensure "correct" uniqueness (we want accented letters to be distinct
+      // from their non-accented counterparts, case matters, and so on).
+      `create unique index \`lemmas(language_id,term)\` on lemmas(language_id, term collate binary)`,
+      // For the sorting index, we use the unicode collation, as specified on
+      // the column itself. Note that the collation is on the column in the
+      // table definition so we never accidentally sort by the wrong collation.
+      // Hopefully we'll hit this index when we need things in order.
+      `create index \`lemmas(term)\` on lemmas(term)`,
     ],
   },
 
@@ -203,9 +201,9 @@ const tables: readonly TableSchema[] = [
           references parts_of_speech(id)
           on delete restrict
       )`,
-      `create index \`idx:definitions.lemma_id\` on definitions(lemma_id)`,
-      `create index \`idx:definitions.language_id\` on definitions(language_id)`,
-      `create index \`idx:definitions.part_of_speech_id\` on definitions(part_of_speech_id)`,
+      `create index \`definitions(lemma_id)\` on definitions(lemma_id)`,
+      `create index \`definitions(language_id)\` on definitions(language_id)`,
+      `create index \`definitions(part_of_speech_id)\` on definitions(part_of_speech_id)`,
     ],
   },
 
@@ -248,7 +246,7 @@ const tables: readonly TableSchema[] = [
           references definitions(id)
           on delete cascade
       )`,
-      `create index \`idx:definition_stems.definition_id\` on definition_stems(definition_id)`,
+      `create index \`definition_stems(definition_id)\` on definition_stems(definition_id)`,
     ],
   },
 
@@ -284,10 +282,9 @@ const tables: readonly TableSchema[] = [
           references inflection_table_versions(id)
           on delete restrict
       )`,
-      `create index \`idx:definition_inflection_tables.definition_id\` on definition_inflection_tables(definition_id)`,
-      `create index \`idx:definition_inflection_tables.inflection_table_id\` on definition_inflection_tables(inflection_table_id)`,
-      `create index \`idx:definition_inflection_tables.inflection_table_version_id\` on definition_inflection_tables(inflection_table_version_id)`,
-      `create index \`idx:definition_inflection_tables.definition_id-sort_order\` on definition_inflection_tables(definition_id, sort_order)`,
+      `create index \`definition_inflection_tables(definition_id,sort_order)\` on definition_inflection_tables(definition_id, sort_order)`,
+      `create index \`definition_inflection_tables(inflection_table_id)\` on definition_inflection_tables(inflection_table_id)`,
+      `create index \`definition_inflection_tables(inflection_table_version_id)\` on definition_inflection_tables(inflection_table_version_id)`,
     ],
   },
 
@@ -313,8 +310,8 @@ const tables: readonly TableSchema[] = [
           references inflected_forms(id)
           on delete restrict
       )`,
-      `create index \`idx:definition_forms.definition_inflection_table_id\` on definition_forms(definition_inflection_table_id)`,
-      `create index \`idx:definition_forms.inflected_form_id\` on definition_forms(inflected_form_id)`,
+      `create index \`definition_forms(definition_inflection_table_id)\` on definition_forms(definition_inflection_table_id)`,
+      `create index \`definition_forms(inflected_form_id)\` on definition_forms(inflected_form_id)`,
     ],
   },
 
@@ -367,9 +364,9 @@ const tables: readonly TableSchema[] = [
         foreign key (original_definition_id) references definitions(id) on delete cascade,
         foreign key (inflected_form_id) references inflected_forms(id) on delete restrict
       )`,
-      `create index \`idx:derived_definitions.lemma_id\` on derived_definitions(lemma_id)`,
-      `create index \`idx:derived_definitions.original_definition_id\` on derived_definitions(original_definition_id)`,
-      `create index \`idx:derived_definitions.inflected_form_id\` on derived_definitions(inflected_form_id)`,
+      `create index \`derived_definitions(lemma_id)\` on derived_definitions(lemma_id)`,
+      `create index \`derived_definitions(original_definition_id)\` on derived_definitions(original_definition_id)`,
+      `create index \`derived_definitions(inflected_form_id)\` on derived_definitions(inflected_form_id)`,
     ],
   },
 
@@ -386,7 +383,7 @@ const tables: readonly TableSchema[] = [
         name text not null,
         primary key (id)
       )`,
-      `create unique index \`unq:tags.name\` on tags(name)`,
+      `create unique index \`tags(name)\` on tags(name)`,
     ],
   },
 
@@ -403,7 +400,7 @@ const tables: readonly TableSchema[] = [
         -- A hashed version of the user's password.
         password_hash text not null
       )`,
-      `create unique index \`unq:users.name\` on users(name)`,
+      `create unique index \`users(name)\` on users(name)`,
     ],
   },
 

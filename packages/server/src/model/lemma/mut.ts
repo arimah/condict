@@ -14,15 +14,15 @@ const LemmaMut = {
       select id
       from lemmas
       where language_id = ${languageId}
-        and term_unique = ${term}
+        and term = ${term}
     `;
     if (result) {
       return result.id;
     }
 
     const {insertId} = db.exec<LemmaId>`
-      insert into lemmas (language_id, term_unique, term_display)
-      values (${languageId}, ${term}, ${term})
+      insert into lemmas (language_id, term)
+      values (${languageId}, ${term})
     `;
     this.updateLemmaCount(db, languageId);
     return insertId;
@@ -48,10 +48,10 @@ const LemmaMut = {
     const result = db.all<Row>`
       select
         id,
-        term_unique as term
+        term
       from lemmas
       where language_id = ${languageId}
-        and term_unique in (${terms})
+        and term in (${terms})
     `;
     const termToId = new Map<string, LemmaId>(
       result.map<[string, LemmaId]>(row => [row.term, row.id])
@@ -62,8 +62,8 @@ const LemmaMut = {
       // TODO: Can we parallelise this? Auto-increment IDs *should* be serial.
       if (!termToId.has(term)) {
         const {insertId} = db.exec<LemmaId>`
-          insert into lemmas (language_id, term_unique, term_display)
-          values (${languageId}, ${term}, ${term})
+          insert into lemmas (language_id, term)
+          values (${languageId}, ${term})
         `;
         termToId.set(term, insertId);
         hasNewTerms = true;

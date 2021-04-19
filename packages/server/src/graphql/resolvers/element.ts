@@ -42,7 +42,7 @@ const InlineElement: ResolversFor<InlineElementType, InlineElementJson> = {
 };
 
 const FormattedText: ResolversFor<FormattedTextType, FormattedTextJson> = {
-  // Formatting properties are not stored in the object, to save space.
+  // Disabled formatting properties are not stored in the object, to save space.
   bold: p => p.bold || false,
   italic: p => p.italic || false,
   underline: p => p.underline || false,
