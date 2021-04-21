@@ -1,6 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
-import {Connection} from '../../database';
+import {DataWriter} from '../../database';
 import {
   DefinitionInflectionTableId,
   CustomInflectedFormInput,
@@ -12,7 +12,7 @@ import {InflectedForm} from '../inflection-table';
 
 const CustomFormMut = {
   async insert(
-    db: Connection,
+    db: DataWriter,
     definitionTableId: DefinitionInflectionTableId,
     inflectionTableLayoutId: InflectionTableLayoutId,
     customForms: CustomInflectedFormInput[]
@@ -55,7 +55,7 @@ const CustomFormMut = {
     return allCustomForms;
   },
 
-  deleteAll(db: Connection, tableId: DefinitionInflectionTableId): void {
+  deleteAll(db: DataWriter, tableId: DefinitionInflectionTableId): void {
     db.exec`
       delete from definition_forms
       where definition_inflection_table_id = ${tableId}

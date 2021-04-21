@@ -19,7 +19,13 @@ export {
 } from './types';
 export {
   Connection,
-  ConnectionPool,
+  DataAccessor,
+  DataReader,
+  DataWriter,
+  ExecResult,
+  Value,
+  Scalar,
+  RawSql,
   Options as DatabaseConfig,
 } from './database';
 export {addUser, editUser, deleteUser} from './manage-users';

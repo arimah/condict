@@ -24,6 +24,246 @@ export const validateOptions = (options: any): Options => {
   return {file};
 };
 
+export interface DataReader {
+  /**
+   * Fetches the first row that matches a query.
+   * @param query An SQL query string.
+   * @return The first matching row, or null if no row matches.
+   */
+  get<Row>(query: string): Row | null;
+  /**
+   * Fetches the first row that matches a query. This overload should be used
+   * as a template string tag.
+   * @param parts Template string parts.
+   * @param values Values to be embedded in the query.
+   * @return The first matching row, or null if no row matches.
+   */
+  get<Row>(parts: TemplateStringsArray, ...values: Value[]): Row | null;
+
+  /**
+   * Fetches the first row that matches a query. If no row is found, throws
+   * an error.
+   * @param query An SQL query string.
+   * @return The first matching row.
+   * @throws {Error} No rows were found.
+   */
+  getRequired<Row>(query: string): Row;
+  /**
+   * Fetches the first row that matches a query. If no row is found, throws
+   * an error. This overload should be used as a template string tag.
+   * @param parts Template string parts.
+   * @param values Values to be embedded in the query.
+   * @return The first matching row.
+   * @throws {Error} No rows were found.
+   */
+  getRequired<Row>(parts: TemplateStringsArray, ...values: Value[]): Row;
+
+  /**
+   * Fetches all rows that match a query.
+   * @param query An SQL query string.
+   * @return The rows that match the query.
+   */
+  all<Row>(query: string): Row[];
+  /**
+   * Fetches all rows that match a query. This overload should be used as a
+   * template string tag.
+   * @param parts Template string parts.
+   * @param values Values to be embedded in the query.
+   * @return The rows that match the query.
+   */
+  all<Row>(parts: TemplateStringsArray, ...values: Value[]): Row[];
+
+  /**
+   * Treats the specified string as raw SQL, enabling it to be inserted into
+   * queries and commands without being escaped.
+   * @param sql An SQL string.
+   * @return A value that can be embedded into future queries and commands
+   *         without being escaped.
+   */
+  raw(sql: string): RawSql;
+  /**
+   * Treats the specified string as raw SQL, enabling it to be inserted into
+   * queries and commands without being escaped. This overload should be used
+   * as a template string tag.
+   * @param parts Template string parts.
+   * @param values Values to be embedded in the SQL string.
+   * @return A value that can be embedded into future queries and commands
+   *         without being escaped.
+   */
+  raw(parts: TemplateStringsArray, ...values: Value[]): RawSql;
+
+  /**
+   * Determines whether the specified table exists.
+   * @param name The table name to look up.
+   * @return True if the table exists, or false if it does not.
+   */
+  tableExists(name: string): boolean;
+
+  /**
+   * Batches a query; that is, combines multiple queries (from the same tick
+   * of the event loop) into a single lookup. The query is expected to match
+   * at most one row per input ID.
+   * @param batchKey The key to associate with this batch. All queries with
+   *        the same key are batched together.
+   * @param id The ID to look up. This does not have to be the row's primary
+   *        key; it can be any primitive value.
+   * @param fetcher A function that receives all IDs of the batch and returns
+   *        an awaitable value with all matching rows. Each ID can match at
+   *        most one row.
+   * @param getRowId A function that extracts a result row's ID.
+   * @return A promise that resolves to the row matching `id`, or null if no
+   *         row matches.
+   */
+  batchOneToOne<K extends string | number, Row>(
+    batchKey: string,
+    id: K,
+    fetcher: (db: this, ids: readonly K[]) => Awaitable<Row[]>,
+    getRowId: (row: Row) => K
+  ): Promise<Row | null>;
+  /**
+   * Batches a query; that is, combines multiple queries (from the same tick
+   * of the event loop) into a single lookup. The query is expected to match
+   * at most one row per input ID.
+   * @param batchKey The key to associate with this batch. All queries with
+   *        the same key are batched together.
+   * @param id The ID to look up. This does not have to be the row's primary
+   *        key; it can be any primitive value.
+   * @param fetcher A function that receives all IDs of the batch and returns
+   *        an awaitable value with all matching rows. Each ID can match at
+   *        most one row.
+   * @param getRowId A function that extracts a result row's ID.
+   * @param extraArg An extra argument to pass into the `fetcher` callback.
+   *        If this method is called multiple times with the same `batchKey`
+   *        but a different `extraArg`, only the value from the very first
+   *        call is used.
+   * @return A promise that resolves to the row matching `id`, or null if no
+   *         row matches.
+   */
+  batchOneToOne<K extends string | number, Row, E>(
+    batchKey: string,
+    id: K,
+    fetcher: (db: this, ids: readonly K[], extraArg: E) => Awaitable<Row[]>,
+    getRowId: (row: Row) => K,
+    extraArg: E
+  ): Promise<Row | null>;
+
+  /**
+   * Batches a query; that is, combines multiple queries (from the same tick
+   * of the event loop) into a single lookup. The query can match any number
+   * of rows per input ID.
+   * @param batchKey The key to associate with this batch. All queries with
+   *        the same key are batched together.
+   * @param id The ID to look up. This does not have to be the row's primary
+   *        key; it can be any primitive value.
+   * @param fetcher A function that receives all IDs of the batch and returns
+   *        an awaitable value with all matching rows. Each ID can match any
+   *        number of rows.
+   * @param getRowId A function that extractcs a result row's ID.
+   * @return A promise that resolves to the rows matching `id`. If none were
+   *         found, the array will be empty.
+   */
+  batchOneToMany<K extends string | number, Row>(
+    batchKey: string,
+    id: K,
+    fetcher: (db: this, ids: readonly K[]) => Awaitable<Row[]>,
+    getRowId: (row: Row) => K
+  ): Promise<Row[]>;
+  /**
+   * Batches a query; that is, combines multiple queries (from the same tick
+   * of the event loop) into a single lookup. The query can match any number
+   * of rows per input ID.
+   * @param batchKey The key to associate with this batch. All queries with
+   *        the same key are batched together.
+   * @param id The ID to look up. This does not have to be the row's primary
+   *        key; it can be any primitive value.
+   * @param fetcher A function that receives all IDs of the batch and returns
+   *        an awaitable value with all matching rows. Each ID can match any
+   *        number of rows.
+   * @param getRowId A function that extractcs a result row's ID.
+   * @param extraArg An extra argument to pass into the `fetcher` callback,
+   *        If this method is called multiple times with the same `batchKey`
+   *        but a different `extraArg`, only the value from the very first
+   *        call is used.
+   * @return A promise that resolves to the rows matching `id`. If none were
+   *         found, the array will be empty.
+   */
+  batchOneToMany<K extends string | number, Row, E>(
+    batchKey: string,
+    id: K,
+    fetcher: (db: this, ids: readonly K[], extraArg: E) => Awaitable<Row[]>,
+    getRowId: (row: Row) => K,
+    extraArg: E
+  ): Promise<Row[]>;
+
+  /**
+   * Clear the batch cache associated with the specified batch key and ID. The
+   * cache is local to the request.
+   * @param batchKey The key to clear cache for.
+   * @param id The ID to clear cache for.
+   */
+  clearCache<K extends string | number>(batchKey: string, id: K): void;
+}
+
+/**
+ * A database connection that has read-only access and must be disposed once the
+ * work is complete (by calling `finish`). Exclusive read-write access can be
+ * requested through the `transact` method.
+ */
+export interface DataAccessor extends DataReader {
+  /**
+   * Runs the specified callback inside a write transaction. The return value of
+   * the callback becomes the return value of this method. Nested transactions
+   * are not supported.
+   *
+   * While the transaction is running, the DataWriter passed to the callback
+   * must be used to write to the database. The instance that this method is
+   * called on cannot be used for the duration of the transaction.
+   *
+   * When called on a DataWriter, the callback receives the same writer, since
+   * it already has exclusive write access.
+   * @param callback The callback to call inside a transaction. It receives a
+   *        DataWriter that is used to write to the database.
+   * @return A promise that resolves to the return value of the callback. The
+   *         promise is rejected if an error occurs inside the callback, or if
+   *         the underlying readers-writer lock is closed.
+   */
+  transact<R>(callback: (db: DataWriter) => Awaitable<R>): Promise<R>;
+
+  /**
+   * Marks the work done on this reader as finished. The connection cannot be
+   * used after calling this method.
+   */
+  finish(): void;
+}
+
+/**
+ * A database connection that has exclusive read-write access. It is disposed of
+ * automatically by the DataReader's `transact` method.
+ */
+export interface DataWriter extends DataReader {
+  /**
+   * Executes a non-query SQL command.
+   *
+   * To perform a SELECT, use `get`, `getRequired` or `all`.
+   * @param cmd An SQL command string.
+   * @return The result of the command.
+   */
+  exec<I extends number = number>(cmd: string): ExecResult<I>;
+  /**
+   * Executes a non-query SQL command. This overload should be used as a
+   * template string tag.
+   *
+   * To perform a SELECT, use `get`, `getRequired` or `all`.
+   * @param parts Template string parts.
+   * @param values Values to be embedded in the command.
+   * @return The result of the command.
+   */
+  exec<I extends number = number>(
+    parts: TemplateStringsArray,
+    ...values: Value[]
+  ): ExecResult<I>;
+}
+
 /** Contains the result of a non-query command execution. */
 export interface ExecResult<I extends number> {
   /**
@@ -70,3 +310,6 @@ export type Value =
 
 /** An SQL parameter. */
 export type Param = string | number | null;
+
+/** A function that logs an executed SQL string. */
+export type SqlLogger = (sql: string) => void;

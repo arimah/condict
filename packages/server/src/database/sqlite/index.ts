@@ -1,4 +1,7 @@
 export {
+  DataReader,
+  DataAccessor,
+  DataWriter,
   Value,
   Scalar,
   RawSql,
@@ -7,4 +10,3 @@ export {
   validateOptions,
 } from './types';
 export {default as Connection} from './connection';
-export {default as ConnectionPool} from './pool';

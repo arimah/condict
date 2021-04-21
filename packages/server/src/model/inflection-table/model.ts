@@ -1,7 +1,7 @@
 import {UserInputError} from 'apollo-server';
 import {GraphQLResolveInfo} from 'graphql';
 
-import {Connection} from '../../database';
+import {DataReader} from '../../database';
 import {
   PartOfSpeechId,
   InflectionTableId,
@@ -25,7 +25,7 @@ const InflectionTable = {
   allByPartOfSpeechKey: 'InflectionTable.allByPartOfSpeechKey',
 
   byId(
-    db: Connection,
+    db: DataReader,
     id: InflectionTableId
   ): Promise<InflectionTableRow | null> {
     return db.batchOneToOne(
@@ -42,7 +42,7 @@ const InflectionTable = {
   },
 
   async byIdRequired(
-    db: Connection,
+    db: DataReader,
     id: InflectionTableId,
     paramName = 'id'
   ): Promise<InflectionTableRow> {
@@ -56,7 +56,7 @@ const InflectionTable = {
   },
 
   allByPartOfSpeech(
-    db: Connection,
+    db: DataReader,
     partOfSpeechId: PartOfSpeechId
   ): Promise<InflectionTableRow[]> {
     return db.batchOneToMany(
@@ -78,7 +78,7 @@ const InflectedForm = {
   byIdKey: 'InflectedForm.byId',
   allByTableLayoutKey: 'InflectedForm.allByTableLayout',
 
-  byId(db: Connection, id: InflectedFormId): Promise<InflectedFormRow | null> {
+  byId(db: DataReader, id: InflectedFormId): Promise<InflectedFormRow | null> {
     return db.batchOneToOne(
       this.byIdKey,
       id,
@@ -93,7 +93,7 @@ const InflectedForm = {
   },
 
   async byIdRequired(
-    db: Connection,
+    db: DataReader,
     id: InflectedFormId,
     paramName = 'id'
   ): Promise<InflectedFormRow> {
@@ -107,7 +107,7 @@ const InflectedForm = {
   },
 
   allByTableLayout(
-    db: Connection,
+    db: DataReader,
     versionId: InflectionTableLayoutId
   ): Promise<InflectedFormRow[]> {
     return db.batchOneToMany(
@@ -125,7 +125,7 @@ const InflectedForm = {
   },
 
   allDerivableByTableLayout(
-    db: Connection,
+    db: DataReader,
     versionId: InflectionTableLayoutId
   ): InflectedFormRow[] {
     return db.all<InflectedFormRow>`
@@ -147,7 +147,7 @@ const InflectionTableLayout = {
   maxPerPage: 200,
 
   byId(
-    db: Connection,
+    db: DataReader,
     id: InflectionTableLayoutId
   ): Promise<InflectionTableLayoutRow | null> {
     return db.batchOneToOne(
@@ -168,7 +168,7 @@ const InflectionTableLayout = {
   },
 
   async byIdRequired(
-    db: Connection,
+    db: DataReader,
     id: InflectionTableLayoutId,
     paramName = 'id'
   ): Promise<InflectionTableLayoutRow> {
@@ -182,7 +182,7 @@ const InflectionTableLayout = {
   },
 
   currentByTable(
-    db: Connection,
+    db: DataReader,
     tableId: InflectionTableId
   ): Promise<InflectionTableLayoutRow | null> {
     return db.batchOneToOne(
@@ -204,7 +204,7 @@ const InflectionTableLayout = {
   },
 
   async currentByTableRequired(
-    db: Connection,
+    db: DataReader,
     tableId: InflectionTableId,
     paramName = 'tableId'
   ): Promise<InflectionTableLayoutRow> {
@@ -218,7 +218,7 @@ const InflectionTableLayout = {
   },
 
   allOldByTable(
-    db: Connection,
+    db: DataReader,
     tableId: InflectionTableId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo

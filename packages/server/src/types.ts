@@ -7,7 +7,19 @@ export interface ServerConfig {
 }
 
 /** Represents a log level. */
-export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
+export type LogLevel = 'error' | 'warn' | 'info' | 'verbose' | 'debug';
+
+/**
+ * Determines whether a value is a valid log level.
+ * @param value The value to check.
+ * @return True if the value is a LogLevel.
+ */
+export const isLogLevel = (value: any): value is LogLevel =>
+  value === 'error' ||
+  value === 'warn' ||
+  value === 'info' ||
+  value === 'verbose' ||
+  value === 'debug';
 
 /** Contains configuration for a single log file. */
 export interface LogFile {
@@ -36,10 +48,10 @@ export interface LoggerOptions {
 }
 
 /** Combines server configuration and log configuration in one type. */
-export type ServerConfigWithLogger = ServerConfig & {
+export interface ServerConfigWithLogger extends ServerConfig {
   /** Logger configuration. */
   readonly log: LoggerOptions;
-};
+}
 
 /**
  * Represents a highly generic logger type, which is compatible with loggers
@@ -53,14 +65,3 @@ export type Logger = {
    */
   readonly [K in LogLevel]: (message: string, ...extra: any[]) => void;
 };
-
-/**
- * Determines whether a value is a valid log level.
- * @param value The value to check.
- * @return True if the value is a LogLevel.
- */
-export const isLogLevel = (value: any): value is LogLevel =>
-  value === 'error' ||
-  value === 'warn' ||
-  value === 'info' ||
-  value === 'debug';

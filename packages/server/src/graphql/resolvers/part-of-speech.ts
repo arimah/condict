@@ -30,18 +30,15 @@ const Query: ResolversFor<QueryType, null> = {
 
 const Mutation: Mutators = {
   addPartOfSpeech: mutator(
-    (_root, {data}, {db}) =>
-      PartOfSpeechMut.insert(db, data)
+    (_root, {data}, {db}) => PartOfSpeechMut.insert(db, data)
   ),
 
   editPartOfSpeech: mutator(
-    (_root, {id, data}, {db}) =>
-      PartOfSpeechMut.update(db, id, data)
+    (_root, {id, data}, {db}) => PartOfSpeechMut.update(db, id, data)
   ),
 
   deletePartOfSpeech: mutator(
-    (_root, {id}, {db}) =>
-      PartOfSpeechMut.delete(db, id)
+    (_root, {id}, {db}) => PartOfSpeechMut.delete(db, id)
   ),
 };
 

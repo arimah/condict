@@ -1,6 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
-import {Connection} from '../../database';
+import {DataReader} from '../../database';
 import {LanguageId} from '../../graphql';
 
 import {LanguageRow} from './types';
@@ -8,7 +8,7 @@ import {LanguageRow} from './types';
 const Language = {
   byIdKey: 'Language.byId',
 
-  all(db: Connection): LanguageRow[] {
+  all(db: DataReader): LanguageRow[] {
     return db.all<LanguageRow>`
       select *
       from languages
@@ -16,7 +16,7 @@ const Language = {
     `;
   },
 
-  byId(db: Connection, id: LanguageId): Promise<LanguageRow | null> {
+  byId(db: DataReader, id: LanguageId): Promise<LanguageRow | null> {
     return db.batchOneToOne(
       this.byIdKey,
       id,
@@ -30,7 +30,7 @@ const Language = {
   },
 
   async byIdRequired(
-    db: Connection,
+    db: DataReader,
     id: LanguageId,
     paramName = 'id'
   ): Promise<LanguageRow> {
@@ -43,7 +43,7 @@ const Language = {
     return language;
   },
 
-  byName(db: Connection, name: string): LanguageRow | null {
+  byName(db: DataReader, name: string): LanguageRow | null {
     return db.get<LanguageRow>`
       select *
       from languages

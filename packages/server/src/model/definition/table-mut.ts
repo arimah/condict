@@ -1,6 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
-import {Connection} from '../../database';
+import {DataWriter} from '../../database';
 import {
   DefinitionId,
   DefinitionInflectionTableId,
@@ -44,7 +44,7 @@ type ValidateInflectionTableResult = {
 
 const DefinitionInflectionTableMut = {
   async insert(
-    db: Connection,
+    db: DataWriter,
     definition: DefinitionData,
     data: NewDefinitionInflectionTableInput,
     index: number
@@ -98,7 +98,7 @@ const DefinitionInflectionTableMut = {
   },
 
   async update(
-    db: Connection,
+    db: DataWriter,
     id: DefinitionInflectionTableId,
     definition: DefinitionData,
     data: EditDefinitionInflectionTableInput,
@@ -164,7 +164,7 @@ const DefinitionInflectionTableMut = {
   },
 
   async validateInflectionTableId(
-    db: Connection,
+    db: DataWriter,
     inflectionTableId: InflectionTableId,
     partOfSpeechId: PartOfSpeechId
   ): Promise<ValidateInflectionTableResult> {
@@ -187,7 +187,7 @@ const DefinitionInflectionTableMut = {
   },
 
   deriveAllForms(
-    db: Connection,
+    db: DataWriter,
     tableId: DefinitionInflectionTableId,
     term: string,
     stemMap: Map<string, string>,
@@ -210,7 +210,7 @@ const DefinitionInflectionTableMut = {
   },
 
   deleteOld(
-    db: Connection,
+    db: DataWriter,
     definitionId: DefinitionId,
     currentIds: DefinitionInflectionTableId[]
   ): void {
@@ -220,7 +220,7 @@ const DefinitionInflectionTableMut = {
         ${
           currentIds.length > 0
             ? db.raw`and id not in (${currentIds})`
-            : ''
+            : db.raw``
         }
     `;
   },

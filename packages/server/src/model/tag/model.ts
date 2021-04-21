@@ -1,7 +1,7 @@
 import {UserInputError} from 'apollo-server';
 import {GraphQLResolveInfo} from 'graphql';
 
-import {Connection} from '../../database';
+import {DataReader} from '../../database';
 import {
   TagId,
   LanguageId,
@@ -28,7 +28,7 @@ const Tag = {
   maxPerPage: 200,
 
   all(
-    db: Connection,
+    db: DataReader,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
   ): ItemConnection<TagRow> {
@@ -53,7 +53,7 @@ const Tag = {
   },
 
   allByLanguage(
-    db: Connection,
+    db: DataReader,
     languageId: LanguageId,
     page?: PageParams | null,
     info?: GraphQLResolveInfo
@@ -85,7 +85,7 @@ const Tag = {
     );
   },
 
-  byId(db: Connection, id: TagId): Promise<TagRow | null> {
+  byId(db: DataReader, id: TagId): Promise<TagRow | null> {
     return db.batchOneToOne(
       this.byIdKey,
       id,
@@ -100,7 +100,7 @@ const Tag = {
   },
 
   async byIdRequired(
-    db: Connection,
+    db: DataReader,
     id: TagId,
     paramName = 'id'
   ): Promise<TagRow> {
@@ -113,7 +113,7 @@ const Tag = {
     return tag;
   },
 
-  byName(db: Connection, name: string): Promise<TagRow | null> {
+  byName(db: DataReader, name: string): Promise<TagRow | null> {
     return db.batchOneToOne(
       this.byNameKey,
       name,
@@ -127,7 +127,7 @@ const Tag = {
     );
   },
 
-  allByLemma(db: Connection, lemmaId: LemmaId): Promise<TagRow[]> {
+  allByLemma(db: DataReader, lemmaId: LemmaId): Promise<TagRow[]> {
     return db.batchOneToMany(
       this.allByLemmaKey,
       lemmaId,
@@ -148,7 +148,7 @@ const Tag = {
   },
 
   allByDefinition(
-    db: Connection,
+    db: DataReader,
     definitionId: DefinitionId
   ): Promise<TagRow[]> {
     return db.batchOneToMany(

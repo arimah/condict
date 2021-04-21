@@ -1,4 +1,4 @@
-import {Connection} from '../../database';
+import {DataWriter} from '../../database';
 import {DefinitionId, StemInput} from '../../graphql';
 
 import {DefinitionStem} from './model';
@@ -10,7 +10,7 @@ const buildStemMap = (stems: StemInput[]) => new Map<string, string>(
 
 const DefinitionStemMut = {
   insert(
-    db: Connection,
+    db: DataWriter,
     definitionId: DefinitionId,
     stems: StemInput[]
   ): Map<string, string> {
@@ -29,7 +29,7 @@ const DefinitionStemMut = {
   },
 
   async update(
-    db: Connection,
+    db: DataWriter,
     definitionId: DefinitionId,
     stems: StemInput[] | undefined | null
   ): Promise<Map<string, string>> {
@@ -48,7 +48,7 @@ const DefinitionStemMut = {
     return stemMap;
   },
 
-  deleteAll(db: Connection, definitionId: DefinitionId): void {
+  deleteAll(db: DataWriter, definitionId: DefinitionId): void {
     db.exec`
       delete from definition_stems
       where definition_id = ${definitionId}

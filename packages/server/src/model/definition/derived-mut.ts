@@ -1,4 +1,4 @@
-import {Connection} from '../../database';
+import {DataWriter} from '../../database';
 import {MultiMap} from '../../utils';
 import {DefinitionId, LanguageId, InflectedFormId} from '../../graphql';
 
@@ -6,7 +6,7 @@ import {LemmaMut, ValidTerm, validateTerm} from '../lemma';
 
 const DerivedDefinitionMut = {
   insertAll(
-    db: Connection,
+    db: DataWriter,
     languageId: LanguageId,
     originalDefinitionId: DefinitionId,
     derivedDefinitions: MultiMap<string, InflectedFormId>
@@ -63,7 +63,7 @@ const DerivedDefinitionMut = {
     }
   },
 
-  deleteAll(db: Connection, originalDefinitionId: DefinitionId): void {
+  deleteAll(db: DataWriter, originalDefinitionId: DefinitionId): void {
     db.exec`
       delete from derived_definitions
       where original_definition_id = ${originalDefinitionId}

@@ -2,25 +2,10 @@ import {GraphQLSchema} from 'graphql';
 import {makeExecutableSchema} from 'graphql-tools';
 
 import performStartupChecks from './startup-checks';
-import {Connection, ConnectionPool} from './database';
+import {Connection, DataAccessor} from './database';
 import {Context, getTypeDefs, getResolvers, getDirectives} from './graphql';
 import {UserSession} from './model';
 import {ServerConfig, Logger} from './types';
-
-/**
- * Contains a GraphQL execution context and a cleanup function.
- *
- * The cleanup function *must* be called when the context is no longer needed,
- * as that will ensure the database connection is returned to the pool and made
- * available to other requests. Failure to clean up may result in short-lived
- * memory leaks.
- */
-export interface ContextResult {
-  /** The GraphQL execution context. */
-  readonly context: Context;
-  /** The cleanup function for this context. */
-  readonly finish: () => Promise<void>;
-}
 
 /**
  * Contains a symbol which, when passed into `CondictServer.getContextValue()`,
@@ -34,8 +19,8 @@ const noSession = () => false;
 
 /**
  * Encapsulates the state and configuration of a Condict server. It contains
- * the executable GraphQL schema as well as a database connection pool. The
- * method `getSchema()` returns the schema, and `getContextValue()` returns
+ * the executable GraphQL schema as well as a database connection. The method
+ * `getSchema()` returns the GraphQL schema, and `getContextValue()` returns
  * a value suitable for use as the GraphQL execution context.
  *
  * Before using a server, it must be started using the `start()` method. This
@@ -47,7 +32,7 @@ export default class CondictServer {
   private readonly logger: Logger;
   private readonly config: ServerConfig;
   private readonly schema: GraphQLSchema;
-  private databasePool: ConnectionPool | null = null;
+  private database: Connection | null = null;
 
   /**
    * Creates a new Condict server.
@@ -94,7 +79,7 @@ export default class CondictServer {
    * @return True if the server is running.
    */
   public isRunning(): boolean {
-    return this.databasePool !== null;
+    return this.database !== null;
   }
 
   /**
@@ -106,14 +91,14 @@ export default class CondictServer {
    *         start for any reason.
    */
   public async start(): Promise<void> {
-    if (this.databasePool) {
+    if (this.database) {
       return;
     }
 
     const {logger, config} = this;
-    const databasePool = new ConnectionPool(logger, config.database);
-    await performStartupChecks(logger, config, databasePool);
-    this.databasePool = databasePool;
+    const database = new Connection(logger, config.database);
+    await performStartupChecks(logger, config, database);
+    this.database = database;
   }
 
   /**
@@ -124,46 +109,34 @@ export default class CondictServer {
    *         down completely.
    */
   public async stop(): Promise<void> {
-    if (!this.databasePool) {
+    if (!this.database) {
       return;
     }
-    await this.databasePool.close();
+    await this.database.close();
   }
 
   /**
-   * Gets a GraphQL execution context value along with a cleanup function. The
-   * cleanup function *must* be called when the context is no longer needed, as
-   * that will ensure the database connection is returned to the pool and made
-   * available to other requests. Failure to clean up may result in short-lived
-   * memory leaks.
+   * Gets a GraphQL execution context value. The `finish` method on the returned
+   * value *must* be called at the end of the request. Otherwise, hard-to-debug
+   * deadlocks *will* occur.
    * @param sessionId The current session ID. Without a valid session ID, most
    *        mutations will be unavailable. A session ID is obtained from the
    *        `logIn` mutation, which requires a user account. The `LocalSession`
    *        symbol enables all mutations, and should only be used for operations
    *        that come from trusted sources, e.g. an application that runs a
    *        non-HTTP server.
-   * @return An object containing the GraphQL execution context value as well
-   *         as a cleanup function.
+   * @return The GraphQL execution context value.
    */
   public async getContextValue(
     sessionId?: string | typeof LocalSession | null
-  ): Promise<ContextResult> {
-    if (!this.databasePool) {
+  ): Promise<Context> {
+    if (!this.database) {
       throw new Error('Server is not started.');
     }
 
-    const {logger, databasePool} = this;
+    const {logger, database} = this;
 
-    let db: Connection | null = null;
-    try {
-      db = await databasePool.getConnection();
-    } catch (e) {
-      if (db) {
-        await db.release();
-        db = null;
-      }
-      throw e;
-    }
+    let db: DataAccessor | null = await database.getAccessor();
 
     const hasValidSession =
       sessionId === LocalSession
@@ -173,15 +146,13 @@ export default class CondictServer {
           : () => db !== null && UserSession.verify(db, sessionId);
 
     return {
-      context: {
-        db,
-        logger,
-        sessionId: typeof sessionId === 'string' ? sessionId : null,
-        hasValidSession,
-      },
-      finish: async () => {
+      db,
+      logger,
+      sessionId: typeof sessionId === 'string' ? sessionId : null,
+      hasValidSession,
+      finish: () => {
         if (db) {
-          await db.release();
+          db.finish();
           db = null;
         }
       },

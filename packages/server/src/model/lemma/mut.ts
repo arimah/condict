@@ -1,12 +1,12 @@
 import {LemmaId, LanguageId} from '../../graphql';
-import {Connection} from '../../database';
+import {DataWriter} from '../../database';
 
 import {Lemma} from './model';
 import {ValidTerm} from './validators';
 
 const LemmaMut = {
   ensureExists(
-    db: Connection,
+    db: DataWriter,
     languageId: LanguageId,
     term: ValidTerm
   ): LemmaId {
@@ -29,7 +29,7 @@ const LemmaMut = {
   },
 
   ensureAllExist(
-    db: Connection,
+    db: DataWriter,
     languageId: LanguageId,
     terms: ValidTerm[]
   ): Map<string, LemmaId> {
@@ -78,7 +78,7 @@ const LemmaMut = {
     return termToId;
   },
 
-  deleteEmpty(db: Connection, languageId: LanguageId): void {
+  deleteEmpty(db: DataWriter, languageId: LanguageId): void {
     const emptyIds = db.all<{id: LemmaId}>`
       select l.id as id
       from lemmas l
@@ -100,7 +100,7 @@ const LemmaMut = {
     }
   },
 
-  updateLemmaCount(db: Connection, languageId: LanguageId): void {
+  updateLemmaCount(db: DataWriter, languageId: LanguageId): void {
     db.exec`
       update languages
       set lemma_count = (

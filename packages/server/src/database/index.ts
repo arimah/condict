@@ -1,6 +1,12 @@
 export {
   Connection,
-  ConnectionPool,
+  DataAccessor,
+  DataReader,
+  DataWriter,
+  ExecResult,
+  RawSql,
+  Value,
+  Scalar,
   Options,
   validateOptions,
 } from './sqlite';

@@ -1,9 +1,9 @@
 import {ServerConfig, Logger} from '../types';
 
-import {Connection, ConnectionPool} from './sqlite';
+import {Connection, DataReader, DataWriter} from './sqlite';
 import schema, {schemaVersion as serverSchemaVersion} from './schema';
 
-const getSchemaVersion = (db: Connection) => {
+const getSchemaVersion = (db: DataReader) => {
   // FIXME: https://github.com/typescript-eslint/typescript-eslint/issues/2452
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type Row = { value: string };
@@ -27,7 +27,7 @@ const getSchemaVersion = (db: Connection) => {
 
 const createSchema = (
   logger: Logger,
-  db: Connection,
+  db: DataWriter,
   config: ServerConfig,
   isNewSchema: boolean
 ) => {
@@ -59,7 +59,7 @@ const createSchema = (
 
 const createNewSchema = (
   logger: Logger,
-  db: Connection,
+  db: DataWriter,
   config: ServerConfig
 ) => {
   logger.info(
@@ -68,14 +68,14 @@ const createNewSchema = (
   return createSchema(logger, db, config, true);
 };
 
-const verifySchema = (logger: Logger, db: Connection, config: ServerConfig) => {
+const verifySchema = (logger: Logger, db: DataWriter, config: ServerConfig) => {
   logger.info('Database schema is up to date. Verifying existing tables.');
   return createSchema(logger, db, config, false);
 };
 
 const migrateSchema = (
   logger: Logger,
-  db: Connection,
+  db: DataWriter,
   config: ServerConfig,
   schemaVersion: number
 ) => {
@@ -89,17 +89,17 @@ const migrateSchema = (
 const ensureSchemaIsValid = async (
   logger: Logger,
   config: ServerConfig,
-  databasePool: ConnectionPool
+  connection: Connection
 ): Promise<void> => {
-  const db = await databasePool.getConnection();
+  const db = await connection.getAccessor();
   try {
     const schemaVersion = getSchemaVersion(db);
     if (schemaVersion === null) {
-      createNewSchema(logger, db, config);
+      await db.transact(db => createNewSchema(logger, db, config));
     } else if (schemaVersion < serverSchemaVersion) {
-      migrateSchema(logger, db, config, schemaVersion);
+      await db.transact(db => migrateSchema(logger, db, config, schemaVersion));
     } else if (schemaVersion === serverSchemaVersion) {
-      verifySchema(logger, db, config);
+      await db.transact(db => verifySchema(logger, db, config));
     } else if (schemaVersion > serverSchemaVersion) {
       throw new Error(
         `Database schema version is too high! (database = ${
@@ -109,7 +109,7 @@ const ensureSchemaIsValid = async (
     }
   } finally {
     // Always return the db connection even if something goes wrong
-    await db.release();
+    db.finish();
   }
 };
 

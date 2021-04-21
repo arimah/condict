@@ -1,4 +1,4 @@
-import {Connection} from '../../database';
+import {DataReader} from '../../database';
 
 import {UserId, UserRow, UserSessionRow} from './types';
 
@@ -6,7 +6,7 @@ import {UserId, UserRow, UserSessionRow} from './types';
 // and only with one ID at a time.
 
 const User = {
-  byId(db: Connection, id: UserId): UserRow | null {
+  byId(db: DataReader, id: UserId): UserRow | null {
     return db.get<UserRow>`
       select *
       from users
@@ -14,7 +14,7 @@ const User = {
     `;
   },
 
-  byIdRequired(db: Connection, id: UserId): UserRow {
+  byIdRequired(db: DataReader, id: UserId): UserRow {
     const user = this.byId(db, id);
     if (!user) {
       throw new Error(`User not found: ${id}`);
@@ -22,7 +22,7 @@ const User = {
     return user;
   },
 
-  byName(db: Connection, name: string): UserRow | null {
+  byName(db: DataReader, name: string): UserRow | null {
     return db.get<UserRow>`
       select *
       from users
@@ -30,7 +30,7 @@ const User = {
     `;
   },
 
-  byNameRequired(db: Connection, name: string): UserRow {
+  byNameRequired(db: DataReader, name: string): UserRow {
     const user = this.byName(db, name);
     if (!user) {
       throw new Error(`User not found: ${name}`);
@@ -40,7 +40,7 @@ const User = {
 } as const;
 
 const UserSession = {
-  byId(db: Connection, id: string): UserSessionRow | null {
+  byId(db: DataReader, id: string): UserSessionRow | null {
     return db.get<UserSessionRow>`
       select *
       from user_sessions
@@ -48,7 +48,7 @@ const UserSession = {
     `;
   },
 
-  byIdRequired(db: Connection, id: string): UserSessionRow {
+  byIdRequired(db: DataReader, id: string): UserSessionRow {
     const session = this.byId(db, id);
     if (!session) {
       throw new Error(`User session not found: ${id}`);
@@ -56,7 +56,7 @@ const UserSession = {
     return session;
   },
 
-  verify(db: Connection, sessionId: string): boolean {
+  verify(db: DataReader, sessionId: string): boolean {
     const session = this.byId(db, sessionId);
     const now = Date.now();
     return session !== null && now < session.expires_at;

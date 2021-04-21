@@ -1,6 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
-import {Connection} from '../../database';
+import {DataReader} from '../../database';
 import {LanguageId, PartOfSpeechId} from '../../graphql';
 
 import {PartOfSpeechRow} from './types';
@@ -9,7 +9,7 @@ const PartOfSpeech = {
   byIdKey: 'PartOfSpeech.byId',
   allByLanguageKey: 'PartOfSpeech.allByLanguage',
 
-  byId(db: Connection, id: PartOfSpeechId): Promise<PartOfSpeechRow | null> {
+  byId(db: DataReader, id: PartOfSpeechId): Promise<PartOfSpeechRow | null> {
     return db.batchOneToOne(
       this.byIdKey,
       id,
@@ -24,7 +24,7 @@ const PartOfSpeech = {
   },
 
   async byIdRequired(
-    db: Connection,
+    db: DataReader,
     id: PartOfSpeechId,
     paramName = 'id'
   ): Promise<PartOfSpeechRow> {
@@ -38,7 +38,7 @@ const PartOfSpeech = {
   },
 
   allByLanguage(
-    db: Connection,
+    db: DataReader,
     languageId: LanguageId
   ): Promise<PartOfSpeechRow[]> {
     return db.batchOneToMany(

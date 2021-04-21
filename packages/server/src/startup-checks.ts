@@ -1,12 +1,12 @@
-import {ConnectionPool, ensureSchemaIsValid} from './database';
+import {Connection, ensureSchemaIsValid} from './database';
 import {ServerConfig, Logger} from './types';
 
 const performStartupChecks = async (
   logger: Logger,
   config: ServerConfig,
-  databasePool: ConnectionPool
+  connection: Connection
 ): Promise<void> => {
-  await ensureSchemaIsValid(logger, config, databasePool);
+  await ensureSchemaIsValid(logger, config, connection);
 };
 
 export default performStartupChecks;

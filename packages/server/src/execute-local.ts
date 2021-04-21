@@ -18,7 +18,7 @@ const executeLocalOperation = async (
   operation: string,
   variableValues: Record<string, any> | null
 ): Promise<ExecutionResult<unknown>> => {
-  const {context, finish} = await server.getContextValue(LocalSession);
+  const context = await server.getContextValue(LocalSession);
   const schema = server.getSchema();
 
   try {
@@ -43,7 +43,7 @@ const executeLocalOperation = async (
       throw e;
     }
   } finally {
-    await finish();
+    context.finish();
   }
 };
 

@@ -1,4 +1,4 @@
-import {Connection} from '../../database';
+import {DataAccessor, DataReader, DataWriter} from '../../database';
 import {MultiMap} from '../../utils';
 import {validateDescription} from '../../rich-text';
 import {
@@ -28,7 +28,7 @@ import DerivedDefinitionMut from './derived-mut';
 
 const DefinitionMut = {
   async insert(
-    db: Connection,
+    db: DataAccessor,
     data: NewDefinitionInput
   ): Promise<DefinitionRow> {
     const {
@@ -53,7 +53,7 @@ const DefinitionMut = {
     );
     const validTerm = validateTerm(term);
 
-    return db.transact(async () => {
+    return db.transact(async db => {
       const lemmaId = LemmaMut.ensureExists(db, language.id, validTerm);
 
       const {insertId: definitionId} = db.exec<DefinitionId>`
@@ -88,7 +88,7 @@ const DefinitionMut = {
   },
 
   async update(
-    db: Connection,
+    db: DataAccessor,
     id: DefinitionId,
     data: EditDefinitionInput
   ): Promise<DefinitionRow> {
@@ -103,7 +103,7 @@ const DefinitionMut = {
 
     const definition = await Definition.byIdRequired(db, id);
 
-    return db.transact(async () => {
+    return db.transact(async db => {
       const newFields = new FieldSet<DefinitionRow>();
 
       const actualTerm = this.updateTerm(db, definition, term, newFields);
@@ -163,7 +163,7 @@ const DefinitionMut = {
   },
 
   updateTerm(
-    db: Connection,
+    db: DataWriter,
     definition: DefinitionRow,
     term: string | undefined | null,
     newFields: FieldSet<DefinitionRow>
@@ -183,7 +183,7 @@ const DefinitionMut = {
   },
 
   async updatePartOfSpeech(
-    db: Connection,
+    db: DataWriter,
     definition: DefinitionRow,
     partOfSpeechId: PartOfSpeechId | undefined | null,
     newFields: FieldSet<DefinitionRow>
@@ -205,23 +205,25 @@ const DefinitionMut = {
     }
   },
 
-  async delete(db: Connection, id: DefinitionId): Promise<boolean> {
+  async delete(db: DataAccessor, id: DefinitionId): Promise<boolean> {
     // We need the language ID
     const definition = await Definition.byId(db, id);
     if (!definition) {
       return false;
     }
 
-    db.exec`
-      delete from definitions
-      where id = ${id}
-    `;
-    LemmaMut.deleteEmpty(db, definition.language_id);
+    await db.transact(db => {
+      db.exec`
+        delete from definitions
+        where id = ${id}
+      `;
+      LemmaMut.deleteEmpty(db, definition.language_id);
+    });
     return true;
   },
 
   async updateInflectionTablesAndForms(
-    db: Connection,
+    db: DataWriter,
     definition: DefinitionRow,
     partOfSpeechId: PartOfSpeechId,
     term: string,
@@ -269,7 +271,7 @@ const DefinitionMut = {
   },
 
   async updateInflectionTables(
-    db: Connection,
+    db: DataWriter,
     definitionId: DefinitionId,
     partOfSpeechId: PartOfSpeechId,
     term: string,
@@ -325,7 +327,7 @@ const DefinitionMut = {
   },
 
   rederiveAllForms(
-    db: Connection,
+    db: DataWriter,
     definitionId: DefinitionId,
     term: string,
     stemMap: Map<string, string>
@@ -369,7 +371,7 @@ const DefinitionMut = {
   },
 
   fetchAllCustomForms(
-    db: Connection,
+    db: DataReader,
     definitionTableIds: DefinitionInflectionTableId[]
   ): Map<DefinitionInflectionTableId, Map<InflectedFormId, string>> {
     // FIXME: https://github.com/typescript-eslint/typescript-eslint/issues/2452
@@ -405,7 +407,7 @@ const DefinitionMut = {
 
 const DefinitionDescriptionMut = {
   insert(
-    db: Connection,
+    db: DataWriter,
     definitionId: DefinitionId,
     description: BlockElementInput[]
   ): void {
@@ -418,7 +420,7 @@ const DefinitionDescriptionMut = {
   },
 
   update(
-    db: Connection,
+    db: DataWriter,
     definitionId: DefinitionId,
     description: BlockElementInput[]
   ): void {

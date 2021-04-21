@@ -1,7 +1,7 @@
 import {UserInputError} from 'apollo-server';
 import {GraphQLResolveInfo} from 'graphql';
 
-import {Connection} from '../../database';
+import {DataReader} from '../../database';
 import {
   DefinitionId,
   DefinitionInflectionTableId,
@@ -34,7 +34,7 @@ const Definition = {
   },
   maxPerPage: 200,
 
-  byId(db: Connection, id: DefinitionId): Promise<DefinitionRow | null> {
+  byId(db: DataReader, id: DefinitionId): Promise<DefinitionRow | null> {
     return db.batchOneToOne(
       this.byIdKey,
       id,
@@ -52,7 +52,7 @@ const Definition = {
   },
 
   async byIdRequired(
-    db: Connection,
+    db: DataReader,
     id: DefinitionId,
     paramName = 'id'
   ): Promise<DefinitionRow> {
@@ -65,7 +65,7 @@ const Definition = {
     return definition;
   },
 
-  allByLemma(db: Connection, lemmaId: LemmaId): Promise<DefinitionRow[]> {
+  allByLemma(db: DataReader, lemmaId: LemmaId): Promise<DefinitionRow[]> {
     return db.batchOneToMany(
       this.allByLemmaKey,
       lemmaId,
@@ -83,7 +83,7 @@ const Definition = {
     );
   },
 
-  anyUsesInflectionTableCond(db: Connection, condition: any): boolean {
+  anyUsesInflectionTableCond(db: DataReader, condition: any): boolean {
     const {used} = db.getRequired<{used: number}>`
       select exists (
         select 1
@@ -94,7 +94,7 @@ const Definition = {
     return used === 1;
   },
 
-  anyUsesInflectionTable(db: Connection, tableId: InflectionTableId): boolean {
+  anyUsesInflectionTable(db: DataReader, tableId: InflectionTableId): boolean {
     return this.anyUsesInflectionTableCond(
       db,
       db.raw`inflection_table_id = ${tableId}`
@@ -102,7 +102,7 @@ const Definition = {
   },
 
   anyUsesInflectionTableLayout(
-    db: Connection,
+    db: DataReader,
     versionId: InflectionTableLayoutId
   ): boolean {
     return this.anyUsesInflectionTableCond(
@@ -112,7 +112,7 @@ const Definition = {
   },
 
   allByInflectionTableCond(
-    db: Connection,
+    db: DataReader,
     condition: any,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
@@ -144,7 +144,7 @@ const Definition = {
   },
 
   allByInflectionTable(
-    db: Connection,
+    db: DataReader,
     tableId: InflectionTableId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
@@ -158,7 +158,7 @@ const Definition = {
   },
 
   allByInflectionTableLayout(
-    db: Connection,
+    db: DataReader,
     versionId: InflectionTableLayoutId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
@@ -172,7 +172,7 @@ const Definition = {
   },
 
   anyUsesPartOfSpeech(
-    db: Connection,
+    db: DataReader,
     partOfSpeechId: PartOfSpeechId
   ): boolean {
     const {used} = db.getRequired<{used: number}>`
@@ -186,7 +186,7 @@ const Definition = {
   },
 
   allByPartOfSpeech(
-    db: Connection,
+    db: DataReader,
     partOfSpeechId: PartOfSpeechId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
@@ -222,7 +222,7 @@ const Definition = {
 const DefinitionDescription = {
   rawByDefinitionKey: 'DefinitionDescription.rawByDefinition',
 
-  rawByDefinition(db: Connection, definitionId: DefinitionId): Promise<string> {
+  rawByDefinition(db: DataReader, definitionId: DefinitionId): Promise<string> {
     return db
       .batchOneToOne(
         this.rawByDefinitionKey,
@@ -245,7 +245,7 @@ const DefinitionStem = {
   allByDefinitionKey: 'DefinitionStem.allByDefinition',
 
   allByDefinition(
-    db: Connection,
+    db: DataReader,
     definitionId: DefinitionId
   ): Promise<DefinitionStemRow[]> {
     return db.batchOneToMany(
@@ -268,7 +268,7 @@ const DefinitionInflectionTable = {
   allByDefinitionKey: 'DefinitionInflectionTable.allByDefinition',
 
   byId(
-    db: Connection,
+    db: DataReader,
     id: DefinitionInflectionTableId
   ): Promise<DefinitionInflectionTableRow | null> {
     return db.batchOneToOne(
@@ -285,7 +285,7 @@ const DefinitionInflectionTable = {
   },
 
   async byIdRequired(
-    db: Connection,
+    db: DataReader,
     id: DefinitionInflectionTableId,
     paramName = 'id'
   ): Promise<DefinitionInflectionTableRow> {
@@ -299,7 +299,7 @@ const DefinitionInflectionTable = {
   },
 
   allByDefinition(
-    db: Connection,
+    db: DataReader,
     definitionId: DefinitionId
   ): Promise<DefinitionInflectionTableRow[]> {
     return db.batchOneToMany(
@@ -321,7 +321,7 @@ const CustomInflectedForm = {
   allByTableKey: 'CustomInflectedForm.allByTable',
 
   allByTable(
-    db: Connection,
+    db: DataReader,
     tableId: DefinitionInflectionTableId
   ): Promise<CustomInflectedFormRow[]> {
     return db.batchOneToMany(
@@ -348,7 +348,7 @@ const DerivedDefinition = {
   maxPerPage: 200,
 
   allByLemma(
-    db: Connection,
+    db: DataReader,
     lemmaId: LemmaId
   ): Promise<DerivedDefinitionRow[]> {
     return db.batchOneToMany(
@@ -370,7 +370,7 @@ const DerivedDefinition = {
   },
 
   allByDerivedFrom(
-    db: Connection,
+    db: DataReader,
     definitionId: DefinitionId,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo

@@ -1,12 +1,12 @@
 import {normalizePattern} from '@condict/inflect';
 
-import {Connection} from '../../database';
+import {DataReader} from '../../database';
 import {InflectionTableId, PartOfSpeechId} from '../../graphql';
 
 import validator, {minLength, unique} from '../validator';
 
 export const validateName = (
-  db: Connection,
+  db: DataReader,
   currentId: InflectionTableId | null,
   partOfSpeechId: PartOfSpeechId,
   value: string

@@ -1,15 +1,30 @@
 import {IFieldResolver} from 'apollo-server';
 
-import {Connection} from '../../database';
+import {DataAccessor} from '../../database';
 import {Logger} from '../../types';
 
 import {FieldArgs, Mutation} from '../types';
 
 export interface Context {
-  readonly db: Connection;
+  /** The database connection for this request. */
+  readonly db: DataAccessor;
+  /** The logger for the request. */
   readonly logger: Logger;
+  /**
+   * The session ID of the request, or null if no session ID header was sent.
+   */
   readonly sessionId: string | null;
+  /**
+   * Determines whether the request has a valid user session.
+   * @return True if there is a valid user session, i.e. the requester can
+   *         execute mutations.
+   */
   readonly hasValidSession: () => boolean;
+  /**
+   * The cleanup function for this context, which absolutely *must* be called
+   * when the request ends.
+   */
+  readonly finish: () => void;
 }
 
 export type ResolversFor<T, P> =

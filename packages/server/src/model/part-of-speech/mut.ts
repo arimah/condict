@@ -1,6 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
-import {Connection} from '../../database';
+import {DataAccessor, DataReader} from '../../database';
 import {
   PartOfSpeechId,
   NewPartOfSpeechInput,
@@ -16,7 +16,7 @@ import {validateName} from './validators';
 
 const PartOfSpeechMut = {
   async insert(
-    db: Connection,
+    db: DataAccessor,
     data: NewPartOfSpeechInput
   ): Promise<PartOfSpeechRow> {
     const {languageId} = data;
@@ -26,15 +26,17 @@ const PartOfSpeechMut = {
 
     name = validateName(db, null, language.id, name);
 
-    const {insertId} = db.exec<PartOfSpeechId>`
-      insert into parts_of_speech (language_id, name)
-      values (${language.id}, ${name})
-    `;
-    return PartOfSpeech.byIdRequired(db, insertId);
+    return db.transact(db => {
+      const {insertId} = db.exec<PartOfSpeechId>`
+        insert into parts_of_speech (language_id, name)
+        values (${language.id}, ${name})
+      `;
+      return PartOfSpeech.byIdRequired(db, insertId);
+    });
   },
 
   async update(
-    db: Connection,
+    db: DataAccessor,
     id: PartOfSpeechId,
     data: EditPartOfSpeechInput
   ): Promise<PartOfSpeechRow> {
@@ -50,28 +52,32 @@ const PartOfSpeechMut = {
         name
       );
 
-      db.exec`
-        update parts_of_speech
-        set name = ${newName}
-        where id = ${partOfSpeech.id}
-      `;
-      db.clearCache(PartOfSpeech.byIdKey, partOfSpeech.id);
+      await db.transact(db => {
+        db.exec`
+          update parts_of_speech
+          set name = ${newName}
+          where id = ${partOfSpeech.id}
+        `;
+        db.clearCache(PartOfSpeech.byIdKey, partOfSpeech.id);
+      });
     }
 
     return PartOfSpeech.byIdRequired(db, partOfSpeech.id);
   },
 
-  delete(db: Connection, id: PartOfSpeechId): boolean {
+  delete(db: DataAccessor, id: PartOfSpeechId): Promise<boolean> {
     this.ensureUnused(db, id);
 
-    const {affectedRows} = db.exec`
-      delete from parts_of_speech
-      where id = ${id}
-    `;
-    return affectedRows > 0;
+    return db.transact(db => {
+      const {affectedRows} = db.exec`
+        delete from parts_of_speech
+        where id = ${id}
+      `;
+      return affectedRows > 0;
+    });
   },
 
-  ensureUnused(db: Connection, id: PartOfSpeechId) {
+  ensureUnused(db: DataReader, id: PartOfSpeechId) {
     if (Definition.anyUsesPartOfSpeech(db, id)) {
       throw new UserInputError(
         `Part of speech ${id} cannot be deleted because it is used by one or more lemmas`

@@ -1,10 +1,10 @@
-import {Connection} from '../../database';
+import {DataReader} from '../../database';
 import {LanguageId} from '../../graphql';
 
 import validator, {minLength, unique} from '../validator';
 
 export const validateName = (
-  db: Connection,
+  db: DataReader,
   currentId: LanguageId | null,
   value: string
 ): string =>

@@ -1,7 +1,7 @@
 import {UserInputError} from 'apollo-server';
 import {hash} from 'bcrypt';
 
-import {Connection} from '../../database';
+import {DataReader} from '../../database';
 
 import validator, {Valid, minLength, unique} from '../validator';
 
@@ -13,7 +13,7 @@ export type ValidPassword = Valid<string, 'Password'>;
 const UserNameMinLength = 3;
 
 export const validateName = (
-  db: Connection,
+  db: DataReader,
   currentId: UserId | null,
   value: string
 ): string =>

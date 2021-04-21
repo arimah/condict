@@ -1,4 +1,4 @@
-import {Connection} from '../../database';
+import {DataAccessor} from '../../database';
 import {LanguageId, NewLanguageInput, EditLanguageInput} from '../../graphql';
 
 import FieldSet from '../field-set';
@@ -8,20 +8,22 @@ import {LanguageRow} from './types';
 import {validateName} from './validators';
 
 const LanguageMut = {
-  insert(db: Connection, data: NewLanguageInput): Promise<LanguageRow> {
+  insert(db: DataAccessor, data: NewLanguageInput): Promise<LanguageRow> {
     let {name} = data;
 
     name = validateName(db, null, name);
 
-    const {insertId} = db.exec<LanguageId>`
-      insert into languages (name)
-      values (${name})
-    `;
-    return Language.byIdRequired(db, insertId);
+    return db.transact(db => {
+      const {insertId} = db.exec<LanguageId>`
+        insert into languages (name)
+        values (${name})
+      `;
+      return Language.byIdRequired(db, insertId);
+    });
   },
 
   async update(
-    db: Connection,
+    db: DataAccessor,
     id: LanguageId,
     data: EditLanguageInput
   ): Promise<LanguageRow> {
@@ -35,12 +37,14 @@ const LanguageMut = {
     }
 
     if (newFields.hasValues) {
-      db.exec`
-        update languages
-        set ${newFields}
-        where id = ${language.id}
-      `;
-      db.clearCache(Language.byIdKey, language.id);
+      await db.transact(db => {
+        db.exec`
+          update languages
+          set ${newFields}
+          where id = ${language.id}
+        `;
+        db.clearCache(Language.byIdKey, language.id);
+      });
     }
     return Language.byIdRequired(db, id);
   },

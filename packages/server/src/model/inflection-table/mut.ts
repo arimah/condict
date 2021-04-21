@@ -1,6 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
-import {Connection} from '../../database';
+import {DataAccessor, DataReader, DataWriter} from '../../database';
 import {
   InflectionTableId,
   InflectionTableLayoutId,
@@ -26,7 +26,7 @@ import {InflectionTableRow, InflectionTableLayoutRow} from './types';
 
 const InflectionTableMut = {
   async insert(
-    db: Connection,
+    db: DataAccessor,
     data: NewInflectionTableInput
   ): Promise<InflectionTableRow> {
     const {partOfSpeechId, layout} = data;
@@ -40,7 +40,7 @@ const InflectionTableMut = {
 
     name = validateName(db, null, partOfSpeech.id, name);
 
-    return db.transact(() => {
+    return db.transact(db => {
       const {insertId: tableId} = db.exec<InflectionTableId>`
         insert into inflection_tables (
           part_of_speech_id,
@@ -56,7 +56,7 @@ const InflectionTableMut = {
   },
 
   async update(
-    db: Connection,
+    db: DataAccessor,
     id: InflectionTableId,
     data: EditInflectionTableInput
   ): Promise<InflectionTableRow> {
@@ -73,7 +73,7 @@ const InflectionTableMut = {
     }
 
     if (newFields.hasValues || layout != null) {
-      await db.transact(async () => {
+      await db.transact(async db => {
         if (newFields.hasValues) {
           db.exec`
             update inflection_tables
@@ -91,19 +91,21 @@ const InflectionTableMut = {
     return InflectionTable.byIdRequired(db, table.id);
   },
 
-  delete(db: Connection, id: InflectionTableId): boolean {
+  delete(db: DataAccessor, id: InflectionTableId): Promise<boolean> {
     // The table cannot be deleted while it is in use by one or
     // more definitions.
     this.ensureUnused(db, id);
 
-    const {affectedRows} = db.exec`
-      delete from inflection_tables
-      where id = ${id}
-    `;
-    return affectedRows > 0;
+    return db.transact(db => {
+      const {affectedRows} = db.exec`
+        delete from inflection_tables
+        where id = ${id}
+      `;
+      return affectedRows > 0;
+    });
   },
 
-  ensureUnused(db: Connection, id: InflectionTableId): void {
+  ensureUnused(db: DataReader, id: InflectionTableId): void {
     if (Definition.anyUsesInflectionTable(db, id)) {
       throw new UserInputError(
         `Operation not permitted on table ${
@@ -116,7 +118,7 @@ const InflectionTableMut = {
 
 const InflectionTableLayoutMut = {
   insert(
-    db: Connection,
+    db: DataWriter,
     tableId: InflectionTableId,
     rows: InflectionTableRowInput[]
   ): void {
@@ -124,7 +126,7 @@ const InflectionTableLayoutMut = {
   },
 
   async update(
-    db: Connection,
+    db: DataWriter,
     tableId: InflectionTableId,
     rows: InflectionTableRowInput[]
   ): Promise<void> {
@@ -155,7 +157,7 @@ const InflectionTableLayoutMut = {
   },
 
   createNewTableLayout(
-    db: Connection,
+    db: DataWriter,
     tableId: InflectionTableId,
     rows: InflectionTableRowInput[]
   ): InflectionTableLayoutId {
@@ -190,7 +192,7 @@ const InflectionTableLayoutMut = {
   },
 
   async updateCurrentTableLayout(
-    db: Connection,
+    db: DataWriter,
     layout: InflectionTableLayoutRow,
     rows: InflectionTableRowInput[]
   ): Promise<void> {
@@ -238,7 +240,7 @@ const InflectionTableLayoutMut = {
     db.clearCache(InflectedForm.allByTableLayoutKey, layout.id);
   },
 
-  deleteObsolete(db: Connection): void {
+  deleteObsolete(db: DataWriter): void {
     // Find all layouts that are (1) not current, (2) not used by any definitions.
     // These can safely be deleted.
     const obsoleteLayouts = db.all<{id: InflectionTableLayoutId}>`
@@ -261,7 +263,7 @@ const InflectionTableLayoutMut = {
 
 const InflectedFormMut = {
   insert(
-    db: Connection,
+    db: DataWriter,
     layoutId: InflectionTableLayoutId,
     form: InflectedFormInput
   ): InflectedFormId {
@@ -286,7 +288,7 @@ const InflectedFormMut = {
   },
 
   update(
-    db: Connection,
+    db: DataWriter,
     id: InflectedFormId,
     form: InflectedFormInput
   ): InflectedFormId {

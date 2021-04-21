@@ -1,4 +1,4 @@
-import {Connection} from '../../database';
+import {DataWriter} from '../../database';
 import {TagId} from '../../graphql';
 
 import {Tag} from './model';
@@ -6,7 +6,7 @@ import {TagRow} from './types';
 import {ValidTag} from './validators';
 
 const TagMut = {
-  ensureAllExist(db: Connection, tags: ValidTag[]): Map<string, TagId> {
+  ensureAllExist(db: DataWriter, tags: ValidTag[]): Map<string, TagId> {
     if (tags.length === 0) {
       // Nothing to do
       return new Map<string, TagId>();
@@ -35,7 +35,7 @@ const TagMut = {
     return tagToId;
   },
 
-  deleteOrphaned(db: Connection): void {
+  deleteOrphaned(db: DataWriter): void {
     const emptyIds = db.all<{id: TagId}>`
       select t.id
       from tags t

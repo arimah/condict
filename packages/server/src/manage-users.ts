@@ -1,7 +1,7 @@
 import readline from 'readline';
 import {Writable} from 'stream';
 
-import {Connection, ConnectionPool} from './database';
+import {Connection, DataAccessor} from './database';
 import performStartupChecks from './startup-checks';
 import {User, UserMut, UserId} from './model';
 import {ServerConfig, Logger} from './types';
@@ -58,21 +58,21 @@ const withPrompt = async <T>(fn: (prompt: Prompt) => Promise<T>) => {
 const withDatabase = async (
   logger: Logger,
   config: ServerConfig,
-  fn: (db: Connection) => Promise<void>
+  fn: (db: DataAccessor) => Promise<void>
 ) => {
-  const databasePool = new ConnectionPool(logger, config.database);
+  const connection = new Connection(logger, config.database);
 
   try {
-    await performStartupChecks(logger, config, databasePool);
+    await performStartupChecks(logger, config, connection);
 
-    const db = await databasePool.getConnection();
+    const db = await connection.getAccessor();
     try {
       await fn(db);
     } finally {
-      await db.release();
+      db.finish();
     }
   } finally {
-    await databasePool.close();
+    await connection.close();
   }
 };
 
@@ -167,7 +167,7 @@ export const deleteUser = async (
   userNameOrId: string | number
 ): Promise<void> => {
   try {
-    await withDatabase(logger, config, db => {
+    await withDatabase(logger, config, async db => {
       let userId: UserId;
       if (typeof userNameOrId === 'number') {
         userId = userNameOrId as UserId;
@@ -180,7 +180,7 @@ export const deleteUser = async (
         userId = user.id;
       }
 
-      const deleted = UserMut.delete(db, userId);
+      const deleted = await UserMut.delete(db, userId);
       if (deleted) {
         logger.info(`User deleted: ${userNameOrId}`);
       } else {

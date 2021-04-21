@@ -1,6 +1,6 @@
 import {GraphQLResolveInfo} from 'graphql';
 
-import {Connection} from '../../database';
+import {DataReader} from '../../database';
 import {
   LanguageId,
   LemmaId,
@@ -22,7 +22,7 @@ const Lemma = {
   },
   maxPerPage: 500,
 
-  byId(db: Connection, id: LemmaId): Promise<LemmaRow | null> {
+  byId(db: DataReader, id: LemmaId): Promise<LemmaRow | null> {
     return db.batchOneToOne(
       this.byIdKey,
       id,
@@ -37,7 +37,7 @@ const Lemma = {
   },
 
   byTerm(
-    db: Connection,
+    db: DataReader,
     languageId: LanguageId,
     term: string
   ): Promise<LemmaRow | null> {
@@ -61,7 +61,7 @@ const Lemma = {
   },
 
   allByLanguage(
-    db: Connection,
+    db: DataReader,
     languageId: LanguageId,
     page: PageParams | undefined | null,
     filter: LemmaFilter,

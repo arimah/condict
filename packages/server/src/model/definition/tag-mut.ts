@@ -1,10 +1,10 @@
-import {Connection} from '../../database';
+import {DataWriter} from '../../database';
 import {DefinitionId} from '../../graphql';
 
 import {TagMut, validateTag} from '../tag';
 
 const DefinitionTagMut = {
-  insertAll(db: Connection, definitionId: DefinitionId, tags: string[]): void {
+  insertAll(db: DataWriter, definitionId: DefinitionId, tags: string[]): void {
     const tagToId = TagMut.ensureAllExist(db, tags.map(validateTag));
 
     if (tagToId.size > 0) {
@@ -17,7 +17,7 @@ const DefinitionTagMut = {
     }
   },
 
-  update(db: Connection, definitionId: DefinitionId, tags: string[]): void {
+  update(db: DataWriter, definitionId: DefinitionId, tags: string[]): void {
     // We could compute a delta here, but it's kind of messy and complex, and
     // this all happens inside a transaction anyway.
     this.deleteAll(db, definitionId);
@@ -27,7 +27,7 @@ const DefinitionTagMut = {
     TagMut.deleteOrphaned(db);
   },
 
-  deleteAll(db: Connection, definitionId: DefinitionId): void {
+  deleteAll(db: DataWriter, definitionId: DefinitionId): void {
     db.exec`
       delete from definition_tags
       where definition_id = ${definitionId}

@@ -1,6 +1,7 @@
 import {Server as HttpServer} from 'http';
 
 import {ApolloServer} from 'apollo-server';
+import {GraphQLRequestContext} from 'apollo-server-plugin-base';
 import {customAlphabet} from 'nanoid';
 
 import CondictServer from './server';
@@ -36,24 +37,26 @@ export default class CondictHttpServer {
     this.apolloServer = new ApolloServer({
       schema: server.getSchema(),
       rootValue: null,
-      context: async ({req, res}): Promise<Context> => {
-        const {logger, server} = this;
+      context: ({req}) => this.server.getContextValue(
+        req.header('x-condict-session-id')
+      ),
+      plugins: [{
+        requestDidStart: (req: GraphQLRequestContext<Context>) => {
+          const {logger} = this;
 
-        const requestId = genRequestId();
-        const startTime = Date.now();
-        logger.info(`Start request ${requestId}`);
+          const requestId = genRequestId();
+          const startTime = Date.now();
+          this.logger.verbose(`Start request ${requestId}`);
 
-        const {context, finish} = await server.getContextValue(
-          req.header('x-condict-session-id')
-        );
-        res.once('finish', () => {
-          const requestTime = Date.now() - startTime;
-          logger.info(`Request ${requestId} finished in ${requestTime} ms`);
-          void finish();
-        });
-
-        return context;
-      },
+          return {
+            willSendResponse() {
+              req.context.finish();
+              const requestTime = Date.now() - startTime;
+              logger.verbose(`Request ${requestId} finished in ${requestTime} ms`);
+            },
+          };
+        },
+      }],
     });
   }
 
@@ -85,10 +88,19 @@ export default class CondictHttpServer {
    * @return A promise that resolves when the server is stopped.
    */
   public async stop(): Promise<void> {
-    if (this.httpServer) {
+    const httpServer = this.httpServer;
+    this.httpServer = null;
+
+    if (httpServer) {
       this.logger.info('Stopping HTTP server...');
-      this.httpServer.close();
-      this.httpServer = null;
+      await new Promise<void>(resolve => {
+        httpServer.close(err => {
+          if (err) {
+            this.logger.error(`Error stopping HTTP server`, err);
+          }
+          resolve();
+        });
+      });
     }
 
     await this.server.stop();
