@@ -8,14 +8,16 @@ const levels: Record<LogLevel, number> = {
   error: 0,
   warn: 1,
   info: 2,
-  debug: 3,
+  verbose: 3,
+  debug: 4,
 };
 
 const levelColors: Record<LogLevel, Chalk> = {
   error: chalk.redBright,
   warn: chalk.yellowBright,
   info: chalk.cyanBright,
-  debug: chalk.greenBright,
+  verbose: chalk.greenBright,
+  debug: chalk.magenta,
 };
 
 const consoleFormat = winston.format.combine(
@@ -74,5 +76,6 @@ export const createNullLogger = (): Logger => ({
   error() { /* no-op */ },
   warn() { /* no-op */ },
   info() { /* no-op */ },
+  verbose() { /* no-op */ },
   debug() { /* no-op */ },
 });
