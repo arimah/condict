@@ -1,6 +1,6 @@
 import React, {ReactNode, useState, useCallback} from 'react';
 
-import {Button, Intent, useUniqueId} from '@condict/ui';
+import {Button, useUniqueId} from '@condict/ui';
 
 import * as S from './styles';
 

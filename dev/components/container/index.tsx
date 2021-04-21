@@ -9,14 +9,7 @@ import {ThemeProvider} from 'styled-components';
 import {useRouter} from 'next/router';
 import Link from 'next/link';
 
-import {
-  Switch,
-  Intent,
-  GlobalStyles,
-  Theme,
-  LightTheme,
-  DarkTheme,
-} from '@condict/ui';
+import {Switch, GlobalStyles, Theme, LightTheme, DarkTheme} from '@condict/ui';
 
 import * as S from './styles';
 

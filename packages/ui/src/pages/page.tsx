@@ -3,7 +3,7 @@ import React, {ReactNode, useContext} from 'react';
 import {SROnly} from '../a11y-utils';
 import {Spinner} from '../spinner';
 
-import {Messages, PageContext} from './types';
+import {PageContext} from './types';
 import * as S from './styles';
 
 export type Props = {
