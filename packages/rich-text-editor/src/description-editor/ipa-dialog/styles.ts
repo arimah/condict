@@ -12,10 +12,11 @@ export type GroupProps = {
 };
 
 export const Group = styled.div<GroupProps>`
-  ${p => p.hasBase && `
-    margin-left: 42px;
+  margin-right: 8px;
+  ${p => p.hasBase ? `
+    margin-left: 46px;
     text-indent: -42px;
-  `}
+  ` : `margin-left: 4px;`}
 
   &:not(:first-child) {
     margin-top: ${p => p.hasBase ? '4px' : '8px'};
@@ -23,10 +24,8 @@ export const Group = styled.div<GroupProps>`
 `;
 
 export const GroupName = styled.div`
-  margin-left: 2px;
-  margin-right: 2px;
+  margin: 8px;
   font-weight: bold;
-  font-size: 11pt;
 `;
 
 export type CharacterProps = {
@@ -44,7 +43,8 @@ export const Character = styled.span.attrs({
   min-width: 32px;
   text-indent: 0;
   text-align: center;
-  font-size: 17pt;
+  font-size: 20px;
+  line-height: 20px;
   cursor: default;
 
   background-color: ${p => p.theme.general[
@@ -88,7 +88,8 @@ export const SearchResultChar = styled.span`
   padding: 4px;
   min-width: 32px;
   text-align: center;
-  font-size: 17pt;
+  font-size: 20px;
+  line-height: 20px;
 `;
 
 export const SearchResultName = styled.span`
