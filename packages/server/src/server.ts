@@ -4,7 +4,14 @@ import {makeExecutableSchema} from 'graphql-tools';
 import performStartupChecks from './startup-checks';
 import {Connection, DataAccessor} from './database';
 import {Context, getTypeDefs, getResolvers, getDirectives} from './graphql';
-import {UserSession} from './model';
+import {
+  UserSession,
+  UserMut,
+  UserId,
+  UserRow,
+  NewUserInput,
+  EditUserInput,
+} from './model';
 import {ServerConfig, Logger} from './types';
 
 /**
@@ -157,5 +164,81 @@ export default class CondictServer {
         }
       },
     };
+  }
+
+  /**
+   * Adds a user to the database. When the promise has resolved, it is possible
+   * to log in as the user with the supplied credentials in GraphQL using the
+   * `logIn` mutation.
+   * @param data New user data.
+   * @return A promise that resolves to the ID of the newly created user. The
+   *         promise is rejected if the name or password is invalid, or if ther
+   *         is already a user with the specified name.
+   */
+  public async addUser(data: NewUserInput): Promise<UserId> {
+    if (!this.database) {
+      throw new Error('Server is not started');
+    }
+
+    const {database} = this;
+
+    const db = await database.getAccessor();
+    let user: UserRow;
+    try {
+      user = await UserMut.insert(db, data);
+    } finally {
+      db.finish();
+    }
+    return user.id;
+  }
+
+  /**
+   * Edits the user with the specified ID. This method can be used to rename
+   * the user and/or change their password. Existing sessions are *not* closed
+   * when a user is edited.
+   * @param id The ID of the user to update.
+   * @param data User data to update.
+   * @return A promise that resolves when the user has been updated. The promise
+   *         is rejected if the new name or new password is invalid, or if the
+   *         user is being renamed and the name is taken by an existing user.
+   */
+  public async editUser(id: UserId, data: EditUserInput): Promise<void> {
+    if (!this.database) {
+      throw new Error('Server is not started');
+    }
+
+    const {database} = this;
+
+    const db = await database.getAccessor();
+    try {
+      await UserMut.update(db, id, data);
+    } finally {
+      db.finish();
+    }
+  }
+
+  /**
+   * Deletes the user with the specified ID. All of the user's sessions are
+   * terminated, and it is not possible to log in as the user once the promise
+   * has resolved.
+   * @param id The ID of the user to delete.
+   * @return A promise that resolves when the user has been deleted. If the
+   *         value is true, the user was found and deleted; if false, the user
+   *         could not be found. The promise is rejected only if an unexpected
+   *         database error occurs.
+   */
+  public async deleteUser(id: UserId): Promise<boolean> {
+    if (!this.database) {
+      throw new Error('Server is not started');
+    }
+
+    const {database} = this;
+
+    const db = await database.getAccessor();
+    try {
+      return await UserMut.delete(db, id);
+    } finally {
+      db.finish();
+    }
   }
 }
