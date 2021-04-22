@@ -9,11 +9,9 @@ import React, {
   useEffect,
   useImperativeHandle,
 } from 'react';
-import {ReactEditor} from 'slate-react';
+import {ReactEditor, useSlate} from 'slate-react';
 
 import {Shortcut} from '@condict/ui';
-
-import {useCondictEditor} from '../../plugin';
 
 import {PlacementRect} from '../popup';
 import {CloseKey} from '../dialog';
@@ -65,7 +63,7 @@ const ContextualPopup = React.forwardRef((
 ): JSX.Element | null => {
   const {editorRef, onOpenLinkDialog, onOpenIpaDialog} = props;
 
-  const editor = useCondictEditor();
+  const editor = useSlate();
 
   const rootRef = useRef<HTMLFormElement>(null);
 

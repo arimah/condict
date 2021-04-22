@@ -9,9 +9,9 @@
   "browser": "src/browser.js",
   "types": "src/index.d.ts",
   "devDependencies": {
-    "platform": "^1.3.5"
+    "platform": "^1.3.6"
   },
   "peerDependencies": {
-    "platform": "^1.3.5"
+    "platform": "^1.3.6"
   }
 }

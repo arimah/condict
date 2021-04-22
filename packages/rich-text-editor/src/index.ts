@@ -13,14 +13,4 @@ export {
   InlineShortcuts,
   LinkShortcuts,
 } from './shortcuts';
-export {
-  ElementType,
-  BlockType,
-  ListType,
-  HeadingType,
-  InlineType,
-  MarkType,
-  LinkTarget,
-  isListType,
-  isHeadingType,
-} from './types';
+export * from './types';

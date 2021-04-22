@@ -1,5 +1,5 @@
 import React, {KeyboardEvent, useState, useMemo, useCallback} from 'react';
-import {Node as SlateNode} from 'slate';
+import {Descendant} from 'slate';
 import {Slate} from 'slate-react';
 
 import {ShortcutMap} from '@condict/ui';
@@ -13,10 +13,10 @@ import {InlineFormatGroup} from './toolbar';
 
 export type Props = {
   className?: string;
-  value: SlateNode[];
+  value: Descendant[];
   toolbarAlwaysVisible?: boolean;
   shortcuts?: InlineShortcuts;
-  onChange: (value: SlateNode[]) => void;
+  onChange: (value: Descendant[]) => void;
 };
 
 const TableCaptionEditor = (props: Props): JSX.Element => {

@@ -15,11 +15,11 @@
   },
   "dependencies": {
     "command-line-args": "^5.1.1",
-    "graphql": "^15.1.0"
+    "graphql": "^15.5.0"
   },
   "devDependencies": {
     "@types/command-line-args": "^5.0.0",
-    "@types/node": "^12.12.12",
-    "chalk": "^4.1.0"
+    "@types/node": "^14.14.41",
+    "chalk": "^4.1.1"
   }
 }

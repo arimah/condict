@@ -22,9 +22,6 @@ export interface KeyCommand<A = {}> {
     event: KeyboardEvent<HTMLDivElement>,
     args: A & {
       editor: CondictEditor;
-      //openLinkDialog: () => void;
-      //openIpaDialog: () => void;
-      //focusPopup: () => void;
     }
   ) => void;
 }

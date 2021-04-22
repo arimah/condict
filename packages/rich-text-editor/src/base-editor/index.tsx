@@ -8,9 +8,7 @@ import React, {
   useEffect,
 } from 'react';
 import {Transforms, Editor} from 'slate';
-import {ReactEditor} from 'slate-react';
-
-import {useStaticCondictEditor} from '../plugin';
+import {ReactEditor, useSlateStatic} from 'slate-react';
 
 import {renderElement, renderLeaf} from './render';
 import * as S from './styles';
@@ -45,7 +43,7 @@ const BaseEditor = React.forwardRef((
     children,
   } = props;
 
-  const editor = useStaticCondictEditor();
+  const editor = useSlateStatic();
 
   const handleMouseDown = useCallback(() => {
     // When the user clicks inside the editor, don't re-select the previous

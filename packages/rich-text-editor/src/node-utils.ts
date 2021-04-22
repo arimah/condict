@@ -1,6 +1,13 @@
 import {Editor, Location, Span, Element, Node, NodeEntry} from 'slate';
 
-import {BlockType, InlineType, isListType} from './types';
+import {
+  BlockElement,
+  BlockType,
+  LinkElement,
+  InlineElement,
+  InlineType,
+  isListType,
+} from './types';
 
 /** The (inclusive) maximum indentation level. */
 export const MaxIndent = 8;
@@ -11,10 +18,13 @@ export const getMinIndent = (element: Element): number =>
   // list numbering a thousand times simpler.
   isListType(element.type || 'paragraph') ? 1 : 0;
 
-export const isBlock = (n: Node, editor: Editor): n is Element =>
+export const isBlock = (n: Node, editor: Editor): n is BlockElement =>
   Element.isElement(n) && !editor.isInline(n);
 
-export const isLink = (n: Node): n is Element =>
+export const isInline = (n: Node, editor: Editor): n is InlineElement =>
+  Element.isElement(n) && editor.isInline(n);
+
+export const isLink = (n: Node): n is LinkElement =>
   Element.isElement(n) && n.type === 'link';
 
 export const blocks = (
@@ -22,10 +32,10 @@ export const blocks = (
   options: {
     at?: Location | Span;
   } = {}
-): Iterable<NodeEntry<Element>> =>
+): Iterable<NodeEntry<BlockElement>> =>
   Editor.nodes(editor, {
     ...options,
-    match: (n): n is Element => isBlock(n, editor),
+    match: (n): n is BlockElement => isBlock(n, editor),
   });
 
 const anyMatch = (iterable: Iterable<any>): boolean => {
@@ -71,7 +81,7 @@ export const isBlockActive = (
 ): boolean =>
   anyMatch(Editor.nodes(editor, {
     ...options,
-    match: n => n.type === type,
+    match: n => isBlock(n, editor) && n.type === type,
     mode: 'all',
   }));
 
@@ -84,7 +94,7 @@ export const isInlineActive = (
 ): boolean =>
   anyMatch(Editor.nodes(editor, {
     ...options,
-    match: n => n.type === type,
+    match: n => isInline(n, editor) && n.type === type,
   }));
 
 export const firstMatchingNode = <T extends Node = Node>(

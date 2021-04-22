@@ -1,5 +1,6 @@
 import React, {useCallback} from 'react';
 import {Editor, Range} from 'slate';
+import {useSlate} from 'slate-react';
 
 import H1Icon from 'mdi-react/FormatHeader1Icon';
 import H2Icon from 'mdi-react/FormatHeader2Icon';
@@ -28,7 +29,6 @@ import {
   HelperShortcuts,
 } from './shortcuts';
 
-import {useCondictEditor} from './plugin';
 import {
   isBlockActive,
   isInlineActive,
@@ -45,7 +45,7 @@ export type Props<S> = {
 export const HeadingsGroup = (
   {shortcuts}: Props<BlockShortcuts>
 ): JSX.Element => {
-  const editor = useCondictEditor();
+  const editor = useSlate();
   const options = {
     at: editor.selection || editor.blurSelection || undefined,
   };
@@ -74,7 +74,7 @@ export const HeadingsGroup = (
 export const InlineFormatGroup = (
   {shortcuts}: Props<InlineShortcuts>
 ): JSX.Element => {
-  const editor = useCondictEditor();
+  const editor = useSlate();
   const marks = Editor.marks(editor) || {};
 
   const toggleMark = useCallback((key: MarkType) => {
@@ -150,7 +150,7 @@ export const LinkGroup = (
     onSetLink: () => void;
   }
 ): JSX.Element => {
-  const editor = useCondictEditor();
+  const editor = useSlate();
   const at = editor.selection || editor.blurSelection || undefined;
   const options = {at};
   const hasLink = isInlineActive(editor, 'link', options);
@@ -180,7 +180,7 @@ export const LinkGroup = (
 export const BlockFormatGroup = (
   {shortcuts}: Props<BlockShortcuts>
 ): JSX.Element => {
-  const editor = useCondictEditor();
+  const editor = useSlate();
   const options = {
     at: editor.selection || editor.blurSelection || undefined,
   };
@@ -230,7 +230,7 @@ export const HelpersGroup = (
     onOpenIpaDialog: () => void;
   }
 ): JSX.Element => {
-  const editor = useCondictEditor();
+  const editor = useSlate();
   return (
     <Toolbar.Button
       label='Insert IPA character'

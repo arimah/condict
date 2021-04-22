@@ -1,10 +1,9 @@
 import React, {useCallback} from 'react';
 import {Transforms, Editor, Node, Text, Range as SlateRange, Path} from 'slate';
-import {ReactEditor} from 'slate-react';
+import {ReactEditor, useSlateStatic} from 'slate-react';
 
 import xsampaToIpa from '@condict/x-sampa';
 
-import {useStaticCondictEditor} from '../../plugin';
 import {SearchIpaIcon, ConvertToIpaIcon} from '../../icons';
 import {CondictEditor} from '../../types';
 
@@ -22,7 +21,7 @@ export type Props = {
 const PhoneticPopup = (props: Props): JSX.Element | null => {
   const {range, text, focusable, onInsertIpa} = props;
 
-  const editor = useStaticCondictEditor();
+  const editor = useSlateStatic();
 
   const ipa = xsampaToIpa(text);
 

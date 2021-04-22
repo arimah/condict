@@ -80,7 +80,10 @@ export const getPlugins = (options = {}) => {
     // Replace process.env.NODE_ENV with the current environment, to allow some
     // packages to use production versions.
     replace({
-      'process.env.NODE_ENV': JSON.stringify(env),
+      preventAssignment: true,
+      values: {
+        'process.env.NODE_ENV': JSON.stringify(env),
+      },
     }),
 
     // Allow JSON files to be imported as modules.

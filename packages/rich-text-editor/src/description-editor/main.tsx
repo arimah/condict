@@ -7,7 +7,7 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
-import {Transforms, Editor, Node as SlateNode, Range} from 'slate';
+import {Transforms, Editor, Descendant, Range} from 'slate';
 import {Slate, ReactEditor} from 'slate-react';
 
 import {ShortcutMap} from '@condict/ui';
@@ -38,10 +38,10 @@ import * as S from './styles';
 
 export type Props = {
   className?: string;
-  value: SlateNode[];
+  value: Descendant[];
   toolbarAlwaysVisible?: boolean;
   shortcuts?: AllShortcuts;
-  onChange: (value: SlateNode[]) => void;
+  onChange: (value: Descendant[]) => void;
   onFindLinkTarget: (query: string) => Promise<readonly SearchResult[]>;
 };
 

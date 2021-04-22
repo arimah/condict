@@ -267,6 +267,13 @@ export type TableUpdater<D> = (table: Draft<Table<D>>) => Table<D> | void;
 
 export type DataUpdater<D> = (data: Draft<D>) => D | void;
 
+// Additional types needed to get around some of Immer's possibly questionable
+// type declarations.
+
+type TableRecipe<D> = (table: Draft<Table<D>>) => Draft<Table<D>> | void;
+
+type DataRecipe<D> = (data: Draft<D>) => Draft<D> | void;
+
 export const Table: TableOps = {
   fromBase<D>(base: TableBase<D>): Table<D> {
     const layout = Layout.build(base);
@@ -279,7 +286,7 @@ export const Table: TableOps = {
   },
 
   update<D>(prevTable: Table<D>, updater: TableUpdater<D>): Table<D> {
-    let nextTable = produce(prevTable, updater);
+    let nextTable = produce(prevTable, updater as TableRecipe<D>);
 
     if (
       nextTable.cells !== prevTable.cells ||
@@ -323,7 +330,7 @@ export const Table: TableOps = {
         table.cellData.set(key, castDraft(nextData));
       }
     } else {
-      const nextData = produce(table.defaultData, updater) as Draft<D>;
+      const nextData = produce(table.defaultData, updater as DataRecipe<D>);
       table.cellData.set(key, nextData);
     }
   },

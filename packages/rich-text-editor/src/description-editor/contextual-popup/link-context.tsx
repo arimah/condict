@@ -1,19 +1,18 @@
 import React from 'react';
-import {Editor, Element, Range, Point} from 'slate';
-import {ReactEditor} from 'slate-react';
+import {Editor, Range, Point} from 'slate';
+import {ReactEditor, useSlateStatic} from 'slate-react';
 import EditIcon from 'mdi-react/PencilIcon';
 import RemoveLinkIcon from 'mdi-react/LinkOffIcon';
 
-import {useStaticCondictEditor} from '../../plugin';
 import {isLink} from '../../node-utils';
-import {CondictEditor} from '../../types';
+import {CondictEditor, LinkElement} from '../../types';
 
 import {PlacementRect} from '../popup';
 
 import * as S from './styles';
 
 export type Props = {
-  link: Element;
+  link: LinkElement;
   focusable: boolean;
   onEditLink: () => void;
 };
@@ -21,10 +20,9 @@ export type Props = {
 const LinkContext = (props: Props): JSX.Element => {
   const {link, focusable, onEditLink} = props;
 
-  const editor = useStaticCondictEditor();
+  const editor = useSlateStatic();
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const target = link.target!;
+  const target = link.target;
 
   const tabIndex = focusable ? undefined : -1;
 
@@ -57,12 +55,11 @@ const LinkContext = (props: Props): JSX.Element => {
 export default LinkContext;
 
 export interface ContextValue {
-  readonly link: Element;
+  readonly link: LinkElement;
   readonly placement: PlacementRect;
 }
 
-
-const getNearestLink = (editor: CondictEditor): Element | null => {
+const getNearestLink = (editor: CondictEditor): LinkElement | null => {
   const {selection} = editor;
   if (!selection) {
     return null;
