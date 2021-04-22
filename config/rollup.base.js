@@ -10,12 +10,12 @@ import typescript from '@rollup/plugin-typescript';
 const localDepPattern = /^\.\.?\//;
 
 export const getExternal = pkg => {
-  const dependencies = new Set([
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {}),
-  ]);
+  const dependencies = new Set(
+    [].concat(Object.keys(pkg.dependencies || {}))
+      .concat(Object.keys(pkg.peerDependencies || {}))
+  );
 
-  const devDependencies = new Set(Object.keys(pkg.devDependencies));
+  const devDependencies = new Set(Object.keys(pkg.devDependencies || {}));
 
   const isDependency = (deps, id) => {
     if (!localDepPattern.test(id)) {
@@ -93,6 +93,32 @@ export const getPlugins = (options = {}) => {
   ];
 };
 
+export const onwarn = (warning, warn) => {
+  // Circular dependencies are common in TS when importing types, and
+  // are not detrimental in any way.
+  if (warning.code === 'CIRCULAR_DEPENDENCY') {
+    return;
+  }
+
+  // The TypeScript plugin does not prepend the source location of errors
+  // for whatever reason. So let's add them ourselves.
+  if (
+    warning.code === 'PLUGIN_WARNING' &&
+    warning.plugin === 'typescript' &&
+    warning.loc
+  ) {
+    const {file, column, line} = warning.loc;
+    const relativePath = path.relative(process.cwd(), file);
+    // NB: warning.frame starts with a newline.
+    warning = {
+      ...warning,
+      frame: `${relativePath}:${line}:${column}${warning.frame}`,
+    };
+  }
+
+  warn(warning);
+};
+
 export const configureTarget = (pkg, output, options = {}) => {
   const env = process.env.NODE_ENV || 'production';
   const {
@@ -135,36 +161,28 @@ export const configureTarget = (pkg, output, options = {}) => {
       packagePath,
     }),
 
-    onwarn: (warning, warn) => {
-      // Circular dependencies are common in TS when importing types, and
-      // are not detrimental in any way.
-      if (warning.code === 'CIRCULAR_DEPENDENCY') {
-        return;
-      }
-
-      // The TypeScript plugin does not prepend the source location of errors
-      // for whatever reason. So let's add them ourselves.
-      if (
-        warning.code === 'PLUGIN_WARNING' &&
-        warning.plugin === 'typescript' &&
-        warning.loc
-      ) {
-        const {file, column, line} = warning.loc;
-        const relativePath = path.relative(process.cwd(), file);
-        // NB: warning.frame starts with a newline.
-        warning = {
-          ...warning,
-          frame: `${relativePath}:${line}:${column}${warning.frame}`,
-        };
-      }
-
-      warn(warning);
-    },
+    onwarn,
   };
 };
 
 const configureDefault = (pkg, options = {}) => {
-  const external = getExternal(pkg);
+  const isExternalDependency = getExternal(pkg);
+  let external = isExternalDependency;
+  let loadedLocalModules = null;
+  if (pkg.binEntries) {
+    // Record visited local modules, so we can find out if any are imported
+    // multiple times.
+    loadedLocalModules = new Map();
+    external = id => {
+      if (isExternalDependency(id)) {
+        return true;
+      }
+      if (path.isAbsolute(id)) {
+        loadedLocalModules.set(id, '<main>');
+      }
+      return false;
+    };
+  }
 
   let targets = [
     configureTarget(pkg, pkg.main, {
@@ -174,39 +192,43 @@ const configureDefault = (pkg, options = {}) => {
     }),
   ];
 
-  const {binEntries} = options;
-  if (binEntries) {
-    const binExternal = id => {
-      if (external(id)) {
+  if (pkg.binEntries) {
+    const binExternal = (id, binName) => {
+      if (isExternalDependency(id)) {
         return true;
       }
-
-      if (localDepPattern.test(id) && id !== '.') {
-        throw new Error(
-          `bin entry points can only import local dependencies from '.'; tried to import '${id}'`
-        );
+      if (localDepPattern.test(id)) {
+        // Allow the module to be imported. It will be resolved to an absolute
+        // path next, which we can check below. The only local module that is
+        // always external is '.', which doesn't match localDepPattern.
+        return false;
       }
-
+      if (path.isAbsolute(id)) {
+        const previousLoader = loadedLocalModules.get(id);
+        if (previousLoader && previousLoader !== binName) {
+          throw new Error(
+            `Local module ${id} has already been loaded by entry point ${
+              previousLoader
+            }`
+          );
+        }
+        loadedLocalModules.set(id, binName);
+        return false;
+      }
+      // Probably a built-in, like 'fs' or 'path', or the main entry point '.'.
       return true;
     };
 
     targets = targets.concat(
-      Object.entries(binEntries)
-        .map(([binName, input]) => {
-          const output = pkg.bin[binName];
-          const config = configureTarget(pkg, output, {
-            ...options,
-            external: binExternal,
-            entry: input,
-          });
-          return {
-            ...config,
-            output: {
-              ...config.output,
-              banner: '#!/usr/bin/env node',
-            },
-          };
-        })
+      Object.entries(pkg.binEntries).map(([binName, input]) => {
+        const config = configureTarget(pkg, pkg.bin[binName], {
+          ...options,
+          external: id => binExternal(id, binName),
+          entry: input,
+        });
+        config.output.banner = '#!/usr/bin/env node';
+        return config;
+      })
     );
   }
 

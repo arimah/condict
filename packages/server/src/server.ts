@@ -5,6 +5,7 @@ import performStartupChecks from './startup-checks';
 import {Connection, DataAccessor} from './database';
 import {Context, getTypeDefs, getResolvers, getDirectives} from './graphql';
 import {
+  User as UserModel,
   UserSession,
   UserMut,
   UserId,
@@ -20,6 +21,17 @@ import {ServerConfig, Logger} from './types';
  * such as a local application that executes GraphQL operations.
  */
 export const LocalSession = Symbol();
+
+/**
+ * Contains information about a user. Used by the user management methods on
+ * the server object.
+ */
+export interface User {
+  /** The user ID. */
+  readonly id: UserId;
+  /** The user name. */
+  readonly name: string;
+}
 
 const validSession = () => true;
 const noSession = () => false;
@@ -81,8 +93,20 @@ export default class CondictServer {
   }
 
   /**
+   * Gets the server's database connection. If the server is not started, the
+   * method throws an error.
+   * @return The current database connection.
+   */
+  public getDatabase(): Connection {
+    if (!this.database) {
+      throw new Error('The server is not running');
+    }
+    return this.database;
+  }
+
+  /**
    * Determines whether the server is running. A server must be started before
-   * `getContextValue()` can be called.
+   * most methods can be called.
    * @return True if the server is running.
    */
   public isRunning(): boolean {
@@ -120,6 +144,7 @@ export default class CondictServer {
       return;
     }
     await this.database.close();
+    this.database = null;
   }
 
   /**
@@ -137,11 +162,8 @@ export default class CondictServer {
   public async getContextValue(
     sessionId?: string | typeof LocalSession | null
   ): Promise<Context> {
-    if (!this.database) {
-      throw new Error('Server is not started.');
-    }
-
-    const {logger, database} = this;
+    const database = this.getDatabase();
+    const {logger} = this;
 
     let db: DataAccessor | null = await database.getAccessor();
 
@@ -167,20 +189,53 @@ export default class CondictServer {
   }
 
   /**
+   * Gets the user with the specified id.
+   * @param id The user ID to look up.
+   * @return A promise that resolves to the user with the specified ID, or null
+   *         if the user was not found. The promise is rejected if the server is
+   *         not running.
+   */
+  public async getUserById(id: UserId): Promise<User | null> {
+    const database = this.getDatabase();
+
+    const db = await database.getAccessor();
+    try {
+      return UserModel.byId(db, id);
+    } finally {
+      db.finish();
+    }
+  }
+
+  /**
+   * Gets the user with the specified name.
+   * @param name The user name to look up.
+   * @return A promise that resolves to the user with the specified name, or
+   *         null if the user was not found. The promise is rejected if the
+   *         server is not running.
+   */
+  public async getUserByName(name: string): Promise<User | null> {
+    const database = this.getDatabase();
+
+    const db = await database.getAccessor();
+    try {
+      return UserModel.byName(db, name);
+    } finally {
+      db.finish();
+    }
+  }
+
+  /**
    * Adds a user to the database. When the promise has resolved, it is possible
    * to log in as the user with the supplied credentials in GraphQL using the
    * `logIn` mutation.
    * @param data New user data.
    * @return A promise that resolves to the ID of the newly created user. The
-   *         promise is rejected if the name or password is invalid, or if ther
-   *         is already a user with the specified name.
+   *         promise is rejected if the name or password is invalid, if there
+   *         is already a user with the specified name, or if the server is not
+   *         started.
    */
-  public async addUser(data: NewUserInput): Promise<UserId> {
-    if (!this.database) {
-      throw new Error('Server is not started');
-    }
-
-    const {database} = this;
+  public async addUser(data: NewUserInput): Promise<User> {
+    const database = this.getDatabase();
 
     const db = await database.getAccessor();
     let user: UserRow;
@@ -189,7 +244,7 @@ export default class CondictServer {
     } finally {
       db.finish();
     }
-    return user.id;
+    return {id: user.id, name: user.name};
   }
 
   /**
@@ -199,22 +254,21 @@ export default class CondictServer {
    * @param id The ID of the user to update.
    * @param data User data to update.
    * @return A promise that resolves when the user has been updated. The promise
-   *         is rejected if the new name or new password is invalid, or if the
-   *         user is being renamed and the name is taken by an existing user.
+   *         is rejected if the new name or new password is invalid, if the user
+   *         is being renamed and the name is taken by an existing user, or if
+   *         the server is not started.
    */
-  public async editUser(id: UserId, data: EditUserInput): Promise<void> {
-    if (!this.database) {
-      throw new Error('Server is not started');
-    }
-
-    const {database} = this;
+  public async editUser(id: UserId, data: EditUserInput): Promise<User> {
+    const database = this.getDatabase();
 
     const db = await database.getAccessor();
+    let user: UserRow;
     try {
-      await UserMut.update(db, id, data);
+      user = await UserMut.update(db, id, data);
     } finally {
       db.finish();
     }
+    return {id: user.id, name: user.name};
   }
 
   /**
@@ -224,15 +278,11 @@ export default class CondictServer {
    * @param id The ID of the user to delete.
    * @return A promise that resolves when the user has been deleted. If the
    *         value is true, the user was found and deleted; if false, the user
-   *         could not be found. The promise is rejected only if an unexpected
-   *         database error occurs.
+   *         could not be found. The promise is rejected if the server is not
+   *         running or an unexpected database error occurs.
    */
   public async deleteUser(id: UserId): Promise<boolean> {
-    if (!this.database) {
-      throw new Error('Server is not started');
-    }
-
-    const {database} = this;
+    const database = this.getDatabase();
 
     const db = await database.getAccessor();
     try {

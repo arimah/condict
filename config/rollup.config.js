@@ -8,9 +8,6 @@ const AllPackages = [
     name: 'graphql-typer',
     options: {
       browser: false,
-      binEntries: {
-        'condict-graphql-typer': 'src/cli.ts',
-      },
     },
   },
 
@@ -24,9 +21,6 @@ const AllPackages = [
     name: 'server',
     options: {
       browser: false,
-      binEntries: {
-        'condict-server': 'src/cli.ts',
-      },
     },
   },
 

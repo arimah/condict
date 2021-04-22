@@ -9,10 +9,8 @@ import {
   createLogger,
   loadConfigFile,
   getTableSchema,
-  addUser,
-  editUser,
-  deleteUser,
 } from '.';
+import {addUser, editUser, deleteUser} from './manage-users';
 
 type MaybeString = string | null | undefined;
 type MaybeNumber = number | null | undefined;

@@ -14,6 +14,9 @@
   "bin": {
     "condict-server": "./dist/cli.js"
   },
+  "binEntries": {
+    "condict-server": "src/cli.ts"
+  },
   "scripts": {
     "start": "node dist/cli.js",
     "copyGraphql": "copyfiles --up 3 ../../graphql-schema/*.graphql ./graphql-schema",

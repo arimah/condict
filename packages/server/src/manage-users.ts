@@ -1,10 +1,14 @@
 import readline from 'readline';
 import {Writable} from 'stream';
 
-import {Connection, DataAccessor} from './database';
-import performStartupChecks from './startup-checks';
-import {User, UserMut, UserId} from './model';
-import {ServerConfig, Logger} from './types';
+import {
+  CondictServer,
+  ServerConfig,
+  Logger,
+  UserId,
+  NewUserInput,
+  EditUserInput,
+} from '.';
 
 type Prompt = {
   query(prompt: string): Promise<string>;
@@ -55,24 +59,17 @@ const withPrompt = async <T>(fn: (prompt: Prompt) => Promise<T>) => {
   }
 };
 
-const withDatabase = async (
+const withServer = async (
   logger: Logger,
   config: ServerConfig,
-  fn: (db: DataAccessor) => Promise<void>
+  fn: (server: CondictServer) => Promise<void>
 ) => {
-  const connection = new Connection(logger, config.database);
-
+  const server = new CondictServer(logger, config);
   try {
-    await performStartupChecks(logger, config, connection);
-
-    const db = await connection.getAccessor();
-    try {
-      await fn(db);
-    } finally {
-      db.finish();
-    }
+    await server.start();
+    await fn(server);
   } finally {
-    await connection.close();
+    await server.stop();
   }
 };
 
@@ -82,7 +79,7 @@ export const addUser = async (
   maybeName?: string | null,
   maybePassword?: string | null
 ): Promise<void> => {
-  const args = await withPrompt(async prompt => {
+  const args: NewUserInput = await withPrompt(async prompt => {
     const name = maybeName ||
       await prompt.query('Name of new user: ');
     const password = maybePassword ||
@@ -92,16 +89,16 @@ export const addUser = async (
   });
 
   try {
-    await withDatabase(logger, config, async db => {
+    await withServer(logger, config, async server => {
       logger.info(`Creating user: ${args.name}`);
 
-      const user = await UserMut.insert(db, args);
+      const user = await server.addUser(args);
 
       logger.info(`User created: ${user.name} (id = ${user.id})`);
     });
   } catch (e) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    console.error(`An error occurred: ${e.message || e}`);
+    logger.error(`An error occurred: ${e.message || e}`);
     process.exitCode = 1;
   }
 };
@@ -113,7 +110,7 @@ export const editUser = async (
   maybeNewName?: string | null,
   maybeNewPassword?: string | null
 ): Promise<void> => {
-  const args = await withPrompt(async prompt => {
+  const args: EditUserInput = await withPrompt(async prompt => {
     // If either is specified as an argument, prompt for neither: if the user
     // runs `edit-user x --new-name y`, we assume that's the only thing they
     // want to change.
@@ -134,10 +131,10 @@ export const editUser = async (
   });
 
   try {
-    await withDatabase(logger, config, async db => {
+    await withServer(logger, config, async server => {
       const user = typeof userNameOrId === 'string'
-        ? User.byName(db, userNameOrId)
-        : User.byId(db, userNameOrId as UserId);
+        ? await server.getUserByName(userNameOrId)
+        : await server.getUserById(userNameOrId as UserId);
 
       if (!user) {
         throw new Error(`User not found: ${userNameOrId}`);
@@ -145,18 +142,18 @@ export const editUser = async (
 
       logger.info(`Editing user: ${user.name} (id = ${user.id})`);
 
-      const newUser = await UserMut.update(db, user.id, args);
+      const newUser = await server.editUser(user.id, args);
 
       if (newUser.name !== user.name) {
         logger.debug(`User renamed: ${user.name} => ${newUser.name}`);
       }
-      if (newUser.password_hash !== user.password_hash) {
+      if (args.password) {
         logger.debug(`Password changed for user ${newUser.name}`);
       }
     });
   } catch (e) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    console.error(`An error occurred: ${e.message || e}`);
+    logger.error(`An error occurred: ${e.message || e}`);
     process.exitCode = 1;
   }
 };
@@ -167,20 +164,20 @@ export const deleteUser = async (
   userNameOrId: string | number
 ): Promise<void> => {
   try {
-    await withDatabase(logger, config, async db => {
+    await withServer(logger, config, async server => {
       let userId: UserId;
       if (typeof userNameOrId === 'number') {
         userId = userNameOrId as UserId;
       } else {
-        const user = User.byName(db, userNameOrId);
+        const user = await server.getUserByName(userNameOrId);
         if (!user) {
           logger.warn(`User does not exist: ${userNameOrId}`);
-          return Promise.resolve();
+          return;
         }
         userId = user.id;
       }
 
-      const deleted = await UserMut.delete(db, userId);
+      const deleted = await server.deleteUser(userId);
       if (deleted) {
         logger.info(`User deleted: ${userNameOrId}`);
       } else {
@@ -191,7 +188,7 @@ export const deleteUser = async (
     });
   } catch (e) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    console.error(`An error occurred: ${e.message || e}`);
+    logger.error(`An error occurred: ${e.message || e}`);
     process.exitCode = 1;
   }
 };

@@ -13,6 +13,9 @@
   "bin": {
     "condict-graphql-typer": "./dist/cli.js"
   },
+  "binEntries": {
+    "condict-graphql-typer": "src/cli.ts"
+  },
   "dependencies": {
     "command-line-args": "^5.1.1",
     "graphql": "^15.5.0"
