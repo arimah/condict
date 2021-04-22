@@ -51,6 +51,8 @@ export const getPlugins = (options = {}) => {
     browser = true,
     declarationDir = null,
     packagePath = '.',
+    tsBuildInfoFile = null,
+    cacheDir = null,
   } = options;
 
   return [
@@ -62,12 +64,15 @@ export const getPlugins = (options = {}) => {
     typescript({
       tsconfig: `${packagePath}/tsconfig.json`,
       rootDir: `./src`,
-      // TODO: Remove this when it's no longer necessary
-      exclude: [`${packagePath}/dev/**/*`],
       noEmitOnError: false,
       ...declarationDir ? {
         declaration: true,
         declarationDir,
+      } : null,
+      ...cacheDir && tsBuildInfoFile ? {
+        incremental: true,
+        cacheDir,
+        tsBuildInfoFile,
       } : null,
     }),
 
@@ -138,6 +143,8 @@ export const configureTarget = (pkg, output, options = {}) => {
       ? `${packagePath}/src/index.tsx`
       : `${packagePath}/src/index.ts`;
 
+  const outputName = path.basename(realOutput);
+
   return {
     input,
 
@@ -158,6 +165,10 @@ export const configureTarget = (pkg, output, options = {}) => {
       env,
       browser,
       declarationDir: declarations && path.dirname(realOutput),
+      cacheDir: declarations && `${packagePath}/.buildcache/${outputName}`,
+      tsBuildInfoFile:
+        declarations &&
+        `${path.dirname(output)}/.${outputName}.tsbuildinfo`,
       packagePath,
     }),
 
