@@ -20,7 +20,7 @@ console.log(inflectWord(pattern1, term1, stems1)); // lizards
 // kitāb -> kutub
 const pattern2 = '{C1}u{C2}u{C3}';
 const term2 = 'kitāb';
-const stems3 = new Map([
+const stems2 = new Map([
   ['C1', 'k'],
   ['C2', 't'],
   ['C3', 'b'],

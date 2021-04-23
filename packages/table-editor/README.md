@@ -11,11 +11,11 @@
 
 ---
 
-Condict permits word inflection rules to be defined, in the shape of inflection tables. This package implements Condict's table editors. Note that there are two table editors: one for defning inflection tables ([`<InflectionTableEditor>`](#inflectiontableeditor)), and another for customizing those tables for a single definition ([`<DefinitionTableEditor>`](#definitiontableeditor)).
+Condict enables the definition of word inflection rules through inflection tables. This package implements Condict's table editors. Note that there are two table editors: one for defining inflection tables ([`<InflectionTableEditor>`](#inflectiontableeditor)), and another for customizing those tables for a single definition ([`<DefinitionTableEditor>`](#definitiontableeditor)).
 
 ## `<InflectionTableEditor>`
 
-The `<InflectionTableEditor>` component edits inflection tables. An inflection table contains any number of header cells as well as data cells with inflection patterns. The exact details of inflected forms are beyond the scope of this readme.
+The `<InflectionTableEditor>` component edits inflection tables. An inflection table contains any number of header cells as well as data cells with inflection patterns. The exact details of inflected forms are beyond the scope of this readme; see [@condict/inflect][inflect] for that.
 
 ### Examples
 
