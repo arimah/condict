@@ -52,20 +52,20 @@ query {
 
 ## Command-line usage
 
-```shell
-condict-graphql-typer --schema-dir=SCHEMA_DIR --target=server --output=OUTPUT_FILE
-condict-graphql-typer --schema-dir=SCHEMA_DIR --target=client --src=SRC_DIR --defs=DEFS_FILE
+```
+condict-graphql-typer --schema-dir=<schema-dir> --target=server --output=<output-file>
+condict-graphql-typer --schema-dir=<schema-dir> --target=client --src=<src-dir> --defs=<defs-file>
 condict-graphql-typer --help
 ```
 
-Builds TypeScript type definitions from all .graphql files in `SCHEMA_DIR` (searched recursively), saving the result in `OUTPUT_FILE`.
+Builds TypeScript type definitions from all .graphql files in `<schema-dir>` (searched recursively), saving the result in `<output-file>`.
 
-* `--schema-dir SCHEMA_DIR` (alias: `-s`): The directory that is searched for .graphql schema files. The directory is searched recursively. All .graphql files that are found are concatenated together and parsed as a single string. Each .graphql file should be a syntactically valid, self-contained schema file. The files cannot contain queries, only schema definitions.
-* `--target <server|client>` (alias: `-t`): Determines whether to write server type definitions (`server`), or client operation type definitions (`client`).
-* `--output OUTPUT_FILE` (alias: `-o`): Server only. The file that TypeScript definitions are written to. Any existing contents will be overwritten.
-* `--src=SRC_DIR`: Client only. Client only. The source directory that is searched for client .graphql files. Every file named `query.graphql` contains one or more operations (queries, mutations, subscriptions) and receives a generated `query.ts` in the same directory. All other .graphql files are expected to contain fragment definitions, which are made available to all operations across the codebase.
-* `--defs=DEFS_FILE` (alias: `-d`): Client only. The path to the shared definitions file, which will receive generated definitions for the `IdOf`, `Query`, `QueryArgs` and `QueryResult` types as well as enum, input and custom ID types.
-* `--help` (alias: `-h`): Shows a help screen.
+* `--schema-dir <schema-dir>` / `-s <schema-dir>`: The directory that is searched for .graphql schema files. The directory is searched recursively. All .graphql files that are found are concatenated together and parsed as a single string. Each .graphql file should be a syntactically valid, self-contained schema file. The files cannot contain queries, only schema definitions.
+* `--target (server|client)` / `-t (server|client)`: Determines whether to write server type definitions (`server`), or client operation type definitions (`client`).
+* `--output <output-file>` / `-o <output-file>`: Server only. The file that TypeScript definitions are written to. Any existing contents will be overwritten.
+* `--src=<src-dir>`: Client only. Client only. The source directory that is searched for client .graphql files. Every file named `query.graphql` contains one or more operations (queries, mutations, subscriptions) and receives a generated `query.ts` in the same directory. All other .graphql files are expected to contain fragment definitions, which are made available to all operations across the codebase.
+* `--defs=<defs-file>` / `-d <defs-file>`: Client only. The path to the shared definitions file, which will receive generated definitions for the `IdOf`, `Query`, `QueryArgs` and `QueryResult` types as well as enum, input and custom ID types.
+* `--help` / `-h`: Shows a help screen.
 
 ## Node API
 

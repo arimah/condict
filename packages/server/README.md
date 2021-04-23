@@ -304,8 +304,6 @@ If there is already a user with the specified name, or if the password is invali
 condict-server add-user [-p <password>] [[-n] <name>]
 ```
 
-#### Options
-
 * `-n <name>` / `--name=<name>`: The name of the user to create. If omitted, the program will prompt for it.
 * `-p <password>` / `--password=<password>`: The password of the new user. If omitted, the program will prompt for it.
 
@@ -319,8 +317,6 @@ If there is a user with the new name, or if the new password is invalid, the pro
 condict-server edit-user [-n <new-name>] [-p <new-password>] [--id <id> | [-u] <name>]
 ```
 
-#### Options
-
 * `-u <name>` / `--user=<name>`: The name of the user to edit. Cannot be combined with `--id`.
 * `--id <id>`: The ID of the user to edit. Cannot be combined with a username.
 * `-n <new-name>` / `--new-name=<new-name>`: The name to rename the user to.
@@ -333,8 +329,6 @@ Deletes a [user](#user). This command can delete a user by name or ID. If there 
 ```
 condict-server delete-user [--id=<id> | [-u] <name>]
 ```
-
-#### Options
 
 * `-u <name>` / `--user=<name>`: The name of the user to delete. Cannot be combined with `--id`.
 * `--id=<id>`: The ID of the user to delete. Cannot be combined with a username.

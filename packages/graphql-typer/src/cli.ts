@@ -34,37 +34,42 @@ const options: OptionDefinition[] = [
 const usage = () => {
   console.log(
     `Usage:\n` +
-    `  condict-graphql-typer --schema-dir=SCHEMA_DIR --target=server --output=OUTPUT_FILE\n` +
-    `  condict-graphql-typer --schema-dir=SCHEMA_DIR --target=client \\\n` +
-    `                        --src=SRC_DIR --defs=DEFS_FILE\n` +
+    `  condict-graphql-typer --schema-dir=<schema-dir> --target=server --output=<output-file>\n` +
+    `  condict-graphql-typer --schema-dir=<schema-dir> --target=client \\\n` +
+    `                        --src=<src-dir> --defs=<defs-file>\n` +
     `  condict-graphql-typer --help\n` +
     `\n` +
     `Options:\n` +
-    `--schema-dir=SCHEMA_DIR  (alias: -s)\n` +
+    `-s <schema-dir>\n` +
+    `--schema-dir=<schema-dir>\n` +
     `        The directory from which GraphQL schema definitions are read. The schema\n` +
     `        is constructed from every '*.graphql' file found in this directory, which\n` +
     `        is searched recursively.\n` +
     `\n` +
-    `--target=<server|client>  (alias: -t)\n` +
+    `-t (server|client)\n` +
+    `--target=(server|client)\n` +
     `        server: Generate schema type definitions.\n` +
     `        client: Generate type definitions for operation results.\n` +
     `\n` +
-    `--output=OUTPUT_FILE  (alias: -o)\n` +
+    `-o <output-file>\n` +
+    `--output=<output-file>\n` +
     `        Server only. The path to the file that receives the schema types.\n` +
     `\n` +
-    `--src=SRC_DIR\n` +
+    `--src=<src-dir>\n` +
     `        Client only. The source directory that is searched for client '*.graphql'\n` +
     `        files. Every file named 'query.graphql' contains one or more operations\n` +
     `        (queries, mutations, subscriptions) and receives a generated 'query.ts' in\n` +
     `        the same directory. All other .graphql files are expected to contain fragment\n` +
     `        definitions, which are made available to all operations across the codebase.\n` +
     `\n` +
-    `--defs=DEFS_FILE  (alias: -d)\n` +
+    `-d <defs-file>\n` +
+    `--defs=<defs-file>\n` +
     `        Client only. The path to the shared definitions file, which will receive\n` +
     `        generated definitions for the 'IdOf', 'Query', 'QueryArgs' and 'QueryResult'\n` +
     `        types as well as enum, input and custom ID types.\n` +
     `\n` +
-    `--help  (alias: -h)\n` +
+    `-h\n` +
+    `--help\n` +
     `        Shows this screen.`
   );
 };
