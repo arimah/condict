@@ -229,7 +229,7 @@ export default class CondictServer {
    * to log in as the user with the supplied credentials in GraphQL using the
    * `logIn` mutation.
    * @param data New user data.
-   * @return A promise that resolves to the ID of the newly created user. The
+   * @return A promise that resolves with details of the newly created user. The
    *         promise is rejected if the name or password is invalid, if there
    *         is already a user with the specified name, or if the server is not
    *         started.

@@ -24,6 +24,13 @@ export const validateOptions = (options: any): Options => {
   return {file};
 };
 
+/**
+ * The base interface for a database reader. Queries executed through methods
+ * on this interface are not permitted to update the database in any way.
+ * Accepting this interface as an argument is an implicit promise that the
+ * method will not attempt to change the data in the database; it indicates
+ * that the function only ever needs read access.
+ */
 export interface DataReader {
   /**
    * Fetches the first row that matches a query.
@@ -205,9 +212,11 @@ export interface DataReader {
 }
 
 /**
- * A database connection that has read-only access and must be disposed once the
- * work is complete (by calling `finish`). Exclusive read-write access can be
- * requested through the `transact` method.
+ * A database connection that has shared read-only access and must be disposed
+ * on the work is complete (by calling `finish`). Exclusive read-write access
+ * can be requested through the `transact` method. Accepting this interface as
+ * an argument implies that the function may write to the database by acquiring
+ * a read-write access.
  */
 export interface DataAccessor extends DataReader {
   /**
@@ -237,8 +246,11 @@ export interface DataAccessor extends DataReader {
 }
 
 /**
- * A database connection that has exclusive read-write access. It is disposed of
- * automatically by the DataReader's `transact` method.
+ * A database connection that has exclusive read-write access. It is obtained
+ * in the `transact` method on DataAccessor, and is disposed of automatically
+ * when the transaction is complete. Accepting this interface as an argument
+ * implies that the function expects an exclusive read-write lock to be held,
+ * and that the function intends to modify the database.
  */
 export interface DataWriter extends DataReader {
   /**
