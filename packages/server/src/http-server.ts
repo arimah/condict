@@ -1,5 +1,3 @@
-import {Server as HttpServer} from 'http';
-
 import {ApolloServer} from 'apollo-server';
 import {GraphQLRequestContext} from 'apollo-server-plugin-base';
 import {customAlphabet} from 'nanoid';
@@ -24,7 +22,7 @@ export default class CondictHttpServer {
   private readonly server: CondictServer;
   private readonly logger: Logger;
   private readonly apolloServer: ApolloServer;
-  private httpServer: HttpServer | null = null;
+  private apolloServerStarted = false;
 
   /**
    * Creates a new Condict HTTP server.
@@ -57,6 +55,8 @@ export default class CondictHttpServer {
           };
         },
       }],
+      // We handle these ourselves.
+      stopOnTerminationSignals: false,
     });
   }
 
@@ -67,8 +67,8 @@ export default class CondictHttpServer {
    *         contains information about the running server.
    */
   public async start(): Promise<ServerInfo> {
-    if (this.httpServer) {
-      throw new Error('Server is already running');
+    if (this.apolloServerStarted) {
+      throw new Error('The server is already running');
     }
 
     const {logger, server} = this;
@@ -76,8 +76,8 @@ export default class CondictHttpServer {
 
     await server.start();
 
-    const {url, server: httpServer} = await this.apolloServer.listen();
-    this.httpServer = httpServer;
+    const {url} = await this.apolloServer.listen();
+    this.apolloServerStarted = true;
 
     return {url};
   }
@@ -88,21 +88,16 @@ export default class CondictHttpServer {
    * @return A promise that resolves when the server is stopped.
    */
   public async stop(): Promise<void> {
-    const httpServer = this.httpServer;
-    this.httpServer = null;
-
-    if (httpServer) {
-      this.logger.info('Stopping HTTP server...');
-      await new Promise<void>(resolve => {
-        httpServer.close(err => {
-          if (err) {
-            this.logger.error(`Error stopping HTTP server`, err);
-          }
-          resolve();
-        });
-      });
+    if (this.apolloServerStarted) {
+      this.logger.debug('Stopping HTTP server...');
+      try {
+        await this.apolloServer.stop();
+      } catch (e) {
+        this.logger.error(`Error stopping HTTP server: ${e}`);
+      }
+      this.apolloServerStarted = false;
+      this.logger.debug('HTTP server stopped.');
     }
-
     await this.server.stop();
   }
 }

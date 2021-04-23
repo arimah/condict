@@ -54,14 +54,22 @@ const start = async (logger: Logger, config: ServerConfig) => {
   const server = new CondictServer(logger, config);
   const httpServer = new CondictHttpServer(server);
 
-  process.on('SIGINT', () => {
-    logger.info('Exit: Ctrl+C');
+  let shuttingDown = false;
+  const gracefulShutdown = (signal: NodeJS.Signals) => {
+    if (shuttingDown) {
+      return;
+    }
+    shuttingDown = true;
 
-    logger.info('Stopping server...');
+    logger.info(`Exit: ${signal}`);
+
     void httpServer.stop().then(() => {
       logger.info('Goodbye!');
     });
-  });
+  };
+
+  process.on('SIGINT', gracefulShutdown);
+  process.on('SIGTERM', gracefulShutdown);
 
   const {url} = await httpServer.start();
   logger.info(`Server listening on ${url}`);
