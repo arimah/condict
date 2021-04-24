@@ -19,7 +19,7 @@ module.exports = {
   },
   settings: {
     react: {
-      version: '16.13.1',
+      version: '17.0.2',
     },
   },
   parserOptions: {
@@ -157,6 +157,11 @@ module.exports = {
 
     // We have a type system.
     'react/prop-types': 'off',
+
+    // New JSX transform automatically adds the appropriate imports, and does
+    // not import React from 'react'.
+    'react/jsx-uses-react': 'off',
+    'react/react-in-jsx-scope': 'off',
 
     'jsx-quotes': [
       'error',

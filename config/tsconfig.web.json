@@ -2,6 +2,6 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "target": "es2018",
-    "jsx": "react"
+    "jsx": "react-jsx"
   }
 }
