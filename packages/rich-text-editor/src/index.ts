@@ -7,10 +7,14 @@ export {
   default as TableCaptionEditor,
   Props as TableCaptionEditorProps,
 } from './caption-editor';
+
 export {
   AllShortcuts,
   BlockShortcuts,
   InlineShortcuts,
   LinkShortcuts,
 } from './shortcuts';
+
+export {default as Value} from './value';
+
 export * from './types';

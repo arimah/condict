@@ -49,7 +49,7 @@ export type BlockElement =
 export interface LinkElement {
   type: 'link';
   target: LinkTarget;
-  children: Children;
+  children: CustomText[];
 }
 
 export type LinkTarget = {

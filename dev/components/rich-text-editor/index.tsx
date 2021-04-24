@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Node as SlateNode} from 'slate';
+import {Descendant} from 'slate';
 
 import {Checkbox, useUniqueId} from '@condict/ui';
 import {DescriptionEditor, TableCaptionEditor} from '@condict/rich-text-editor';
@@ -12,12 +12,12 @@ const Main = (): JSX.Element => {
   const id = useUniqueId();
 
   const [descriptionValue, setDescriptionValue] = useState(
-    InitialDescription as SlateNode[]
+    InitialDescription as Descendant[]
   );
   const [descriptionToolbar, setDescriptionToolbar] = useState(true);
 
   const [captionValue, setCaptionValue] = useState(
-    InitialTableCaption as SlateNode[]
+    InitialTableCaption as Descendant[]
   );
   const [captionToolbar, setCaptionToolbar] = useState(false);
 
