@@ -11,7 +11,8 @@ import React, {
 import memoizeOne from 'memoize-one';
 
 import {Shortcut, useUniqueId} from '@condict/ui';
-import {IpaChar, Match, search, getGroups} from '@condict/ipa';
+import {IpaChar, search, getGroups} from '@condict/ipa';
+import xsampaToIpa from '@condict/x-sampa';
 
 import {PlacementRect} from '../popup';
 import Dialog, {
@@ -23,7 +24,7 @@ import Dialog, {
   NextResultKey,
 } from '../dialog';
 
-import SearchResultList from './search-result-list';
+import SearchResultList, {Result, isMatch} from './search-result-list';
 import CharacterListing from './character-listing';
 import * as S from './styles';
 
@@ -65,7 +66,7 @@ const findCharByIndex = (index: number): IpaChar => {
 type State = {
   query: string;
   /** Search results matching the current query. */
-  results: readonly Match[] | null;
+  results: readonly Result[] | null;
   /** The currently selected index. */
   index: number;
   /** True if the currently selected result should be scrolled into view. */
@@ -83,7 +84,15 @@ const reduce = (state: State, msg: Message): State => {
   switch (msg.type) {
     case 'input': {
       const {value} = msg;
-      const results = hasQuery(value) ? search(value) : null;
+
+      let results: Result[] | null = null;
+      if (hasQuery(value)) {
+        results = search(value);
+        const fromXSampa = xsampaToIpa(value);
+        if (fromXSampa !== value) {
+          results.unshift({ipa: fromXSampa});
+        }
+      }
       return {
         ...state,
         query: value,
@@ -168,10 +177,18 @@ const IpaDialog = (props: Props): JSX.Element => {
   const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (index !== -1) {
-      const char: IpaChar = results
-        ? results[index][0]
-        : findCharByIndex(index);
-      emit(char.input);
+      let input: string;
+      if (results) {
+        const result = results[index];
+        if (isMatch(result)) {
+          input = result[0].input;
+        } else {
+          input = result.ipa;
+        }
+      } else {
+        input = findCharByIndex(index).input;
+      }
+      emit(input);
     }
   }, [emit, results, index]);
 
@@ -214,7 +231,7 @@ const IpaDialog = (props: Props): JSX.Element => {
       >
         <SearchInput
           value={query}
-          placeholder='f, ng, alveolar sibilant, high tone, ...'
+          placeholder='nasal, alveolar, high tone, Eks-\s{mp@, ...'
           aria-autocomplete='list'
           aria-controls={`${id}-list`}
           aria-activedescendant={

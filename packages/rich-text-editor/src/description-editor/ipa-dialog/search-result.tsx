@@ -73,7 +73,7 @@ const SearchResult = React.memo(React.forwardRef((
   }, [char, match]);
 
   return (
-    <S.SearchResult
+    <S.Result
       id={id}
       selected={selected}
       aria-selected={selected}
@@ -87,7 +87,7 @@ const SearchResult = React.memo(React.forwardRef((
       <S.SearchResultName>
         {name}
       </S.SearchResultName>
-    </S.SearchResult>
+    </S.Result>
   );
 }));
 

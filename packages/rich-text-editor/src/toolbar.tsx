@@ -233,7 +233,7 @@ export const HelpersGroup = (
   const editor = useSlate();
   return (
     <Toolbar.Button
-      label='Insert IPA character'
+      label='Insert IPA'
       disabled={editor.selection === null && editor.blurSelection === null}
       shortcut={shortcuts.insertIpa}
       onClick={onOpenIpaDialog}

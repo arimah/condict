@@ -57,13 +57,13 @@ export const Character = styled.span.attrs({
   }
 `;
 
-export type SearchResultProps = {
+export type ResultProps = {
   selected: boolean;
 };
 
-export const SearchResult = styled.div.attrs({
+export const Result = styled.div.attrs({
   role: 'option',
-})<SearchResultProps>`
+})<ResultProps>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -82,6 +82,23 @@ export const SearchResult = styled.div.attrs({
   }
 `;
 
+export const TargetIpa = styled.div`
+  flex: 1 1 auto;
+  padding: 4px 8px;
+  font-size: 20px;
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
+
+export const ConvertText = styled.div`
+  flex: none;
+  padding: 4px 8px 4px 0;
+  white-space: nowrap;
+  opacity: 0.7;
+`;
+
 export const SearchResultChar = styled.span`
   flex: none;
   margin-right: 8px;
@@ -97,7 +114,7 @@ export const SearchResultName = styled.span`
 `;
 
 export const SecondaryTerms = styled.span`
-  opacity: 0.65;
+  opacity: 0.7;
 `;
 
 export const NoSearchResults = styled.div`
