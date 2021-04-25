@@ -1,3 +1,3 @@
-export {Language} from './model';
-export {LanguageMut} from './mut';
+export {Language, LanguageDescription} from './model';
+export {LanguageMut, LanguageDescriptionMut} from './mut';
 export * from './types';

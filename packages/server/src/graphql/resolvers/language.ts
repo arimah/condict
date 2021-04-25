@@ -1,5 +1,6 @@
 import {
   Language as LanguageModel,
+  LanguageDescription,
   LanguageMut,
   PartOfSpeech,
   Lemma,
@@ -13,6 +14,14 @@ import {mutator} from '../helpers';
 import {ResolversFor, Mutators} from './types';
 
 const Language: ResolversFor<LanguageType, LanguageRow> = {
+  async description(p, _args, {db}) {
+    const description = await LanguageDescription.rawByLanguage(db, p.id);
+    return JSON.parse(description) as unknown;
+  },
+
+  descriptionRaw: (p, _args, {db}) =>
+    LanguageDescription.rawByLanguage(db, p.id),
+
   partsOfSpeech: (p, _args, {db}) => PartOfSpeech.allByLanguage(db, p.id),
 
   lemmaCount: p => p.lemma_count,

@@ -235,9 +235,7 @@ const DefinitionDescription = {
           `,
         row => row.definition_id
       )
-      // The string 'null' is a valid JSON value. In theory we should never
-      // find any null values here, but I guess being defensive doesn't hurt.
-      .then(row => row ? row.description : 'null');
+      .then(row => row ? row.description : '[]');
   },
 } as const;
 

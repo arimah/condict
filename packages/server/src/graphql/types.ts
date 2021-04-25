@@ -456,6 +456,10 @@ export type EditLanguageInput = {
    * If set, updates the display name of the language.
    */
   name?: string | null;
+  /**
+   * If set, updates the language's description.
+   */
+  description?: BlockElementInput[] | null;
 };
 
 /**
@@ -955,6 +959,15 @@ export type Language = {
    */
   name: string;
   /**
+   * Formatted text that provides a description of the language
+   */
+  description: BlockElement[];
+  /**
+   * A raw JSON string equivalent of `description`. Generally, you should avoid
+   * using this field; prefer `description` whenever possible.
+   */
+  descriptionRaw: string;
+  /**
    * The parts of speech that belong to this language.
    */
   partsOfSpeech: PartOfSpeech[];
@@ -1387,6 +1400,11 @@ export type NewLanguageInput = {
    * The display name of the language.
    */
   name: string;
+  /**
+   * Formatted text that provides a description of the language. If omitted or
+   * null, the language has no description.
+   */
+  description?: BlockElementInput[] | null;
 };
 
 /**

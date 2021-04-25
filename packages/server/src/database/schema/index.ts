@@ -34,6 +34,25 @@ const tables: readonly TableSchema[] = [
     ],
   },
 
+  // Descriptions associated with each definition. This is a separate table
+  // so we don't have to fetch a potentially large JSON object unless the
+  // description is asked for.
+  {
+    name: 'language_descriptions',
+    commands: [`
+      create table language_descriptions (
+        -- The language that this description belongs to.
+        language_id integer not null primary key,
+        -- The language text itself. See app documentation for details.
+        description text not null,
+
+        foreign key (language_id)
+          references languages(id)
+          on delete cascade
+      )`,
+    ],
+  },
+
   // Parts of speech defined for a language. A part of speech is associated with
   // every definition, and can define any number of inflection tables.
   {
@@ -207,11 +226,9 @@ const tables: readonly TableSchema[] = [
     ],
   },
 
-  // Descriptions associated with each definition. This is a separate table for
-  // two reasons: it means we don't have to fetch a potentially large JSON
-  // object unless the description is asked for, and it means we can actually
-  // reference `definitions` in the formatted text so the data export/import
-  // works.
+  // Descriptions associated with each definition. This is a separate table
+  // so we don't have to fetch a potentially large JSON object unless the
+  // description is asked for.
   {
     name: 'definition_descriptions',
     commands: [`
