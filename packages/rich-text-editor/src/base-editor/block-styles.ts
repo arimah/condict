@@ -16,8 +16,8 @@ const ListLevels = IndentLevels.slice(1);
 
 const ListItem = styled.div`
   position: relative;
-  margin-top: 4px;
-  margin-bottom: 4px;
+  margin-top: 2px;
+  margin-bottom: 2px;
 
   ${ListLevels
     .map(level =>  `&[data-indent='${level}'] + :not([data-indent='${level}'])`)
@@ -64,17 +64,33 @@ export const EditorStyles = css`
     }
   `)}
 
+  line-height: 20px;
+
   ${Heading1} {
     margin-top: 16px;
     margin-bottom: 8px;
-    font-size: 1.3em;
+    font-size: 21px;
+    line-height: 24px;
   }
 
   ${Heading2} {
     margin-top: 12px;
     margin-bottom: 4px;
-    font-size: 1.10em;
+    font-size: 18px;
+    line-height: 21px;
   }
+
+    /* Reduce spacing around headings at the beginning and end. */
+
+    ${Heading1}:first-child,
+    ${Heading2}:first-child {
+      margin-top: 8px;
+    }
+
+    ${Heading1}:last-child,
+    ${Heading2}:last-child {
+      margin-bottom: 8px;
+    }
 
   /* Extra space at the beginning, to mimic a "real" list. */
   ${NumberListItem}:first-child,

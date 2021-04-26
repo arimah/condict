@@ -83,12 +83,14 @@ export const Editable = styled(BaseEditable)<EditableProps>`
   ${p => p.$singleLine ? SingleLineStyles : BlockStyles}
 
   ${Superscript} {
-    font-size: 0.85em;
+    font-size: 12px;
+    line-height: 13px;
     vertical-align: 4px;
   }
 
   ${Subscript} {
-    font-size: 0.85em;
+    font-size: 12px;
+    line-height: 13px;
     vertical-align: -3px;
   }
 
