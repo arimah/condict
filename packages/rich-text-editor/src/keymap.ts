@@ -4,14 +4,20 @@ import {HistoryEditor} from 'slate-history';
 
 import {Shortcut} from '@condict/ui';
 
-import {blocks, isBlock} from './node-utils';
+import {MaxIndent, blocks, isBlock} from './node-utils';
 import {
   InlineShortcuts,
   BlockShortcuts,
   LinkShortcuts,
   HelperShortcuts,
 } from './shortcuts';
-import {MarkType, CondictEditor, isListType, isHeadingType} from './types';
+import {
+  MarkType,
+  CondictEditor,
+  BlockElement,
+  isListType,
+  isHeadingType,
+} from './types';
 
 // Note: We don't have to worry about editor.blurSelection here, as you can't
 // trigger keyboard shortcuts without focusing the editor.
@@ -144,11 +150,15 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
         // Ctrl+Enter inserts a new paragraph at the current indentation.
         // Makes it easier to add paragraphs to lists.
         editor.insertBreak();
-        // NB: editor.formatBlock removes indentation when going from list
-        // to non-list. That's exactly what we *don't* want here!
-        Transforms.setNodes(editor, {type: 'paragraph'}, {
-          // eslint-disable-next-line @typescript-eslint/unbound-method
-          match: Element.isElement,
+
+        // Lists are are displayed one level deeper than they're stored, so when
+        // pressing Ctrl+Enter in a list, we need to indent by one level.
+        const [[block, blockPath]] = blocks(editor);
+        const indent = isListType(block.type)
+          ? Math.min((block.indent || 0) + 1, MaxIndent)
+          : block.indent;
+        Transforms.setNodes(editor, {type: 'paragraph', indent}, {
+          at: blockPath,
         });
       });
     },
@@ -207,9 +217,9 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
 
         // The nearest block.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const [block, blockPath] = Editor.above<Element>(editor, {
+        const [block, blockPath] = Editor.above(editor, {
           at: focus.path,
-          match: n => isBlock(n, editor),
+          match: (n): n is BlockElement => isBlock(n, editor),
         })!;
 
         const isFirstAndOnlyText =

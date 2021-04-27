@@ -12,8 +12,8 @@ import {HistoryEditor, withHistory} from 'slate-history';
 
 import {
   MaxIndent,
-  getMinIndent,
   isLink,
+  isBlock,
   isBlockActive,
   blocks,
 } from './node-utils';
@@ -96,24 +96,8 @@ const withCondict = (
     const targetType = isBlockActive(editor, format, options)
       ? 'paragraph'
       : format;
-    const isList = isListType(targetType);
-
-    Editor.withoutNormalizing(editor, () => {
-      for (const [block, path] of blocks(editor, options)) {
-        const wasList = isListType(block.type || 'paragraph');
-
-        const oldIndent = block.indent || 0;
-        const indent =
-          // Lists have one level of extra indentation.
-          // non-list -> list: indent += 1 (up to MaxIndent)
-          !wasList && isList ? Math.min(MaxIndent, oldIndent + 1) :
-          // list -> non-list: indent -= 1
-          wasList && !isList ? Math.max(0, oldIndent - 1) :
-          // list -> list or non-list -> non-list: no change.
-          block.indent;
-
-        Transforms.setNodes(editor, {type: targetType, indent}, {at: path});
-      }
+    Transforms.setNodes(editor, {type: targetType}, {
+      match: n => isBlock(n, editor),
     });
   };
 
@@ -129,7 +113,7 @@ const withCondict = (
   editor.unindent = options => Editor.withoutNormalizing(editor, () => {
     for (const [block, path] of blocks(editor, options)) {
       const indent = block.indent || 0;
-      if (indent > getMinIndent(block)) {
+      if (indent > 0) {
         Transforms.setNodes(editor, {indent: indent - 1}, {at: path});
       }
     }

@@ -17,6 +17,8 @@ export const AppStyles = createGlobalStyle`
 export const Container = styled.div`
   margin-left: auto;
   margin-right: auto;
+  padding-left: 32px;
+  padding-right: 32px;
   max-width: 1100px;
 `;
 

@@ -23,6 +23,8 @@ export const renderElement = (props: RenderElementProps): JSX.Element => {
       break;
     case 'bulletListItem':
       Component = B.BulletListItem;
+      // List items are rendered with one deeper level of indentation, so that
+      // the list marker actually fits.
       break;
     case 'numberListItem':
       Component = B.NumberListItem;
@@ -31,8 +33,9 @@ export const renderElement = (props: RenderElementProps): JSX.Element => {
       Component = B.Paragraph;
       break;
   }
+  const indent = element.indent || 0;
   return (
-    <Component data-indent={element.indent || 0} {...attributes}>
+    <Component data-indent={indent} {...attributes}>
       {children}
     </Component>
   );

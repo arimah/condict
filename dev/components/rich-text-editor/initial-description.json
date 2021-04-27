@@ -8,7 +8,7 @@
   },
   {
     "type": "bulletListItem",
-    "indent": 1,
+    "indent": 0,
     "children": [
       {"text": "A list item in a "},
       {"text": "bullet", "bold": true},
@@ -17,14 +17,14 @@
   },
   {
     "type": "bulletListItem",
-    "indent": 1,
+    "indent": 0,
     "children": [
-      {"text": "A second list item in the same bullet list."}
+      {"text": "A second list item in the same bullet list. This item has a significantly longer text, which we use\u2014to great effect!\u2014in order to verify that word wrapping functions as intended and that the line height is reasonable. In case the preceding sentence was somehow insufficient in causing the text to wrap, here is an amount of additional verbiage."}
     ]
   },
   {
     "type": "numberListItem",
-    "indent": 2,
+    "indent": 1,
     "children": [
       {"text": "First "},
       {"text": "numbered", "underline": true},
@@ -33,14 +33,14 @@
   },
   {
     "type": "numberListItem",
-    "indent": 2,
+    "indent": 1,
     "children": [
       {"text": "Second numbered item, oh my."}
     ]
   },
   {
     "type": "bulletListItem",
-    "indent": 1,
+    "indent": 0,
     "children": [
       {"text": "A third bullet "},
       {

@@ -11,15 +11,15 @@ export const Heading2 = 'h3';
 /** An array from 0 up to MaxIndent. */
 const IndentLevels = Array.from({length: MaxIndent + 1}, (_, i) => i);
 
-/** An array from 1 up to MaxIndent. */
-const ListLevels = IndentLevels.slice(1);
+const Indent = 32; // pixels
 
 const ListItem = styled.div`
   position: relative;
   margin-top: 2px;
   margin-bottom: 2px;
+  padding-left: ${Indent}px;
 
-  ${ListLevels
+  ${IndentLevels
     .map(level =>  `&[data-indent='${level}'] + :not([data-indent='${level}'])`)
     .join(',')
   } {
@@ -32,7 +32,7 @@ export const BulletListItem = styled(ListItem)`
     content: '•\\A0';
     margin-right: 6px;
     position: absolute;
-    right: 100%;
+    right: calc(100% - ${Indent}px);
   }
 `;
 
@@ -40,10 +40,10 @@ export const NumberListItem = styled(ListItem)`
   &::before {
     content: '#.\\A0';
     position: absolute;
-    right: 100%;
+    right: calc(100% - ${Indent}px);
   }
 
-  ${ListLevels.map(level => `
+  ${IndentLevels.map(level => `
     &[data-indent='${level}'] {
       counter-increment: list${level};
       &::before {
@@ -56,7 +56,7 @@ export const NumberListItem = styled(ListItem)`
 export const EditorStyles = css`
   ${IndentLevels.map(level => `
     [data-indent='${level}'] {
-      margin-left: ${level * 32}px;
+      margin-left: ${level * Indent}px;
       counter-reset: ${
         // Reset every list counter higher than this.
         IndentLevels.slice(level + 1).map(l => `list${l}`).join(' ')

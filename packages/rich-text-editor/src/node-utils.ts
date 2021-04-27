@@ -6,17 +6,10 @@ import {
   LinkElement,
   InlineElement,
   InlineType,
-  isListType,
 } from './types';
 
 /** The (inclusive) maximum indentation level. */
 export const MaxIndent = 8;
-
-export const getMinIndent = (element: Element): number =>
-  // List items are basically forced to be indented at least one step.
-  // This creates some extra headache, but makes all the formatting and
-  // list numbering a thousand times simpler.
-  isListType(element.type || 'paragraph') ? 1 : 0;
 
 export const isBlock = (n: Node, editor: Editor): n is BlockElement =>
   Element.isElement(n) && !editor.isInline(n);
@@ -69,7 +62,7 @@ export const canUnindent = (
     match: n =>
       isBlock(n, editor) &&
       n.indent !== undefined &&
-      n.indent > getMinIndent(n),
+      n.indent > 0,
   }));
 
 export const isBlockActive = (
