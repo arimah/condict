@@ -8,8 +8,8 @@ import {
   createEditor as createSlateEditor,
 } from 'slate';
 import {ReactEditor, withReact} from 'slate-react';
-import {HistoryEditor, withHistory} from 'slate-history';
 
+import {HistoryEditor, withHistory} from './history-editor';
 import {
   MaxIndent,
   isLink,
@@ -17,7 +17,7 @@ import {
   isBlockActive,
   blocks,
 } from './node-utils';
-import {CondictEditor, isListType} from './types';
+import {CondictEditor} from './types';
 
 const LineBreak = /[\n\r\u2028\u2029]/g;
 
@@ -125,34 +125,36 @@ const withCondict = (
       return;
     }
 
-    if (Range.isRange(at) && Range.isCollapsed(at)) {
-      // Empty range: update existing selected link.
-      Transforms.setNodes(editor, {target}, {at, match: isLink});
-    } else {
+    HistoryEditor.isolate(editor, () => {
+      if (Range.isRange(at) && Range.isCollapsed(at)) {
+        // Empty range: update existing selected link.
+        Transforms.setNodes(editor, {target}, {at, match: isLink});
+      } else {
       // The range potentially spans multiple characters - wrap in a link.
-      Editor.withoutNormalizing(editor, () => {
-        const atRef =
-          Range.isRange(at) ? Editor.rangeRef(editor, at) :
-          Path.isPath(at) ? Editor.pathRef(editor, at) :
-          Editor.pointRef(editor, at);
+        Editor.withoutNormalizing(editor, () => {
+          const atRef =
+            Range.isRange(at) ? Editor.rangeRef(editor, at) :
+            Path.isPath(at) ? Editor.pathRef(editor, at) :
+            Editor.pointRef(editor, at);
 
-        // Links cannot be nested.
-        Transforms.unwrapNodes(editor, {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          at: atRef.current!,
-          split: true,
-          match: isLink,
-        });
+          // Links cannot be nested.
+          Transforms.unwrapNodes(editor, {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            at: atRef.current!,
+            split: true,
+            match: isLink,
+          });
 
-        const link: Element = {type: 'link', target, children: []};
-        Transforms.wrapNodes(editor, link, {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          at: atRef.unref()!,
-          mode: 'lowest',
-          split: true,
+          const link: Element = {type: 'link', target, children: []};
+          Transforms.wrapNodes(editor, link, {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            at: atRef.unref()!,
+            mode: 'lowest',
+            split: true,
+          });
         });
-      });
-    }
+      }
+    });
   };
 
   editor.removeLink = (options = {}) => {

@@ -1,9 +1,9 @@
 import {KeyboardEvent} from 'react';
 import {Editor, Transforms, Node, Element, Text, Range} from 'slate';
-import {HistoryEditor} from 'slate-history';
 
-import {Shortcut} from '@condict/ui';
+import {Shortcut, Shortcuts} from '@condict/ui';
 
+import {HistoryEditor} from './history-editor';
 import {MaxIndent, blocks, isBlock} from './node-utils';
 import {
   InlineShortcuts,
@@ -37,11 +37,6 @@ export interface KeyboardMapConfig {
   allowLinks: boolean;
 }
 
-const handle = (event: KeyboardEvent) => {
-  event.preventDefault();
-  event.stopPropagation();
-};
-
 const toggleMark = (editor: CondictEditor, key: MarkType) => {
   const marks = Editor.marks(editor);
   if (marks && marks[key]) {
@@ -53,37 +48,51 @@ const toggleMark = (editor: CondictEditor, key: MarkType) => {
 
 export const getInlineCommands = (shortcuts: InlineShortcuts): KeyCommand[] => [
   {
+    shortcut: Shortcuts.undo,
+    exec: (e, {editor}) => {
+      e.preventDefault();
+      editor.undo();
+    },
+  },
+  {
+    shortcut: Shortcuts.redo,
+    exec: (e, {editor}) => {
+      e.preventDefault();
+      editor.redo();
+    },
+  },
+  {
     shortcut: shortcuts.bold,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       toggleMark(editor, 'bold');
     },
   },
   {
     shortcut: shortcuts.italic,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       toggleMark(editor, 'italic');
     },
   },
   {
     shortcut: shortcuts.underline,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       toggleMark(editor, 'underline');
     },
   },
   {
     shortcut: shortcuts.strikethrough,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       toggleMark(editor, 'strikethrough');
     },
   },
   {
     shortcut: shortcuts.subscript,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       toggleMark(editor, 'subscript');
       editor.removeMark('superscript');
     },
@@ -91,7 +100,7 @@ export const getInlineCommands = (shortcuts: InlineShortcuts): KeyCommand[] => [
   {
     shortcut: shortcuts.superscript,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       toggleMark(editor, 'superscript');
       editor.removeMark('subscript');
     },
@@ -101,7 +110,7 @@ export const getInlineCommands = (shortcuts: InlineShortcuts): KeyCommand[] => [
 export const getSingleLineCommands = (): KeyCommand[] => [
   {
     shortcut: Shortcut.parse(['Enter', 'Shift+Enter', 'Ctrl+Enter']),
-    exec: e => handle(e), // do nothing
+    exec: e => e.preventDefault(), // do nothing
   },
 ];
 
@@ -119,7 +128,7 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
         // When you press Enter at the end of a heading block, the block
         // type is reset to paragraph.
         if (isHeadingType(block.type) && atEnd) {
-          handle(e);
+          e.preventDefault();
           editor.insertBreak();
           editor.formatBlock('paragraph');
           return;
@@ -128,7 +137,7 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
         // to a paragraph. Indentation is kept.
         const atStart = Editor.isStart(editor, selection.focus, blockPath);
         if (isListType(block.type) && atEnd && atStart) {
-          handle(e);
+          e.preventDefault();
           editor.formatBlock('paragraph');
           return;
         }
@@ -138,14 +147,14 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
   {
     shortcut: Shortcut.parse('Shift+Enter'),
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       editor.insertText('\n');
     },
   },
   {
     shortcut: Shortcut.parse('Ctrl+Enter'),
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       Editor.withoutNormalizing(editor, () => {
         // Ctrl+Enter inserts a new paragraph at the current indentation.
         // Makes it easier to add paragraphs to lists.
@@ -166,42 +175,42 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
   {
     shortcut: shortcuts.heading1,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       editor.formatBlock('heading1');
     },
   },
   {
     shortcut: shortcuts.heading2,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       editor.formatBlock('heading2');
     },
   },
   {
     shortcut: shortcuts.bulletList,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       editor.formatBlock('bulletListItem');
     },
   },
   {
     shortcut: shortcuts.numberList,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       editor.formatBlock('numberListItem');
     },
   },
   {
     shortcut: shortcuts.indent,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       editor.indent();
     },
   },
   {
     shortcut: shortcuts.unindent,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       editor.unindent();
     },
   },
@@ -232,29 +241,24 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
           focus.offset === text.text.length &&
           ListStart.test(text.text)
         ) {
-          handle(e);
+          e.preventDefault();
 
-          // HistoryEditor.withoutMerging prevents merging into the *previous*
-          // history state. The ' ' should be its own history state, so you
-          // can undo back to `* `, `1. ` or whatever you typed. The deletion
-          // and the block formatting are merged into one action, so that you
-          // *can't* get back to an empty block.
-
-          HistoryEditor.withoutMerging(editor, () => {
+          HistoryEditor.isolate(editor, () => {
             editor.insertText(' ');
           });
 
-          HistoryEditor.withoutMerging(editor, () => {
+          HistoryEditor.isolate(editor, () => {
             Transforms.delete(editor, {
               distance: focus.offset + 1, // +1 for newly inserted ' '
               reverse: true,
               unit: 'character',
             });
+
+            const listType = BulletListStart.test(text.text)
+              ? 'bulletListItem'
+              : 'numberListItem';
+            editor.formatBlock(listType, {at: blockPath});
           });
-          const listType = BulletListStart.test(text.text)
-            ? 'bulletListItem'
-            : 'numberListItem';
-          editor.formatBlock(listType, {at: blockPath});
           return;
         }
       }
@@ -274,7 +278,7 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
         const atEnd = Editor.isEnd(editor, selection.focus, blockPath);
         // Backspace in an empty list item resets it to paragraph.
         if (isListType(block.type) && atStart && atEnd) {
-          handle(e);
+          e.preventDefault();
           editor.formatBlock('paragraph');
           return;
         }
@@ -291,14 +295,14 @@ export const getLinkCommands = (shortcuts: LinkShortcuts): KeyCommand<LinkArgs>[
   {
     shortcut: shortcuts.addLink,
     exec: (e, {openLinkDialog}) => {
-      handle(e);
+      e.preventDefault();
       openLinkDialog();
     },
   },
   {
     shortcut: shortcuts.removeLink,
     exec: (e, {editor}) => {
-      handle(e);
+      e.preventDefault();
       editor.removeLink();
     },
   },
@@ -313,14 +317,14 @@ export const getHelperCommands = (shortcuts: HelperShortcuts): KeyCommand<Helper
   {
     shortcut: shortcuts.insertIpa,
     exec: (e, {openIpaDialog}) => {
-      handle(e);
+      e.preventDefault();
       openIpaDialog();
     },
   },
   {
     shortcut: shortcuts.focusPopup,
     exec: (e, {focusPopup}) => {
-      handle(e);
+      e.preventDefault();
       focusPopup();
     },
   },

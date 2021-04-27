@@ -1,6 +1,7 @@
 import {Location, Range} from 'slate';
 import {ReactEditor} from 'slate-react';
-import {HistoryEditor} from 'slate-history';
+
+import {HistoryEditor} from './history-editor';
 
 export interface ParagraphElement {
   type: 'paragraph';
