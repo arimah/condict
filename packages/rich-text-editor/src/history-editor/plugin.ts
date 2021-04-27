@@ -183,14 +183,14 @@ const shouldReuse = (
     return true;
   }
 
-  const timeSinceOperation = now - state.lastOperationTime;
-  if (timeSinceOperation > MaxPause) {
-    return false;
-  }
-
   // Selections can be merged without consequence.
   if (op.type === 'set_selection') {
     return true;
+  }
+
+  const timeSinceOperation = now - state.lastOperationTime;
+  if (timeSinceOperation > MaxPause) {
+    return false;
   }
 
   const prev = state.operations[state.operations.length - 1];
