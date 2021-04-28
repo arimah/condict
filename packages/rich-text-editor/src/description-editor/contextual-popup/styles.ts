@@ -4,11 +4,9 @@ import {Button} from '@condict/ui';
 
 import PopupBase from '../popup';
 
-const Width = 340;
+export const Popup = styled(PopupBase)`
+  max-width: 376px;
 
-export const Popup = styled(PopupBase).attrs({
-  width: Width,
-})`
   animation-name: enter;
   animation-duration: 100ms;
   animation-iteration-count: 1;

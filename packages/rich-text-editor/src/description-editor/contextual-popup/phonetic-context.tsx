@@ -49,8 +49,8 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
         </S.PrimaryAction>
         <S.Actions>
           <S.Action
-            label='Insert IPA character'
-            title='Insert IPA character'
+            label='Insert IPA'
+            title='Insert IPA'
             tabIndex={tabIndex}
             onClick={onInsertIpa}
           >
@@ -60,7 +60,7 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
       </> : (
         <S.PrimaryAction tabIndex={tabIndex} onClick={onInsertIpa}>
           <SearchIpaIcon/>
-          <span>Insert IPA character</span>
+          <span>Insert IPA</span>
         </S.PrimaryAction>
       )}
     </S.Columns>

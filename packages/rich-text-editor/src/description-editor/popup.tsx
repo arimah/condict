@@ -1,18 +1,17 @@
-import React, {Ref, HTMLAttributes} from 'react';
+import React, {Ref, HTMLAttributes, useRef, useEffect} from 'react';
 
-import {FocusTrap} from '@condict/ui';
+import {FocusTrap, combineRefs} from '@condict/ui';
 
 import * as S from './styles';
 
 export type Props = {
-  width: number;
   placement: PlacementRect;
   trapFocus?: boolean;
   restoreFocus?: boolean;
   onPointerDownOutside?: (target: Element) => void;
 } & Omit<
   HTMLAttributes<HTMLFormElement>,
-  'width' | 'placement' | 'role' | 'tabIndex' | 'aria-modal'
+  'placement' | 'role' | 'tabIndex' | 'aria-modal'
 >;
 
 export type PlacementRect = {
@@ -39,7 +38,6 @@ const Popup = React.forwardRef((
   ref: Ref<HTMLFormElement>
 ): JSX.Element => {
   const {
-    width,
     placement,
     style,
     trapFocus = false,
@@ -49,13 +47,21 @@ const Popup = React.forwardRef((
     ...otherProps
   } = props;
 
-  const x = Math.max(
-    Math.min(
-      placement.x,
-      placement.parentWidth - width - Margin
-    ),
-    Margin
-  );
+  const ownRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (ownRef.current) {
+      const width = ownRef.current.offsetWidth;
+      const x = Math.max(
+        Math.min(
+          placement.x,
+          placement.parentWidth - width - Margin
+        ),
+        Margin
+      );
+      ownRef.current.style.left = `${x}px`;
+      ownRef.current.style.visibility = 'visible';
+    }
+  });
 
   return (
     <FocusTrap
@@ -67,11 +73,9 @@ const Popup = React.forwardRef((
         {...otherProps}
         style={{
           ...style,
-          left: `${x}px`,
           top: `${placement.y}px`,
-          width: `${width}px`,
         }}
-        ref={ref}
+        ref={combineRefs(ref, ownRef)}
       >
         {children}
       </S.Popup>

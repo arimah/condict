@@ -15,6 +15,8 @@ export const Popup = styled.form.attrs({
   tabIndex: -1,
   'aria-modal': true,
 })`
+  visibility: hidden; /* until positioned */
+  margin-top: 2px;
   box-sizing: border-box;
   overflow: hidden;
   position: absolute;

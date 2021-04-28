@@ -10,13 +10,12 @@ export const PrevResultKey = Shortcut.parse('ArrowUp');
 
 export const NextResultKey = Shortcut.parse('ArrowDown');
 
-const Width = 375; // px
-
 const Dialog = styled(Popup).attrs({
-  width: Width,
   trapFocus: true,
   restoreFocus: true,
-})``;
+})`
+  width: 376px;
+`;
 
 export default Dialog;
 
