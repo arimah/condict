@@ -217,7 +217,6 @@ const IpaDialog = (props: Props): JSX.Element => {
     <Dialog
       aria-label='IPA'
       placement={placement}
-      trapFocus
       onSubmit={handleSubmit}
       onKeyDown={handleFormKeyDown}
       onPointerDownOutside={close}

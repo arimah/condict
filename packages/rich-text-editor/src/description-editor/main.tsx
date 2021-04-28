@@ -1,6 +1,5 @@
 import React, {
   KeyboardEvent,
-  FocusEvent,
   useState,
   useMemo,
   useCallback,
@@ -163,25 +162,13 @@ const DescriptionEditor = (props: Props): JSX.Element => {
 
   const popupRef = useRef<ContextualPopupHandle>(null);
 
-  const handleFocus = useCallback((e: FocusEvent<HTMLDivElement>) => {
+  const handleFocusChanged = useCallback((nextFocus: Element | null) => {
     const editorElem = ReactEditor.toDOMNode(editor, editor);
-    if (
-      editorElem.contains(e.target) ||
-      popupRef.current?.contains(e.target)
-    ) {
-      setShowPopup(true);
-    }
-  }, []);
-
-  const handleBlur = useCallback((e: FocusEvent<HTMLDivElement>) => {
-    const editorElem = ReactEditor.toDOMNode(editor, editor);
-    // relatedTarget is the element that *gained* focus
-    if (
-      !editorElem.contains(e.relatedTarget as Node | null) &&
-      !popupRef.current?.contains(e.relatedTarget as Node | null)
-    ) {
-      setShowPopup(false);
-    }
+    const focusInEditorOrPopup =
+      editorElem.contains(nextFocus) ||
+      popupRef.current?.contains(nextFocus) ||
+      false;
+    setShowPopup(focusInEditorOrPopup);
   }, []);
 
   const focusPopup = useCallback(() => {
@@ -240,8 +227,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
         </>}
         $dialogOpen={dialogProps !== null}
         onKeyDown={handleKeyDown}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
+        onFocusChanged={handleFocusChanged}
         ref={editorRef}
       >
         {dialogProps && dialogProps.type === 'link' &&
@@ -252,13 +238,8 @@ const DescriptionEditor = (props: Props): JSX.Element => {
             onSubmit={target => {
               const at = dialogProps.selection;
               editor.blurSelection = at;
+              editor.wrapLink(target, {at});
               setDialogProps(null);
-              // TODO: Why is this next-tick stuff necessary? Can we do without
-              // this hack?
-              void Promise.resolve().then(() => {
-                ReactEditor.focus(editor);
-                editor.wrapLink(target, {at});
-              });
             }}
             onCancel={handleCloseDialog}
           />}

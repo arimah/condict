@@ -31,10 +31,8 @@ export const blocks = (
     match: (n): n is BlockElement => isBlock(n, editor),
   });
 
-const anyMatch = (iterable: Iterable<any>): boolean => {
-  const iter = iterable[Symbol.iterator]();
-  return !iter.next().done;
-};
+const anyMatch = (iterable: Generator<unknown>): boolean =>
+  !iterable.next().done;
 
 export const canIndent = (
   editor: Editor,
@@ -97,7 +95,7 @@ export const firstMatchingNode = <T extends Node = Node>(
     match?: ((node: Node) => node is T) | ((node: Node) => boolean);
   } = {}
 ): T | null => {
-  const iter = Editor.nodes(editor, options)[Symbol.iterator]();
+  const iter = Editor.nodes(editor, options);
   const item = iter.next();
   return !item.done ? item.value[0] : null;
 };

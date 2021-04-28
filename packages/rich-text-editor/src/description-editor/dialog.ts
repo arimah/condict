@@ -14,6 +14,8 @@ const Width = 375; // px
 
 const Dialog = styled(Popup).attrs({
   width: Width,
+  trapFocus: true,
+  restoreFocus: true,
 })``;
 
 export default Dialog;

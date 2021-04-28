@@ -73,6 +73,11 @@ const ContextualPopup = React.forwardRef((
   const [trapActive, setTrapActive] = useState(false);
 
   const cancelTrap = useCallback(() => {
+    // HACK: We need to restore focus manually after deactivating the trap.
+    // Otherwise events happen in the wrong order and the editor becomes
+    // convinced that it doesn't have focus, and the contextual popup vanishes.
+    // It should not be possible to get into the contextual popup from anywhere
+    // but the editor.
     setTrapActive(false);
     void Promise.resolve().then(() => {
       ReactEditor.focus(editor);

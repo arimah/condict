@@ -23,8 +23,7 @@ export type Props = {
   toolbarAlwaysVisible?: boolean;
   singleLine: boolean;
   onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => void;
-  onFocus?: (e: FocusEvent<HTMLDivElement>) => void;
-  onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
+  onFocusChanged?: (nextFocus: Element | null) => void;
   children?: ReactNode;
 };
 
@@ -38,8 +37,7 @@ const BaseEditor = React.forwardRef((
     toolbarAlwaysVisible = true,
     singleLine,
     onKeyDown,
-    onFocus,
-    onBlur,
+    onFocusChanged,
     children,
   } = props;
 
@@ -83,28 +81,24 @@ const BaseEditor = React.forwardRef((
   }, []);
 
   // COMPAT: Slate does not appreciate re-renders during focus and blur, so we
-  // must execute the handlers on the next tick.
-  const handleFocus = useCallback((e: FocusEvent<HTMLDivElement>) => {
-    e.persist();
+  // must execute the focus change handler on the next tick.
+  const handleFocusChange = useCallback((e: FocusEvent) => {
+    const nextFocus = e.type === 'focus' || e.type === 'focusin'
+      ? e.target as Element
+      // For blur/focusout, e.relatedTarget is the element that receives focus.
+      : e.relatedTarget as Element;
     void Promise.resolve().then(() => {
-      onFocus?.(e);
+      onFocusChanged?.(nextFocus);
     });
-  }, [onFocus]);
-
-  const handleBlur = useCallback((e: FocusEvent<HTMLDivElement>) => {
-    e.persist();
-    void Promise.resolve().then(() => {
-      onBlur?.(e);
-    });
-  }, [onBlur]);
+  }, [onFocusChanged]);
 
   return (
     <S.EditorContainer
       className={className}
       singleLine={singleLine}
       toolbarAlwaysVisible={toolbarAlwaysVisible}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
+      onFocus={handleFocusChange}
+      onBlur={handleFocusChange}
       ref={ref}
     >
       <S.Toolbar

@@ -8,6 +8,7 @@ export type Props = {
   width: number;
   placement: PlacementRect;
   trapFocus?: boolean;
+  restoreFocus?: boolean;
   onPointerDownOutside?: (target: Element) => void;
 } & Omit<
   HTMLAttributes<HTMLFormElement>,
@@ -42,6 +43,7 @@ const Popup = React.forwardRef((
     placement,
     style,
     trapFocus = false,
+    restoreFocus = false,
     onPointerDownOutside,
     children,
     ...otherProps
@@ -57,10 +59,8 @@ const Popup = React.forwardRef((
 
   return (
     <FocusTrap
-      // COMPAT: We need to call ReactEditor.focus on the editor instead of
-      // letting FocusTrap handle it for us. I don't know why.
-      return={false}
       active={trapFocus}
+      return={restoreFocus}
       onPointerDownOutside={onPointerDownOutside}
     >
       <S.Popup

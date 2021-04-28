@@ -291,7 +291,6 @@ const LinkDialog = (props: Props): JSX.Element => {
     <Dialog
       placement={placement}
       aria-label='Link target'
-      trapFocus
       onSubmit={handleSubmit}
       onKeyDown={handleFormKeyDown}
       onPointerDownOutside={cancel}
