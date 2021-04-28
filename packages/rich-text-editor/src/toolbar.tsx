@@ -160,7 +160,7 @@ export const LinkGroup = (
         label='Add/edit link'
         shortcut={shortcuts.addLink}
         checked={hasLink}
-        disabled={!hasLink && (at === undefined || Range.isCollapsed(at))}
+        disabled={at === undefined}
         onClick={onSetLink}
       >
         <LinkIcon/>

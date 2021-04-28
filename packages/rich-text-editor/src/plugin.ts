@@ -15,6 +15,7 @@ import {
   isLink,
   isBlock,
   isBlockActive,
+  isTextEmpty,
   blocks,
 } from './node-utils';
 import {CondictEditor} from './types';
@@ -34,8 +35,8 @@ const withCondict = (
 
   editor.blurSelection = editor.selection;
 
+  const {normalizeNode} = editor;
   if (singleLine) {
-    const {normalizeNode} = editor;
     editor.normalizeNode = entry => {
       const [node, path] = entry;
 
@@ -51,6 +52,21 @@ const withCondict = (
       }
 
       if (Element.isElement(node) && node.type === 'link') {
+        Transforms.unwrapNodes(editor, {at: path});
+      }
+
+      normalizeNode(entry);
+    };
+  } else {
+    editor.normalizeNode = entry => {
+      const [node, path] = entry;
+
+      // Remove inline elements without text.
+      if (
+        Element.isElement(node) &&
+        editor.isInline(node) &&
+        isTextEmpty(node)
+      ) {
         Transforms.unwrapNodes(editor, {at: path});
       }
 
@@ -120,40 +136,56 @@ const withCondict = (
   });
 
   editor.wrapLink = (target, options = {}) => {
-    const {at = editor.selection} = options;
-    if (!at) {
+    const {at: originalAt = editor.selection} = options;
+    if (!originalAt) {
       return;
     }
 
     HistoryEditor.isolate(editor, () => {
-      if (Range.isRange(at) && Range.isCollapsed(at)) {
-        // Empty range: update existing selected link.
-        Transforms.setNodes(editor, {target}, {at, match: isLink});
-      } else {
-      // The range potentially spans multiple characters - wrap in a link.
-        Editor.withoutNormalizing(editor, () => {
-          const atRef =
-            Range.isRange(at) ? Editor.rangeRef(editor, at) :
-            Path.isPath(at) ? Editor.pathRef(editor, at) :
-            Editor.pointRef(editor, at);
+      Editor.withoutNormalizing(editor, () => {
+        let at = originalAt;
 
-          // Links cannot be nested.
-          Transforms.unwrapNodes(editor, {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            at: atRef.current!,
-            split: true,
-            match: isLink,
-          });
+        if (Range.isRange(at) && Range.isCollapsed(at)) {
+          // Empty range: try to update existing selected link.
+          const nearestLink = Editor.above(editor, {at, match: isLink});
+          if (nearestLink) {
+            Transforms.setNodes(editor, {target}, {at: nearestLink[1]});
+            return;
+          }
 
-          const link: Element = {type: 'link', target, children: []};
-          Transforms.wrapNodes(editor, link, {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            at: atRef.unref()!,
-            mode: 'lowest',
-            split: true,
-          });
+          // Otherwise, insert the target name or URL, and wrap that.
+          const linkText = target.name || target.url;
+          Transforms.insertText(editor, linkText, {at});
+          at = {
+            anchor: at.anchor,
+            focus: {
+              path: at.anchor.path,
+              offset: at.anchor.offset + linkText.length,
+            },
+          };
+        }
+
+        const atRef =
+          Range.isRange(at) ? Editor.rangeRef(editor, at) :
+          Path.isPath(at) ? Editor.pathRef(editor, at) :
+          Editor.pointRef(editor, at);
+
+        // Links cannot be nested.
+        Transforms.unwrapNodes(editor, {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          at: atRef.current!,
+          split: true,
+          match: isLink,
         });
-      }
+
+        const link: Element = {type: 'link', target, children: []};
+        Transforms.wrapNodes(editor, link, {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          at: atRef.unref()!,
+          mode: 'lowest',
+          split: true,
+        });
+      });
     });
   };
 

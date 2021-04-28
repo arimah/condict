@@ -99,3 +99,12 @@ export const firstMatchingNode = <T extends Node = Node>(
   const item = iter.next();
   return !item.done ? item.value[0] : null;
 };
+
+export const isTextEmpty = (node: Node): boolean => {
+  for (const [text] of Node.texts(node)) {
+    if (text.text.length > 0) {
+      return false;
+    }
+  }
+  return true;
+};
