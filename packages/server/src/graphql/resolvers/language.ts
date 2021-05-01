@@ -1,7 +1,7 @@
 import {
   Language as LanguageModel,
-  LanguageDescription,
   LanguageMut,
+  Description,
   PartOfSpeech,
   Lemma,
   Tag,
@@ -15,12 +15,11 @@ import {ResolversFor, Mutators} from './types';
 
 const Language: ResolversFor<LanguageType, LanguageRow> = {
   async description(p, _args, {db}) {
-    const description = await LanguageDescription.rawByLanguage(db, p.id);
+    const description = await Description.rawById(db, p.description_id);
     return JSON.parse(description) as unknown;
   },
 
-  descriptionRaw: (p, _args, {db}) =>
-    LanguageDescription.rawByLanguage(db, p.id),
+  descriptionRaw: (p, _args, {db}) => Description.rawById(db, p.description_id),
 
   partsOfSpeech: (p, _args, {db}) => PartOfSpeech.allByLanguage(db, p.id),
 

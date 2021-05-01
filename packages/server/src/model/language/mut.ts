@@ -1,13 +1,12 @@
-import {DataAccessor, DataWriter} from '../../database';
-import {validateDescription} from '../../rich-text';
+import {DataAccessor} from '../../database';
 import {
   LanguageId,
   NewLanguageInput,
   EditLanguageInput,
-  BlockElementInput,
 } from '../../graphql';
 
 import FieldSet from '../field-set';
+import {DescriptionMut} from '../description';
 
 import {Language} from './model';
 import {LanguageRow} from './types';
@@ -20,12 +19,12 @@ const LanguageMut = {
     const validName = validateName(db, null, name);
 
     return db.transact(db => {
-      const {insertId: languageId} = db.exec<LanguageId>`
-        insert into languages (name)
-        values (${validName})
-      `;
+      const descriptionId = DescriptionMut.insert(db, description || []);
 
-      LanguageDescriptionMut.insert(db, languageId, description || []);
+      const {insertId: languageId} = db.exec<LanguageId>`
+        insert into languages (name, description_id)
+        values (${validName}, ${descriptionId})
+      `;
 
       return Language.byIdRequired(db, languageId);
     });
@@ -56,7 +55,7 @@ const LanguageMut = {
         }
 
         if (description) {
-          LanguageDescriptionMut.update(db, language.id, description);
+          DescriptionMut.update(db, language.description_id, description);
         }
 
         db.clearCache(Language.byIdKey, language.id);
@@ -66,33 +65,4 @@ const LanguageMut = {
   },
 } as const;
 
-const LanguageDescriptionMut = {
-  insert(
-    db: DataWriter,
-    languageId: LanguageId,
-    description: BlockElementInput[]
-  ): void {
-    const finalDescription = validateDescription(description, () => { /* ignore */ });
-
-    db.exec`
-      insert into language_descriptions (language_id, description)
-      values (${languageId}, ${JSON.stringify(finalDescription)})
-    `;
-  },
-
-  update(
-    db: DataWriter,
-    languageId: LanguageId,
-    description: BlockElementInput[]
-  ): void {
-    const finalDescription = validateDescription(description, () => { /* ignore */ });
-
-    db.exec`
-      update language_descriptions
-      set description = ${JSON.stringify(finalDescription)}
-      where language_id = ${languageId}
-    `;
-  },
-} as const;
-
-export {LanguageMut, LanguageDescriptionMut};
+export {LanguageMut};

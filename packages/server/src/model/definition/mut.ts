@@ -1,13 +1,11 @@
 import {DataAccessor, DataReader, DataWriter} from '../../database';
 import {MultiMap} from '../../utils';
-import {validateDescription} from '../../rich-text';
 import {
   DefinitionId,
   DefinitionInflectionTableId,
   PartOfSpeechId,
   InflectedFormId,
   InflectionTableLayoutId,
-  BlockElementInput,
   NewDefinitionInput,
   EditDefinitionInput,
   EditDefinitionInflectionTableInput,
@@ -17,6 +15,7 @@ import {Language} from '../language';
 import {Definition} from '../definition';
 import {PartOfSpeech} from '../part-of-speech';
 import {InflectionTableLayoutMut} from '../inflection-table';
+import {DescriptionMut} from '../description';
 import {LemmaMut, validateTerm} from '../lemma';
 import FieldSet from '../field-set';
 
@@ -56,12 +55,18 @@ const DefinitionMut = {
     return db.transact(async db => {
       const lemmaId = LemmaMut.ensureExists(db, language.id, validTerm);
 
+      const descriptionId = DescriptionMut.insert(db, description);
+
       const {insertId: definitionId} = db.exec<DefinitionId>`
-        insert into definitions (lemma_id, language_id, part_of_speech_id)
-        values (${lemmaId}, ${language.id}, ${partOfSpeech.id})
+        insert into definitions (
+          lemma_id,
+          language_id,
+          part_of_speech_id,
+          description_id
+        )
+        values (${lemmaId}, ${language.id}, ${partOfSpeech.id}, ${descriptionId})
       `;
 
-      DefinitionDescriptionMut.insert(db, definitionId, description);
       const stemMap = DefinitionStemMut.insert(db, definitionId, stems);
 
       const derivedDefinitions = await this.updateInflectionTables(
@@ -132,7 +137,7 @@ const DefinitionMut = {
       }
 
       if (description) {
-        DefinitionDescriptionMut.update(db, definition.id, description);
+        DescriptionMut.update(db, definition.description_id, description);
       }
 
       const stemMap = await DefinitionStemMut.update(db, definition.id, stems);
@@ -217,6 +222,9 @@ const DefinitionMut = {
         delete from definitions
         where id = ${id}
       `;
+
+      DescriptionMut.delete(db, definition.description_id);
+
       LemmaMut.deleteEmpty(db, definition.language_id);
     });
     return true;
@@ -405,36 +413,4 @@ const DefinitionMut = {
   },
 } as const;
 
-const DefinitionDescriptionMut = {
-  insert(
-    db: DataWriter,
-    definitionId: DefinitionId,
-    description: BlockElementInput[]
-  ): void {
-    const finalDescription = validateDescription(description, () => { /* ignore */ });
-
-    db.exec`
-      insert into definition_descriptions (definition_id, description)
-      values (${definitionId}, ${JSON.stringify(finalDescription)})
-    `;
-  },
-
-  update(
-    db: DataWriter,
-    definitionId: DefinitionId,
-    description: BlockElementInput[]
-  ): void {
-    const finalDescription = validateDescription(description, () => { /* ignore */ });
-
-    db.exec`
-      update definition_descriptions
-      set description = ${JSON.stringify(finalDescription)}
-      where definition_id = ${definitionId}
-    `;
-  },
-} as const;
-
-export {
-  DefinitionMut,
-  DefinitionDescriptionMut,
-};
+export {DefinitionMut};

@@ -19,6 +19,21 @@ const tables: readonly TableSchema[] = [
     ],
   },
 
+  // Formatted rich text descriptions, used in various places in the dictionary.
+  // This table needs to be defined first so that its IDs can be used in foreign
+  // keys elsewhere.
+  {
+    name: 'descriptions',
+    commands: [`
+      create table descriptions (
+        id integer not null primary key,
+        -- The formatted text itself, as a JSON document. See app documentation
+        -- for details.
+        description text not null
+      )`,
+    ],
+  },
+
   // Languages that are defined in the dictionary.
   {
     name: 'languages',
@@ -27,29 +42,16 @@ const tables: readonly TableSchema[] = [
         id integer not null primary key,
         -- The total number of lemmas in the language. Cached for performance.
         lemma_count integer not null default 0,
+        -- The description of the language.
+        description_id integer not null,
         -- The full display name of the language.
-        name text not null
+        name text not null,
+
+        foreign key (description_id)
+          references descriptions(id)
+          on delete restrict
       )`,
       `create unique index \`languages(name)\` on languages(name)`,
-    ],
-  },
-
-  // Descriptions associated with each definition. This is a separate table
-  // so we don't have to fetch a potentially large JSON object unless the
-  // description is asked for.
-  {
-    name: 'language_descriptions',
-    commands: [`
-      create table language_descriptions (
-        -- The language that this description belongs to.
-        language_id integer not null primary key,
-        -- The language text itself. See app documentation for details.
-        description text not null,
-
-        foreign key (language_id)
-          references languages(id)
-          on delete cascade
-      )`,
     ],
   },
 
@@ -209,6 +211,8 @@ const tables: readonly TableSchema[] = [
         language_id integer not null,
         -- The part of speech of the definition.
         part_of_speech_id integer not null,
+        -- The description of the definition; the definition text itself.
+        description_id integer not null,
 
         foreign key (lemma_id)
           references lemmas(id)
@@ -218,30 +222,14 @@ const tables: readonly TableSchema[] = [
           on delete cascade,
         foreign key (part_of_speech_id)
           references parts_of_speech(id)
+          on delete restrict,
+        foreign key (description_id)
+          references descriptions(id)
           on delete restrict
       )`,
       `create index \`definitions(lemma_id)\` on definitions(lemma_id)`,
       `create index \`definitions(language_id)\` on definitions(language_id)`,
       `create index \`definitions(part_of_speech_id)\` on definitions(part_of_speech_id)`,
-    ],
-  },
-
-  // Descriptions associated with each definition. This is a separate table
-  // so we don't have to fetch a potentially large JSON object unless the
-  // description is asked for.
-  {
-    name: 'definition_descriptions',
-    commands: [`
-      create table definition_descriptions (
-        -- The definition that this description belongs to.
-        definition_id integer not null primary key,
-        -- The definition text itself. See app documentation for details.
-        description text not null,
-
-        foreign key (definition_id)
-          references definitions(id)
-          on delete cascade
-      )`,
     ],
   },
 

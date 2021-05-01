@@ -3,7 +3,7 @@ import {UserInputError} from 'apollo-server';
 import {DataReader} from '../../database';
 import {LanguageId} from '../../graphql';
 
-import {LanguageRow, LanguageDescriptionRow} from './types';
+import {LanguageRow} from './types';
 
 const Language = {
   byIdKey: 'Language.byId',
@@ -52,24 +52,4 @@ const Language = {
   },
 } as const;
 
-const LanguageDescription = {
-  rawByLanguageKey: 'LanguageDescription.rawByLanguage',
-
-  rawByLanguage(db: DataReader, languageId: LanguageId): Promise<string> {
-    return db
-      .batchOneToOne(
-        this.rawByLanguageKey,
-        languageId,
-        (db, languageIds) =>
-          db.all<LanguageDescriptionRow>`
-            select *
-            from language_descriptions
-            where language_id in (${languageIds})
-          `,
-        row => row.language_id
-      )
-      .then(row => row ? row.description : '[]');
-  },
-} as const;
-
-export {Language, LanguageDescription};
+export {Language};

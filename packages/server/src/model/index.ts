@@ -1,3 +1,4 @@
+export * from './description';
 export * from './definition';
 export * from './inflection-table';
 export * from './language';

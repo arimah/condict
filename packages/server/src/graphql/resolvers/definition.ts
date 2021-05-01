@@ -2,10 +2,10 @@ import {
   Definition as DefinitionModel,
   DefinitionMut,
   PartOfSpeech,
-  DefinitionDescription,
   DefinitionStem as DefinitionStemModel,
   DefinitionInflectionTable as DefinitionInflectionTableModel,
   DerivedDefinition as DerivedDefinitionModel,
+  Description,
   Tag,
   Lemma,
   Language,
@@ -36,12 +36,11 @@ const Definition: ResolversFor<DefinitionType, DefinitionRow> = {
   partOfSpeech: (p, _args, {db}) => PartOfSpeech.byId(db, p.part_of_speech_id),
 
   async description(p, _args, {db}) {
-    const description = await DefinitionDescription.rawByDefinition(db, p.id);
+    const description = await Description.rawById(db, p.description_id);
     return JSON.parse(description) as unknown;
   },
 
-  descriptionRaw: (p, _args, {db}) =>
-    DefinitionDescription.rawByDefinition(db, p.id),
+  descriptionRaw: (p, _args, {db}) => Description.rawById(db, p.description_id),
 
   stems: (p, _args, {db}) => DefinitionStemModel.allByDefinition(db, p.id),
 

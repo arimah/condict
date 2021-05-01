@@ -1,13 +1,10 @@
 import {LanguageId} from '../../graphql';
 
+import {DescriptionId} from '../description';
+
 export type LanguageRow = {
   id: LanguageId;
   lemma_count: number;
+  description_id: DescriptionId;
   name: string;
-};
-
-export type LanguageDescriptionRow = {
-  language_id: LanguageId;
-  /** JSON-serialized data */
-  description: string;
 };

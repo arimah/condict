@@ -9,18 +9,15 @@ import {
   InflectedFormId,
 } from '../../graphql';
 
+import {DescriptionId} from '../description';
+
 export type DefinitionRow = {
   id: DefinitionId;
   lemma_id: LemmaId;
   language_id: LanguageId;
   part_of_speech_id: PartOfSpeechId;
+  description_id: DescriptionId;
   term: string;
-};
-
-export type DefinitionDescriptionRow = {
-  definition_id: DefinitionId;
-  /** JSON-serialized data */
-  description: string;
 };
 
 export type DefinitionStemRow = {

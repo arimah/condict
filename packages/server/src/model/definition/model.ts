@@ -18,7 +18,6 @@ import {ItemConnection} from '../types';
 
 import {
   DefinitionRow,
-  DefinitionDescriptionRow,
   DefinitionStemRow,
   DefinitionInflectionTableRow,
   CustomInflectedFormRow,
@@ -219,26 +218,6 @@ const Definition = {
   },
 } as const;
 
-const DefinitionDescription = {
-  rawByDefinitionKey: 'DefinitionDescription.rawByDefinition',
-
-  rawByDefinition(db: DataReader, definitionId: DefinitionId): Promise<string> {
-    return db
-      .batchOneToOne(
-        this.rawByDefinitionKey,
-        definitionId,
-        (db, definitionIds) =>
-          db.all<DefinitionDescriptionRow>`
-            select *
-            from definition_descriptions
-            where definition_id in (${definitionIds})
-          `,
-        row => row.definition_id
-      )
-      .then(row => row ? row.description : '[]');
-  },
-} as const;
-
 const DefinitionStem = {
   allByDefinitionKey: 'DefinitionStem.allByDefinition',
 
@@ -404,7 +383,6 @@ const DerivedDefinition = {
 
 export {
   Definition,
-  DefinitionDescription,
   DefinitionStem,
   DefinitionInflectionTable,
   CustomInflectedForm,
