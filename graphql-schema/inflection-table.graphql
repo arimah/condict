@@ -366,7 +366,7 @@ extend type Mutation {
 
   Requires authentication.
   """
-  addInflectionTable(data: NewInflectionTableInput!): InflectionTable!
+  addInflectionTable(data: NewInflectionTableInput!): InflectionTable
 
   """
   Edits an inflection table.
@@ -376,7 +376,7 @@ extend type Mutation {
   editInflectionTable(
     id: InflectionTableId!
     data: EditInflectionTableInput!
-  ): InflectionTable!
+  ): InflectionTable
 
   """
   Deletes an inflection table. It is not possible to delete a table that is used
@@ -384,5 +384,5 @@ extend type Mutation {
 
   Requires authentication.
   """
-  deleteInflectionTable(id: InflectionTableId!): Boolean!
+  deleteInflectionTable(id: InflectionTableId!): Boolean
 }

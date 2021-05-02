@@ -67,7 +67,7 @@ extend type Mutation {
 
   Requires authentication.
   """
-  addPartOfSpeech(data: NewPartOfSpeechInput!): PartOfSpeech!
+  addPartOfSpeech(data: NewPartOfSpeechInput!): PartOfSpeech
 
   """
   Edits a part of speech.
@@ -77,7 +77,7 @@ extend type Mutation {
   editPartOfSpeech(
     id: PartOfSpeechId!
     data: EditPartOfSpeechInput!
-  ): PartOfSpeech!
+  ): PartOfSpeech
 
   """
   Deletes a part of speech. It is not possible to delete a part of speech that
@@ -85,5 +85,5 @@ extend type Mutation {
 
   Requires authentication.
   """
-  deletePartOfSpeech(id: PartOfSpeechId!): Boolean!
+  deletePartOfSpeech(id: PartOfSpeechId!): Boolean
 }

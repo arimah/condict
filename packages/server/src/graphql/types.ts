@@ -1210,7 +1210,7 @@ export type Mutation = {
    */
   addDefinition: WithArgs<{
     data: NewDefinitionInput;
-  }, Definition>;
+  }, Definition | null>;
   /**
    * Edits an existing definition.
    * 
@@ -1219,7 +1219,7 @@ export type Mutation = {
   editDefinition: WithArgs<{
     id: DefinitionId;
     data: EditDefinitionInput;
-  }, Definition>;
+  }, Definition | null>;
   /**
    * Deletes a definition.
    * 
@@ -1227,7 +1227,7 @@ export type Mutation = {
    */
   deleteDefinition: WithArgs<{
     id: DefinitionId;
-  }, boolean>;
+  }, boolean | null>;
   /**
    * Adds an inflection table.
    * 
@@ -1235,7 +1235,7 @@ export type Mutation = {
    */
   addInflectionTable: WithArgs<{
     data: NewInflectionTableInput;
-  }, InflectionTable>;
+  }, InflectionTable | null>;
   /**
    * Edits an inflection table.
    * 
@@ -1244,7 +1244,7 @@ export type Mutation = {
   editInflectionTable: WithArgs<{
     id: InflectionTableId;
     data: EditInflectionTableInput;
-  }, InflectionTable>;
+  }, InflectionTable | null>;
   /**
    * Deletes an inflection table. It is not possible to delete a table that is used
    * by one or more definitions.
@@ -1253,7 +1253,7 @@ export type Mutation = {
    */
   deleteInflectionTable: WithArgs<{
     id: InflectionTableId;
-  }, boolean>;
+  }, boolean | null>;
   /**
    * Adds a language.
    * 
@@ -1261,7 +1261,7 @@ export type Mutation = {
    */
   addLanguage: WithArgs<{
     data: NewLanguageInput;
-  }, Language>;
+  }, Language | null>;
   /**
    * Edits a language.
    * 
@@ -1270,7 +1270,7 @@ export type Mutation = {
   editLanguage: WithArgs<{
     id: LanguageId;
     data: EditLanguageInput;
-  }, Language>;
+  }, Language | null>;
   /**
    * Adds a part of speech.
    * 
@@ -1278,7 +1278,7 @@ export type Mutation = {
    */
   addPartOfSpeech: WithArgs<{
     data: NewPartOfSpeechInput;
-  }, PartOfSpeech>;
+  }, PartOfSpeech | null>;
   /**
    * Edits a part of speech.
    * 
@@ -1287,7 +1287,7 @@ export type Mutation = {
   editPartOfSpeech: WithArgs<{
     id: PartOfSpeechId;
     data: EditPartOfSpeechInput;
-  }, PartOfSpeech>;
+  }, PartOfSpeech | null>;
   /**
    * Deletes a part of speech. It is not possible to delete a part of speech that
    * is in use by any definition.
@@ -1296,19 +1296,19 @@ export type Mutation = {
    */
   deletePartOfSpeech: WithArgs<{
     id: PartOfSpeechId;
-  }, boolean>;
+  }, boolean | null>;
   /**
    * Attempts to log in on the server using the specified username and password.
    */
   logIn: WithArgs<{
     username: string;
     password: string;
-  }, LoginResult>;
+  }, LoginResult | null>;
   /**
    * Logs out of the current session. Returns true if the session was terminated,
    * false if there is no current session.
    */
-  logOut: boolean;
+  logOut: boolean | null;
   /**
    * Tries to resume the current session. If the session exists and has not
    * expired, the expiry date is updated and the session data is returned. If

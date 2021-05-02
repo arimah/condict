@@ -115,12 +115,12 @@ extend type Mutation {
 
   Requires authentication.
   """
-  addLanguage(data: NewLanguageInput!): Language!
+  addLanguage(data: NewLanguageInput!): Language
 
   """
   Edits a language.
 
   Requires authentication.
   """
-  editLanguage(id: LanguageId!, data: EditLanguageInput!): Language!
+  editLanguage(id: LanguageId!, data: EditLanguageInput!): Language
 }

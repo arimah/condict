@@ -367,19 +367,19 @@ extend type Mutation {
 
   Requires authentication.
   """
-  addDefinition(data: NewDefinitionInput!): Definition!
+  addDefinition(data: NewDefinitionInput!): Definition
 
   """
   Edits an existing definition.
 
   Requires authentication.
   """
-  editDefinition(id: DefinitionId!, data: EditDefinitionInput!): Definition!
+  editDefinition(id: DefinitionId!, data: EditDefinitionInput!): Definition
 
   """
   Deletes a definition.
 
   Requires authentication.
   """
-  deleteDefinition(id: DefinitionId!): Boolean!
+  deleteDefinition(id: DefinitionId!): Boolean
 }

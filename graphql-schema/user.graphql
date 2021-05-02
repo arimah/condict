@@ -40,13 +40,13 @@ union LoginResult = UserSession | FailedLogin
 
 extend type Mutation {
   "Attempts to log in on the server using the specified username and password."
-  logIn(username: String!, password: String!): LoginResult!
+  logIn(username: String!, password: String!): LoginResult
 
   """
   Logs out of the current session. Returns true if the session was terminated,
   false if there is no current session.
   """
-  logOut: Boolean!
+  logOut: Boolean
 
   """
   Tries to resume the current session. If the session exists and has not
