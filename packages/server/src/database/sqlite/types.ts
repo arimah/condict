@@ -227,9 +227,6 @@ export interface DataAccessor extends DataReader {
    * While the transaction is running, the DataWriter passed to the callback
    * must be used to write to the database. The instance that this method is
    * called on cannot be used for the duration of the transaction.
-   *
-   * When called on a DataWriter, the callback receives the same writer, since
-   * it already has exclusive write access.
    * @param callback The callback to call inside a transaction. It receives a
    *        DataWriter that is used to write to the database.
    * @return A promise that resolves to the return value of the callback. The

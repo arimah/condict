@@ -65,6 +65,9 @@ export default class Accessor implements DataAccessor, DataWriter {
     const sql = formatSql(parts, values, params);
 
     const stmt = this.database.prepare(sql);
+    if (!stmt.readonly && this.rwToken.isReader) {
+      throw new Error('Cannot execute a mutating statement as a reader');
+    }
     if (!stmt.reader) {
       throw new Error('The specified SQL does not return data');
     }
@@ -80,6 +83,9 @@ export default class Accessor implements DataAccessor, DataWriter {
     const sql = formatSql(parts, values, params);
 
     const stmt = this.database.prepare(sql);
+    if (this.rwToken.isReader && !stmt.readonly) {
+      throw new Error('Cannot execute a mutating statement as a reader');
+    }
     if (!stmt.reader) {
       throw new Error('The specified SQL does not return data');
     }
@@ -100,6 +106,9 @@ export default class Accessor implements DataAccessor, DataWriter {
     const sql = formatSql(parts, values, params);
 
     const stmt = this.database.prepare(sql);
+    if (this.rwToken.isReader && !stmt.readonly) {
+      throw new Error('Cannot execute a mutating statement as a reader');
+    }
     if (!stmt.reader) {
       throw new Error('The specified SQL does not return data');
     }
@@ -118,8 +127,8 @@ export default class Accessor implements DataAccessor, DataWriter {
     const sql = formatSql(parts, values, params);
 
     const stmt = this.database.prepare(sql);
-    if (this.rwToken.isReader && !stmt.reader) {
-      throw new Error('Cannot execute a mutating statement on a read-only accessor');
+    if (this.rwToken.isReader && !stmt.readonly) {
+      throw new Error('Cannot execute a mutating statement as a reader');
     }
 
     this.logSql(sql);
