@@ -1,4 +1,4 @@
-import {Database} from 'better-sqlite3';
+import {Database, Statement} from 'better-sqlite3';
 import DataLoader from 'dataloader';
 
 import {FieldSet} from '../../model';
@@ -64,7 +64,7 @@ export default class Accessor implements DataAccessor, DataWriter {
     const params: Param[] = [];
     const sql = formatSql(parts, values, params);
 
-    const stmt = this.database.prepare(sql);
+    const stmt = this.prepare(sql);
     if (!stmt.readonly && this.rwToken.isReader) {
       throw new Error('Cannot execute a mutating statement as a reader');
     }
@@ -72,7 +72,6 @@ export default class Accessor implements DataAccessor, DataWriter {
       throw new Error('The specified SQL does not return data');
     }
 
-    this.logSql(sql);
     return stmt.get(params) as Row || null;
   }
 
@@ -82,7 +81,7 @@ export default class Accessor implements DataAccessor, DataWriter {
     const params: Param[] = [];
     const sql = formatSql(parts, values, params);
 
-    const stmt = this.database.prepare(sql);
+    const stmt = this.prepare(sql);
     if (this.rwToken.isReader && !stmt.readonly) {
       throw new Error('Cannot execute a mutating statement as a reader');
     }
@@ -90,7 +89,6 @@ export default class Accessor implements DataAccessor, DataWriter {
       throw new Error('The specified SQL does not return data');
     }
 
-    this.logSql(sql);
     const row = stmt.get(params) as Row | undefined;
 
     if (row === undefined) {
@@ -105,7 +103,7 @@ export default class Accessor implements DataAccessor, DataWriter {
     const params: Param[] = [];
     const sql = formatSql(parts, values, params);
 
-    const stmt = this.database.prepare(sql);
+    const stmt = this.prepare(sql);
     if (this.rwToken.isReader && !stmt.readonly) {
       throw new Error('Cannot execute a mutating statement as a reader');
     }
@@ -113,7 +111,6 @@ export default class Accessor implements DataAccessor, DataWriter {
       throw new Error('The specified SQL does not return data');
     }
 
-    this.logSql(sql);
     return stmt.all(params) as Row[];
   }
 
@@ -126,12 +123,10 @@ export default class Accessor implements DataAccessor, DataWriter {
     const params: Param[] = [];
     const sql = formatSql(parts, values, params);
 
-    const stmt = this.database.prepare(sql);
+    const stmt = this.prepare(sql);
     if (this.rwToken.isReader && !stmt.readonly) {
       throw new Error('Cannot execute a mutating statement as a reader');
     }
-
-    this.logSql(sql);
 
     const {
       changes: affectedRows,
@@ -151,21 +146,21 @@ export default class Accessor implements DataAccessor, DataWriter {
   ): Promise<R> {
     this.ensureValid();
 
-    const db = this.database;
-
     // We have to upgrade the token *first*, so we have exclusive write access
     // once the transaction is underway.
     const writerToken = await this.rwToken.upgrade();
 
-    db.prepare('begin').run();
+    this.prepare('begin').run();
 
     let result: R;
     try {
-      result = await callback(new Accessor(db, writerToken, this.logSql));
+      result = await callback(
+        new Accessor(this.database, writerToken, this.logSql)
+      );
 
-      db.prepare('commit').run();
+      this.prepare('commit').run();
     } catch (e) {
-      db.prepare('rollback').run();
+      this.prepare('rollback').run();
       throw e;
     } finally {
       this.rwToken = writerToken.downgrade();
@@ -269,6 +264,11 @@ export default class Accessor implements DataAccessor, DataWriter {
       }
       this.rwToken.finish();
     }
+  }
+
+  private prepare(sql: string): Statement {
+    this.logSql(sql);
+    return this.database.prepare(sql);
   }
 
   private ensureValid(): void {

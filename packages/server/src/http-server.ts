@@ -36,21 +36,21 @@ export default class CondictHttpServer {
       schema: server.getSchema(),
       rootValue: null,
       context: ({req}) => this.server.getContextValue(
-        req.header('x-condict-session-id')
+        req.header('x-condict-session-id'),
+        genRequestId()
       ),
       plugins: [{
         requestDidStart: (req: GraphQLRequestContext<Context>) => {
-          const {logger} = this;
+          const {context} = req;
 
-          const requestId = genRequestId();
           const startTime = Date.now();
-          this.logger.verbose(`Start request ${requestId}`);
+          context.logger.verbose(`Start request`);
 
           return {
             willSendResponse() {
-              req.context.finish();
               const requestTime = Date.now() - startTime;
-              logger.verbose(`Request ${requestId} finished in ${requestTime} ms`);
+              context.logger.verbose(`Request finished in ${requestTime} ms`);
+              req.context.finish();
             },
           };
         },

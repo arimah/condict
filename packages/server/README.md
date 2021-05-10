@@ -143,7 +143,7 @@ The returned promise resolves when the server has shut down fully. If any error 
 
 #### `CondictServer.prototype.getContextValue()`
 
-> `getContextValue(sessionId?: string | typeof LocalSession | null): Promise<Context>`
+> `getContextValue(sessionId?: string | typeof LocalSession | null, requestId?: string): Promise<Context>`
 
 Gets a GraphQL execution context value. This value required when executing GraphQL operations. The [`executeLocalOperation()`](#executelocaloperation) function calls this method internally.
 
@@ -152,6 +152,8 @@ The `sessionId` parameter is used for mutation authentication. It takes one of t
 * A session ID string, as returned by the `logIn` mutation. The session ID is valid if it matches an ongoing user session; otherwise, the request is unauthenticated.
 * The symbol `LocalSession`. This indicates that the operation is executed in a trusted context, for example when the server is embedded in an application. All mutations are permitted.
 * `null` or `undefined`, which means the request is unauthenticated. Most mutations are prohibited without authentication.
+
+The `requestId` parameter takes a string that identifies the request. It is prepended to log messages produced by the context's logger.
 
 The returned promise resolves once the context is available. If the server is in the process of shutting down, the promise is rejected.
 

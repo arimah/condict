@@ -7,7 +7,7 @@ import reindentQuery from '../reindent-query';
 import Accessor from './accessor';
 import RwLock from './rwlock';
 import registerUnicodeCollation from './unicode-collation';
-import {Options, DataAccessor, SqlLogger} from './types';
+import {Options, DataAccessor} from './types';
 
 // NB: "db" refers to instances of better-sqlite3's Database, and "connection"
 // to our own wrapper.
@@ -20,13 +20,13 @@ import {Options, DataAccessor, SqlLogger} from './types';
  * See the documentation of Accessor and RwLock for details.
  */
 export default class Connection {
-  private readonly logger: Logger;
+  private readonly defaultLogger: Logger;
   private readonly db: Database;
   private readonly lock: RwLock;
-  private readonly logSql: SqlLogger;
+  private readonly logSql: (logger: Logger, sql: string) => void;
 
-  public constructor(logger: Logger, options: Options) {
-    this.logger = logger;
+  public constructor(defaultLogger: Logger, options: Options) {
+    this.defaultLogger = defaultLogger;
 
     const db = new Sqlite(options.file);
     db.pragma('journal_mode = WAL');
@@ -36,12 +36,12 @@ export default class Connection {
     this.lock = new RwLock();
 
     if (process.env.DEBUG_QUERIES === '1') {
-      this.logSql = sql => {
+      this.logSql = (logger, sql) => {
         if (/^\s*$/.test(sql)) {
-          this.logger.warn('Empty query?!');
+          logger.warn('Empty query?!');
         } else {
           const reindentedSql = reindentQuery(sql);
-          this.logger.debug(`Query:\n${reindentedSql}`);
+          logger.debug(`Query:\n${reindentedSql}`);
         }
       };
     } else {
@@ -54,13 +54,17 @@ export default class Connection {
    * Gets a connection to the database. The connection has shared read-only
    * access by default, and exclusive read-write access must be requested
    * through the connection object.
+   * @param reqLogger A logger to use for the accessor, if query logging is
+   *        enabled. If omitted or undefined, the connection's default logger
+   *        is used.
    * @return A promise that resolves with the database connection. The promise
    *         is rejected if the connection is closed before the accessor could
    *         be acquired.
    */
-  public async getAccessor(): Promise<DataAccessor> {
+  public async getAccessor(reqLogger?: Logger): Promise<DataAccessor> {
     const token = await this.lock.reader();
-    return new Accessor(this.db, token, this.logSql);
+    const logger = reqLogger ?? this.defaultLogger;
+    return new Accessor(this.db, token, sql => this.logSql(logger, sql));
   }
 
   public async close(): Promise<void> {
