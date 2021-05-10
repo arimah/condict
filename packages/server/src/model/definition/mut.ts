@@ -17,6 +17,7 @@ import {PartOfSpeech} from '../part-of-speech';
 import {InflectionTableLayoutMut} from '../inflection-table';
 import {DescriptionMut} from '../description';
 import {LemmaMut, validateTerm} from '../lemma';
+import {SearchIndexMut} from '../search-index';
 import FieldSet from '../field-set';
 
 import {DefinitionRow} from './types';
@@ -55,7 +56,7 @@ const DefinitionMut = {
     return db.transact(async db => {
       const lemmaId = LemmaMut.ensureExists(db, language.id, validTerm);
 
-      const descriptionId = DescriptionMut.insert(db, description);
+      const desc = DescriptionMut.insert(db, description);
 
       const {insertId: definitionId} = db.exec<DefinitionId>`
         insert into definitions (
@@ -64,8 +65,10 @@ const DefinitionMut = {
           part_of_speech_id,
           description_id
         )
-        values (${lemmaId}, ${language.id}, ${partOfSpeech.id}, ${descriptionId})
+        values (${lemmaId}, ${language.id}, ${partOfSpeech.id}, ${desc.id})
       `;
+
+      SearchIndexMut.insertDefinition(db, definitionId, desc.description);
 
       const stemMap = DefinitionStemMut.insert(db, definitionId, stems);
 
@@ -137,7 +140,12 @@ const DefinitionMut = {
       }
 
       if (description) {
-        DescriptionMut.update(db, definition.description_id, description);
+        const desc = DescriptionMut.update(
+          db,
+          definition.description_id,
+          description
+        );
+        SearchIndexMut.updateDefinition(db, definition.id, desc.description);
       }
 
       const stemMap = await DefinitionStemMut.update(db, definition.id, stems);
@@ -211,7 +219,7 @@ const DefinitionMut = {
   },
 
   async delete(db: DataAccessor, id: DefinitionId): Promise<boolean> {
-    // We need the language ID
+    // We need the language ID and description ID
     const definition = await Definition.byId(db, id);
     if (!definition) {
       return false;
@@ -224,6 +232,8 @@ const DefinitionMut = {
       `;
 
       DescriptionMut.delete(db, definition.description_id);
+
+      SearchIndexMut.deleteDefinition(db, definition.id);
 
       LemmaMut.deleteEmpty(db, definition.language_id);
     });

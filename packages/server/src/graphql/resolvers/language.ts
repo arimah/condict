@@ -5,6 +5,7 @@ import {
   PartOfSpeech,
   Lemma,
   Tag,
+  SearchIndex,
   LanguageRow,
 } from '../../model';
 
@@ -36,6 +37,21 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
 
   tags: (p, {page}, {db}, info) =>
     Tag.allByLanguage(db, p.id, page, info),
+
+  search: (p, {params, page}, {db}, info) =>
+    SearchIndex.search(
+      db,
+      params.query,
+      params.scopes ?? null,
+      {
+        inLanguages: [p.id],
+        inPartsOfSpeech: params.inPartsOfSpeech ?? null,
+        withTags: params.withTags ?? null,
+        tagMatching: params.tagMatching ?? 'MATCH_ANY',
+      },
+      page,
+      info
+    ),
 };
 
 const Query: ResolversFor<QueryType, null> = {

@@ -4,6 +4,7 @@ export * from './inflection-table';
 export * from './language';
 export * from './lemma';
 export * from './part-of-speech';
+export * from './search-index';
 export * from './tag';
 export * from './user';
 

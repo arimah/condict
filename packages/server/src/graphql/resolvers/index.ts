@@ -8,6 +8,7 @@ import LanguageResolvers from './language';
 import LemmaResolvers from './lemma';
 import PartOfSpeechResolvers from './part-of-speech';
 import RootResolvers from './root';
+import SearchResolvers from './search';
 import TagResolvers from './tag';
 import UserResolvers from './user';
 
@@ -27,6 +28,7 @@ export const getResolvers = (): IResolvers<any, any> =>
     LemmaResolvers,
     PartOfSpeechResolvers,
     RootResolvers,
+    SearchResolvers,
     TagResolvers,
     UserResolvers,
   ]) as IResolvers<any, any>;

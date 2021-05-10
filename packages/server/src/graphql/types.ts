@@ -291,6 +291,20 @@ export type DefinitionLinkTarget = {
 };
 
 /**
+ * A search result that matches a definition.
+ */
+export type DefinitionSearchResult = {
+  /**
+   * A snippet over the matching part of the description text.
+   */
+  descriptionSnippet: MatchingSnippet;
+  /**
+   * The definition that matched the search.
+   */
+  definition: Definition;
+};
+
+/**
  * An inflection stem for a single definition. Stems are used when inflecting the
  * word: inflected forms contain patterns like `{pl}es`, where `{pl}` is replaced
  * with the value of the stem named `pl`.
@@ -557,6 +571,100 @@ export type FormattedTextInput = {
    * `subscript` and `superscript` are mutually exclusive.
    */
   superscript?: boolean | null;
+};
+
+/**
+ * Contains search parameters for the `search` field on the root query type. See
+ * that field for more documentation and examples.
+ */
+export type GlobalSearchParams = {
+  /**
+   * The free text search query.
+   */
+  query: string;
+  /**
+   * The scopes to search within. This specifies the kinds of resources that will
+   * be included in the search. Others filters may additionally limit the search
+   * scope. For example, a part of speech filter will further constrain the search
+   * to resources that have to a part of speech.
+   * 
+   * If omitted or null, all scopes are searched. If empty, no scopes are searched;
+   * the result will be empty.
+   */
+  scopes?: SearchScope[] | null;
+  /**
+   * The IDs of languages to search in. This limits the search to resources that
+   * belong to a language (parts of speech, lemmas and definitions). Notably, this
+   * *excludes* languages themselves.
+   * 
+   * A parts of speech, lemma or definition matches if it belongs to *any* of the
+   * specified languages.
+   * 
+   * If omitted or null, no language filter is applied. If empty, no languages are
+   * searched; the result will be empty.
+   */
+  inLanguages?: LanguageId[] | null;
+  /**
+   * The IDs of parts of speech to search in. This limits the search to resources
+   * that have a part of speech (lemmas and definitions). Notably, this *excludes*
+   * parts of speech themselves.
+   * 
+   * A definition matches if it belongs to *any* of the specified parts of speech.
+   * A lemma matches if *any* of its definitions match.
+   * 
+   * If omitted or null, no part of speech filter is applied. If empty, no parts
+   * of speech are searched; the result will be empty.
+   */
+  inPartsOfSpeech?: PartOfSpeechId[] | null;
+  /**
+   * The IDs of tags to search in. This limits the search to resources that have
+   * tags (lemmas and definitions). Notably, this *excludes* tags themselves.
+   * 
+   * The value of `tagMatching` determines how these values are used:
+   * 
+   * * If `tagMatching` is `MATCH_ANY`, then: a definition matches if it has *any*
+   *   of the specified tags, and a lemma matches if *any* of its definitions
+   *   match. In this mode, an empty list means no tags are searched; the result
+   *   will be empty.
+   * * If `tagMatching` is `MATCH_ALL`, then: a definition matches if it has *all*
+   *   of the specified tags, and a lemma matches if its definitions together have
+   *   *all* of the speciifed tags. In this mode, an empty list means all lemmas
+   *   and definitions match (`[]` is a subset of every list).
+   * 
+   * If omitted or null, no tag filter is applied.
+   */
+  withTags?: TagId[] | null;
+  /**
+   * Determines how `withTags` matches. See the documentation of `withTags` for
+   * more details. If omitted or null, the default value is `MATCH_ANY`.
+   * 
+   * This field has no effect if `withTags` is omitted or null.
+   */
+  tagMatching?: MatchingMode | null;
+};
+
+/**
+ * The result of a global search (the `search` field on the root query type).
+ */
+export type GlobalSearchResult =
+  | LanguageSearchResult
+  | LemmaSearchResult
+  | DefinitionSearchResult
+  | PartOfSpeechSearchResult
+  | TagSearchResult;
+
+/**
+ * Contains paginated results from the `Query.search` field.
+ */
+export type GlobalSearchResultConnection = {
+  /**
+   * Pagination metadata for this batch.
+   */
+  page: PageInfo;
+  /**
+   * The search results in this batch.
+   */
+  nodes: GlobalSearchResult[];
 };
 
 /**
@@ -991,6 +1099,40 @@ export type Language = {
   tags: WithArgs<{
     page?: PageParams | null;
   }, TagConnection>;
+  /**
+   * Searches the language. This field behaves like `Query.search` with an implicit
+   * language filter. See that field for more documentation and examples.
+   * 
+   * The following are equivalent:
+   * 
+   * ```graphql
+   * query($language: LanguageId!) {
+   *   language(id: $language) {
+   *     # This search:
+   *     search(params: {
+   *       query: "foo"
+   *     }) {
+   *       ...
+   *     }
+   *   }
+   * 
+   *   # is equivalent to:
+   *   search(params: {
+   *     query: "foo"
+   *     inLanguages: [$language]
+   *   }) {
+   *     ...
+   *   }
+   * }
+   * ```
+   * 
+   * But note that `Language.search` returns a different type that includes only
+   * those resources that are searchable in languages.
+   */
+  search: WithArgs<{
+    params: SearchInLanguageParams;
+    page?: PageParams | null;
+  }, SearchInLanguageResultConnection | null>;
 };
 
 /**
@@ -1011,6 +1153,20 @@ export type LanguageLinkTarget = {
    * the link was created, this field is null.
    */
   language: Language | null;
+};
+
+/**
+ * A search result that matches a language.
+ */
+export type LanguageSearchResult = {
+  /**
+   * A snippet over the matching part of the language name.
+   */
+  nameSnippet: MatchingSnippet;
+  /**
+   * The language that matched the search.
+   */
+  language: Language;
 };
 
 /**
@@ -1107,6 +1263,20 @@ export type LemmaLinkTarget = {
 };
 
 /**
+ * A search result that matches a lemma.
+ */
+export type LemmaSearchResult = {
+  /**
+   * A snippet over the matching part of the lemma name.
+   */
+  termSnippet: MatchingSnippet;
+  /**
+   * The lemma that matched the search.
+   */
+  lemma: Lemma;
+};
+
+/**
  * An inline element that represents a link, either to an item in the dictionary,
  * or to an arbitrary external URI. Link elements may not contain other links.
  */
@@ -1196,6 +1366,73 @@ export type MarshalType =
    */
   | 'STRING_TYPE'
 ;
+
+/**
+ * Determines the matching mode of some filterable values.
+ */
+export type MatchingMode =
+  /**
+   * Specifies that the filtered field must match *at least one* of the provided
+   * values.
+   */
+  | 'MATCH_ANY'
+  /**
+   * Specifies that the filtered field must match *all* of the provided values.
+   */
+  | 'MATCH_ALL'
+;
+
+/**
+ * This type encapsulates the part of a searchable text field that matched a query,
+ * along with a small amount of surrounding context. The surrounding content is
+ * usually a subset of the the searchable field's text, but may be large enough to
+ * include the full text. This type is used for highlighting where a search query
+ * matched a field.
+ * 
+ * Values of this type are not guaranteed to contain every single matching search
+ * query token.
+ */
+export type MatchingSnippet = {
+  /**
+   * If true, the snippet starts before the searched field's text; that is, there
+   * exists field text before the first value in `parts`. If false, the `parts`
+   * list contains the start of the searched text.
+   * 
+   * When this field is true, a highlighted snippet should probably start with a
+   * marker to indicate partial content, such as `...`.
+   */
+  partialStart: boolean;
+  /**
+   * If true, the snippet ends before the searched field's text; that is, there
+   * exists field text after the last value in `parts`. If false, the `parts list
+   * contains the end of the searched text.
+   * 
+   * When this field is true, a highlighted snippet should probably end with a
+   * marker to indicate partial content, such as `...`.
+   */
+  partialEnd: boolean;
+  /**
+   * Text extracted from the searched field. This list contains the parts that
+   * matched the search query as well as surrounding context.
+   */
+  parts: MatchingSnippetPart[];
+};
+
+/**
+ * A part of a `MatchingSnippet`, which is either a match for a token from the
+ * search query, or surrounding text extracted from the searched field. See the
+ * `MatchingSnippet` type for more details.
+ */
+export type MatchingSnippetPart = {
+  /**
+   * True if the part is a search query match; false if it is surrounding context.
+   */
+  isMatch: boolean;
+  /**
+   * Text from the searched field.
+   */
+  text: string;
+};
 
 /**
  * The root mutation type.
@@ -1530,6 +1767,20 @@ export type PartOfSpeechLinkTarget = {
 };
 
 /**
+ * A search result that matches a part of speech.
+ */
+export type PartOfSpeechSearchResult = {
+  /**
+   * A snippet over the matching part of the part of speech name.
+   */
+  nameSnippet: MatchingSnippet;
+  /**
+   * The part of speech that matched the search.
+   */
+  partOfSpeech: PartOfSpeech;
+};
+
+/**
  * The root query type.
  */
 export type Query = {
@@ -1586,6 +1837,67 @@ export type Query = {
     id: PartOfSpeechId;
   }, PartOfSpeech | null>;
   /**
+   * Searches the dictionary.
+   * 
+   * The `params` parameter of this field contains a number of fields. The most
+   * important is `query`, which contains the free text search query. At minimum,
+   * a query to this field must include that:
+   * 
+   * ```graphql
+   * query {
+   *   search(params: {
+   *     # Search for anything matching "foo"
+   *     query: "foo"
+   *   }) {
+   *     ...
+   *   }
+   * }
+   * ```
+   * 
+   * This field can search through most of the dictionary: lemmas, languages,
+   * definitions, and more. The `scope` field specifies the kinds of resources that
+   * should be searched:
+   * 
+   * ```graphql
+   * query($query: String!) {
+   *   search(params: {
+   *     query: $query
+   *     # Search only in languages and lemmas
+   *     scopes: [SEARCH_LANGUAGES, SEARCH_LEMMAS]
+   *   }) {
+   *     ...
+   *   }
+   * }
+   * ```
+   * 
+   * The search parameters can also include filters for other properties, such as
+   * associated tags, part of speech or language. Use of these fields implicitly
+   * constrains the type to resources with those fields. For example, only lemmas
+   * and definitions have tags, so this example will only return results for those
+   * resources (despite broader `scopes`):
+   * 
+   * ```graphql
+   * query($query: String!, $tag, TagId!) {
+   *   search(params: {
+   *     query: $query
+   *     scopes: [SEARCH_LANGUAGES, SEARCH_LEMMAS, SEARCH_DEFINITIONS, SEARCH_TAGS]
+   *     # Only definitions and lemmas have tags; languages and tags will not be
+   *     # present in the result.
+   *     withTags: [$tag]
+   *   }) {
+   *     ...
+   *   }
+   * }
+   * ```
+   * 
+   * Lastly, searches can match many items, so the results of a search are always
+   * paginated. If provided, `page.perPage` cannot exceed 200.
+   */
+  search: WithArgs<{
+    params: GlobalSearchParams;
+    page?: PageParams | null;
+  }, GlobalSearchResultConnection | null>;
+  /**
    * The tags that exist in the dictionary. Since a dictionary may contain many
    * tags, this field is always paginated. If provided, `page.perPage` cannot
    * exceed 200.
@@ -1602,6 +1914,118 @@ export type Query = {
     name?: string | null;
   }, Tag | null>;
 };
+
+/**
+ * Contains search parameters for the `Language.search` field. See that field for
+ * more documentation and examples.
+ */
+export type SearchInLanguageParams = {
+  /**
+   * The free text search query.
+   */
+  query: string;
+  /**
+   * The scopes to search within. This specifies the kinds of resources that will
+   * be included in the search. Others filters may additionally limit the search
+   * scope. For example, a part of speech filter will further constrain the search
+   * to resources that have to a part of speech.
+   * 
+   * The values `SEARCH_LANGUAGES` and `SEARCH_TAGS` are not valid for language
+   * searches. Passing either into this list is an error.
+   * 
+   * If omitted or null, all scopes are searched. If empty, no scopes are searched;
+   * the result will be empty.
+   */
+  scopes?: SearchScope[] | null;
+  /**
+   * The IDs of parts of speech to search in. This limits the search to resources
+   * that have a part of speech (lemmas and definitions). Notably, this *excludes*
+   * parts of speech themselves.
+   * 
+   * A definition matches if it belongs to *any* of the specified parts of speech.
+   * A lemma matches if *any* of its definitions match.
+   * 
+   * If omitted or null, no part of speech filter is applied. If empty, no parts
+   * of speech are searched; the result will be empty.
+   */
+  inPartsOfSpeech?: PartOfSpeechId[] | null;
+  /**
+   * The IDs of tags to search in. This limits the search to resources that have
+   * tags (lemmas and definitions). Notably, this *excludes* tags themselves.
+   * 
+   * The value of `tagMatching` determines how these values are used:
+   * 
+   * * If `tagMatching` is `MATCH_ANY`, then: a definition matches if it has *any*
+   *   of the specified tags, and a lemma matches if *any* of its definitions
+   *   match. In this mode, an empty list means no tags are searched; the result
+   *   will be empty.
+   * * If `tagMatching` is `MATCH_ALL`, then: a definition matches if it has *all*
+   *   of the specified tags, and a lemma matches if its definitions together have
+   *   *all* of the speciifed tags. In this mode, an empty list means all lemmas
+   *   and definitions match (`[]` is a subset of every list).
+   * 
+   * If omitted or null, no tag filter is applied.
+   */
+  withTags?: TagId[] | null;
+  /**
+   * Determines how `withTags` matches. See the documentation of `withTags` for
+   * more details. If omitted or null, the default value is `MATCH_ANY`.
+   * 
+   * This field has no effect if `withTags` is omitted or null.
+   */
+  tagMatching?: MatchingMode | null;
+};
+
+/**
+ * The result of a search within a language (the `Language.search` field).
+ */
+export type SearchInLanguageResult =
+  | LemmaSearchResult
+  | DefinitionSearchResult
+  | PartOfSpeechSearchResult;
+
+/**
+ * Contains paginated results from the `Language.search` field.
+ */
+export type SearchInLanguageResultConnection = {
+  /**
+   * Pagination metadata for this batch.
+   */
+  page: PageInfo;
+  /**
+   * The search results in this batch.
+   */
+  nodes: SearchInLanguageResult[];
+};
+
+/**
+ * The scope of a search; that is, the type of resource that a search applies to.
+ * Some scopes are invalid in some contexts, and some scopes can be implicitly
+ * excluded by other search options. For details, see the documentation of each
+ * input type that uses this enum.
+ */
+export type SearchScope =
+  /**
+   * Specifies that languages should be searched.
+   */
+  | 'SEARCH_LANGUAGES'
+  /**
+   * Specifies that lemmas should be searched.
+   */
+  | 'SEARCH_LEMMAS'
+  /**
+   * Specifies that definitions should be searched.
+   */
+  | 'SEARCH_DEFINITIONS'
+  /**
+   * Specifies that parts of speech should be searched.
+   */
+  | 'SEARCH_PARTS_OF_SPEECH'
+  /**
+   * Specifies that tags should be searched.
+   */
+  | 'SEARCH_TAGS'
+;
 
 /**
  * Input type for a definition inflection stem.
@@ -1674,6 +2098,20 @@ export type TagConnection = {
  * Represents a tag ID.
  */
 export type TagId = IdOf<'Tag'>;
+
+/**
+ * A search result that matches a tag.
+ */
+export type TagSearchResult = {
+  /**
+   * A snippet over the matching part of the tag name.
+   */
+  nameSnippet: MatchingSnippet;
+  /**
+   * The tag that matched the search.
+   */
+  tag: Tag;
+};
 
 /**
  * Represents a user session. User sessions can be obtained by using the `logIn` or

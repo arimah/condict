@@ -7,6 +7,7 @@ import {
 
 import FieldSet from '../field-set';
 import {DescriptionMut} from '../description';
+import {SearchIndexMut} from '../search-index';
 
 import {Language} from './model';
 import {LanguageRow} from './types';
@@ -19,12 +20,14 @@ const LanguageMut = {
     const validName = validateName(db, null, name);
 
     return db.transact(db => {
-      const descriptionId = DescriptionMut.insert(db, description || []);
+      const desc = DescriptionMut.insert(db, description || []);
 
       const {insertId: languageId} = db.exec<LanguageId>`
         insert into languages (name, description_id)
-        values (${validName}, ${descriptionId})
+        values (${validName}, ${desc.id})
       `;
+
+      SearchIndexMut.insertLanguage(db, languageId, validName);
 
       return Language.byIdRequired(db, languageId);
     });
@@ -52,6 +55,11 @@ const LanguageMut = {
             set ${newFields}
             where id = ${language.id}
           `;
+
+          const newName = newFields.get('name');
+          if (newName != null) {
+            SearchIndexMut.updateLanguage(db, language.id, newName);
+          }
         }
 
         if (description) {
