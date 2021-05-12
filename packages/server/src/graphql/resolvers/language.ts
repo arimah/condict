@@ -1,3 +1,5 @@
+import {UserInputError} from 'apollo-server';
+
 import {
   Language as LanguageModel,
   LanguageMut,
@@ -38,11 +40,23 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
   tags: (p, {page}, {db}, info) =>
     Tag.allByLanguage(db, p.id, page, info),
 
-  search: (p, {params, page}, {db}, info) =>
-    SearchIndex.search(
+  search: (p, {params, page}, {db}, info) => {
+    const {scopes} = params;
+    if (scopes) {
+      if (
+        scopes.includes('SEARCH_LANGUAGES') ||
+        scopes.includes('SEARCH_TAGS')
+      ) {
+        throw new UserInputError(
+          `The search scopes SEARCH_LANGUAGES and SEARCH_TAGS are not valid when searching in a language`,
+          {invalidArgs: ['params']}
+        );
+      }
+    }
+    return SearchIndex.search(
       db,
       params.query,
-      params.scopes ?? null,
+      scopes ?? null,
       {
         inLanguages: [p.id],
         inPartsOfSpeech: params.inPartsOfSpeech ?? null,
@@ -51,7 +65,8 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
       },
       page,
       info
-    ),
+    );
+  },
 };
 
 const Query: ResolversFor<QueryType, null> = {
