@@ -9,6 +9,7 @@ import {
 
 import {Language} from '../language';
 import {Definition} from '../definition';
+import {SearchIndexMut} from '../search-index';
 
 import {PartOfSpeech} from './model';
 import {PartOfSpeechRow} from './types';
@@ -31,6 +32,9 @@ const PartOfSpeechMut = {
         insert into parts_of_speech (language_id, name)
         values (${language.id}, ${name})
       `;
+
+      SearchIndexMut.insertPartOfSpeech(db, insertId, name);
+
       return PartOfSpeech.byIdRequired(db, insertId);
     });
   },
@@ -58,6 +62,9 @@ const PartOfSpeechMut = {
           set name = ${newName}
           where id = ${partOfSpeech.id}
         `;
+
+        SearchIndexMut.updatePartOfSpeech(db, partOfSpeech.id, newName);
+
         db.clearCache(PartOfSpeech.byIdKey, partOfSpeech.id);
       });
     }
@@ -73,6 +80,9 @@ const PartOfSpeechMut = {
         delete from parts_of_speech
         where id = ${id}
       `;
+
+      SearchIndexMut.deletePartOfSpeech(db, id);
+
       return affectedRows > 0;
     });
   },

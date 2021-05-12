@@ -17,7 +17,7 @@ In lieu of a proper timeline or to-do list, here are some of the features that a
   - [x] Including the ability to add inflected words to the dictionary, so that _birds_ can be shown as "_plural of **bird**_".
 * [ ] **Word etymology,** both free-form – e.g. "Misinterpretation of _acorn_ as _egg_ + _corn_" – and simple combinations of other words – "_snow_ + _man_".
   - [ ] Including showing derived terms under any dictionary word. Under _snow_, you'd be able to find _snowman_.
-* [ ] **Search and filtering options,** naturally.
+* [x] **Search and filtering options,** naturally.
 * [ ] **Sample texts,** with [interlinear glosses][interlinear], which get automatically linked to and shown under the words used therein.
 * [x] **Tags,** mainly for thematic grouping, such as _food_, _colours_, _emotions_.
 * And more in the future!

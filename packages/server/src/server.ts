@@ -1,6 +1,7 @@
 import {GraphQLSchema} from 'graphql';
 import {makeExecutableSchema} from 'graphql-tools';
 
+import {createPrefixLogger} from './create-logger';
 import performStartupChecks from './startup-checks';
 import {Connection, DataAccessor} from './database';
 import {Context, getTypeDefs, getResolvers, getDirectives} from './graphql';
@@ -160,12 +161,17 @@ export default class CondictServer {
    * @return The GraphQL execution context value.
    */
   public async getContextValue(
-    sessionId?: string | typeof LocalSession | null
+    sessionId?: string | typeof LocalSession | null,
+    requestId?: string
   ): Promise<Context> {
     const database = this.getDatabase();
-    const {logger} = this;
+    let {logger} = this;
 
-    let db: DataAccessor | null = await database.getAccessor();
+    if (requestId) {
+      logger = createPrefixLogger(logger, `[${requestId}]`);
+    }
+
+    let db: DataAccessor | null = await database.getAccessor(logger);
 
     const hasValidSession =
       sessionId === LocalSession
@@ -178,6 +184,7 @@ export default class CondictServer {
       db,
       logger,
       sessionId: typeof sessionId === 'string' ? sessionId : null,
+      requestId: requestId ?? null,
       hasValidSession,
       finish: () => {
         if (db) {

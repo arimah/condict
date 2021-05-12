@@ -79,3 +79,27 @@ export const createNullLogger = (): Logger => ({
   verbose() { /* no-op */ },
   debug() { /* no-op */ },
 });
+
+/**
+ * Creates a logger that prepends a prefix to all incoming messages.
+ * @param inner The logger to wrap.
+ * @param prefix The prefix to add to each message.
+ * @return A prefixing logger.
+ */
+export const createPrefixLogger = (inner: Logger, prefix: string): Logger => ({
+  error(msg, ...extra) {
+    inner.error(`${prefix} ${msg}`, ...extra);
+  },
+  warn(msg, ...extra) {
+    inner.warn(`${prefix} ${msg}`, ...extra);
+  },
+  info(msg, ...extra) {
+    inner.info(`${prefix} ${msg}`, ...extra);
+  },
+  verbose(msg, ...extra) {
+    inner.verbose(`${prefix} ${msg}`, ...extra);
+  },
+  debug(msg, ...extra) {
+    inner.debug(`${prefix} ${msg}`, ...extra);
+  },
+});

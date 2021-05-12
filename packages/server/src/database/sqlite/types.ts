@@ -293,12 +293,19 @@ export type Awaitable<T> = T | Promise<T>;
  * The `raw` method on the database can be used to construct RawSql values.
  */
 export class RawSql {
-  public sql: string;
-  public params: Param[];
+  public readonly sql: string;
+  public readonly params: readonly Param[];
 
-  public constructor(sql: string, params: Param[]) {
+  public constructor(sql: string, params: readonly Param[]) {
     this.sql = sql;
     this.params = params;
+  }
+
+  public static join(parts: readonly RawSql[], separator: string): RawSql {
+    return new RawSql(
+      parts.map(r => r.sql).join(separator),
+      parts.reduce<readonly Param[]>((acc, r) => acc.concat(r.params), [])
+    );
   }
 }
 

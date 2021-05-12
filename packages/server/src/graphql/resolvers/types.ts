@@ -15,6 +15,10 @@ export interface Context {
    */
   readonly sessionId: string | null;
   /**
+   * The request ID of the request, or null if no request ID was provided.
+   */
+  readonly requestId: string | null;
+  /**
    * Determines whether the request has a valid user session.
    * @return True if there is a valid user session, i.e. the requester can
    *         execute mutations.

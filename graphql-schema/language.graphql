@@ -69,6 +69,41 @@ type Language {
   is always paginated. If provided, `page.perPage` cannot exceed 200.
   """
   tags(page: PageParams): TagConnection!
+
+  """
+  Searches the language. This field behaves like `Query.search` with an implicit
+  language filter. See that field for more documentation and examples.
+
+  The following are equivalent:
+
+  ```graphql
+  query($language: LanguageId!) {
+    language(id: $language) {
+      # This search:
+      search(params: {
+        query: "foo"
+      }) {
+        ...
+      }
+    }
+
+    # is equivalent to:
+    search(params: {
+      query: "foo"
+      inLanguages: [$language]
+    }) {
+      ...
+    }
+  }
+  ```
+
+  But note that `Language.search` returns a different type that includes only
+  those resources that are searchable in languages.
+  """
+  search(
+    params: SearchInLanguageParams!
+    page: PageParams
+  ): SearchInLanguageResultConnection
 }
 
 "Contains paginated results from the `Language.lemmas` field."
@@ -78,6 +113,84 @@ type LemmaConnection {
 
   "The lemmas in this batch."
   nodes: [Lemma!]!
+}
+
+"Contains paginated results from the `Language.search` field."
+type SearchInLanguageResultConnection {
+  "Pagination metadata for this batch."
+  page: PageInfo!
+
+  "The search results in this batch."
+  nodes: [SearchInLanguageResult!]!
+}
+
+"The result of a search within a language (the `Language.search` field)."
+union SearchInLanguageResult =
+  | LemmaSearchResult
+  | DefinitionSearchResult
+  | PartOfSpeechSearchResult
+
+"""
+Contains search parameters for the `Language.search` field. See that field for
+more documentation and examples.
+"""
+input SearchInLanguageParams {
+  "The free text search query."
+  query: String!
+
+  """
+  The scopes to search within. This specifies the kinds of resources that will
+  be included in the search. Others filters may additionally limit the search
+  scope. For example, a part of speech filter will further constrain the search
+  to resources that have to a part of speech.
+
+  The values `SEARCH_LANGUAGES` and `SEARCH_TAGS` are not valid for language
+  searches. Passing either into this list is an error.
+
+  If omitted or null, all scopes are searched. If empty, no scopes are searched;
+  the result will be empty.
+  """
+  scopes: [SearchScope!]
+
+  """
+  The IDs of parts of speech to search in. This limits the search to resources
+  that have a part of speech (lemmas and definitions). Notably, this *excludes*
+  parts of speech themselves.
+
+  A definition matches if it belongs to *any* of the specified parts of speech.
+  A lemma matches if *any* of its definitions match.
+
+  If omitted or null, no part of speech filter is applied. If empty, no parts
+  of speech are searched; the result will be empty.
+  """
+  inPartsOfSpeech: [PartOfSpeechId!]
+
+  """
+  The IDs of tags to search in. This limits the search to resources that have
+  tags (lemmas and definitions). Notably, this *excludes* tags themselves.
+
+  The value of `tagMatching` determines how these values are used:
+
+  * If `tagMatching` is `MATCH_ANY`, then: a definition matches if it has *any*
+    of the specified tags, and a lemma matches if *any* of its definitions
+    match. In this mode, an empty list means no tags are searched; the result
+    will be empty.
+  * If `tagMatching` is `MATCH_ALL`, then: a definition matches if it has *all*
+    of the specified tags, and a lemma matches if its definitions together have
+    *all* of the speciifed tags. In this mode, an empty list means all lemmas
+    and definitions match (`[]` is a subset of every list).
+
+  If omitted or null, no tag filter is applied.
+  """
+  withTags: [TagId!]
+
+  """
+  Determines how `withTags` matches. See the documentation of `withTags` for
+  more details. If omitted or null, the default value is `MATCH_ANY`.
+
+  This field has no effect if `withTags` is omitted or null.
+  """
+  tagMatching: MatchingMode
 }
 
 extend type Query {

@@ -5,6 +5,13 @@ export interface TableSchema {
 
 export const schemaVersion = 1;
 
+// Shared full-text-search tokenize parameters. This is by no means the best
+// possible configuration for all languages, but should hopefully be Good Enough
+// for most reasonable situations.
+// NOTE: The token character included here MUST be kept in sync with the regex
+// for formatFtsQuery (../../model/search-index/query).
+const FtsTokenize = "unicode61 remove_diacritics 0 categories 'L* N* Co Mc Mn' tokenchars ''''";
+
 const tables: readonly TableSchema[] = [
   {
     name: 'schema_info',
@@ -55,6 +62,17 @@ const tables: readonly TableSchema[] = [
     ],
   },
 
+  // Search table for languages.
+  {
+    name: 'languages_fts',
+    commands: [`
+      create virtual table languages_fts using fts5(
+        name,
+        tokenize = "${FtsTokenize}"
+      )`,
+    ],
+  },
+
   // Parts of speech defined for a language. A part of speech is associated with
   // every definition, and can define any number of inflection tables.
   {
@@ -71,6 +89,17 @@ const tables: readonly TableSchema[] = [
           on delete cascade
       )`,
       `create unique index \`parts_of_speech(language_id,name)\` on parts_of_speech(language_id, name)`,
+    ],
+  },
+
+  // Search table for parts of speech.
+  {
+    name: 'parts_of_speech_fts',
+    commands: [`
+      create virtual table parts_of_speech_fts using fts5(
+        name,
+        tokenize = "${FtsTokenize}"
+      )`,
     ],
   },
 
@@ -200,6 +229,23 @@ const tables: readonly TableSchema[] = [
     ],
   },
 
+  // Search table for lemmas.
+  {
+    name: 'lemmas_fts',
+    commands: [`
+      create virtual table lemmas_fts using fts5(
+        term,
+        tokenize = "${FtsTokenize}",
+        prefix = '1 2 3 4'
+      )`,
+    ],
+  },
+
+  // Definitions of dictionary words. The primary component of a definition is
+  // its free text description (stored in `descriptions`). In addition to the
+  // properties in this table, each definition can also have multiple inflection
+  // tables (see `definition_inflection_tables`) and associated stems (see
+  // `definition_stems`).
   {
     name: 'definitions',
     commands: [`
@@ -230,6 +276,16 @@ const tables: readonly TableSchema[] = [
       `create index \`definitions(lemma_id)\` on definitions(lemma_id)`,
       `create index \`definitions(language_id)\` on definitions(language_id)`,
       `create index \`definitions(part_of_speech_id)\` on definitions(part_of_speech_id)`,
+    ],
+  },
+
+  {
+    name: 'definitions_fts',
+    commands: [`
+      create virtual table definitions_fts using fts5(
+        description,
+        tokenize = "${FtsTokenize}"
+      )`,
     ],
   },
 
@@ -389,6 +445,18 @@ const tables: readonly TableSchema[] = [
         primary key (id)
       )`,
       `create unique index \`tags(name)\` on tags(name)`,
+    ],
+  },
+
+  // Search table for tags.
+  {
+    name: 'tags_fts',
+    commands: [`
+      create virtual table tags_fts using fts5(
+        name,
+        tokenize = "${FtsTokenize}",
+        prefix = '1 2 3'
+      )`,
     ],
   },
 
