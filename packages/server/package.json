@@ -1,6 +1,6 @@
 {
   "name": "@condict/server",
-  "version": "0.4.0",
+  "version": "0.1.0",
   "description": "Condict backend/server. Exposes HTTP APIs for querying and manipulating the dictionary, and Node APIs for configuring, starting and stopping a server.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
@@ -29,7 +29,7 @@
     "install": "prebuild-install || npm run build:native-own"
   },
   "dependencies": {
-    "@condict/inflect": "^0.1.2",
+    "@condict/inflect": "^0.1.0",
     "apollo-server": "^2.23.0",
     "bcrypt": "^5.0.1",
     "better-sqlite3": "^7.3.0",
@@ -44,7 +44,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@condict/graphql-typer": "^0.3.1",
+    "@condict/graphql-typer": "^0.1.0",
     "@types/bcrypt": "^3.0.1",
     "@types/bindings": "^1.5.0",
     "@types/command-line-args": "^5.0.0",

@@ -1,6 +1,6 @@
 {
   "name": "@condict/inflect",
-  "version": "0.1.2",
+  "version": "0.1.0",
   "description": "Provides APIs for inflecting words using Condict inflection patterns.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
