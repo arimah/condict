@@ -21,6 +21,7 @@ import {
   Green,
   Blue,
   Purple,
+  Gray,
   lightTheme,
   darkTheme,
 } from '@condict/ui';
@@ -39,7 +40,7 @@ interface Appearance {
 
 type ThemeName = 'light' | 'dark';
 
-type ShadeName = 'red' | 'yellow' | 'green' | 'blue' | 'purple';
+type ShadeName = 'red' | 'yellow' | 'green' | 'blue' | 'purple' | 'gray';
 
 type ThemeGenerator = typeof lightTheme;
 
@@ -59,6 +60,7 @@ const Shades: Record<ShadeName, ShadeGroup> = {
   green: Green,
   blue: Blue,
   purple: Purple,
+  gray: Gray,
 };
 
 const ShadeOptions: readonly ShadeOption[] = [
@@ -67,6 +69,7 @@ const ShadeOptions: readonly ShadeOption[] = [
   {value: 'green', name: 'Green'},
   {value: 'blue', name: 'Blue'},
   {value: 'purple', name: 'Purple'},
+  {value: 'gray', name: 'Gray'},
 ];
 
 const AppearanceKey = 'condict/appearance';
