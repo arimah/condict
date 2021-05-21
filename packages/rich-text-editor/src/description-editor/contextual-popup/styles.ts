@@ -43,22 +43,17 @@ export const Actions = styled.span`
   padding: 2px 2px 2px 0;
 `;
 
-export const Action = styled(Button).attrs({
-  intent: 'secondary',
-})`
+export const Action = styled(Button)`
   padding: 4px 8px;
   border-radius: 5px;
-  border-color: ${p => p.theme.general.altBg};
-  background-color: ${p => p.theme.general.altBg};
+  border-color: ${p => p.theme.general.bg};
 
   &:hover:not(:focus):not(.force-focus) {
-    border-color: ${p => p.theme.general.hoverAltBg};
-    background-color: ${p => p.theme.general.hoverAltBg};
+    border-color: ${p => p.theme.general.hoverBg};
   }
 
   &:active:not(:focus):not(.force-focus) {
-    border-color: ${p => p.theme.general.activeAltBg};
-    background-color: ${p => p.theme.general.activeAltBg};
+    border-color: ${p => p.theme.general.activeBg};
   }
 `;
 

@@ -54,7 +54,7 @@ export const Main = styled.div.attrs({
   padding: 24px;
   flex-direction: column;
   border-radius: 8px;
-  background-color: ${p => p.theme.general.bg};
+  background-color: ${p => p.theme.defaultBg};
 
   ${p => AlignXValues[p.alignX]}
 

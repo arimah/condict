@@ -97,7 +97,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
       }
 
       ReactEditor.focus(editor);
-      // Try to open the link dialog again after the next render.
+      // Try to open the dialog again after the next render.
       return type;
     }
 
@@ -171,10 +171,6 @@ const DescriptionEditor = (props: Props): JSX.Element => {
     setShowPopup(focusInEditorOrPopup);
   }, []);
 
-  const focusPopup = useCallback(() => {
-    popupRef.current?.focus();
-  }, []);
-
   const keyboardMap = useMemo(() => new ShortcutMap(
     [
       ...getInlineCommands(shortcuts),
@@ -188,7 +184,14 @@ const DescriptionEditor = (props: Props): JSX.Element => {
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     const cmd = keyboardMap.get(e);
     if (cmd) {
-      cmd.exec(e, {editor, openLinkDialog, openIpaDialog, focusPopup});
+      cmd.exec(e, {
+        editor,
+        openLinkDialog,
+        openIpaDialog,
+        focusPopup: () => {
+          popupRef.current?.focus();
+        },
+      });
     }
   }, [keyboardMap]);
 

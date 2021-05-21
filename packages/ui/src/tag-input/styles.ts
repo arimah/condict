@@ -15,9 +15,9 @@ export const Main = styled.span<Props>`
   flex-wrap: wrap;
   cursor: ${p => !p.disabled && 'text'};
   border-radius: 3px;
-  border-color: ${p => p.theme.general.borderColor};
-  background-color: ${p => p.theme.general.bg};
-  color: ${p => p.theme.general.fg};
+  border-color: ${p => p.theme.general.border};
+  background-color: ${p => p.theme.defaultBg};
+  color: ${p => p.theme.defaultFg};
 
   ${p => p.minimal ? css`
     padding: 2px;
@@ -29,13 +29,14 @@ export const Main = styled.span<Props>`
   `}
 
   ${p => p.inputFocused && css<Props>`
-    ${p => p.theme.focus.style}
+    outline: none;
     padding: ${p => p.minimal && '0'};
     border: 2px solid ${p => p.theme.focus.color};
+    box-shadow: ${p => p.theme.focus.shadow};
   `}
 
   ${p => p.disabled && css`
-    border-color: ${p => p.theme.general.disabledBorderColor};
+    border-color: ${p => p.theme.general.disabledBorder};
     color: ${p => p.theme.general.disabledFg};
   `}
 `;
@@ -52,39 +53,39 @@ export const Tag = styled.button.attrs({
   max-width: calc(100% - 2px);
   font: inherit;
   text-align: left;
-  background-color: ${p => p.theme.general.altBg};
-  border: 2px solid ${p => p.theme.general.altBg};
+  background-color: ${p => p.theme.general.bg};
+  border: 2px solid ${p => p.theme.general.bg};
   border-radius: 13px;
-  color: ${p => p.theme.general.altFg};
+  color: ${p => p.theme.general.fg};
   cursor: default;
 
   ${p => p.disabled && css`
     &&& {
       padding-left: 16px;
       padding-right: 16px;
-      background-color: ${p => p.theme.general.disabledAltBg};
-      border-color: ${p => p.theme.general.disabledAltBg};
-      color: ${p => p.theme.general.disabledAltFg};
+      background-color: ${p => p.theme.general.disabledBg};
+      border-color: ${p => p.theme.general.disabledBg};
+      color: ${p => p.theme.general.disabledFg};
     }
   `}
 
   &:hover {
-    background-color: ${p => p.theme.danger.hoverAltBg};
-    border-color: ${p => p.theme.danger.hoverAltBg};
-    color: ${p => p.theme.danger.altFg};
+    background-color: ${p => p.theme.danger.boldBg};
+    border-color: ${p => p.theme.danger.boldBg};
+    color: ${p => p.theme.danger.boldFg};
   }
 
   &:active {
-    background-color: ${p => p.theme.danger.activeAltBg};
-    border-color: ${p => p.theme.danger.activeAltBg};
-    color: ${p => p.theme.danger.altFg};
+    background-color: ${p => p.theme.danger.boldActiveBg};
+    border-color: ${p => p.theme.danger.boldActiveBg};
+    color: ${p => p.theme.danger.boldFg};
   }
 
   &:focus,
   &.force-focus {
-    ${p => p.theme.focus.style}
     outline: none;
     border-color: ${p => p.theme.focus.color};
+    box-shadow: ${p => p.theme.focus.shadow};
   }
 `;
 
@@ -112,8 +113,8 @@ export const Input = styled.input.attrs({
   min-width: 72px;
   border: none;
   border-radius: 0;
-  background-color: ${p => p.theme.general.bg};
-  color: ${p => p.theme.general.fg};
+  background-color: ${p => p.theme.defaultBg};
+  color: ${p => p.theme.defaultFg};
 
   &:focus {
     outline: none;

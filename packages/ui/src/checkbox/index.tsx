@@ -27,7 +27,7 @@ export type Props = {
 export const Checkbox = (props: Props): JSX.Element => {
   const {
     className,
-    intent = 'primary',
+    intent = 'accent',
     indeterminate = false,
     label,
     disabled,

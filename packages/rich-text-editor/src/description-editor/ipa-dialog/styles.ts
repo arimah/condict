@@ -47,13 +47,11 @@ export const Character = styled.span.attrs({
   line-height: 20px;
   cursor: default;
 
-  background-color: ${p => p.theme.general[
-    p.selected ? 'hoverAltBg' : 'altBg'
-  ]};
+  background-color: ${p => p.theme.general[p.selected ? 'hoverBg' : 'bg']};
   font-weight: ${p => p.isBase && 'bold'};
 
   &:active {
-    background-color: ${p => p.theme.general.activeAltBg};
+    background-color: ${p => p.theme.general.activeBg};
   }
 `;
 
@@ -69,16 +67,14 @@ export const Result = styled.div.attrs({
   align-items: center;
   cursor: default;
 
-  background-color: ${p => p.theme.general[
-    p.selected ? 'hoverAltBg' : 'altBg'
-  ]};
+  background-color: ${p => p.theme.general[p.selected ? 'hoverBg' : 'bg']};
 
   &:not(:last-child) {
     margin-bottom: 2px;
   }
 
   &:active {
-    background-color: ${p => p.theme.general.activeAltBg};
+    background-color: ${p => p.theme.general.activeBg};
   }
 `;
 

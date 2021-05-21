@@ -1,5 +1,7 @@
 import styled, {css} from 'styled-components';
 
+import {Gray} from '../theme';
+
 export type MenuProps = {
   open: boolean;
   submenu: boolean;
@@ -17,8 +19,8 @@ export const Menu = styled.div.attrs({
   top: 0;
   left: 0;
   border-radius: 4px;
-  background-color: ${p => p.theme.general.altBg};
-  color: ${p => p.theme.general.altFg};
+  background-color: ${p => p.theme.general.bg};
+  color: ${p => p.theme.general.fg};
   box-shadow: 3px 2px 4px 1px rgba(0, 0, 0, 0.45);
   user-select: none;
 
@@ -43,19 +45,19 @@ export const Item = styled.div<ItemProps>`
   position: relative;
   white-space: nowrap;
   cursor: default;
-  background-color: ${p => p.theme.general.altBg};
+  background-color: ${p => p.theme.general.bg};
 
   ${p => p.current && css`
-    background-color: ${p => p.theme.general.hoverAltBg};
+    background-color: ${p => p.theme.general.hoverBg};
   `}
 
   ${p => p.disabled ? css`
-    color: ${p => p.theme.general.disabledAltFg};
+    color: ${p => p.theme.general.disabledFg};
   ` : css`
-    color: ${p => p.theme.general.altFg};
+    color: ${p => p.theme.general.fg};
 
     &:active {
-      background-color: ${p => p.theme.general.activeAltBg};
+      background-color: ${p => p.theme.general.activeBg};
     }
   `}
 `;
@@ -114,19 +116,19 @@ export const ItemCheck = styled.span<ItemCheckProps>`
   ${p => p.radio ? css<ItemCheckProps>`
     border-radius: 8px;
     border-color: ${p => p.checked
-      ? p.theme.primary.altBg
-      : p.theme.general.borderColor
+      ? p.theme.accent.boldBg
+      : p.theme.general.border
     };
-    background-color: ${p => p.theme.general.bg};
+    background-color: ${p => p.theme.defaultBg};
   ` : css<ItemCheckProps>`
     border-radius: 3px;
     border-color: ${p => p.checked
-      ? p.theme.primary.altBg
-      : p.theme.general.borderColor
+      ? p.theme.accent.boldBg
+      : p.theme.general.border
     };
     background-color: ${p => p.checked
-      ? p.theme.primary.altBg
-      : p.theme.general.bg
+      ? p.theme.accent.boldBg
+      : p.theme.defaultBg
     };
   `}
 `;
@@ -139,8 +141,8 @@ export const CheckMark = styled.span`
   left: 50%;
   width: 10px;
   height: 6px;
-  border-left: 2px solid ${p => p.theme.general.bg};
-  border-bottom: 2px solid ${p => p.theme.general.bg};
+  border-left: 2px solid ${p => p.theme.defaultBg};
+  border-bottom: 2px solid ${p => p.theme.defaultBg};
   transform: translate(-50%, -75%) rotate(-45deg);
 `;
 
@@ -152,16 +154,19 @@ export const RadioDot = styled.span`
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  background-color: ${p => p.theme.primary.altBg};
+  background-color: ${p => p.theme.accent.boldBg};
   transform: translate(-50%, -50%);
 `;
 
 export const Separator = styled.div.attrs({
   role: 'separator',
 })`
-  margin-top: 3px;
-  margin-bottom: 3px;
-  border-top: 2px solid ${p => p.theme.general.borderColor};
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-top: 2px solid ${p => p.theme.mode === 'dark'
+    ? Gray.bold[5]
+    : Gray.bold[2]
+  };
 `;
 
 export const PhantomFadeTime = 200;

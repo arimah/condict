@@ -94,7 +94,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   a:link {
-    color: ${p => p.theme.link.color};
+    color: ${p => p.theme.link.link};
     text-decoration: none;
   }
 

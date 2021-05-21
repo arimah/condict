@@ -1,24 +1,16 @@
 import {Interpolation, css} from 'styled-components';
 
-import {IntentTheme, TimingTheme, IntentProps} from './types';
+import {UIColors, TimingTheme, IntentProps} from './types';
 
-/** Purple. */
-export const PrimaryHue = 291;
-/**
- * Blue with a tiny bit of green (greenish blue when saturated, or bluish grey
- * when desaturated).
- */
-export const GeneralHue = 200;
-/** Red with the tiniest hint of green. */
-export const DangerHue = 1;
-/** Greenish blue. */
-export const FocusHue = 200;
-/** Greenish blue, with less green. */
-export const SelectionHue = 205;
+export const Timing: TimingTheme = {
+  motion: 'full',
+  short: 100,
+  long: 250,
+};
 
 export const intentVar =
-  <K extends keyof IntentTheme>(variable: K) =>
-    (props: IntentProps): IntentTheme[K] =>
+  <K extends keyof UIColors>(variable: K) =>
+    (props: IntentProps): UIColors[K] =>
       props.theme[props.intent][variable];
 
 export const transition = (

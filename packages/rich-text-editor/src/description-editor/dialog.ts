@@ -27,8 +27,8 @@ export const SearchWrapper = styled.div.attrs({
   flex-direction: row;
 
   border-radius: 3px;
-  border: 2px solid ${p => p.theme.general.bg};
-  background-color: ${p => p.theme.general.bg};
+  border: 2px solid ${p => p.theme.defaultBg};
+  background-color: ${p => p.theme.defaultBg};
 `;
 
 export const SearchInput = styled(TextInput).attrs({
@@ -48,7 +48,7 @@ export const SearchInput = styled(TextInput).attrs({
 `;
 
 export const SubmitButton = styled(Button).attrs({
-  intent: 'primary',
+  intent: 'accent',
   bold: true,
   slim: true,
   type: 'submit',

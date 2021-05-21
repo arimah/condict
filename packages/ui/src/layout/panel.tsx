@@ -15,7 +15,7 @@ const Panel = styled.div<Props>`
     borded-width: 0;
   ` : css`
     padding: 14px;
-    border: 2px solid ${p => p.theme.general.borderColor};
+    border: 2px solid ${p => p.theme.general.border};
   `}
 
   border-radius: 3px;
@@ -24,9 +24,10 @@ const Panel = styled.div<Props>`
   /* Panel is not focusable by default, but make sure it supports tabindex. */
   &:focus,
   &.force-focus {
-    ${p => p.theme.focus.style}
+    outline: none;
     padding: 14px;
     border: 2px solid ${p => p.theme.focus.color};
+    box-shadow: ${p => p.theme.focus.shadow};
   }
 
   > :first-child {

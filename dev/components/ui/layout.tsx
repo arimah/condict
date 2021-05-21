@@ -21,7 +21,7 @@ const PanelStorageKey = 'condict/ui/panel';
 const Separator = styled.div`
   margin-top: 31px;
   margin-bottom: 31px;
-  border-top: 2px solid ${p => p.theme.general.borderColor};
+  border-top: 2px solid ${p => p.theme.general.border};
 `;
 
 const Main = (): JSX.Element => {
@@ -103,7 +103,7 @@ const Main = (): JSX.Element => {
         <Checkbox label='Second option'/>
         <span>The second option has a much longer description, which requires word wrapping over several lines.</span>
         <Cell column='2' alignX='end'>
-          <Button intent='secondary'>
+          <Button intent='accent'>
             Do something
           </Button>
         </Cell>

@@ -41,7 +41,7 @@ export const RadioGroupContext = React.createContext<ContextValue>({
 export const Radio = (props: Props): JSX.Element => {
   const {
     className,
-    intent = 'primary',
+    intent = 'accent',
     label,
     disabled,
     name = '',

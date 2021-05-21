@@ -1,6 +1,7 @@
 import styled, {css} from 'styled-components';
 
 import {Table} from '../table-editor/styles';
+import Colors from '../colors';
 
 export type CellProps = {
   header: boolean;
@@ -19,25 +20,19 @@ export const Cell = styled.td<CellProps>`
 
   ${p => p.header ? css<CellProps>`
     font-weight: bold;
-    background-color: ${p => p.theme.general[
-      p.disabled ? 'disabledAltBg' : 'altBg'
-    ]};
-    color: ${p => p.theme.general[
-      p.disabled ? 'disabledAltFg' : 'altFg'
-    ]};
+    background-color: ${p => p.theme.general[p.disabled ? 'disabledBg' : 'bg']};
+    color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
   ` : css<CellProps>`
     font-weight: normal;
-    background-color: ${p => p.theme.general.bg};
-    color: ${p => p.theme.general[
-      p.disabled ? 'disabledFg' : 'fg'
-    ]};
+    background-color: ${p => p.theme.defaultBg};
+    color: ${p => p.disabled ? p.theme.general.disabledFg : p.theme.defaultFg};
   `}
 
   ${Table}:focus &,
   ${Table}.force-focus & {
     ${p => p.selected && css<CellProps>`
-      background-color: ${p => p.theme.selection[
-        p.header ? 'altBg' : 'bg'
+      background-color: ${p => Colors[p.theme.mode][
+        p.header ? 'selectedHeaderBg' : 'selectedBg'
       ]};
     `}
   }
@@ -64,17 +59,17 @@ export const CellBorder = styled.div<CellBorderProps>`
   pointer-events: none;
 
   border: 2px solid ${p => p.theme.general[
-    p.disabled ? 'disabledBorderColor' : 'borderColor'
+    p.disabled ? 'disabledBorder' : 'border'
   ]};
 
   ${Table}:focus &,
   ${Table}.force-focus & {
-    ${p => p.focused && p.theme.focus.style}
     border-color: ${p =>
       p.focused ? p.theme.focus.color :
-      p.selected ? p.theme.selection.borderColor :
+      p.selected ? Colors[p.theme.mode].selectedBorder :
       undefined
     };
+    box-shadow: ${p => p.focused && p.theme.focus.shadow};
     z-index: ${p =>
       p.focused ? '2' :
       p.selected ? '1' :

@@ -23,12 +23,13 @@ export const CellInputWrapper = styled.label<CellInputWrapperProps>`
   align-items: center;
   cursor: text;
 
-  border: 2px solid ${p => p.theme.general.borderColor};
-  background-color: ${p => p.theme.general.bg};
+  border: 2px solid ${p => p.theme.general.border};
+  background-color: ${p => p.theme.defaultBg};
 
   ${p => p.focus && css`
-    ${p => p.theme.focus.style}
+    outline: none;
     border-color: ${p => p.theme.focus.color};
+    box-shadow: ${p => p.theme.focus.shadow};
   `}
 `;
 
@@ -54,7 +55,7 @@ export const CellInput = styled(TextInput).attrs({
     display: block;
     flex: 1 1 auto;
     /* padding-right is 0 to leave some room for the cursor and a bit of
-     * extra padding that some browsers add.
+     * extra padding that is sometimes added.
      */
     padding: 6px 0 6px 6px;
     width: 50%;
@@ -78,7 +79,7 @@ export const CellSettingsGroup = styled.div`
 export const CellSettingsSeparator = styled.div`
   margin-top: 15px;
   margin-bottom: 15px;
-  border-top: 2px solid ${p => p.theme.general.borderColor};
+  border-top: 2px solid ${p => p.theme.general.border};
 `;
 
 export const DisplayNameLabel = styled.label`
@@ -94,7 +95,6 @@ export const DisplayNameInput = styled(TextInput)`
 export const DeriveDisplayNameButton = styled(Button).attrs({
   slim: true,
   bold: true,
-  intent: 'secondary',
 })`
   display: block;
   width: 256px;

@@ -1,6 +1,6 @@
 type Intent =
-  | 'primary'
-  | 'secondary'
+  | 'general'
+  | 'accent'
   | 'danger';
 
 export default Intent;

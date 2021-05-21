@@ -21,7 +21,7 @@ const Button = React.forwardRef((props: Props, ref: Ref<HTMLButtonElement>) => {
     command: commandName,
     slim = false,
     bold = false,
-    intent = 'primary',
+    intent = 'general',
     disabled,
     onClick,
     children,

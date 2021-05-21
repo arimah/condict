@@ -22,10 +22,10 @@ const Demo = (): JSX.Element => {
       <FocusScope active={scope1}>
         <S.Scope kind='scope' active={scope1}>
           <p>
-            <Button slim label='I am clickable' intent='secondary'/>
+            <Button slim label='I am clickable'/>
           </p>
           <p>
-            <Button slim label='Hello, focus!' intent='secondary'/>
+            <Button slim label='Hello, focus!'/>
           </p>
         </S.Scope>
       </FocusScope>
@@ -43,14 +43,12 @@ const Demo = (): JSX.Element => {
             <Button
               slim
               label='I am focusable and tabbable'
-              intent='secondary'
             />
           </p>
           <p>
             <Button
               slim
               label='I am focusable but not tabbable'
-              intent='secondary'
               tabIndex={-1}
             />
           </p>

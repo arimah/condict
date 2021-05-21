@@ -9,9 +9,9 @@ export const Input = styled.input<Props>`
   box-sizing: border-box;
   font: inherit;
   border-radius: ${p => p.borderRadius || '3px'};
-  border-color: ${p => p.theme.general.borderColor};
-  background-color: ${p => p.theme.general.bg};
-  color: ${p => p.theme.general.fg};
+  border-color: ${p => p.theme.general.border};
+  background-color: ${p => p.theme.defaultBg};
+  color: ${p => p.theme.defaultFg};
 
   ${p => p.minimal ? css`
     padding: 4px;
@@ -24,18 +24,19 @@ export const Input = styled.input<Props>`
 
   &:focus,
   &.force-focus {
-    ${p => p.theme.focus.style}
+    outline: none;
     padding: ${p => p.minimal && '2px'};
     border: 2px solid ${p => p.theme.focus.color};
+    box-shadow: ${p => p.theme.focus.shadow};
   }
 
   &:disabled {
-    border-color: ${p => p.theme.general.disabledBorderColor};
+    border-color: ${p => p.theme.general.disabledBorder};
     color: ${p => p.theme.general.disabledFg};
   }
 
   &::placeholder {
-    color: ${p => p.theme.general.fg};
+    color: ${p => p.theme.defaultFg};
     opacity: 0.65;
   }
 

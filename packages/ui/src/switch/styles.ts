@@ -20,9 +20,9 @@ export const Switch = styled.span`
   width: 32px;
   height: 16px;
   vertical-align: -3px;
-  border: 2px solid ${p => p.theme.general.borderColor};
+  border: 2px solid ${p => p.theme.general.border};
   border-radius: 10px;
-  background-color: ${p => p.theme.general.bg};
+  background-color: ${p => p.theme.defaultBg};
 `;
 
 export const Dot = styled.span`
@@ -32,7 +32,7 @@ export const Dot = styled.span`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: ${p => p.theme.general.borderColor};
+  background-color: ${p => p.theme.general.border};
 
   ${transition('left')}
 `;
@@ -46,31 +46,31 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
   height: 100%;
 
   &:checked + ${Switch} {
-    border-color: ${intentVar('altBg')};
-    background-color: ${intentVar('altBg')};
+    border-color: ${intentVar('boldBg')};
+    background-color: ${intentVar('boldBg')};
 
     > ${Dot} {
       left: 18px;
-      background-color: ${p => p.theme.general.bg};
+      background-color: ${p => p.theme.defaultBg};
     }
   }
 
   &&&:disabled {
     + ${Switch} {
-      border-color: ${p => p.theme.general.disabledBorderColor};
-      background-color: ${p => p.theme.general.bg};
+      border-color: ${p => p.theme.general.disabledBorder};
+      background-color: ${p => p.theme.defaultBg};
 
       > ${Dot} {
-        background-color: ${p => p.theme.general.disabledBg};
+        background-color: ${p => p.theme.general.disabledBorder};
       }
     }
 
     &:checked + ${Switch} {
-      border-color: ${p => p.theme.general.disabledBg};
-      background-color: ${p => p.theme.general.disabledBg};
+      border-color: ${p => p.theme.general.disabledBorder};
+      background-color: ${p => p.theme.general.disabledBorder};
 
       > ${Dot} {
-        background-color: ${p => p.theme.general.bg};
+        background-color: ${p => p.theme.defaultBg};
       }
     }
   }
@@ -81,8 +81,9 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
 
   &&&:focus + ${Switch},
   &&&.force-focus + ${Switch} {
-    ${p => p.theme.focus.style}
+    outline: none;
     border: 2px solid ${p => p.theme.focus.color};
+    box-shadow: ${p => p.theme.focus.shadow};
   }
 `;
 
@@ -94,18 +95,18 @@ export const Label = styled.label<DisabledProps & IntentProps>`
 
   &:hover {
     > ${Switch} {
-      background-color: ${p => p.theme.general.hoverBg};
+      background-color: ${p => p.theme.defaultHoverBg};
     }
 
     > :checked + ${Switch} {
-      border-color: ${intentVar('hoverAltBg')};
-      background-color: ${intentVar('hoverAltBg')};
+      border-color: ${intentVar('boldHoverBg')};
+      background-color: ${intentVar('boldHoverBg')};
     }
   }
 
   &:active {
     > ${Switch} {
-      background-color: ${p => p.theme.general.activeBg};
+      background-color: ${p => p.theme.defaultActiveBg};
 
       > ${Dot} {
         left: 4px;
@@ -113,8 +114,8 @@ export const Label = styled.label<DisabledProps & IntentProps>`
     }
 
     > :checked + ${Switch} {
-      border-color: ${intentVar('activeAltBg')};
-      background-color: ${intentVar('activeAltBg')};
+      border-color: ${intentVar('boldActiveBg')};
+      background-color: ${intentVar('boldActiveBg')};
 
       > ${Dot} {
         left: 16px;

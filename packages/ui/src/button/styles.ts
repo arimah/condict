@@ -22,27 +22,28 @@ export const ButtonStyle = css<Props>`
 
   &:focus,
   &.force-focus {
+    outline: none;
     border: 2px solid ${p => p.theme.focus.color};
-    ${p => p.theme.focus.style}
+    box-shadow: ${p => p.theme.focus.shadow};
   }
 
   ${p => p.bold ? css<Props>`
-    color: ${intentVar('altFg')};
-    border-color: ${intentVar('borderColor')};
-    background-color: ${intentVar('altBg')};
+    color: ${intentVar('boldFg')};
+    border-color: ${intentVar('boldBg')};
+    background-color: ${intentVar('boldBg')};
 
     &:hover {
-      background-color: ${intentVar('hoverAltBg')};
+      background-color: ${intentVar('boldHoverBg')};
     }
 
     &:active {
-      background-color: ${intentVar('activeAltBg')};
+      background-color: ${intentVar('boldActiveBg')};
     }
 
     &:disabled {
-      color: ${intentVar('disabledAltFg')};
-      border-color: ${intentVar('disabledBorderColor')};
-      background-color: ${intentVar('disabledAltBg')};
+      color: ${intentVar('boldDisabledFg')};
+      border-color: ${intentVar('boldDisabledBg')};
+      background-color: ${intentVar('boldDisabledBg')};
     }
   ` : css<Props>`
     color: ${intentVar('fg')};
@@ -97,7 +98,7 @@ export const Link = styled.a<Props>`
   &:hover,
   &:active,
   &:visited {
-    color: ${p => p.bold ? intentVar('altFg') : intentVar('fg')};
+    color: ${p => p.bold ? intentVar('boldFg') : intentVar('fg')};
     text-decoration: none;
   }
 

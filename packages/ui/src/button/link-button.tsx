@@ -30,7 +30,7 @@ const LinkButton = React.forwardRef((
     command: commandName,
     slim = false,
     bold = false,
-    intent = 'primary',
+    intent = 'general',
     onClick,
     children,
     ...otherProps

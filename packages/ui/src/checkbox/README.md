@@ -41,7 +41,7 @@ import {Checkbox} from '@condict/ui';
 | `checked` | boolean | `undefined` | Determines whether the checkbox is checked. |
 | `indeterminate` | boolean | `false` | If true, the checkbox is put in an indeterminate, i.e. half-checked, state. If set to true, the value of `checked` is ignored, but should probably be set to `true`. |
 | `disabled` | boolean | `false` | If true, the checkbox is disabled. |
-| `intent` | one of `'primary'`, `'secondary'`, `'danger'` | `'primary'` | Determines what intent styling to give the checkbox. Unchecked checkboxes look identical regardless of intent. |
+| `intent` | one of `'general'`, `'accent'`, `'danger'` | `'accent'` | Determines what intent styling to give the checkbox. Unchecked checkboxes look identical regardless of intent. |
 | `label` | string | `undefined` | A string value that contains the checkbox's text. If used together with children, this value defines the checkbox's accessible label. |
 | `name` | string | `undefined` | The name of the checkbox, which is used if the checkbox is submitted as part of a form. |
 | `labelProps` | object | `undefined` | An object of additional properties to pass on to the `<label>`. |

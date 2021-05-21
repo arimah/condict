@@ -17,11 +17,11 @@ export const SearchResult = styled.li.attrs({
   user-select: none;
 
   ${p => p.selected && `
-    background-color: ${p.theme.general.hoverAltBg};
+    background-color: ${p.theme.general.hoverBg};
   `}
 
   &:active {
-    background-color: ${p => p.theme.general.activeAltBg};
+    background-color: ${p => p.theme.general.activeBg};
   }
 `;
 
@@ -51,7 +51,7 @@ export const SearchResultMatch = styled.div`
   margin-top: 2px;
   padding-top: 2px;
   font-style: italic;
-  border-top: 1px solid ${p => p.theme.general.borderColor};
+  border-top: 1px solid ${p => p.theme.general.border};
 `;
 
 export type SearchResultListProps = {

@@ -14,7 +14,7 @@ type State = {
 
 const InitialState: State = {
   current: '1',
-  intent: 'primary',
+  intent: 'accent',
   disabled: false,
 };
 
@@ -43,7 +43,6 @@ const Main = (): JSX.Element => {
         />,
         <Button
           slim
-          intent='secondary'
           label='Deselect all'
           onClick={() => set('current', null)}
         />,

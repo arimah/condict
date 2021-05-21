@@ -28,10 +28,10 @@ export const CellPopup = styled.div`
 
   font-weight: normal;
 
-  border: 2px solid ${p => p.theme.general.borderColor};
+  border: 2px solid ${p => p.theme.general.border};
   border-radius: 3px;
-  background-color: ${p => p.theme.general.altBg};
-  color: ${p => p.theme.general.altFg};
+  background-color: ${p => p.theme.general.bg};
+  color: ${p => p.theme.general.fg};
   box-shadow: ${p => p.theme.shadow.elevation2};
 
   ::after {
@@ -43,9 +43,9 @@ export const CellPopup = styled.div`
     width: 11px;
     height: 11px;
 
-    border-top: 2px solid ${p => p.theme.general.borderColor};
-    border-right: 2px solid ${p => p.theme.general.borderColor};
-    background-color: ${p => p.theme.general.altBg};
+    border-top: 2px solid ${p => p.theme.general.border};
+    border-right: 2px solid ${p => p.theme.general.border};
+    background-color: ${p => p.theme.general.bg};
     transform: rotate(-45deg);
   }
 `;

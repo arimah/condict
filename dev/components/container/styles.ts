@@ -1,16 +1,19 @@
 import styled, {createGlobalStyle} from 'styled-components';
 
+import {Gray} from '@condict/ui';
+
 export const AppStyles = createGlobalStyle`
   body {
-    background-color: ${p => p.theme.general[
-      p.theme.dark ? 'hoverBg' : 'activeBg'
-    ]};
-    color: ${p => p.theme.general.fg};
+    background-color: ${p => p.theme.mode === 'dark'
+      ? Gray.pale[7]
+      : Gray.pale[0]
+    };
+    color: ${p => p.theme.defaultFg};
   }
 
   a.current {
     font-weight: bold;
-    color: ${p => p.theme.general.fg};
+    color: ${p => p.theme.defaultFg};
   }
 `;
 
@@ -28,13 +31,22 @@ export const Header = styled.header`
 
   > h1 {
     flex: 1 1 auto;
+    margin-top: 24px;
   }
 `;
 
 export const HeaderSwitch = styled.div`
   flex: 0 0 200px;
-  margin: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin: 16px 16px 0 0;
   vertical-align: 3px;
+
+  > * {
+    flex: none;
+  }
 `;
 
 export const MainNav = styled.nav`
@@ -51,5 +63,5 @@ export const NavSeparator = styled.span`
   height: 7px;
   vertical-align: 1px;
   border-radius: 50%;
-  background-color: ${p => p.theme.general.fg};
+  background-color: ${p => p.theme.defaultFg};
 `;

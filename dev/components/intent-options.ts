@@ -6,8 +6,8 @@ interface IntentOption {
 }
 
 const IntentOptions: readonly IntentOption[] = [
-  {value: 'primary', name: 'primary'},
-  {value: 'secondary', name: 'secondary'},
+  {value: 'general', name: 'general'},
+  {value: 'accent', name: 'accent'},
   {value: 'danger', name: 'danger'},
 ];
 

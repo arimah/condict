@@ -21,9 +21,9 @@ export const CheckmarkContainer = styled.span`
   height: 16px;
   position: relative;
 
-  border: 2px solid ${p => p.theme.general.borderColor};
+  border: 2px solid ${p => p.theme.general.border};
   border-radius: 3px;
-  background-color: ${p => p.theme.general.bg};
+  background-color: ${p => p.theme.defaultBg};
 `;
 
 export const IndeterminateMark = styled.span`
@@ -33,7 +33,7 @@ export const IndeterminateMark = styled.span`
   left: 50%;
   width: 10px;
   height: 2px;
-  background-color: ${p => p.theme.general.bg};
+  background-color: ${p => p.theme.defaultBg};
   transform: translate(-50%, -50%);
   opacity: 0;
 `;
@@ -46,8 +46,8 @@ export const CheckMark = styled.span`
   left: 50%;
   width: 10px;
   height: 6px;
-  border-left: 2px solid ${p => p.theme.general.bg};
-  border-bottom: 2px solid ${p => p.theme.general.bg};
+  border-left: 2px solid ${p => p.theme.defaultBg};
+  border-bottom: 2px solid ${p => p.theme.defaultBg};
   transform: translate(-50%, -75%) rotate(-45deg);
   opacity: 0;
 `;
@@ -67,21 +67,21 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
   &:checked,
   &:indeterminate {
     + ${CheckmarkContainer} {
-      border-color: ${intentVar('altBg')};
-      background-color: ${intentVar('altBg')};
+      border-color: ${intentVar('boldBg')};
+      background-color: ${intentVar('boldBg')};
     }
   }
 
   &&:disabled {
     + ${CheckmarkContainer} {
-      border-color: ${p => p.theme.general.disabledBorderColor};
-      background-color: ${p => p.theme.general.bg};
+      border-color: ${p => p.theme.general.disabledBorder};
+      background-color: ${p => p.theme.defaultBg};
     }
 
     &:checked + ${CheckmarkContainer},
     &:indeterminate + ${CheckmarkContainer} {
-      border-color: ${p => p.theme.general.disabledBg};
-      background-color: ${p => p.theme.general.disabledBg};
+      border-color: ${p => p.theme.general.disabledBorder};
+      background-color: ${p => p.theme.general.disabledBorder};
     }
   }
 
@@ -96,8 +96,9 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
 
   &&&:focus + ${CheckmarkContainer},
   &&&.force-focus + ${CheckmarkContainer} {
-    ${p => p.theme.focus.style}
+    outline: none;
     border-color: ${p => p.theme.focus.color};
+    box-shadow: ${p => p.theme.focus.shadow};
   }
 `;
 
@@ -105,29 +106,29 @@ export const Label = styled.label<DisabledProps & IntentProps>`
   display: inline-block;
   box-sizing: border-box;
   position: relative;
-  color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
+  color: ${p => p.disabled ? p.theme.general.disabledFg : p.theme.defaultFg};
 
   &:hover {
     > ${CheckmarkContainer} {
-      background-color: ${p => p.theme.general.hoverBg};
+      background-color: ${p => p.theme.defaultHoverBg};
     }
 
     > :checked + ${CheckmarkContainer},
     > :indeterminate + ${CheckmarkContainer} {
-      border-color: ${intentVar('hoverAltBg')};
-      background-color: ${intentVar('hoverAltBg')};
+      border-color: ${intentVar('boldHoverBg')};
+      background-color: ${intentVar('boldHoverBg')};
     }
   }
 
   &:active {
     > ${CheckmarkContainer} {
-      background-color: ${p => p.theme.general.activeBg};
+      background-color: ${p => p.theme.defaultActiveBg};
     }
 
     > :checked + ${CheckmarkContainer},
     > :indeterminate + ${CheckmarkContainer} {
-      border-color: ${intentVar('activeAltBg')};
-      background-color: ${intentVar('activeAltBg')};
+      border-color: ${intentVar('boldActiveBg')};
+      background-color: ${intentVar('boldActiveBg')};
     }
   }
 `;

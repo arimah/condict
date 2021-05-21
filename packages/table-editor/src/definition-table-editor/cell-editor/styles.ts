@@ -32,7 +32,6 @@ export const CellPopup = styled(CellPopupBase)`
 export const RevertButton = styled(Button).attrs({
   slim: true,
   bold: true,
-  intent: 'secondary',
 })`
   display: block;
   width: 184px;

@@ -22,9 +22,9 @@ export const Popup = styled.form.attrs({
   position: absolute;
   z-index: 5;
   border-radius: 7px;
-  border: 2px solid ${p => p.theme.general.borderColor};
-  background-color: ${p => p.theme.general.altBg};
-  color: ${p => p.theme.general.altFg};
+  border: 2px solid ${p => p.theme.general.border};
+  background-color: ${p => p.theme.general.bg};
+  color: ${p => p.theme.general.fg};
   box-shadow: ${p => p.theme.shadow.elevation2};
 
   &:focus {

@@ -13,20 +13,21 @@ export const Main = styled.div.attrs({
   margin: 16px auto;
   width: 260px;
   border-radius: 3px;
-  background: ${p => p.theme.general.bg};
-  color: ${p => p.theme.general.fg};
+  background: ${p => p.theme.defaultBg};
+  color: ${p => p.theme.defaultFg};
 
   ${p => p.minimal ? css`
     padding: 16px 24px;
   ` : css`
     padding: 14px 22px;
-    border: 2px solid ${p => p.theme.general.borderColor};
+    border: 2px solid ${p => p.theme.general.border};
     box-shadow: ${p => p.theme.shadow.elevation1};
   `}
 
   &:focus {
-    ${p => p.theme.focus.style}
+    outline: none;
     border-color: ${p => p.theme.focus.color};
+    box-shadow: ${p => p.theme.focus.shadow};
   }
 `;
 

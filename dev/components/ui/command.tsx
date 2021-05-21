@@ -119,12 +119,14 @@ const Main = (): JSX.Element => {
             <Button
               slim
               label='Toggle italic'
+              intent='accent'
               command='toggleItalic'
             />
             {' '}
             <Button
               slim
               label='Toggle bold'
+              intent='accent'
               command='toggleBold'
             />
           </div>
@@ -137,12 +139,14 @@ const Main = (): JSX.Element => {
                 <Button
                   slim
                   label='Toggle italic (inner)'
+                  intent='accent'
                   command='toggleItalic'
                 />
                 {' '}
                 <Button
                   slim
                   label='Toggle bold (outer)'
+                  intent='accent'
                   command='toggleBold'
                 />
               </div>

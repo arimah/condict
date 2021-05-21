@@ -36,7 +36,7 @@ import {Switch} from '@condict/ui';
 | `className` | string | `''` | One or more class names that are forwarded to the switch _label_. |
 | `checked` | boolean | `false` | Determines whether the switch is checked. |
 | `disabled` | boolean | `false` | If true, the switch is disabled. |
-| `intent` | one of `'primary'`, `'secondary'`, `'danger'` | `'primary'` | Determines what intent styling to give the switch. Unchecked switches look identical regardless of intent. |
+| `intent` | one of `'general'`, `'accent'`, `'danger'` | `'accent'` | Determines what intent styling to give the switch. Unchecked switches look identical regardless of intent. |
 | `label` | string | `''` | A string value that contains the switch's text. If used together with children, this value defines the switch's accessible label. |
 | `labelProps` | object | `null` | An object of additional properties to pass on to the `<label>`. |
 | `inputRef` | ref | `undefined` | Receives the underlying `<input>`. |

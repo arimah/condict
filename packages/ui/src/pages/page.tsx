@@ -31,21 +31,24 @@ const Page = (props: Props): JSX.Element => {
     onChange,
   } = useContext(PageContext);
 
+  const disabled = allDisabled || selfDisabled;
+
   return (
     <S.Item>
       <S.Page
         label={label || messages.pageNumber(page + 1, totalPages)}
         aria-current={isCurrent ? 'page' : undefined}
         aria-busy={isCurrent ? loading : undefined}
-        current={isCurrent}
+        bold={isCurrent}
+        intent={isCurrent ? 'accent' : 'general'}
         isLoading={isCurrent && loading}
-        disabled={allDisabled || selfDisabled}
+        disabled={disabled}
         onClick={() => onChange(page)}
       >
         {children || page + 1}
       </S.Page>
       {isCurrent && loading &&
-        <S.Loading>
+        <S.Loading disabled={disabled}>
           <Spinner size={20}/>
         </S.Loading>
       }

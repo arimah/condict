@@ -13,7 +13,7 @@ type State = {
 };
 
 const InitialState: State = {
-  intent: 'primary',
+  intent: 'accent',
   disabled: false,
   checked: [true, false, false],
 };

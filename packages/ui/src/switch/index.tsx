@@ -18,7 +18,7 @@ export type Props = {
 export const Switch = (props: Props): JSX.Element => {
   const {
     className,
-    intent = 'primary',
+    intent = 'accent',
     checked,
     label,
     disabled,

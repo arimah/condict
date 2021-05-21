@@ -17,7 +17,7 @@ export type ToolbarProps = {
 
 export const Toolbar = styled(ToolbarBase)<ToolbarProps>`
   padding: 2px;
-  border: 2px solid ${p => p.theme.general.borderColor};
+  border: 2px solid ${p => p.theme.general.border};
   border-radius: 3px 3px 0 0;
 
   ${p => p.alwaysVisible ? `
@@ -62,9 +62,10 @@ export const Editable = styled(BaseEditable)<EditableProps>`
   padding: ${p => p.$singleLine ? '0 2px' : '0 6px'};
   position: relative;
   z-index: 2;
-  background-color: ${p => p.theme.general.bg};
-  border: 2px solid ${p => p.theme.general.borderColor};
+  border: 2px solid ${p => p.theme.general.border};
   border-radius: 3px;
+  background-color: ${p => p.theme.defaultBg};
+  color: ${p => p.theme.defaultFg};
 
   ${transition('border-radius')}
 
@@ -74,9 +75,9 @@ export const Editable = styled(BaseEditable)<EditableProps>`
     border-top-right-radius: 0;
   ` : css`
     &:focus {
-      ${p => p.theme.focus.style}
       outline: none;
       border-color: ${p => p.theme.focus.color};
+      box-shadow: ${p => p.theme.focus.shadow};
     }
   `}
 
@@ -98,7 +99,7 @@ export const Editable = styled(BaseEditable)<EditableProps>`
   ${Link}:visited,
   ${Link}:hover,
   ${Link}:active {
-    color: ${p => p.theme.link.color};
+    color: ${p => p.theme.link.link};
   }
 `;
 

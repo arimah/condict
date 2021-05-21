@@ -10,7 +10,10 @@ export const CellIcons = styled.div<CellIconsProps>`
   margin-left: 5px;
   margin-right: 5px;
 
-  opacity: ${p => p.disabled && '0.4'};
+  ${p => p.disabled ? `
+    opacity: 0.6;
+    filter: grayscale(0.6);
+  ` : ''}
 
   > svg {
     display: block;

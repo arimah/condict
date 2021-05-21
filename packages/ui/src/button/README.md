@@ -44,7 +44,7 @@ import {Button} from '@condict/ui';
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
 | `disabled` | boolean | `false` | If true, the button is disabled. This prop has no effect on link buttons. If the button has a [command][], the command can also disable the button. |
 | `minimal` | boolean | `false` | If true, applies minimal styling to the button. Basically, it removes the background. |
-| `intent` | one of `'primary'`, `'secondary'`, `'danger'` | `'primary'` | Determines what intent styling to give the button. |
+| `intent` | one of `'general'`, `'accent'`, `'danger'` | `'general'` | Determines what intent styling to give the button. |
 | `slim` | boolean | `false` | If true, reduce the button's padding, to make it fit better alongside text inputs, selects, and similar. |
 | `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
 | `type` | one of `'button'`, `'submit'` | `'button'` | Determines the button's type. Submit buttons are used in forms. This prop has no effect on link buttons. |
@@ -67,7 +67,7 @@ Link buttons forward their ref to the underlying element, which is an `<a>`.
 | `href` | string | _none; required_ | The URL that the link button points to. |
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
 | `minimal` | boolean | `false` | If true, applies minimal styling to the button. Basically, it removes the background. |
-| `intent` | one of `'primary'`, `'secondary'`, `'danger'` | `'primary'` | Determines what intent styling to give the button. |
+| `intent` | one of `'general'`, `'accent'`, `'danger'` | `'general'` | Determines what intent styling to give the button. |
 | `slim` | boolean | `false` | If true, reduce the button's padding, to make it fit better alongside text inputs, selects, and similar. |
 | `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `onClick` prop. |

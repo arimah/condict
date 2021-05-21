@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {Editor, Range} from 'slate';
+import {Editor} from 'slate';
 import {useSlate} from 'slate-react';
 
 import H1Icon from 'mdi-react/FormatHeader1Icon';

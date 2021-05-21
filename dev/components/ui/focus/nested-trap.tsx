@@ -15,6 +15,7 @@ const Demo = (): JSX.Element => {
         <Button
           slim
           label='Activate outer trap'
+          intent='accent'
           onClick={() => setOuter(true)}
         />
       </p>
@@ -24,7 +25,6 @@ const Demo = (): JSX.Element => {
             <Button
               slim
               label='Deactivate outer trap'
-              intent='secondary'
               onClick={() => setOuter(false)}
             />
           </p>
@@ -32,7 +32,6 @@ const Demo = (): JSX.Element => {
             <Button
               slim
               label='Activate inner trap'
-              intent='secondary'
               onClick={() => setInner(true)}
             />
           </p>
@@ -46,7 +45,6 @@ const Demo = (): JSX.Element => {
                 <Button
                   slim
                   label='Deactivate inner trap'
-                  intent='secondary'
                   onClick={() => setInner(false)}
                 />
               </p>
@@ -57,7 +55,6 @@ const Demo = (): JSX.Element => {
             <Button
               slim
               label='A button after the inner trap'
-              intent='secondary'
             />
           </p>
         </S.Scope>

@@ -13,8 +13,8 @@ export const Toolbar = styled.div.attrs({
   padding: 2px;
   flex-wrap: wrap;
   border-radius: 5px;
-  background-color: ${p => p.theme.general.altBg};
-  color: ${p => p.theme.general.altFg};
+  background-color: ${p => p.theme.general.bg};
+  color: ${p => p.theme.general.fg};
 `;
 
 export const Group = styled.div.attrs({
@@ -40,8 +40,8 @@ export const Button = styled.button.attrs({
   text-align: center;
   border: none;
   border-radius: 4px;
-  background-color: ${p => p.theme.general.altBg};
-  color: ${p => p.theme.general.altFg};
+  background-color: ${p => p.theme.general.bg};
+  color: ${p => p.theme.general.fg};
 
   &:not(:first-child) {
     margin-left: 2px;
@@ -49,43 +49,50 @@ export const Button = styled.button.attrs({
 
   &:focus,
   &.force-focus {
-    ${p => p.theme.focus.style}
+    outline: none;
     padding: 4px 6px;
     border: 2px solid ${p => p.theme.focus.color};
+    box-shadow: ${p => p.theme.focus.shadow};
   }
 
   &:hover {
-    background-color: ${p => p.theme.general.hoverAltBg};
+    background-color: ${p => p.theme.general.hoverBg};
   }
 
   &:active {
-    background-color: ${p => p.theme.general.activeAltBg};
+    background-color: ${p => p.theme.general.activeBg};
   }
 
   ${p => p.checked && css`
     && {
-      background-color: ${p => p.theme.primary.bg};
+      background-color: ${p => p.theme.accent.bg};
       box-shadow:
-        inset 0 1px 2px rgba(0, 0, 0, ${p => p.theme.dark ? '0.75' : '0.4'});
+        inset 0 1px 2px rgba(0, 0, 0, ${p => p.theme.mode === 'dark'
+          ? '0.75'
+          : '0.4'
+        });
     }
 
     &&:focus,
     &&.force-focus {
       box-shadow:
-        0 0 4px ${p => p.theme.focus.color},
-        inset 0 1px 2px rgba(0, 0, 0, ${p => p.theme.dark ? '0.75' : '0.4'});
+        ${p => p.theme.focus.shadow},
+        inset 0 1px 2px rgba(0, 0, 0, ${p => p.theme.mode === 'dark'
+          ? '0.75'
+          : '0.4'
+        });
     }
   `}
 
   ${p => p.menuOpen && css`
     && {
-      background-color: ${p => p.theme.general.activeAltBg};
+      background-color: ${p => p.theme.general.activeBg};
     }
   `}
 
   &:disabled {
-    background-color: ${p => p.theme.general.altBg};
-    color: ${p => p.theme.general.disabledAltFg};
+    background-color: ${p => p.theme.general.bg};
+    color: ${p => p.theme.general.disabledFg};
   }
 
   > .mdi-icon {

@@ -21,9 +21,9 @@ export const RadioContainer = styled.span`
   height: 16px;
   position: relative;
 
-  border: 2px solid ${p => p.theme.general.borderColor};
+  border: 2px solid ${p => p.theme.general.border};
   border-radius: 9px;
-  background-color: ${p => p.theme.general.bg};
+  background-color: ${p => p.theme.defaultBg};
 `;
 
 export const RadioDot = styled.span<IntentProps>`
@@ -35,7 +35,7 @@ export const RadioDot = styled.span<IntentProps>`
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  background-color: ${intentVar('altBg')};
+  background-color: ${intentVar('boldBg')};
   transform: translate(-50%, -50%);
   opacity: 0;
 `;
@@ -53,7 +53,7 @@ export const Input = styled.input.attrs({type: 'radio'})<IntentProps>`
   height: 100%;
 
   &:checked + ${RadioContainer} {
-    border-color: ${intentVar('altBg')};
+    border-color: ${intentVar('boldBg')};
 
     > ${RadioDot} {
       opacity: 1;
@@ -61,11 +61,11 @@ export const Input = styled.input.attrs({type: 'radio'})<IntentProps>`
   }
 
   &&&:disabled + ${RadioContainer} {
-    border-color: ${p => p.theme.general.disabledBorderColor};
-    background-color: ${p => p.theme.general.bg};
+    border-color: ${p => p.theme.general.disabledBorder};
+    background-color: ${p => p.theme.defaultBg};
 
     > ${RadioDot} {
-      background-color: ${p => p.theme.general.disabledBg};
+      background-color: ${p => p.theme.general.disabledBorder};
     }
   }
 
@@ -75,8 +75,8 @@ export const Input = styled.input.attrs({type: 'radio'})<IntentProps>`
 
   &&&:focus + ${RadioContainer},
   &&&.force-focus + ${RadioContainer} {
-    ${p => p.theme.focus.style}
     border: 2px solid ${p => p.theme.focus.color};
+    box-shadow: ${p => p.theme.focus.shadow};
   }
 `;
 
@@ -84,26 +84,26 @@ export const Label = styled.label<DisabledProps & IntentProps>`
   display: inline-block;
   box-sizing: border-box;
   position: relative;
-  color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
+  color: ${p => p.disabled ? p.theme.general.disabledFg : p.theme.defaultFg};
 
   &:hover {
     > ${RadioContainer} {
-      background-color: ${p => p.theme.general.hoverBg};
+      background-color: ${p => p.theme.defaultHoverBg};
     }
 
     > :checked + ${RadioContainer} {
-      border-color: ${intentVar('hoverAltBg')};
+      border-color: ${intentVar('boldHoverBg')};
       background-color: ${intentVar('hoverBg')};
     }
   }
 
   &:active {
     > ${RadioContainer} {
-      background-color: ${p => p.theme.general.activeBg};
+      background-color: ${p => p.theme.defaultActiveBg};
     }
 
     > :checked + ${RadioContainer} {
-      border-color: ${intentVar('activeAltBg')};
+      border-color: ${intentVar('boldActiveBg')};
       background-color: ${intentVar('bg')};
     }
   }
