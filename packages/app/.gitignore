@@ -1,0 +1,13 @@
+# Generated on build by node-gyp
+build/
+
+# Source files are compiled before publish, and are not needed otherwise
+dist/
+
+# Main app configuration
+config.json
+
+# Main window size and location
+window.json
+
+*.log

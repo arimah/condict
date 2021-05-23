@@ -20,6 +20,8 @@ const CliOptions = [
 // Groups and packages are arranged in build order. Lerna may choose
 // a different order to execute commands in, but Rollup will adhere
 // to what we write here.
+// Note: The app is absent from this list, because it has its own build
+// process that can't easily be included here.
 const AllPackages = [
   // Build tools. These are used in the building of other packages,
   // so obviously must be built first.
