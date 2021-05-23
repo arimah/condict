@@ -20,14 +20,3 @@ declare interface KeyboardLayoutMap {
     thisArg?: any
   ): void;
 }
-
-declare interface Window {
-  Condict: CondictDevThings;
-}
-
-declare interface CondictDevThings {
-  readonly version: string;
-  help(item: unknown): void;
-  execute(operation: string, args?: Record<string, unknown>): Promise<unknown>;
-  settings(): Promise<unknown>;
-}
