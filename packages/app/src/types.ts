@@ -19,7 +19,7 @@ export interface AppConfig {
 
 export interface AppearanceConfig {
   /** The user's preferred theme (light or dark). */
-  readonly theme: ThemeName;
+  readonly theme: ThemePreference;
   /** The accent color. */
   readonly accentColor: ColorName;
   /** The danger color, used for destructive actions. */
@@ -31,6 +31,8 @@ export interface AppearanceConfig {
   /** The motion preference, which controls animations in the app. */
   readonly motion: MotionPreference;
 }
+
+export type ThemePreference = ThemeName | 'system';
 
 export type ThemeName = 'light' | 'dark';
 

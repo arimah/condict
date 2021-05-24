@@ -2,7 +2,7 @@ import {ChangeEvent, useCallback} from 'react';
 
 import {Button} from '@condict/ui';
 
-import {ThemeName, ColorName, AppearanceConfig} from '../../types';
+import {ThemePreference, ColorName, AppearanceConfig} from '../../types';
 
 import {ConfigRecipe} from '../types';
 
@@ -16,7 +16,7 @@ const MainScreen = (): JSX.Element => {
   const {appearance} = config;
 
   const handleChangeTheme = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const nextTheme = e.target.value as ThemeName;
+    const nextTheme = e.target.value as ThemePreference;
     updateConfig(config => {
       config.appearance.theme = nextTheme;
     });
@@ -31,6 +31,13 @@ const MainScreen = (): JSX.Element => {
         <S.OptionGroup aria-label='Theme'>
           <p>Theme:</p>
           <S.OptionList>
+            <S.Option
+              label='Same as system'
+              name='theme'
+              value='system'
+              checked={appearance.theme === 'system'}
+              onChange={handleChangeTheme}
+            />
             <S.Option
               label='Light'
               name='theme'

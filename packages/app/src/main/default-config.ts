@@ -6,7 +6,7 @@ import {UserDataPath} from './paths';
 
 const DefaultConfig: AppConfig = {
   appearance: {
-    theme: 'light',
+    theme: 'system',
     accentColor: 'purple',
     dangerColor: 'red',
     sidebarColor: 'purple',

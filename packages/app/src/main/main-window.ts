@@ -1,6 +1,6 @@
 import path from 'path';
 
-import {BrowserWindow, app} from 'electron';
+import {BrowserWindow, app, nativeTheme} from 'electron';
 
 import {AppConfig} from '../types';
 
@@ -81,6 +81,13 @@ const initMainWindow = (getConfig: () => AppConfig): MainWindowInstance => {
       }
       win.focus();
     }
+  });
+
+  nativeTheme.on('updated', () => {
+    win?.webContents.send(
+      'system-theme-change',
+      nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
+    );
   });
 
   ipc.handle('window-ready', e => {

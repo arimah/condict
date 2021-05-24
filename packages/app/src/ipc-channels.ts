@@ -9,6 +9,7 @@ import {
   ExecuteOperationArg,
   OperationResult,
   AppConfig,
+  ThemeName,
 } from './types';
 
 /** IPC messages sent from the main process to a browser window. */
@@ -18,6 +19,9 @@ export type MainChannels = {
 
   /** Requests to open the settings dialog. */
   'open-settings': void;
+
+  /** Informs the renderer that the system theme has changed. */
+  'system-theme-change': ThemeName;
 };
 
 /** IPC messages sent from a browser window to the main process. */
@@ -51,6 +55,15 @@ export type RendererChannels = {
 
   /** Executes an edit command on the browser window. */
   'execute-edit-command': IpcRendererMessage<EditCommand, void>;
+
+  /**
+   * Gets the initial application state, which includes its configuration and
+   * other details necessary to perform the first render.
+   */
+  'get-initial-state': IpcRendererMessage<void, {
+    config: AppConfig;
+    systemTheme: ThemeName;
+  }>;
 };
 
 export type EditCommand =

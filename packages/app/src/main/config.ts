@@ -12,7 +12,7 @@ import type {MotionPreference} from '@condict/ui';
 import {
   AppConfig,
   AppearanceConfig,
-  ThemeName,
+  ThemePreference,
   ColorName,
   ServerConfig,
   LoginConfig,
@@ -61,7 +61,7 @@ const initConfig = (): ConfigInstance => {
     get current(): AppConfig {
       return config;
     },
-    takeErrors: (): string[] => {
+    takeErrors(): string[] {
       const result = errors;
       errors = [];
       return result;
@@ -141,10 +141,11 @@ const validateAppearanceConfig = (
   };
 };
 
-const validateTheme = (value: unknown, errors: string[]): ThemeName => {
+const validateTheme = (value: unknown, errors: string[]): ThemePreference => {
   switch (value) {
     case 'light':
     case 'dark':
+    case 'system':
       return value;
     default:
       errors.push(`appearance.theme: invalid value: ${value}`);

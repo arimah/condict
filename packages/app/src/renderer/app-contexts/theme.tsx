@@ -3,7 +3,6 @@ import {ThemeProvider} from 'styled-components';
 
 import {
   ShadeGroup,
-  ColorRange,
   Red,
   Yellow,
   Green,
@@ -20,6 +19,7 @@ import {AppTheme} from '../types';
 
 export type Props = {
   appearance: AppearanceConfig;
+  systemTheme: ThemeName;
   children: ReactNode;
 };
 
@@ -66,10 +66,10 @@ const ThemeBuilders: Record<ThemeName, ThemeBuilder> = {
 };
 
 const AppThemeProvider = (props: Props): JSX.Element => {
-  const {appearance, children} = props;
+  const {appearance, systemTheme, children} = props;
 
   const {
-    theme: themeName,
+    theme: themePreference,
     accentColor,
     dangerColor,
     sidebarColor,
@@ -77,6 +77,9 @@ const AppThemeProvider = (props: Props): JSX.Element => {
   } = appearance;
 
   const theme = useMemo(() => {
+    const themeName = themePreference === 'system'
+      ? systemTheme
+      : themePreference;
     let theme = ThemeBuilders[themeName](
       Colors[accentColor],
       Colors[dangerColor],
@@ -87,7 +90,7 @@ const AppThemeProvider = (props: Props): JSX.Element => {
       theme = {
         ...theme,
         timing: {
-          motion: 'none',
+          motion,
           short: 0,
           long: 0,
         },
@@ -96,7 +99,7 @@ const AppThemeProvider = (props: Props): JSX.Element => {
       theme = {
         ...theme,
         timing: {
-          motion: 'reduced',
+          motion,
           short: 0,
           long: theme.timing.long,
         },
@@ -104,7 +107,14 @@ const AppThemeProvider = (props: Props): JSX.Element => {
     }
 
     return theme;
-  }, [themeName, accentColor, dangerColor, sidebarColor, motion]);
+  }, [
+    themePreference,
+    systemTheme,
+    accentColor,
+    dangerColor,
+    sidebarColor,
+    motion,
+  ]);
 
   return (
     <ThemeProvider theme={theme}>

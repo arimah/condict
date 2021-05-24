@@ -1,4 +1,4 @@
-import {BrowserWindow, app, dialog} from 'electron';
+import {BrowserWindow, app, dialog, nativeTheme} from 'electron';
 
 import {createLogger} from '@condict/server';
 import {isMacOS} from '@condict/platform';
@@ -57,6 +57,11 @@ const main = (): void => {
   ipc.handle('execute-edit-command', (e, cmd) => {
     e.sender[cmd]();
   });
+
+  ipc.handle('get-initial-state', () => ({
+    config: config.current,
+    systemTheme: nativeTheme.shouldUseDarkColors ? 'dark' : 'light',
+  }));
 };
 
 export default main;
