@@ -38,17 +38,19 @@ export const MainContent = styled.main`
   grid-column: 2;
 `;
 
-const SidebarMinWidth = 250;
+const SidebarMinWidth = 248;
 
-const SidebarMaxWidth = 300;
+const SidebarMaxWidth = 320;
 
 export const Sidebar = styled.nav`
   display: flex;
+  box-sizing: border-box;
   flex-direction: column;
   grid-column: 1;
-  padding: 16px;
+  padding: 16px 8px;
+  gap: 8px;
 
-  width: 22vw;
+  width: 23vw;
   min-width: ${SidebarMinWidth}px;
   max-width: ${SidebarMaxWidth}px;
 

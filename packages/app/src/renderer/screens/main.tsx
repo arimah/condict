@@ -7,6 +7,7 @@ import {ThemePreference, ColorName, AppearanceConfig} from '../../types';
 import {ConfigRecipe} from '../types';
 
 import {useConfig} from '../app-contexts';
+import {SidebarContent} from '../ui';
 
 import * as S from './styles';
 
@@ -25,7 +26,7 @@ const MainScreen = (): JSX.Element => {
   return (
     <S.MainScreen>
       <S.Sidebar>
-        <p>I am a bar, at the side.</p>
+        <SidebarContent/>
       </S.Sidebar>
       <S.MainContent>
         <S.OptionGroup aria-label='Theme'>
