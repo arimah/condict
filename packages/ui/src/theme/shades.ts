@@ -40,27 +40,31 @@ const makeShade = (bold: ColorRange, pale: ColorRange): ShadeGroup => ({
 });
 
 export const Red = makeShade(
-  ['#fef1f2', '#fcd5d8', '#f9b4b9', '#f47b85', '#f04251', '#d91222', '#920c17', '#5e080f'],
+  ['#fdf2f3', '#f9d7da', '#f5b8bd', '#ed828b', '#e64c59', '#cd1d2c', '#8a141e', '#590d13'],
   ['#faf5f5', '#eedddf', '#e0c2c5', '#c9979b', '#ae6167', '#8a474d', '#5b2f32', '#3d1f22']
 );
 
+
 export const Yellow = makeShade(
-  ['#fbf1d5', '#f7e3ab', '#efc85d', '#daa616', '#ba8d12', '#906d0e', '#5d4709', '#463507'],
+  ['#f9f0d8', '#f2e1b0', '#e6c465', '#cea022', '#af881d', '#886a16', '#58440e', '#42330b'],
   ['#f5f2eb', '#e3dcc9', '#cdc09d', '#b19d68', '#917e4b', '#6c5e37', '#4a4026', '#2f2918']
 );
 
+
 export const Green = makeShade(
-  ['#e4fbe6', '#aef4b4', '#6beb76', '#28e237', '#19b826', '#14901e', '#0d6315', '#093f0d'],
+  ['#e6fae7', '#b3efb8', '#74e27d', '#35d442', '#25ad30', '#1d8725', '#145d1a', '#0c3b10'],
   ['#ecf4ec', '#cce1cd', '#a2c8a5', '#6eaa73', '#538d58', '#406d44', '#2d4d30', '#203722']
 );
 
+
 export const Blue = makeShade(
-  ['#ecf3fd', '#d0e2fb', '#a6c8f7', '#69a2f2', '#2779ec', '#115cc5', '#0c4088', '#082a59'],
+  ['#edf3fd', '#d1e2fa', '#a8c8f5', '#6ca3ef', '#2c7ae8', '#155dc1', '#0f4085', '#0a2a57'],
   ['#f2f4f8', '#d8dfe9', '#bbc7d8', '#91a4c0', '#6782a8', '#4c6485', '#324257', '#232e3e']
 );
 
+
 export const Purple = makeShade(
-  ['#fcf1fe', '#f5d5fb', '#eaa7f6', '#de74f1', '#d13cec', '#b515d1', '#7c0e90', '#50095d'],
+  ['#fbf2fd', '#f4d7f9', '#e7abf2', '#da7bea', '#cb46e2', '#ad1fc7', '#771589', '#4d0e58'],
   ['#f7f2f8', '#e9dbeb', '#d6bddb', '#ba8fc1', '#a46bae', '#844e8d', '#5f3866', '#3d2442']
 );
 

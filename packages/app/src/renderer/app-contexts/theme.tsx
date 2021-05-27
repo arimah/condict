@@ -15,7 +15,8 @@ import {
 
 import {ThemeName, ColorName, AppearanceConfig} from '../../types';
 
-import {AppTheme} from '../types';
+import {SidebarColors} from '../ui';
+import {AppTheme, SidebarColors as SidebarColorGroup} from '../types';
 
 export type Props = {
   appearance: AppearanceConfig;
@@ -26,7 +27,7 @@ export type Props = {
 type ThemeBuilder = (
   accent: ShadeGroup,
   danger: ShadeGroup,
-  sidebar: ShadeGroup
+  sidebar: SidebarColorGroup
 ) => AppTheme;
 
 const Colors: Record<ColorName, ShadeGroup> = {
@@ -43,24 +44,14 @@ const ThemeBuilders: Record<ThemeName, ThemeBuilder> = {
     const uiTheme = lightTheme(accent, danger);
     return {
       ...uiTheme,
-      sidebar: {
-        fg: '#ffffff',
-        bg: sidebar.bold[6],
-        hoverBg: sidebar.bold[5],
-        activeBg: sidebar.bold[7],
-      },
+      sidebar,
     };
   },
   dark: (accent, danger, sidebar) => {
     const uiTheme = darkTheme(accent, danger);
     return {
       ...uiTheme,
-      sidebar: {
-        fg: '#ffffff',
-        bg: sidebar.bold[6],
-        hoverBg: sidebar.bold[5],
-        activeBg: sidebar.bold[7],
-      },
+      sidebar,
     };
   },
 };
@@ -83,7 +74,7 @@ const AppThemeProvider = (props: Props): JSX.Element => {
     let theme = ThemeBuilders[themeName](
       Colors[accentColor],
       Colors[dangerColor],
-      Colors[sidebarColor]
+      SidebarColors[sidebarColor]
     );
 
     if (motion === 'none') {
