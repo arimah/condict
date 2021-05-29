@@ -2,9 +2,21 @@ import styled from 'styled-components';
 
 import {Button as ButtonBase} from '@condict/ui';
 
-export const SearchButton = styled(ButtonBase)`
+const FlexButton = styled(ButtonBase)`
   flex: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   text-align: left;
+
+  /* slightly more space to the left of the icon */
+  > .mdi-icon:first-child {
+    flex: none;
+    margin-left: -4px;
+  }
+`;
+
+export const SearchButton = styled(FlexButton)`
   border-radius: 16px;
   border-color: ${p => p.theme.defaultBg};
   background-color: ${p => p.theme.defaultBg};
@@ -23,16 +35,9 @@ export const SearchButton = styled(ButtonBase)`
   &:focus {
     border-color: ${p => p.theme.focus.color};
   }
-
-  /* slightly more space to the left of the icon */
-  > .mdi-icon:first-child {
-    margin-left: -4px;
-  }
 `;
 
-export const Button = styled(ButtonBase)`
-  flex: none;
-  text-align: left;
+export const Button = styled(FlexButton)`
   border-color: ${p => p.theme.sidebar.bg};
   background-color: ${p => p.theme.sidebar.bg};
   color: ${p => p.theme.sidebar.fg};
@@ -49,10 +54,5 @@ export const Button = styled(ButtonBase)`
 
   &:focus {
     border-color: ${p => p.theme.focus.color};
-  }
-
-  /* slightly more space to the left of the icon */
-  > .mdi-icon:first-child {
-    margin-left: -4px;
   }
 `;
