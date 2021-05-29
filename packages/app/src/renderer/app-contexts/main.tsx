@@ -34,17 +34,17 @@ const AppContexts = (props: Props): JSX.Element => {
       initialConfig={initialConfig}
       onUpdateConfig={onUpdateConfig}
     >
-      <AppThemeProvider
-        appearance={config.appearance}
-        systemTheme={systemTheme}
+      <TranslationProvider
+        defaultLocale={defaultLocale}
+        currentLocale={currentLocale}
       >
-        <TranslationProvider
-          defaultLocale={defaultLocale}
-          currentLocale={currentLocale}
+        <AppThemeProvider
+          appearance={config.appearance}
+          systemTheme={systemTheme}
         >
           {children}
-        </TranslationProvider>
-      </AppThemeProvider>
+        </AppThemeProvider>
+      </TranslationProvider>
     </ConfigProvider>
   );
 };

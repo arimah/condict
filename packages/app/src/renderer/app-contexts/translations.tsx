@@ -1,4 +1,4 @@
-import {ReactNode, useMemo} from 'react';
+import {ReactChild, useMemo} from 'react';
 import {FluentBundle, FluentResource} from '@fluent/bundle';
 import {LocalizationProvider, ReactLocalization} from '@fluent/react';
 
@@ -7,7 +7,7 @@ import {Locale} from '../../types';
 export type Props = {
   defaultLocale: Locale;
   currentLocale: Locale;
-  children: ReactNode;
+  children: ReactChild;
 };
 
 const TranslationProvider = (props: Props): JSX.Element => {
@@ -45,7 +45,7 @@ const createBundle = (locale: Locale): FluentBundle => {
 
   const bundle = new FluentBundle(localeName);
   const errors = bundle.addResource(resource);
-  if (errors) {
+  if (errors.length > 0) {
     console.error(
       `Errors in locale '${localeName}':`,
       errors.map(e => e.message)
