@@ -9,6 +9,8 @@ import type {MotionPreference} from '@condict/ui';
 export interface AppConfig {
   /** Condict UI appearance configuration. */
   readonly appearance: AppearanceConfig;
+  /** The application language, as a language code. */
+  readonly locale: string;
   /** Logger configuration. */
   readonly log: LoggerOptions;
   /** Server configuration. */
@@ -110,4 +112,12 @@ export interface ExecuteError {
   readonly locations?: readonly SourceLocation[];
   readonly path?: readonly (string | number)[];
   readonly extensions?: Record<string, unknown>;
+}
+
+/** A translation bundle for a specific locale. */
+export interface Locale {
+  /** The locale name, as an ISO language code. */
+  readonly locale: string;
+  /** The locale's raw translation bundle. */
+  readonly source: string;
 }

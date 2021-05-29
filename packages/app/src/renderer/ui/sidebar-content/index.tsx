@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react';
 import SearchIcon from 'mdi-react/MagnifyIcon';
 import SettingsIcon from 'mdi-react/CogIcon';
 import DownloadIcon from 'mdi-react/DownloadIcon';
+import {Localized as T} from '@fluent/react';
 
 import TabList from './tab-list';
 import * as S from './styles';
@@ -22,7 +23,7 @@ const SidebarContent = (): JSX.Element => {
   return <>
     <S.SearchButton command='global:search'>
       <SearchIcon/>
-      <span>Search the dictionary</span>
+      <span><T id='sidebar-search-button'/></span>
     </S.SearchButton>
 
     <TabList/>
@@ -30,12 +31,12 @@ const SidebarContent = (): JSX.Element => {
     {updateAvailable &&
       <S.Button command='global:update'>
         <DownloadIcon/>
-        <span>Download update</span>
+        <span><T id='sidebar-update-button'/></span>
       </S.Button>
     }
     <S.Button command='global:settings'>
       <SettingsIcon/>
-      <span>Settings</span>
+      <span><T id='sidebar-settings-button'/></span>
     </S.Button>
   </>;
 };

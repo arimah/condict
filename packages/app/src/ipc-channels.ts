@@ -10,6 +10,7 @@ import {
   OperationResult,
   AppConfig,
   ThemeName,
+  Locale,
 } from './types';
 
 /** IPC messages sent from the main process to a browser window. */
@@ -47,6 +48,12 @@ export type RendererChannels = {
   /** Sets the current app configuration. */
   'set-config': IpcRendererMessage<AppConfig, void>;
 
+  /**
+   * Gets the source text of the specified translation bundle. This may involve
+   * reading a file. The reply contains the raw translation source text.
+   */
+  'get-locale': IpcRendererMessage<string, Locale>;
+
   /** Requests to show a file open dialog. */
   'show-open-dialog': IpcRendererMessage<
     OpenDialogOptions,
@@ -61,8 +68,16 @@ export type RendererChannels = {
    * other details necessary to perform the first render.
    */
   'get-initial-state': IpcRendererMessage<void, {
+    /** The current app config. */
     config: AppConfig;
+    /** The system theme (light/dark). */
     systemTheme: ThemeName;
+    /** The available translation locales (as ISO language codes). */
+    availableLocales: readonly string[];
+    /** The default/fallback locale. */
+    defaultLocale: Locale;
+    /** The user's selected locale. */
+    currentLocale: Locale;
   }>;
 };
 

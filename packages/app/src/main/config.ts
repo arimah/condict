@@ -32,9 +32,9 @@ type PlainObject = {
   [key: string]: unknown;
 };
 
-const initConfig = (): ConfigInstance => {
+const initConfig = (availableLocales: readonly string[]): ConfigInstance => {
   let errors: string[] = [];
-  let config: AppConfig = loadConfig(ConfigFile, errors);
+  let config: AppConfig = loadConfig(ConfigFile, availableLocales, errors);
 
   const writeConfig = debounce(1000, () => {
     saveConfig(ConfigFile, config).then(
@@ -74,7 +74,11 @@ export default initConfig;
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 
-const loadConfig = (fileName: string, errors: string[]): AppConfig => {
+const loadConfig = (
+  fileName: string,
+  availableLocales: readonly string[],
+  errors: string[]
+): AppConfig => {
   let configText: string;
   try {
     configText = fs.readFileSync(fileName, {encoding: 'utf-8'});
@@ -96,23 +100,28 @@ const loadConfig = (fileName: string, errors: string[]): AppConfig => {
     return DefaultConfig;
   }
 
-  return validateConfig(config, errors);
+  return validateConfig(config, availableLocales, errors);
 };
 
 const isPlainObject = (value: any): value is PlainObject =>
   value != null && typeof value === 'object' && !Array.isArray(value);
 
-const validateConfig = (value: unknown, errors: string[]): AppConfig => {
+const validateConfig = (
+  value: unknown,
+  availableLocales: readonly string[],
+  errors: string[]
+): AppConfig => {
   if (!isPlainObject(value)) {
     errors.push('Config is not an object');
     return DefaultConfig;
   }
 
   const appearance = validateAppearanceConfig(value.appearance, errors);
+  const locale = validateLocale(value.locale, availableLocales, errors);
   const log = validateLoggerConfig(value.log, errors);
   const server = validateServerConfig(value.server, errors);
   const login = validateLoginConfig(value.login, errors);
-  return {appearance, log, server, login};
+  return {appearance, locale, log, server, login};
 };
 
 const validateAppearanceConfig = (
@@ -139,6 +148,22 @@ const validateAppearanceConfig = (
     zoomLevel,
     motion,
   };
+};
+
+const validateLocale = (
+  value: unknown,
+  availableLocales: readonly string[],
+  errors: string[]
+): string => {
+  if (typeof value !== 'string') {
+    errors.push(`locale: Config is not a string: ${value}`);
+    return DefaultConfig.locale;
+  }
+  if (!availableLocales.includes(value)) {
+    errors.push(`locale: invalid value: ${value}`);
+    return DefaultConfig.locale;
+  }
+  return value;
 };
 
 const validateTheme = (value: unknown, errors: string[]): ThemePreference => {

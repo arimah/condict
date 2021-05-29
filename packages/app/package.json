@@ -20,6 +20,8 @@
     "@condict/platform": "^0.1.0",
     "@condict/server": "^0.1.0",
     "@condict/ui": "^0.1.0",
+    "@fluent/bundle": "^0.16.1",
+    "@fluent/react": "^0.13.1",
     "apollo-server": "^2.23.0",
     "better-sqlite3": "^7.3.0",
     "bcrypt": "^5.0.1",

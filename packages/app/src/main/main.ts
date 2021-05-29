@@ -5,11 +5,14 @@ import {isMacOS} from '@condict/platform';
 
 import initConfig from './config';
 import initServer from './server';
+import initTranslations, {DefaultLocale} from './translations';
 import initMainWindow from './main-window';
 import ipc from './ipc';
 
 const main = (): void => {
-  const config = initConfig();
+  const translations = initTranslations();
+
+  const config = initConfig(translations.availableLocales);
 
   const logger = createLogger(config.current.log);
 
@@ -58,10 +61,26 @@ const main = (): void => {
     e.sender[cmd]();
   });
 
-  ipc.handle('get-initial-state', () => ({
-    config: config.current,
-    systemTheme: nativeTheme.shouldUseDarkColors ? 'dark' : 'light',
-  }));
+  ipc.handle('get-initial-state', async () => {
+    const cfg = config.current;
+
+    const defaultBundle = await translations.loadBundle(DefaultLocale);
+    const currentBundle = await translations.loadBundle(cfg.locale);
+
+    return {
+      config: cfg,
+      systemTheme: nativeTheme.shouldUseDarkColors ? 'dark' : 'light',
+      availableLocales: translations.availableLocales,
+      defaultLocale: {
+        locale: DefaultLocale,
+        source: defaultBundle,
+      },
+      currentLocale: {
+        locale: cfg.locale,
+        source: currentBundle,
+      },
+    };
+  });
 };
 
 export default main;

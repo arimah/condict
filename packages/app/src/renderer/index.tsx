@@ -5,7 +5,7 @@ import produce from 'immer';
 
 import {GlobalStyles as UIStyles} from '@condict/ui';
 
-import {AppConfig, ThemeName} from '../types';
+import {AppConfig, ThemeName, Locale} from '../types';
 
 import ipc from './ipc';
 import AppContexts from './app-contexts';
@@ -16,10 +16,17 @@ import * as S from './styles';
 type Props = {
   initialConfig: AppConfig;
   initialSystemTheme: ThemeName;
+  defaultLocale: Locale,
+  initialLocale: Locale,
 };
 
 const App = (props: Props): JSX.Element => {
-  const {initialConfig, initialSystemTheme} = props;
+  const {
+    initialConfig,
+    initialSystemTheme,
+    defaultLocale,
+    initialLocale,
+  } = props;
 
   const [loading, setLoading] = useState(true);
 
@@ -56,6 +63,8 @@ const App = (props: Props): JSX.Element => {
       config={config}
       initialConfig={initialConfig}
       systemTheme={systemTheme}
+      defaultLocale={defaultLocale}
+      currentLocale={initialLocale}
       onUpdateConfig={updateConfig}
     >
       {loading ? <LoadingScreen/> : <MainScreen/>}
@@ -66,9 +75,14 @@ const App = (props: Props): JSX.Element => {
   );
 };
 
-void ipc.invoke('get-initial-state').then(({config, systemTheme}) => {
+void ipc.invoke('get-initial-state').then(state => {
   ReactDOM.render(
-    <App initialConfig={config} initialSystemTheme={systemTheme}/>,
+    <App
+      initialConfig={state.config}
+      initialSystemTheme={state.systemTheme}
+      defaultLocale={state.defaultLocale}
+      initialLocale={state.currentLocale}
+    />,
     document.getElementById('root')
   );
 });

@@ -1,22 +1,33 @@
 import {ReactNode} from 'react';
 
-import {AppConfig, ThemeName} from '../../types';
+import {AppConfig, ThemeName, Locale} from '../../types';
 
 import {ConfigRecipe} from '../types';
 
 import ConfigProvider from './config';
 import AppThemeProvider from './theme';
+import TranslationProvider from './translations';
 
 export type Props = {
   config: AppConfig;
   initialConfig: AppConfig;
   systemTheme: ThemeName;
+  defaultLocale: Locale,
+  currentLocale: Locale,
   onUpdateConfig: (recipe: ConfigRecipe) => void;
   children: ReactNode;
 };
 
 const AppContexts = (props: Props): JSX.Element => {
-  const {config, initialConfig, systemTheme, onUpdateConfig, children} = props;
+  const {
+    config,
+    initialConfig,
+    systemTheme,
+    defaultLocale,
+    currentLocale,
+    onUpdateConfig,
+    children,
+  } = props;
   return (
     <ConfigProvider
       config={config}
@@ -27,7 +38,12 @@ const AppContexts = (props: Props): JSX.Element => {
         appearance={config.appearance}
         systemTheme={systemTheme}
       >
-        {children}
+        <TranslationProvider
+          defaultLocale={defaultLocale}
+          currentLocale={currentLocale}
+        >
+          {children}
+        </TranslationProvider>
       </AppThemeProvider>
     </ConfigProvider>
   );

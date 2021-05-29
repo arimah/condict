@@ -3,6 +3,7 @@ import path from 'path';
 import {AppConfig} from '../types';
 
 import {UserDataPath} from './paths';
+import {DefaultLocale} from './translations';
 
 const DefaultConfig: AppConfig = {
   appearance: {
@@ -13,6 +14,7 @@ const DefaultConfig: AppConfig = {
     zoomLevel: 100,
     motion: 'full',
   },
+  locale: DefaultLocale,
   log: {
     stdout: false,
     files: [
