@@ -16,7 +16,6 @@ export const Switch = styled.span`
   box-sizing: border-box;
   margin-right: 8px;
   position: relative;
-  overflow: hidden;
   width: 32px;
   height: 16px;
   vertical-align: -3px;
@@ -79,10 +78,16 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
     outline: none;
   }
 
-  &&&:focus + ${Switch},
-  &&&.force-focus + ${Switch} {
-    outline: none;
+  &:focus + ${Switch}::after,
+  &.force-focus + ${Switch}::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 34px;
+    height: 18px;
     border: 2px solid ${p => p.theme.focus.color};
+    border-radius: 11px;
     box-shadow: ${p => p.theme.focus.shadow};
   }
 `;

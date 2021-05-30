@@ -94,10 +94,16 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
     outline: none;
   }
 
-  &&&:focus + ${CheckmarkContainer},
-  &&&.force-focus + ${CheckmarkContainer} {
-    outline: none;
-    border-color: ${p => p.theme.focus.color};
+  &:focus + ${CheckmarkContainer}::after,
+  &.force-focus + ${CheckmarkContainer}::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 18px;
+    height: 18px;
+    border: 2px solid ${p => p.theme.focus.color};
+    border-radius: 5px;
     box-shadow: ${p => p.theme.focus.shadow};
   }
 `;

@@ -73,9 +73,16 @@ export const Input = styled.input.attrs({type: 'radio'})<IntentProps>`
     outline: none;
   }
 
-  &&&:focus + ${RadioContainer},
-  &&&.force-focus + ${RadioContainer} {
+  &:focus + ${RadioContainer}::after,
+  &.force-focus + ${RadioContainer}::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 18px;
+    height: 18px;
     border: 2px solid ${p => p.theme.focus.color};
+    border-radius: 11px;
     box-shadow: ${p => p.theme.focus.shadow};
   }
 `;
