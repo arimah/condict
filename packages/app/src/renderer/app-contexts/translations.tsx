@@ -1,4 +1,4 @@
-import {ReactChild, useMemo} from 'react';
+import React, {ReactNode, useMemo, useContext} from 'react';
 import {FluentBundle, FluentResource} from '@fluent/bundle';
 import {LocalizationProvider, ReactLocalization} from '@fluent/react';
 
@@ -7,11 +7,14 @@ import {Locale} from '../../types';
 export type Props = {
   defaultLocale: Locale;
   currentLocale: Locale;
-  children: ReactChild;
+  availableLocales: readonly string[];
+  children: ReactNode;
 };
 
+const AvailableLocalesContext = React.createContext<readonly string[]>([]);
+
 const TranslationProvider = (props: Props): JSX.Element => {
-  const {defaultLocale, currentLocale, children} = props;
+  const {defaultLocale, currentLocale, availableLocales, children} = props;
 
   const defaultBundle = useMemo(
     () => createBundle(defaultLocale),
@@ -31,7 +34,9 @@ const TranslationProvider = (props: Props): JSX.Element => {
 
   return (
     <LocalizationProvider l10n={localization}>
-      {children}
+      <AvailableLocalesContext.Provider value={availableLocales}>
+        {children}
+      </AvailableLocalesContext.Provider>
     </LocalizationProvider>
   );
 };
@@ -54,3 +59,6 @@ const createBundle = (locale: Locale): FluentBundle => {
 
   return bundle;
 };
+
+export const useAvailableLocales = (): readonly string[] =>
+  useContext(AvailableLocalesContext);

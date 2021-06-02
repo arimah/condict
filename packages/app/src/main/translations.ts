@@ -16,7 +16,8 @@ const initTranslations = (): Translations => {
   const availableLocales =
     fs.readdirSync(translationsDir, {withFileTypes: true})
       .filter(f => f.isFile() && f.name.endsWith('.ftl'))
-      .map(f => path.basename(f.name).replace(/\.ftl$/, ''));
+      .map(f => path.basename(f.name).replace(/\.ftl$/, ''))
+      .sort();
 
   // Cache of loaded bundles
   const loaded = new Map<string, string>();
