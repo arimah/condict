@@ -6,12 +6,12 @@ const SidebarColors: Record<ColorName, SidebarColorGroup> = {
   red: {
     fg: '#ffffff',
     bg: '#801922',
-    hoverBg: '#bb2532',
+    hoverBg: '#af232e',
     activeBg: '#511015',
   },
   yellow: {
     fg: '#ffffff',
-    bg: '#4f3f11',
+    bg: '#544212',
     hoverBg: '#79601b',
     activeBg: '#3b2e0d',
   },
@@ -24,13 +24,13 @@ const SidebarColors: Record<ColorName, SidebarColorGroup> = {
   blue: {
     fg: '#ffffff',
     bg: '#153f79',
-    hoverBg: '#1f5aad',
+    hoverBg: '#1e58a9',
     activeBg: '#0e294e',
   },
   purple: {
     fg: '#ffffff',
     bg: '#701980',
-    hoverBg: '#a124b7',
+    hoverBg: '#9d23b3',
     activeBg: '#471051',
   },
   gray: {
