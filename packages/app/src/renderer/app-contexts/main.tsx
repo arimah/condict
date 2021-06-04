@@ -2,6 +2,8 @@ import {ReactNode} from 'react';
 
 import {AppConfig, ThemeName, Locale} from '../../types';
 
+// Navigation context is defined elsewhere due to its complexity.
+import {NavigationProvider} from '../navigation';
 import {ConfigRecipe} from '../types';
 
 import ConfigProvider from './config';
@@ -45,7 +47,9 @@ const AppContexts = (props: Props): JSX.Element => {
           appearance={config.appearance}
           systemTheme={systemTheme}
         >
-          {children}
+          <NavigationProvider>
+            {children}
+          </NavigationProvider>
         </AppThemeProvider>
       </TranslationProvider>
     </ConfigProvider>

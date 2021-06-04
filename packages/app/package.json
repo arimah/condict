@@ -29,6 +29,7 @@
     "immer": "^9.0.1",
     "mdi-react": "^7.5.0",
     "memoize-one": "^5.1.1",
+    "nanoid": "^3.1.22",
     "node-fetch": "^2.6.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

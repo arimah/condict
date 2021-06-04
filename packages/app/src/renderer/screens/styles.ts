@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import {Spinner, Radio} from '@condict/ui';
+import {Spinner} from '@condict/ui';
 
 export type LoadingScreenProps = {
   visible: boolean;
@@ -31,11 +31,15 @@ export const MainScreen = styled.div`
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: 1fr;
+  width: 100vw;
+  height: 100vh;
 `;
 
 export const MainContent = styled.main`
-  padding: 16px;
+  box-sizing: border-box;
   grid-column: 2;
+  max-height: 100vh;
+  overflow: auto;
 `;
 
 const SidebarMinWidth = 248;
@@ -56,28 +60,4 @@ export const Sidebar = styled.nav`
 
   background-color: ${p => p.theme.sidebar.bg};
   color: ${p => p.theme.sidebar.fg};
-`;
-
-export const OptionGroup = styled.div.attrs({
-  role: 'group',
-})`
-  margin-bottom: 16px;
-`;
-
-export const OptionList = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-top: 8px;
-  margin-bottom: 8px;
-`;
-
-export const Option = styled(Radio)`
-  &:not(:first-child) {
-    margin-top: 2px;
-  }
-
-  &:not(:last-child) {
-    margin-bottom: 2px;
-  }
 `;

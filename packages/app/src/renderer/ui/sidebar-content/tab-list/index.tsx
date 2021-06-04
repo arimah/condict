@@ -1,74 +1,77 @@
-import HomeIcon from 'mdi-react/BookshelfIcon';
-import LanguageIcon from 'mdi-react/BookOpenPageVariantOutlineIcon';
-import TableIcon from 'mdi-react/TableLargeIcon';
-import LemmaIcon from 'mdi-react/CardBulletedOutlineIcon';
-import SearchResultsIcon from 'mdi-react/TextSearchIcon';
-import {useLocalization} from '@fluent/react';
+import {KeyboardEvent, useState, useCallback, useRef, useEffect} from 'react';
 
-import {CloseIcon, DirtyIcon} from './icons';
+import {Shortcut, ShortcutMap} from '@condict/ui';
+
+import {NavigationContextValue, useNavigation} from '../../../navigation';
+
+import Tab from './tab';
 import * as S from './styles';
 
+interface KeyCommand {
+  key: Shortcut | null;
+  exec(nav: NavigationContextValue): void;
+}
+
+const KeyboardMap = new ShortcutMap<KeyCommand>(
+  // Ctrl+Tab and Ctrl+Shift+Tab are handled globally, so are not present here.
+  [
+    {
+      key: Shortcut.parse('ArrowUp ArrowLeft'),
+      exec: nav => nav.selectRelative('prev'),
+    },
+    {
+      key: Shortcut.parse('ArrowDown ArrowRight'),
+      exec: nav => nav.selectRelative('next'),
+    },
+    {
+      key: Shortcut.parse('Delete'),
+      exec: nav => {
+        const currentId = nav.tabs[nav.currentTabIndex].id;
+        nav.close(currentId);
+      },
+    },
+  ],
+  cmd => cmd.key
+);
+
 const TabList = (): JSX.Element => {
-  const {l10n} = useLocalization();
-  const closeTabTitle = l10n.getString('sidebar-tab-close-button-tooltip');
+  const nav = useNavigation();
+
+  const [hasFocus, setHasFocus] = useState(false);
+  const currentTabRef = useRef<HTMLDivElement>(null);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    const cmd = KeyboardMap.get(e);
+    if (cmd) {
+      e.preventDefault();
+      cmd.exec(nav);
+    }
+  }, [nav]);
+
+  useEffect(() => {
+    // If the current tab changes while focus is inside the tab list,
+    // move focus to the new active tab.
+    if (hasFocus) {
+      currentTabRef.current?.focus();
+    }
+  }, [hasFocus, nav.currentTabIndex]);
+
   return (
-    <S.TabList>
-      <S.Tab>
-        <HomeIcon/>
-        <S.TabTitle>Condict</S.TabTitle>
-      </S.Tab>
-      <S.Tab>
-        <LanguageIcon/>
-        <S.TabTitle>Second tab</S.TabTitle>
-        <S.CloseButton title={closeTabTitle}>
-          <CloseIcon/>
-        </S.CloseButton>
-      </S.Tab>
-      <S.Tab isChild>
-        <TableIcon/>
-        <S.TabTitle>Type II, vowel-final</S.TabTitle>
-        <S.CloseButton
-          title={l10n.getString('sidebar-tab-close-button-unsaved-tooltip')}
-        >
-          <DirtyIcon/>
-          <CloseIcon/>
-        </S.CloseButton>
-      </S.Tab>
-      <S.Tab isChild isCurrent tabIndex={0}>
-        <LemmaIcon/>
-        <S.TabTitle>bird</S.TabTitle>
-        <S.CloseButton title={closeTabTitle}>
-          <CloseIcon/>
-        </S.CloseButton>
-      </S.Tab>
-      <S.Tab isChild>
-        <S.TabSpinner/>
-        <LemmaIcon/>
-        <S.TabTitle>
-          extravagant
-        </S.TabTitle>
-        <S.CloseButton title={closeTabTitle}>
-          <CloseIcon/>
-        </S.CloseButton>
-      </S.Tab>
-      <S.Tab>
-        <LanguageIcon/>
-        <S.TabTitle>
-          This tab has an extremely long title that does not fit completely
-        </S.TabTitle>
-        <S.CloseButton title={closeTabTitle}>
-          <CloseIcon/>
-        </S.CloseButton>
-      </S.Tab>
-      <S.Tab>
-        <SearchResultsIcon/>
-        <S.TabTitle>
-          Search: foo bar
-        </S.TabTitle>
-        <S.CloseButton title={closeTabTitle}>
-          <CloseIcon/>
-        </S.CloseButton>
-      </S.Tab>
+    <S.TabList
+      onFocus={() => setHasFocus(true)}
+      onBlur={() => setHasFocus(false)}
+      onKeyDown={handleKeyDown}
+    >
+      {nav.tabs.map((tab, i) =>
+        <Tab
+          key={tab.id}
+          tab={tab}
+          isCurrent={i === nav.currentTabIndex}
+          onSelect={nav.select}
+          onClose={nav.close}
+          ref={i === nav.currentTabIndex ? currentTabRef : undefined}
+        />
+      )}
     </S.TabList>
   );
 };

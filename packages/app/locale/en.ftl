@@ -14,3 +14,9 @@ sidebar-tab-close-button-tooltip = Close tab
 sidebar-tab-close-button-unsaved-tooltip =
   {sidebar-tab-close-button-tooltip}
   This tab has unsaved changes.
+
+sidebar-home-tab-title = Condict
+
+## Messages that occur inside the main content area
+
+tab-back-button = Back
