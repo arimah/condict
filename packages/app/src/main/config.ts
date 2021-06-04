@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import {app} from 'electron';
+import {app, nativeTheme} from 'electron';
 
 import {
   LoggerOptions,
@@ -36,6 +36,8 @@ const initConfig = (availableLocales: readonly string[]): ConfigInstance => {
   let errors: string[] = [];
   let config: AppConfig = loadConfig(ConfigFile, availableLocales, errors);
 
+  nativeTheme.themeSource = config.appearance.theme;
+
   const writeConfig = debounce(1000, () => {
     saveConfig(ConfigFile, config).then(
       () => console.log('Saved new app config.'),
@@ -49,6 +51,9 @@ const initConfig = (availableLocales: readonly string[]): ConfigInstance => {
 
   ipc.handle('set-config', (_e, newConfig) => {
     config = newConfig;
+    if (nativeTheme.themeSource !== newConfig.appearance.theme) {
+      nativeTheme.themeSource = newConfig.appearance.theme;
+    }
     writeConfig();
   });
 
