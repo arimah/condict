@@ -20,4 +20,13 @@ export const AppStyles = createGlobalStyle`
     justify-items: stretch;
     align-items: stretch;
   }
+
+  a:focus {
+    outline: none;
+  }
+
+  a:focus-visible {
+    box-shadow: 0 0 2px 2px ${p => p.theme.focus.color};
+    border-radius: 1px;
+  }
 `;
