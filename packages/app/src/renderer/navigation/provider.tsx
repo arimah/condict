@@ -264,6 +264,13 @@ const reduce = produce<State, [Message]>((state, message) => {
     case 'close': {
       const {startIndex, endIndex} = message;
       state.tabs.splice(startIndex, endIndex - startIndex);
+
+      if (state.currentTabIndex >= endIndex) {
+        // Try to keep the current tab selected.
+        const closedCount = endIndex - startIndex;
+        state.currentTabIndex -= closedCount;
+      }
+
       if (state.currentTabIndex >= state.tabs.length) {
         state.currentTabIndex = state.tabs.length - 1;
       }
