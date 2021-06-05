@@ -20,3 +20,6 @@ sidebar-home-tab-title = Condict
 ## Messages that occur inside the main content area
 
 tab-back-button = Back
+# Variables:
+#   previousPageTitle: The title of the page that the back button returns to.
+tab-back-button-tooltip = Back to {$previousPageTitle}
