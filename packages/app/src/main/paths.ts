@@ -6,9 +6,7 @@ import {app} from 'electron';
 export const UserDataPath =
   process.env.CONDICT_DATA_DIR
     ? process.env.CONDICT_DATA_DIR
-    : process.env.NODE_ENV === 'development'
-      ? path.resolve('.')
-      : app.getPath('userData');
+    : app.getPath('userData');
 
 /** The absolute path to the current config file. */
 export const ConfigFile = path.join(UserDataPath, 'config.json');

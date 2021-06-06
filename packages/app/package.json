@@ -8,7 +8,7 @@
   "license": "MIT",
   "main": "dist/main.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development electron .",
+    "start": "cross-env NODE_ENV=development CONDICT_DATA_DIR=. electron .",
     "start:prod": "cross-env NODE_ENV=production electron .",
     "build": "npm run -s build:graphql && npm run -s build:main",
     "build:main": "rollup -c",
