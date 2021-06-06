@@ -2,8 +2,9 @@ import {ReactNode} from 'react';
 
 import {AppConfig, ThemeName, Locale} from '../../types';
 
-// Navigation context is defined elsewhere due to its complexity.
+// Navigation and data contexts are defined elsewhere due to their complexity.
 import {NavigationProvider} from '../navigation';
+import {DataProvider} from '../data';
 import {ConfigRecipe} from '../types';
 
 import ConfigProvider from './config';
@@ -48,7 +49,9 @@ const AppContexts = (props: Props): JSX.Element => {
           systemTheme={systemTheme}
         >
           <NavigationProvider>
-            {children}
+            <DataProvider>
+              {children}
+            </DataProvider>
           </NavigationProvider>
         </AppThemeProvider>
       </TranslationProvider>

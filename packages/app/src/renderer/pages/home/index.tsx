@@ -1,20 +1,21 @@
-import {ChangeEvent, useCallback} from 'react';
+import {ChangeEvent, Fragment, useCallback} from 'react';
 
 import {Button} from '@condict/ui';
 
 import {ThemePreference, ColorName, AppearanceConfig} from '../../../types';
 
 import {Link} from '../../ui';
+import {useData} from '../../data';
 import {LanguagePage, PartOfSpeechPage} from '../../pages';
 import {useConfig, useAvailableLocales} from '../../app-contexts';
 import {ConfigRecipe} from '../../types';
 
-// FIXME: Remove when we can GraphQL
-import {Languages, PartsOfSpeech} from '../../sample-data';
-
+import HomeQuery from './query';
 import * as S from './styles';
 
 const HomePage = (): JSX.Element => {
+  const data = useData(HomeQuery, null);
+
   const {config, updateConfig} = useConfig();
   const availableLocales = useAvailableLocales();
 
@@ -34,28 +35,30 @@ const HomePage = (): JSX.Element => {
     });
   }, []);
 
-  const lang1 = LanguagePage(Languages[1].id, Languages[1].name);
-  const lang2 = LanguagePage(Languages[2].id, Languages[2].name);
-
-  const pos1 = PartOfSpeechPage(PartsOfSpeech[1].id, PartsOfSpeech[1].name, lang1);
-  const pos2 = PartOfSpeechPage(PartsOfSpeech[2].id, PartsOfSpeech[2].name, lang1);
-  const pos3 = PartOfSpeechPage(PartsOfSpeech[3].id, PartsOfSpeech[3].name, lang2);
-  const pos4 = PartOfSpeechPage(PartsOfSpeech[4].id, PartsOfSpeech[4].name, lang2);
+  const languages = data.state === 'data'
+    ? data.result.data?.languages
+    : undefined;
 
   return <>
     <p>This is the content of the home page.</p>
-    <p>Some sample links to test navigation:</p>
     <ul>
-      <li>
-        Language: <Link to={lang1}>{lang1.name}</Link>
-        {' – '}
-        <Link to={pos1}>{pos1.name}</Link>, <Link to={pos2}>{pos2.name}</Link>
-      </li>
-      <li>
-        Language: <Link to={lang2}>{lang2.name}</Link>
-        {' – '}
-        <Link to={pos3}>{pos3.name}</Link>, <Link to={pos4}>{pos4.name}</Link>
-      </li>
+      {languages?.map(lang => {
+        const langPage = LanguagePage(lang.id, lang.name);
+        return (
+          <li key={lang.id}>
+            Language: <Link to={langPage}>{lang.name}</Link>
+            {' - '}
+            {lang.partsOfSpeech.map((pos, i) =>
+              <Fragment key={pos.id}>
+                {i > 0 && ', '}
+                <Link to={PartOfSpeechPage(pos.id, pos.name, langPage)}>
+                  {pos.name}
+                </Link>
+              </Fragment>
+            )}
+          </li>
+        );
+      })}
     </ul>
     <hr/>
     <S.OptionGroup aria-label='Theme'>

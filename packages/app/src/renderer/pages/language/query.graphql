@@ -1,0 +1,10 @@
+query($id: LanguageId!) {
+  language(id: $id) {
+    name
+
+    partsOfSpeech {
+      id
+      name
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  languages {
+    id
+    name
+
+    partsOfSpeech {
+      id
+      name
+    }
+  }
+}

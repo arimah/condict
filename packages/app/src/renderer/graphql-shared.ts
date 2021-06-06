@@ -35,3 +35,13 @@ export type Query<A, R> = Operation<'query', A, R>;
 
 export type Mutation<A, R> = Operation<'mutation', A, R>;
 
+/**
+ * Represents a language ID.
+ */
+export type LanguageId = IdOf<'Language'>;
+
+/**
+ * Represents a part of speech ID.
+ */
+export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
+

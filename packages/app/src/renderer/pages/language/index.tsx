@@ -1,8 +1,11 @@
+import {Spinner} from '@condict/ui';
+
 import {Link} from '../../ui';
 import {LanguagePage as LanguageTarget, PartOfSpeechPage} from '../../pages';
+import {LanguageId} from '../../graphql-shared';
+import {useData} from '../../data';
 
-// FIXME: Remove when we can GraphQL
-import {LanguageId, Languages, PartsOfSpeech} from '../../sample-data';
+import LanguageQuery from './query';
 
 export type Props = {
   id: LanguageId;
@@ -11,19 +14,28 @@ export type Props = {
 const LanguagePage = (props: Props): JSX.Element => {
   const {id} = props;
 
-  const lang = Languages[id];
-  const partsOfSpeech =
-    Object.values(PartsOfSpeech)
-      .filter(pos => pos.language.id === lang.id)
-      .sort((a, b) => a.name.localeCompare(b.name));
+  const data = useData(LanguageQuery, {id});
 
-  const langPage = LanguageTarget(lang.id, lang.name);
+  if (data.state === 'loading') {
+    // TODO: Better loading screen
+    // TODO: l10n
+    return <p><Spinner/> Loading...</p>;
+  }
+
+  const lang = data.result.data?.language;
+  if (!lang) {
+    // TODO: Better error screen
+    // TODO: l10n
+    return <p>Language not found.</p>;
+  }
+
+  const langPage = LanguageTarget(id, lang.name);
 
   return <>
-    <p>This is the page for language {id}.</p>
+    <p>This is the page for language {lang.name} (ID: {id}).</p>
     <p>Parts of speech in this language:</p>
     <ul>
-      {partsOfSpeech.map(pos =>
+      {lang.partsOfSpeech.map(pos =>
         <li key={pos.id}>
           <Link to={PartOfSpeechPage(pos.id, pos.name, langPage)}>
             {pos.name}
