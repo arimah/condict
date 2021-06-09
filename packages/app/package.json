@@ -14,7 +14,9 @@
     "build:main": "rollup -c",
     "build:graphql": "condict-graphql-typer --schema-dir ../../graphql-schema --target=client --src=./src/renderer/ --defs=./src/renderer/graphql-shared.ts",
     "build:native": "electron-rebuild -f -w bcrypt,better-sqlite3,@condict/server",
-    "watch": "rollup -c --watch"
+    "watch": "npm-run-all --silent --parallel --print-label watch:main watch:graphql",
+    "watch:main": "rollup -c --watch",
+    "watch:graphql": "condict-graphql-typer --schema-dir ../../graphql-schema --target=client --src=./src/renderer/ --defs=./src/renderer/graphql-shared.ts --watch"
   },
   "dependencies": {
     "@condict/platform": "^0.1.0",
