@@ -1,3 +1,4 @@
+import {ReactNode} from 'react';
 import {ReactLocalization} from '@fluent/react';
 
 import {Page} from '../pages';
@@ -17,6 +18,8 @@ export interface Tab {
   readonly state: TabState;
   /** The previous tab in the tab's history, or null if there is none. */
   readonly previous: PreviousTab | null;
+  /** Current open panels in this tab. */
+  readonly panels: readonly Panel[];
 }
 
 export const Tab = {
@@ -36,7 +39,7 @@ export const Tab = {
    * @return True if the tab has unsaved changes.
    */
   isDirty(tab: Tab): boolean {
-    return tab.dirty;
+    return tab.dirty || tab.panels.some(p => p.dirty);
   },
 
   /**
@@ -80,7 +83,7 @@ export const Tab = {
       case 'language':
         return false;
       default:
-        return true;
+        return tab.panels.length === 0;
     }
   },
 
@@ -100,6 +103,7 @@ export const Tab = {
       state: title === '' ? 'loading' : 'idle',
       dirty: false,
       previous: null,
+      panels: [],
     };
   },
 } as const;
@@ -114,6 +118,47 @@ export interface PreviousTab {
   /** The previous tab in the tab's history, or null if there is none. */
   readonly previous: PreviousTab | null;
 }
+
+export interface Panel {
+  /** A unique, randomly generated identifier for the panel. */
+  readonly id: string;
+  /** The title of the panel, for accessibility purposes. */
+  readonly title: string;
+  /** True if the panel is dirty (has unsaved changes). */
+  readonly dirty: boolean;
+  /** Renders the main content of the panel. */
+  readonly render: () => ReactNode;
+}
+
+export interface PanelParams<R> {
+  /** The initial title of the panel. */
+  readonly initialTitle: string;
+  /**
+   * Renders the panel's content. This is *not* a component type, but a render
+   * function that returns a React tree. It is not possible to use hooks inside
+   * this callback.
+   */
+  readonly render: (props: PanelProps<R>) => ReactNode;
+}
+
+export type PanelProps<R> = {
+  /**
+   * Updates the panel's properties.
+   * @param values New property values.
+   */
+  updatePanel: (
+    values: {
+      title?: string;
+      dirty?: boolean;
+    }
+  ) => void;
+  /**
+   * A function to be called when the panel has a result. The panel will close
+   * upon calling this function.
+   * @param value The panel's result value.
+   */
+  onResolve: (value: R) => void;
+};
 
 export type NavigateFn = (page: Page, options?: NavigateOptions) => void;
 
@@ -182,3 +227,28 @@ export interface NavigationContextValue {
    */
   readonly move: (id: string, newIndex: number) => void;
 }
+
+/**
+ * Opens a modal panel.
+ * @param params Panel parameters.
+ * @return A promise that resolves with the result of the modal panel. The
+ *         promise resolves when the panel closes. The promise is rejected if
+ *         the tab or panel already has a pending panel.
+ */
+export type OpenPanelFn = <R>(params: PanelParams<R>) => Promise<R>;
+
+/**
+ * Opens the first modal panel in a tab.
+ *
+ * This function is used internally, by TabContextProvider, so that component
+ * can provide its tab with an OpenPanelFn.
+ * @param tabId The owner tab's ID.
+ * @param params Panel parameters.
+ * @return A promise that resolves with the result of the modal pane. The
+ *         promise resolves when the panel closes. The promise is rejected if
+ *         the tab already has one or more panel.
+ */
+export type OpenFirstPanelFn = <R>(
+  tabId: string,
+  params: PanelParams<R>
+) => Promise<R>;

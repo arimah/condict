@@ -1,6 +1,11 @@
 import React, {useContext} from 'react';
 
-import {NavigateFn, NavigationContextValue} from './types';
+import {
+  NavigateFn,
+  NavigationContextValue,
+  OpenPanelFn,
+  OpenFirstPanelFn,
+} from './types';
 
 const noContext = (): never => {
   throw new Error('No context available');
@@ -23,3 +28,9 @@ export const useNavigation = (): NavigationContextValue =>
 export const NavigateToContext = React.createContext<NavigateFn>(noContext);
 
 export const useNavigateTo = (): NavigateFn => useContext(NavigateToContext);
+
+export const OpenFirstPanelContext = React.createContext<OpenFirstPanelFn>(noContext);
+
+export const OpenPanelContext = React.createContext<OpenPanelFn>(noContext);
+
+export const useOpenPanel = (): OpenPanelFn => useContext(OpenPanelContext);

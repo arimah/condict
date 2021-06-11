@@ -8,10 +8,12 @@ import React, {
 import BackArrow from 'mdi-react/ArrowLeftIcon';
 import {useLocalization} from '@fluent/react';
 
-import {getFocusable} from '@condict/ui';
+import {FocusScope, getTabReachable} from '@condict/ui';
 
 import {PageContent} from '../../pages';
-import {Tab} from '../../navigation';
+import {Tab, TabContextProvider} from '../../navigation';
+
+import SidePanelList, {SidePanelListHandle} from '../side-panel-list';
 
 import * as S from './styles';
 
@@ -39,76 +41,96 @@ const TabPanel = React.forwardRef((
   const panelRef = useRef<HTMLDivElement>(null);
   const backButtonRef = useRef<HTMLButtonElement>(null);
   const mainColumnRef = useRef<HTMLDivElement>(null);
+  const sidePanelListRef = useRef<SidePanelListHandle>(null);
   const lastFocus = useRef<HTMLElement | null>(null);
 
   const handleFocus = useCallback((e: FocusEvent) => {
     lastFocus.current = e.target as HTMLElement;
   }, []);
 
-  useImperativeHandle(ref, () => ({
-    restoreFocus() {
-      const panel = panelRef.current;
-      if (!panel) {
+  const hasSidePanels = tab.panels.length > 0;
+  const restoreFocus = useCallback(() => {
+    // If there is an active side panel, we must move focus to it. We should
+    // never attempt to move focus into the main panel.
+    if (hasSidePanels) {
+      sidePanelListRef.current?.restoreFocus();
+      return;
+    }
+
+    const panel = panelRef.current;
+    if (!panel) {
+      return;
+    }
+
+    // Try to focus lastFocus, if the element is still valid. It might have
+    // become invalid if the panel was updated while focus was outside it,
+    // in which case we'll have a reference to a removed element.
+    if (lastFocus.current && panel.contains(lastFocus.current)) {
+      lastFocus.current.focus();
+      return;
+    }
+
+    // If lastFocus was not valid, try to find the first focusable element in
+    // the main column.
+    if (mainColumnRef.current) {
+      const focusable = getTabReachable(mainColumnRef.current, {
+        includeRoot: false,
+      });
+      if (focusable.length > 0) {
+        (focusable[0] as HTMLElement).focus();
         return;
       }
+    }
 
-      // Try to focus lastFocus, if the element is still valid. It might have
-      // become invalid if the panel was updated while focus was outside it,
-      // in which case we'll have a reference to a removed element.
-      if (lastFocus.current && panel.contains(lastFocus.current)) {
-        lastFocus.current.focus();
-        return;
-      }
+    // Nothing focusable inside the main column, so let's try the back button.
+    if (backButtonRef.current) {
+      backButtonRef.current.focus();
+      return;
+    }
 
-      // If lastFocus was not valid, try to find the first focusable element in
-      // the main column.
-      if (mainColumnRef.current) {
-        const focusable = getFocusable(mainColumnRef.current, {includeRoot: false});
-        if (focusable.length > 0) {
-          (focusable[0] as HTMLElement).focus();
-          return;
-        }
-      }
+    // If all else fails, focus the panel itself.
+    panel.focus();
+  }, [hasSidePanels]);
 
-      // Nothing focusable inside the main column, so let's try the back button.
-      if (backButtonRef.current) {
-        backButtonRef.current.focus();
-        return;
-      }
-
-      // If all else fails, focus the panel itself.
-      panel.focus();
-    },
-  }), []);
+  useImperativeHandle(ref, () => ({restoreFocus}), [restoreFocus]);
 
   return (
-    <S.TabPanel
-      id={`tabpanel-${id}`}
-      aria-labelledby={`tab-${id}`}
-      aria-expanded={isCurrent}
-      hidden={!isCurrent}
-      isCurrent={isCurrent}
-      onFocus={handleFocus}
-      ref={panelRef}
-    >
-      <S.BackButtonColumn>
-        {tab.previous && (
-          <S.BackButton
-            label={l10n.getString('tab-back-button')}
-            title={l10n.getString('tab-back-button-tooltip', {
-              previousPageTitle: tab.previous.title,
-            })}
-            onClick={() => onBack(id)}
-            ref={backButtonRef}
-          >
-            <BackArrow/>
-          </S.BackButton>
-        )}
-      </S.BackButtonColumn>
-      <S.MainColumn ref={mainColumnRef}>
-        <PageContent page={page}/>
-      </S.MainColumn>
-    </S.TabPanel>
+    <TabContextProvider tab={tab}>
+      <FocusScope active={isCurrent && tab.panels.length === 0}>
+        <S.TabPanel
+          id={`tabpanel-${id}`}
+          aria-labelledby={`tab-${id}`}
+          aria-expanded={isCurrent}
+          hidden={!isCurrent}
+          isCurrent={isCurrent}
+          onFocus={handleFocus}
+          ref={panelRef}
+        >
+          <S.BackButtonColumn>
+            {tab.previous && (
+              <S.BackButton
+                label={l10n.getString('tab-back-button')}
+                title={l10n.getString('tab-back-button-tooltip', {
+                  previousPageTitle: tab.previous.title,
+                })}
+                onClick={() => onBack(id)}
+                ref={backButtonRef}
+              >
+                <BackArrow/>
+              </S.BackButton>
+            )}
+          </S.BackButtonColumn>
+          <S.MainColumn ref={mainColumnRef}>
+            <PageContent page={page}/>
+          </S.MainColumn>
+        </S.TabPanel>
+      </FocusScope>
+      <SidePanelList
+        panels={tab.panels}
+        visible={isCurrent}
+        ref={sidePanelListRef}
+      />
+    </TabContextProvider>
   );
 });
 

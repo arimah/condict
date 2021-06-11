@@ -15,7 +15,9 @@ const TabPanelList = (props: Props): JSX.Element => {
 
   const currentPanelRef = useRef<TabPanelHandle>(null);
 
-  const currentPage = nav.tabs[nav.currentTabIndex].page;
+  const currentTab = nav.tabs[nav.currentTabIndex];
+  const currentPage = currentTab.page;
+  const currentSidePanels = currentTab.panels;
 
   useEffect(() => {
     const currentPanel = currentPanelRef.current;
@@ -41,7 +43,7 @@ const TabPanelList = (props: Props): JSX.Element => {
     ) {
       currentPanel.restoreFocus();
     }
-  }, [currentPage]);
+  }, [currentPage, currentSidePanels]);
 
   return <>
     {nav.tabs.map((tab, i) =>

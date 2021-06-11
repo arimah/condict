@@ -12,7 +12,9 @@ export const TabPanel = styled.div.attrs({
 })<TabPanelProps>`
   display: ${p => p.isCurrent ? 'flex' : 'none'};
   flex-direction: row;
-  min-height: 100%;
+  height: 100%;
+  overflow: auto;
+  align-items: flex-start;
 
   &:focus {
     outline: none;

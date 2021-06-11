@@ -38,8 +38,8 @@ export const MainScreen = styled.div`
 export const MainContent = styled.main`
   box-sizing: border-box;
   grid-column: 2;
-  max-height: 100vh;
-  overflow: auto;
+  height: 100vh;
+  position: relative;
 `;
 
 const SidebarMinWidth = 248;

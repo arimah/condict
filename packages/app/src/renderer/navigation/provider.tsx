@@ -1,13 +1,27 @@
 import {ReactNode, useReducer, useMemo, useRef, Dispatch} from 'react';
-import produce from 'immer';
+import produce, {Draft} from 'immer';
 import {ReactLocalization, useLocalization} from '@fluent/react';
 import {customAlphabet} from 'nanoid';
 
 import {Page, HomePage} from '../pages';
 
-import {NavigationContext, NavigateToContext} from './context';
+import {
+  NavigationContext,
+  NavigateToContext,
+  OpenPanelContext,
+  OpenFirstPanelContext,
+} from './context';
 import PageConditions, {SingletonPage} from './page-conditions';
-import {NavigateOptions, NavigationContextValue, Tab} from './types';
+import {
+  NavigateOptions,
+  NavigationContextValue,
+  Tab,
+  Panel,
+  PanelParams,
+  PanelProps,
+  OpenPanelFn,
+  OpenFirstPanelFn,
+} from './types';
 
 export type Props = {
   children: ReactNode;
@@ -19,11 +33,31 @@ type State = {
 };
 
 type Message =
-  | {type: 'select', index: number | 'prev' | 'next'}
-  | {type: 'open', tabs: Tab[], insertIndex: number, background: boolean}
-  | {type: 'navigate', index: number, page: Page, title: string}
-  | {type: 'back', index: number}
-  | {type: 'close', startIndex: number, endIndex: number};
+  | {type: 'select'; index: number | 'prev' | 'next'}
+  | {type: 'open'; tabs: Tab[]; insertIndex: number; background: boolean}
+  | {type: 'navigate'; index: number; page: Page; title: string}
+  | {type: 'back'; index: number}
+  | {type: 'close'; startIndex: number; endIndex: number}
+  | {
+    type: 'openPanel';
+    tabIndex: number;
+    panelIndex: number;
+    panel: Panel;
+    reject: (reason: any) => void;
+  }
+  | {
+    type: 'updatePanel';
+    tabId: string;
+    panelId: string;
+    title?: string;
+    dirty?: boolean;
+  }
+  | {
+    type: 'closePanel',
+    tabId: string;
+    panelId: string;
+    resolve: () => void;
+  };
 
 interface CloseRange {
   /** The index of the first tab to be closed. */
@@ -50,10 +84,10 @@ const NavigationProvider = (props: Props): JSX.Element => {
   const functions = useMemo(() => ({
     navigateTo: (
       page: Page,
-      options: NavigateOptions = {
-        openInNewTab: false,
-        openInBackground: false,
-      }
+      {
+        openInNewTab = false,
+        openInBackground = false,
+      }: NavigateOptions = {}
     ): void => {
       const state = stateRef.current;
 
@@ -64,7 +98,7 @@ const NavigationProvider = (props: Props): JSX.Element => {
         if (index !== -1) {
           // There is an existing tab for this resource. Switch to it unless the
           // user has asked to open it in the background.
-          if (!options.openInBackground) {
+          if (!openInBackground) {
             dispatch({type: 'select', index});
           }
           return;
@@ -74,7 +108,7 @@ const NavigationProvider = (props: Props): JSX.Element => {
       // Let's see if we should navigate inside the current tab.
       const currentTab = state.tabs[state.currentTabIndex];
       const shouldNavigateWithinCurrent =
-        !options.openInNewTab &&
+        !openInNewTab &&
         Tab.canNavigateWithin(currentTab) &&
         !PageConditions.alwaysOpenInNewTab(page);
       if (shouldNavigateWithinCurrent) {
@@ -117,7 +151,7 @@ const NavigationProvider = (props: Props): JSX.Element => {
         type: 'open',
         tabs: newTabs,
         insertIndex,
-        background: !!options.openInBackground,
+        background: openInBackground,
       });
     },
     select: (id: string): void => {
@@ -137,6 +171,11 @@ const NavigationProvider = (props: Props): JSX.Element => {
         : state.tabs.findIndex(t => t.id === id);
       if (index !== -1) {
         const tab = state.tabs[index];
+        if (tab.panels.length > 0) {
+          // Can't navigate within a tab with one or more panels open.
+          return;
+        }
+
         if (Tab.isDirty(tab)) {
           void confirmClose(index, index + 1, dispatch).then(canClose => {
             if (canClose) {
@@ -188,10 +227,79 @@ const NavigationProvider = (props: Props): JSX.Element => {
     ...functions,
   }), [state, functions]);
 
+  const openFirstPanel = useMemo<OpenFirstPanelFn>(() => {
+    const openPanel = function<R>(
+      tabId: string,
+      panelIndex: number,
+      params: PanelParams<R>
+    ): Promise<R>  {
+      const state = stateRef.current;
+      const tabIndex = state.tabs.findIndex(t => t.id === tabId);
+
+      if (tabIndex === -1) {
+        return Promise.reject(new Error(`Tab not found: ${tabId}`));
+      }
+
+      const tab = state.tabs[tabIndex];
+      if (tab.panels.length > panelIndex) {
+        const message = panelIndex === 0
+          ? `Tab ${tabId} already has a open panel`
+          : `Tab ${tabId} panel ${panelIndex - 1} already has an open panel`;
+        return Promise.reject(new Error(message));
+      }
+
+      return new Promise<R>((resolve, reject) => {
+        const panelId = genId();
+        const {render} = params;
+        const renderProps: PanelProps<R> = {
+          updatePanel: ({title, dirty}) => dispatch({
+            type: 'updatePanel',
+            tabId,
+            panelId,
+            title,
+            dirty,
+          }),
+          onResolve: value => dispatch({
+            type: 'closePanel',
+            tabId,
+            panelId,
+            resolve: () => resolve(value),
+          }),
+        };
+
+        const openNestedPanel: OpenPanelFn = params =>
+          openPanel(tabId, panelIndex + 1, params);
+
+        dispatch({
+          type: 'openPanel',
+          tabIndex,
+          panelIndex,
+          panel: {
+            id: panelId,
+            title: params.initialTitle,
+            dirty: false,
+            // eslint-disable-next-line react/display-name
+            render: () =>
+              <OpenPanelContext.Provider value={openNestedPanel}>
+                {render(renderProps)}
+              </OpenPanelContext.Provider>,
+          },
+          reject,
+        });
+      });
+    };
+
+    return function<R>(tabId: string, params: PanelParams<R>): Promise<R> {
+      return openPanel(tabId, 0, params);
+    };
+  }, []);
+
   return (
     <NavigationContext.Provider value={value}>
       <NavigateToContext.Provider value={functions.navigateTo}>
-        {children}
+        <OpenFirstPanelContext.Provider value={openFirstPanel}>
+          {children}
+        </OpenFirstPanelContext.Provider>
       </NavigateToContext.Provider>
     </NavigationContext.Provider>
   );
@@ -227,7 +335,7 @@ const reduce = produce<State, [Message]>((state, message) => {
     }
     case 'open': {
       const {tabs, insertIndex, background} = message;
-      state.tabs.splice(insertIndex, 0, ...tabs);
+      state.tabs.splice(insertIndex, 0, ...tabs as Draft<Tab>[]);
       if (!background) {
         // Focus the last of the created tabs.
         state.currentTabIndex = insertIndex + tabs.length - 1;
@@ -250,6 +358,7 @@ const reduce = produce<State, [Message]>((state, message) => {
       tab.title = title;
       tab.state = title === '' ? 'loading' : 'idle';
       tab.dirty = false;
+      tab.panels = [];
       break;
     }
     case 'back': {
@@ -276,6 +385,43 @@ const reduce = produce<State, [Message]>((state, message) => {
       }
       break;
     }
+    case 'openPanel': {
+      const {tabIndex, panelIndex, panel, reject} = message;
+      const tab = state.tabs[tabIndex];
+      if (tab && tab.panels.length === panelIndex) {
+        tab.panels.push(panel);
+      } else {
+        reject(new Error('Panel could not be opened'));
+      }
+      break;
+    }
+    case 'updatePanel': {
+      const {tabId, panelId, title, dirty} = message;
+      const tab = state.tabs.find(t => t.id === tabId);
+      const panel = tab && tab.panels.find(p => p.id === panelId);
+      if (panel) {
+        if (title !== undefined) {
+          panel.title = title;
+        }
+        if (dirty !== undefined) {
+          panel.dirty = dirty;
+        }
+      }
+      break;
+    }
+    case 'closePanel': {
+      const {tabId, panelId, resolve} = message;
+      const tab = state.tabs.find(t => t.id === tabId);
+      if (
+        tab &&
+        tab.panels.length > 0 &&
+        tab.panels[tab.panels.length - 1].id === panelId
+      ) {
+        tab.panels.pop();
+        resolve();
+      }
+      break;
+    }
   }
   return state;
 });
@@ -284,7 +430,7 @@ const findExistingTab = (
   tabs: readonly Tab[],
   page: SingletonPage
 ): number => {
-  return tabs.findIndex(t => PageConditions.isSameResource(page, t.page));
+  return tabs.findIndex(t => PageConditions.areSameResource(page, t.page));
 };
 
 const findChildInsertIndex = (

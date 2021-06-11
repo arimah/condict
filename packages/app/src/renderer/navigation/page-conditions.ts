@@ -21,7 +21,7 @@ const PageConditions = {
    * @param existingPage The currently open page to test against.
    * @return True if the two pages represent the same resource.
    */
-  isSameResource(newPage: SingletonPage, existingPage: Page): boolean {
+  areSameResource(newPage: SingletonPage, existingPage: Page): boolean {
     switch (newPage.type) {
       case 'home':
         return existingPage.type === 'home';

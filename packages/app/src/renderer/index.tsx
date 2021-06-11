@@ -1,7 +1,7 @@
 import {useState, useCallback, useEffect, useRef} from 'react';
 import ReactDOM from 'react-dom';
 import {webFrame} from 'electron';
-import produce from 'immer';
+import produce, {enableMapSet} from 'immer';
 
 import {GlobalStyles as UIStyles} from '@condict/ui';
 
@@ -93,6 +93,9 @@ const App = (props: Props): JSX.Element => {
     </AppContexts>
   );
 };
+
+// Sigh.
+enableMapSet();
 
 void ipc.invoke('get-initial-state').then(state => {
   ReactDOM.render(
