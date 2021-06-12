@@ -74,7 +74,7 @@ const Tab = React.forwardRef((
           onMouseDown={handleCloseButtonMouseDown}
           onClick={handleCloseButtonClick}
         >
-          {tab.dirty && <DirtyIcon/>}
+          {NavTab.isDirty(tab) && <DirtyIcon/>}
           <CloseIcon/>
         </S.CloseButton>
       )}
