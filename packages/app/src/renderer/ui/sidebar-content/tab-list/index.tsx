@@ -1,4 +1,11 @@
-import {KeyboardEvent, useState, useCallback, useRef, useEffect} from 'react';
+import {
+  MouseEvent,
+  KeyboardEvent,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+} from 'react';
 
 import {Shortcut, ShortcutMap} from '@condict/ui';
 
@@ -6,6 +13,10 @@ import {NavigationContextValue, useNavigation} from '../../../navigation';
 
 import Tab from './tab';
 import * as S from './styles';
+
+export type Props = {
+  sidebarContainsFocus: () => boolean;
+};
 
 interface KeyCommand {
   key: Shortcut | null;
@@ -34,7 +45,9 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
   cmd => cmd.key
 );
 
-const TabList = (): JSX.Element => {
+const TabList = (props: Props): JSX.Element => {
+  const {sidebarContainsFocus} = props;
+
   const nav = useNavigation();
 
   const [hasFocus, setHasFocus] = useState(false);
@@ -47,6 +60,16 @@ const TabList = (): JSX.Element => {
       cmd.exec(nav);
     }
   }, [nav]);
+
+  const handleTabMouseDown = useCallback((e: MouseEvent) => {
+    // If the sidebar currently contains the focus, we can move it safely to
+    // the tab list, as we effectively "own" it. But if focus is inside the
+    // main area, let it stay there, so the user doesn't have to tab back into
+    // the newly opened tab.
+    if (!sidebarContainsFocus()) {
+      e.preventDefault();
+    }
+  }, []);
 
   useEffect(() => {
     // If the current tab changes while focus is inside the tab list,
@@ -69,6 +92,7 @@ const TabList = (): JSX.Element => {
           isCurrent={i === nav.currentTabIndex}
           onSelect={nav.select}
           onClose={nav.close}
+          onMouseDown={handleTabMouseDown}
           ref={i === nav.currentTabIndex ? currentTabRef : undefined}
         />
       )}

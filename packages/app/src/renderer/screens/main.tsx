@@ -19,6 +19,7 @@ const MainScreen = (): JSX.Element => {
   }, [navCommands]);
 
   const mainRef = useRef<HTMLDivElement>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
 
   const mainContentContainsFocus = useCallback(() => {
     if (!mainRef.current) {
@@ -27,11 +28,18 @@ const MainScreen = (): JSX.Element => {
     return mainRef.current.contains(document.activeElement);
   }, []);
 
+  const sidebarContainsFocus = useCallback(() => {
+    if (!sidebarRef.current) {
+      return false;
+    }
+    return sidebarRef.current.contains(document.activeElement);
+  }, []);
+
   return (
     <CommandProvider commands={navCommands}>
       <S.MainScreen onKeyDown={handleKeyDown}>
-        <S.Sidebar>
-          <SidebarContent/>
+        <S.Sidebar ref={sidebarRef}>
+          <SidebarContent sidebarContainsFocus={sidebarContainsFocus}/>
         </S.Sidebar>
         <S.MainContent ref={mainRef}>
           <TabPanelList mainContentContainsFocus={mainContentContainsFocus}/>

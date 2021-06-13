@@ -10,7 +10,13 @@ import * as S from './styles';
 // This component implements the *contents* of the sidebar. The container with
 // the coloured background is part of the MainScreen.
 
-const SidebarContent = (): JSX.Element => {
+export type Props = {
+  sidebarContainsFocus: () => boolean;
+};
+
+const SidebarContent = (props: Props): JSX.Element => {
+  const {sidebarContainsFocus} = props;
+
   // FIXME: remove this temporary testing code
   const [updateAvailable, setUpdateAvailable] = useState(false);
 
@@ -26,7 +32,7 @@ const SidebarContent = (): JSX.Element => {
       <span><T id='sidebar-search-button'/></span>
     </S.SearchButton>
 
-    <TabList/>
+    <TabList sidebarContainsFocus={sidebarContainsFocus}/>
 
     {updateAvailable &&
       <S.Button command='global:update'>

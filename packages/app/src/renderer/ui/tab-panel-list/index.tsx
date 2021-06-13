@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import {useLayoutEffect, useRef} from 'react';
 
 import {useNavigation} from '../../navigation';
 
@@ -19,7 +19,9 @@ const TabPanelList = (props: Props): JSX.Element => {
   const currentPage = currentTab.page;
   const currentSidePanels = currentTab.panels;
 
-  useEffect(() => {
+  // HACK: useLayoutEffect instead of useEffect prevents us from catching <body>
+  // as the active element when clicking sidebar tabs, for some reason.
+  useLayoutEffect(() => {
     const currentPanel = currentPanelRef.current;
     if (!currentPanel) {
       return;

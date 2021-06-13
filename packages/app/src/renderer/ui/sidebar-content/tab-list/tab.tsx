@@ -12,6 +12,7 @@ export type Props = {
   isCurrent: boolean;
   onSelect: (id: string) => void;
   onClose: (id: string) => void;
+  onMouseDown: (e: MouseEvent<HTMLDivElement>) => void;
 }
 
 const handleCloseButtonMouseDown = (e: MouseEvent) => {
@@ -25,18 +26,18 @@ const Tab = React.forwardRef((
   props: Props,
   ref: Ref<HTMLDivElement>
 ): JSX.Element => {
-  const {tab, isCurrent, onSelect, onClose} = props;
+  const {tab, isCurrent, onSelect, onClose, onMouseDown} = props;
   const {id} = tab;
 
   const {l10n} = useLocalization();
 
-  const handleTabMouseDown = useCallback((e: MouseEvent) => {
-    // Prevent the tab from being focused.
-    e.preventDefault();
+  const handleTabMouseDown = useCallback((e: MouseEvent<HTMLDivElement>) => {
+    onMouseDown(e);
+
     if (e.button === 0) {
       onSelect(id);
     }
-  }, [id, onSelect]);
+  }, [id, onSelect, onMouseDown]);
 
   const handleTabAuxClick = useCallback((e: MouseEvent) => {
     if (e.button === 1) {
