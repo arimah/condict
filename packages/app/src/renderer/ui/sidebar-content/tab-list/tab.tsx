@@ -71,6 +71,7 @@ const Tab = React.forwardRef((
               ? 'sidebar-tab-close-button-unsaved-tooltip'
               : 'sidebar-tab-close-button-tooltip'
           )}
+          isCurrentTab={isCurrent}
           onMouseDown={handleCloseButtonMouseDown}
           onClick={handleCloseButtonClick}
         >

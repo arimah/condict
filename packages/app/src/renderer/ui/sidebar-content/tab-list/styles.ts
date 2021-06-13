@@ -99,16 +99,20 @@ export const TabTitle = styled.span`
 // but in this case, I really do not want it to be focusable in any way, and it
 // seems to be impossible to accomplish with plain HTML/CSS.
 
+export type CloseButtonProps = {
+  isCurrentTab?: boolean;
+};
+
 export const CloseButton = styled.div.attrs({
   role: 'button',
-})`
+})<CloseButtonProps>`
   margin-top: -4px;
   margin-bottom: -4px;
   margin-left: 4px;
   padding: 4px;
   width: 16px;
   height: 16px;
-  border-radius: 8px;
+  border-radius: 12px;
   opacity: 0.5;
 
   > svg {
@@ -133,5 +137,13 @@ export const CloseButton = styled.div.attrs({
     > .dirty-icon + .close-icon {
       display: block;
     }
+  }
+
+  &&:hover:active {
+    background-color: ${p => p.isCurrentTab
+      ? p.theme.defaultActiveBg
+      // bg instead of activeBg since the tab is hoverBg
+      : p.theme.sidebar.bg
+    };
   }
 `;
