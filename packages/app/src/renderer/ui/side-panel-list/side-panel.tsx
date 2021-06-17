@@ -6,11 +6,11 @@ import React, {
   useCallback,
   useRef,
   useImperativeHandle,
+  useLayoutEffect,
 } from 'react';
 
 import {FocusScope, getTabReachable} from '@condict/ui';
 
-import {useDelayedMountEffect} from '../../hooks';
 import {Panel} from '../../navigation';
 
 import * as S from './styles';
@@ -70,12 +70,9 @@ const SidePanel = React.forwardRef((
     },
   }), []);
 
-  // HACK: We have to delay the call to setNeedToEnter, or weird timing issues
-  // happen in React. The result of the first render never seems to make it to
-  // the DOM at all.
-  useDelayedMountEffect(1, () => {
+  useLayoutEffect(() => {
     setNeedToEnter(false);
-  });
+  }, []);
 
   const handleTransitionEnd = useCallback((e: TransitionEvent) => {
     // transitionend bubbles - we don't want to catch it for descendant nodes.

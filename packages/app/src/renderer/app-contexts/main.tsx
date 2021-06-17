@@ -2,7 +2,9 @@ import {ReactNode} from 'react';
 
 import {AppConfig, ThemeName, Locale} from '../../types';
 
-// Navigation and data contexts are defined elsewhere due to their complexity.
+// Dialog, navigation and data contexts are defined elsewhere
+// due to their complexity.
+import {DialogStackProvider} from '../dialog-stack';
 import {NavigationProvider} from '../navigation';
 import {DataProvider} from '../data';
 import {ConfigRecipe} from '../types';
@@ -48,11 +50,13 @@ const AppContexts = (props: Props): JSX.Element => {
           appearance={config.appearance}
           systemTheme={systemTheme}
         >
-          <NavigationProvider>
-            <DataProvider>
-              {children}
-            </DataProvider>
-          </NavigationProvider>
+          <DialogStackProvider>
+            <NavigationProvider>
+              <DataProvider>
+                {children}
+              </DataProvider>
+            </NavigationProvider>
+          </DialogStackProvider>
         </AppThemeProvider>
       </TranslationProvider>
     </ConfigProvider>

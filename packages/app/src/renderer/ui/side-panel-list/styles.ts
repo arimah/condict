@@ -28,6 +28,7 @@ export const Overlay = styled.div<OverlayProps>`
   bottom: 0;
   background-color: ${p => p.theme.defaultBg};
   opacity: ${p => p.active ? '0.6' : '0'};
+  /* At least 1ms to force transitionend event even with disabled animations. */
   transition: opacity ${p => Math.max(2 * p.theme.timing.long, 1)}ms linear;
   pointer-events: ${p => p.active ? 'auto' : 'none'};
 `;

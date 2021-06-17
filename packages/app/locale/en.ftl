@@ -23,3 +23,21 @@ tab-back-button = Back
 # Variables:
 #   previousPageTitle: The title of the page that the back button returns to.
 tab-back-button-tooltip = Back to {$previousPageTitle}
+
+## Message box messages
+
+# "Yes" button label in a Yes/No message box
+message-box-yes = Yes
+
+# "No" button label in a Yes/No message box
+message-box-no = No
+
+# "OK" button label in an OK/Cancel message box
+message-box-ok = OK
+
+# "Cancel" button label in an OK/Cancel message box
+message-box-cancel = Cancel
+
+## Various temporary test messages
+
+test-dialog-title = Is this message box working?

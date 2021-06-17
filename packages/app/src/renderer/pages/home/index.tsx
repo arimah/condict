@@ -9,6 +9,8 @@ import {useData} from '../../data';
 import {LanguagePage, PartOfSpeechPage} from '../../pages';
 import {useConfig, useAvailableLocales} from '../../app-contexts';
 import {PanelProps, PanelParams, useOpenPanel} from '../../navigation';
+import {useOpenDialog} from '../../dialog-stack';
+import {YesNo, OKCancel, messageBox} from '../../dialogs';
 import {ConfigRecipe} from '../../types';
 
 import HomeQuery from './query';
@@ -74,8 +76,10 @@ const HomePage = (): JSX.Element => {
   const data = useData(HomeQuery, null);
 
   const openPanel = useOpenPanel();
+  const openDialog = useOpenDialog();
 
   const [panelResponse, setPanelResponse] = useState<TestResponse | null>(null);
+  const [dialogResponse, setDialogResponse] = useState<boolean | null>(null);
 
   const {config, updateConfig} = useConfig();
   const availableLocales = useAvailableLocales();
@@ -130,6 +134,38 @@ const HomePage = (): JSX.Element => {
       />
     </p>
     {panelResponse && <p>Test panel response: {panelResponse}</p>}
+    <hr/>
+    <p>
+      <Button
+        label='Open a Yes/No dialog'
+        bold
+        onClick={() => {
+          void openDialog(messageBox({
+            titleKey: 'test-dialog-title',
+            message: <>
+              <p>The primary response is true. The secondary response is false.</p>
+              <p>Choose wisely.</p>
+            </>,
+            buttons: YesNo,
+          })).then(setDialogResponse);
+        }}
+      />
+      {' '}
+      <Button
+        label='Open an OK/Cancel dialog'
+        bold
+        onClick={() => {
+          void openDialog(messageBox({
+            titleKey: 'test-dialog-title',
+            message: <>
+              <p>This dialog can be dismissed by pressing <kbd>Escape</kbd>, which is equivalent to clicking the Cancel button.</p>
+            </>,
+            buttons: OKCancel,
+          })).then(setDialogResponse);
+        }}
+      />
+    </p>
+    {dialogResponse !== null && <p>Last dialog response: {String(dialogResponse)}</p>}
     <hr/>
     <S.OptionGroup aria-label='Theme'>
       <p>Theme:</p>
