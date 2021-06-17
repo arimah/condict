@@ -229,6 +229,22 @@ export interface NavigationContextValue {
 }
 
 /**
+ * Updates a tab's properties.
+ * @param id The ID of the tab to update.
+ * @param values New values for the tab's properties.
+ */
+export type UpdateFreeTabFn = (id: string, values: UpdatableTabProps) => void;
+
+/**
+ * Updates a tab's properties.
+ * @param id The ID of the tab to update.
+ * @param values New values for the tab's properties.
+ */
+export type UpdateTabFn = (values: UpdatableTabProps) => void;
+
+export type UpdatableTabProps = Partial<Pick<Tab, 'title' | 'dirty'>>;
+
+/**
  * Opens a modal panel.
  * @param params Panel parameters.
  * @return A promise that resolves with the result of the modal panel. The

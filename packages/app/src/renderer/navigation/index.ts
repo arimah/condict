@@ -1,4 +1,9 @@
-export {useNavigation, useNavigateTo, useOpenPanel} from './context';
+export {
+  useNavigation,
+  useNavigateTo,
+  useUpdateTab,
+  useOpenPanel,
+} from './context';
 export {
   default as NavigationProvider,
   Props as NavigationProviderProps,
@@ -14,8 +19,11 @@ export {
   NavigateOptions,
   Tab,
   TabState,
+  PreviousTab,
   Panel,
   PanelParams,
   PanelProps,
+  UpdateTabFn,
+  UpdatableTabProps,
   OpenPanelFn,
 } from './types';

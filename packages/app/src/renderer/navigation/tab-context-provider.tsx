@@ -1,7 +1,12 @@
 import {ReactNode, useContext, useCallback} from 'react';
 
-import {OpenFirstPanelContext, OpenPanelContext} from './context';
-import {Tab, OpenPanelFn, PanelParams} from './types';
+import {
+  OpenFirstPanelContext,
+  OpenPanelContext,
+  UpdateFreeTabContext,
+  UpdateTabContext,
+} from './context';
+import {Tab, UpdateTabFn, OpenPanelFn, PanelParams} from './types';
 
 export type Props = {
   tab: Tab;
@@ -11,19 +16,27 @@ export type Props = {
 const TabContextProvider = (props: Props): JSX.Element => {
   const {tab, children} = props;
 
+  const updateFreeTab = useContext(UpdateFreeTabContext);
   const openFirstPanel = useContext(OpenFirstPanelContext);
 
   const ownerId = tab.id;
-  const value = useCallback<OpenPanelFn>(function<R>(
+
+  const updateTab = useCallback<UpdateTabFn>(values => {
+    updateFreeTab(ownerId, values);
+  }, [ownerId, updateFreeTab]);
+
+  const openPanel = useCallback<OpenPanelFn>(function<R>(
     params: PanelParams<R>
   ): Promise<R> {
     return openFirstPanel(ownerId, params);
   }, [ownerId, openFirstPanel]);
 
   return (
-    <OpenPanelContext.Provider value={value}>
-      {children}
-    </OpenPanelContext.Provider>
+    <UpdateTabContext.Provider value={updateTab}>
+      <OpenPanelContext.Provider value={openPanel}>
+        {children}
+      </OpenPanelContext.Provider>
+    </UpdateTabContext.Provider>
   );
 };
 

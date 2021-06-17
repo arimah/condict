@@ -1,7 +1,8 @@
-import {Spinner} from '@condict/ui';
+import {Button, Spinner} from '@condict/ui';
 
 import {Link} from '../../ui';
 import {LanguagePage, PartOfSpeechPage as PartOfSpeechTarget} from '../../pages';
+import {useUpdateTab} from '../../navigation';
 import {PartOfSpeechId} from '../../graphql-shared';
 import {useData} from '../../data';
 
@@ -15,6 +16,8 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
   const {id} = props;
 
   const data = useData(PartOfSpeechQuery, {id});
+
+  const updateTab = useUpdateTab();
 
   if (data.state === 'loading') {
     // TODO: Better loading screen
@@ -46,6 +49,20 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
         </li>
       )}
     </ul>
+    <hr/>
+    <p>
+      <Button
+        label='Mark tab as dirty'
+        bold
+        onClick={() => updateTab({dirty: true})}
+      />
+      {' '}
+      <Button
+        label='Mark tab as not dirty'
+        bold
+        onClick={() => updateTab({dirty: false})}
+      />
+    </p>
   </>;
 };
 

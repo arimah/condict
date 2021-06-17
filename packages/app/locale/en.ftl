@@ -38,6 +38,16 @@ message-box-ok = OK
 # "Cancel" button label in an OK/Cancel message box
 message-box-cancel = Cancel
 
+## Confirm close dialog
+
+confirm-close-title = Discard unsaved changes?
+
+confirm-close-message = Changes you have made will not be saved.
+
+confirm-close-stay-button = Stay here
+
+confirm-close-discard-button = Discard changes
+
 ## Various temporary test messages
 
 test-dialog-title = Is this message box working?

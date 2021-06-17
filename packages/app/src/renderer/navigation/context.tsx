@@ -3,6 +3,8 @@ import React, {useContext} from 'react';
 import {
   NavigateFn,
   NavigationContextValue,
+  UpdateTabFn,
+  UpdateFreeTabFn,
   OpenPanelFn,
   OpenFirstPanelFn,
 } from './types';
@@ -28,6 +30,12 @@ export const useNavigation = (): NavigationContextValue =>
 export const NavigateToContext = React.createContext<NavigateFn>(noContext);
 
 export const useNavigateTo = (): NavigateFn => useContext(NavigateToContext);
+
+export const UpdateFreeTabContext = React.createContext<UpdateFreeTabFn>(noContext);
+
+export const UpdateTabContext = React.createContext<UpdateTabFn>(noContext);
+
+export const useUpdateTab = (): UpdateTabFn => useContext(UpdateTabContext);
 
 export const OpenFirstPanelContext = React.createContext<OpenFirstPanelFn>(noContext);
 

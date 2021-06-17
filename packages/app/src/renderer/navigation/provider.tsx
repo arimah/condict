@@ -1,17 +1,27 @@
-import {ReactNode, useReducer, useMemo, useRef, Dispatch} from 'react';
+import {
+  ReactNode,
+  useReducer,
+  useMemo,
+  useCallback,
+  useRef,
+  Dispatch,
+} from 'react';
 import produce, {Draft} from 'immer';
 import {ReactLocalization, useLocalization} from '@fluent/react';
 import {customAlphabet} from 'nanoid';
 
 import {Page, HomePage} from '../pages';
+import {OpenDialogFn, useOpenDialog} from '../dialog-stack';
 
 import {
   NavigationContext,
   NavigateToContext,
+  UpdateFreeTabContext,
   OpenPanelContext,
   OpenFirstPanelContext,
 } from './context';
 import PageConditions, {SingletonPage} from './page-conditions';
+import ConfirmCloseDialog from './confirm-close-dialog';
 import {
   NavigateOptions,
   NavigationContextValue,
@@ -19,6 +29,7 @@ import {
   Panel,
   PanelParams,
   PanelProps,
+  UpdateFreeTabFn,
   OpenPanelFn,
   OpenFirstPanelFn,
 } from './types';
@@ -36,6 +47,7 @@ type Message =
   | {type: 'select'; index: number | 'prev' | 'next'}
   | {type: 'open'; tabs: Tab[]; insertIndex: number; background: boolean}
   | {type: 'navigate'; index: number; page: Page; title: string}
+  | {type: 'update', index: number; title?: string; dirty?: boolean}
   | {type: 'back'; index: number}
   | {type: 'close'; startIndex: number; endIndex: number}
   | {
@@ -76,6 +88,8 @@ const NavigationProvider = (props: Props): JSX.Element => {
   const {children} = props;
 
   const {l10n} = useLocalization();
+  const openDialog = useOpenDialog();
+
   const [state, dispatch] = useReducer(reduce, l10n, getInitialState);
 
   const stateRef = useRef(state);
@@ -121,7 +135,13 @@ const NavigationProvider = (props: Props): JSX.Element => {
 
         if (Tab.isDirty(currentTab)) {
           const index = state.currentTabIndex;
-          void confirmClose(index, index + 1, dispatch).then(canClose => {
+          void confirmClose(
+            openDialog,
+            state.tabs,
+            index,
+            index + 1,
+            dispatch
+          ).then(canClose => {
             if (canClose) {
               dispatch(message);
             }
@@ -177,7 +197,13 @@ const NavigationProvider = (props: Props): JSX.Element => {
         }
 
         if (Tab.isDirty(tab)) {
-          void confirmClose(index, index + 1, dispatch).then(canClose => {
+          void confirmClose(
+            openDialog,
+            state.tabs,
+            index,
+            index + 1,
+            dispatch
+          ).then(canClose => {
             if (canClose) {
               dispatch({type: 'back', index});
             }
@@ -208,7 +234,13 @@ const NavigationProvider = (props: Props): JSX.Element => {
         endIndex,
       };
       if (hasDirty) {
-        void confirmClose(startIndex, endIndex, dispatch).then(canClose => {
+        void confirmClose(
+          openDialog,
+          state.tabs,
+          startIndex,
+          endIndex,
+          dispatch
+        ).then(canClose => {
           if (canClose) {
             dispatch(message);
           }
@@ -220,12 +252,20 @@ const NavigationProvider = (props: Props): JSX.Element => {
     move: (_id: string): void => {
       // TODO: Complex logic here
     },
-  } as const), [l10n]);
+  } as const), [l10n, openDialog]);
 
   const value = useMemo<NavigationContextValue>(() => ({
     ...state,
     ...functions,
   }), [state, functions]);
+
+  const updateFreeTab = useCallback<UpdateFreeTabFn>((id, {title, dirty}) => {
+    const state = stateRef.current;
+    const index = state.tabs.findIndex(t => t.id === id);
+    if (index !== -1) {
+      dispatch({type: 'update', index, title, dirty});
+    }
+  }, []);
 
   const openFirstPanel = useMemo<OpenFirstPanelFn>(() => {
     const openPanel = function<R>(
@@ -297,9 +337,11 @@ const NavigationProvider = (props: Props): JSX.Element => {
   return (
     <NavigationContext.Provider value={value}>
       <NavigateToContext.Provider value={functions.navigateTo}>
-        <OpenFirstPanelContext.Provider value={openFirstPanel}>
-          {children}
-        </OpenFirstPanelContext.Provider>
+        <UpdateFreeTabContext.Provider value={updateFreeTab}>
+          <OpenFirstPanelContext.Provider value={openFirstPanel}>
+            {children}
+          </OpenFirstPanelContext.Provider>
+        </UpdateFreeTabContext.Provider>
       </NavigateToContext.Provider>
     </NavigationContext.Provider>
   );
@@ -359,6 +401,17 @@ const reduce = produce<State, [Message]>((state, message) => {
       tab.state = title === '' ? 'loading' : 'idle';
       tab.dirty = false;
       tab.panels = [];
+      break;
+    }
+    case 'update': {
+      const {index, title, dirty} = message;
+      const tab = state.tabs[index];
+      if (title !== undefined) {
+        tab.title = title;
+      }
+      if (dirty !== undefined) {
+        tab.dirty = dirty;
+      }
       break;
     }
     case 'back': {
@@ -477,20 +530,27 @@ const findCloseRange = (
 };
 
 const confirmClose = async (
+  openDialog: OpenDialogFn,
+  tabs: readonly Tab[],
   startIndex: number,
   endIndex: number,
   dispatch: Dispatch<Message>
 ): Promise<boolean> => {
   for (let i = startIndex; i < endIndex; i++) {
+    const tab = tabs[i];
+    if (!Tab.isDirty(tab)) {
+      continue;
+    }
+
     // First, move to the tab so the user can see what's being confirmed.
     dispatch({type: 'select', index: i});
-    // Wait one tick for the UI to update.
+
+    // Wait one tick for the UI to update. This allows focus to move into the
+    // tab, so it can be restored correctly when the dialog is closed.
     await Promise.resolve();
 
-    // TODO: Use custom message box code.
-    // TODO: l10n
-    const canClose = confirm('Discard unsaved changes?');
-    if (!canClose) {
+    const response = await openDialog(ConfirmCloseDialog);
+    if (response === 'stay') {
       // If the user does not wish to discard their unsaved changes, do *not*
       // restore the previous tab. Continue right here, so the user can have a
       // closer look at their unsaved work.
