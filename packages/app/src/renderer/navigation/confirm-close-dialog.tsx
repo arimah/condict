@@ -13,7 +13,7 @@ const Discard: MessageBoxButton<'discard'> = {
 
 const Stay: MessageBoxButton<'stay'> = {
   value: 'stay',
-  labelKey: 'confirm-close-stay-button',
+  labelKey: 'confirm-close-cancel-button',
   disposition: 'cancel',
 };
 

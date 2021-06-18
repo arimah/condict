@@ -44,7 +44,7 @@ confirm-close-title = Discard unsaved changes?
 
 confirm-close-message = Changes you have made will not be saved.
 
-confirm-close-stay-button = Stay here
+confirm-close-cancel-button = Cancel
 
 confirm-close-discard-button = Discard changes
 
