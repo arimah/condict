@@ -1,4 +1,4 @@
-import {useState, useCallback, useEffect} from 'react';
+import {useState, useCallback, useEffect, useRef} from 'react';
 import produce from 'immer';
 
 export type Props<T> = {
@@ -39,48 +39,65 @@ interface ItemState<T> {
 function TransitionList<T>(props: Props<T>): JSX.Element {
   const {list, getKey, children: renderItem} = props;
 
-  const [state, setState] = useState(() => getInitialState(list, getKey));
+  // This component is a bit hacky. When the input list changes, we want new
+  // items to be added and old items to start leaving in the same render. To
+  // accomplish this, we compute the next state during render. But we also
+  // need some way to tell React to re-render when items finish transitioning.
+  // Hence, the current up-to-date canonical state is kept in a ref (stateRef),
+  // which is synchronised with the most recently rendered state (lastState)
+  // through an effect.
+  //
+  // When onPhaseEnd is called, we derive the next state from stateRef, and
+  // write it to lastState to force the component to update.
+
+  const [lastState, setLastState] = useState(() => getInitialState(list, getKey));
+  const stateRef = useRef(lastState);
 
   const onPhaseEnd = useCallback((key: Key) => {
-    setState(state => {
-      const index = state.itemStates.findIndex(i => i.key === key);
-      if (index === -1) {
-        return state;
+    const state = stateRef.current;
+
+    const index = state.itemStates.findIndex(i => i.key === key);
+    if (index === -1) {
+      return;
+    }
+
+    const nextState = produce(state, draft => {
+      const itemState = draft.itemStates[index];
+      switch (itemState.phase) {
+        case 'entering':
+          // Once the item has entered, it is idle.
+          itemState.phase = 'idle';
+          break;
+        case 'idle':
+          // Nothing to do.
+          break;
+        case 'leaving':
+          // Once the item has left, we can safely delete it.
+          draft.itemStates.splice(index, 1);
+          draft.keyToItem.delete(itemState.key);
+          break;
       }
-      return produce(state, draft => {
-        const itemState = draft.itemStates[index];
-        switch (itemState.phase) {
-          case 'entering':
-            // Once the item has entered, it is idle.
-            itemState.phase = 'idle';
-            break;
-          case 'idle':
-            // Nothing to do.
-            break;
-          case 'leaving':
-            // Once the item has left, we can safely delete it.
-            draft.itemStates.splice(index, 1);
-            draft.keyToItem.delete(itemState.key);
-            break;
-        }
-      });
     });
+
+    stateRef.current = nextState;
+    setLastState(nextState);
   }, []);
 
   // Compute the next state eagerly, so we don't end up out-of-sync with the
   // list by one render. This does lead to double renders.
-  const nextState = state.list !== list
-    ? getNextState(state, list, getKey)
-    : state;
+  const state = stateRef.current.list !== list
+    ? getNextState(stateRef.current, list, getKey)
+    : stateRef.current;
+  stateRef.current = state;
 
   useEffect(() => {
-    if (state !== nextState) {
-      setState(nextState);
+    if (state !== lastState) {
+      setLastState(lastState);
     }
-  }, [nextState]);
+  }, [state]);
 
-  return <>
-    {nextState.itemStates.map(item =>
+  const tree = <>
+    {state.itemStates.map(item =>
       <Item
         key={item.key}
         state={item}
@@ -89,6 +106,8 @@ function TransitionList<T>(props: Props<T>): JSX.Element {
       />
     )}
   </>;
+
+  return tree;
 }
 
 export default TransitionList;
@@ -173,3 +192,28 @@ function Item<T>(props: ItemProps<T>): JSX.Element {
     () => onPhaseEnd(state.key)
   );
 }
+
+/**
+ * A helper hook that can be used for items with no transitions at all.
+ * @param phase The current phase
+ * @param onPhaseEnd The function that is called when the current phase ends.
+ */
+export const useImmediateEntryAndExit = (
+  phase: ItemPhase,
+  onPhaseEnd: () => void
+): void => {
+  useEffect(() => {
+    if (phase !== 'idle') {
+      // HACK: We have to do this in a short timeout for some reason, or React
+      // doesn't remove the DOM node correctly when leaving.
+      // Possibly a bug in React.
+      const timeoutId = window.setTimeout(() => {
+        onPhaseEnd();
+      }, 2);
+      return () => {
+        window.clearTimeout(timeoutId);
+      };
+    }
+    return undefined;
+  }, [phase, onPhaseEnd]);
+};

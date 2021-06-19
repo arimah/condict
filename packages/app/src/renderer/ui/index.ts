@@ -8,4 +8,5 @@ export {
   ItemKeyFn,
   ItemPhase,
   ItemRenderFn,
+  useImmediateEntryAndExit,
 } from './transition-list';
