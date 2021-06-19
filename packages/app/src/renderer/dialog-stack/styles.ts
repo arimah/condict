@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export type ContainerProps = {
   active: boolean;
+  backdrop: boolean;
 };
 
 export const Container = styled.div<ContainerProps>`
@@ -18,6 +19,7 @@ export const Container = styled.div<ContainerProps>`
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  background-color: ${p => p.backdrop && 'rgba(0, 0, 0, 0.35)'};
   pointer-events: ${p => p.active ? 'auto' : 'none'};
 
   > * {

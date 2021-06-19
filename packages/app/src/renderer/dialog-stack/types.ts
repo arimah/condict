@@ -5,6 +5,11 @@ import {ItemPhase} from '../ui';
 export interface Dialog {
   /** A unique, randomly generated identifier for the dialog. */
   readonly id: string;
+  /**
+   * If true, the dialog is given a backdrop that partly obscures the content
+   * behind it.
+   */
+  readonly backdrop: boolean;
   /** Renders the main content of the dialog. */
   readonly render: (
     partialProps: Pick<
@@ -15,6 +20,11 @@ export interface Dialog {
 }
 
 export interface DialogParams<R> {
+  /**
+   * If true, the dialog is given a backdrop that partly obscures the content
+   * behind it.
+   */
+  readonly backdrop?: boolean;
   /**
    * Renders the dialog's content. This is *not* a component type, but a render
    * function that returns a React tree. It is not possible to use hooks inside

@@ -64,6 +64,7 @@ const DialogStackProvider = (props: Props): JSX.Element => {
           type: 'open',
           dialog: {
             id: genId(),
+            backdrop: params.backdrop ?? false,
             // eslint-disable-next-line react/display-name
             render: partialProps =>
               <OpenDialogContext.Provider value={openNestedDialog}>
