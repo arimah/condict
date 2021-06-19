@@ -50,13 +50,13 @@ const AppContexts = (props: Props): JSX.Element => {
           appearance={config.appearance}
           systemTheme={systemTheme}
         >
-          <DialogStackProvider>
-            <NavigationProvider>
-              <DataProvider>
+          <DataProvider>
+            <DialogStackProvider>
+              <NavigationProvider>
                 {children}
-              </DataProvider>
-            </NavigationProvider>
-          </DialogStackProvider>
+              </NavigationProvider>
+            </DialogStackProvider>
+          </DataProvider>
         </AppThemeProvider>
       </TranslationProvider>
     </ConfigProvider>
