@@ -99,7 +99,7 @@ const TabPanel = React.forwardRef((
       <FocusScope active={isCurrent && tab.panels.length === 0}>
         <S.TabPanel
           id={`tabpanel-${id}`}
-          aria-labelledby={`tab-${id}`}
+          aria-labelledby={`tab-${id}-title`}
           aria-expanded={isCurrent}
           hidden={!isCurrent}
           isCurrent={isCurrent}
