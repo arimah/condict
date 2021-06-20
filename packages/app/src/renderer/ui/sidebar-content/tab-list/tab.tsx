@@ -55,6 +55,7 @@ const Tab = React.forwardRef((
       tabIndex={isCurrent ? 0 : -1}
       isCurrent={isCurrent}
       isChild={NavTab.isChild(tab)}
+      aria-labelledby={`tab-${id}-title`}
       aria-selected={isCurrent}
       aria-controls={`tabpanel-${id}`}
       onMouseDown={handleTabMouseDown}
