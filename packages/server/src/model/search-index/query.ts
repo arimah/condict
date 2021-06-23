@@ -24,7 +24,16 @@ const formatFtsQuery = (query: string): string => {
 
   let m: RegExpExecArray | null;
   while ((m = groupPattern.exec(query)) !== null) {
-    if (m[1]) {
+    if (m[3] != null) {
+      // Non-quoted token(s).
+      // Note: we may match multiple tokens here, if the captured text is
+      // something like `foo,bar+baz`.
+
+      const tokens = m[3].match(TokenPattern);
+      if (tokens) {
+        phrases.push(...tokens.map(quotePrefixToken));
+      }
+    } else {
       // Quoted group
       // We perform our own tokenization of the phrase, so we can check that it
       // is not empty. Additionally, if the final " is missing *and* the query
@@ -33,18 +42,9 @@ const formatFtsQuery = (query: string): string => {
       // around unpleasantly as phrases go between matching and not matching.
 
       const tokens = m[1].match(TokenPattern);
-      if (tokens) {
+      if (tokens && tokens.length > 0) {
         const usePrefix = !m[2] && !/\s$/.test(m[1]);
         phrases.push(`"${tokens.join(' ')}"${usePrefix ? '*' : ''}`);
-      }
-    } else {
-      // Non-quoted token(s).
-      // Note: we may match multiple tokens here, if the captured text is
-      // something like `foo,bar+baz`.
-
-      const tokens = m[3].match(TokenPattern);
-      if (tokens) {
-        phrases.push(...tokens.map(quotePrefixToken));
       }
     }
   }
