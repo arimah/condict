@@ -1,6 +1,6 @@
 // NOTE: The characters included here MUST match the FTS tokenize options
 // from the database schema (../../database/schema).
-const TokenPattern = /[\p{L}\p{N}\p{Co}\p{Mc}\p{Mn}']+/u;
+const TokenPattern = /[\p{L}\p{N}\p{Co}\p{Mc}\p{Mn}']+/gu;
 
 const quotePrefixToken = (token: string): string => `"${token}"*`;
 
@@ -29,7 +29,6 @@ const formatFtsQuery = (query: string): string => {
       // We perform our own tokenization of the phrase, so we can check that
       // it is not empty.
 
-      // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
       const tokens = m[1].match(TokenPattern);
       if (tokens) {
         phrases.push(`"${tokens.join(' ')}"`);
@@ -39,7 +38,6 @@ const formatFtsQuery = (query: string): string => {
       // Note: we may match multiple tokens here, if the captured text is
       // something like `foo,bar+baz`.
 
-      // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
       const tokens = m[2].match(TokenPattern);
       if (tokens) {
         phrases.push(...tokens.map(quotePrefixToken));
