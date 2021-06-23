@@ -18,7 +18,7 @@ const formatFtsQuery = (query: string): string => {
   // Capturing groups:
   //   1: content of quoted phrase
   //   2: non-quoted token(s)
-  const groupPattern = /"([^"]*)(?:"|$)|([^"\s]+)/g;
+  const groupPattern = /"([^"]*)("|$)|([^"\s]+)/g;
 
   const phrases: string[] = [];
 
@@ -26,19 +26,23 @@ const formatFtsQuery = (query: string): string => {
   while ((m = groupPattern.exec(query)) !== null) {
     if (m[1]) {
       // Quoted group
-      // We perform our own tokenization of the phrase, so we can check that
-      // it is not empty.
+      // We perform our own tokenization of the phrase, so we can check that it
+      // is not empty. Additionally, if the final " is missing *and* the query
+      // does not end with white space, we treat the last token as a prefix, to
+      // give the user better matches while typing. Otherwise, results can jump
+      // around unpleasantly as phrases go between matching and not matching.
 
       const tokens = m[1].match(TokenPattern);
       if (tokens) {
-        phrases.push(`"${tokens.join(' ')}"`);
+        const usePrefix = !m[2] && !/\s$/.test(m[1]);
+        phrases.push(`"${tokens.join(' ')}"${usePrefix ? '*' : ''}`);
       }
     } else {
       // Non-quoted token(s).
       // Note: we may match multiple tokens here, if the captured text is
       // something like `foo,bar+baz`.
 
-      const tokens = m[2].match(TokenPattern);
+      const tokens = m[3].match(TokenPattern);
       if (tokens) {
         phrases.push(...tokens.map(quotePrefixToken));
       }
