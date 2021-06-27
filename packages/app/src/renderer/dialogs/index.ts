@@ -5,6 +5,7 @@ export {
   OKCancel,
   messageBox,
 } from './message-box';
+export {default as searchDialog} from './search';
 export {
   default as StandardDialog,
   Props as StandardDialogProps,

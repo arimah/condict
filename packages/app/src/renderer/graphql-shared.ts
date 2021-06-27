@@ -36,9 +36,48 @@ export type Query<A, R> = Operation<'query', A, R>;
 export type Mutation<A, R> = Operation<'mutation', A, R>;
 
 /**
+ * The scope of a search; that is, the type of resource that a search applies to.
+ * Some scopes are invalid in some contexts, and some scopes can be implicitly
+ * excluded by other search options. For details, see the documentation of each
+ * input type that uses this enum.
+ */
+export type SearchScope =
+  /**
+   * Specifies that languages should be searched.
+   */
+  | 'SEARCH_LANGUAGES'
+  /**
+   * Specifies that lemmas should be searched.
+   */
+  | 'SEARCH_LEMMAS'
+  /**
+   * Specifies that definitions should be searched.
+   */
+  | 'SEARCH_DEFINITIONS'
+  /**
+   * Specifies that parts of speech should be searched.
+   */
+  | 'SEARCH_PARTS_OF_SPEECH'
+  /**
+   * Specifies that tags should be searched.
+   */
+  | 'SEARCH_TAGS'
+;
+
+/**
+ * Represents a lemma ID.
+ */
+export type LemmaId = IdOf<'Lemma'>;
+
+/**
  * Represents a language ID.
  */
 export type LanguageId = IdOf<'Language'>;
+
+/**
+ * Represents a definition ID.
+ */
+export type DefinitionId = IdOf<'Definition'>;
 
 /**
  * Represents a part of speech ID.

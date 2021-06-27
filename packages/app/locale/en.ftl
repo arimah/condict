@@ -57,6 +57,51 @@ confirm-close-cancel-button = Cancel
 
 confirm-close-discard-button = Discard changes
 
+## Search dialog
+
+search-box-title = Search
+
+search-box-input-label = Search terms
+
+search-box-input-placeholder = Type something to search for!
+
+search-box-scopes-label = Search in:
+
+search-box-scope-lemmas = Headwords
+
+search-box-scope-definitions = Definitions
+
+search-box-advanced-link = Advanced search
+
+search-box-result-type-lemma = Headword
+
+search-box-result-type-definition = Definition
+
+search-box-no-scopes = No filters are selected.
+
+search-box-no-scopes-helper = Select at least one of the options above to search.
+
+# Variables:
+#   query: The user's search query, with leading and trailing white space removed.
+#
+# Elements:
+#   <query>: Wraps around $query. Should not contain anything else.
+search-box-no-results = No results were found for <query>{$query}</query>.
+
+search-box-no-results-helper =
+  Double-check the spelling or try a different query. Most punctuation is ignored, and accents must match (a ≠ ā).
+
+# Variables:
+#   formName: The name of the inflected form.
+#   sourceTerm: The term (headword) that the inflected form is based on.
+#
+# Elements:
+#    <term>: Wraps around $sourceTerm. Should not contain anything else.
+#
+# For example: if formName = Plural and sourceTerm = bird, then the message
+# should be something like "Plural of <term>bird</term>"
+search-box-result-derived-from = {$formName} of <term>{$sourceTerm}</term>
+
 ## Various temporary test messages
 
 test-dialog-title = Is this message box working?

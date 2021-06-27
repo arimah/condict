@@ -20,3 +20,5 @@ export {
   InflectionTableIcon,
   TagIcon,
 } from './resource-icons';
+
+export {intersperse} from './utils';
