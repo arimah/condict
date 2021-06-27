@@ -1,16 +1,20 @@
-import {OperationResult as ExecuteResult} from '../../types';
+import {OperationResult} from '../../types';
 
 import {
   Operation,
   Query,
   OperationArgs,
-  OperationResult,
+  OperationResult as OperationData,
 } from '../graphql-shared';
 
 export type ExecuteFn = <Op extends Operation<'query' | 'mutation', any, any>>(
   operation: Op,
   variableValues: OperationArgs<Op>
-) => Promise<ExecuteResult<OperationResult<Op>>>;
+) => Promise<ExecuteResult<Op>>;
+
+/** The result of an ExecuteFn call. */
+export type ExecuteResult<Op extends Operation<'query' | 'mutation', any, any>> =
+  OperationResult<OperationData<Op>>;
 
 export interface DataContextValue {
   readonly execute: ExecuteFn;
@@ -31,5 +35,5 @@ export const LoadingResult: LoadingResult = {state: 'loading'};
 /** Contains the result of a query when fetched by the `useData()` hook.` */
 export interface DataResult<Q extends Query<any, any>> {
   readonly state: 'data';
-  readonly result: ExecuteResult<OperationResult<Q>>;
+  readonly result: ExecuteResult<Q>;
 }
