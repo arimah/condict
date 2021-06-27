@@ -4,5 +4,8 @@ export {
   Page,
   HomePage,
   LanguagePage,
+  LemmaPage,
+  DefinitionPage,
   PartOfSpeechPage,
+  SearchPage,
 } from './types';

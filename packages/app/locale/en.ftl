@@ -17,6 +17,15 @@ sidebar-tab-close-button-unsaved-tooltip =
 
 sidebar-home-tab-title = Condict
 
+# Tab title for a search page with a non-empty search query.
+#
+# Variables:
+#   query: The user's search query.
+sidebar-search-with-query-tab-title = Search: {$query}
+
+# Tab title for a search page with an empty search query.
+sidebar-search-empty-query-tab-title = Search
+
 ## Messages that occur inside the main content area
 
 tab-back-button = Back

@@ -1,14 +1,19 @@
 import {ReactLocalization} from '@fluent/react';
 
-import {IdOf} from '../graphql-shared';
+import {
+  LanguageId,
+  LemmaId,
+  DefinitionId,
+  PartOfSpeechId,
+} from '../graphql-shared';
 
-// FIXME: Use LanguageId from generated GraphQL typings when we can.
-type LanguageId = IdOf<'Language'>;
-
-// FIXME: Use PartOfSpeechId from generated GraphQL typings when we can.
-type PartOfSpeechId = IdOf<'PartOfSpeech'>;
-
-export type Page = HomePage | LanguagePage | PartOfSpeechPage;
+export type Page =
+  | HomePage
+  | LanguagePage
+  | LemmaPage
+  | DefinitionPage
+  | PartOfSpeechPage
+  | SearchPage;
 
 export const Page = {
   /**
@@ -23,8 +28,18 @@ export const Page = {
         return l10n.getString('sidebar-home-tab-title');
       case 'language':
         return page.name;
+      case 'lemma':
+      case 'definition':
+        return page.term;
       case 'partOfSpeech':
         return page.name;
+      case 'search':
+        if (/\S/.test(page.query)) {
+          return l10n.getString('sidebar-search-with-query-tab-title', {
+            query: page.query.trim(),
+          });
+        }
+        return l10n.getString('sidebar-search-empty-query-tab-title');
     }
   },
 
@@ -45,6 +60,8 @@ export const Page = {
    */
   isLanguageChild(page: Page): page is Extract<Page, LanguageChild> {
     switch (page.type) {
+      case 'lemma':
+      case 'definition':
       case 'partOfSpeech':
         return true;
       default:
@@ -85,6 +102,50 @@ interface LanguageChild {
   readonly language: LanguagePage;
 }
 
+export interface LemmaPage extends LanguageChild {
+  readonly type: 'lemma';
+  /** The ID of the lemma to show. */
+  readonly id: LemmaId;
+  /**
+   * The term that the lemma defines, if available. Shown as the initial tab
+   * title when the tab is loading.
+   */
+  readonly term: string;
+}
+
+export const LemmaPage = (
+  id: LemmaId,
+  term: string,
+  language: LanguagePage
+): LemmaPage => ({
+  type: 'lemma',
+  id,
+  term,
+  language,
+});
+
+export interface DefinitionPage extends LanguageChild {
+  readonly type: 'definition';
+  /** The ID of the definition to show. */
+  readonly id: DefinitionId;
+  /**
+   * The term that the definition belongs to, if available. Shown as the initial
+   * tab title while the tab is loading.
+   */
+  readonly term: string;
+}
+
+export const DefinitionPage = (
+  id: DefinitionId,
+  term: string,
+  language: LanguagePage
+): DefinitionPage => ({
+  type: 'definition',
+  id,
+  term,
+  language,
+});
+
 export interface PartOfSpeechPage extends LanguageChild {
   readonly type: 'partOfSpeech';
   /** The ID of the part of speech to show. */
@@ -105,4 +166,18 @@ export const PartOfSpeechPage = (
   id,
   name,
   language,
+});
+
+export interface SearchPage {
+  readonly type: 'search';
+  /**
+   * The initial search query. Shown in the initial tab title if it not empty
+   * and not all white space.
+   */
+  readonly query: string;
+}
+
+export const SearchPage = (query = ''): SearchPage => ({
+  type: 'search',
+  query,
 });

@@ -1,7 +1,7 @@
 import HomeIcon from 'mdi-react/BookshelfIcon';
-// TODO: Find better icons for these, or create our own.
-import LanguageIcon from 'mdi-react/BookOpenPageVariantOutlineIcon';
-import PartOfSpeechIcon from 'mdi-react/SelectGroupIcon';
+import SearchIcon from 'mdi-react/BookSearchOutlineIcon';
+
+import {ResourceIcon} from '../ui';
 
 import {Page} from './types';
 
@@ -13,10 +13,10 @@ const PageIcon = ({page}: Props): JSX.Element => {
   switch (page.type) {
     case 'home':
       return <HomeIcon/>;
-    case 'language':
-      return <LanguageIcon/>;
-    case 'partOfSpeech':
-      return <PartOfSpeechIcon/>;
+    case 'search':
+      return <SearchIcon/>;
+    default:
+      return <ResourceIcon type={page.type}/>;
   }
 };
 

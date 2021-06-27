@@ -10,3 +10,13 @@ export {
   ItemRenderFn,
   useImmediateEntryAndExit,
 } from './transition-list';
+export {
+  ResourceIcon,
+  ResourceIconProps,
+  LanguageIcon,
+  LemmaIcon,
+  DefinitionIcon,
+  PartOfSpeechIcon,
+  InflectionTableIcon,
+  TagIcon,
+} from './resource-icons';
