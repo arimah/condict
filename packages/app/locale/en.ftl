@@ -1,3 +1,11 @@
+# The language's writing direction. Valid values are:
+#
+# * ltr = Left-to-right
+# * rtl = Right-to-left
+#
+# Vertical writing is not supported.
+dir = ltr
+
 ## Sidebar messages
 
 sidebar-search-button = Search the dictionary

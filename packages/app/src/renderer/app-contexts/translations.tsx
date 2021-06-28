@@ -1,4 +1,4 @@
-import React, {ReactNode, useMemo, useContext} from 'react';
+import React, {ReactNode, useMemo, useContext, useEffect} from 'react';
 import {FluentBundle, FluentResource} from '@fluent/bundle';
 import {LocalizationProvider, ReactLocalization} from '@fluent/react';
 
@@ -30,6 +30,13 @@ const TranslationProvider = (props: Props): JSX.Element => {
     () => new ReactLocalization([currentBundle, defaultBundle]),
     [currentBundle, defaultBundle]
   );
+
+  const dir = localization.getString('dir');
+  useEffect(() => {
+    const html = document.documentElement;
+    html.setAttribute('lang', currentLocale.locale);
+    html.setAttribute('dir', dir === 'rtl' ? 'rtl' : 'ltr');
+  }, [currentLocale, dir]);
 
   return (
     <LocalizationProvider l10n={localization}>
