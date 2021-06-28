@@ -88,14 +88,47 @@ export const Tab = {
   },
 
   /**
+   * Gets the full (computed) title of a tab. This is the `title` of the tab
+   * plus any additional text as determined by the page type.
+   * @param tab The tab to get a title for.
+   * @param l10n The current localization.
+   * @return The full tab title.
+   */
+  getFullTitle(tab: Tab, l10n: ReactLocalization): string {
+    switch (tab.page.type) {
+      case 'home':
+        return l10n.getString('sidebar-home-tab-title');
+      case 'language':
+        return l10n.getString('sidebar-language-tab-title', {name: tab.title});
+      case 'lemma':
+        return l10n.getString('sidebar-lemma-tab-title', {term: tab.title});
+      case 'definition':
+        return l10n.getString('sidebar-definition-tab-title', {
+          term: tab.title,
+        });
+      case 'partOfSpeech':
+        return l10n.getString('sidebar-part-of-speech-tab-title', {
+          name: tab.title,
+        });
+      case 'search':
+        // The tab title contains the current search query
+        if (/\S/.test(tab.title)) {
+          return l10n.getString('sidebar-search-with-query-tab-title', {
+            query: tab.title.trim(),
+          });
+        }
+        return l10n.getString('sidebar-search-empty-query-tab-title');
+    }
+  },
+
+  /**
    * Creates a new tab from a page.
    * @param id The new tab's ID.
    * @param page The page.
-   * @param l10n The current localization.
    * @return The new tab.
    */
-  fromPage(id: string, page: Page, l10n: ReactLocalization): Tab {
-    const title = Page.getInitialTitle(page, l10n);
+  fromPage(id: string, page: Page): Tab {
+    const title = Page.getInitialTitle(page);
     return {
       id,
       page,

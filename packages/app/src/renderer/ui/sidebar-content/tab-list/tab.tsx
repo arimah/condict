@@ -64,7 +64,7 @@ const Tab = React.forwardRef((
     >
       <PageIcon page={tab.page}/>
       <S.TabTitle id={`tab-${id}-title`}>
-        {tab.title}
+        {NavTab.getFullTitle(tab, l10n)}
       </S.TabTitle>
       {NavTab.canClose(tab) && (
         <S.CloseButton

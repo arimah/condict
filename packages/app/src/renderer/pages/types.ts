@@ -1,5 +1,3 @@
-import {ReactLocalization} from '@fluent/react';
-
 import {
   LanguageId,
   LemmaId,
@@ -17,15 +15,15 @@ export type Page =
 
 export const Page = {
   /**
-   * Gets the initial tab title for a page.
+   * Gets the initial tab title for a page. The tab title may subsequently be
+   * augmented with locale-specific data depending on the page type.
    * @param page The page to get a title from.
-   * @param l10n The current localization context.
    * @return A suitable initial tab title for the page.
    */
-  getInitialTitle(page: Page, l10n: ReactLocalization): string {
+  getInitialTitle(page: Page): string {
     switch (page.type) {
       case 'home':
-        return l10n.getString('sidebar-home-tab-title');
+        return 'home';
       case 'language':
         return page.name;
       case 'lemma':
@@ -34,12 +32,7 @@ export const Page = {
       case 'partOfSpeech':
         return page.name;
       case 'search':
-        if (/\S/.test(page.query)) {
-          return l10n.getString('sidebar-search-with-query-tab-title', {
-            query: page.query.trim(),
-          });
-        }
-        return l10n.getString('sidebar-search-empty-query-tab-title');
+        return page.query.trim();
     }
   },
 

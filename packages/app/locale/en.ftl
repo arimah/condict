@@ -17,6 +17,22 @@ sidebar-tab-close-button-unsaved-tooltip =
 
 sidebar-home-tab-title = Condict
 
+# Variables:
+#   name: The name of the language.
+sidebar-language-tab-title = {$name}
+
+# Variables:
+#   term: The term that the headword (lemma) defines.
+sidebar-lemma-tab-title = {$term}
+
+# Variables:
+#   term: The term that the definition defines.
+sidebar-definition-tab-title = {$term}
+
+# Variables:
+#   name: The name of the part of speech.
+sidebar-part-of-speech-tab-title = {$name}
+
 # Tab title for a search page with a non-empty search query.
 #
 # Variables:

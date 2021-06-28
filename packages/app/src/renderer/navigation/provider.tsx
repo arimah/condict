@@ -90,7 +90,7 @@ const NavigationProvider = (props: Props): JSX.Element => {
   const {l10n} = useLocalization();
   const openDialog = useOpenDialog();
 
-  const [state, dispatch] = useReducer(reduce, l10n, getInitialState);
+  const [state, dispatch] = useReducer(reduce, null, getInitialState);
 
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -130,7 +130,7 @@ const NavigationProvider = (props: Props): JSX.Element => {
           type: 'navigate',
           index: state.currentTabIndex,
           page,
-          title: Page.getInitialTitle(page, l10n),
+          title: Page.getInitialTitle(page),
         };
 
         if (Tab.isDirty(currentTab)) {
@@ -156,12 +156,12 @@ const NavigationProvider = (props: Props): JSX.Element => {
       // the child of a language, we must ensure the language is open too.
       let insertIndex = state.tabs.length;
       const newTabs = [
-        Tab.fromPage(genId(), page, l10n),
+        Tab.fromPage(genId(), page),
       ];
       if (Page.isLanguageChild(page)) {
         const parentIndex = findExistingTab(state.tabs, page.language);
         if (parentIndex === -1) {
-          newTabs.unshift(Tab.fromPage(genId(), page.language, l10n));
+          newTabs.unshift(Tab.fromPage(genId(), page.language));
         } else {
           insertIndex = findChildInsertIndex(state.tabs, parentIndex);
         }
@@ -349,8 +349,8 @@ const NavigationProvider = (props: Props): JSX.Element => {
 
 export default NavigationProvider;
 
-const getInitialState = (l10n: ReactLocalization): State => ({
-  tabs: [Tab.fromPage('home', HomePage, l10n)],
+const getInitialState = (): State => ({
+  tabs: [Tab.fromPage('home', HomePage)],
   currentTabIndex: 0,
 });
 
