@@ -128,7 +128,7 @@ const saveWindowState = (
   windowState: WindowState
 ): Promise<void> => {
   const windowStateText = JSON.stringify(windowState, undefined, '  ');
-  const options = {encoding: 'utf8'};
+  const options = {encoding: 'utf8'} as const;
   return new Promise<void>((resolve, reject) => {
     fs.writeFile(fileName, windowStateText, options, error => {
       if (error) {

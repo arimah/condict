@@ -5,8 +5,8 @@ import {LocalizationProvider, ReactLocalization} from '@fluent/react';
 import {Locale} from '../../types';
 
 export type Props = {
-  defaultLocale: Locale;
   currentLocale: Locale;
+  defaultLocale: Locale;
   availableLocales: readonly string[];
   children: ReactNode;
 };
@@ -18,8 +18,7 @@ const TranslationProvider = (props: Props): JSX.Element => {
 
   const defaultBundle = useMemo(
     () => createBundle(defaultLocale),
-    // The default locale should never change.
-    []
+    [defaultLocale]
   );
 
   const currentBundle = useMemo(
@@ -29,7 +28,7 @@ const TranslationProvider = (props: Props): JSX.Element => {
 
   const localization = useMemo(
     () => new ReactLocalization([currentBundle, defaultBundle]),
-    [currentBundle]
+    [currentBundle, defaultBundle]
   );
 
   return (

@@ -23,6 +23,12 @@ export type MainChannels = {
 
   /** Informs the renderer that the system theme has changed. */
   'system-theme-change': ThemeName;
+
+  /** Informs the renderer that a locale source file has changed. */
+  'locale-updated': string;
+
+  /** Informs the renderer that the set of available locales has changed. */
+  'available-locales-changed': readonly string[];
 };
 
 /** IPC messages sent from a browser window to the main process. */

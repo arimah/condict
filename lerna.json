@@ -12,6 +12,7 @@
         "better-sqlite3",
         "electron",
         "electron-rebuild",
+        "fsevents",
         "node-abi"
       ]
     }

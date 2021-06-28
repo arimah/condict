@@ -2,7 +2,8 @@ import path from 'path';
 
 import {BrowserWindow, app, nativeTheme} from 'electron';
 
-import {AppConfig} from '../types';
+import {MainChannels} from '../ipc-channels';
+import {AppConfig, IpcMessageArg} from '../types';
 
 import ipc from './ipc';
 import {WindowStateFile} from './paths';
@@ -19,11 +20,26 @@ export type ReadyCallback = () => Promise<void>;
 
 export interface MainWindowInstance {
   onReady: ReadyCallback | null;
+  /**
+   * Sends an IPC message to the window, if the window is currently open.
+   * @param channel The channel (message name).
+   * @param args Arguments to pass along with the message.
+   */
+  readonly send: SendIpcFn;
 }
+
+export type SendIpcFn = <C extends keyof MainChannels>(
+  channel: C,
+  ...args: IpcMessageArg<MainChannels[C]>
+) => void;
 
 const initMainWindow = (getConfig: () => AppConfig): MainWindowInstance => {
   let onReady: (() => Promise<void>) | null = null;
   let win: BrowserWindow | null = null;
+
+  const send: SendIpcFn = (channel, ...args) => {
+    win?.webContents.send(channel, ...args);
+  };
 
   const createWindow = () => {
     if (win) {
@@ -65,7 +81,7 @@ const initMainWindow = (getConfig: () => AppConfig): MainWindowInstance => {
     });
 
     win.webContents.on('context-menu', (_e, params) => {
-      win?.webContents.send('context-menu', params);
+      send('context-menu', params);
     });
 
     void win.loadFile(path.join(__dirname, '../static/index.html'));
@@ -84,7 +100,7 @@ const initMainWindow = (getConfig: () => AppConfig): MainWindowInstance => {
   });
 
   nativeTheme.on('updated', () => {
-    win?.webContents.send(
+    send(
       'system-theme-change',
       nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
     );
@@ -98,6 +114,8 @@ const initMainWindow = (getConfig: () => AppConfig): MainWindowInstance => {
   });
 
   return {
+    send,
+
     get onReady(): ReadyCallback | null {
       return onReady;
     },

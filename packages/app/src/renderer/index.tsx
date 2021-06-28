@@ -16,25 +16,29 @@ import * as S from './styles';
 type Props = {
   initialConfig: AppConfig;
   initialSystemTheme: ThemeName;
-  defaultLocale: Locale;
   initialLocale: Locale;
-  availableLocales: readonly string[];
+  initialDefaultLocale: Locale;
+  initialAvailableLocales: readonly string[];
 };
 
 const App = (props: Props): JSX.Element => {
   const {
     initialConfig,
     initialSystemTheme,
-    defaultLocale,
+    initialDefaultLocale,
     initialLocale,
-    availableLocales,
+    initialAvailableLocales,
   } = props;
 
   const [loading, setLoading] = useState(true);
 
   const [config, setConfig] = useState(initialConfig);
   const [systemTheme, setSystemTheme] = useState(initialSystemTheme);
+  const [defaultLocale, setDefaultLocale] = useState(initialDefaultLocale);
   const [currentLocale, setCurrentLocale] = useState(initialLocale);
+  const [availableLocales, setAvailableLocales] = useState(
+    initialAvailableLocales
+  );
 
   const updateConfig = useCallback((recipe: ConfigRecipe) => {
     setConfig(prevConfig => {
@@ -76,13 +80,33 @@ const App = (props: Props): JSX.Element => {
     }
   }, [config.locale]);
 
+  useEffect(() => {
+    const defaultLocaleName = defaultLocale.locale;
+
+    ipc.on('locale-updated', (_, localeName) => {
+      void ipc.invoke('get-locale', localeName).then(locale => {
+        if (defaultLocaleName === locale.locale) {
+          setDefaultLocale(locale);
+        }
+
+        if (localeConfigRef.current === locale.locale) {
+          setCurrentLocale(locale);
+        }
+      });
+    });
+
+    ipc.on('available-locales-changed', (_, locales) => {
+      setAvailableLocales(locales);
+    });
+  }, []);
+
   return (
     <AppContexts
       config={config}
       initialConfig={initialConfig}
       systemTheme={systemTheme}
-      defaultLocale={defaultLocale}
       currentLocale={currentLocale}
+      defaultLocale={defaultLocale}
       availableLocales={availableLocales}
       onUpdateConfig={updateConfig}
     >
@@ -102,9 +126,9 @@ void ipc.invoke('get-initial-state').then(state => {
     <App
       initialConfig={state.config}
       initialSystemTheme={state.systemTheme}
-      defaultLocale={state.defaultLocale}
       initialLocale={state.currentLocale}
-      availableLocales={state.availableLocales}
+      initialDefaultLocale={state.defaultLocale}
+      initialAvailableLocales={state.availableLocales}
     />,
     document.getElementById('root')
   );

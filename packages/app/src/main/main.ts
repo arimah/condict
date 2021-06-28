@@ -49,6 +49,14 @@ const main = (): void => {
     });
   }
 
+  translations.onLocaleUpdated = locale => {
+    mainWindow.send('locale-updated', locale);
+  };
+
+  translations.onAvailableLocalesChanged = locales => {
+    mainWindow.send('available-locales-changed', locales);
+  };
+
   ipc.handle('show-open-dialog', (e, options) => {
     const browserWindow = BrowserWindow.fromWebContents(e.sender);
     if (!browserWindow) {
