@@ -22,14 +22,14 @@ export type ResourceIconProps = {
 };
 
 export const ResourceIcon = (props: ResourceIconProps): JSX.Element => {
-  const {type, className} = props;
+  const {type, className = ''} = props;
   switch (type) {
     case 'language':
-      return <LanguageIcon className={className}/>;
+      return <LanguageIcon className={`rtl-mirror ${className}`}/>;
     case 'lemma':
-      return <LemmaIcon className={className}/>;
+      return <LemmaIcon className={`rtl-mirror ${className}`}/>;
     case 'definition':
-      return <DefinitionIcon className={className}/>;
+      return <DefinitionIcon className={`rtl-mirror ${className}`}/>;
     case 'partOfSpeech':
       return <PartOfSpeechIcon className={className}/>;
     case 'inflectionTable':

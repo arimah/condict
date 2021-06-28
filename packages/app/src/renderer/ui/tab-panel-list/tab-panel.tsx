@@ -116,7 +116,7 @@ const TabPanel = React.forwardRef((
                 onClick={() => onBack(id)}
                 ref={backButtonRef}
               >
-                <BackArrow/>
+                <BackArrow className='rtl-mirror'/>
               </S.BackButton>
             )}
           </S.BackButtonColumn>

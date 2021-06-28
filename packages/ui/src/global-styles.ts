@@ -103,4 +103,8 @@ export const GlobalStyles = createGlobalStyle`
     color: ${p => p.theme.link.active};
     text-decoration: none;
   }
+
+  html[dir=rtl] .mdi-icon.rtl-mirror {
+    transform: scale(-1, 1);
+  }
 `;

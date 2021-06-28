@@ -256,10 +256,10 @@ const Main = (): JSX.Element => {
             onChange={e => set('blockStyle', e.target.value)}
           />
           <Button label='Increase indentation'>
-            <IndentMoreIcon/>
+            <IndentMoreIcon className='rtl-mirror'/>
           </Button>
           <Button label='Decrease indentation'>
-            <IndentLessIcon/>
+            <IndentLessIcon className='rtl-mirror'/>
           </Button>
         </Group>
         <Spacer/>

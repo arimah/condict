@@ -192,7 +192,7 @@ export const BlockFormatGroup = (
         shortcut={shortcuts.bulletList}
         onClick={() => editor.formatBlock('bulletListItem', options)}
       >
-        <BulletedListIcon/>
+        <BulletedListIcon className='rtl-mirror'/>
       </Toolbar.Button>
       <Toolbar.Button
         label='Numbered list'
@@ -211,7 +211,7 @@ export const BlockFormatGroup = (
         disabled={!canIndent(editor, options)}
         onClick={() => editor.indent(options)}
       >
-        <IndentMoreIcon/>
+        <IndentMoreIcon className='rtl-mirror'/>
       </Toolbar.Button>
       <Toolbar.Button
         label='Decrease indentation'
@@ -219,7 +219,7 @@ export const BlockFormatGroup = (
         disabled={!canUnindent(editor, options)}
         onClick={() => editor.unindent(options)}
       >
-        <IndentLessIcon/>
+        <IndentLessIcon className='rtl-mirror'/>
       </Toolbar.Button>
     </Toolbar.Group>
   </>;

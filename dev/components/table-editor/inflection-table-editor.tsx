@@ -77,13 +77,13 @@ const Editor = (props: Props): JSX.Element | null => {
                 label='Insert column before'
                 command='insertColumnBefore'
               >
-                <InsertColumnBeforeIcon/>
+                <InsertColumnBeforeIcon className='rtl-mirror'/>
               </Toolbar.Button>
               <Toolbar.Button
                 label='Insert column after'
                 command='insertColumnAfter'
               >
-                <InsertColumnAfterIcon/>
+                <InsertColumnAfterIcon className='rtl-mirror'/>
               </Toolbar.Button>
               <Toolbar.Button
                 label='Delete selected column(s)'

@@ -125,7 +125,7 @@ export const Pages = React.forwardRef((props: Props, ref: Ref<HTMLElement>) => {
             page={page - 1}
             disabled={page === 0}
           >
-            <ChevronLeft/>
+            <ChevronLeft className='rtl-mirror'/>
           </Page>
 
           {pages}
@@ -135,7 +135,7 @@ export const Pages = React.forwardRef((props: Props, ref: Ref<HTMLElement>) => {
             page={page + 1}
             disabled={page === lastPage}
           >
-            <ChevronRight/>
+            <ChevronRight className='rtl-mirror'/>
           </Page>
         </PageContext.Provider>
       </S.List>

@@ -88,12 +88,12 @@ const ContextMenu = ({table, messages}: Props): JSX.Element | null => {
       <Menu.Separator/>
       <Menu.Item
         label={messages.insertColumnBefore()}
-        icon={<InsertColumnBeforeIcon/>}
+        icon={<InsertColumnBeforeIcon className='rtl-mirror'/>}
         command='insertColumnBefore'
       />
       <Menu.Item
         label={messages.insertColumnAfter()}
-        icon={<InsertColumnAfterIcon/>}
+        icon={<InsertColumnAfterIcon className='rtl-mirror'/>}
         command='insertColumnAfter'
       />
     </Menu.Item>

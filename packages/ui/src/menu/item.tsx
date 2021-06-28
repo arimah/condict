@@ -79,7 +79,7 @@ const Item = React.forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
           {Shortcut.format(effectiveShortcut)}
         </S.ItemShortcut>}
       <S.ItemSubmenu>
-        {children != null && <ChevronRightIcon/>}
+        {children != null && <ChevronRightIcon className='rtl-mirror'/>}
       </S.ItemSubmenu>
     </S.Item>
     {children &&
@@ -116,7 +116,7 @@ const PhantomItem = ({icon, label, shortcut, hasSubmenu}: PhantomProps) =>
         {Shortcut.format(shortcut)}
       </S.ItemShortcut>}
     <S.ItemSubmenu>
-      {hasSubmenu && <ChevronRightIcon/>}
+      {hasSubmenu && <ChevronRightIcon className='rtl-mirror'/>}
     </S.ItemSubmenu>
   </S.Item>;
 
