@@ -55,7 +55,7 @@ export const SidePanel = styled.div.attrs({
   position: absolute;
   overflow: auto;
   top: 0;
-  left: ${p =>
+  inset-inline-start: ${p =>
     p.state === 'background'
       ? '0'
       : p.state === 'current'
@@ -68,10 +68,10 @@ export const SidePanel = styled.div.attrs({
   max-width: 1650px;
   height: 100%;
   background-color: ${p => p.theme.defaultBg};
-  box-shadow: -4px 0 6px ${p => p.theme.shadow.color};
+  box-shadow: 0 0 6px 3px ${p => p.theme.shadow.color};
 
   transition:
-    left
+    inset-inline-start
     ${p => 2.25 * p.theme.timing.long}ms
     ${p =>
       // When entering for the first time, use EaseOut to reveal the panel faster.

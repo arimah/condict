@@ -19,10 +19,12 @@ export const Select = styled.select<Props>`
   color: ${p => p.theme.defaultFg};
 
   ${p => p.minimal ? css`
-    padding: 4px 24px 4px 8px;
+    padding-block: 4px;
+    padding-inline: 8px 24px;
     border-style: none;
   ` : css`
-    padding: 2px 22px 2px 6px;
+    padding-block: 2px;
+    padding-inline: 6px 22px;
     border-width: 2px;
     border-style: solid;
   `}
@@ -34,7 +36,10 @@ export const Select = styled.select<Props>`
   &:focus,
   &.force-focus {
     outline: none;
-    padding: ${p => p.minimal && '2px 22px 2px 6px'};
+    ${p => p.minimal && `
+      padding-block: 2px;
+      padding-inline: 6px 22px;
+    `}
     border: 2px solid ${p => p.theme.focus.color};
     box-shadow: ${p => p.theme.focus.shadow};
   }
@@ -58,7 +63,7 @@ export const Arrow = styled.svg.attrs({
   display: block;
   position: absolute;
   top: 50%;
-  right: 10px;
+  inset-inline-end: 10px;
   pointer-events: none;
   transform: translate(0, -50%);
 

@@ -7,9 +7,8 @@ export const TabList = styled.div.attrs({
   'aria-orientation': 'vertical',
 })`
   flex: 1 1 auto;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  margin-right: -8px;
+  margin-block: 8px;
+  margin-inline-end: -8px;
   max-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
@@ -18,7 +17,8 @@ export const TabList = styled.div.attrs({
 export const TabSpinner = styled(Spinner).attrs({
   size: 20,
 })`
-  margin: -2px 10px -2px -2px;
+  margin-block: -2px;
+  margin-inline: -2px 10px;
   flex: none;
 
   & + .mdi-icon {
@@ -37,14 +37,15 @@ export const Tab = styled.div.attrs({
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8px 4px 8px 16px;
+  padding-block: 8px;
+  padding-inline: 16px 4px;
   position: relative;
   white-space: nowrap;
   overflow: hidden;
-  border-top-left-radius: 7px;
-  border-bottom-left-radius: 7px;
+  border-start-start-radius: 7px;
+  border-end-start-radius: 7px;
 
-  ${p => p.isChild && `margin-left: 16px;`}
+  ${p => p.isChild && `margin-inline-start: 16px;`}
 
   ${p => p.isCurrent ? css`
     background-color: ${p => p.theme.defaultBg};
@@ -65,13 +66,11 @@ export const Tab = styled.div.attrs({
   &:focus::before {
     content: '';
     position: absolute;
-    top: 2px;
-    left: 2px;
-    right: 0;
-    bottom: 2px;
+    inset-block: 2px;
+    inset-inline: 2px 0;
     border: 2px solid ${p => p.theme.focus.color};
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-start-start-radius: 6px;
+    border-end-start-radius: 6px;
     pointer-events: none;
   }
 
@@ -84,7 +83,8 @@ export const Tab = styled.div.attrs({
   }
 
   > .mdi-icon {
-    margin: -4px 8px -4px -4px;
+    margin-block: -4px;
+    margin-inline: -4px 8px;
     flex: none;
   }
 `;
@@ -106,9 +106,8 @@ export type CloseButtonProps = {
 export const CloseButton = styled.div.attrs({
   role: 'button',
 })<CloseButtonProps>`
-  margin-top: -4px;
-  margin-bottom: -4px;
-  margin-left: 4px;
+  margin-block: -4px;
+  margin-inline-start: 4px;
   padding: 4px;
   width: 16px;
   height: 16px;

@@ -19,48 +19,42 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   h1 {
-    margin-top: 8px;
-    margin-bottom: 24px;
+    margin-block: 8px 24px;
     font-size: 28px;
     line-height: 32px;
     font-weight: bold;
   }
 
   h2 {
-    margin-top: 30px;
-    margin-bottom: 8px;
+    margin-block: 30px 8px;
     font-size: 24px;
     line-height: 28px;
     font-weight: bold;
   }
 
   h3 {
-    margin-top: 26px;
-    margin-bottom: 8px;
+    margin-block: 26px 8px;
     font-size: 21px;
     line-height: 24px;
     font-weight: bold;
   }
 
   h4 {
-    margin-top: 24px;
-    margin-bottom: 8px;
+    margin-block: 24px 8px;
     font-size: 18px;
     line-height: 21px;
     font-weight: bold;
   }
 
   h5 {
-    margin-top: 22px;
-    margin-bottom: 8px;
+    margin-block: 22px 8px;
     font-size: 17px;
     line-height: 19px;
     font-weight: bold;
   }
 
   h6 {
-    margin-top: 16px;
-    margin-bottom: 8px;
+    margin-block: 16px 8px;
     font-size: 15px;
     line-height: 17px;
     font-weight: bold;
@@ -78,19 +72,16 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   p {
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-block: 8px;
   }
 
   ul, ol {
-    margin-top: 8px;
-    margin-bottom: 8px;
-    padding-left: 32px;
+    margin-block: 8px;
+    padding-inline-start: 32px;
   }
 
   li {
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-block: 4px 4px;
   }
 
   a:link {

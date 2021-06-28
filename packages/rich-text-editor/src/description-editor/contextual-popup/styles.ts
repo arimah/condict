@@ -33,14 +33,16 @@ export const PrimaryLabel = styled.span`
 
 export const SecondaryLabel = styled.span`
   flex: none;
-  padding: 8px 8px 8px 0;
+  padding-block: 8px;
+  padding-inline: 0 8px;
   white-space: nowrap;
   opacity: 0.7;
 `;
 
 export const Actions = styled.span`
   flex: none;
-  padding: 2px 2px 2px 0;
+  padding-block: 2px;
+  padding-inline: 0 2px;
 `;
 
 export const Action = styled(Button)`
@@ -65,25 +67,25 @@ export const PrimaryAction = styled(Action)`
   flex-direction: row;
   overflow: hidden;
   align-items: center;
-  text-align: left;
+  text-align: start;
 
   > .mdi-icon {
     flex: none;
 
     &:first-child {
-      margin-left: -2px;
+      margin-inline-start: -2px;
     }
 
     &:not(:first-child) {
-      margin-left: 6px;
+      margin-inline-start: 6px;
     }
 
     &:last-child {
-      margin-right: -2px;
+      margin-inline-end: -2px;
     }
 
     &:not(:last-child) {
-      margin-right: 6px;
+      margin-inline-end: 6px;
     }
   }
 
@@ -92,6 +94,7 @@ export const PrimaryAction = styled(Action)`
   }
 
   > ${SecondaryLabel} {
-    padding: 0 0 0 8px;
+    padding-block: 0;
+    padding-inline: 8px 0;
   }
 `;

@@ -11,7 +11,7 @@ export const Nav = styled.nav`
 
   ul {
     list-style-type: none;
-    padding-left: 0;
+    padding-inline-start: 0;
   }
 
   li:not(:first-child) {

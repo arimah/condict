@@ -23,7 +23,7 @@ export const CellPopup = styled.div`
   padding: 14px;
   position: absolute;
   top: 100%;
-  left: -8px;
+  inset-inline-start: -8px;
   z-index: 1;
 
   font-weight: normal;
@@ -39,7 +39,7 @@ export const CellPopup = styled.div`
     box-sizing: border-box;
     position: absolute;
     top: -7px;
-    left: 10px;
+    inset-inline-start: 10px;
     width: 11px;
     height: 11px;
 

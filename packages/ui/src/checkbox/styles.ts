@@ -14,7 +14,7 @@ export type DisabledProps = {
 export const CheckmarkContainer = styled.span`
   display: inline-block;
   box-sizing: border-box;
-  margin-right: 8px;
+  margin-inline-end: 8px;
   vertical-align: -3px;
 
   width: 16px;

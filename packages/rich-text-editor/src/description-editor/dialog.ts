@@ -38,7 +38,9 @@ export const SearchInput = styled(TextInput).attrs({
   flex: 1 1 auto;
   padding: 4px;
   min-width: 100px;
-  border-radius: 3px 0 0 3px;
+  border-radius: 0;
+  border-start-start-radius: 3px;
+  border-end-start-radius: 3px;
 
   &:focus {
     padding: 4px;

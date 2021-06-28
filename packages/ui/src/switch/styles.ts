@@ -14,7 +14,7 @@ export type DisabledProps = {
 export const Switch = styled.span`
   display: inline-block;
   box-sizing: border-box;
-  margin-right: 8px;
+  margin-inline-end: 8px;
   position: relative;
   width: 32px;
   height: 16px;
@@ -27,20 +27,20 @@ export const Switch = styled.span`
 export const Dot = styled.span`
   position: absolute;
   top: 2px;
-  left: 2px;
+  inset-inline-start: 2px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background-color: ${p => p.theme.general.border};
 
-  ${transition('left')}
+  ${transition('inset-inline-start')}
 `;
 
 export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
   appearance: none;
   position: absolute;
   top: 0;
-  left: 2px;
+  inset-inline-start: 2px;
   width: 100%;
   height: 100%;
 
@@ -49,7 +49,7 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
     background-color: ${intentVar('boldBg')};
 
     > ${Dot} {
-      left: 18px;
+      inset-inline-start: 18px;
       background-color: ${p => p.theme.defaultBg};
     }
   }
@@ -114,7 +114,7 @@ export const Label = styled.label<DisabledProps & IntentProps>`
       background-color: ${p => p.theme.defaultActiveBg};
 
       > ${Dot} {
-        left: 4px;
+        inset-inline-start: 4px;
       }
     }
 
@@ -123,7 +123,7 @@ export const Label = styled.label<DisabledProps & IntentProps>`
       background-color: ${intentVar('boldActiveBg')};
 
       > ${Dot} {
-        left: 16px;
+        inset-inline-start: 16px;
       }
     }
   }

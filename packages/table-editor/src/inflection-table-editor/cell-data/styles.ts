@@ -7,8 +7,7 @@ export type CellIconsProps = {
 // NOTE: This styling must be synchronized with the one in ../cell-editor/styles
 export const CellIcons = styled.div<CellIconsProps>`
   display: block;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-inline: 5px;
 
   ${p => p.disabled ? `
     opacity: 0.6;
@@ -26,9 +25,10 @@ export const CellIcons = styled.div<CellIconsProps>`
 
 export const CellData = styled.div`
   flex: 1 0 auto;
-  padding: 6px 0 6px 6px;
+  padding-block: 6px;
+  padding-inline: 6px 0;
 
   &:last-child {
-    padding-right: 6px;
+    padding-inline-end: 6px;
   }
 `;

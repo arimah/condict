@@ -66,25 +66,24 @@ export const ButtonStyle = css<Props>`
   `}
 
   > .mdi-icon {
-    margin-top: -4px;
-    margin-bottom: -4px;
+    margin-block: -4px;
     vertical-align: -3px;
   }
 
   > .mdi-icon:first-child {
-    margin-left: -8px;
+    margin-inline-start: -8px;
   }
 
   > .mdi-icon:not(:first-child) {
-    margin-left: 8px;
+    margin-inline-start: 8px;
   }
 
   > .mdi-icon:last-child {
-    margin-right: -8px;
+    margin-inline-end: -8px;
   }
 
   > .mdi-icon:not(:last-child) {
-    margin-right: 8px;
+    margin-inline-end: 8px;
   }
 `;
 

@@ -26,7 +26,7 @@ export const Group = styled.div.attrs({
   flex-wrap: wrap;
 
   &:not(:last-child) {
-    margin-right: 16px;
+    margin-inline-end: 16px;
   }
 `;
 
@@ -44,7 +44,7 @@ export const Button = styled.button.attrs({
   color: ${p => p.theme.general.fg};
 
   &:not(:first-child) {
-    margin-left: 2px;
+    margin-inline-start: 2px;
   }
 
   &:focus,
@@ -96,15 +96,14 @@ export const Button = styled.button.attrs({
   }
 
   > .mdi-icon {
-    margin-top: -4px;
-    margin-bottom: -4px;
+    margin-block: -4px;
     vertical-align: -3px;
 
-    :first-child {
-      margin-left: -4px;
+    &:first-child {
+      margin-inline-start: -4px;
     }
-    :last-child {
-      margin-right: -4px;
+    &:last-child {
+      margin-inline-end: -4px;
     }
   }
 `;
@@ -115,6 +114,5 @@ export const Spacer = styled.div`
 
 export const SelectLabel = styled.label`
   flex: none;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding-block: 2px;
 `;

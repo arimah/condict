@@ -3,9 +3,8 @@ import styled from 'styled-components';
 import {TextInput} from '@condict/ui';
 
 export const List = styled.ul`
-  margin-top: 8px;
-  margin-bottom: 8px;
-  padding-left: 24px;
+  margin-block: 8px;
+  padding-inline-start: 24px;
   list-style-type: disc;
 `;
 

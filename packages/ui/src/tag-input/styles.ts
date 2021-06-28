@@ -48,11 +48,12 @@ export const Tag = styled.button.attrs({
   box-sizing: border-box;
   flex: none;
   margin: 2px;
-  padding: 2px 24px 2px 8px;
+  padding-block: 2px;
+  padding-inline: 8px 24px;
   position: relative;
   max-width: calc(100% - 2px);
   font: inherit;
-  text-align: left;
+  text-align: start;
   background-color: ${p => p.theme.general.bg};
   border: 2px solid ${p => p.theme.general.bg};
   border-radius: 13px;
@@ -61,8 +62,7 @@ export const Tag = styled.button.attrs({
 
   ${p => p.disabled && css`
     &&& {
-      padding-left: 16px;
-      padding-right: 16px;
+      padding-inline: 16px;
       background-color: ${p => p.theme.general.disabledBg};
       border-color: ${p => p.theme.general.disabledBg};
       color: ${p => p.theme.general.disabledFg};
@@ -91,7 +91,7 @@ export const Tag = styled.button.attrs({
 
 export const DeleteMarker = styled(DeleteIcon)`
   position: absolute;
-  right: 8px;
+  inset-inline-end: 8px;
   top: 50%;
   margin-top: -4px;
   pointer-events: none;

@@ -36,7 +36,7 @@ export const CellInputWrapper = styled.label<CellInputWrapperProps>`
 // NOTE: This styling must be synchronized with the one in ../cell-data/styles
 export const CellIcons = styled.span`
   display: block;
-  margin-right: 5px;
+  margin-inline-end: 5px;
 
   > svg {
     display: block;
@@ -54,16 +54,18 @@ export const CellInput = styled(TextInput).attrs({
   && {
     display: block;
     flex: 1 1 auto;
-    /* padding-right is 0 to leave some room for the cursor and a bit of
+    padding-block: 6px;
+    /* padding-inline-end is 0 to leave some room for the cursor and a bit of
      * extra padding that is sometimes added.
      */
-    padding: 6px 0 6px 6px;
+    padding-inline: 6px 0;
     width: 50%;
     height: 100%;
   }
 
   &&:focus {
-    padding: 6px 0 6px 6px;
+    padding-block: 6px;
+    padding-inline: 6px 0;
     border: none;
     box-shadow: none;
   }
@@ -77,8 +79,7 @@ export const CellSettingsGroup = styled.div`
 `;
 
 export const CellSettingsSeparator = styled.div`
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-block: 15px;
   border-top: 2px solid ${p => p.theme.general.border};
 `;
 

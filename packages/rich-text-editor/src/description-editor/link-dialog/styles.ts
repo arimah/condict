@@ -38,7 +38,7 @@ export const SearchResultName = styled.span`
 `;
 
 export const SearchResultType = styled.span`
-  margin-left: 8px;
+  margin-inline-end: 8px;
   flex: none;
   max-width: 175px;
   white-space: nowrap;

@@ -13,10 +13,11 @@ export const CellInput = styled(TextInput).attrs({
 })<CellInputProps>`
   && {
     display: block;
-    /* padding-right is 0 to leave some room for the cursor and a bit of
+    padding-block: 6px;
+    /* padding-inline-end is 0 to leave some room for the cursor and a bit of
      * extra padding that some browsers add.
      */
-    padding: 6px 0 6px 6px;
+    padding-inline: 6px 0;
     width: 100%;
     height: 100%;
     ${p => p.inflected && css`

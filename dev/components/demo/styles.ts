@@ -17,14 +17,13 @@ export const Row = styled.div`
   }
 
   > :not(:last-child) {
-    margin-right: 16px;
+    margin-inline-end: 16px;
   }
 `;
 
 export const Outer = styled.div`
   display: flex;
-  margin-top: 8px;
-  margin-bottom: 16px;
+  margin-block: 8px 16px;
   flex-direction: row;
 `;
 

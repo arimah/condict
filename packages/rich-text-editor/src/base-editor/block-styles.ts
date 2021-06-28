@@ -17,7 +17,7 @@ const ListItem = styled.div`
   position: relative;
   margin-top: 2px;
   margin-bottom: 2px;
-  padding-left: ${Indent}px;
+  padding-inline-start: ${Indent}px;
 
   ${IndentLevels
     .map(level =>  `&[data-indent='${level}'] + :not([data-indent='${level}'])`)
@@ -30,9 +30,9 @@ const ListItem = styled.div`
 export const BulletListItem = styled(ListItem)`
   &::before {
     content: '•\\A0';
-    margin-right: 6px;
+    margin-inline-end: 6px;
     position: absolute;
-    right: calc(100% - ${Indent}px);
+    inset-inline-end: calc(100% - ${Indent}px);
   }
 `;
 
@@ -40,7 +40,7 @@ export const NumberListItem = styled(ListItem)`
   &::before {
     content: '#.\\A0';
     position: absolute;
-    right: calc(100% - ${Indent}px);
+    inset-inline-end: calc(100% - ${Indent}px);
   }
 
   ${IndentLevels.map(level => `
@@ -56,7 +56,7 @@ export const NumberListItem = styled(ListItem)`
 export const EditorStyles = css`
   ${IndentLevels.map(level => `
     [data-indent='${level}'] {
-      margin-left: ${level * Indent}px;
+      margin-inline-start: ${level * Indent}px;
       counter-reset: ${
         // Reset every list counter higher than this.
         IndentLevels.slice(level + 1).map(l => `list${l}`).join(' ')
@@ -67,15 +67,13 @@ export const EditorStyles = css`
   line-height: 20px;
 
   ${Heading1} {
-    margin-top: 16px;
-    margin-bottom: 8px;
+    margin-block: 16px 8px;
     font-size: 21px;
     line-height: 24px;
   }
 
   ${Heading2} {
-    margin-top: 12px;
-    margin-bottom: 4px;
+    margin-block: 12px 4px;
     font-size: 18px;
     line-height: 21px;
   }

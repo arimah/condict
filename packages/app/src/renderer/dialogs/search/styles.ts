@@ -49,7 +49,8 @@ export const InputWrapper = styled.label`
   > .mdi-icon {
     flex: none;
     display: block;
-    margin: 6px 0 6px 6px;
+    margin-block: 6px;
+    margin-inline: 6px 0;
     align-self: center;
   }
 `;
@@ -60,14 +61,16 @@ export const Input = styled(TextInput).attrs({
 })`
   flex: 1 1 auto;
   align-self: stretch;
-  padding: 4px 4px 4px 8px;
+  padding-block: 4px;
+  padding-inline: 8px 4px;
   border: none;
   border-radius: 0;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-start-end-radius: 5px;
+  border-end-end-radius: 5px;
 
   &:focus {
-    padding: 4px 4px 4px 8px;
+    padding-block: 4px;
+    padding-inline: 8px 4px;
     border: none;
     box-shadow: none;
   }
@@ -82,7 +85,8 @@ export const Spinner = styled(SpinnerBase).attrs({
   size: 20,
 })`
   align-self: center;
-  margin: 6px 6px 6px 4px;
+  margin-block: 6px;
+  margin-inline: 4px 6px;
 `;
 
 export const SearchOptions = styled.p`
@@ -111,14 +115,16 @@ export const SearchScopes = styled.span.attrs({
 
 export const AdvancedSearch = styled.span`
   flex: 1 1 auto;
-  text-align: right;
+  text-align: end;
 `;
 
 export const ResultList = styled.ul`
   flex: 0 1 auto;
   list-style-type: none;
-  margin: 16px -10px 0 0;
-  padding: 0 2px 0 0;
+  margin-block: 16px 0;
+  margin-inline: 0 -16px;
+  padding-block: 0;
+  padding-inline: 0 2px;
   overflow-x: hidden;
   overflow-y: scroll;
 
@@ -154,7 +160,7 @@ export const Result = styled.li<ResultProps>`
   > .mdi-icon {
     grid-column: 1;
     grid-row: 1 / span 2;
-    margin-right: 8px;
+    margin-inline-end: 8px;
   }
 `;
 
@@ -177,15 +183,14 @@ export const ResultName = styled.span`
 
 export const ResultLanguage = styled.span`
   flex: 1 1 auto;
-  margin-left: 16px;
-  margin-right: 16px;
+  margin-inline: 16px;
   text-overflow: ellipsis;
   overflow: hidden;
 `;
 
 export const ResultType = styled.span`
   flex: none;
-  margin-left: 8px;
+  margin-inline-start: 8px;
   max-width: 176px;
   white-space: nowrap;
   text-overflow: ellipsis;

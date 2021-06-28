@@ -65,7 +65,7 @@ export const Item = styled.div<ItemProps>`
 export const ItemIcon = styled.span`
   display: block;
   flex: none;
-  padding-left: 8px;
+  padding-inline-start: 8px;
   width: 24px;
 
   > .mdi-icon {
@@ -82,14 +82,14 @@ export const ItemLabel = styled.span`
 export const ItemShortcut = styled.span`
   display: block;
   flex: none;
-  padding: 4px 0 4px 16px;
+  padding-block: 4px;
+  padding-inline: 16px 0;
 `;
 
 export const ItemSubmenu = styled.span`
   display: block;
   flex: none;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-inline: 4px;
   width: 24px;
 
   > .mdi-icon {

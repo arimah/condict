@@ -12,11 +12,13 @@ export type GroupProps = {
 };
 
 export const Group = styled.div<GroupProps>`
-  margin-right: 8px;
+  margin-inline-end: 8px;
   ${p => p.hasBase ? `
-    margin-left: 46px;
+    margin-inline-start: 46px;
     text-indent: -42px;
-  ` : `margin-left: 4px;`}
+  ` : `
+    margin-inline-start: 4px;
+  `}
 
   &:not(:first-child) {
     margin-top: ${p => p.hasBase ? '4px' : '8px'};
@@ -37,8 +39,8 @@ export const Character = styled.span.attrs({
   role: 'option',
 })<CharacterProps>`
   display: inline-block;
-  margin-right: 2px;
   margin-bottom: 2px;
+  margin-inline-end: 2px;
   padding: 4px;
   min-width: 32px;
   text-indent: 0;
@@ -90,14 +92,15 @@ export const TargetIpa = styled.div`
 
 export const ConvertText = styled.div`
   flex: none;
-  padding: 4px 8px 4px 0;
+  padding-block: 4px;
+  padding-inline: 0 8px;
   white-space: nowrap;
   opacity: 0.7;
 `;
 
 export const SearchResultChar = styled.span`
   flex: none;
-  margin-right: 8px;
+  margin-inline-end: 8px;
   padding: 4px;
   min-width: 32px;
   text-align: center;

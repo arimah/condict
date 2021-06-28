@@ -11,7 +11,7 @@ export type CellProps = {
 
 export const Cell = styled.td<CellProps>`
   position: relative;
-  text-align: left;
+  text-align: start;
   white-space: pre-wrap;
   min-width: 16px;
   cursor: default;

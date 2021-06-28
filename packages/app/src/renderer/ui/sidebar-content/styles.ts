@@ -7,12 +7,12 @@ const FlexButton = styled(ButtonBase)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  text-align: left;
+  text-align: start;
 
-  /* slightly more space to the left of the icon */
+  /* slightly more space before the icon */
   > .mdi-icon:first-child {
     flex: none;
-    margin-left: -4px;
+    margin-inline-start: -4px;
   }
 `;
 

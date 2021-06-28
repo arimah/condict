@@ -18,10 +18,8 @@ export const AppStyles = createGlobalStyle`
 `;
 
 export const Container = styled.div`
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 32px;
-  padding-right: 32px;
+  margin-inline: auto;
+  padding-inline: 32px;
   max-width: 1100px;
 `;
 
@@ -41,7 +39,8 @@ export const HeaderSwitch = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
-  margin: 16px 16px 0 0;
+  margin-block: 16px 0;
+  margin-inline: 16px 0;
   vertical-align: 3px;
 
   > * {
@@ -57,8 +56,7 @@ export const MainNav = styled.nav`
 
 export const NavSeparator = styled.span`
   display: inline-block;
-  margin-left: 16px;
-  margin-right: 16px;
+  margin-inline: 16px;
   width: 7px;
   height: 7px;
   vertical-align: 1px;
