@@ -5,12 +5,12 @@ import React, {
   useState,
   useCallback,
   useRef,
-  useLayoutEffect,
 } from 'react';
 
 import {combineRefs} from '@condict/ui';
 
 import {ItemPhase} from '../../ui';
+import {useDelayedMountEffect} from '../../hooks';
 
 import * as S from './styles';
 
@@ -39,9 +39,13 @@ const StandardDialog = React.forwardRef((
 
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() => {
-    setNeedToEnter(false);
-  }, []);
+  // HACK: Despite sincere efforts, there are timing issues in React or Chromium
+  // or something. Occasionally and quite unpredictably, the setNeedToEnter call
+  // occurs *before* the first DOM state has been committed, and the web browser
+  // never even runs the transition. Sometimes useLayoutEffect helps, and other
+  // times it doesn't. A small forceful delay seems to be the most reliable way
+  // of accomplishing this.
+  useDelayedMountEffect(5, () => setNeedToEnter(false));
 
   const handleTransitionEnd = useCallback((e: TransitionEvent) => {
     // transitionend bubbles - we don't want to catch it for descendant nodes.

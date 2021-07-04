@@ -7,7 +7,7 @@ import {
   Dispatch,
 } from 'react';
 import produce, {Draft} from 'immer';
-import {ReactLocalization, useLocalization} from '@fluent/react';
+import {useLocalization} from '@fluent/react';
 import {customAlphabet} from 'nanoid';
 
 import {Page, HomePage} from '../pages';

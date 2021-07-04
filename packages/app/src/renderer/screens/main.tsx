@@ -5,7 +5,7 @@ import {CommandProvider, CommandGroup, useCommandGroup} from '@condict/ui';
 import {SidebarContent, TabPanelList} from '../ui';
 import {useNavigationCommands, useNavigateTo} from '../navigation';
 import {useOpenDialog} from '../dialog-stack';
-import {searchDialog} from '../dialogs';
+import {searchDialog, settingsDialog} from '../dialogs';
 
 import * as S from './styles';
 
@@ -26,6 +26,11 @@ const MainScreen = (): JSX.Element => {
             },
             () => {/* ignore */}
           );
+        },
+      },
+      'global:settings': {
+        action: () => {
+          openDialog(settingsDialog).catch(() => { /* ignore */ });
         },
       },
     },

@@ -126,6 +126,68 @@ search-box-no-results-helper =
 # should be something like "Plural of <term>bird</term>"
 search-box-result-derived-from = {$formName} of <term>{$sourceTerm}</term>
 
+## Settings dialog
+
+settings-title = Settings
+
+settings-close-button = Close
+
+settings-sidebar-label = Settings sections
+
+settings-section-appearance = Appearance
+
+settings-section-language = Language
+
+settings-section-updates = Application updates
+
+settings-section-storage = Data & storage
+
+## Settings > Appearance section
+
+settings-theme-label = Theme
+
+settings-theme-system = Same as system
+
+settings-theme-light = Light
+
+settings-theme-dark = Dark
+
+settings-accent-color-label = Accent colour
+
+settings-danger-color-label = Danger colour
+
+settings-danger-color-description = This colour is used for destructive actions, such as “Delete” buttons.
+
+settings-sidebar-color-label = Sidebar colour
+
+settings-color-name-red = Red
+
+settings-color-name-yellow = Yellow
+
+settings-color-name-green = Green
+
+settings-color-name-blue = Blue
+
+settings-color-name-purple = Purple
+
+settings-color-name-gray = Grey
+
+settings-zoom-level-label = Zoom level
+
+settings-zoom-level-description = Changes the scale of the user interface.
+
+settings-motion-label = Reduced motion
+
+settings-motion-full = Full motion and animations
+
+settings-motion-reduced = Reduced motion and animations
+
+settings-motion-reduced-description = Disables shorter animations, but keeps larger motions.
+
+settings-motion-none = No motion or animations
+
+settings-motion-none-description = Completely disables all motion and animations.
+
 ## Various temporary test messages
 
 test-dialog-title = Is this message box working?
