@@ -109,6 +109,7 @@ export {
 } from './theme';
 
 export {default as Intent} from './intent';
+export {default as MarkerLocation} from './marker-location';
 export {default as Placement, RelativeParent, placeElement} from './placement';
 
 export {default as combineRefs} from './combine-refs';

@@ -2,6 +2,9 @@ import styled from 'styled-components';
 
 import {intentVar} from '../theme';
 import Intent from '../intent';
+import MarkerLocation, {
+  markerLocationToFlexDirection,
+} from '../marker-location';
 
 export type IntentProps = {
   intent: Intent;
@@ -12,9 +15,9 @@ export type DisabledProps = {
 };
 
 export const CheckmarkContainer = styled.span`
+  flex: none;
   display: inline-block;
   box-sizing: border-box;
-  margin-inline-end: 8px;
   vertical-align: -3px;
 
   width: 16px;
@@ -108,10 +111,19 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
   }
 `;
 
-export const Label = styled.label<DisabledProps & IntentProps>`
-  display: inline-block;
+export type LabelProps = IntentProps & {
+  disabled?: boolean;
+  marker: MarkerLocation;
+};
+
+export const Label = styled.label<LabelProps>`
+  display: inline-flex;
   box-sizing: border-box;
+  flex-direction: ${p => markerLocationToFlexDirection(p.marker)};
+  align-items: center;
+  gap: 4px 8px;
   position: relative;
+  vertical-align: top;
   color: ${p => p.disabled ? p.theme.general.disabledFg : p.theme.defaultFg};
 
   &:hover {
@@ -138,3 +150,5 @@ export const Label = styled.label<DisabledProps & IntentProps>`
     }
   }
 `;
+
+export const Content = styled.span``;

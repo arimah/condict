@@ -1,6 +1,7 @@
-import React, {InputHTMLAttributes, LabelHTMLAttributes} from 'react';
+import {InputHTMLAttributes, LabelHTMLAttributes} from 'react';
 
 import {getContentAndLabel} from '../a11y-utils';
+import MarkerLocation from '../marker-location';
 
 import * as S from './styles';
 
@@ -10,6 +11,7 @@ export type Props = {
     LabelHTMLAttributes<HTMLLabelElement>,
     'className'
   >;
+  marker?: MarkerLocation;
 } & Partial<S.IntentProps> & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'aria-label' | 'aria-pressed' | 'role' | 'type'
@@ -23,6 +25,7 @@ export const Switch = (props: Props): JSX.Element => {
     label,
     disabled,
     labelProps,
+    marker = 'before',
     children,
     ...inputProps
   } = props;
@@ -36,6 +39,7 @@ export const Switch = (props: Props): JSX.Element => {
     <S.Label
       {...labelProps}
       intent={intent}
+      marker={marker}
       className={className}
       disabled={disabled}
     >
@@ -55,3 +59,5 @@ export const Switch = (props: Props): JSX.Element => {
     </S.Label>
   );
 };
+
+Switch.Content = S.Content;

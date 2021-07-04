@@ -2,6 +2,7 @@
 
 * [Examples](#examples)
 * [`<Radio>`](#radio)
+* [`Radio.Content`](#radiocontent)
 * [`<Radio.Group>`](#radiogroup)
 
 ---
@@ -82,7 +83,7 @@ groups.map((options, index) =>
 
 ## `<Radio>`
 
-Unlike a standard HTML radio button, the `<Radio>` component renders both the label (as a `<label>`) and the radio button (as an `<input>`). It is currently not possible to configure the placement of the radio button; it always comes before the label.
+Unlike a standard HTML radio button, the `<Radio>` component renders both the label (as a `<label>`) and the radio button (as an `<input>`). The location of the radio button is controlled by the `marker` prop.
 
 The `<Radio>` component may be used as a controlled or uncontrolled component.
 
@@ -96,6 +97,7 @@ Radio buttons do _not_ forward refs to any underlying element. Use the `inputRef
 | `checked` | boolean | `undefined` | Determines whether the radio button is checked. |
 | `disabled` | boolean | `false` | If true, the radio button is disabled. |
 | `intent` | one of `'general'`, `'accent'`, `'danger'` | `'accent'` | Determines what intent styling to give the radio button. Unchecked radio buttons look identical regardless of intent. |
+| `marker` | one of `'before'`, `'after'`, `'above'`, `'below'` | `'before'` | Sets the location of the radio button marker (the checkable circle) relative to the label. |
 | `label` | string | `undefined` | A string value that contains the radio button's text. If used together with children, this value defines the radio button's accessible label. |
 | `name` | string | `''` | The name of the radio button, which is used if the radio button is submitted as part of a form. The radio button name also determines what group it belongs to. |
 | `value` | string | `undefined` | The value of the radio button. The value of the group's currently selected radio button is used if the radio button is submitted as part of a form. |
@@ -105,6 +107,23 @@ Radio buttons do _not_ forward refs to any underlying element. Use the `inputRef
 | `children` | node | `undefined` | The content of the radio button label. If used together with `label`, this becomes the visible content of the radio button. |
 
 All other props are forwarded to the underlying `<input>`, which is a [styled component][styled-components].
+
+## `Radio.Content`
+
+The [styled component][styled-components] that wraps around the visible content of the radio button. When styling a radio button, this can be used to apply styles to the content wrapper. This is a `<span>`, so can only contain other inline elements. For example:
+
+```jsx
+import styled from 'styled-components';
+import {Radio} from '@condict/ui';
+
+const MyRadio = styled(Radio)`
+  > ${Radio.Content} {
+    display: flex:
+    flex-direction: column;
+    gap: 4px;
+  }
+`;
+```
 
 ## `<Radio.Group>`
 

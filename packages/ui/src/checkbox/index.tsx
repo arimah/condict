@@ -1,4 +1,4 @@
-import React, {
+import {
   ReactNode,
   Ref,
   InputHTMLAttributes,
@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 
 import {getContentAndLabel} from '../a11y-utils';
+import MarkerLocation from '../marker-location';
 import combineRefs from '../combine-refs';
 
 import * as S from './styles';
@@ -17,6 +18,7 @@ export type Props = {
     LabelHTMLAttributes<HTMLLabelElement>,
     'className'
   >;
+  marker?: MarkerLocation;
   inputRef?: Ref<HTMLInputElement>;
   children?: ReactNode;
 } & Partial<S.IntentProps> & Omit<
@@ -32,6 +34,7 @@ export const Checkbox = (props: Props): JSX.Element => {
     label,
     disabled,
     labelProps,
+    marker = 'before',
     inputRef,
     children,
     // checked deliberately included here
@@ -55,6 +58,7 @@ export const Checkbox = (props: Props): JSX.Element => {
       className={className}
       disabled={disabled}
       intent={intent}
+      marker={marker}
     >
       <S.Input
         {...inputProps}
@@ -67,7 +71,9 @@ export const Checkbox = (props: Props): JSX.Element => {
         <S.IndeterminateMark/>
         <S.CheckMark/>
       </S.CheckmarkContainer>
-      {renderedContent}
+      <S.Content>{renderedContent}</S.Content>
     </S.Label>
   );
 };
+
+Checkbox.Content = S.Content;

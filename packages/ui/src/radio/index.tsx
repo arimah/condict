@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 
 import {getContentAndLabel} from '../a11y-utils';
+import MarkerLocation from '../marker-location';
 import genUniqueId from '../unique-id';
 
 import * as S from './styles';
@@ -18,6 +19,7 @@ export type Props = {
     LabelHTMLAttributes<HTMLLabelElement>,
     'className'
   >;
+  marker?: MarkerLocation;
   inputRef?: Ref<HTMLInputElement>;
   children?: ReactNode;
 } & Partial<S.IntentProps> & Omit<
@@ -46,6 +48,7 @@ export const Radio = (props: Props): JSX.Element => {
     disabled,
     name = '',
     labelProps,
+    marker = 'before',
     inputRef,
     children,
     // checked deliberately included here
@@ -61,6 +64,7 @@ export const Radio = (props: Props): JSX.Element => {
     <S.Label
       {...labelProps}
       intent={intent}
+      marker={marker}
       className={className}
       disabled={disabled}
     >
@@ -75,7 +79,7 @@ export const Radio = (props: Props): JSX.Element => {
       <S.RadioContainer>
         <S.RadioDot intent={intent}/>
       </S.RadioContainer>
-      {renderedContent}
+      <S.Content>{renderedContent}</S.Content>
     </S.Label>
   );
 };
@@ -94,3 +98,5 @@ const RadioGroup = ({name, children}: GroupProps) => {
 };
 
 Radio.Group = RadioGroup;
+
+Radio.Content = S.Content;
