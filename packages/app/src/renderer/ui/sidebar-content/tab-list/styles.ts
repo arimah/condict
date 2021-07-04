@@ -12,6 +12,17 @@ export const TabList = styled.div.attrs({
   max-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+    background-color: ${p => p.theme.sidebar.bg};
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 2px solid ${p => p.theme.sidebar.bg};
+    border-radius: 5px;
+    background-color: ${p => p.theme.sidebar.activeBg};
+  }
 `;
 
 export const TabSpinner = styled(Spinner).attrs({

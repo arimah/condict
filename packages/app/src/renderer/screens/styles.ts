@@ -57,6 +57,7 @@ export const Sidebar = styled.nav`
   width: 23vw;
   min-width: ${SidebarMinWidth}px;
   max-width: ${SidebarMaxWidth}px;
+  max-height: 100vh;
 
   background-color: ${p => p.theme.sidebar.bg};
   color: ${p => p.theme.sidebar.fg};
