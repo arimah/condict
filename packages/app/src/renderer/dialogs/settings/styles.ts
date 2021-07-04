@@ -5,15 +5,16 @@ import {Button} from '@condict/ui';
 import StandardDialog from '../standard-dialog';
 
 export const Main = styled(StandardDialog)`
-  display: flex;
+  display: grid;
   padding: 0;
-  flex-direction: row;
-  align-items: stretch;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+
   width: calc(100vw - 96px);
   height: calc(100vh - 96px);
   max-width: 1200px;
   max-height: 860px;
-  overflow: hidden;
 `;
 
 export const Title = styled.h2`
@@ -22,8 +23,10 @@ export const Title = styled.h2`
 
 export const Sidebar = styled.nav`
   box-sizing: border-box;
-  flex: 0 0 260px;
   padding-block: 20px;
+  width: 260px;
+  grid-row: 1 / span 2;
+  grid-column: 1;
   background-color: ${p => p.theme.general.bg};
 
   > ${Title} {
@@ -95,11 +98,20 @@ export type SectionProps = {
 
 export const Section = styled.main<SectionProps>`
   display: ${p => p.isCurrent ? 'block' : 'none'};
-  padding: 20px;
-  flex: 1 1 auto;
+  padding: 8px 20px 16px;
   max-height: 100%;
+  grid-row: 2;
+  grid-column: 2;
   overflow-x: visible;
   overflow-y: auto;
+`;
+
+export const SectionTitle = styled.h2<SectionProps>`
+  display: ${p => p.isCurrent ? 'block' : 'none'};
+  margin: 0;
+  padding: 20px 20px 8px;
+  grid-row: 1;
+  grid-column: 2;
 `;
 
 export const CloseButton = styled(Button)`

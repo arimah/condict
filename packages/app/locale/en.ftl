@@ -182,7 +182,7 @@ settings-motion-full = Full motion and animations
 
 settings-motion-reduced = Reduced motion and animations
 
-settings-motion-reduced-description = Disables shorter animations, but keeps larger motions.
+settings-motion-reduced-description = Disables short animations, but keeps larger motions and transitions.
 
 settings-motion-none = No motion or animations
 

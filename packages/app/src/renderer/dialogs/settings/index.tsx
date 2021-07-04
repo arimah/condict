@@ -1,4 +1,4 @@
-import {useState, useCallback, useRef} from 'react';
+import {Fragment, useState, useCallback, useRef} from 'react';
 import {Localized, useLocalization} from '@fluent/react';
 import CloseIcon from 'mdi-react/CloseIcon';
 
@@ -61,19 +61,20 @@ const SettingsDialog = (props: DialogProps<void>): JSX.Element => {
         />
       </S.Sidebar>
       {AllSections.map(({key, content: Content}, i) =>
-        <S.Section
-          key={key}
-          id={`${id}-tabpanel-${key}`}
-          aria-expanded={i === currentIndex}
-          isCurrent={i === currentIndex}
-        >
-          <S.Title>
+        <Fragment key={key}>
+          <S.SectionTitle isCurrent={i === currentIndex}>
             <Localized id={`settings-section-${key}`}/>
-          </S.Title>
-          <Content
-            ref={i === currentIndex ? currentSectionRef : undefined}
-          />
-        </S.Section>
+          </S.SectionTitle>
+          <S.Section
+            id={`${id}-tabpanel-${key}`}
+            aria-expanded={i === currentIndex}
+            isCurrent={i === currentIndex}
+          >
+            <Content
+              ref={i === currentIndex ? currentSectionRef : undefined}
+            />
+          </S.Section>
+        </Fragment>
       )}
       <S.CloseButton
         label={l10n.getString('settings-close-button')}
