@@ -120,7 +120,7 @@ search-box-no-results-helper =
 #   sourceTerm: The term (headword) that the inflected form is based on.
 #
 # Elements:
-#    <term>: Wraps around $sourceTerm. Should not contain anything else.
+#   <term>: Wraps around $sourceTerm. Should not contain anything else.
 #
 # For example: if formName = Plural and sourceTerm = bird, then the message
 # should be something like "Plural of <term>bird</term>"
@@ -154,6 +154,8 @@ settings-theme-dark = Dark
 
 settings-accent-color-label = Accent colour
 
+# Can also be translated as "warning colour", "caution colour", "signal colour"
+# or equivalent.
 settings-danger-color-label = Danger colour
 
 settings-danger-color-description = This colour is used for destructive actions, such as “Delete” buttons.
@@ -187,6 +189,15 @@ settings-motion-reduced-description = Disables short animations, but keeps large
 settings-motion-none = No motion or animations
 
 settings-motion-none-description = Completely disables all motion and animations.
+
+## Settings > Language section
+
+# Elements:
+#   <help-link>: Link to the page where the user can help translate Condict.
+settings-help-translate =
+  Want Condict in your language? Found a translation error? You can <help-link>help translate Condict</help-link>.
+
+settings-locale-en = English (United Kingdom)
 
 ## Various temporary test messages
 

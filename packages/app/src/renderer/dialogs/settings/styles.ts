@@ -169,3 +169,7 @@ export const OptionDescription = styled.div`
   margin-inline-start: 24px;
   opacity: 0.7;
 `;
+
+export const IntroText = styled.p`
+  margin-bottom: 20px;
+`;
