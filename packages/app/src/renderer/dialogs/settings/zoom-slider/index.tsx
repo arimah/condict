@@ -2,12 +2,18 @@ import {
   KeyboardEvent,
   MouseEvent as SyntheticMouseEvent,
   useState,
+  useMemo,
   useCallback,
   useRef,
   useEffect,
 } from 'react';
 
-import {Shortcut, ShortcutMap} from '@condict/ui';
+import {
+  Shortcut,
+  ShortcutMap,
+  WritingDirection,
+  useWritingDirection,
+} from '@condict/ui';
 
 import * as S from './styles';
 
@@ -40,14 +46,22 @@ const MinZoom = ZoomLevels[0];
 
 const MaxZoom = ZoomLevels[ZoomLevels.length - 1];
 
-const KeyboardMap = new ShortcutMap<KeyCommand>(
+const getKeyboardMap = (dir: WritingDirection) => new ShortcutMap<KeyCommand>(
   [
     {
-      shortcut: Shortcut.parse('ArrowLeft ArrowDown'),
+      shortcut: Shortcut.parse(
+        dir === 'rtl'
+          ? 'ArrowRight ArrowDown'
+          : 'ArrowLeft ArrowDown'
+      ),
       exec: index => Math.max(0, index - 1),
     },
     {
-      shortcut: Shortcut.parse('ArrowRight ArrowUp'),
+      shortcut: Shortcut.parse(
+        dir === 'rtl'
+          ? 'ArrowLeft ArrowUp'
+          : 'ArrowRight ArrowUp'
+      ),
       exec: index => Math.min(ZoomLevels.length - 1, index + 1),
     },
     {
@@ -65,38 +79,41 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
 const ZoomSlider = (props: Props): JSX.Element => {
   const {value, 'aria-labelledby': ariaLabelledBy, onChange} = props;
 
+  const dir = useWritingDirection();
+
   const [isDragging, setDragging] = useState(false);
   const [draggingValue, setDraggingValue] = useState(value);
+  const keyboardMap = useMemo(() => getKeyboardMap(dir), [dir]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    const cmd = KeyboardMap.get(e);
+    const cmd = keyboardMap.get(e);
     if (cmd && !isDragging) {
       e.preventDefault();
       const currentIndex = ZoomLevels.indexOf(value);
       const nextIndex = cmd.exec(currentIndex);
       onChange(ZoomLevels[nextIndex]);
     }
-  }, [value, onChange, isDragging]);
+  }, [value, onChange, isDragging, keyboardMap]);
 
   const ref = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = useCallback((e: SyntheticMouseEvent) => {
     if (ref.current) {
-      setDraggingValue(getValueUnderMouse(e.clientX, ref.current));
+      setDraggingValue(getValueUnderMouse(e.clientX, ref.current, dir));
     }
     setDragging(true);
-  }, [onChange]);
+  }, [onChange, dir]);
 
   useEffect(() => {
     if (isDragging) {
       const handleMouseMove = (e: MouseEvent) => {
         if (ref.current) {
-          setDraggingValue(getValueUnderMouse(e.clientX, ref.current));
+          setDraggingValue(getValueUnderMouse(e.clientX, ref.current, dir));
         }
       };
       const handleMouseUp = (e: MouseEvent) => {
         if (ref.current) {
-          const value = getValueUnderMouse(e.clientX, ref.current);
+          const value = getValueUnderMouse(e.clientX, ref.current, dir);
           setDraggingValue(value);
           onChange(value);
         }
@@ -111,7 +128,7 @@ const ZoomSlider = (props: Props): JSX.Element => {
       };
     }
     return undefined;
-  }, [onChange, isDragging]);
+  }, [onChange, isDragging, dir]);
 
   const currentValue = isDragging ? draggingValue : value;
   const x = getX(currentValue);
@@ -127,7 +144,10 @@ const ZoomSlider = (props: Props): JSX.Element => {
       ref={ref}
     >
       {ZoomLevels.map(zoom =>
-        <S.SliderTick key={zoom} style={{left: `${getX(zoom) * 100}%`}}>
+        <S.SliderTick
+          key={zoom}
+          style={{insetInlineStart: `${getX(zoom) * 100}%`}}
+        >
           <S.SliderTickLabel $selected={zoom === currentValue}>
             {zoom}
           </S.SliderTickLabel>
@@ -135,10 +155,10 @@ const ZoomSlider = (props: Props): JSX.Element => {
       )}
       <S.SliderTrack>
         <S.SliderTrackFill style={{
-          right: `calc((100% - 10px) * ${1 - x} + 5px)`,
+          insetInlineEnd: `calc((100% - 10px) * ${1 - x} + 5px)`,
         }}/>
       </S.SliderTrack>
-      <S.SliderThumb style={{left: `${x * 100}%`}}/>
+      <S.SliderThumb style={{insetInlineStart: `${x * 100}%`}}/>
     </S.Main>
   );
 };
@@ -147,9 +167,16 @@ export default ZoomSlider;
 
 const getX = (value: number) => (value - MinZoom) / (MaxZoom - MinZoom);
 
-const getValueUnderMouse = (mouseX: number, sliderElem: HTMLDivElement) => {
+const getValueUnderMouse = (
+  mouseX: number,
+  sliderElem: HTMLDivElement,
+  dir: WritingDirection
+) => {
   const elemRect = sliderElem.getBoundingClientRect();
-  const relativePosition = (mouseX - elemRect.left) / elemRect.width;
+  let relativePosition = (mouseX - elemRect.left) / elemRect.width;
+  if (dir === 'rtl') {
+    relativePosition = 1 - relativePosition;
+  }
   const exactZoomLevel = MinZoom + relativePosition * (MaxZoom - MinZoom);
   if (exactZoomLevel < MinZoom) {
     return MinZoom;

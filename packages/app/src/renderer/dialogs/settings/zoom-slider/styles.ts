@@ -49,9 +49,8 @@ export const SliderTrack = styled.div`
 
 export const SliderTrackFill = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
+  inset-block: 0;
+  inset-inline-start: 0;
   background-color: ${p => p.theme.accent.boldBg};
 `;
 

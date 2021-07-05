@@ -111,6 +111,11 @@ export {
 export {default as Intent} from './intent';
 export {default as MarkerLocation} from './marker-location';
 export {default as Placement, RelativeParent, placeElement} from './placement';
+export {
+  WritingDirection,
+  WritingDirectionProvider,
+  useWritingDirection,
+} from './writing-direction';
 
 export {default as combineRefs} from './combine-refs';
 export {Descendants, compareNodes, useDescendant} from './descendants';

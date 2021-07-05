@@ -2,6 +2,8 @@ import React, {ReactNode, useMemo, useContext, useEffect} from 'react';
 import {FluentBundle, FluentResource} from '@fluent/bundle';
 import {LocalizationProvider, ReactLocalization} from '@fluent/react';
 
+import {WritingDirection, WritingDirectionProvider} from '@condict/ui';
+
 import {Locale} from '../../types';
 
 export type Props = {
@@ -31,17 +33,22 @@ const TranslationProvider = (props: Props): JSX.Element => {
     [currentBundle, defaultBundle]
   );
 
-  const dir = localization.getString('dir');
+  const dir: WritingDirection =
+    localization.getString('dir') === 'rtl'
+      ? 'rtl'
+      : 'ltr';
   useEffect(() => {
     const html = document.documentElement;
     html.setAttribute('lang', currentLocale.locale);
-    html.setAttribute('dir', dir === 'rtl' ? 'rtl' : 'ltr');
+    html.setAttribute('dir', dir);
   }, [currentLocale, dir]);
 
   return (
     <LocalizationProvider l10n={localization}>
       <AvailableLocalesContext.Provider value={availableLocales}>
-        {children}
+        <WritingDirectionProvider value={dir}>
+          {children}
+        </WritingDirectionProvider>
       </AvailableLocalesContext.Provider>
     </LocalizationProvider>
   );
