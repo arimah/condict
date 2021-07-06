@@ -9,7 +9,7 @@ export type ItemElement = Node & {
 
 export type ContextValue = {
   descendants: Descendants<RefObject<ItemElement>>;
-  currentFocus: RefObject<ItemElement> | null;
+  activeChild: RefObject<ItemElement> | null;
 };
 
 export const Context = React.createContext<ContextValue | null>(null);
@@ -19,8 +19,8 @@ export const useManagedFocus = (itemRef: RefObject<ItemElement>): boolean => {
   if (!context) {
     throw new Error('Toolbar item must be placed inside a <Toolbar>');
   }
-  const {descendants, currentFocus} = context;
+  const {descendants, activeChild} = context;
   useDescendant(descendants, itemRef);
 
-  return currentFocus === itemRef;
+  return activeChild === itemRef;
 };

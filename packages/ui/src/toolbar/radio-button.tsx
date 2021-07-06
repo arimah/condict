@@ -39,13 +39,13 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
   [
     {
       key: Shortcut.parse('ArrowUp'),
-      exec({descendants, currentFocus}, parent) {
+      exec({descendants, activeChild}, parent) {
         const prev =
-          currentFocus &&
-          currentFocus.current &&
+          activeChild &&
+          activeChild.current &&
           Descendants.prevWrapping(
             descendants,
-            currentFocus,
+            activeChild,
             item => isEnabledInParent(parent, item)
           );
         if (prev && prev.current) {
@@ -55,13 +55,13 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
     },
     {
       key: Shortcut.parse('ArrowDown'),
-      exec({descendants, currentFocus}, parent) {
+      exec({descendants, activeChild}, parent) {
         const next =
-          currentFocus &&
-          currentFocus.current &&
+          activeChild &&
+          activeChild.current &&
           Descendants.nextWrapping(
             descendants,
-            currentFocus,
+            activeChild,
             item => isEnabledInParent(parent, item)
           );
         if (next && next.current) {

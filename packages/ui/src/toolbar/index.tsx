@@ -12,6 +12,7 @@ import React, {
 
 import {Shortcut, ShortcutMap} from '../shortcut';
 import {Descendants, compareNodes} from '../descendants';
+import {WritingDirection, useWritingDirection} from '../writing-direction';
 
 import {Context, ContextValue, ItemElement} from './focus-manager';
 import Button from './button';
@@ -29,50 +30,40 @@ type KeyCommand = {
 const isEnabled = (item: RefObject<ItemElement>): boolean =>
   item.current !== null && !item.current.disabled;
 
-const KeyboardMap = new ShortcutMap<KeyCommand>(
+const getKeyboardMap = (dir: WritingDirection) => new ShortcutMap<KeyCommand>(
   [
     {
-      key: Shortcut.parse('ArrowLeft'),
-      exec({descendants, currentFocus}) {
-        const prev = currentFocus && Descendants.prevWrapping(
+      key: Shortcut.parse(dir === 'rtl' ? 'ArrowRight' : 'ArrowLeft'),
+      exec({descendants, activeChild}) {
+        const prev = activeChild && Descendants.prevWrapping(
           descendants,
-          currentFocus,
+          activeChild,
           isEnabled
         );
-        if (prev && prev.current) {
-          prev.current.focus();
-        }
+        prev?.current?.focus();
       },
     },
     {
-      key: Shortcut.parse('ArrowRight'),
-      exec({descendants, currentFocus}) {
-        const next = currentFocus && Descendants.nextWrapping(
+      key: Shortcut.parse(dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight'),
+      exec({descendants, activeChild}) {
+        const next = activeChild && Descendants.nextWrapping(
           descendants,
-          currentFocus,
+          activeChild,
           isEnabled
         );
-        if (next && next.current) {
-          next.current.focus();
-        }
+        next?.current?.focus();
       },
     },
     {
       key: Shortcut.parse(['Home', 'Shift+Home']),
       exec({descendants}) {
-        const first = Descendants.first(descendants, isEnabled);
-        if (first && first.current) {
-          first.current.focus();
-        }
+        Descendants.first(descendants, isEnabled)?.current?.focus();
       },
     },
     {
       key: Shortcut.parse(['End', 'Shift+End']),
       exec({descendants}) {
-        const last = Descendants.last(descendants, isEnabled);
-        if (last && last.current) {
-          last.current.focus();
-        }
+        Descendants.last(descendants, isEnabled)?.current?.focus();
       },
     },
   ],
@@ -81,28 +72,28 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
 
 const getValidFocus = (
   descendants: Descendants<RefObject<ItemElement>>,
-  currentFocus: RefObject<ItemElement> | null
+  activeChild: RefObject<ItemElement> | null
 ): RefObject<ItemElement> | null => {
   if (
-    !currentFocus ||
-    !currentFocus.current ||
-    !Descendants.first(descendants, r => r.current == currentFocus.current)
+    !activeChild ||
+    !activeChild.current ||
+    !Descendants.first(descendants, r => r.current == activeChild.current)
   ) {
     // Either there is no current focus, or the current focus is not a child
     // of this toolbar. Focus the first element.
     return Descendants.first(descendants, isEnabled);
-  } else if (currentFocus.current.disabled) {
+  } else if (activeChild.current.disabled) {
     // The current focus has become disabled. Move focus to the another
     // element. We try to first to find the previous toolbar item. If there
     // are no previous enabled items, move to the *next* item instead. This
     // prevents needless wrapping and in most cases should keep the new
     // focus as close as possible to the previous.
     return (
-      Descendants.prev(descendants, currentFocus, isEnabled) ||
-      Descendants.next(descendants, currentFocus, isEnabled)
+      Descendants.prev(descendants, activeChild, isEnabled) ||
+      Descendants.next(descendants, activeChild, isEnabled)
     );
   }
-  return currentFocus;
+  return activeChild;
 };
 
 export type Props = Omit<HTMLAttributes<HTMLDivElement>, 'role'>;
@@ -112,18 +103,20 @@ export const Toolbar = Object.assign(
   React.forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
     const {onFocus, onKeyDown, children, ...otherProps} = props;
 
+    const dir = useWritingDirection();
+
     const [descendants] = useState(() =>
       Descendants.create<RefObject<ItemElement>>(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         (a, b) => compareNodes(a.current!, b.current!)
       )
     );
-    const [currentFocus, setCurrentFocus] = useState<RefObject<ItemElement> | null>(null);
+    const [activeChild, setActiveChild] = useState<RefObject<ItemElement> | null>(null);
 
-    const contextValue = useMemo(() => ({
+    const context = useMemo<ContextValue>(() => ({
       descendants,
-      currentFocus,
-    }), [currentFocus]);
+      activeChild,
+    }), [activeChild]);
 
     const handleFocus = useCallback((e: FocusEvent<HTMLDivElement>) => {
       const ref = Descendants.first(
@@ -131,21 +124,23 @@ export const Toolbar = Object.assign(
         r => r.current !== null && r.current.contains(e.target)
       );
       if (ref) {
-        setCurrentFocus(ref);
+        setActiveChild(ref);
       }
       if (onFocus) {
         onFocus.call(e.currentTarget, e);
       }
     }, [onFocus]);
 
+    const keyboardMap = useMemo(() => getKeyboardMap(dir), [dir]);
+
     const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
-      const command = KeyboardMap.get(e);
+      const command = keyboardMap.get(e);
       if (command) {
         e.preventDefault();
         e.stopPropagation();
-        command.exec(contextValue);
+        command.exec(context);
       }
-    }, [contextValue, onKeyDown]);
+    }, [context, onKeyDown, keyboardMap]);
 
     // After rendering, ensure the current item is one of the enabled children
     // of the toolbar. If you press a Redo button that then becomes disabled
@@ -156,15 +151,15 @@ export const Toolbar = Object.assign(
     // Also, on mount, once we've collected all the children, we need to make
     // the first one focusable.
     useEffect(() => {
-      const nextFocus = getValidFocus(descendants, currentFocus);
+      const nextFocus = getValidFocus(descendants, activeChild);
       // Avoid infinite update loops.
-      if (nextFocus !== currentFocus) {
-        setCurrentFocus(nextFocus);
+      if (nextFocus !== activeChild) {
+        setActiveChild(nextFocus);
       }
     });
 
     return (
-      <Context.Provider value={contextValue}>
+      <Context.Provider value={context}>
         <S.Toolbar
           {...otherProps}
           onFocus={handleFocus}
