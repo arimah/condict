@@ -226,9 +226,9 @@ settings-updates-install-button = Restart and install update
 
 settings-updates-is-latest = You have the latest version.
 
-settings-updates-available = A new version is available.
+settings-updates-available = A new version is available!
 
-settings-updates-downloaded = Condict will be updated next time it starts.
+settings-updates-downloaded = The update will be installed next time you start Condict.
 
 ## Various temporary test messages
 

@@ -46,7 +46,6 @@ const Status = (): JSX.Element => {
   const id = useUniqueId();
 
   const handleClick = useCallback(() => {
-    setDownloadProgress(0);
     setBusy(busy => {
       if (!busy) {
         void getNextStatus(status, setDownloadProgress).then(nextStatus => {
@@ -72,7 +71,7 @@ const Status = (): JSX.Element => {
         onClick={handleClick}
       >
         {
-          busy && downloadProgress > 0
+          status === 'updateAvailable' && busy && downloadProgress > 0
             ? <ProgressRing progress={downloadProgress / 100}/>
             : busy
               ? <S.Spinner/>
@@ -125,6 +124,7 @@ const getNextStatus = (
         }
       };
       window.setTimeout(updateProgress, initialDelay);
+      setDownloadProgress(0);
       break;
     }
     case 'downloadedNeedsRestart':
