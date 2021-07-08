@@ -1,17 +1,16 @@
-import {ChangeEvent, Fragment, useState, useCallback} from 'react';
+import {Fragment, useState} from 'react';
 
 import {Button} from '@condict/ui';
 
 import {Link} from '../../ui';
 import {useData} from '../../data';
 import {LanguagePage, PartOfSpeechPage} from '../../pages';
-import {useConfig, useAvailableLocales} from '../../app-contexts';
 import {PanelProps, PanelParams, useOpenPanel} from '../../navigation';
 import {useOpenDialog} from '../../dialog-stack';
 import {YesNo, OKCancel, messageBox} from '../../dialogs';
 
 import HomeQuery from './query';
-import * as S from './styles';
+// import * as S from './styles';
 
 type TestResponse = 'yes' | 'no' | 'cancel';
 
@@ -77,16 +76,6 @@ const HomePage = (): JSX.Element => {
 
   const [panelResponse, setPanelResponse] = useState<TestResponse | null>(null);
   const [dialogResponse, setDialogResponse] = useState<boolean | null>(null);
-
-  const {config, updateConfig} = useConfig();
-  const availableLocales = useAvailableLocales();
-
-  const handleChangeLocale = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const nextLocale = e.target.value;
-    updateConfig(config => {
-      config.locale = nextLocale;
-    });
-  }, []);
 
   const languages = data.state === 'data'
     ? data.result.data?.languages
@@ -154,22 +143,6 @@ const HomePage = (): JSX.Element => {
       />
     </p>
     {dialogResponse !== null && <p>Last dialog response: {String(dialogResponse)}</p>}
-    <hr/>
-    <S.OptionGroup aria-label='Language'>
-      <p>Language:</p>
-      <S.OptionList>
-        {availableLocales.map(locale =>
-          <S.Option
-            key={locale}
-            label={locale}
-            name='locale'
-            value={locale}
-            checked={config.locale === locale}
-            onChange={handleChangeLocale}
-          />
-        )}
-      </S.OptionList>
-    </S.OptionGroup>
   </>;
 };
 

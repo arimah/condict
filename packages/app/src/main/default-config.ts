@@ -15,6 +15,9 @@ const DefaultConfig: AppConfig = {
     motion: 'full',
   },
   locale: DefaultLocale,
+  // Default to the least intrusive update policy. The user will be prompted
+  // to select an update policy during initial setup.
+  updates: 'manual',
   log: {
     stdout: false,
     files: [

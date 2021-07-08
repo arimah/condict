@@ -37,8 +37,7 @@ export const Sidebar = styled.nav`
 export const TabList = styled.div.attrs({
   role: 'tablist',
   'aria-orientation': 'vertical',
-})`
-`;
+})``;
 
 export type TabProps = {
   isCurrent: boolean;
@@ -96,7 +95,9 @@ export type SectionProps = {
   isCurrent: boolean;
 };
 
-export const Section = styled.main<SectionProps>`
+export const Section = styled.main.attrs({
+  role: 'tabpanel',
+})<SectionProps>`
   display: ${p => p.isCurrent ? 'block' : 'none'};
   padding: 8px 20px 16px;
   max-height: 100%;

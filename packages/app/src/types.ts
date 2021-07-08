@@ -11,6 +11,8 @@ export interface AppConfig {
   readonly appearance: AppearanceConfig;
   /** The application language, as a language code. */
   readonly locale: string;
+  /** The automatic updates policy. */
+  readonly updates: UpdatePolicy;
   /** Logger configuration. */
   readonly log: LoggerOptions;
   /** Server configuration. */
@@ -45,6 +47,17 @@ export type ColorName =
   | 'blue'
   | 'purple'
   | 'gray';
+
+export type UpdatePolicy =
+  // Checks for updates, downloads them automatically, and installs when
+  // Condict is restarted.
+  | 'download'
+  // Checks for updates, but lets the user choose when to download and
+  // install them.
+  | 'check'
+  // Does not check for updates automatically. The user can still download
+  // and install updates manually.
+  | 'manual';
 
 export type ServerConfig = LocalServerConfig | RemoteServerConfig;
 

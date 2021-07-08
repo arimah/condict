@@ -199,6 +199,37 @@ settings-help-translate =
 
 settings-locale-en = English (United Kingdom)
 
+## Settings > Application updates section
+
+# Elements:
+#   <privacy-link>: Link to Condict's privacy policy page.
+settings-updates-about =
+  To provide automatic updates, Condict needs to send a small amount of information about your computer. Condict will never collect or send personal information, or share any part of your dictionary. Read more in the <privacy-link>privacy policy</privacy-link>.
+
+settings-updates-download-label = Download and install updates automatically
+
+settings-updates-download-description = Condict will periodically look for updates. When updates are found, they will be downloaded automatically and installed when you restart Condict.
+
+settings-updates-check-label = Notify me when updates are available
+
+settings-updates-check-description = Condict will periodically look for updates. You will be notified when updates are available, and get to choose when to download and install them.
+
+settings-updates-manual-label = Do not look for updates automatically
+
+settings-updates-manual-description = All automatic updates are disabled. You can still check for updates manually.
+
+settings-updates-check-button = Check for updates
+
+settings-updates-download-button = Download update
+
+settings-updates-install-button = Restart and install update
+
+settings-updates-is-latest = You have the latest version.
+
+settings-updates-available = A new version is available.
+
+settings-updates-downloaded = Condict will be updated next time it starts.
+
 ## Various temporary test messages
 
 test-dialog-title = Is this message box working?

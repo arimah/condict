@@ -14,6 +14,7 @@ import {
   AppearanceConfig,
   ThemePreference,
   ColorName,
+  UpdatePolicy,
   ServerConfig,
   LoginConfig,
 } from '../types';
@@ -123,10 +124,11 @@ const validateConfig = (
 
   const appearance = validateAppearanceConfig(value.appearance, errors);
   const locale = validateLocale(value.locale, availableLocales, errors);
+  const updates = validateUpdatePolicy(value.updates, errors);
   const log = validateLoggerConfig(value.log, errors);
   const server = validateServerConfig(value.server, errors);
   const login = validateLoginConfig(value.login, errors);
-  return {appearance, locale, log, server, login};
+  return {appearance, locale, updates, log, server, login};
 };
 
 const validateAppearanceConfig = (
@@ -226,6 +228,21 @@ const validateMotionPreference = (
     default:
       errors.push(`appearance.motion: invalid value: ${value}`);
       return DefaultConfig.appearance.motion;
+  }
+};
+
+const validateUpdatePolicy = (
+  value: unknown,
+  errors: string[]
+): UpdatePolicy => {
+  switch (value) {
+    case 'download':
+    case 'check':
+    case 'manual':
+      return value;
+    default:
+      errors.push(`updates: invalid value: ${value}`);
+      return DefaultConfig.updates;
   }
 };
 

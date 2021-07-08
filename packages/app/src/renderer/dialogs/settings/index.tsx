@@ -62,11 +62,15 @@ const SettingsDialog = (props: DialogProps<void>): JSX.Element => {
       </S.Sidebar>
       {AllSections.map(({key, content: Content}, i) =>
         <Fragment key={key}>
-          <S.SectionTitle isCurrent={i === currentIndex}>
+          <S.SectionTitle
+            id={`${id}-${key}-title`}
+            isCurrent={i === currentIndex}
+          >
             <Localized id={`settings-section-${key}`}/>
           </S.SectionTitle>
           <S.Section
             id={`${id}-tabpanel-${key}`}
+            aria-labelledby={`${id}-${key}-title`}
             aria-expanded={i === currentIndex}
             isCurrent={i === currentIndex}
           >
