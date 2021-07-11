@@ -15,6 +15,13 @@ import {
   useWritingDirection,
 } from '@condict/ui';
 
+import {
+  SliderDecreaseKey,
+  SliderIncreaseKey,
+  SliderMinKey,
+  SliderMaxKey,
+} from '../../../shortcuts';
+
 import * as S from './styles';
 
 export type Props = {
@@ -49,27 +56,19 @@ const MaxZoom = ZoomLevels[ZoomLevels.length - 1];
 const getKeyboardMap = (dir: WritingDirection) => new ShortcutMap<KeyCommand>(
   [
     {
-      shortcut: Shortcut.parse(
-        dir === 'rtl'
-          ? 'ArrowRight ArrowDown'
-          : 'ArrowLeft ArrowDown'
-      ),
+      shortcut: SliderDecreaseKey[dir],
       exec: index => Math.max(0, index - 1),
     },
     {
-      shortcut: Shortcut.parse(
-        dir === 'rtl'
-          ? 'ArrowLeft ArrowUp'
-          : 'ArrowRight ArrowUp'
-      ),
+      shortcut: SliderIncreaseKey[dir],
       exec: index => Math.min(ZoomLevels.length - 1, index + 1),
     },
     {
-      shortcut: Shortcut.parse('Home'),
+      shortcut: SliderMinKey,
       exec: () => 0,
     },
     {
-      shortcut: Shortcut.parse('End'),
+      shortcut: SliderMaxKey,
       exec: () => ZoomLevels.length - 1,
     },
   ],

@@ -2,14 +2,21 @@ import {
   MouseEvent,
   KeyboardEvent,
   useState,
+  useMemo,
   useCallback,
   useRef,
   useEffect,
 } from 'react';
 
-import {Shortcut, ShortcutMap} from '@condict/ui';
+import {
+  Shortcut,
+  ShortcutMap,
+  WritingDirection,
+  useWritingDirection,
+} from '@condict/ui';
 
 import {NavigationContextValue, useNavigation} from '../../../navigation';
+import {VerticalTabPrevKey, VerticalTabNextKey} from '../../../shortcuts';
 
 import Tab from './tab';
 import * as S from './styles';
@@ -23,23 +30,20 @@ interface KeyCommand {
   exec(nav: NavigationContextValue): void;
 }
 
-const KeyboardMap = new ShortcutMap<KeyCommand>(
+const getKeyboardMap = (dir: WritingDirection) => new ShortcutMap<KeyCommand>(
   // Ctrl+Tab and Ctrl+Shift+Tab are handled globally, so are not present here.
   [
     {
-      key: Shortcut.parse('ArrowUp ArrowLeft'),
+      key: VerticalTabPrevKey[dir],
       exec: nav => nav.selectRelative('prev'),
     },
     {
-      key: Shortcut.parse('ArrowDown ArrowRight'),
+      key: VerticalTabNextKey[dir],
       exec: nav => nav.selectRelative('next'),
     },
     {
       key: Shortcut.parse('Delete'),
-      exec: nav => {
-        const currentId = nav.tabs[nav.currentTabIndex].id;
-        nav.close(currentId);
-      },
+      exec: nav => nav.close(),
     },
   ],
   cmd => cmd.key
@@ -49,17 +53,20 @@ const TabList = (props: Props): JSX.Element => {
   const {sidebarContainsFocus} = props;
 
   const nav = useNavigation();
+  const dir = useWritingDirection();
 
   const [hasFocus, setHasFocus] = useState(false);
   const currentTabRef = useRef<HTMLDivElement>(null);
 
+  const keyboardMap = useMemo(() => getKeyboardMap(dir), [dir]);
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    const cmd = KeyboardMap.get(e);
+    const cmd = keyboardMap.get(e);
     if (cmd) {
       e.preventDefault();
       cmd.exec(nav);
     }
-  }, [nav]);
+  }, [nav, keyboardMap]);
 
   const handleTabMouseDown = useCallback((e: MouseEvent) => {
     // If the sidebar currently contains the focus, we can move it safely to

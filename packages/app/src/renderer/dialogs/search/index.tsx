@@ -6,6 +6,7 @@ import {Shortcut, Checkbox, Button, useUniqueId} from '@condict/ui';
 
 import {SearchScope} from '../../graphql-shared';
 import {DialogParams, DialogProps} from '../../dialog-stack';
+import {AcceptKey, CancelKey} from '../../shortcuts';
 import {useImmediateEntryAndExit} from '../../ui';
 import {Page, SearchPage} from '../../pages';
 
@@ -14,13 +15,9 @@ import SearchResultList from './search-result-list';
 import {SearchResult} from './types';
 import * as S from './styles';
 
-const CloseKey = Shortcut.parse('Escape');
-
 const PrevResultKey = Shortcut.parse('ArrowUp');
 
 const NextResultKey = Shortcut.parse('ArrowDown');
-
-const CommitKey = Shortcut.parse('Enter');
 
 const InitialScopes: SearchScope[] = ['SEARCH_LEMMAS', 'SEARCH_DEFINITIONS'];
 
@@ -59,7 +56,7 @@ const SearchDialog = (props: DialogProps<Page | null>): JSX.Element => {
   }, []);
 
   const handleDialogKeyDown = useCallback((e: KeyboardEvent) => {
-    if (Shortcut.matches(CloseKey, e)) {
+    if (Shortcut.matches(CancelKey, e)) {
       e.preventDefault();
       onResolve(null);
     }
@@ -73,7 +70,7 @@ const SearchDialog = (props: DialogProps<Page | null>): JSX.Element => {
     } else if (Shortcut.matches(NextResultKey, e)) {
       e.preventDefault();
       onSelect('next');
-    } else if (Shortcut.matches(CommitKey, e)) {
+    } else if (Shortcut.matches(AcceptKey, e)) {
       e.preventDefault();
       if (currentResult) {
         onResolve(SearchResult.toPage(currentResult));

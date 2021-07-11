@@ -7,14 +7,12 @@ import {
 } from 'react';
 import {Localized} from '@fluent/react';
 
-import {Shortcut} from '@condict/ui';
+import {Shortcut, useWritingDirection} from '@condict/ui';
+
+import {VerticalTabPrevKey, VerticalTabNextKey} from '../../shortcuts';
 
 import AllSections from './sections';
 import * as S from './styles';
-
-const PrevSectionKey = Shortcut.parse('ArrowUp ArrowLeft');
-
-const NextSectionKey = Shortcut.parse('ArrowDown ArrowRight');
 
 const SelectTabKey = Shortcut.parse('Space Enter');
 
@@ -27,11 +25,13 @@ export type Props = {
 const TabList = (props: Props): JSX.Element => {
   const {dialogId, currentIndex, onTrySetCurrentIndex} = props;
 
+  const dir = useWritingDirection();
+
   const handleTabListKeyDown = useCallback((e: KeyboardEvent) => {
     const delta =
-      Shortcut.matches(PrevSectionKey, e)
+      Shortcut.matches(VerticalTabPrevKey[dir], e)
         ? -1
-        : Shortcut.matches(NextSectionKey, e)
+        : Shortcut.matches(VerticalTabNextKey[dir], e)
           ? 1
           : 0;
     if (delta !== 0) {
@@ -40,7 +40,7 @@ const TabList = (props: Props): JSX.Element => {
         (index + delta + AllSections.length) % AllSections.length
       );
     }
-  }, [onTrySetCurrentIndex]);
+  }, [onTrySetCurrentIndex, dir]);
 
   const handleTabClick = useCallback((index: number) => {
     onTrySetCurrentIndex(index);

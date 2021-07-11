@@ -1,10 +1,11 @@
-import {Fragment, useState, useCallback, useRef} from 'react';
+import {Fragment, KeyboardEvent, useState, useCallback, useRef} from 'react';
 import {Localized, useLocalization} from '@fluent/react';
 import CloseIcon from 'mdi-react/CloseIcon';
 
-import {useUniqueId} from '@condict/ui';
+import {Shortcut, useUniqueId} from '@condict/ui';
 
 import {DialogParams, DialogProps} from '../../dialog-stack';
+import {CancelKey} from '../../shortcuts';
 
 import TabList from './tab-list';
 import AllSections from './sections';
@@ -38,7 +39,13 @@ const SettingsDialog = (props: DialogProps<void>): JSX.Element => {
 
   const handleCloseClick = useCallback(() => {
     tryLeaveSection(onResolve);
-  }, [tryLeaveSection]);
+  }, [tryLeaveSection, onResolve]);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (!e.isDefaultPrevented() && Shortcut.matches(CancelKey, e)) {
+      tryLeaveSection(onResolve);
+    }
+  }, [tryLeaveSection, onResolve]);
 
   const id = useUniqueId();
 
@@ -47,6 +54,7 @@ const SettingsDialog = (props: DialogProps<void>): JSX.Element => {
       title={l10n.getString('settings-title')}
       animationPhase={animationPhase}
       onAnimationPhaseEnd={onAnimationPhaseEnd}
+      onKeyDown={handleKeyDown}
     >
       <S.Sidebar aria-label={l10n.getString('settings-sidebar-label')}>
         <S.Title>

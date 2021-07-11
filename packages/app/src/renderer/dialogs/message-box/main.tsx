@@ -4,13 +4,12 @@ import {useLocalization} from '@fluent/react';
 import {Shortcut} from '@condict/ui';
 
 import {DialogParams, DialogProps} from '../../dialog-stack';
+import {CancelKey} from '../../shortcuts';
 
 import {MessageBoxParams} from './types';
 import * as S from './styles';
 
 type Props<R> = DialogProps<R> & MessageBoxParams<R>;
-
-const CancelKey = Shortcut.parse('Escape');
 
 function MessageBox<R>(props: Props<R>): JSX.Element {
   const {
