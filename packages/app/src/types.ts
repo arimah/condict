@@ -134,3 +134,22 @@ export interface Locale {
   /** The locale's raw translation bundle. */
   readonly source: string;
 }
+
+export type UpdateStatus =
+  | 'unknown'
+  | 'isLatest'
+  | 'updateAvailable'
+  | 'checking'
+  | 'downloading'
+  | 'downloadedNeedsRestart';
+
+/**
+ * Encapsulates the current update progress, which combines an update status
+ * with download progress.
+ */
+export interface UpdateProgress {
+  /** The current update status. */
+  readonly status: UpdateStatus;
+  /** The current download progress as a percentage between 0 and 100. */
+  readonly downloadProgress: number;
+}

@@ -6,6 +6,7 @@ import {isMacOS} from '@condict/platform';
 import initConfig from './config';
 import initServer from './server';
 import initTranslations, {DefaultLocale} from './translations';
+import initUpdater from './updater';
 import initMainWindow from './main-window';
 import ipc from './ipc';
 
@@ -28,6 +29,8 @@ const main = (): void => {
     config.current.server,
     () => config.current.login.sessionToken
   );
+
+  const updater = initUpdater();
 
   const mainWindow = initMainWindow(() => config.current);
 
@@ -55,6 +58,14 @@ const main = (): void => {
 
   translations.onAvailableLocalesChanged = locales => {
     mainWindow.send('available-locales-changed', locales);
+  };
+
+  updater.onStatusChanged = status => {
+    mainWindow.send('update-status-changed', status);
+  };
+
+  updater.onDownloadProgress = progress => {
+    mainWindow.send('update-download-progress', progress);
   };
 
   ipc.handle('show-open-dialog', (e, options) => {

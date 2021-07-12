@@ -223,6 +223,10 @@ settings-updates-is-latest = You have the latest version.
 
 settings-updates-available = A new version is available!
 
+settings-updates-checking = Checking for new version...
+
+settings-updates-downloading = Downloading update...
+
 settings-updates-downloaded = The update will be installed next time you start Condict.
 
 ## Various temporary test messages

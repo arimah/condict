@@ -11,6 +11,8 @@ import {
   AppConfig,
   ThemeName,
   Locale,
+  UpdateStatus,
+  UpdateProgress,
 } from './types';
 
 /** IPC messages sent from the main process to a browser window. */
@@ -29,6 +31,15 @@ export type MainChannels = {
 
   /** Informs the renderer that the set of available locales has changed. */
   'available-locales-changed': readonly string[];
+
+  /** Informs the renderer that the update status has changed. */
+  'update-status-changed': UpdateStatus;
+
+  /**
+   * Informs the renderer that the current version u pdate download progress has
+   * changed. The value is a percentage between 0 and 100.
+   */
+  'update-download-progress': number;
 };
 
 /** IPC messages sent from a browser window to the main process. */
@@ -59,6 +70,43 @@ export type RendererChannels = {
    * reading a file. The reply contains the raw translation source text.
    */
   'get-locale': IpcRendererMessage<string, Locale>;
+
+  /** Gets the current update progress. */
+  'get-update-progress': IpcRendererMessage<void, UpdateProgress>;
+
+  /**
+   * Asks the main process to check for updates. If the application is currently
+   * waiting to download a new version (i.e. knows there is an update), download
+   * a new version, or has a new version downloaded, this call is a no-op.
+   *
+   * If and when the update status is updated, the main process sends the IPC
+   * message `update-status-changed`.`
+   *
+   * If the call is a no-op, the returned promise resolves immediately.
+   * Otherwise, the promise resolves when the update check is completed.
+   */
+  'check-for-updates': IpcRendererMessage<void, void>;
+
+  /**
+   * Asks the main process to download the pending update and prepare it for
+   * installation. If there is no pending update, or the application is waiting
+   * to restart after downloading an update, this call is a no-op.
+   *
+   * During the download, the main process will periodically send IPC messages
+   * with the download progress (`update-download-progress`).
+   *
+   * If and when the update status is updated, the main process sends the IPC
+   * message `update-status-changed`.`
+   *
+   * If the call is a no-op, the returned promise resolves immediately.
+   * Otherwise, the promise resolves when the download is completed.
+   */
+  'download-update': IpcRendererMessage<void, void>;
+
+  /**
+   * TEMPORARY TEST MESSAGE. Resets the update status to 'unknown'.
+   */
+  'reset-update-status': IpcRendererMessage<void, void>;
 
   /** Requests to show a file open dialog. */
   'show-open-dialog': IpcRendererMessage<
