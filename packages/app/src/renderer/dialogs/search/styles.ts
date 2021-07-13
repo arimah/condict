@@ -11,6 +11,7 @@ export const Wrapper = styled.div`
   max-width: 75vw;
   height: 520px;
   max-height: 75vh;
+  pointer-events: none;
 `;
 
 export const Main = styled.div.attrs({
@@ -25,7 +26,9 @@ export const Main = styled.div.attrs({
   max-height: 100%;
   border-radius: 15px;
   background-color: ${p => p.theme.general.bg};
-  box-shadow: 0 2px 7px rgba(0, 0, 0, ${p => p.theme.mode === 'dark' ? '0.8' : '0.6'});
+  box-shadow:
+    0 2px 7px rgba(0, 0, 0, ${p => p.theme.mode === 'dark' ? '0.8' : '0.6'});
+  pointer-events: all;
 
   &:focus {
     outline: none;

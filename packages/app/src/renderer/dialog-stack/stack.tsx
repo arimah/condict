@@ -1,3 +1,4 @@
+import {useRef} from 'react';
 import ReactDOM from 'react-dom';
 
 import {FocusTrap} from '@condict/ui';
@@ -38,17 +39,13 @@ const DialogStack = (props: Props): JSX.Element => {
   return ReactDOM.createPortal(
     <TransitionList list={dialogs} getKey={getKey}>
       {(dialog, phase, onAnimationPhaseEnd) =>
-        <FocusTrap active={focusTrapActive(dialog.id, phase, currentId)}>
-          <S.Container
-            active={phase !== 'leaving'}
-            backdrop={dialog.id === backdropId}
-          >
-            {dialog.render({
-              animationPhase: phase,
-              onAnimationPhaseEnd,
-            })}
-          </S.Container>
-        </FocusTrap>
+        <DialogItem
+          dialog={dialog}
+          phase={phase}
+          backdrop={dialog.id === backdropId}
+          focusTrap={focusTrapActive(dialog.id, phase, currentId)}
+          onAnimationPhaseEnd={onAnimationPhaseEnd}
+        />
       }
     </TransitionList>,
     getPortalRoot()
@@ -79,4 +76,44 @@ const focusTrapActive = (
     return 'disabled';
   }
   return 'paused';
+};
+
+type DialogItemProps = {
+  dialog: Dialog;
+  phase: ItemPhase;
+  backdrop: boolean;
+  focusTrap: 'active' | 'paused' | 'disabled';
+  onAnimationPhaseEnd: () => void;
+};
+
+const DialogItem = (props: DialogItemProps): JSX.Element => {
+  const {dialog, phase, backdrop, focusTrap, onAnimationPhaseEnd} = props;
+
+  // We can't rely entirely on FocusTrap's onPointerDownOutside to detect clicks
+  // outside the dialog, since the S.Container covers the entire screen.
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  return (
+    <FocusTrap
+      active={focusTrap}
+      onPointerDownOutside={dialog.onPointerDownOutside}
+    >
+      <S.Container
+        active={phase !== 'leaving'}
+        backdrop={backdrop}
+        onMouseDown={dialog.onPointerDownOutside && (e => {
+          if (e.target === containerRef.current) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            dialog.onPointerDownOutside!();
+          }
+        })}
+        ref={containerRef}
+      >
+        {dialog.render({
+          animationPhase: phase,
+          onAnimationPhaseEnd,
+        })}
+      </S.Container>
+    </FocusTrap>
+  );
 };

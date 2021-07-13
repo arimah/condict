@@ -10,6 +10,11 @@ export interface Dialog {
    * behind it.
    */
   readonly backdrop: boolean;
+  /**
+   * A function that is called when the pointer is pressed down outside the
+   * dialog, typically to resolve the dialog with a cancellation value.
+   */
+  readonly onPointerDownOutside: (() => void) | undefined;
   /** Renders the main content of the dialog. */
   readonly render: (
     partialProps: Pick<
@@ -25,6 +30,13 @@ export interface DialogParams<R> {
    * behind it.
    */
   readonly backdrop?: boolean;
+  /**
+   * If set, contains the value that the dialog resolves to when the pointer is
+   * pressed down outside the dialog. Typically used to cancel the dialog.
+   */
+  readonly pointerDownOutside?: {
+    readonly value: R;
+  };
   /**
    * Renders the dialog's content. This is *not* a component type, but a render
    * function that returns a React tree. It is not possible to use hooks inside

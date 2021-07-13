@@ -1,6 +1,7 @@
 import {KeyboardEvent, ChangeEvent, useState, useCallback} from 'react';
 import {Localized, useLocalization} from '@fluent/react';
 import SearchIcon from 'mdi-react/MagnifyIcon';
+import CloseIcon from 'mdi-react/CloseIcon';
 
 import {Shortcut, Checkbox, Button, useUniqueId} from '@condict/ui';
 
@@ -123,7 +124,7 @@ const SearchDialog = (props: DialogProps<Page | null>): JSX.Element => {
             />
           </S.SearchScopes>
           <S.AdvancedSearch>
-            <Button slim onClick={handleAdvancedSearch}>
+            <Button slim borderless onClick={handleAdvancedSearch}>
               <Localized id='search-box-advanced-link'/>
             </Button>
           </S.AdvancedSearch>
@@ -145,6 +146,7 @@ const SearchDialog = (props: DialogProps<Page | null>): JSX.Element => {
 
 const searchDialog: DialogParams<Page | null> = {
   backdrop: true,
+  pointerDownOutside: {value: null},
   // eslint-disable-next-line react/display-name
   render: props => <SearchDialog {...props}/>,
 };

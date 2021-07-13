@@ -53,7 +53,7 @@ const DialogStackProvider = (props: Props): JSX.Element => {
         openDialog(index + 1, params);
 
       return new Promise<R>((resolve, reject) => {
-        const {render} = params;
+        const {render, pointerDownOutside} = params;
         const onResolve = (value: R): void => dispatch({
           type: 'close',
           index,
@@ -65,6 +65,10 @@ const DialogStackProvider = (props: Props): JSX.Element => {
           dialog: {
             id: genId(),
             backdrop: params.backdrop ?? false,
+            onPointerDownOutside:
+              pointerDownOutside
+                ? () => onResolve(pointerDownOutside.value)
+                : undefined,
             // eslint-disable-next-line react/display-name
             render: partialProps =>
               <OpenDialogContext.Provider value={openNestedDialog}>
