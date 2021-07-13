@@ -46,6 +46,7 @@ import {Button} from '@condict/ui';
 | `minimal` | boolean | `false` | If true, applies minimal styling to the button. Basically, it removes the background. |
 | `intent` | one of `'general'`, `'accent'`, `'danger'` | `'general'` | Determines what intent styling to give the button. |
 | `slim` | boolean | `false` | If true, reduce the button's padding, to make it fit better alongside text inputs, selects, and similar. |
+| `borderless` | boolean | `false` | If true, the entire button lights up when hovered and pressed. By default, the border stays the same. Borderless styling is used when the button is placed on a background with the same colour as the button. |
 | `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
 | `type` | one of `'button'`, `'submit'` | `'button'` | Determines the button's type. Submit buttons are used in forms. This prop has no effect on link buttons. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `disabled` and `onClick` props. |
@@ -69,6 +70,7 @@ Link buttons forward their ref to the underlying element, which is an `<a>`.
 | `minimal` | boolean | `false` | If true, applies minimal styling to the button. Basically, it removes the background. |
 | `intent` | one of `'general'`, `'accent'`, `'danger'` | `'general'` | Determines what intent styling to give the button. |
 | `slim` | boolean | `false` | If true, reduce the button's padding, to make it fit better alongside text inputs, selects, and similar. |
+| `borderless` | boolean | `false` | If true, the entire button lights up when hovered and pressed. By default, the border stays the same. Borderless styling is used when the button is placed on a background with the same colour as the button. |
 | `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `onClick` prop. |
 | `onClick` | function | no-op | Attaches the `click` event handler to the button. If the button has a [command][], this prop is ignored. |

@@ -22,6 +22,7 @@ const Button = React.forwardRef((props: Props, ref: Ref<HTMLButtonElement>) => {
     slim = false,
     bold = false,
     intent = 'general',
+    borderless = false,
     disabled,
     onClick,
     children,
@@ -39,6 +40,7 @@ const Button = React.forwardRef((props: Props, ref: Ref<HTMLButtonElement>) => {
       slim={slim}
       bold={bold}
       intent={intent}
+      borderless={borderless}
       disabled={command !== null ? command.disabled || disabled : disabled}
       onClick={command !== null ? command.exec : onClick}
       type={type}

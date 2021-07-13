@@ -1,13 +1,20 @@
-import styled, {css} from 'styled-components';
+import styled, {StyledProps, css} from 'styled-components';
 
-import {intentVar} from '../theme';
+import {UIColors, intentVar} from '../theme';
 import Intent from '../intent';
 
 export type Props = {
   slim: boolean;
   bold: boolean;
   intent: Intent;
+  borderless: boolean;
 };
+
+const buttonColor = (regular: keyof UIColors, bold: keyof UIColors) =>
+  (props: StyledProps<Props>) => {
+    const colors = props.theme[props.intent];
+    return colors[props.bold ? bold : regular];
+  };
 
 export const ButtonStyle = css<Props>`
   display: inline-block;
@@ -20,50 +27,36 @@ export const ButtonStyle = css<Props>`
   border-radius: ${p => p.slim ? '3px' : '7px'};
   position: relative;
 
+  color: ${buttonColor('fg', 'boldFg')};
+  border-color: ${buttonColor('bg', 'boldBg')};
+  background-color: ${buttonColor('bg', 'boldBg')};
+
+  &:hover {
+    background-color: ${buttonColor('hoverBg', 'boldHoverBg')};
+    ${p => p.borderless && css<Props>`
+      border-color: ${buttonColor('hoverBg', 'boldHoverBg')};
+    `}
+  }
+
+  &:active {
+    background-color: ${buttonColor('activeBg', 'boldActiveBg')};
+    ${p => p.borderless && css<Props>`
+      border-color: ${buttonColor('activeBg', 'boldActiveBg')};
+    `}
+  }
+
+  &:disabled {
+    color: ${buttonColor('disabledFg', 'boldDisabledFg')};
+    border-color: ${buttonColor('disabledBg', 'boldDisabledBg')};
+    background-color: ${buttonColor('disabledBg', 'boldDisabledBg')};
+  }
+
   &:focus,
   &.force-focus {
     outline: none;
     border: 2px solid ${p => p.theme.focus.color};
     box-shadow: ${p => p.theme.focus.shadow};
   }
-
-  ${p => p.bold ? css<Props>`
-    color: ${intentVar('boldFg')};
-    border-color: ${intentVar('boldBg')};
-    background-color: ${intentVar('boldBg')};
-
-    &:hover {
-      background-color: ${intentVar('boldHoverBg')};
-    }
-
-    &:active {
-      background-color: ${intentVar('boldActiveBg')};
-    }
-
-    &:disabled {
-      color: ${intentVar('boldDisabledFg')};
-      border-color: ${intentVar('boldDisabledBg')};
-      background-color: ${intentVar('boldDisabledBg')};
-    }
-  ` : css<Props>`
-    color: ${intentVar('fg')};
-    border-color: ${intentVar('bg')};
-    background-color: ${intentVar('bg')};
-
-    &:hover {
-      background-color: ${intentVar('hoverBg')};
-    }
-
-    &:active {
-      background-color: ${intentVar('activeBg')};
-    }
-
-    &:disabled {
-      color: ${intentVar('disabledFg')};
-      border-color: ${intentVar('disabledBg')};
-      background-color: ${intentVar('disabledBg')};
-    }
-  `}
 
   > .mdi-icon {
     margin-block: -4px;

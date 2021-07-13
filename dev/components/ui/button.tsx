@@ -17,6 +17,7 @@ type State = {
   disabled: boolean;
   bold: boolean;
   slim: boolean;
+  borderless: boolean;
 };
 
 const InitialState: State = {
@@ -24,13 +25,14 @@ const InitialState: State = {
   disabled: false,
   bold: false,
   slim: false,
+  borderless: false,
 };
 
 const StorageKey = 'condict/ui/button';
 
 const Main = (): JSX.Element => {
   const {state, set, reset} = useDemoState(StorageKey, InitialState);
-  const {intent, disabled, bold, slim} = state;
+  const {intent, disabled, bold, slim, borderless} = state;
   return (
     <Demo
       name='Button'
@@ -57,6 +59,11 @@ const Main = (): JSX.Element => {
           label='Slim'
           onChange={e => set('slim', e.target.checked)}
         />,
+        <Checkbox
+          checked={borderless}
+          label='Borderless'
+          onChange={e => set('borderless', e.target.checked)}
+        />,
       ]}
       onReset={reset}
     >
@@ -67,15 +74,26 @@ const Main = (): JSX.Element => {
             disabled={disabled}
             bold={bold}
             slim={slim}
+            borderless={borderless}
             label='Regular button'
           />
         </Row>
         <Row>
-          <Button intent={intent} disabled={disabled} bold={bold}>
+          <Button
+            intent={intent}
+            disabled={disabled}
+            bold={bold}
+            borderless={borderless}
+          >
             <HandHeartIcon/>
             <span>Icon before</span>
           </Button>
-          <Button intent={intent} disabled={disabled} bold={bold}>
+          <Button
+            intent={intent}
+            disabled={disabled}
+            bold={bold}
+            borderless={borderless}
+          >
             <span>Icon after</span>
             <RobotLoveIcon/>
           </Button>
@@ -83,6 +101,7 @@ const Main = (): JSX.Element => {
             intent={intent}
             disabled={disabled}
             bold={bold}
+            borderless={borderless}
             label='Icon only'
           >
             <CakeIcon/>
@@ -93,22 +112,34 @@ const Main = (): JSX.Element => {
             intent={intent}
             bold={bold}
             slim={slim}
+            borderless={borderless}
             label='Link button'
             href='#'
           />
         </Row>
         <Row>
-          <LinkButton intent={intent} bold={bold} href='#'>
+          <LinkButton
+            intent={intent}
+            bold={bold}
+            borderless={borderless}
+            href='#'
+          >
             <DeathStarIcon/>
             <span>Icon before</span>
           </LinkButton>
-          <LinkButton intent={intent} bold={bold} href='#'>
+          <LinkButton
+            intent={intent}
+            bold={bold}
+            borderless={borderless}
+            href='#'
+          >
             <span>Icon after</span>
             <PuzzleIcon/>
           </LinkButton>
           <LinkButton
             intent={intent}
             bold={bold}
+            borderless={borderless}
             href='#'
             label='Icon only'
           >

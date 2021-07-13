@@ -45,18 +45,11 @@ export const Actions = styled.span`
   padding-inline: 0 2px;
 `;
 
-export const Action = styled(Button)`
+export const Action = styled(Button).attrs({
+  borderless: true,
+})`
   padding: 4px 8px;
   border-radius: 5px;
-  border-color: ${p => p.theme.general.bg};
-
-  &:hover:not(:focus):not(.force-focus) {
-    border-color: ${p => p.theme.general.hoverBg};
-  }
-
-  &:active:not(:focus):not(.force-focus) {
-    border-color: ${p => p.theme.general.activeBg};
-  }
 `;
 
 export const PrimaryAction = styled(Action)`

@@ -31,6 +31,7 @@ const LinkButton = React.forwardRef((
     slim = false,
     bold = false,
     intent = 'general',
+    borderless = false,
     onClick,
     children,
     ...otherProps
@@ -48,6 +49,7 @@ const LinkButton = React.forwardRef((
       slim={slim}
       bold={bold}
       intent={intent}
+      borderless={borderless}
       onClick={
         command !== null
           ? (command.disabled ? cancelClickEvent : command.exec)
