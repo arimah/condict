@@ -2,6 +2,7 @@ import AppearanceSection from './appeareance-section';
 import LanguageSection from './language-section';
 import UpdatesSection from './updates-section';
 import StorageSection from './storage-section';
+import AboutSection from './about-section';
 import {Section} from './types';
 
 const AllSections: readonly Section[] = [
@@ -9,6 +10,7 @@ const AllSections: readonly Section[] = [
   LanguageSection,
   UpdatesSection,
   StorageSection,
+  AboutSection,
 ];
 
 export default AllSections;

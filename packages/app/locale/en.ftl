@@ -137,6 +137,8 @@ settings-section-updates = Application updates
 
 settings-section-storage = Data & storage
 
+settings-section-about = About Condict
+
 ## Settings > Appearance section
 
 settings-theme-label = Theme
@@ -229,6 +231,17 @@ settings-updates-downloading = Downloading update...
 
 settings-updates-downloaded = The update will be installed next time you start Condict.
 
-## Various temporary test messages
+## Settings > About section
 
-test-dialog-title = Is this message box working?
+# Elements:
+#   <repo-link>: Link to the Condict repository on GitHub.
+settings-about-authors = Condict is developed by Alice Heurlin and is free and open-source software, distributed under the MIT License. <repo-link>The code is available on GitHub.</repo-link>
+
+settings-about-special-thanks = Alice would like to extend special gratitude to the following:
+
+settings-about-special-thanks-list =
+  <list-item>M. Damian Mulligan for invaluable technical expertise and continual encouragement.</list-item>
+
+settings-about-third-party-licenses-title = Third-party licences
+
+settings-about-third-party-licenses-intro = This section does not yet have any content.
