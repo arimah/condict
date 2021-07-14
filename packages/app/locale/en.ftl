@@ -249,3 +249,17 @@ settings-about-special-thanks-list =
 settings-about-third-party-licenses-title = Third-party licences
 
 settings-about-third-party-licenses-intro = This section does not yet have any content.
+
+## Generic messages
+
+generic-loading = Loading...
+
+# Variables:
+#   errorCount: The number of errors that were returned from the server. Always greater than 0.
+fetch-error =
+  Something went wrong when loading this content. The following {$errorCount ->
+    [one] error was received
+   *[other] {$errorCount} errors were received
+  }:
+
+fetch-no-data = Something went wrong when loading this content: no data was received.
