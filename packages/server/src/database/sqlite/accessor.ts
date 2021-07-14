@@ -46,12 +46,18 @@ export default class Accessor implements DataAccessor, DataWriter {
   private readonly logSql: (sql: string) => void;
 
   // TODO: See if it's meaningful to break out batching into a separate type.
-  private readonly dataLoaders: Record<string, DataLoader<any, any>> = {};
+  private readonly dataLoaders: Record<string, DataLoader<any, any>>;
 
-  public constructor(database: Database, rwToken: RwToken, logSql: SqlLogger) {
+  public constructor(
+    database: Database,
+    rwToken: RwToken,
+    logSql: SqlLogger,
+    dataLoaders?: Record<string, DataLoader<any, any>>
+  ) {
     this.database = database;
     this.rwToken = rwToken;
     this.logSql = logSql;
+    this.dataLoaders = dataLoaders ?? {};
   }
 
   // Undocumented methods implement members of DataReader or DataWriter.
@@ -154,9 +160,12 @@ export default class Accessor implements DataAccessor, DataWriter {
 
     let result: R;
     try {
-      result = await callback(
-        new Accessor(this.database, writerToken, this.logSql)
-      );
+      result = await callback(new Accessor(
+        this.database,
+        writerToken,
+        this.logSql,
+        this.dataLoaders
+      ));
 
       this.prepare('commit').run();
     } catch (e) {
