@@ -86,7 +86,7 @@ const LemmaMut = {
         from lemmas l
         left join definitions d on d.lemma_id = l.id
         left join derived_definitions dd on dd.lemma_id = l.id
-        where l.languages_id = ${languageId}
+        where l.language_id = ${languageId}
           and d.id is null
           and dd.original_definition_id is null
       )
