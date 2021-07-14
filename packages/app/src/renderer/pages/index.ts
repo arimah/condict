@@ -7,5 +7,6 @@ export {
   LemmaPage,
   DefinitionPage,
   PartOfSpeechPage,
+  TagPage,
   SearchPage,
 } from './types';

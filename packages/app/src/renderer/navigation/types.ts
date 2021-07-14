@@ -81,6 +81,7 @@ export const Tab = {
     switch (tab.page.type) {
       case 'home':
       case 'language':
+      case 'tag':
         return false;
       default:
         return tab.panels.length === 0;
@@ -108,6 +109,10 @@ export const Tab = {
         });
       case 'partOfSpeech':
         return l10n.getString('sidebar-part-of-speech-tab-title', {
+          name: tab.title,
+        });
+      case 'tag':
+        return l10n.getString('sidebar-tag-tab-title', {
           name: tab.title,
         });
       case 'search':

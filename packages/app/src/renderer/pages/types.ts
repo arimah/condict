@@ -3,6 +3,7 @@ import {
   LemmaId,
   DefinitionId,
   PartOfSpeechId,
+  TagId,
 } from '../graphql-shared';
 
 export type Page =
@@ -11,6 +12,7 @@ export type Page =
   | LemmaPage
   | DefinitionPage
   | PartOfSpeechPage
+  | TagPage
   | SearchPage;
 
 export const Page = {
@@ -30,6 +32,8 @@ export const Page = {
       case 'definition':
         return page.term;
       case 'partOfSpeech':
+        return page.name;
+      case 'tag':
         return page.name;
       case 'search':
         return page.query.trim();
@@ -159,6 +163,23 @@ export const PartOfSpeechPage = (
   id,
   name,
   language,
+});
+
+export interface TagPage {
+  readonly type: 'tag';
+  /** The ID of the tag to show. */
+  readonly id: TagId;
+  /**
+   * The name of the tag, if available. Shown as the initial tab title while the
+   * tab is loading.
+   */
+  readonly name: string;
+}
+
+export const TagPage = (id: TagId, name = ''): TagPage => ({
+  type: 'tag',
+  id,
+  name,
 });
 
 export interface SearchPage {

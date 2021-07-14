@@ -36,6 +36,10 @@ sidebar-definition-tab-title = {$term}
 #   name: The name of the part of speech.
 sidebar-part-of-speech-tab-title = {$name}
 
+# Variables:
+#   name: The name of the tag.
+sidebar-tag-tab-title = {$name}
+
 # Tab title for a search page with a non-empty search query.
 #
 # Variables:
