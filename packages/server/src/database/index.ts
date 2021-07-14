@@ -3,6 +3,7 @@ export {
   DataAccessor,
   DataReader,
   DataWriter,
+  BatchFn,
   ExecResult,
   RawSql,
   Value,

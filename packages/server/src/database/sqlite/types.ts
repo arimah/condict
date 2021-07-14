@@ -124,7 +124,7 @@ export interface DataReader {
   batchOneToOne<K extends string | number, Row>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: readonly K[]) => Awaitable<Row[]>,
+    fetcher: BatchFn<K, Row>,
     getRowId: (row: Row) => K
   ): Promise<Row | null>;
   /**
@@ -149,7 +149,7 @@ export interface DataReader {
   batchOneToOne<K extends string | number, Row, E>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: readonly K[], extraArg: E) => Awaitable<Row[]>,
+    fetcher: BatchFn<K, Row, E>,
     getRowId: (row: Row) => K,
     extraArg: E
   ): Promise<Row | null>;
@@ -172,7 +172,7 @@ export interface DataReader {
   batchOneToMany<K extends string | number, Row>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: readonly K[]) => Awaitable<Row[]>,
+    fetcher: BatchFn<K, Row>,
     getRowId: (row: Row) => K
   ): Promise<Row[]>;
   /**
@@ -197,7 +197,7 @@ export interface DataReader {
   batchOneToMany<K extends string | number, Row, E>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: readonly K[], extraArg: E) => Awaitable<Row[]>,
+    fetcher: BatchFn<K, Row, E>,
     getRowId: (row: Row) => K,
     extraArg: E
   ): Promise<Row[]>;
@@ -210,6 +210,12 @@ export interface DataReader {
    */
   clearCache<K extends string | number>(batchKey: string, id: K): void;
 }
+
+export type BatchFn<K extends string | number, Row, E = undefined> = (
+  db: DataReader,
+  ids: readonly K[],
+  extraArg: E
+) => Awaitable<Row[]>;
 
 /**
  * A database connection that has shared read-only access and must be disposed

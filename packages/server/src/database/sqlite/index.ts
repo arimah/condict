@@ -2,6 +2,7 @@ export {
   DataReader,
   DataAccessor,
   DataWriter,
+  BatchFn,
   Value,
   Scalar,
   RawSql,

@@ -1,12 +1,13 @@
 import {Database, Statement} from 'better-sqlite3';
-import DataLoader from 'dataloader';
 
 import {FieldSet} from '../../model';
 
 import {RwToken} from './rwlock';
+import RequestCache from './request-cache';
 import {
   DataAccessor,
   DataWriter,
+  BatchFn,
   ExecResult,
   Awaitable,
   Value,
@@ -46,18 +47,18 @@ export default class Accessor implements DataAccessor, DataWriter {
   private readonly logSql: (sql: string) => void;
 
   // TODO: See if it's meaningful to break out batching into a separate type.
-  private readonly dataLoaders: Record<string, DataLoader<any, any>>;
+  private readonly cache: RequestCache;
 
   public constructor(
     database: Database,
     rwToken: RwToken,
     logSql: SqlLogger,
-    dataLoaders?: Record<string, DataLoader<any, any>>
+    sharedCache?: RequestCache
   ) {
     this.database = database;
     this.rwToken = rwToken;
     this.logSql = logSql;
-    this.dataLoaders = dataLoaders ?? {};
+    this.cache = sharedCache ?? new RequestCache(this);
   }
 
   // Undocumented methods implement members of DataReader or DataWriter.
@@ -160,12 +161,14 @@ export default class Accessor implements DataAccessor, DataWriter {
 
     let result: R;
     try {
-      result = await callback(new Accessor(
+      const writer = new Accessor(
         this.database,
         writerToken,
         this.logSql,
-        this.dataLoaders
-      ));
+        this.cache
+      );
+      this.cache.setDataReader(writer);
+      result = await callback(writer);
 
       this.prepare('commit').run();
     } catch (e) {
@@ -173,6 +176,7 @@ export default class Accessor implements DataAccessor, DataWriter {
       throw e;
     } finally {
       this.rwToken = writerToken.downgrade();
+      this.cache.setDataReader(this);
     }
     return result;
   }
@@ -191,79 +195,30 @@ export default class Accessor implements DataAccessor, DataWriter {
     return found === 1;
   }
 
-  public batchOneToOne<K extends string | number, Row, E = undefined>(
+  public batchOneToOne<K extends string | number, Row, E = void>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: readonly K[], extraArg?: E) => Awaitable<Row[]>,
+    fetcher: BatchFn<K, Row, E>,
     getRowId: (row: Row) => K,
     extraArg?: E
   ): Promise<Row | null> {
     this.ensureValid();
-
-    let dataLoader: DataLoader<K, Row | null>;
-
-    if (!this.dataLoaders[batchKey]) {
-      dataLoader = new DataLoader<K, Row | null>(async ids => {
-        const rows = await fetcher(this, ids, extraArg);
-        const rowsById = rows.reduce((acc, row) => {
-          acc.set(getRowId(row), row);
-          return acc;
-        }, new Map<K, Row>());
-        return ids.map(id => rowsById.get(id) || null);
-      });
-      this.dataLoaders[batchKey] = dataLoader;
-    } else {
-      dataLoader = this.dataLoaders[batchKey] as DataLoader<K, Row | null>;
-    }
-
-    return dataLoader.load(id);
+    return this.cache.batchOneToOne(batchKey, id, fetcher, getRowId, extraArg);
   }
 
-  public batchOneToMany<K extends string | number, Row, E = undefined>(
+  public batchOneToMany<K extends string | number, Row, E = void>(
     batchKey: string,
     id: K,
-    fetcher: (db: this, ids: readonly K[], extraArg?: E) => Awaitable<Row[]>,
+    fetcher: BatchFn<K, Row, E>,
     getRowId: (row: Row) => K,
     extraArg?: E
   ): Promise<Row[]> {
     this.ensureValid();
-
-    let dataLoader: DataLoader<K, Row[]>;
-
-    if (!this.dataLoaders[batchKey]) {
-      dataLoader = new DataLoader<K, Row[]>(async ids => {
-        const rows = await fetcher(this, ids, extraArg as E);
-
-        // If there is only a single ID, assume all rows belong to it.
-        if (ids.length === 1) {
-          return [rows];
-        }
-
-        // Otherwise, find out which ID each row belongs to.
-        const rowsById = rows.reduce((acc, row) => {
-          const rowId = getRowId(row);
-          const currentRows = acc.get(rowId);
-          if (!currentRows) {
-            acc.set(rowId, [row]);
-          } else {
-            currentRows.push(row);
-          }
-          return acc;
-        }, new Map<K, Row[]>());
-        return ids.map(id => rowsById.get(id) || []);
-      });
-      this.dataLoaders[batchKey] = dataLoader;
-    } else {
-      dataLoader = this.dataLoaders[batchKey] as DataLoader<K, Row[]>;
-    }
-
-    return dataLoader.load(id);
+    return this.cache.batchOneToMany(batchKey, id, fetcher, getRowId, extraArg);
   }
 
   public clearCache<K extends string | number>(batchKey: string, id: K): void {
-    if (this.dataLoaders[batchKey]) {
-      this.dataLoaders[batchKey].clear(id);
-    }
+    this.cache.clear(batchKey, id);
   }
 
   public finish(): void {
