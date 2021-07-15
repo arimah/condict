@@ -59,6 +59,7 @@ export const getPlugins = (options = {}) => {
     // Resolve node modules in addition to local modules.
     nodeResolve({
       browser,
+      preferBuiltins: true,
     }),
 
     typescript({

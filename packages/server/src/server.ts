@@ -65,7 +65,7 @@ export default class CondictServer {
     this.schema = makeExecutableSchema({
       typeDefs: getTypeDefs(),
       resolvers: getResolvers(),
-      schemaDirectives: getDirectives(),
+      schemaTransforms: getDirectives(),
     });
   }
 

@@ -1,11 +1,9 @@
-import {SchemaDirectiveVisitorClass} from 'graphql-tools';
+import {ExecutableSchemaTransformation} from 'graphql-tools';
 
-import IdDirective from './id';
-import MarshalDirective from './marshal';
+import idDirectiveTransformer from './id';
+import marshalDirectiveTransformer from './marshal';
 
-type Directives = Record<string, SchemaDirectiveVisitorClass>;
-
-export const getDirectives = (): Directives => ({
-  id: IdDirective,
-  marshal: MarshalDirective as SchemaDirectiveVisitorClass,
-});
+export const getDirectives = (): ExecutableSchemaTransformation[] => [
+  idDirectiveTransformer,
+  marshalDirectiveTransformer,
+];

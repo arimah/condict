@@ -1,4 +1,4 @@
-import {IResolvers} from 'apollo-server';
+import {IResolvers} from 'graphql-tools';
 import merge from 'deepmerge';
 
 import DefinitionResolvers from './definition';

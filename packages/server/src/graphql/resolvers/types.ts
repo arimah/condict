@@ -1,4 +1,4 @@
-import {IFieldResolver} from 'apollo-server';
+import {IFieldResolver} from 'graphql-tools';
 
 import {DataAccessor} from '../../database';
 import {Logger} from '../../types';

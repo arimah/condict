@@ -1,5 +1,10 @@
-import {GraphQLScalarType, ValueNode, Kind} from 'graphql';
-import {SchemaDirectiveVisitor} from 'graphql-tools';
+import {ValueNode, Kind} from 'graphql';
+import {
+  ExecutableSchemaTransformation,
+  MapperKind,
+  mapSchema,
+  getDirectives,
+} from 'graphql-tools';
 
 const serialize = (value: any) => value as unknown;
 
@@ -31,11 +36,18 @@ const parseLiteral = (node: ValueNode) => {
   );
 };
 
-export default class IdDirective extends SchemaDirectiveVisitor {
-  public visitScalar(scalar: GraphQLScalarType): GraphQLScalarType | void | null {
-    scalar.serialize = serialize;
-    scalar.parseValue = parseValue;
-    scalar.parseLiteral = parseLiteral;
-    return scalar;
-  }
-}
+const idDirectiveTransformer: ExecutableSchemaTransformation = schema =>
+  mapSchema(schema, {
+    [MapperKind.SCALAR_TYPE]: scalarType => {
+      const directives = getDirectives(schema, scalarType);
+      if (directives['id']) {
+        scalarType.serialize = serialize;
+        scalarType.parseValue = parseValue;
+        scalarType.parseLiteral = parseLiteral;
+        return scalarType;
+      }
+      return;
+    },
+  });
+
+export default idDirectiveTransformer;

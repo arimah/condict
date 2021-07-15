@@ -1,11 +1,15 @@
 import {
-  GraphQLScalarType,
   GraphQLScalarSerializer,
   GraphQLScalarValueParser,
   GraphQLScalarLiteralParser,
   Kind,
 } from 'graphql';
-import {SchemaDirectiveVisitor} from 'graphql-tools';
+import {
+  ExecutableSchemaTransformation,
+  MapperKind,
+  mapSchema,
+  getDirectives,
+} from 'graphql-tools';
 
 import {MarshalType} from '../types';
 
@@ -69,17 +73,24 @@ const MarshalImpls: Record<MarshalType, MarshalImpl> = {
   },
 };
 
-export default class MarshalDirective extends SchemaDirectiveVisitor<MarshalArgs> {
-  public visitScalar(scalar: GraphQLScalarType): GraphQLScalarType | void | null {
-    const type = this.args.as;
-    const impl = MarshalImpls[type];
-    if (!impl) {
-      // This should never happen.
-      throw new Error(`Unrecognised MarshalType: ${type}`);
-    }
-    scalar.serialize = impl.serialize;
-    scalar.parseValue = impl.parseValue;
-    scalar.parseLiteral = impl.parseLiteral;
-    return scalar;
-  }
-}
+const marshalDirectiveTransformer: ExecutableSchemaTransformation = schema =>
+  mapSchema(schema, {
+    [MapperKind.SCALAR_TYPE]: scalarType => {
+      const directives = getDirectives(schema, scalarType);
+      const directiveArgs = directives['marshal'] as MarshalArgs | undefined;
+      if (directiveArgs) {
+        const impl = MarshalImpls[directiveArgs.as];
+        if (!impl) {
+          // This should never happen.
+          throw new Error(`Unrecognised MarshalType: ${directiveArgs.as}`);
+        }
+        scalarType.serialize = impl.serialize;
+        scalarType.parseValue = impl.parseValue;
+        scalarType.parseLiteral = impl.parseLiteral;
+        return scalarType;
+      }
+      return;
+    },
+  });
+
+export default marshalDirectiveTransformer;

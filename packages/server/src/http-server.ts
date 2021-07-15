@@ -1,4 +1,7 @@
 import {ApolloServer} from 'apollo-server';
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+} from 'apollo-server-core';
 import {GraphQLRequestContext} from 'apollo-server-plugin-base';
 import {customAlphabet} from 'nanoid';
 
@@ -39,22 +42,26 @@ export default class CondictHttpServer {
         req.header('x-condict-session-id'),
         genRequestId()
       ),
-      plugins: [{
-        requestDidStart: (req: GraphQLRequestContext<Context>) => {
-          const {context} = req;
+      plugins: [
+        ApolloServerPluginLandingPageGraphQLPlayground(),
+        {
+          requestDidStart: (req: GraphQLRequestContext<Context>) => {
+            const {context} = req;
 
-          const startTime = Date.now();
-          context.logger.verbose(`Start request`);
+            const startTime = Date.now();
+            context.logger.verbose(`Start request`);
 
-          return {
-            willSendResponse() {
-              const requestTime = Date.now() - startTime;
-              context.logger.verbose(`Request finished in ${requestTime} ms`);
-              req.context.finish();
-            },
-          };
+            return Promise.resolve({
+              willSendResponse() {
+                const requestTime = Date.now() - startTime;
+                context.logger.verbose(`Request finished in ${requestTime} ms`);
+                req.context.finish();
+                return Promise.resolve();
+              },
+            });
+          },
         },
-      }],
+      ],
       // We handle these ourselves.
       stopOnTerminationSignals: false,
     });

@@ -31,7 +31,9 @@
   },
   "dependencies": {
     "@condict/inflect": "^0.1.0",
-    "apollo-server": "^2.23.0",
+    "apollo-server": "^3.0.0",
+    "apollo-server-core": "^3.0.0",
+    "apollo-server-plugin-base": "^3.0.0",
     "bcrypt": "^5.0.1",
     "better-sqlite3": "^7.3.0",
     "bindings": "^1.5.0",
@@ -39,8 +41,8 @@
     "command-line-args": "^5.1.1",
     "dataloader": "^2.0.0",
     "deepmerge": "^4.2.2",
-    "graphql": "^15.5.0",
-    "graphql-tools": "^7.0.4",
+    "graphql": "^15.5.1",
+    "graphql-tools": "^7.0.5",
     "nanoid": "^3.1.22",
     "winston": "^3.3.3"
   },
