@@ -4,8 +4,8 @@ import {DefinitionId, StemInput} from '../../graphql';
 import {DefinitionStem} from './model';
 import {validateStems} from './validators';
 
-const buildStemMap = (stems: StemInput[]) => new Map<string, string>(
-  stems.map<[string, string]>(stem => [stem.name, stem.value])
+const buildStemMap = (stems: StemInput[]) => new Map(
+  stems.map(stem => [stem.name, stem.value])
 );
 
 const DefinitionStemMut = {

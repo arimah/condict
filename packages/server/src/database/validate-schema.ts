@@ -4,8 +4,6 @@ import {Connection, DataReader, DataWriter} from './sqlite';
 import schema, {schemaVersion as serverSchemaVersion} from './schema';
 
 const getSchemaVersion = (db: DataReader) => {
-  // FIXME: https://github.com/typescript-eslint/typescript-eslint/issues/2452
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type Row = { value: string };
 
   const hasSchemaInfo = db.tableExists('schema_info');

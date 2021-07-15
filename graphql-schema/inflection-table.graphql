@@ -45,8 +45,8 @@ type InflectionTable {
   definition (query through the `InflectionTableLayout.usedByDefinitions` field).
   Old layouts are ordered from oldest to newest.
 
-  Since there may be many old layouts, this field always paginated. If provided,
-  `page.perPage` cannot exceed 200.
+  Since there may be many old layouts, this field is always paginated. If
+  provided, `page.perPage` cannot exceed 200.
   """
   oldLayouts(page: PageParams): InflectionTableLayoutConnection!
 
@@ -68,10 +68,19 @@ type InflectionTable {
   to the same lemma, they will appear in the same relative order as they would
   on the `Lemma.definitions` field.
 
-  Since the table may be used by many definitions, this field always paginated.
-  If provided, `page.perPage` cannot exceed 200.
+  Since the table may be used by many definitions, this field is always
+  paginated. If provided, `page.perPage` cannot exceed 200.
   """
   usedByDefinitions(page: PageParams): DefinitionConnection!
+
+  "The time that the inflection table was created."
+  timeCreated: UtcInstant!
+
+  """
+  The time of the most recent update to the inflection table. This time covers
+  updates performed on the table itself or on its layout.
+  """
+  timeUpdated: UtcInstant!
 }
 
 "Contains paginated results from the `InflectionTable.oldLayouts` field."
@@ -136,8 +145,8 @@ type InflectionTableLayout {
   to the same lemma, they will appear in the same relative order as they would
   on the `Lemma.definitions` field.
 
-  Since the table may be used by many definitions, this field always paginated.
-  If provided, `page.perPage` cannot exceed 200.
+  Since the table may be used by many definitions, this field is always
+  paginated. If provided, `page.perPage` cannot exceed 200.
   """
   usedByDefinitions(page: PageParams): DefinitionConnection!
 }

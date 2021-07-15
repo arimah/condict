@@ -65,6 +65,16 @@ type Definition {
   `lemma.language` and is provided here for convenience.
   """
   language: Language!
+
+  "The time that the definition was created."
+  timeCreated: UtcInstant!
+
+  """
+  The time of the most recent update to the definition. This time covers updates
+  performed on the definition itself, or on its inflection tables, tags or
+  stems.
+  """
+  timeUpdated: UtcInstant!
 }
 
 """

@@ -17,7 +17,7 @@ type UserSession {
   The date and time that the session expires. After this point, the user must
   log in again to make changes to the dictionary.
   """
-  expiresAt: Date!
+  expiresAt: UtcInstant!
 }
 
 "Represents a failed login attempt."

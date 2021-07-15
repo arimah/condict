@@ -51,6 +51,12 @@ const tables: readonly TableSchema[] = [
         lemma_count integer not null default 0,
         -- The description of the language.
         description_id integer not null,
+        -- The date and time the language was created, as the number of
+        -- milliseconds since midnight 1 January, 1970, UTC.
+        time_created integer not null,
+        -- The date and time the language was last updated, as the number of
+        -- milliseconds since midnight 1 January, 1970, UTC.
+        time_updated integer not null,
         -- The full display name of the language.
         name text not null,
 
@@ -82,6 +88,12 @@ const tables: readonly TableSchema[] = [
         id integer not null primary key,
         -- The language that the part of speech belongs to.
         language_id integer not null,
+        -- The date and time the part of speech was created, as the number of
+        -- milliseconds since midnight 1 January, 1970, UTC.
+        time_created integer not null,
+        -- The date and time the part of speech was last updated, as the number
+        -- of milliseconds since midnight 1 January, 1970, UTC.
+        time_updated integer not null,
         -- The display name of the part of speech.
         name text not null,
         foreign key (language_id)
@@ -111,6 +123,12 @@ const tables: readonly TableSchema[] = [
         id integer not null primary key,
         -- The parent part of speech.
         part_of_speech_id integer not null,
+        -- The date and time the inflection table was created, as the number of
+        -- milliseconds since midnight 1 January, 1970, UTC.
+        time_created integer not null,
+        -- The date and time the inflection table was last updated, as the
+        -- number of milliseconds since midnight 1 January, 1970, UTC.
+        time_updated integer not null,
         -- The name of the inflection table, shown in admin UIs.
         name text not null,
         foreign key (part_of_speech_id)
@@ -259,6 +277,12 @@ const tables: readonly TableSchema[] = [
         part_of_speech_id integer not null,
         -- The description of the definition; the definition text itself.
         description_id integer not null,
+        -- The date and time the definition was created, as the number of
+        -- milliseconds since midnight 1 January, 1970, UTC.
+        time_created integer not null,
+        -- The date and time the definition was last updated, as the number of
+        -- milliseconds since midnight 1 January, 1970, UTC.
+        time_updated integer not null,
 
         foreign key (lemma_id)
           references lemmas(id)

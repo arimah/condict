@@ -22,9 +22,10 @@ const LanguageMut = {
     return db.transact(db => {
       const desc = DescriptionMut.insert(db, description || []);
 
+      const now = Date.now();
       const {insertId: languageId} = db.exec<LanguageId>`
-        insert into languages (name, description_id)
-        values (${validName}, ${desc.id})
+        insert into languages (name, description_id, time_created, time_updated)
+        values (${validName}, ${desc.id}, ${now}, ${now})
       `;
 
       SearchIndexMut.insertLanguage(db, languageId, validName);
@@ -49,17 +50,17 @@ const LanguageMut = {
 
     if (newFields.hasValues || description) {
       await db.transact(db => {
-        if (newFields.hasValues) {
-          db.exec`
-            update languages
-            set ${newFields}
-            where id = ${language.id}
-          `;
+        newFields.set('time_updated', Date.now());
 
-          const newName = newFields.get('name');
-          if (newName != null) {
-            SearchIndexMut.updateLanguage(db, language.id, newName);
-          }
+        db.exec`
+          update languages
+          set ${newFields}
+          where id = ${language.id}
+        `;
+
+        const newName = newFields.get('name');
+        if (newName != null) {
+          SearchIndexMut.updateLanguage(db, language.id, newName);
         }
 
         if (description) {

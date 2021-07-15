@@ -127,13 +127,6 @@ export type CustomInflectedFormInput = {
 };
 
 /**
- * Represents a date and time. The value is sent as the number of milliseconds
- * since midnight 1 January 1970 UTC (that is, a value compatible with the JS
- * `Date` type).
- */
-export type Date = number;
-
-/**
  * As its name suggests, a definition defines a lemma. A definition has a part of
  * speech, a description, and, optionally, some inflection tables.
  * 
@@ -201,6 +194,16 @@ export type Definition = {
    * `lemma.language` and is provided here for convenience.
    */
   language: Language;
+  /**
+   * The time that the definition was created.
+   */
+  timeCreated: UtcInstant;
+  /**
+   * The time of the most recent update to the definition. This time covers updates
+   * performed on the definition itself, or on its inflection tables, tags or
+   * stems.
+   */
+  timeUpdated: UtcInstant;
 };
 
 /**
@@ -802,8 +805,8 @@ export type InflectionTable = {
    * definition (query through the `InflectionTableLayout.usedByDefinitions` field).
    * Old layouts are ordered from oldest to newest.
    * 
-   * Since there may be many old layouts, this field always paginated. If provided,
-   * `page.perPage` cannot exceed 200.
+   * Since there may be many old layouts, this field is always paginated. If
+   * provided, `page.perPage` cannot exceed 200.
    */
   oldLayouts: WithArgs<{
     page?: PageParams | null;
@@ -826,12 +829,21 @@ export type InflectionTable = {
    * to the same lemma, they will appear in the same relative order as they would
    * on the `Lemma.definitions` field.
    * 
-   * Since the table may be used by many definitions, this field always paginated.
-   * If provided, `page.perPage` cannot exceed 200.
+   * Since the table may be used by many definitions, this field is always
+   * paginated. If provided, `page.perPage` cannot exceed 200.
    */
   usedByDefinitions: WithArgs<{
     page?: PageParams | null;
   }, DefinitionConnection>;
+  /**
+   * The time that the inflection table was created.
+   */
+  timeCreated: UtcInstant;
+  /**
+   * The time of the most recent update to the inflection table. This time covers
+   * updates performed on the table itself or on its layout.
+   */
+  timeUpdated: UtcInstant;
 };
 
 /**
@@ -959,8 +971,8 @@ export type InflectionTableLayout = {
    * to the same lemma, they will appear in the same relative order as they would
    * on the `Lemma.definitions` field.
    * 
-   * Since the table may be used by many definitions, this field always paginated.
-   * If provided, `page.perPage` cannot exceed 200.
+   * Since the table may be used by many definitions, this field is always
+   * paginated. If provided, `page.perPage` cannot exceed 200.
    */
   usedByDefinitions: WithArgs<{
     page?: PageParams | null;
@@ -1133,6 +1145,16 @@ export type Language = {
     params: SearchInLanguageParams;
     page?: PageParams | null;
   }, SearchInLanguageResultConnection | null>;
+  /**
+   * The time that the language was created.
+   */
+  timeCreated: UtcInstant;
+  /**
+   * The time of the most recent update to the language. This time coers updates
+   * performed on the language itself, but not on any of its subresources (such as
+   * parts of speech or definitions).
+   */
+  timeUpdated: UtcInstant;
 };
 
 /**
@@ -1738,12 +1760,22 @@ export type PartOfSpeech = {
    * to the same lemma, they will appear in the same relative order as they would
    * on the `Lemma.definitions` field.
    * 
-   * Since the part of speech may be used by many definitions, this field always
+   * Since the part of speech may be used by many definitions, this field is always
    * paginated. If provided, `page.perPage` cannot exceed 200.
    */
   usedByDefinitions: WithArgs<{
     page?: PageParams | null;
   }, DefinitionConnection>;
+  /**
+   * The time that the part of speech was created.
+   */
+  timeCreated: UtcInstant;
+  /**
+   * The time of the most recent update to the part of speech. This time covers
+   * updates performed on the part of speech itself, but not to any of its
+   * inflection tables.
+   */
+  timeUpdated: UtcInstant;
 };
 
 /**
@@ -2132,6 +2164,13 @@ export type UserSession = {
    * The date and time that the session expires. After this point, the user must
    * log in again to make changes to the dictionary.
    */
-  expiresAt: Date;
+  expiresAt: UtcInstant;
 };
+
+/**
+ * Represents an instant in time. The value is sent as the number of milliseconds
+ * since midnight 1 January 1970 UTC (that is, a value compatible with the JS
+ * `Date` type).
+ */
+export type UtcInstant = number;
 

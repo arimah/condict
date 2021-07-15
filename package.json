@@ -14,10 +14,11 @@
     "watch:utils": "node scripts/build -w -g utils",
     "watch:ui": "node scripts/build -w -g ui",
     "watch:server": "node scripts/build -w -g server",
+    "watch:server-graphql": "cd packages/server && npm run -s watch:graphqlTypes",
     "watch:app": "cd packages/app && npm run -s watch",
     "serve": "cd ./dev && npx --no-install next",
     "dev:ui": "cross-env NODE_ENV=development npm-run-all --silent --parallel --print-label watch:utils watch:ui serve",
-    "dev:server": "cross-env NODE_ENV=development npm-run-all --silent --parallel --print-label watch:utils watch:server",
+    "dev:server": "cross-env NODE_ENV=development npm-run-all --silent --parallel --print-label watch:utils watch:server watch:server-graphql",
     "dev:app": "cross-env NODE_ENV=development npm-run-all --silent --parallel --print-label watch:utils watch:ui watch:app",
     "lint": "eslint --ext .ts,.tsx dev/ packages/",
     "test": "lerna run test"

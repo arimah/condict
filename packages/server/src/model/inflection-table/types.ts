@@ -8,6 +8,8 @@ import {
 export type InflectionTableRow = {
   id: InflectionTableId;
   part_of_speech_id: PartOfSpeechId;
+  time_created: number;
+  time_updated: number;
   name: string;
 };
 
@@ -48,4 +50,3 @@ export type InflectionTableCellJson = {
   headerText?: string;
   inflectedFormId?: InflectedFormId;
 };
-

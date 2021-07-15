@@ -22,6 +22,10 @@ const PartOfSpeech: ResolversFor<PartOfSpeechType, PartOfSpeechRow> = {
 
   usedByDefinitions: (p, {page}, {db}, info) =>
     Definition.allByPartOfSpeech(db, p.id, page, info),
+
+  timeCreated: p => p.time_created,
+
+  timeUpdated: p => p.time_updated,
 };
 
 const Query: ResolversFor<QueryType, null> = {

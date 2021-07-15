@@ -28,9 +28,15 @@ const PartOfSpeechMut = {
     name = validateName(db, null, language.id, name);
 
     return db.transact(db => {
+      const now = Date.now();
       const {insertId} = db.exec<PartOfSpeechId>`
-        insert into parts_of_speech (language_id, name)
-        values (${language.id}, ${name})
+        insert into parts_of_speech (
+          language_id,
+          name,
+          time_created,
+          time_updated
+        )
+        values (${language.id}, ${name}, ${now}, ${now})
       `;
 
       SearchIndexMut.insertPartOfSpeech(db, insertId, name);
@@ -59,7 +65,9 @@ const PartOfSpeechMut = {
       await db.transact(db => {
         db.exec`
           update parts_of_speech
-          set name = ${newName}
+          set
+            name = ${newName},
+            time_updated = ${Date.now()}
           where id = ${partOfSpeech.id}
         `;
 

@@ -17,6 +17,8 @@ export type DefinitionRow = {
   language_id: LanguageId;
   part_of_speech_id: PartOfSpeechId;
   description_id: DescriptionId;
+  time_created: number;
+  time_updated: number;
   term: string;
 };
 
@@ -45,6 +47,6 @@ export type DerivedDefinitionRow = {
   lemma_id: LemmaId;
   original_definition_id: DefinitionId;
   inflected_form_id: InflectedFormId;
-  term: string;
   language_id: LanguageId;
+  term: string;
 };

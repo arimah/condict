@@ -55,6 +55,10 @@ const Definition: ResolversFor<DefinitionType, DefinitionRow> = {
   lemma: (p, _args, {db}) => Lemma.byId(db, p.lemma_id),
 
   language: (p, _args, {db}) => Language.byId(db, p.language_id),
+
+  timeCreated: p => p.time_created,
+
+  timeUpdated: p => p.time_updated,
 };
 
 const DefinitionStem: ResolversFor<DefinitionStemType, DefinitionStemRow> = {

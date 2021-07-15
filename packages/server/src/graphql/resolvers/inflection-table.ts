@@ -37,6 +37,10 @@ const InflectionTable: ResolversFor<InflectionTableType, InflectionTableRow> = {
 
   usedByDefinitions: (p, {page}, {db}, info) =>
     Definition.allByInflectionTable(db, p.id, page, info),
+
+  timeCreated: p => p.time_created,
+
+  timeUpdated: p => p.time_updated,
 };
 
 const InflectionTableLayout: ResolversFor<

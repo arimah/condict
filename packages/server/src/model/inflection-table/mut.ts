@@ -41,12 +41,15 @@ const InflectionTableMut = {
     name = validateName(db, null, partOfSpeech.id, name);
 
     return db.transact(db => {
+      const now = Date.now();
       const {insertId: tableId} = db.exec<InflectionTableId>`
         insert into inflection_tables (
           part_of_speech_id,
-          name
+          name,
+          time_created,
+          time_updated
         )
-        values (${partOfSpeech.id}, ${name})
+        values (${partOfSpeech.id}, ${name}, ${now}, ${now})
       `;
 
       InflectionTableLayoutMut.insert(db, tableId, layout);
@@ -74,13 +77,13 @@ const InflectionTableMut = {
 
     if (newFields.hasValues || layout != null) {
       await db.transact(async db => {
-        if (newFields.hasValues) {
-          db.exec`
-            update inflection_tables
-            set ${newFields}
-            where id = ${table.id}
-          `;
-        }
+        newFields.set('time_updated', Date.now());
+
+        db.exec`
+          update inflection_tables
+          set ${newFields}
+          where id = ${table.id}
+        `;
 
         if (layout != null) {
           await InflectionTableLayoutMut.update(db, table.id, layout);

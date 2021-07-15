@@ -58,14 +58,25 @@ const DefinitionMut = {
 
       const desc = DescriptionMut.insert(db, description);
 
+      const now = Date.now();
+
       const {insertId: definitionId} = db.exec<DefinitionId>`
         insert into definitions (
           lemma_id,
           language_id,
           part_of_speech_id,
-          description_id
+          description_id,
+          time_created,
+          time_updated
         )
-        values (${lemmaId}, ${language.id}, ${partOfSpeech.id}, ${desc.id})
+        values (
+          ${lemmaId},
+          ${language.id},
+          ${partOfSpeech.id},
+          ${desc.id},
+          ${now},
+          ${now}
+        )
       `;
 
       SearchIndexMut.insertDefinition(db, definitionId, desc.description);
@@ -114,6 +125,7 @@ const DefinitionMut = {
     return db.transact(async db => {
       const newFields = new FieldSet<DefinitionRow>();
 
+      newFields.set('time_updated', Date.now());
       const actualTerm = this.updateTerm(db, definition, term, newFields);
       const actualPartOfSpeechId = await this.updatePartOfSpeech(
         db,
@@ -131,13 +143,11 @@ const DefinitionMut = {
         inflectionTables = [];
       }
 
-      if (newFields.hasValues) {
-        db.exec`
-          update definitions
-          set ${newFields}
-          where id = ${definition.id}
-        `;
-      }
+      db.exec`
+        update definitions
+        set ${newFields}
+        where id = ${definition.id}
+      `;
 
       if (description) {
         const desc = DescriptionMut.update(
@@ -350,8 +360,6 @@ const DefinitionMut = {
     term: string,
     stemMap: Map<string, string>
   ): MultiMap<string, InflectedFormId> {
-    // FIXME: https://github.com/typescript-eslint/typescript-eslint/issues/2452
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     type Row = {
       id: DefinitionInflectionTableId;
       inflection_table_version_id: InflectionTableLayoutId;
@@ -392,8 +400,6 @@ const DefinitionMut = {
     db: DataReader,
     definitionTableIds: DefinitionInflectionTableId[]
   ): Map<DefinitionInflectionTableId, Map<InflectedFormId, string>> {
-    // FIXME: https://github.com/typescript-eslint/typescript-eslint/issues/2452
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     type Row = {
       parent_id: DefinitionInflectionTableId;
       inflected_form_id: InflectedFormId;

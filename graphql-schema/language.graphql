@@ -104,6 +104,16 @@ type Language {
     params: SearchInLanguageParams!
     page: PageParams
   ): SearchInLanguageResultConnection
+
+  "The time that the language was created."
+  timeCreated: UtcInstant!
+
+  """
+  The time of the most recent update to the language. This time coers updates
+  performed on the language itself, but not on any of its subresources (such as
+  parts of speech or definitions).
+  """
+  timeUpdated: UtcInstant!
 }
 
 "Contains paginated results from the `Language.lemmas` field."
