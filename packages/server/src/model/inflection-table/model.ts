@@ -224,7 +224,7 @@ const InflectionTableLayout = {
     info?: GraphQLResolveInfo
   ): ItemConnection<InflectionTableLayoutRow> {
     const condition = db.raw`
-      itv.inflection_table_id = ${tableId} and is_current = 0
+      itv.inflection_table_id = ${tableId} and itv.is_current = 0
     `;
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),

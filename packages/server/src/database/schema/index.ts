@@ -61,10 +61,14 @@ const tables: readonly TableSchema[] = [
         name text not null,
 
         foreign key (description_id)
-          references descriptions(id)
+          references descriptions
           on delete restrict
       )`,
       `create unique index \`languages(name)\` on languages(name)`,
+      // Descriptions are unique per language.
+      `create unique index \`languages(description_id)\` on languages(description_id)`,
+      `create index \`languages(time_created)\` on languages(time_created)`,
+      `create index \`languages(time_updated)\` on languages(time_updated)`,
     ],
   },
 
@@ -96,11 +100,14 @@ const tables: readonly TableSchema[] = [
         time_updated integer not null,
         -- The display name of the part of speech.
         name text not null,
+
         foreign key (language_id)
-          references languages(id)
+          references languages
           on delete cascade
       )`,
       `create unique index \`parts_of_speech(language_id,name)\` on parts_of_speech(language_id, name)`,
+      `create index \`parts_of_speech(time_created)\` on parts_of_speech(time_created)`,
+      `create index \`parts_of_speech(time_updated)\` on parts_of_speech(time_updated)`,
     ],
   },
 
@@ -131,11 +138,14 @@ const tables: readonly TableSchema[] = [
         time_updated integer not null,
         -- The name of the inflection table, shown in admin UIs.
         name text not null,
+
         foreign key (part_of_speech_id)
-          references parts_of_speech(id)
+          references parts_of_speech
           on delete cascade
       )`,
       `create unique index \`inflection_tables(part_of_speech_id,name)\` on inflection_tables(part_of_speech_id, name)`,
+      `create index \`inflection_tables(time_created)\` on inflection_tables(time_created)`,
+      `create index \`inflection_tables(time_updated)\` on inflection_tables(time_updated)`,
     ],
   },
 
@@ -150,18 +160,19 @@ const tables: readonly TableSchema[] = [
         inflection_table_id integer not null,
         -- Indicates whether this is the current layout of the table.
         is_current integer not null,
+
         foreign key (inflection_table_id)
-          references inflection_tables(id)
+          references inflection_tables
           on delete cascade
       )`,
       `create index \`inflection_table_versions(is_current)\` on inflection_table_versions(is_current)`,
     ],
   },
 
-  // Layouts for all inflected tables. This is a separate table for two reasons:
-  // it means we don't have to fetch a potentially large JSON object unless the
-  // layout is asked for, and it means we can actually reference `inflected_forms`
-  // in each cell so the data export/import works.
+  // Layouts for all inflected tables. This is a separate table so we don't have
+  // to fetch a potentially large JSON object unless the layout is asked for,
+  // and so that `inflected_forms` have something to refer to (namely, the table
+  // `inflection_table_versions`) before the layout has been inserted.
   {
     name: 'inflection_table_layouts',
     commands: [`
@@ -178,7 +189,7 @@ const tables: readonly TableSchema[] = [
         stems text not null,
 
         foreign key (inflection_table_version_id)
-          references inflection_table_versions(id)
+          references inflection_table_versions
           on delete cascade
       )`,
     ],
@@ -210,7 +221,7 @@ const tables: readonly TableSchema[] = [
         display_name text not null,
 
         foreign key (inflection_table_version_id)
-          references inflection_table_versions(id)
+          references inflection_table_versions
           on delete cascade
       )`,
       `create index \`inflected_forms(inflection_table_version_id)\` on inflected_forms(inflection_table_version_id)`,
@@ -232,7 +243,7 @@ const tables: readonly TableSchema[] = [
         term text not null collate unicode,
 
         foreign key (language_id)
-          references languages(id)
+          references languages
           on delete cascade
       )`,
       // For the unique index, we need to use *binary* collation, not Unicode,
@@ -285,21 +296,25 @@ const tables: readonly TableSchema[] = [
         time_updated integer not null,
 
         foreign key (lemma_id)
-          references lemmas(id)
+          references lemmas
           on delete restrict,
         foreign key (language_id)
-          references languages(id)
+          references languages
           on delete cascade,
         foreign key (part_of_speech_id)
-          references parts_of_speech(id)
+          references parts_of_speech
           on delete restrict,
         foreign key (description_id)
-          references descriptions(id)
+          references descriptions
           on delete restrict
       )`,
       `create index \`definitions(lemma_id)\` on definitions(lemma_id)`,
       `create index \`definitions(language_id)\` on definitions(language_id)`,
       `create index \`definitions(part_of_speech_id)\` on definitions(part_of_speech_id)`,
+      // Descriptions are unique per definition.
+      `create unique index \`definitions(description_id)\` on definitions(description_id)`,
+      `create index \`definitions(time_created)\` on definitions(time_created)`,
+      `create index \`definitions(time_updated)\` on definitions(time_updated)`,
     ],
   },
 
@@ -328,10 +343,9 @@ const tables: readonly TableSchema[] = [
         primary key (definition_id, name),
 
         foreign key (definition_id)
-          references definitions(id)
+          references definitions
           on delete cascade
       )`,
-      `create index \`definition_stems(definition_id)\` on definition_stems(definition_id)`,
     ],
   },
 
@@ -358,13 +372,13 @@ const tables: readonly TableSchema[] = [
         caption text,
 
         foreign key (definition_id)
-          references definitions(id)
+          references definitions
           on delete cascade,
         foreign key (inflection_table_id)
-          references inflection_tables(id)
+          references inflection_tables
           on delete restrict,
         foreign key (inflection_table_version_id)
-          references inflection_table_versions(id)
+          references inflection_table_versions
           on delete restrict
       )`,
       `create index \`definition_inflection_tables(definition_id,sort_order)\` on definition_inflection_tables(definition_id, sort_order)`,
@@ -389,13 +403,12 @@ const tables: readonly TableSchema[] = [
         primary key (definition_inflection_table_id, inflected_form_id),
 
         foreign key (definition_inflection_table_id)
-          references definition_inflection_tables(id)
+          references definition_inflection_tables
           on delete cascade,
         foreign key (inflected_form_id)
-          references inflected_forms(id)
+          references inflected_forms
           on delete restrict
       )`,
-      `create index \`definition_forms(definition_inflection_table_id)\` on definition_forms(definition_inflection_table_id)`,
       `create index \`definition_forms(inflected_form_id)\` on definition_forms(inflected_form_id)`,
     ],
   },
@@ -414,13 +427,13 @@ const tables: readonly TableSchema[] = [
         primary key (definition_id, tag_id),
 
         foreign key (definition_id)
-          references definitions(id)
+          references definitions
           on delete cascade,
-
         foreign key (tag_id)
-          references tags(id)
+          references tags
           on delete restrict
       )`,
+      `create index \`definition_tags(tag_id)\` on definition_tags(tag_id)`,
     ],
   },
 
@@ -445,11 +458,16 @@ const tables: readonly TableSchema[] = [
 
         primary key (lemma_id, original_definition_id, inflected_form_id),
 
-        foreign key (lemma_id) references lemmas(id) on delete restrict,
-        foreign key (original_definition_id) references definitions(id) on delete cascade,
-        foreign key (inflected_form_id) references inflected_forms(id) on delete restrict
+        foreign key (lemma_id)
+          references lemmas
+          on delete restrict,
+        foreign key (original_definition_id)
+          references definitions
+          on delete cascade,
+        foreign key (inflected_form_id)
+          references inflected_forms
+          on delete restrict
       )`,
-      `create index \`derived_definitions(lemma_id)\` on derived_definitions(lemma_id)`,
       `create index \`derived_definitions(original_definition_id)\` on derived_definitions(original_definition_id)`,
       `create index \`derived_definitions(inflected_form_id)\` on derived_definitions(inflected_form_id)`,
     ],
@@ -516,9 +534,10 @@ const tables: readonly TableSchema[] = [
         expires_at integer not null,
 
         foreign key (user_id)
-          references users(id)
+          references users
           on delete cascade
       )`,
+      `create index \`user_sessions(user_id)\` on user_sessions(user_id)`,
     ],
   },
 ];
