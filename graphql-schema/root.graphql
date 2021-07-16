@@ -48,6 +48,30 @@ input PageParams {
 }
 
 """
+Indicates that an item contains metadata about when it was created and last
+updated.
+"""
+interface ChangeInfo {
+  """
+  The time that the item was created.
+
+  When this field is equal to `timeUpdated`, it means the item has not been
+  edited since it was created.
+  """
+  timeCreated: UtcInstant!
+
+  """
+  The time of the most recent update to the item. This time covers updates
+  performed on the item itself, and may cover updates on certain nested
+  resources.
+
+  When this field is equal to `timeCreated`, it means the item has not been
+  edited since it was created.
+  """
+  timeUpdated: UtcInstant!
+}
+
+"""
 Represents an instant in time. The value is sent as the number of milliseconds
 since midnight 1 January 1970 UTC (that is, a value compatible with the JS
 `Date` type).

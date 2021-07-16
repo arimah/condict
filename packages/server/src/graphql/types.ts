@@ -97,6 +97,16 @@ export type BlockKind =
 ;
 
 /**
+ * Indicates that an item contains metadata about when it was created and last
+ * updated.
+ */
+export type ChangeInfo =
+  | Definition
+  | InflectionTable
+  | Language
+  | PartOfSpeech;
+
+/**
  * A custom inflected form, typically an irregular form. It overrides a single cell
  * in a definition inflection table.
  */
