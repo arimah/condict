@@ -1098,7 +1098,7 @@ export type Language = {
   /**
    * The lemmas defined in the dictionary. Since a language usually contains many
    * lemmas, this field is always paginated. If provided, `page.perPage` cannot
-   * exceed 200.
+   * exceed 500.
    */
   lemmas: WithArgs<{
     page?: PageParams | null;
@@ -1869,6 +1869,26 @@ export type Query = {
     id: PartOfSpeechId;
   }, PartOfSpeech | null>;
   /**
+   * Lists recently changed dictionary items. The results can be sorted by creation
+   * date or by last update/edit date.
+   * 
+   * Recent items do not include every possible type of dictionary resource. If the
+   * user changes an inflection table, there will not be recent change entries for
+   * each individual inflected form, but for the table as a whole. Effectively, the
+   * resources that have recent changes correspond to those for which there exist
+   * corresponding `add*` and `edit*` mutations.
+   * 
+   * The `order` parameter determines the sort order. If omitted or null, defaults
+   * to MOST_RECENTLY_UPDATED.
+   * 
+   * Since a dictionary may contain many items, this field is always paginated. If
+   * provided, `page.perPage` cannot exceed 100.
+   */
+  recentChanges: WithArgs<{
+    page?: PageParams | null;
+    order?: RecentItemOrder | null;
+  }, RecentItemConnection | null>;
+  /**
    * Searches the dictionary.
    * 
    * The `params` parameter of this field contains a number of fields. The most
@@ -1946,6 +1966,43 @@ export type Query = {
     name?: string | null;
   }, Tag | null>;
 };
+
+/**
+ * A recently changed item.
+ */
+export type RecentItem =
+  | Language
+  | Definition
+  | PartOfSpeech
+  | InflectionTable;
+
+/**
+ * Contains paginated results from the `Query.recentChanges` field.
+ */
+export type RecentItemConnection = {
+  /**
+   * Pagination metadata for this batch.
+   */
+  page: PageInfo;
+  /**
+   * The items in this batch.
+   */
+  nodes: RecentItem[];
+};
+
+/**
+ * Determines the order in which recent changes are sorted.
+ */
+export type RecentItemOrder =
+  /**
+   * Orders recent items by creation date, with the newest first.
+   */
+  | 'MOST_RECENTLY_CREATED'
+  /**
+   * Orders recent items by update/edit date, with the most recently edited first.
+   */
+  | 'MOST_RECENTLY_UPDATED'
+;
 
 /**
  * Contains search parameters for the `Language.search` field. See that field for

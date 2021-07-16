@@ -32,8 +32,7 @@ export interface Context {
 }
 
 export type ResolversFor<T, P> =
-  RequiredResolvers<T, P> &
-  OptionalResolvers<T, P> &
+  RequiredResolvers<T, P> & OptionalResolvers<T, P> |
   ResolveType<P>;
 
 // It may seem like the type conditions below are backwards: if P is null,
@@ -61,10 +60,10 @@ export type OptionalResolvers<T, P> = {
   >;
 };
 
-export type ResolveType<P> = {
+export interface ResolveType<P> {
   // This resolver never receives arguments.
-  __resolveType?: IFieldResolver<P, Context, unknown>;
-};
+  __resolveType: IFieldResolver<P, Context, unknown>;
+}
 
 const IsMutator = Symbol('mutator function');
 

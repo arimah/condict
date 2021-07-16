@@ -7,6 +7,7 @@ import InflectionTableResolvers from './inflection-table';
 import LanguageResolvers from './language';
 import LemmaResolvers from './lemma';
 import PartOfSpeechResolvers from './part-of-speech';
+import RecentsResolvers from './recents';
 import RootResolvers from './root';
 import SearchResolvers from './search';
 import TagResolvers from './tag';
@@ -27,6 +28,7 @@ export const getResolvers = (): IResolvers<any, any> =>
     LanguageResolvers,
     LemmaResolvers,
     PartOfSpeechResolvers,
+    RecentsResolvers,
     RootResolvers,
     SearchResolvers,
     TagResolvers,

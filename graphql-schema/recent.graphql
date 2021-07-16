@@ -1,0 +1,49 @@
+"A recently changed item."
+union RecentItem =
+  | Language
+  | Definition
+  | PartOfSpeech
+  | InflectionTable
+
+"Determines the order in which recent changes are sorted."
+enum RecentItemOrder {
+  "Orders recent items by creation date, with the newest first."
+  MOST_RECENTLY_CREATED
+
+  """
+  Orders recent items by update/edit date, with the most recently edited first.
+  """
+  MOST_RECENTLY_UPDATED
+}
+
+"Contains paginated results from the `Query.recentChanges` field."
+type RecentItemConnection {
+  "Pagination metadata for this batch."
+  page: PageInfo!
+
+  "The items in this batch."
+  nodes: [RecentItem!]!
+}
+
+extend type Query {
+  """
+  Lists recently changed dictionary items. The results can be sorted by creation
+  date or by last update/edit date.
+
+  Recent items do not include every possible type of dictionary resource. If the
+  user changes an inflection table, there will not be recent change entries for
+  each individual inflected form, but for the table as a whole. Effectively, the
+  resources that have recent changes correspond to those for which there exist
+  corresponding `add*` and `edit*` mutations.
+
+  The `order` parameter determines the sort order. If omitted or null, defaults
+  to MOST_RECENTLY_UPDATED.
+
+  Since a dictionary may contain many items, this field is always paginated. If
+  provided, `page.perPage` cannot exceed 100.
+  """
+  recentChanges(
+    page: PageParams
+    order: RecentItemOrder
+  ): RecentItemConnection
+}

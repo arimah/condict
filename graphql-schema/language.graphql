@@ -57,7 +57,7 @@ type Language {
   """
   The lemmas defined in the dictionary. Since a language usually contains many
   lemmas, this field is always paginated. If provided, `page.perPage` cannot
-  exceed 200.
+  exceed 500.
   """
   lemmas(
     page: PageParams
