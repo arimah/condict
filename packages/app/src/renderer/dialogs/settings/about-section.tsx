@@ -13,7 +13,7 @@ const Content: SectionComponent = React.forwardRef((_props, ref) => {
     canLeave: true,
   }));
 
-  return <>
+  return (
     <BodyText>
       <p>
         <Localized
@@ -43,7 +43,7 @@ const Content: SectionComponent = React.forwardRef((_props, ref) => {
         <Localized id='settings-about-third-party-licenses-intro'/>
       </p>
     </BodyText>
-  </>;
+  );
 });
 
 Content.displayName = 'AboutSection';

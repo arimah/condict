@@ -1,6 +1,6 @@
 import styled, {css} from 'styled-components';
 
-import {Button} from '@condict/ui';
+import {Button, BodyText} from '@condict/ui';
 
 import StandardDialog from '../standard-dialog';
 
@@ -166,13 +166,13 @@ export const OptionList = styled.div`
   gap: 8px;
 `;
 
-export const OptionDescription = styled.div`
+export const OptionDescription = styled(BodyText)`
   margin-inline-start: 24px;
-  line-height: 20px;
   opacity: 0.7;
 `;
 
-export const IntroText = styled.p`
+export const IntroText = styled(BodyText).attrs({
+  as: 'p' as const,
+})`
   margin-bottom: 20px;
-  line-height: 20px;
 `;
