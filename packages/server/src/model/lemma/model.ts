@@ -67,38 +67,28 @@ const Lemma = {
     filter: LemmaFilter,
     info?: GraphQLResolveInfo
   ): ItemConnection<LemmaRow> {
-    const condition = db.raw`
-      l.language_id = ${languageId}
-        ${
-          filter === 'DEFINED_LEMMAS_ONLY' ? db.raw`
-            and exists (
-              select 1
-              from definitions d
-              where d.lemma_id = l.id
-            )` :
-          filter === 'DERIVED_LEMMAS_ONLY' ? db.raw`
-            and exists (
-              select 1
-              from derived_definitions dd
-              where dd.lemma_id = l.id
-            )` :
-          db.raw``
-        }
-    `;
+    const join =
+      filter === 'DEFINED_LEMMAS_ONLY'
+        ? db.raw`inner join definitions d on d.lemma_id = l.id`
+        : filter === 'DERIVED_LEMMAS_ONLY'
+          ? db.raw`inner join derived_definitions dd on dd.lemma_id = l.id`
+          : db.raw``;
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
       () => {
         const {total} = db.getRequired<{total: number}>`
           select count(*) as total
           from lemmas l
-          where ${condition}
+          ${join}
+          where l.language_id = ${languageId}
         `;
         return total;
       },
       (limit, offset) => db.all<LemmaRow>`
         select l.*
         from lemmas l
-        where ${condition}
+        ${join}
+        where l.language_id = ${languageId}
         order by l.term
         limit ${limit} offset ${offset}
       `,

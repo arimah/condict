@@ -249,12 +249,12 @@ const tables: readonly TableSchema[] = [
       // For the unique index, we need to use *binary* collation, not Unicode,
       // to ensure "correct" uniqueness (we want accented letters to be distinct
       // from their non-accented counterparts, case matters, and so on).
-      `create unique index \`lemmas(language_id,term)\` on lemmas(language_id, term collate binary)`,
+      `create unique index \`lemmas(language_id,term binary)\` on lemmas(language_id, term collate binary)`,
       // For the sorting index, we use the unicode collation, as specified on
       // the column itself. Note that the collation is on the column in the
       // table definition so we never accidentally sort by the wrong collation.
       // Hopefully we'll hit this index when we need things in order.
-      `create index \`lemmas(term)\` on lemmas(term)`,
+      `create index \`lemmas(language_id,term)\` on lemmas(language_id, term)`,
     ],
   },
 

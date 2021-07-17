@@ -1,7 +1,7 @@
 import {UserInputError} from 'apollo-server';
 import {GraphQLResolveInfo} from 'graphql';
 
-import {DataReader} from '../../database';
+import {DataReader, RawSql} from '../../database';
 import {
   DefinitionId,
   DefinitionInflectionTableId,
@@ -82,7 +82,7 @@ const Definition = {
     );
   },
 
-  anyUsesInflectionTableCond(db: DataReader, condition: any): boolean {
+  anyUsesInflectionTableCond(db: DataReader, condition: RawSql): boolean {
     const {used} = db.getRequired<{used: number}>`
       select exists (
         select 1
@@ -112,7 +112,7 @@ const Definition = {
 
   allByInflectionTableCond(
     db: DataReader,
-    condition: any,
+    condition: RawSql,
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
   ): ItemConnection<DefinitionRow> {
