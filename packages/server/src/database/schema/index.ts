@@ -58,7 +58,7 @@ const tables: readonly TableSchema[] = [
         -- milliseconds since midnight 1 January, 1970, UTC.
         time_updated integer not null,
         -- The full display name of the language.
-        name text not null,
+        name text not null collate unicode,
 
         foreign key (description_id)
           references descriptions
@@ -99,7 +99,7 @@ const tables: readonly TableSchema[] = [
         -- of milliseconds since midnight 1 January, 1970, UTC.
         time_updated integer not null,
         -- The display name of the part of speech.
-        name text not null,
+        name text not null collate unicode,
 
         foreign key (language_id)
           references languages
@@ -137,7 +137,7 @@ const tables: readonly TableSchema[] = [
         -- number of milliseconds since midnight 1 January, 1970, UTC.
         time_updated integer not null,
         -- The name of the inflection table, shown in admin UIs.
-        name text not null,
+        name text not null collate unicode,
 
         foreign key (part_of_speech_id)
           references parts_of_speech
@@ -185,7 +185,7 @@ const tables: readonly TableSchema[] = [
         -- A JSON array that contains the unique stem names present in the table
         -- layout. This is calculated when the layout is updated, and is stored
         -- here primarily for performance reasons (so we don't have to walk the
-        -- table and parse inflection patterns in the admin UI).
+        -- table and parse inflection patterns in the UI).
         stems text not null,
 
         foreign key (inflection_table_version_id)
@@ -246,15 +246,7 @@ const tables: readonly TableSchema[] = [
           references languages
           on delete cascade
       )`,
-      // For the unique index, we need to use *binary* collation, not Unicode,
-      // to ensure "correct" uniqueness (we want accented letters to be distinct
-      // from their non-accented counterparts, case matters, and so on).
-      `create unique index \`lemmas(language_id,term binary)\` on lemmas(language_id, term collate binary)`,
-      // For the sorting index, we use the unicode collation, as specified on
-      // the column itself. Note that the collation is on the column in the
-      // table definition so we never accidentally sort by the wrong collation.
-      // Hopefully we'll hit this index when we need things in order.
-      `create index \`lemmas(language_id,term)\` on lemmas(language_id, term)`,
+      `create unique index \`lemmas(language_id,term)\` on lemmas(language_id, term)`,
     ],
   },
 
@@ -483,7 +475,7 @@ const tables: readonly TableSchema[] = [
       create table tags (
         id integer not null,
         -- The name of the tag.
-        name text not null,
+        name text not null collate unicode,
         primary key (id)
       )`,
       `create unique index \`tags(name)\` on tags(name)`,

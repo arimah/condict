@@ -45,7 +45,7 @@ const Tag = {
         db.all<TagRow>`
           select *
           from tags
-          order by name collate unicode
+          order by name
           limit ${limit} offset ${offset}
         `,
       info
@@ -78,7 +78,7 @@ const Tag = {
           inner join definitions d on d.id = dt.definition_id
           where d.language_id = ${languageId}
           group by t.id
-          order by t.name collate unicode
+          order by t.name
           limit ${limit} offset ${offset}
         `,
       info
@@ -141,7 +141,7 @@ const Tag = {
           inner join definitions d on d.id = dt.definition_id
           where d.lemma_id in (${lemmaIds})
           group by d.lemma_id, t.id
-          order by d.lemma_id, t.name collate unicode
+          order by d.lemma_id, t.name
         `,
       row => row.lemma_id
     );
@@ -162,7 +162,7 @@ const Tag = {
           from definition_tags dt
           inner join tags t on t.id = dt.tag_id
           where dt.definition_id in (${definitionIds})
-          order by dt.definition_id, t.name collate unicode
+          order by dt.definition_id, t.name
         `,
       row => row.definition_id
     );

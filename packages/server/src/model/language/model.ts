@@ -12,7 +12,7 @@ const Language = {
     return db.all<LanguageRow>`
       select *
       from languages
-      order by name collate unicode
+      order by name
     `;
   },
 
