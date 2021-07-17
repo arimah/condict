@@ -10,7 +10,7 @@ items, headings and other things.
 
 A definition's inflection tables must belong to the definition's part of speech.
 """
-type Definition implements ChangeInfo {
+type Definition implements RecentItem {
   "The globally unique ID of the definition."
   id: DefinitionId!
 

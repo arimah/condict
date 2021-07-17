@@ -1,9 +1,23 @@
 "A recently changed item."
-union RecentItem =
-  | Language
-  | Definition
-  | PartOfSpeech
-  | InflectionTable
+interface RecentItem {
+  """
+  The time that the item was created.
+
+  When this field is equal to `timeUpdated`, it means the item has not been
+  edited since it was created.
+  """
+  timeCreated: UtcInstant!
+
+  """
+  The time of the most recent update to the item. This time covers updates
+  performed on the item itself, and may cover updates on certain nested
+  resources.
+
+  When this field is equal to `timeCreated`, it means the item has not been
+  edited since it was created.
+  """
+  timeUpdated: UtcInstant!
+}
 
 "Determines the order in which recent changes are sorted."
 enum RecentItemOrder {

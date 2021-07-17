@@ -32,7 +32,7 @@ A language contains:
 
 In addition, every language has a (unique) name.
 """
-type Language implements ChangeInfo {
+type Language implements RecentItem {
   "The globally unique ID of the language."
   id: LanguageId!
 

@@ -7,7 +7,7 @@ providing a way to group words, a part of speech can define any number of
 inflection tables, which describe how to inflect words in that part of speech.
 See `InflectionTable` for more.
 """
-type PartOfSpeech implements ChangeInfo {
+type PartOfSpeech implements RecentItem {
   "The globally unique ID of the part of speech."
   id: PartOfSpeechId!
 

@@ -25,7 +25,7 @@ Historical layouts are saved for two reasons:
    an inflection table across the entire dictionary, especially if the table is
    used by many definitions.
 """
-type InflectionTable implements ChangeInfo {
+type InflectionTable implements RecentItem {
   "The globally unique ID of the inflection table."
   id: InflectionTableId!
 
