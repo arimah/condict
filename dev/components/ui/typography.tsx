@@ -14,7 +14,7 @@ const RandomHref = `#${genUniqueId()}`;
 
 const Main = (): JSX.Element =>
   <Demo name='Typography'>
-    <BodyTextWithMaxWidth>
+    <BodyTextWithMaxWidth underlineLinks>
       <h1>Heading level 1</h1>
       <p>Short paragraph between headings.</p>
       <h2>Heading level 2</h2>

@@ -59,7 +59,7 @@ export {
   Messages as TagInputMessages,
 } from './tag-input';
 export {Toolbar, Props as ToolbarProps} from './toolbar';
-export {BodyText} from './typography';
+export {BodyText, BodyTextProps} from './typography';
 
 export {
   CommandSpec,
