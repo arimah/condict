@@ -334,4 +334,14 @@ export type Value =
 export type Param = string | number | null;
 
 /** A function that logs an executed SQL string. */
-export type SqlLogger = (sql: string) => void;
+export interface SqlLogger {
+  readonly logQuery: (sql: string) => void;
+  readonly logQueryPlan?: (nodes: QueryPlanNode[]) => void;
+}
+
+/** A query plan node, as returned by SQLite's `explain query plan`. */
+export interface QueryPlanNode {
+  readonly id: number;
+  readonly parentId: number;
+  readonly description: string;
+}

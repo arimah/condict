@@ -7,10 +7,14 @@ import reindentQuery from '../reindent-query';
 import Accessor from './accessor';
 import RwLock from './rwlock';
 import registerUnicodeCollation from './unicode-collation';
-import {Options, DataAccessor} from './types';
+import formatQueryPlan from './query-plan';
+import {Options, DataAccessor, QueryPlanNode} from './types';
 
 // NB: "db" refers to instances of better-sqlite3's Database, and "connection"
 // to our own wrapper.
+
+type QueryLogger = (logger: Logger) => (sql: string) => void;
+type QueryPlanLogger = (logger: Logger) => (nodes: QueryPlanNode[]) => void;
 
 /**
  * Manages access to a shared SQLite connection. The server uses a single handle
@@ -23,7 +27,9 @@ export default class Connection {
   private readonly defaultLogger: Logger;
   private readonly db: Database;
   private readonly lock: RwLock;
-  private readonly logSql: (logger: Logger, sql: string) => void;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private readonly logQuery: QueryLogger = () => () => { };
+  private readonly logQueryPlan: QueryPlanLogger | undefined = undefined;
 
   public constructor(defaultLogger: Logger, options: Options) {
     this.defaultLogger = defaultLogger;
@@ -35,8 +41,10 @@ export default class Connection {
 
     this.lock = new RwLock();
 
-    if (process.env.DEBUG_QUERIES === '1') {
-      this.logSql = (logger, sql) => {
+    const queryLogging = getQueryLogSetting(process.env.DEBUG_QUERIES);
+
+    if (queryLogging !== false) {
+      this.logQuery = logger => sql => {
         if (/^\s*$/.test(sql)) {
           logger.warn('Empty query?!');
         } else {
@@ -44,9 +52,13 @@ export default class Connection {
           logger.debug(`Query:\n${reindentedSql}`);
         }
       };
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      this.logSql = () => { };
+    }
+
+    if (queryLogging === 'queryAndPlan') {
+      this.logQueryPlan = logger => nodes => {
+        const queryPlan = formatQueryPlan(nodes);
+        logger.debug(`Query plan:\n${queryPlan}`);
+      };
     }
   }
 
@@ -64,7 +76,11 @@ export default class Connection {
   public async getAccessor(reqLogger?: Logger): Promise<DataAccessor> {
     const token = await this.lock.reader();
     const logger = reqLogger ?? this.defaultLogger;
-    return new Accessor(this.db, token, sql => this.logSql(logger, sql));
+    const logQueryPlan = this.logQueryPlan;
+    return new Accessor(this.db, token, {
+      logQuery: this.logQuery(logger),
+      logQueryPlan: logQueryPlan && logQueryPlan(logger),
+    });
   }
 
   public async close(): Promise<void> {
@@ -72,3 +88,16 @@ export default class Connection {
     this.db.close();
   }
 }
+
+const getQueryLogSetting = (envValue: string | undefined) => {
+  switch (envValue?.toLowerCase()) {
+    case '1':
+    case 'true':
+    case 'yes':
+      return 'query';
+    case 'plan':
+      return 'queryAndPlan';
+    default:
+      return false;
+  }
+};

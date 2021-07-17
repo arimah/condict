@@ -15,6 +15,7 @@ import {
   Param,
   RawSql,
   SqlLogger,
+  QueryPlanNode,
 } from './types';
 
 /**
@@ -44,7 +45,7 @@ const escapeId = (id: string) => '`' + id + '`';
 export default class Accessor implements DataAccessor, DataWriter {
   private readonly database: Database;
   private rwToken: RwToken;
-  private readonly logSql: (sql: string) => void;
+  private readonly logger: SqlLogger;
 
   // TODO: See if it's meaningful to break out batching into a separate type.
   private readonly cache: RequestCache;
@@ -52,12 +53,12 @@ export default class Accessor implements DataAccessor, DataWriter {
   public constructor(
     database: Database,
     rwToken: RwToken,
-    logSql: SqlLogger,
+    logger: SqlLogger,
     sharedCache?: RequestCache
   ) {
     this.database = database;
     this.rwToken = rwToken;
-    this.logSql = logSql;
+    this.logger = logger;
     this.cache = sharedCache ?? new RequestCache(this);
   }
 
@@ -79,6 +80,10 @@ export default class Accessor implements DataAccessor, DataWriter {
       throw new Error('The specified SQL does not return data');
     }
 
+    if (this.logger.logQueryPlan) {
+      this.explainQueryPlan(sql, params);
+    }
+
     return stmt.get(params) as Row || null;
   }
 
@@ -94,6 +99,10 @@ export default class Accessor implements DataAccessor, DataWriter {
     }
     if (!stmt.reader) {
       throw new Error('The specified SQL does not return data');
+    }
+
+    if (this.logger.logQueryPlan) {
+      this.explainQueryPlan(sql, params);
     }
 
     const row = stmt.get(params) as Row | undefined;
@@ -116,6 +125,10 @@ export default class Accessor implements DataAccessor, DataWriter {
     }
     if (!stmt.reader) {
       throw new Error('The specified SQL does not return data');
+    }
+
+    if (this.logger.logQueryPlan) {
+      this.explainQueryPlan(sql, params);
     }
 
     return stmt.all(params) as Row[];
@@ -164,7 +177,7 @@ export default class Accessor implements DataAccessor, DataWriter {
       const writer = new Accessor(
         this.database,
         writerToken,
-        this.logSql,
+        this.logger,
         this.cache
       );
       this.cache.setDataReader(writer);
@@ -231,8 +244,24 @@ export default class Accessor implements DataAccessor, DataWriter {
   }
 
   private prepare(sql: string): Statement {
-    this.logSql(sql);
+    this.logger.logQuery(sql);
     return this.database.prepare(sql);
+  }
+
+  private explainQueryPlan(sql: string, params: Param[]): void {
+    type Row = [number, number, number, string];
+
+    const stmt = this.database.prepare(`explain query plan ${sql}`);
+    stmt.raw(true);
+
+    const rows = stmt.all(params) as Row[];
+    // This function is only ever entered when logQueryPlan != null.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.logger.logQueryPlan!(rows.map(row => ({
+      id: row[0],
+      parentId: row[1],
+      description: row[3],
+    })));
   }
 
   private ensureValid(): void {
