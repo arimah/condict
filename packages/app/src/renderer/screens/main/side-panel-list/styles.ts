@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import {FlowContent} from '../../../ui';
+
 export type MainProps = {
   $open: boolean;
   visible: boolean;
@@ -51,7 +53,7 @@ export const SidePanel = styled.div.attrs({
   'aria-modal': false,
 })<SidePanelProps>`
   box-sizing: border-box;
-  padding: 16px;
+  padding: 24px 32px;
   position: absolute;
   overflow: auto;
   top: 0;
@@ -80,5 +82,15 @@ export const SidePanel = styled.div.attrs({
 
   &:focus {
     outline: none;
+  }
+
+  h1 {
+    margin-top: 36px;
+    margin-bottom: 12px;
+  }
+
+  > :first-child,
+  > ${FlowContent}:first-child > :first-child {
+    margin-top: 0;
   }
 `;

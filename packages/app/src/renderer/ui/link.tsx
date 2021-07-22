@@ -1,8 +1,9 @@
-import {MouseEvent, AnchorHTMLAttributes, useCallback} from 'react';
+import React, {MouseEvent, AnchorHTMLAttributes, useCallback} from 'react';
+import shallowEqual from 'shallowequal';
 
 import {selectPlatform} from '@condict/platform';
 
-import {Page} from '../pages';
+import {Page} from '../page';
 import {useNavigateTo} from '../navigation';
 
 export type Props = {
@@ -18,7 +19,15 @@ const hasPrimaryModifier = selectPlatform({
   default: (e: MouseEvent) => e.ctrlKey,
 });
 
-const Link = (props: Props): JSX.Element => {
+const arePropsEqual = (prev: Props, next: Props) =>
+  shallowEqual(prev, next, (a, b, key) => {
+    if (key === 'to') {
+      return shallowEqual(a, b);
+    }
+    return;
+  });
+
+const Link = React.memo((props: Props): JSX.Element => {
   const {
     to: targetPage,
     newTab,
@@ -73,6 +82,8 @@ const Link = (props: Props): JSX.Element => {
       {children}
     </a>
   );
-};
+}, arePropsEqual);
+
+Link.displayName = 'Link';
 
 export default Link;

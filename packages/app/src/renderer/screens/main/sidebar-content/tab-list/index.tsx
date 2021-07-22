@@ -15,8 +15,8 @@ import {
   useWritingDirection,
 } from '@condict/ui';
 
-import {NavigationContextValue, useNavigation} from '../../../navigation';
-import {VerticalTabPrevKey, VerticalTabNextKey} from '../../../shortcuts';
+import {NavigationContextValue, useNavigation} from '../../../../navigation';
+import {VerticalTabPrevKey, VerticalTabNextKey} from '../../../../shortcuts';
 
 import Tab from './tab';
 import * as S from './styles';

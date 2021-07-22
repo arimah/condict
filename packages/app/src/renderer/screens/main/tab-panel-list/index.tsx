@@ -1,6 +1,6 @@
 import {useLayoutEffect, useRef} from 'react';
 
-import {useNavigation} from '../../navigation';
+import {useNavigation} from '../../../navigation';
 
 import TabPanel, {TabPanelHandle} from './tab-panel';
 

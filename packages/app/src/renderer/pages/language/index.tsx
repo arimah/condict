@@ -1,7 +1,7 @@
-import {Spinner} from '@condict/ui';
+import {BodyText, Spinner} from '@condict/ui';
 
-import {Link} from '../../ui';
-import {LanguagePage as LanguageTarget, PartOfSpeechPage} from '../../pages';
+import {LanguagePage as LanguageTarget, PartOfSpeechPage} from '../../page';
+import {Link, RichContent} from '../../ui';
 import {LanguageId} from '../../graphql-shared';
 import {useData} from '../../data';
 
@@ -33,6 +33,9 @@ const LanguagePage = (props: Props): JSX.Element => {
 
   return <>
     <p>This is the page for language {lang.name} (ID: {id}).</p>
+    <BodyText>
+      <RichContent value={lang.description}/>
+    </BodyText>
     <p>Parts of speech in this language:</p>
     <ul>
       {lang.partsOfSpeech.map(pos =>

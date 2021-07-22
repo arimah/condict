@@ -10,6 +10,8 @@ dir = ltr
 
 sidebar-search-button = Search the dictionary
 
+sidebar-advanced-search-button = Advanced search
+
 sidebar-settings-button = Settings
 
 sidebar-tab-close-button-tooltip = Close tab
@@ -35,6 +37,10 @@ sidebar-definition-tab-title = {$term}
 # Variables:
 #   name: The name of the part of speech.
 sidebar-part-of-speech-tab-title = {$name}
+
+# Variables:
+#   name: The name of the inflection table.
+sidebar-inflection-table-tab-title = {$name}
 
 # Variables:
 #   name: The name of the tag.
@@ -153,15 +159,15 @@ settings-theme-light = Light
 
 settings-theme-dark = Dark
 
-settings-accent-color-label = Accent colour
+settings-accent-color-label = Accent color
 
 # Can also be translated as "warning colour", "caution colour", "signal colour"
 # or equivalent.
-settings-danger-color-label = Danger colour
+settings-danger-color-label = Danger color
 
-settings-danger-color-description = This colour is used for destructive actions, such as “Delete” buttons.
+settings-danger-color-description = This color is used for destructive actions, such as “Delete” buttons.
 
-settings-sidebar-color-label = Sidebar colour
+settings-sidebar-color-label = Sidebar color
 
 settings-color-name-red = Red
 
@@ -198,7 +204,11 @@ settings-motion-none-description = Completely disables all motion and animations
 settings-help-translate =
   Want Condict in your language? Found a translation error? You can <help-link>help translate Condict</help-link>.
 
-settings-locale-en = English (United Kingdom)
+settings-locale-en = English (United States)
+
+settings-locale-en-ca = English (Canada)
+
+settings-locale-en-gb = English (United Kingdom)
 
 ## Settings > Application updates section
 
@@ -246,13 +256,79 @@ settings-about-special-thanks = Alice would like to extend special gratitude to 
 settings-about-special-thanks-list =
   <list-item>M. Damian Mulligan for invaluable technical expertise and continual encouragement.</list-item>
 
-settings-about-third-party-licenses-title = Third-party licences
+settings-about-third-party-licenses-title = Third-party licenses
 
 settings-about-third-party-licenses-intro = This section does not yet have any content.
+
+## Home page messages
+
+home-languages-title = Languages
+
+home-no-languages-heading = Fiat lingua!
+
+home-no-languages-description = Let’s get started! The first step is to add a language.
+
+home-language-statistics =
+  {$lemmaCount ->
+    [0] No headwords
+    [one] {$lemmaCount} headword
+   *[other] {$lemmaCount} headwords
+  } – {$partOfSpeechCount ->
+    [0] No parts of speech
+    [one] {$partOfSpeechCount} part of speech
+   *[other] {$partOfSpeechCount} parts of speech
+  } – {$tagCount ->
+    [0] No tags
+    [one] {$tagCount} tag
+   *[other] {$tagCount} tags
+  }
+
+home-add-language-button = Add language
+
+home-add-language-title = Add language
+
+home-tags-title = Tags
+
+home-no-tags-description = Tags will show up here when you add them to word definitions.
+
+home-recent-changes-title = Recent changes
+
+home-no-recent-changes-description = Recent changes will show up here when you add something to the dictionary or edit an existing item.
+
+home-recent-language-description = Language.
+
+# Variables:
+#   language: The name of the language that the definition is in.
+# Elements:
+#   <lang-link>: Link to the language that the definition is in. Wraps around $language.
+home-recent-definition-description = Definition in <lang-link>{$language}</lang-link>.
+
+# Variables:
+#   language: The name of the language that the part of speech is in.
+# Elements:
+#   <lang-link>: Link to the language that the part of speech is in. Wraps around $language.
+home-recent-part-of-speech-description = Part of speech in <lang-link>{$language}</lang-link>.
+
+# Variables:
+#   partOfSpeech: The name of the part of speech that the inflection table belongs to.
+#   language: The name of the language that the inflection table is in.
+# Elements:
+#   <pos-link>: Link to the part of speech that the inflection table belongs to. Wraps around $partOfSpeech.
+#   <lang-link>: Link to the language that the definition is in. Wraps around $language.
+home-recent-inflection-table-description =
+    Inflection table of <pos-link>{$partOfSpeech}</pos-link> in <lang-link>{$language}</lang-link>.
+
+home-recent-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+home-recent-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
 ## Generic messages
 
 generic-loading = Loading...
+
+generic-broken-link-title = Oops, this link is broken!
+
+generic-broken-link-message = This link leads to a dictionary item that has been deleted.
 
 # Variables:
 #   errorCount: The number of errors that were returned from the server. Always greater than 0.

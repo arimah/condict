@@ -1,8 +1,8 @@
 import React, {MouseEvent, Ref, useCallback} from 'react';
 import {useLocalization} from '@fluent/react';
 
-import {Tab as NavTab} from '../../../navigation';
-import {PageIcon} from '../../../pages';
+import {Tab as NavTab} from '../../../../navigation';
+import PageIcon from '../../../../ui/page-icon';
 
 import {CloseIcon, DirtyIcon} from './icons';
 import * as S from './styles';

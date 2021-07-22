@@ -3,9 +3,9 @@
 import LanguageIcon from 'mdi-react/BookOpenPageVariantOutlineIcon';
 import LemmaIcon from 'mdi-react/TextBoxMultipleOutlineIcon';
 import DefinitionIcon from 'mdi-react/CardBulletedOutlineIcon';
-import PartOfSpeechIcon from 'mdi-react/SelectGroupIcon';
+import PartOfSpeechIcon from 'mdi-react/ShapeOutlineIcon';
 import InflectionTableIcon from 'mdi-react/TableLargeIcon';
-import TagIcon from 'mdi-react/TagTextOutlineIcon';
+import TagIcon from 'mdi-react/PoundIcon';
 
 // TODO: Expand with more as necessary
 export type ResourceType =

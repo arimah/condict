@@ -10,7 +10,7 @@ import produce, {Draft} from 'immer';
 import {useLocalization} from '@fluent/react';
 import {customAlphabet} from 'nanoid';
 
-import {Page, HomePage} from '../pages';
+import {Page, HomePage} from '../page';
 import {OpenDialogFn, useOpenDialog} from '../dialog-stack';
 
 import {

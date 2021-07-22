@@ -1,7 +1,7 @@
 import {Button, Spinner} from '@condict/ui';
 
 import {Link} from '../../ui';
-import {LanguagePage, PartOfSpeechPage as PartOfSpeechTarget} from '../../pages';
+import {LanguagePage, PartOfSpeechPage as PartOfSpeechTarget} from '../../page';
 import {useUpdateTab} from '../../navigation';
 import {PartOfSpeechId} from '../../graphql-shared';
 import {useData} from '../../data';

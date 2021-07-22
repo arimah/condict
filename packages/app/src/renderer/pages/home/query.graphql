@@ -1,11 +1,57 @@
-{
+query($tagsPage: Int!) {
   languages {
     id
     name
+    lemmaCount
+    partsOfSpeech { id }
+    tags {
+      page { totalCount }
+    }
+    description {
+      ...RichTextBlockFragment
+    }
+  }
 
-    partsOfSpeech {
+  tags(page: {page: $tagsPage, perPage: 100}) {
+    page {
+      page
+      hasNext
+    }
+    nodes {
       id
       name
+    }
+  }
+
+  recentChanges(page: {page: 0, perPage: 8}) {
+    nodes {
+      __typename
+      timeCreated
+      timeUpdated
+
+      ...on Language {
+        languageId: id
+        name
+      }
+      ...on Definition {
+        definitionId: id
+        term
+        language { id, name }
+      }
+      ...on PartOfSpeech {
+        partOfSpeechId: id
+        name
+        language { id, name }
+      }
+      ...on InflectionTable {
+        inflectionTableId: id
+        name
+        partOfSpeech {
+          id
+          name
+          language { id, name }
+        }
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 import {LanguageId, LemmaId, DefinitionId} from '../../graphql-shared';
-import {Page, LemmaPage, DefinitionPage, LanguagePage} from '../../pages';
+import {Page, LemmaPage, DefinitionPage, LanguagePage} from '../../page';
 
 export interface SearchResultState {
   readonly query: string;

@@ -3,8 +3,9 @@ import {
   LemmaId,
   DefinitionId,
   PartOfSpeechId,
+  InflectionTableId,
   TagId,
-} from '../graphql-shared';
+} from './graphql-shared';
 
 export type Page =
   | HomePage
@@ -12,6 +13,7 @@ export type Page =
   | LemmaPage
   | DefinitionPage
   | PartOfSpeechPage
+  | InflectionTablePage
   | TagPage
   | SearchPage;
 
@@ -26,13 +28,12 @@ export const Page = {
     switch (page.type) {
       case 'home':
         return 'home';
-      case 'language':
-        return page.name;
       case 'lemma':
       case 'definition':
         return page.term;
+      case 'language':
       case 'partOfSpeech':
-        return page.name;
+      case 'inflectionTable':
       case 'tag':
         return page.name;
       case 'search':
@@ -60,6 +61,7 @@ export const Page = {
       case 'lemma':
       case 'definition':
       case 'partOfSpeech':
+      case 'inflectionTable':
         return true;
       default:
         return false;
@@ -160,6 +162,28 @@ export const PartOfSpeechPage = (
   language: LanguagePage
 ): PartOfSpeechPage => ({
   type: 'partOfSpeech',
+  id,
+  name,
+  language,
+});
+
+export interface InflectionTablePage extends LanguageChild {
+  readonly type: 'inflectionTable';
+  /** The ID of the inflection table to show. */
+  readonly id: InflectionTableId;
+  /**
+   * The name of the inflection table, if available. Shown as the initial tab
+   * title while the tab is loading.
+   */
+  readonly name: string;
+}
+
+export const InflectionTablePage = (
+  id: InflectionTableId,
+  name: string,
+  language: LanguagePage
+): InflectionTablePage => ({
+  type: 'inflectionTable',
   id,
   name,
   language,

@@ -1,4 +1,4 @@
-import {Page, HomePage, LanguagePage} from '../pages';
+import {Page, HomePage, LanguagePage} from '../page';
 
 export type SingletonPage = HomePage | LanguagePage;
 

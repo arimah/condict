@@ -2,11 +2,12 @@ import {KeyboardEvent, useCallback, useRef} from 'react';
 
 import {CommandProvider, CommandGroup, useCommandGroup} from '@condict/ui';
 
-import {SidebarContent, TabPanelList} from '../ui';
-import {useNavigationCommands, useNavigateTo} from '../navigation';
-import {useOpenDialog} from '../dialog-stack';
-import {searchDialog, settingsDialog} from '../dialogs';
+import {useNavigationCommands, useNavigateTo} from '../../navigation';
+import {useOpenDialog} from '../../dialog-stack';
+import {searchDialog, settingsDialog} from '../../dialogs';
 
+import SidebarContent from './sidebar-content';
+import TabPanelList from './tab-panel-list';
 import * as S from './styles';
 
 const MainScreen = (): JSX.Element => {

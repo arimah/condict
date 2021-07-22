@@ -2,6 +2,10 @@ query($id: LanguageId!) {
   language(id: $id) {
     name
 
+    description {
+      ...RichTextBlockFragment
+    }
+
     partsOfSpeech {
       id
       name

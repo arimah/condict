@@ -1,6 +1,6 @@
 import SearchIcon from 'mdi-react/MagnifyIcon';
 import SettingsIcon from 'mdi-react/CogIcon';
-import {Localized as T} from '@fluent/react';
+import {Localized} from '@fluent/react';
 
 import TabList from './tab-list';
 import * as S from './styles';
@@ -18,14 +18,14 @@ const SidebarContent = (props: Props): JSX.Element => {
   return <>
     <S.SearchButton command='global:search'>
       <SearchIcon/>
-      <span><T id='sidebar-search-button'/></span>
+      <span><Localized id='sidebar-search-button'/></span>
     </S.SearchButton>
 
     <TabList sidebarContainsFocus={sidebarContainsFocus}/>
 
     <S.Button command='global:settings'>
       <SettingsIcon/>
-      <span><T id='sidebar-settings-button'/></span>
+      <span><Localized id='sidebar-settings-button'/></span>
     </S.Button>
   </>;
 };

@@ -68,14 +68,14 @@ export const EditorStyles = css`
 
   ${Heading1} {
     margin-block: 16px 8px;
-    font-size: 21px;
+    font-size: 20px;
     line-height: 24px;
   }
 
   ${Heading2} {
     margin-block: 12px 4px;
     font-size: 18px;
-    line-height: 21px;
+    line-height: 20px;
   }
 
     /* Reduce spacing around headings at the beginning and end. */

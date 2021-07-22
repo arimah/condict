@@ -181,7 +181,7 @@ export const ResultName = styled.span`
   text-overflow: ellipsis;
   overflow: hidden;
   font-size: 18px;
-  line-height: 24px;
+  line-height: 20px;
 `;
 
 export const ResultLanguage = styled.span`
@@ -230,5 +230,5 @@ export const NoResultNotice = styled.p`
   margin-bottom: 16px;
   text-align: center;
   font-size: 18px;
-  line-height: 24px;
+  line-height: 20px;
 `;

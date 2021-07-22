@@ -1,8 +1,9 @@
+import {Page} from '../page';
+
 import HomePage from './home';
 import LanguagePage from './language';
 import PartOfSpeechPage from './part-of-speech';
 import UnimplementedPage from './unimplemented';
-import {Page} from './types';
 
 export type Props = {
   page: Page;

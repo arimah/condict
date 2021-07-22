@@ -84,3 +84,48 @@ export type DefinitionId = IdOf<'Definition'>;
  */
 export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
 
+/**
+ * The kind of a block element.
+ */
+export type BlockKind =
+  /**
+   * A paragraph of text without any additional meaning.
+   */
+  | 'PARAGRAPH'
+  /**
+   * A first-level heading.
+   */
+  | 'HEADING_1'
+  /**
+   * A second-level heading.
+   */
+  | 'HEADING_2'
+  /**
+   * An ordered list item. All consecutive ordered list items on the same level
+   * belong to the same list.
+   */
+  | 'OLIST_ITEM'
+  /**
+   * An unordered list item. All consecutive unordered list items on the same
+   * level belong to the same list.
+   */
+  | 'ULIST_ITEM'
+;
+
+/**
+ * Represents a tag ID.
+ */
+export type TagId = IdOf<'Tag'>;
+
+/**
+ * Represents an instant in time. The value is sent as the number of milliseconds
+ * since midnight 1 January 1970 UTC (that is, a value compatible with the JS
+ * `Date` type).
+ */
+export type UtcInstant = number;
+
+/**
+ * Represents an inflection table ID.
+ */
+export type InflectionTableId = IdOf<'InflectionTable'>;
+

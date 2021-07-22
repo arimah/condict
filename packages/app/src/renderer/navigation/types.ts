@@ -1,7 +1,7 @@
 import {ReactNode} from 'react';
 import {ReactLocalization} from '@fluent/react';
 
-import {Page} from '../pages';
+import {Page} from '../page';
 
 export type TabState = 'idle' | 'loading' | 'crashed';
 
@@ -109,6 +109,10 @@ export const Tab = {
         });
       case 'partOfSpeech':
         return l10n.getString('sidebar-part-of-speech-tab-title', {
+          name: tab.title,
+        });
+      case 'inflectionTable':
+        return l10n.getString('sidebar-inflection-table-tab-title', {
           name: tab.title,
         });
       case 'tag':

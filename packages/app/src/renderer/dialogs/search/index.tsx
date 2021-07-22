@@ -1,7 +1,6 @@
 import {KeyboardEvent, ChangeEvent, useState, useCallback} from 'react';
 import {Localized, useLocalization} from '@fluent/react';
 import SearchIcon from 'mdi-react/MagnifyIcon';
-import CloseIcon from 'mdi-react/CloseIcon';
 
 import {Shortcut, Checkbox, Button, useUniqueId} from '@condict/ui';
 
@@ -9,7 +8,7 @@ import {SearchScope} from '../../graphql-shared';
 import {DialogParams, DialogProps} from '../../dialog-stack';
 import {AcceptKey, CancelKey} from '../../shortcuts';
 import {useImmediateEntryAndExit} from '../../ui';
-import {Page, SearchPage} from '../../pages';
+import {Page, SearchPage} from '../../page';
 
 import useSearchState from './use-search-state';
 import SearchResultList from './search-result-list';

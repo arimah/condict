@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 import {Button} from '@condict/ui';
 
+import {FlowContent} from '../../../ui';
+
 export type TabPanelProps = {
   isCurrent?: boolean;
 };
@@ -57,6 +59,17 @@ export const BackButton = styled(Button)`
 `;
 
 export const MainColumn = styled.div`
-  padding: 16px;
+  padding-block: 24px;
+  padding-inline: 16px 32px;
   flex: 1 1 auto;
+
+  h1 {
+    margin-top: 36px;
+    margin-bottom: 12px;
+  }
+
+  > :first-child,
+  > ${FlowContent}:first-child > :first-child {
+    margin-top: 0;
+  }
 `;

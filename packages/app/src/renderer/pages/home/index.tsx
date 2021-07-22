@@ -1,151 +1,101 @@
-import {Fragment, useState} from 'react';
+import {useCallback} from 'react';
+import {Localized, ReactLocalization, useLocalization} from '@fluent/react';
 
-import {Button, BodyText} from '@condict/ui';
+import {Button, useUniqueId} from '@condict/ui';
 
-import {Link} from '../../ui';
+import {LanguageId} from '../../graphql-shared';
+import {DataViewer, FlowContent, Tag} from '../../ui';
+import {PanelParams, PanelProps, useOpenPanel} from '../../navigation';
 import {useData} from '../../data';
-import {LanguagePage, PartOfSpeechPage} from '../../pages';
-import {PanelProps, PanelParams, useOpenPanel} from '../../navigation';
-import {useOpenDialog} from '../../dialog-stack';
-import {YesNo, OKCancel, messageBox} from '../../dialogs';
 
 import HomeQuery from './query';
-// import * as S from './styles';
-
-type TestResponse = 'yes' | 'no' | 'cancel';
-
-const TestPanel = (props: PanelProps<TestResponse>): JSX.Element => {
-  const {onResolve} = props;
-
-  const [childResponse, setChildResponse] = useState<TestResponse | null>(null);
-
-  const openPanel = useOpenPanel();
-
-  return <>
-    <BodyText>
-      <p>Hello, I am a test panel!</p>
-      <p>I contain a small amount of mostly meaningless content, including this long paragraph:</p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-    </BodyText>
-    <p>There are three possible responses:</p>
-    <p>
-      <Button
-        label='Yes'
-        intent='accent'
-        bold
-        onClick={() => onResolve('yes')}
-      />
-      {' '}
-      <Button label='No' onClick={() => onResolve('no')}/>
-      {' '}
-      <Button
-        label='Cancel'
-        intent='danger'
-        onClick={() => onResolve('cancel')}
-      />
-    </p>
-    <hr/>
-    <p>
-      {'For the adventurous: '}
-      <Button
-        label='Open a nested panel'
-        slim
-        onClick={() => openPanel(TestPanelParams).then(setChildResponse)}
-      />
-    </p>
-    {childResponse && <p>Nested panel response: {childResponse}</p>}
-  </>;
-};
-
-const TestPanelParams: PanelParams<TestResponse> = {
-  initialTitle: 'Testing things',
-  // eslint-disable-next-line react/display-name
-  render: props => <TestPanel {...props}/>,
-};
+import LanguageList from './language-list';
+import * as S from './styles';
+import RecentChangeCard from './recent-change-card';
 
 const HomePage = (): JSX.Element => {
-  const data = useData(HomeQuery, null);
+  const data = useData(HomeQuery, {tagsPage: 0});
+
+  const {l10n} = useLocalization();
 
   const openPanel = useOpenPanel();
-  const openDialog = useOpenDialog();
+  const handleAddLanguage = useCallback(() => {
+    void openPanel(addLanguagePanel(l10n));
+  }, [l10n]);
 
-  const [panelResponse, setPanelResponse] = useState<TestResponse | null>(null);
-  const [dialogResponse, setDialogResponse] = useState<boolean | null>(null);
-
-  const languages = data.state === 'data'
-    ? data.result.data?.languages
-    : undefined;
+  const id = useUniqueId();
 
   return <>
-    <p>This is the content of the home page.</p>
-    <ul>
-      {languages?.map(lang => {
-        const langPage = LanguagePage(lang.id, lang.name);
-        return (
-          <li key={lang.id}>
-            Language: <Link to={langPage}>{lang.name}</Link>
-            {' - '}
-            {lang.partsOfSpeech.map((pos, i) =>
-              <Fragment key={pos.id}>
-                {i > 0 && ', '}
-                <Link to={PartOfSpeechPage(pos.id, pos.name, langPage)}>
-                  {pos.name}
-                </Link>
-              </Fragment>
+    <DataViewer
+      result={data}
+      render={({languages, tags, recentChanges}) =>
+        <FlowContent>
+          <h1 id={`${id}-languages-title`}>
+            <Localized id='home-languages-title'/>
+          </h1>
+          <LanguageList
+            aria-labelledby={`${id}-languages-title`}
+            languages={languages}
+            onAddLanguage={handleAddLanguage}
+          />
+
+          <h1 id={`${id}-tags-title`}>
+            <Localized id='home-tags-title'/>
+          </h1>
+          <section aria-labelledby={`${id}-tags-title`}>
+            {tags.nodes.length > 0 ? (
+              <S.TagList>
+                {tags.nodes.map(tag =>
+                  <li key={tag.id}>
+                    <Tag id={tag.id} name={tag.name}/>
+                  </li>
+                )}
+              </S.TagList>
+            ) : (
+              <p>
+                <Localized id='home-no-tags-description'/>
+              </p>
             )}
-          </li>
-        );
-      })}
-    </ul>
-    <hr/>
-    <p>
-      <Button
-        label='Open a test panel'
-        bold
-        onClick={() => openPanel(TestPanelParams).then(setPanelResponse)}
-      />
-    </p>
-    {panelResponse && <p>Test panel response: {panelResponse}</p>}
-    <hr/>
-    <p>
-      <Button
-        label='Open a Yes/No dialog'
-        bold
-        onClick={() => {
-          void openDialog(messageBox({
-            titleKey: 'test-dialog-title',
-            message: <>
-              <p>The primary response is true. The secondary response is false.</p>
-              <p>Choose wisely.</p>
-            </>,
-            buttons: YesNo,
-          })).then(setDialogResponse);
-        }}
-      />
-      {' '}
-      <Button
-        label='Open an OK/Cancel dialog'
-        bold
-        onClick={() => {
-          void openDialog(messageBox({
-            titleKey: 'test-dialog-title',
-            message: <>
-              <p>This dialog can be dismissed by pressing <kbd>Escape</kbd>, which is equivalent to clicking the Cancel button.</p>
-            </>,
-            buttons: OKCancel,
-          })).then(setDialogResponse);
-        }}
-      />
-    </p>
-    {dialogResponse !== null && <p>Last dialog response: {String(dialogResponse)}</p>}
+          </section>
+
+          <h1 id={`${id}-recent-title`}>
+            <Localized id='home-recent-changes-title'/>
+          </h1>
+          {recentChanges != null && recentChanges.nodes.length > 0 ? (
+            <S.RecentChangesList aria-labelledby={`${id}-recent-title`}>
+              {recentChanges?.nodes.map((item, index) =>
+                <RecentChangeCard key={index} item={item}/>
+              )}
+            </S.RecentChangesList>
+          ) : (
+            <p>
+              <Localized id='home-no-recent-changes-description'/>
+            </p>
+          )}
+        </FlowContent>}
+    />
   </>;
 };
 
 export default HomePage;
+
+const addLanguagePanel = (
+  l10n: ReactLocalization
+): PanelParams<LanguageId | null> => ({
+  initialTitle: l10n.getString('home-add-language-title'),
+  // eslint-disable-next-line react/display-name
+  render: props => <AddLanguagePanel {...props}/>,
+});
+
+const AddLanguagePanel = (props: PanelProps<LanguageId | null>) => {
+  const {onResolve} = props;
+  return <>
+    <h1>
+      <Localized id='home-add-language-title'/>
+    </h1>
+    <p>Here you will be able to add a language.</p>
+    <p>
+      <Button label='Cancel' onClick={() => onResolve(null)}/>
+    </p>
+  </>;
+};

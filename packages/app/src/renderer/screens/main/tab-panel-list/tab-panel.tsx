@@ -10,8 +10,8 @@ import {useLocalization} from '@fluent/react';
 
 import {FocusScope, getTabReachable} from '@condict/ui';
 
-import {PageContent} from '../../pages';
-import {Tab, TabContextProvider} from '../../navigation';
+import PageContent from '../../../pages';
+import {Tab, TabContextProvider} from '../../../navigation';
 
 import SidePanelList, {SidePanelListHandle} from '../side-panel-list';
 

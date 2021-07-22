@@ -11,7 +11,7 @@ import React, {
 
 import {FocusScope, getTabReachable} from '@condict/ui';
 
-import {Panel} from '../../navigation';
+import {Panel} from '../../../navigation';
 
 import * as S from './styles';
 

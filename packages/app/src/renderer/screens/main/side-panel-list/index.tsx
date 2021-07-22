@@ -1,8 +1,7 @@
 import React, {Ref, useRef, useImperativeHandle} from 'react';
 
-import {Panel} from '../../navigation';
-
-import TransitionList, {ItemPhase} from '../transition-list';
+import {Panel} from '../../../navigation';
+import TransitionList, {ItemPhase} from '../../../ui/transition-list';
 
 import SidePanel, {SidePanelHandle} from './side-panel';
 import * as S from './styles';
