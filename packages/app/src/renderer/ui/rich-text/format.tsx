@@ -7,7 +7,7 @@ import {
   DefinitionPage,
   PartOfSpeechPage,
 } from '../../page';
-import {BlockKind} from '../../graphql-shared';
+import {BlockKind} from '../../graphql';
 
 import Link from '../link';
 import BrokenLink from '../broken-link';

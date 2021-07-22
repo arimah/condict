@@ -2,7 +2,7 @@ import {BodyText, Spinner} from '@condict/ui';
 
 import {LanguagePage as LanguageTarget, PartOfSpeechPage} from '../../page';
 import {Link, RichContent} from '../../ui';
-import {LanguageId} from '../../graphql-shared';
+import {LanguageId} from '../../graphql';
 import {useData} from '../../data';
 
 import LanguageQuery from './query';

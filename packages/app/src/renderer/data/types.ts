@@ -5,7 +5,7 @@ import {
   Query,
   OperationArgs,
   OperationResult as OperationData,
-} from '../graphql-shared';
+} from '../graphql';
 
 export type ExecuteFn = <Op extends Operation<'query' | 'mutation', any, any>>(
   operation: Op,

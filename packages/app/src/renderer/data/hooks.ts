@@ -7,7 +7,7 @@ import {
 } from 'react';
 import shallowEqual from 'shallowequal';
 
-import {Query, OperationArgs} from '../graphql-shared';
+import {Query, OperationArgs} from '../graphql';
 
 import DataContext from './context';
 import {QueryResult, LoadingResult, ExecuteFn} from './types';

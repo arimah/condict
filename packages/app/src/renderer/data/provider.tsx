@@ -2,7 +2,7 @@ import {ReactNode, useMemo} from 'react';
 
 import {OperationResult as ExecuteResult} from '../../types';
 
-import {Operation, OperationArgs, OperationResult} from '../graphql-shared';
+import {Operation, OperationArgs, OperationResult} from '../graphql';
 import ipc from '../ipc';
 
 import DataContext from './context';

@@ -1,7 +1,7 @@
 import {useReducer, useCallback, useEffect, useRef} from 'react';
 import produce, {Draft} from 'immer';
 
-import {SearchScope} from '../../graphql-shared';
+import {SearchScope} from '../../graphql';
 import {ExecuteResult, useExecute} from '../../data';
 
 import searchQuery from './query';

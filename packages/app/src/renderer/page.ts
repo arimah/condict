@@ -5,7 +5,7 @@ import {
   PartOfSpeechId,
   InflectionTableId,
   TagId,
-} from './graphql-shared';
+} from './graphql';
 
 export type Page =
   | HomePage

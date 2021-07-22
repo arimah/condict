@@ -1,4 +1,4 @@
-import {LanguageId, LemmaId, DefinitionId} from '../../graphql-shared';
+import {LanguageId, LemmaId, DefinitionId} from '../../graphql';
 import {Page, LemmaPage, DefinitionPage, LanguagePage} from '../../page';
 
 export interface SearchResultState {

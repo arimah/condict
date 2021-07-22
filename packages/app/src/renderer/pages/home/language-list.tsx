@@ -5,7 +5,7 @@ import AddIcon from 'mdi-react/PlusIcon';
 import {Button, ConlangFlag, NonIdealState} from '@condict/ui';
 
 import {LinkCard, RichContent} from '../../ui';
-import {OperationResult} from '../../graphql-shared';
+import {OperationResult} from '../../graphql';
 import {LanguagePage} from '../../page';
 
 import HomeQuery from './query';

@@ -4,7 +4,7 @@ import {Localized} from '@fluent/react';
 import {ExecuteError} from '../../types';
 
 import {QueryResult} from '../data';
-import {Query, OperationResult} from '../graphql-shared';
+import {Query, OperationResult} from '../graphql';
 
 import Loading from './loading';
 

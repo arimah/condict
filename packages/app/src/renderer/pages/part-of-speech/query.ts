@@ -6,7 +6,7 @@ import {
   Query,
   PartOfSpeechId,
   LanguageId
-} from "../../graphql-shared";
+} from "../../graphql";
 
 export default "query($id:PartOfSpeechId!){partOfSpeech(id:$id){name,language{id,name,partsOfSpeech{id,name}}}}" as Query<{
   id: PartOfSpeechId;

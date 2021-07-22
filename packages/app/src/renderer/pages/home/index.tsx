@@ -3,7 +3,7 @@ import {Localized, ReactLocalization, useLocalization} from '@fluent/react';
 
 import {Button, useUniqueId} from '@condict/ui';
 
-import {LanguageId} from '../../graphql-shared';
+import {LanguageId} from '../../graphql';
 import {DataViewer, FlowContent, Tag} from '../../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../../navigation';
 import {useData} from '../../data';

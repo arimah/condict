@@ -1,7 +1,7 @@
 import {ReactNode} from 'react';
 import {Localized} from '@fluent/react';
 
-import {OperationResult} from '../../graphql-shared';
+import {OperationResult} from '../../graphql';
 import {Card, Link, ResourceIcon, ResourceType} from '../../ui';
 import {
   Page,

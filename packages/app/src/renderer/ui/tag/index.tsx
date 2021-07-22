@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {TagId} from '../../graphql-shared';
+import {TagId} from '../../graphql';
 import {TagPage} from '../../page';
 
 import {Props as LinkProps} from '../link';

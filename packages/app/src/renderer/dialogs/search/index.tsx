@@ -4,7 +4,7 @@ import SearchIcon from 'mdi-react/MagnifyIcon';
 
 import {Shortcut, Checkbox, Button, useUniqueId} from '@condict/ui';
 
-import {SearchScope} from '../../graphql-shared';
+import {SearchScope} from '../../graphql';
 import {DialogParams, DialogProps} from '../../dialog-stack';
 import {AcceptKey, CancelKey} from '../../shortcuts';
 import {useImmediateEntryAndExit} from '../../ui';
