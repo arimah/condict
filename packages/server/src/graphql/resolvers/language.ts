@@ -2,6 +2,7 @@ import {UserInputError} from 'apollo-server';
 
 import {
   Language as LanguageModel,
+  LanguageStats as LanguageStatsModel,
   LanguageMut,
   Description,
   PartOfSpeech,
@@ -9,9 +10,14 @@ import {
   Tag,
   SearchIndex,
   LanguageRow,
+  LanguageStatsRow,
 } from '../../model';
 
-import {Language as LanguageType, Query as QueryType} from '../types';
+import {
+  Language as LanguageType,
+  LanguageStats as LanguageStatsType,
+  Query as QueryType,
+} from '../types';
 import {mutator} from '../helpers';
 
 import {ResolversFor, Mutators} from './types';
@@ -71,6 +77,18 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
   timeCreated: p => p.time_created,
 
   timeUpdated: p => p.time_updated,
+
+  statistics: (p, _args, {db}) => LanguageStatsModel.byId(db, p.id),
+};
+
+const LanguageStats: ResolversFor<LanguageStatsType, LanguageStatsRow> = {
+  lemmaCount: p => p.lemma_count,
+
+  definitionCount: p => p.definition_count,
+
+  partOfSpeechCount: p => p.part_of_speech_count,
+
+  tagCount: p => p.tag_count,
 };
 
 const Query: ResolversFor<QueryType, null> = {
@@ -91,6 +109,7 @@ const Mutation: Mutators = {
 
 export default {
   Language,
+  LanguageStats,
   Query,
   Mutation,
 };

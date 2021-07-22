@@ -268,11 +268,20 @@ home-no-languages-heading = Fiat lingua!
 
 home-no-languages-description = Let’s get started! The first step is to add a language.
 
+# Variables:
+#   lemmaCount: The total number of lemmas (headwords) in the language.
+#   definitionCount: The total number of definitions in the language.
+#   partOfSpeechCount: The total number of parts of speech in the language.
+#   tagCount: The total number of unique tags used by definitions in the language.
 home-language-statistics =
   {$lemmaCount ->
     [0] No headwords
     [one] {$lemmaCount} headword
    *[other] {$lemmaCount} headwords
+  } – {$definitionCount ->
+    [0] No definitions
+    [one] {$definitionCount} definition
+   *[other] {$definitionCount} definitions
   } – {$partOfSpeechCount ->
     [0] No parts of speech
     [one] {$partOfSpeechCount} part of speech

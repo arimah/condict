@@ -2,13 +2,14 @@ query($tagsPage: Int!) {
   languages {
     id
     name
-    lemmaCount
-    partsOfSpeech { id }
-    tags {
-      page { totalCount }
-    }
     description {
       ...RichTextBlockFragment
+    }
+    statistics {
+      lemmaCount
+      definitionCount
+      partOfSpeechCount
+      tagCount
     }
   }
 

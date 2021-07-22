@@ -83,13 +83,6 @@ const LanguageCard = ({lang}: LanguageCardProps): JSX.Element =>
       />
     </S.LanguageDesc>
     <S.SecondaryDetail>
-      <Localized
-        id='home-language-statistics'
-        vars={{
-          lemmaCount: lang.lemmaCount,
-          partOfSpeechCount: lang.partsOfSpeech.length,
-          tagCount: lang.tags.page.totalCount,
-        }}
-      />
+      <Localized id='home-language-statistics' vars={lang.statistics}/>
     </S.SecondaryDetail>
   </LinkCard>;

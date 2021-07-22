@@ -80,11 +80,6 @@ export type LanguageId = IdOf<'Language'>;
 export type DefinitionId = IdOf<'Definition'>;
 
 /**
- * Represents a part of speech ID.
- */
-export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
-
-/**
  * The kind of a block element.
  */
 export type BlockKind =
@@ -111,6 +106,11 @@ export type BlockKind =
    */
   | 'ULIST_ITEM'
 ;
+
+/**
+ * Represents a part of speech ID.
+ */
+export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
 
 /**
  * Represents a tag ID.

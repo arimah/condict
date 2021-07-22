@@ -1155,6 +1155,10 @@ export type Language = {
    * parts of speech or definitions).
    */
   timeUpdated: UtcInstant;
+  /**
+   * Assorted statistics about the language.
+   */
+  statistics: LanguageStats;
 };
 
 /**
@@ -1189,6 +1193,28 @@ export type LanguageSearchResult = {
    * The language that matched the search.
    */
   language: Language;
+};
+
+/**
+ * Contains statistics about a language.
+ */
+export type LanguageStats = {
+  /**
+   * The total number of lemmas in the language.
+   */
+  lemmaCount: number;
+  /**
+   * The total number of (non-derived) definitions in the language.
+   */
+  definitionCount: number;
+  /**
+   * The number of parts of speech in the language.
+   */
+  partOfSpeechCount: number;
+  /**
+   * The number of unique tags used by definitions in the language.
+   */
+  tagCount: number;
 };
 
 /**

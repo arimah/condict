@@ -114,6 +114,9 @@ type Language implements RecentItem {
   parts of speech or definitions).
   """
   timeUpdated: UtcInstant!
+
+  "Assorted statistics about the language."
+  statistics: LanguageStats!
 }
 
 "Contains paginated results from the `Language.lemmas` field."
@@ -139,6 +142,21 @@ union SearchInLanguageResult =
   | LemmaSearchResult
   | DefinitionSearchResult
   | PartOfSpeechSearchResult
+
+"Contains statistics about a language."
+type LanguageStats {
+  "The total number of lemmas in the language."
+  lemmaCount: Int!
+
+  "The total number of (non-derived) definitions in the language."
+  definitionCount: Int!
+
+  "The number of parts of speech in the language."
+  partOfSpeechCount: Int!
+
+  "The number of unique tags used by definitions in the language."
+  tagCount: Int!
+}
 
 """
 Contains search parameters for the `Language.search` field. See that field for

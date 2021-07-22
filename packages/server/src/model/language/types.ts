@@ -10,3 +10,11 @@ export type LanguageRow = {
   time_updated: number;
   name: string;
 };
+
+export type LanguageStatsRow = {
+  id: LanguageId;
+  lemma_count: number;
+  definition_count: number;
+  part_of_speech_count: number;
+  tag_count: number;
+};
