@@ -14,6 +14,8 @@ import {
   NewUserInput,
   EditUserInput,
 } from './model';
+import DictionaryEventQueue from './event-queue';
+import {DictionaryEventBatch} from './event';
 import {ServerConfig, Logger} from './types';
 
 /**
@@ -22,6 +24,9 @@ import {ServerConfig, Logger} from './types';
  * such as a local application that executes GraphQL operations.
  */
 export const LocalSession = Symbol();
+
+/** A function that handles a dictionary event batch. */
+export type DictionaryEventListener = (batch: DictionaryEventBatch) => void;
 
 /**
  * Contains information about a user. Used by the user management methods on
@@ -52,6 +57,7 @@ export default class CondictServer {
   private readonly logger: Logger;
   private readonly config: ServerConfig;
   private readonly schema: GraphQLSchema;
+  private readonly eventListeners = new Set<DictionaryEventListener>();
   private database: Connection | null = null;
 
   /**
@@ -180,19 +186,70 @@ export default class CondictServer {
           ? noSession
           : () => db !== null && UserSession.verify(db, sessionId);
 
+    let events: DictionaryEventQueue | null = null;
+
     return {
       db,
       logger,
       sessionId: typeof sessionId === 'string' ? sessionId : null,
       requestId: requestId ?? null,
       hasValidSession,
+      get events() {
+        if (!events) {
+          events = new DictionaryEventQueue();
+        }
+        return events;
+      },
       finish: () => {
         if (db) {
           db.finish();
           db = null;
         }
+        const eventBatch = events?.flush();
+        if (eventBatch) {
+          this.emitEventBatch(eventBatch);
+        }
       },
     };
+  }
+
+  /**
+   * Determines whether the specified user session ID is a valid user session.
+   * @param sessionId The session ID.
+   * @return A promise that resolves to true if the session is valid, or false
+   *         if not. The promise is rejected if the server closes before the
+   *         session could be checked.
+   */
+  public async isValidUserSession(sessionId: string): Promise<boolean> {
+    const db = await this.getDatabase().getAccessor();
+    try {
+      return UserSession.verify(db, sessionId);
+    } finally {
+      db.finish();
+    }
+  }
+
+  /**
+   * Adds an event listener to the server. The event listener is invoked when
+   * dictionary events are emitted, and receives a batch of one or more events.
+   *
+   * This method can safely be called before the server has started and after
+   * the server has been stopped.
+   * @param listener The listener function to add.
+   */
+  public addEventListener(listener: DictionaryEventListener): void {
+    this.eventListeners.add(listener);
+  }
+
+  /**
+   * Removes an event listener from the server.
+   *
+   * This method can safely be called before the server has started and after
+   * the server has been stopped.
+   * @param listener The listener function to remove.
+   */
+  public removeEventListener(listener: DictionaryEventListener): void {
+    this.eventListeners.delete(listener);
   }
 
   /**
@@ -296,6 +353,12 @@ export default class CondictServer {
       return await UserMut.delete(db, id);
     } finally {
       db.finish();
+    }
+  }
+
+  private emitEventBatch(batch: DictionaryEventBatch): void {
+    for (const listener of this.eventListeners) {
+      listener(batch);
     }
   }
 }

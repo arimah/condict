@@ -44,7 +44,8 @@
     "graphql": "^15.5.1",
     "graphql-tools": "^7.0.5",
     "nanoid": "^3.1.22",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "ws": "^7.5.3"
   },
   "devDependencies": {
     "@condict/graphql-typer": "^0.1.0",
@@ -52,6 +53,7 @@
     "@types/bindings": "^1.5.0",
     "@types/command-line-args": "^5.0.0",
     "@types/node": "^14.14.41",
+    "@types/ws": "^7.4.7",
     "copyfiles": "^2.4.1",
     "mocha": "^8.3.2",
     "node-gyp": "^8.0.0",

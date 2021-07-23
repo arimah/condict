@@ -1,6 +1,7 @@
 import {IFieldResolver} from 'graphql-tools';
 
 import {DataAccessor} from '../../database';
+import {DictionaryEventEmitter} from '../../event';
 import {Logger} from '../../types';
 
 import {FieldArgs, Mutation} from '../types';
@@ -24,6 +25,8 @@ export interface Context {
    *         execute mutations.
    */
   readonly hasValidSession: () => boolean;
+  /** The event emitter for the request. */
+  readonly events: DictionaryEventEmitter;
   /**
    * The cleanup function for this context, which absolutely *must* be called
    * when the request ends.
