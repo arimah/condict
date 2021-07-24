@@ -48,4 +48,13 @@ export default class DictionaryEventQueue implements DictionaryEventEmitter {
     this.events.clear();
     return {type: 'batch', events};
   }
+
+  /**
+   * Flushes the queue, draining the events into the specified emitter. After
+   * this call, the queue will be empty.
+   */
+  public drainInto(emitter: DictionaryEventEmitter): void {
+    emitter.emitAll(this.events.values());
+    this.events.clear();
+  }
 }

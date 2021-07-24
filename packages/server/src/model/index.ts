@@ -10,3 +10,4 @@ export * from './tag';
 export * from './user';
 
 export {default as FieldSet} from './field-set';
+export {MutContext} from './types';

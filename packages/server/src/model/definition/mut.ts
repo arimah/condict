@@ -1,4 +1,4 @@
-import {DataAccessor, DataReader, DataWriter} from '../../database';
+import {DataReader, DataWriter} from '../../database';
 import {MultiMap} from '../../utils';
 import {
   DefinitionId,
@@ -19,6 +19,7 @@ import {DescriptionMut} from '../description';
 import {LemmaMut, validateTerm} from '../lemma';
 import {SearchIndexMut} from '../search-index';
 import FieldSet from '../field-set';
+import {MutContext, WriteContext} from '../types';
 
 import {DefinitionRow} from './types';
 import DefinitionStemMut from './stem-mut';
@@ -28,7 +29,7 @@ import DerivedDefinitionMut from './derived-mut';
 
 const DefinitionMut = {
   async insert(
-    db: DataAccessor,
+    context: MutContext,
     data: NewDefinitionInput
   ): Promise<DefinitionRow> {
     const {
@@ -42,19 +43,20 @@ const DefinitionMut = {
     } = data;
 
     const language = await Language.byIdRequired(
-      db,
+      context.db,
       languageId,
       'languageId'
     );
     const partOfSpeech = await PartOfSpeech.byIdRequired(
-      db,
+      context.db,
       partOfSpeechId,
       'partOfSpeechId'
     );
     const validTerm = validateTerm(term);
 
-    return db.transact(async db => {
-      const lemmaId = LemmaMut.ensureExists(db, language.id, validTerm);
+    return MutContext.transact(context, async context => {
+      const {db, events} = context;
+      const lemmaId = LemmaMut.ensureExists(context, language.id, validTerm);
 
       const desc = DescriptionMut.insert(db, description);
 
@@ -96,18 +98,25 @@ const DefinitionMut = {
       DefinitionTagMut.insertAll(db, definitionId, tags);
 
       DerivedDefinitionMut.insertAll(
-        db,
+        context,
         language.id,
         definitionId,
         derivedDefinitions
       );
+
+      events.emit({
+        type: 'definition',
+        action: 'create',
+        id: definitionId,
+        lemmaId, languageId,
+      });
 
       return Definition.byIdRequired(db, definitionId);
     });
   },
 
   async update(
-    db: DataAccessor,
+    context: MutContext,
     id: DefinitionId,
     data: EditDefinitionInput
   ): Promise<DefinitionRow> {
@@ -120,13 +129,14 @@ const DefinitionMut = {
     } = data;
     let {inflectionTables} = data;
 
-    const definition = await Definition.byIdRequired(db, id);
+    const definition = await Definition.byIdRequired(context.db, id);
 
-    return db.transact(async db => {
+    return MutContext.transact(context, async context => {
+      const {db, events} = context;
       const newFields = new FieldSet<DefinitionRow>();
 
       newFields.set('time_updated', Date.now());
-      const actualTerm = this.updateTerm(db, definition, term, newFields);
+      const actualTerm = this.updateTerm(context, definition, term, newFields);
       const actualPartOfSpeechId = await this.updatePartOfSpeech(
         db,
         definition,
@@ -161,7 +171,7 @@ const DefinitionMut = {
       const stemMap = await DefinitionStemMut.update(db, definition.id, stems);
 
       await this.updateInflectionTablesAndForms(
-        db,
+        context,
         definition,
         actualPartOfSpeechId,
         actualTerm,
@@ -178,7 +188,16 @@ const DefinitionMut = {
 
       // If the derived definitions or term have changed, we may have orphaned
       // one or more lemmas, so we have to delete them too.
-      LemmaMut.deleteEmpty(db, definition.language_id);
+      LemmaMut.deleteEmpty(context, definition.language_id);
+
+      events.emit({
+        type: 'definition',
+        action: 'update',
+        id: definition.id,
+        lemmaId: newFields.get('lemma_id') ?? definition.lemma_id,
+        prevLemmaId: definition.lemma_id,
+        languageId: definition.language_id,
+      });
 
       db.clearCache(Definition.byIdKey, definition.id);
       return Definition.byIdRequired(db, definition.id);
@@ -186,7 +205,7 @@ const DefinitionMut = {
   },
 
   updateTerm(
-    db: DataWriter,
+    context: WriteContext,
     definition: DefinitionRow,
     term: string | undefined | null,
     newFields: FieldSet<DefinitionRow>
@@ -194,7 +213,7 @@ const DefinitionMut = {
     if (term != null && term !== definition.term) {
       const validTerm = validateTerm(term);
       const newLemmaId = LemmaMut.ensureExists(
-        db,
+        context,
         definition.language_id,
         validTerm
       );
@@ -228,30 +247,40 @@ const DefinitionMut = {
     }
   },
 
-  async delete(db: DataAccessor, id: DefinitionId): Promise<boolean> {
+  async delete(context: MutContext, id: DefinitionId): Promise<boolean> {
     // We need the language ID and description ID
-    const definition = await Definition.byId(db, id);
+    const definition = await Definition.byId(context.db, id);
     if (!definition) {
       return false;
     }
 
-    await db.transact(db => {
+    await MutContext.transact(context, context => {
+      const {db, events} = context;
       db.exec`
         delete from definitions
         where id = ${id}
+        returning lemma_id
       `;
 
       DescriptionMut.delete(db, definition.description_id);
 
       SearchIndexMut.deleteDefinition(db, definition.id);
 
-      LemmaMut.deleteEmpty(db, definition.language_id);
+      LemmaMut.deleteEmpty(context, definition.language_id);
+
+      events.emit({
+        type: 'definition',
+        action: 'delete',
+        id: definition.id,
+        lemmaId: definition.lemma_id,
+        languageId: definition.language_id,
+      });
     });
     return true;
   },
 
   async updateInflectionTablesAndForms(
-    db: DataWriter,
+    context: WriteContext,
     definition: DefinitionRow,
     partOfSpeechId: PartOfSpeechId,
     term: string,
@@ -262,7 +291,7 @@ const DefinitionMut = {
     let derivedDefinitions: MultiMap<string, InflectedFormId> | null = null;
     if (inflectionTables) {
       derivedDefinitions = await this.updateInflectionTables(
-        db,
+        context.db,
         definition.id,
         partOfSpeechId,
         term,
@@ -272,7 +301,7 @@ const DefinitionMut = {
       );
     } else if (newFormsNeeded) {
       derivedDefinitions = this.rederiveAllForms(
-        db,
+        context.db,
         definition.id,
         term,
         stemMap
@@ -280,9 +309,9 @@ const DefinitionMut = {
     }
 
     if (derivedDefinitions) {
-      DerivedDefinitionMut.deleteAll(db, definition.id);
+      DerivedDefinitionMut.deleteAll(context.db, definition.id);
       DerivedDefinitionMut.insertAll(
-        db,
+        context,
         definition.language_id,
         definition.id,
         derivedDefinitions
@@ -290,11 +319,11 @@ const DefinitionMut = {
     }
 
     if (inflectionTables) {
-      // We my have caused any number of old layouts to become disused now,
+      // We may have caused any number of old layouts to become disused now,
       // so clear them out of the database.
       // Note: We must do this here, not at the end of updateInflectionTables,
       // as we have to wait for new derived definitions to be inserted.
-      InflectionTableLayoutMut.deleteObsolete(db);
+      InflectionTableLayoutMut.deleteObsolete(context);
     }
   },
 

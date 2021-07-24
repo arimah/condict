@@ -241,8 +241,7 @@ export default class CondictHttpServer {
       return;
     }
 
-    const json = JSON.stringify(batch);
-    const data = Buffer.from(json);
+    const data = JSON.stringify(batch);
     this.webSocketServer?.clients.forEach(client => {
       try {
         client.send(data);

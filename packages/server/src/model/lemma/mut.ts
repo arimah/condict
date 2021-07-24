@@ -2,16 +2,18 @@ import {LemmaId, LanguageId} from '../../graphql';
 import {DataWriter} from '../../database';
 
 import {SearchIndexMut} from '../search-index';
+import {WriteContext} from '../types';
 
 import {Lemma} from './model';
 import {ValidTerm} from './validators';
 
 const LemmaMut = {
   ensureExists(
-    db: DataWriter,
+    context: WriteContext,
     languageId: LanguageId,
     term: ValidTerm
   ): LemmaId {
+    const {db, events} = context;
     const result = db.get<{id: LemmaId}>`
       select id
       from lemmas
@@ -26,13 +28,16 @@ const LemmaMut = {
       insert into lemmas (language_id, term)
       values (${languageId}, ${term})
     `;
+
     SearchIndexMut.insertLemma(db, insertId, term);
     this.updateLemmaCount(db, languageId);
+
+    events.emit({type: 'lemma', action: 'create', id: insertId, languageId});
     return insertId;
   },
 
   ensureAllExist(
-    db: DataWriter,
+    context: WriteContext,
     languageId: LanguageId,
     terms: ValidTerm[]
   ): Map<string, LemmaId> {
@@ -46,6 +51,7 @@ const LemmaMut = {
       return new Map();
     }
 
+    const {db, events} = context;
     const result = db.all<Row>`
       select
         id,
@@ -73,13 +79,20 @@ const LemmaMut = {
 
       for (const lemma of newLemmas) {
         termToId.set(lemma.term, lemma.id);
+        events.emit({
+          type: 'lemma',
+          action: 'create',
+          id: lemma.id,
+          languageId,
+        });
       }
     }
 
     return termToId;
   },
 
-  deleteEmpty(db: DataWriter, languageId: LanguageId): void {
+  deleteEmpty(context: WriteContext, languageId: LanguageId): void {
+    const {db, events} = context;
     const deleted = db.all<{id: LemmaId}>`
       with empty_lemmas(id) as (
         select l.id as id
@@ -100,6 +113,7 @@ const LemmaMut = {
 
       for (const id of ids) {
         db.clearCache(Lemma.byIdKey, id);
+        events.emit({type: 'lemma', action: 'delete', id, languageId});
       }
 
       SearchIndexMut.deleteLemmas(db, ids);

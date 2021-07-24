@@ -1,9 +1,4 @@
-import {DataAccessor} from '../../database';
-import {
-  LanguageId,
-  NewLanguageInput,
-  EditLanguageInput,
-} from '../../graphql';
+import {LanguageId, NewLanguageInput, EditLanguageInput} from '../../graphql';
 
 import FieldSet from '../field-set';
 import {DescriptionMut} from '../description';
@@ -12,14 +7,16 @@ import {SearchIndexMut} from '../search-index';
 import {Language} from './model';
 import {LanguageRow} from './types';
 import {validateName} from './validators';
+import {MutContext} from '../types';
 
 const LanguageMut = {
-  insert(db: DataAccessor, data: NewLanguageInput): Promise<LanguageRow> {
+  insert(context: MutContext, data: NewLanguageInput): Promise<LanguageRow> {
     const {name, description} = data;
 
-    const validName = validateName(db, null, name);
+    const validName = validateName(context.db, null, name);
 
-    return db.transact(db => {
+    return MutContext.transact(context, context => {
+      const {db, events} = context;
       const desc = DescriptionMut.insert(db, description || []);
 
       const now = Date.now();
@@ -30,15 +27,18 @@ const LanguageMut = {
 
       SearchIndexMut.insertLanguage(db, languageId, validName);
 
+      events.emit({type: 'language', action: 'create', id: languageId});
+
       return Language.byIdRequired(db, languageId);
     });
   },
 
   async update(
-    db: DataAccessor,
+    context: MutContext,
     id: LanguageId,
     data: EditLanguageInput
   ): Promise<LanguageRow> {
+    const {db, events} = context;
     const {name, description} = data;
 
     const language = await Language.byIdRequired(db, id);
@@ -49,7 +49,8 @@ const LanguageMut = {
     }
 
     if (newFields.hasValues || description) {
-      await db.transact(db => {
+      await MutContext.transact(context, context => {
+        const {db} = context;
         newFields.set('time_updated', Date.now());
 
         db.exec`
@@ -69,6 +70,7 @@ const LanguageMut = {
 
         db.clearCache(Language.byIdKey, language.id);
       });
+      events.emit({type: 'language', action: 'update', id: language.id});
     }
     return Language.byIdRequired(db, id);
   },

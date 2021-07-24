@@ -9,6 +9,7 @@ import {
   InflectionTableLayoutRow,
   InflectedFormRow,
   InflectionTableCellJson,
+  MutContext,
 } from '../../model';
 
 import {
@@ -128,16 +129,16 @@ const Query: ResolversFor<QueryType, null> = {
 };
 
 const Mutation: Mutators = {
-  addInflectionTable: mutator(
-    (_root, {data}, {db}) => InflectionTableMut.insert(db, data)
+  addInflectionTable: mutator((_root, {data}, context) =>
+    InflectionTableMut.insert(MutContext.from(context), data)
   ),
 
-  editInflectionTable: mutator(
-    (_root, {id, data}, {db}) => InflectionTableMut.update(db, id, data)
+  editInflectionTable: mutator((_root, {id, data}, context) =>
+    InflectionTableMut.update(MutContext.from(context), id, data)
   ),
 
-  deleteInflectionTable: mutator(
-    (_root, {id}, {db}) => InflectionTableMut.delete(db, id)
+  deleteInflectionTable: mutator((_root, {id}, context) =>
+    InflectionTableMut.delete(MutContext.from(context), id)
   ),
 };
 

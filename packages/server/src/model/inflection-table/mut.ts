@@ -1,6 +1,6 @@
 import {UserInputError} from 'apollo-server';
 
-import {DataAccessor, DataReader, DataWriter} from '../../database';
+import {DataReader, DataWriter} from '../../database';
 import {
   InflectionTableId,
   InflectionTableLayoutId,
@@ -9,11 +9,14 @@ import {
   EditInflectionTableInput,
   InflectionTableRowInput,
   InflectedFormInput,
+  PartOfSpeechId,
+  LanguageId,
 } from '../../graphql';
 
 import {Definition} from '../definition';
 import {PartOfSpeech} from '../part-of-speech';
 import FieldSet from '../field-set';
+import {MutContext, WriteContext} from '../types';
 
 import {InflectionTable, InflectionTableLayout, InflectedForm} from './model';
 import {
@@ -26,21 +29,22 @@ import {InflectionTableRow, InflectionTableLayoutRow} from './types';
 
 const InflectionTableMut = {
   async insert(
-    db: DataAccessor,
+    context: MutContext,
     data: NewInflectionTableInput
   ): Promise<InflectionTableRow> {
     const {partOfSpeechId, layout} = data;
     let {name} = data;
 
     const partOfSpeech = await PartOfSpeech.byIdRequired(
-      db,
+      context.db,
       partOfSpeechId,
       'partOfSpeechId'
     );
 
-    name = validateName(db, null, partOfSpeech.id, name);
+    name = validateName(context.db, null, partOfSpeech.id, name);
 
-    return db.transact(db => {
+    return MutContext.transact(context, context => {
+      const {db, events} = context;
       const now = Date.now();
       const {insertId: tableId} = db.exec<InflectionTableId>`
         insert into inflection_tables (
@@ -54,16 +58,25 @@ const InflectionTableMut = {
 
       InflectionTableLayoutMut.insert(db, tableId, layout);
 
+      events.emit({
+        type: 'inflectionTable',
+        action: 'create',
+        id: tableId,
+        partOfSpeechId: partOfSpeech.id,
+        languageId: partOfSpeech.language_id,
+      });
+
       return InflectionTable.byIdRequired(db, tableId);
     });
   },
 
   async update(
-    db: DataAccessor,
+    context: MutContext,
     id: InflectionTableId,
     data: EditInflectionTableInput
   ): Promise<InflectionTableRow> {
     const {name, layout} = data;
+    const {db} = context;
 
     const table = await InflectionTable.byIdRequired(db, id);
 
@@ -76,7 +89,14 @@ const InflectionTableMut = {
     }
 
     if (newFields.hasValues || layout != null) {
-      await db.transact(async db => {
+      // We need the part of speech for the language ID.
+      const partOfSpeech = await PartOfSpeech.byIdRequired(
+        db,
+        table.part_of_speech_id
+      );
+
+      await MutContext.transact(context, async context => {
+        const {db, events} = context;
         newFields.set('time_updated', Date.now());
 
         db.exec`
@@ -88,24 +108,55 @@ const InflectionTableMut = {
         if (layout != null) {
           await InflectionTableLayoutMut.update(db, table.id, layout);
         }
+
+        events.emit({
+          type: 'inflectionTable',
+          action: 'update',
+          id: table.id,
+          partOfSpeechId: table.part_of_speech_id,
+          languageId: partOfSpeech.language_id,
+        });
       });
       db.clearCache(InflectionTable.byIdKey, table.id);
     }
     return InflectionTable.byIdRequired(db, table.id);
   },
 
-  delete(db: DataAccessor, id: InflectionTableId): Promise<boolean> {
+  async delete(context: MutContext, id: InflectionTableId): Promise<boolean> {
+    const {db} = context;
+    const table = await InflectionTable.byIdRequired(db, id);
+    if (!table) {
+      return false;
+    }
+
     // The table cannot be deleted while it is in use by one or
     // more definitions.
-    this.ensureUnused(db, id);
+    this.ensureUnused(db, table.id);
 
-    return db.transact(db => {
-      const {affectedRows} = db.exec`
+    // We need the part of speech for the language ID.
+    const partOfSpeech = await PartOfSpeech.byIdRequired(
+      db,
+      table.part_of_speech_id
+    );
+
+    await MutContext.transact(context, context => {
+      const {db, events} = context;
+      db.exec`
         delete from inflection_tables
         where id = ${id}
       `;
-      return affectedRows > 0;
+
+      events.emit({
+        type: 'inflectionTable',
+        action: 'delete',
+        id: table.id,
+        partOfSpeechId: table.part_of_speech_id,
+        languageId: partOfSpeech.language_id,
+      });
     });
+
+    db.clearCache(InflectionTable.byIdKey, table.id);
+    return true;
   },
 
   ensureUnused(db: DataReader, id: InflectionTableId): void {
@@ -243,23 +294,57 @@ const InflectionTableLayoutMut = {
     db.clearCache(InflectedForm.allByTableLayoutKey, layout.id);
   },
 
-  deleteObsolete(db: DataWriter): void {
+  deleteObsolete(context: WriteContext): void {
+    const {db, events} = context;
+
     // Find all layouts that are (1) not current, (2) not used by any definitions.
     // These can safely be deleted.
-    const obsoleteLayouts = db.all<{id: InflectionTableLayoutId}>`
-      select itv.id
-      from inflection_table_versions itv
-      left join definition_inflection_tables dit on
-        dit.inflection_table_version_id = itv.id
-      where itv.is_current = 0
-        and dit.id is null
+    const deleted = db.all<{inflection_table_id: InflectionTableId}>`
+      with obsolete_layouts(id) as (
+        select itv.id
+        from inflection_table_versions itv
+        left join definition_inflection_tables dit on
+          dit.inflection_table_version_id = itv.id
+        where itv.is_current = 0
+          and dit.id is null
+      )
+      delete from inflection_table_versions
+      where id in (select id from obsolete_layouts)
+      returning inflection_table_id
     `;
+    if (deleted.length > 0) {
+      type Row = {
+        id: InflectionTableId;
+        part_of_speech_id: PartOfSpeechId;
+        language_id: LanguageId;
+      };
+      // We must now emit an update event on every inflection table that was
+      // affected by this mass-delete.
+      const tableIds = Array.from(
+        new Set(deleted.map(d => d.inflection_table_id))
+      );
 
-    if (obsoleteLayouts.length > 0) {
-      db.exec`
-        delete from inflection_table_versions
-        where id in (${obsoleteLayouts.map(r => r.id)})
+      // To prevent an excess of database calls and promises, let's fetch the
+      // necessary data in a custom query right here.
+      const updated = db.all<Row>`
+        select
+          it.id as id,
+          it.part_of_speech_id as part_of_speech_id,
+          pos.language_id as language_id
+        from inflection_tables it
+        inner join parts_of_speech pos on pos.id = it.part_of_speech_id
+        where it.id in (${tableIds})
       `;
+
+      for (const row of updated) {
+        events.emit({
+          type: 'inflectionTable',
+          action: 'update',
+          id: row.id,
+          partOfSpeechId: row.part_of_speech_id,
+          languageId: row.language_id,
+        });
+      }
     }
   },
 } as const;

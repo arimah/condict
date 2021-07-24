@@ -3,10 +3,11 @@ import {MultiMap} from '../../utils';
 import {DefinitionId, LanguageId, InflectedFormId} from '../../graphql';
 
 import {LemmaMut, ValidTerm, validateTerm} from '../lemma';
+import {WriteContext} from '../types';
 
 const DerivedDefinitionMut = {
   insertAll(
-    db: DataWriter,
+    context: WriteContext,
     languageId: LanguageId,
     originalDefinitionId: DefinitionId,
     derivedDefinitions: MultiMap<string, InflectedFormId>
@@ -35,10 +36,12 @@ const DerivedDefinitionMut = {
       .filter(Boolean);
 
     const termToLemmaId = LemmaMut.ensureAllExist(
-      db,
+      context,
       languageId,
       Array.from(validDerivedDefinitions.keys())
     );
+
+    const {db} = context;
 
     const values: any[] = [];
     for (const [term, inflectedFormId] of validDerivedDefinitions) {

@@ -18,6 +18,7 @@ import {
   DefinitionInflectionTableRow,
   CustomInflectedFormRow,
   DerivedDefinitionRow,
+  MutContext,
 } from '../../model';
 
 import {
@@ -127,16 +128,16 @@ const Query: ResolversFor<QueryType, null> = {
 };
 
 const Mutation: Mutators = {
-  addDefinition: mutator(
-    (_root, {data}, {db}) => DefinitionMut.insert(db, data)
+  addDefinition: mutator((_root, {data}, context) =>
+    DefinitionMut.insert(MutContext.from(context), data)
   ),
 
-  editDefinition: mutator(
-    (_root, {id, data}, {db}) => DefinitionMut.update(db, id, data)
+  editDefinition: mutator((_root, {id, data}, context) =>
+    DefinitionMut.update(MutContext.from(context), id, data)
   ),
 
-  deleteDefinition: mutator(
-    (_root, {id}, {db}) => DefinitionMut.delete(db, id)
+  deleteDefinition: mutator((_root, {id}, context) =>
+    DefinitionMut.delete(MutContext.from(context), id)
   ),
 };
 

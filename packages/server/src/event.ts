@@ -55,9 +55,13 @@ export interface DictionaryEventBatch {
  * inflection table events where partOfSpeechId has the relevant value. This
  * gives the client more flexibility in choosing which updates to subscribe to.
  *
- * Deletions propagate downwards. If a part of speech is deleted, events will
- * also be emitted for the deletion of any inflection tables that are contained
- * in that part of speech.
+ * Deletions also do *not* propagate downwards. If a part of speech is deleted,
+ * no events will be emitted for the deletion of the inflection tables that are
+ * contained in that part of speech. This is done for performance reasons, as
+ * the deletion of a resource with many children may otherwise require thousands
+ * of events (particularly for languages). However, lemma delete events *are*
+ * triggered in response to definition edits, as that is the only place where
+ * lemmas are created and deleted.
  */
 export type DictionaryEvent =
   | LanguageEvent
@@ -74,9 +78,16 @@ export const DictionaryEvent = {
    * @return The event key.
    */
   key(event: DictionaryEvent): string {
-    // Resources cannot move from one parent to another. When comparing equality
-    // we only really have to look at the `id`, and not `languageId`, `lemmaId`,
-    // `partOfSpeechId`, or anything else.
+    // Resources generally can't move from one parent to another. When creating
+    // this key, we generally don't have to look at the IDs of parent resources.
+    // However, definitions can move between lemmas, which we must take into
+    // account. In the extremely unlikely case that a definition is added twice
+    // in the same request, we might get *two* updates with a total of three
+    // different lemma IDs. We can't overwrite either.
+    if (event.type === 'definition' && event.action === 'update') {
+      const {type, action, id, lemmaId, prevLemmaId} = event;
+      return `${type} ${action} ${id} ${lemmaId} ${prevLemmaId}`;
+    }
     return `${event.type} ${event.action} ${event.id}`;
   },
 } as const;
@@ -84,11 +95,11 @@ export const DictionaryEvent = {
 /** The action that was performed on the resource. */
 export type EventAction = 'create' | 'update' | 'delete';
 
-interface BaseEvent<T extends string> {
+interface BaseEvent<T extends string, A extends EventAction = EventAction> {
   /** The resource type. */
   readonly type: T;
   /** The action that was performed. */
-  readonly action: EventAction;
+  readonly action: A;
 }
 
 export interface LanguageEvent extends BaseEvent<'language'> {
@@ -103,11 +114,34 @@ export interface LemmaEvent extends BaseEvent<'lemma'> {
   readonly languageId: LanguageId;
 }
 
-export interface DefinitionEvent extends BaseEvent<'definition'> {
+export type DefinitionEvent =
+  | CreateOrDeleteDefinitionEvent
+  | UpdateDefinitionEvent;
+
+export interface CreateOrDeleteDefinitionEvent extends
+  BaseEvent<'definition', 'create' | 'delete'>
+{
   /** The ID of the definition. */
   readonly id: DefinitionId;
   /** The ID of the lemma that the definition belongs/belonged to. */
   readonly lemmaId: LemmaId;
+  /** The ID of the language that the definition belongs/belonged to. */
+  readonly languageId: LanguageId;
+}
+
+export interface UpdateDefinitionEvent extends
+  BaseEvent<'definition', 'update'>
+{
+  /** The ID of the definition. */
+  readonly id: DefinitionId;
+  /** The ID of the lemma that the definition belongs/belonged to. */
+  readonly lemmaId: LemmaId;
+  /**
+   * The ID of the lemma that the definition previously belonged to. If this
+   * value is the same as `lemmaId`, then the definition has not moved to a new
+   * lemma.
+   */
+  readonly prevLemmaId: LemmaId;
   /** The ID of the language that the definition belongs/belonged to. */
   readonly languageId: LanguageId;
 }

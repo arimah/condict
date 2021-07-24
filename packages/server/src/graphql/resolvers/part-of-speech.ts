@@ -5,6 +5,7 @@ import {
   Language,
   Definition,
   PartOfSpeechRow,
+  MutContext,
 } from '../../model';
 
 import {PartOfSpeech as PartOfSpeechType, Query as QueryType} from '../types';
@@ -33,16 +34,16 @@ const Query: ResolversFor<QueryType, null> = {
 };
 
 const Mutation: Mutators = {
-  addPartOfSpeech: mutator(
-    (_root, {data}, {db}) => PartOfSpeechMut.insert(db, data)
+  addPartOfSpeech: mutator((_root, {data}, context) =>
+    PartOfSpeechMut.insert(MutContext.from(context), data)
   ),
 
-  editPartOfSpeech: mutator(
-    (_root, {id, data}, {db}) => PartOfSpeechMut.update(db, id, data)
+  editPartOfSpeech: mutator((_root, {id, data}, context) =>
+    PartOfSpeechMut.update(MutContext.from(context), id, data)
   ),
 
-  deletePartOfSpeech: mutator(
-    (_root, {id}, {db}) => PartOfSpeechMut.delete(db, id)
+  deletePartOfSpeech: mutator((_root, {id}, context) =>
+    PartOfSpeechMut.delete(MutContext.from(context), id)
   ),
 };
 

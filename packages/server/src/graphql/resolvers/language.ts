@@ -11,6 +11,7 @@ import {
   SearchIndex,
   LanguageRow,
   LanguageStatsRow,
+  MutContext,
 } from '../../model';
 
 import {
@@ -98,12 +99,12 @@ const Query: ResolversFor<QueryType, null> = {
 };
 
 const Mutation: Mutators = {
-  addLanguage: mutator(
-    (_root, {data}, {db}) => LanguageMut.insert(db, data)
+  addLanguage: mutator((_root, {data}, context) =>
+    LanguageMut.insert(MutContext.from(context), data)
   ),
 
-  editLanguage: mutator(
-    (_root, {id, data}, {db}) => LanguageMut.update(db, id, data)
+  editLanguage: mutator((_root, {id, data}, context) =>
+    LanguageMut.update(MutContext.from(context), id, data)
   ),
 };
 
