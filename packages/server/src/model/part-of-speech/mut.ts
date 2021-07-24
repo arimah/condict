@@ -29,7 +29,7 @@ const PartOfSpeechMut = {
     name = validateName(context.db, null, language.id, name);
 
     return MutContext.transact(context, context => {
-      const {db, events} = context;
+      const {db, events, logger} = context;
       const now = Date.now();
       const {insertId} = db.exec<PartOfSpeechId>`
         insert into parts_of_speech (
@@ -49,6 +49,7 @@ const PartOfSpeechMut = {
         id: insertId,
         languageId: language.id,
       });
+      logger.verbose(`Created part of speech: ${insertId}`);
 
       return PartOfSpeech.byIdRequired(db, insertId);
     });
@@ -60,19 +61,20 @@ const PartOfSpeechMut = {
     data: EditPartOfSpeechInput
   ): Promise<PartOfSpeechRow> {
     const {name} = data;
+    const {db} = context;
 
     const partOfSpeech = await PartOfSpeech.byIdRequired(context.db, id);
 
     if (name != null) {
       const newName = validateName(
-        context.db,
+        db,
         partOfSpeech.id,
         partOfSpeech.language_id,
         name
       );
 
       await MutContext.transact(context, context => {
-        const {db, events} = context;
+        const {db, events, logger} = context;
         db.exec`
           update parts_of_speech
           set
@@ -89,12 +91,13 @@ const PartOfSpeechMut = {
           id: partOfSpeech.id,
           languageId: partOfSpeech.language_id,
         });
-
-        db.clearCache(PartOfSpeech.byIdKey, partOfSpeech.id);
+        logger.verbose(`Updated part of speech: ${partOfSpeech.id}`);
       });
+
+      db.clearCache(PartOfSpeech.byIdKey, partOfSpeech.id);
     }
 
-    return PartOfSpeech.byIdRequired(context.db, partOfSpeech.id);
+    return PartOfSpeech.byIdRequired(db, partOfSpeech.id);
   },
 
   async delete(context: MutContext, id: PartOfSpeechId): Promise<boolean> {
@@ -107,7 +110,7 @@ const PartOfSpeechMut = {
     this.ensureUnused(db, partOfSpeech.id);
 
     await MutContext.transact(context, context => {
-      const {db, events} = context;
+      const {db, events, logger} = context;
       db.exec`
         delete from parts_of_speech
         where id = ${partOfSpeech.id}
@@ -121,6 +124,7 @@ const PartOfSpeechMut = {
         id: partOfSpeech.id,
         languageId: partOfSpeech.language_id,
       });
+      logger.verbose(`Deleted part of speech: ${partOfSpeech.id}`);
     });
 
     db.clearCache(PartOfSpeech.byIdKey, partOfSpeech.id);

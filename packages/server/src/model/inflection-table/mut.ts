@@ -44,7 +44,7 @@ const InflectionTableMut = {
     name = validateName(context.db, null, partOfSpeech.id, name);
 
     return MutContext.transact(context, context => {
-      const {db, events} = context;
+      const {db, events, logger} = context;
       const now = Date.now();
       const {insertId: tableId} = db.exec<InflectionTableId>`
         insert into inflection_tables (
@@ -65,6 +65,7 @@ const InflectionTableMut = {
         partOfSpeechId: partOfSpeech.id,
         languageId: partOfSpeech.language_id,
       });
+      logger.verbose(`Created inflection table: ${tableId}`);
 
       return InflectionTable.byIdRequired(db, tableId);
     });
@@ -96,7 +97,7 @@ const InflectionTableMut = {
       );
 
       await MutContext.transact(context, async context => {
-        const {db, events} = context;
+        const {db, events, logger} = context;
         newFields.set('time_updated', Date.now());
 
         db.exec`
@@ -106,7 +107,7 @@ const InflectionTableMut = {
         `;
 
         if (layout != null) {
-          await InflectionTableLayoutMut.update(db, table.id, layout);
+          await InflectionTableLayoutMut.update(context, table.id, layout);
         }
 
         events.emit({
@@ -116,7 +117,9 @@ const InflectionTableMut = {
           partOfSpeechId: table.part_of_speech_id,
           languageId: partOfSpeech.language_id,
         });
+        logger.verbose(`Updated inflection table: ${table.id}`);
       });
+
       db.clearCache(InflectionTable.byIdKey, table.id);
     }
     return InflectionTable.byIdRequired(db, table.id);
@@ -140,7 +143,7 @@ const InflectionTableMut = {
     );
 
     await MutContext.transact(context, context => {
-      const {db, events} = context;
+      const {db, events, logger} = context;
       db.exec`
         delete from inflection_tables
         where id = ${id}
@@ -153,6 +156,7 @@ const InflectionTableMut = {
         partOfSpeechId: table.part_of_speech_id,
         languageId: partOfSpeech.language_id,
       });
+      logger.verbose(`Deleted inflection table: ${table.id}`);
     });
 
     db.clearCache(InflectionTable.byIdKey, table.id);
@@ -180,13 +184,14 @@ const InflectionTableLayoutMut = {
   },
 
   async update(
-    db: DataWriter,
+    context: WriteContext,
     tableId: InflectionTableId,
     rows: InflectionTableRowInput[]
   ): Promise<void> {
     // If the current layout is used by any definition, we must create a new
     // version; otherwise, we update the existing layout. First, let's find
     // the current layout.
+    const {db, logger} = context;
 
     const currentLayout =
       await InflectionTableLayout.currentByTableRequired(db, tableId);
@@ -203,8 +208,10 @@ const InflectionTableLayoutMut = {
         set is_current = (id = ${layoutId})
         where inflection_table_id = ${tableId}
       `;
+      logger.debug('Created new table layout: previous is still in use');
     } else {
       await this.updateCurrentTableLayout(db, currentLayout, rows);
+      logger.debug('Updated current table layout');
     }
 
     db.clearCache(InflectionTableLayout.currentByTableKey, tableId);
@@ -295,7 +302,7 @@ const InflectionTableLayoutMut = {
   },
 
   deleteObsolete(context: WriteContext): void {
-    const {db, events} = context;
+    const {db, events, logger} = context;
 
     // Find all layouts that are (1) not current, (2) not used by any definitions.
     // These can safely be deleted.
@@ -345,6 +352,8 @@ const InflectionTableLayoutMut = {
           languageId: row.language_id,
         });
       }
+
+      logger.debug(`Deleted obsolete table layouts: count = ${updated.length}`);
     }
   },
 } as const;

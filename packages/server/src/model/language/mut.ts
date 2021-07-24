@@ -16,7 +16,7 @@ const LanguageMut = {
     const validName = validateName(context.db, null, name);
 
     return MutContext.transact(context, context => {
-      const {db, events} = context;
+      const {db, events, logger} = context;
       const desc = DescriptionMut.insert(db, description || []);
 
       const now = Date.now();
@@ -28,6 +28,7 @@ const LanguageMut = {
       SearchIndexMut.insertLanguage(db, languageId, validName);
 
       events.emit({type: 'language', action: 'create', id: languageId});
+      logger.verbose(`Created language: ${languageId}`);
 
       return Language.byIdRequired(db, languageId);
     });
@@ -38,7 +39,7 @@ const LanguageMut = {
     id: LanguageId,
     data: EditLanguageInput
   ): Promise<LanguageRow> {
-    const {db, events} = context;
+    const {db} = context;
     const {name, description} = data;
 
     const language = await Language.byIdRequired(db, id);
@@ -50,7 +51,7 @@ const LanguageMut = {
 
     if (newFields.hasValues || description) {
       await MutContext.transact(context, context => {
-        const {db} = context;
+        const {db, events, logger} = context;
         newFields.set('time_updated', Date.now());
 
         db.exec`
@@ -68,9 +69,11 @@ const LanguageMut = {
           DescriptionMut.update(db, language.description_id, description);
         }
 
+        events.emit({type: 'language', action: 'update', id: language.id});
+        logger.verbose(`Updated language: ${language.id}`);
+
         db.clearCache(Language.byIdKey, language.id);
       });
-      events.emit({type: 'language', action: 'update', id: language.id});
     }
     return Language.byIdRequired(db, id);
   },

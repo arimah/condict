@@ -13,7 +13,7 @@ const LemmaMut = {
     languageId: LanguageId,
     term: ValidTerm
   ): LemmaId {
-    const {db, events} = context;
+    const {db, events, logger} = context;
     const result = db.get<{id: LemmaId}>`
       select id
       from lemmas
@@ -21,6 +21,7 @@ const LemmaMut = {
         and term = ${term}
     `;
     if (result) {
+      logger.debug('Found existing lemma');
       return result.id;
     }
 
@@ -33,6 +34,7 @@ const LemmaMut = {
     this.updateLemmaCount(db, languageId);
 
     events.emit({type: 'lemma', action: 'create', id: insertId, languageId});
+    logger.debug('Created lemma for new term');
     return insertId;
   },
 
@@ -46,12 +48,12 @@ const LemmaMut = {
       term: string;
     };
 
+    const {db, events, logger} = context;
     if (terms.length === 0) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return new Map();
+      logger.debug('No terms given for bulk creation of lemmas');
+      return new Map<string, LemmaId>();
     }
 
-    const {db, events} = context;
     const result = db.all<Row>`
       select
         id,
@@ -88,11 +90,17 @@ const LemmaMut = {
       }
     }
 
+    const created = newTerms.length;
+    const existing = terms.length - created;
+    logger.debug(
+      `Bulk creation of lemmas: ${created} created, ${existing} existing`
+    );
+
     return termToId;
   },
 
   deleteEmpty(context: WriteContext, languageId: LanguageId): void {
-    const {db, events} = context;
+    const {db, events, logger} = context;
     const deleted = db.all<{id: LemmaId}>`
       with empty_lemmas(id) as (
         select l.id as id
@@ -117,6 +125,8 @@ const LemmaMut = {
       }
 
       SearchIndexMut.deleteLemmas(db, ids);
+
+      logger.debug(`Deleted empty lemmas: count = ${ids.length}`);
 
       this.updateLemmaCount(db, languageId);
     }

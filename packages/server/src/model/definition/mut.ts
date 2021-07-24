@@ -55,7 +55,9 @@ const DefinitionMut = {
     const validTerm = validateTerm(term);
 
     return MutContext.transact(context, async context => {
-      const {db, events} = context;
+      const {db, events, logger} = context;
+      logger.debug(`Begin creation of definition: term = ${validTerm}`);
+
       const lemmaId = LemmaMut.ensureExists(context, language.id, validTerm);
 
       const desc = DescriptionMut.insert(db, description);
@@ -110,6 +112,7 @@ const DefinitionMut = {
         id: definitionId,
         lemmaId, languageId,
       });
+      logger.verbose(`Definition created: ${definitionId}`);
 
       return Definition.byIdRequired(db, definitionId);
     });
@@ -132,8 +135,10 @@ const DefinitionMut = {
     const definition = await Definition.byIdRequired(context.db, id);
 
     return MutContext.transact(context, async context => {
-      const {db, events} = context;
+      const {db, events, logger} = context;
       const newFields = new FieldSet<DefinitionRow>();
+
+      logger.debug(`Begin update of definition: ${definition.id}`);
 
       newFields.set('time_updated', Date.now());
       const actualTerm = this.updateTerm(context, definition, term, newFields);
@@ -151,6 +156,9 @@ const DefinitionMut = {
         inflectionTables == null
       ) {
         inflectionTables = [];
+        logger.debug(
+          'Clearing inflection tables: part of speech changed, but has no new tables given'
+        );
       }
 
       db.exec`
@@ -198,6 +206,7 @@ const DefinitionMut = {
         prevLemmaId: definition.lemma_id,
         languageId: definition.language_id,
       });
+      logger.verbose(`Definition updated: ${definition.id}`);
 
       db.clearCache(Definition.byIdKey, definition.id);
       return Definition.byIdRequired(db, definition.id);
@@ -255,7 +264,9 @@ const DefinitionMut = {
     }
 
     await MutContext.transact(context, context => {
-      const {db, events} = context;
+      const {db, events, logger} = context;
+      logger.debug(`Begin deletion of definition: ${definition.id}`);
+
       db.exec`
         delete from definitions
         where id = ${id}
@@ -275,6 +286,7 @@ const DefinitionMut = {
         lemmaId: definition.lemma_id,
         languageId: definition.language_id,
       });
+      logger.verbose(`Definition deleted: ${definition.id}`);
     });
     return true;
   },
@@ -288,10 +300,13 @@ const DefinitionMut = {
     inflectionTables: EditDefinitionInflectionTableInput[] | undefined | null,
     newFormsNeeded: boolean
   ): Promise<void> {
+    const {db, logger} = context;
+
     let derivedDefinitions: MultiMap<string, InflectedFormId> | null = null;
     if (inflectionTables) {
+      logger.debug('Updating inflection tables: new tables given');
       derivedDefinitions = await this.updateInflectionTables(
-        context.db,
+        db,
         definition.id,
         partOfSpeechId,
         term,
@@ -300,8 +315,9 @@ const DefinitionMut = {
         false
       );
     } else if (newFormsNeeded) {
+      logger.debug('Recomputing derived definitions: term or stems changed');
       derivedDefinitions = this.rederiveAllForms(
-        context.db,
+        db,
         definition.id,
         term,
         stemMap
@@ -309,7 +325,10 @@ const DefinitionMut = {
     }
 
     if (derivedDefinitions) {
-      DerivedDefinitionMut.deleteAll(context.db, definition.id);
+      logger.debug(
+        `Rebuilding derived definitions: count = ${derivedDefinitions.getTotalSize()}`
+      );
+      DerivedDefinitionMut.deleteAll(db, definition.id);
       DerivedDefinitionMut.insertAll(
         context,
         definition.language_id,
