@@ -1,4 +1,4 @@
-import React, {
+import {
   KeyboardEvent,
   useState,
   useMemo,
@@ -11,6 +11,7 @@ import {Slate, ReactEditor} from 'slate-react';
 
 import {ShortcutMap} from '@condict/ui';
 
+import BaseEditor from '../base-editor';
 import DefaultShortcuts, {AllShortcuts} from '../shortcuts';
 import createEditor from '../plugin';
 import {
@@ -27,7 +28,7 @@ import {
   getHelperCommands,
 } from '../keymap';
 import {isLink, firstMatchingNode} from '../node-utils';
-import {LinkTarget} from '../types';
+import {BlockElement, LinkTarget} from '../types';
 
 import ContextualPopup, {ContextualPopupHandle} from './contextual-popup';
 import {PlacementRect} from './popup';
@@ -37,12 +38,14 @@ import * as S from './styles';
 
 export type Props = {
   className?: string;
-  value: Descendant[];
+  value: BlockElement[];
   toolbarAlwaysVisible?: boolean;
   shortcuts?: AllShortcuts;
-  onChange: (value: Descendant[]) => void;
+  onChange: (value: BlockElement[]) => void;
   onFindLinkTarget: (query: string) => Promise<readonly SearchResult[]>;
 };
+
+type SlateChangeFn = (value: Descendant[]) => void;
 
 type DialogType = 'link' | 'ipa';
 type DialogProps = LinkProps | IpaProps;
@@ -217,8 +220,8 @@ const DescriptionEditor = (props: Props): JSX.Element => {
   }, [shouldOpenDialog]);
 
   return (
-    <Slate editor={editor} value={value} onChange={onChange}>
-      <S.Editor
+    <Slate editor={editor} value={value} onChange={onChange as SlateChangeFn}>
+      <BaseEditor
         {...otherProps}
         singleLine={false}
         toolbarItems={<>
@@ -228,7 +231,6 @@ const DescriptionEditor = (props: Props): JSX.Element => {
           <BlockFormatGroup shortcuts={shortcuts}/>
           <HelpersGroup shortcuts={shortcuts} onOpenIpaDialog={openIpaDialog}/>
         </>}
-        $dialogOpen={dialogProps !== null}
         onKeyDown={handleKeyDown}
         onFocusChanged={handleFocusChanged}
         ref={editorRef}
@@ -267,7 +269,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
             onOpenIpaDialog={openIpaDialog}
             ref={popupRef}
           />}
-      </S.Editor>
+      </BaseEditor>
     </Slate>
   );
 };

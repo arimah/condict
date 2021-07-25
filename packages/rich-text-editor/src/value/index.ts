@@ -6,32 +6,35 @@ import fromGraphQLResponse, {inlineFromGraphQL} from './from-graphql';
 import toGraphQLInput, {formattedTextToGraphQLInput} from './to-graphql';
 import {TableCaption, TableCaptionInput} from './types';
 
-export * from './types';
-
-const Value = {
-  descriptionFromGraphQLResponse: fromGraphQLResponse,
-
-  tableCaptionFromGraphQLResponse(caption: TableCaption): BlockElement[] {
-    return [
-      {
-        type: 'paragraph',
-        children: caption.inlines.map(inlineFromGraphQL),
-      },
-    ];
+export const emptyDescription = (): BlockElement[] => [
+  {
+    type: 'paragraph',
+    children: [{text: ''}],
   },
+];
 
-  descriptionToGraphQLInput: toGraphQLInput,
+export const descriptionFromGraphQLResponse = fromGraphQLResponse;
 
-  tableCaptionToGraphQLInput(caption: BlockElement[]): TableCaptionInput {
-    return {
-      inlines: caption[0].children.map(child => {
-        if (Element.isElement(child)) {
-          throw new Error('Links are not allowed in this context');
-        }
-        return formattedTextToGraphQLInput(child);
-      }),
-    };
+export const descriptionToGraphQLInput = toGraphQLInput;
+
+export const emptyTableCaption = emptyDescription;
+
+export const tableCaptionFromGraphQLResponse = (
+  caption: TableCaption
+): BlockElement[] => [
+  {
+    type: 'paragraph',
+    children: caption.inlines.map(inlineFromGraphQL),
   },
-} as const;
+];
 
-export default Value;
+export const tableCaptionToGraphQLInput = (
+  caption: BlockElement[]
+): TableCaptionInput => ({
+  inlines: caption[0].children.map(child => {
+    if (Element.isElement(child)) {
+      throw new Error('Links are not allowed in this context');
+    }
+    return formattedTextToGraphQLInput(child);
+  }),
+});

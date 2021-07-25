@@ -1,8 +1,11 @@
 import React, {useState} from 'react';
-import {Descendant} from 'slate';
 
 import {Checkbox, useUniqueId} from '@condict/ui';
-import {DescriptionEditor, TableCaptionEditor} from '@condict/rich-text-editor';
+import {
+  DescriptionEditor,
+  TableCaptionEditor,
+  BlockElement,
+} from '@condict/rich-text-editor';
 
 import searchDictionary from './search';
 import InitialDescription from './initial-description.json';
@@ -12,12 +15,12 @@ const Main = (): JSX.Element => {
   const id = useUniqueId();
 
   const [descriptionValue, setDescriptionValue] = useState(
-    InitialDescription as Descendant[]
+    InitialDescription as BlockElement[]
   );
   const [descriptionToolbar, setDescriptionToolbar] = useState(true);
 
   const [captionValue, setCaptionValue] = useState(
-    InitialTableCaption as Descendant[]
+    InitialTableCaption as BlockElement[]
   );
   const [captionToolbar, setCaptionToolbar] = useState(false);
 

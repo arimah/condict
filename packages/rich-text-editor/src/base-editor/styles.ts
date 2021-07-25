@@ -24,13 +24,12 @@ export const Toolbar = styled(ToolbarBase)<ToolbarProps>`
     margin-bottom: 8px;
     position: sticky;
     top: 0;
-    z-index: 3;
+    z-index: 1;
   ` : css<ToolbarProps>`
     position: absolute;
     bottom: 100%;
     left: 0;
     right: 0;
-    z-index: 1;
     overflow: hidden;
     max-height: 10px;
     border-bottom-width: 0;
@@ -61,7 +60,6 @@ export type EditableProps = {
 export const Editable = styled(BaseEditable)<EditableProps>`
   padding: ${p => p.$singleLine ? '0 2px' : '0 6px'};
   position: relative;
-  z-index: 2;
   border: 2px solid ${p => p.theme.general.border};
   border-radius: 3px;
   background-color: ${p => p.theme.defaultBg};
@@ -107,7 +105,6 @@ export const EditorContainer = styled.div<EditorContainerProps>`
   margin-top: 16px;
   margin-bottom: 16px;
   position: relative;
-  z-index: 0;
 
   ${p => !p.toolbarAlwaysVisible && `
     &:focus-within {

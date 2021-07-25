@@ -1,15 +1,5 @@
 import styled from 'styled-components';
 
-import BaseEditor from '../base-editor';
-
-export type EditorProps = {
-  $dialogOpen: boolean;
-};
-
-export const Editor = styled(BaseEditor)<EditorProps>`
-  ${p => p.$dialogOpen && 'z-index: 1;'}
-`;
-
 export const Popup = styled.form.attrs({
   role: 'dialog',
   tabIndex: -1,

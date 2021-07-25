@@ -1,4 +1,4 @@
-import React, {KeyboardEvent, useState, useMemo, useCallback} from 'react';
+import {KeyboardEvent, useState, useMemo, useCallback} from 'react';
 import {Descendant} from 'slate';
 import {Slate} from 'slate-react';
 
@@ -10,14 +10,17 @@ import BaseEditor from './base-editor';
 import createEditor from './plugin';
 import {getInlineCommands, getSingleLineCommands} from './keymap';
 import {InlineFormatGroup} from './toolbar';
+import {BlockElement} from './types';
 
 export type Props = {
   className?: string;
-  value: Descendant[];
+  value: BlockElement[];
   toolbarAlwaysVisible?: boolean;
   shortcuts?: InlineShortcuts;
-  onChange: (value: Descendant[]) => void;
+  onChange: (value: BlockElement[]) => void;
 };
+
+type SlateChangeFn = (value: Descendant[]) => void;
 
 const TableCaptionEditor = (props: Props): JSX.Element => {
   const {
@@ -45,7 +48,7 @@ const TableCaptionEditor = (props: Props): JSX.Element => {
   }, [keyboardMap]);
 
   return (
-    <Slate editor={editor} value={value} onChange={onChange}>
+    <Slate editor={editor} value={value} onChange={onChange as SlateChangeFn}>
       <BaseEditor
         {...otherProps}
         singleLine={true}

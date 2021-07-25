@@ -15,6 +15,26 @@ export {
   LinkShortcuts,
 } from './shortcuts';
 
-export {default as Value} from './value';
+export {
+  descriptionFromGraphQLResponse,
+  descriptionToGraphQLInput,
+  emptyDescription,
+  tableCaptionFromGraphQLResponse,
+  tableCaptionToGraphQLInput,
+  emptyTableCaption,
+} from './value';
 
-export * from './types';
+export {
+  BlockElement,
+  BlockType,
+  ParagraphElement,
+  HeadingElement,
+  HeadingType,
+  ListElement,
+  ListType,
+  LinkElement,
+  LinkTarget,
+  InlineElement,
+  InlineType,
+  CustomText,
+} from './types';
