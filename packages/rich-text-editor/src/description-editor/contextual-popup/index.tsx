@@ -15,6 +15,7 @@ import {Shortcut} from '@condict/ui';
 
 import {PlacementRect} from '../popup';
 import {CloseKey} from '../dialog';
+import {Messages} from '../types';
 
 import LinkContext, {
   ContextValue as LinkContextValue,
@@ -28,6 +29,7 @@ import * as S from './styles';
 
 export type Props = {
   editorRef: RefObject<HTMLDivElement>;
+  messages: Messages;
   onOpenLinkDialog: () => void;
   onOpenIpaDialog: () => void;
 };
@@ -61,7 +63,7 @@ const ContextualPopup = React.forwardRef((
   props: Props,
   ref: Ref<ContextualPopupHandle>
 ): JSX.Element | null => {
-  const {editorRef, onOpenLinkDialog, onOpenIpaDialog} = props;
+  const {editorRef, messages, onOpenLinkDialog, onOpenIpaDialog} = props;
 
   const editor = useSlate();
 
@@ -133,7 +135,7 @@ const ContextualPopup = React.forwardRef((
     <S.Popup
       placement={placement}
       trapFocus={trapActive}
-      aria-label='Contextual tools'
+      aria-label={messages.contextualTools()}
       onMouseDown={preventMouseFocus}
       onKeyDown={handleKeyDown}
       onPointerDownOutside={cancelTrap}
@@ -143,6 +145,7 @@ const ContextualPopup = React.forwardRef((
         <LinkContext
           link={link.link}
           focusable={trapActive}
+          messages={messages}
           onEditLink={onOpenLinkDialog}
         />}
       {phonetic &&
@@ -150,6 +153,7 @@ const ContextualPopup = React.forwardRef((
           range={phonetic.range}
           text={phonetic.text}
           focusable={trapActive}
+          messages={messages}
           onInsertIpa={onOpenIpaDialog}
         />}
     </S.Popup>

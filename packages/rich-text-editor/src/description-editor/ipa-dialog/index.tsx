@@ -1,4 +1,4 @@
-import React, {
+import {
   ChangeEvent,
   MouseEvent,
   KeyboardEvent,
@@ -23,6 +23,7 @@ import Dialog, {
   PrevResultKey,
   NextResultKey,
 } from '../dialog';
+import {Messages} from '../types';
 
 import SearchResultList, {Result, isMatch} from './search-result-list';
 import CharacterListing from './character-listing';
@@ -30,6 +31,7 @@ import * as S from './styles';
 
 export type Props = {
   placement: PlacementRect;
+  messages: Messages;
   onEmit: (ipa: string) => void;
   onClose: () => void;
 };
@@ -138,7 +140,7 @@ const cancelMouseEvent = (e: MouseEvent) => {
 };
 
 const IpaDialog = (props: Props): JSX.Element => {
-  const {placement, onEmit, onClose} = props;
+  const {placement, messages, onEmit, onClose} = props;
 
   const id = useUniqueId();
 
@@ -215,7 +217,7 @@ const IpaDialog = (props: Props): JSX.Element => {
 
   return (
     <Dialog
-      aria-label='IPA'
+      aria-label={messages.ipaDialogTitle()}
       placement={placement}
       onSubmit={handleSubmit}
       onKeyDown={handleFormKeyDown}
@@ -230,7 +232,7 @@ const IpaDialog = (props: Props): JSX.Element => {
       >
         <SearchInput
           value={query}
-          placeholder='nasal, alveolar, high tone, Eks-\s{mp@, ...'
+          placeholder={messages.ipaDialogPlaceholder()}
           aria-autocomplete='list'
           aria-controls={`${id}-list`}
           aria-activedescendant={
@@ -243,7 +245,7 @@ const IpaDialog = (props: Props): JSX.Element => {
           onKeyDown={handleInputKeyDown}
           ref={inputRef}
         />
-        <SubmitButton label='Insert'/>
+        <SubmitButton label={messages.ipaDialogInsert()}/>
       </SearchWrapper>
       <S.CharacterList id={`${id}-list`} onMouseDown={cancelMouseEvent}>
         {results ? (
@@ -253,6 +255,7 @@ const IpaDialog = (props: Props): JSX.Element => {
             results={results}
             currentIndex={index}
             currentResultRef={currentResultRef}
+            messages={messages}
             onHover={handleHover}
             onEmit={emit}
           />

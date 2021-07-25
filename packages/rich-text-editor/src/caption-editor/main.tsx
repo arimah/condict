@@ -4,19 +4,23 @@ import {Slate} from 'slate-react';
 
 import {ShortcutMap} from '@condict/ui';
 
-import DefaultShortcuts, {InlineShortcuts} from './shortcuts';
+import DefaultShortcuts, {InlineShortcuts} from '../shortcuts';
 
-import BaseEditor from './base-editor';
-import createEditor from './plugin';
-import {getInlineCommands, getSingleLineCommands} from './keymap';
-import {InlineFormatGroup} from './toolbar';
-import {BlockElement} from './types';
+import BaseEditor from '../base-editor';
+import createEditor from '../plugin';
+import {getInlineCommands, getSingleLineCommands} from '../keymap';
+import {DefaultInlineMessages} from '../messages';
+import {InlineFormatGroup} from '../toolbar';
+import {BlockElement} from '../types';
+
+import {Messages} from './types';
 
 export type Props = {
   className?: string;
   value: BlockElement[];
   toolbarAlwaysVisible?: boolean;
   shortcuts?: InlineShortcuts;
+  messages?: Messages;
   onChange: (value: BlockElement[]) => void;
 };
 
@@ -26,6 +30,7 @@ const TableCaptionEditor = (props: Props): JSX.Element => {
   const {
     value,
     shortcuts = DefaultShortcuts,
+    messages = DefaultInlineMessages,
     onChange,
     ...otherProps
   } = props;
@@ -52,7 +57,9 @@ const TableCaptionEditor = (props: Props): JSX.Element => {
       <BaseEditor
         {...otherProps}
         singleLine={true}
-        toolbarItems={<InlineFormatGroup shortcuts={shortcuts}/>}
+        toolbarItems={
+          <InlineFormatGroup shortcuts={shortcuts} messages={messages}/>
+        }
         onKeyDown={handleKeyDown}
       />
     </Slate>

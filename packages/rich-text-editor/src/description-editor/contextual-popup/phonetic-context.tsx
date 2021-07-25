@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import {useCallback} from 'react';
 import {Transforms, Editor, Node, Text, Range as SlateRange, Path} from 'slate';
 import {ReactEditor, useSlateStatic} from 'slate-react';
 
@@ -8,6 +8,7 @@ import {SearchIpaIcon, ConvertToIpaIcon} from '../../icons';
 import {CondictEditor} from '../../types';
 
 import {PlacementRect} from '../popup';
+import {Messages} from '../types';
 
 import * as S from './styles';
 
@@ -15,11 +16,12 @@ export type Props = {
   range: SlateRange;
   text: string;
   focusable: boolean;
+  messages: Messages;
   onInsertIpa: () => void;
 };
 
 const PhoneticPopup = (props: Props): JSX.Element | null => {
-  const {range, text, focusable, onInsertIpa} = props;
+  const {range, text, focusable, messages, onInsertIpa} = props;
 
   const editor = useSlateStatic();
 
@@ -39,18 +41,18 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
     <S.Columns>
       {text !== ipa ? <>
         <S.PrimaryAction
-          label={`Convert to IPA: ${ipa}`}
+          label={messages.convertToIpaLabel(ipa)}
           tabIndex={tabIndex}
           onClick={applyConversion}
         >
           <ConvertToIpaIcon/>
           <S.PrimaryLabel>{ipa}</S.PrimaryLabel>
-          <S.SecondaryLabel>Convert to IPA</S.SecondaryLabel>
+          <S.SecondaryLabel>{messages.convertToIpa()}</S.SecondaryLabel>
         </S.PrimaryAction>
         <S.Actions>
           <S.Action
-            label='Insert IPA'
-            title='Insert IPA'
+            label={messages.insertIpa()}
+            title={messages.insertIpa()}
             tabIndex={tabIndex}
             onClick={onInsertIpa}
           >
@@ -60,7 +62,7 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
       </> : (
         <S.PrimaryAction tabIndex={tabIndex} onClick={onInsertIpa}>
           <SearchIpaIcon/>
-          <span>Insert IPA</span>
+          <span>{messages.insertIpa()}</span>
         </S.PrimaryAction>
       )}
     </S.Columns>

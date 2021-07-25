@@ -1,4 +1,3 @@
-import React from 'react';
 import {Editor, Range, Point} from 'slate';
 import {ReactEditor, useSlateStatic} from 'slate-react';
 import EditIcon from 'mdi-react/PencilIcon';
@@ -8,17 +7,19 @@ import {isLink} from '../../node-utils';
 import {CondictEditor, LinkElement} from '../../types';
 
 import {PlacementRect} from '../popup';
+import {Messages} from '../types';
 
 import * as S from './styles';
 
 export type Props = {
   link: LinkElement;
   focusable: boolean;
+  messages: Messages;
   onEditLink: () => void;
 };
 
 const LinkContext = (props: Props): JSX.Element => {
-  const {link, focusable, onEditLink} = props;
+  const {link, focusable, messages, onEditLink} = props;
 
   const editor = useSlateStatic();
 
@@ -29,8 +30,8 @@ const LinkContext = (props: Props): JSX.Element => {
   return (
     <S.Columns>
       <S.PrimaryAction
-        label={`Edit link: ${target.name || target.url} - ${target.type}`}
-        title='Edit link'
+        label={messages.editLinkLabel(target.name || target.url, target.type)}
+        title={messages.editLink()}
         tabIndex={tabIndex}
         onClick={onEditLink}
       >
@@ -40,8 +41,8 @@ const LinkContext = (props: Props): JSX.Element => {
       </S.PrimaryAction>
       <S.Actions>
         <S.Action
-          label='Remove link'
-          title='Remove link'
+          label={messages.removeLink()}
+          title={messages.removeLink()}
           tabIndex={tabIndex}
           onClick={() => editor.removeLink()}
         >

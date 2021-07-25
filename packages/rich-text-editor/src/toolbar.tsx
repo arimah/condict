@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import {useCallback} from 'react';
 import {Editor} from 'slate';
 import {useSlate} from 'slate-react';
 
@@ -36,15 +36,17 @@ import {
   canUnindent,
 } from './node-utils';
 import {SearchIpaIcon} from './icons';
-import {MarkType} from './types';
+import {MarkType, InlineMessages, BlockMessages, LinkMessages} from './types';
 
-export type Props<S> = {
+export type Props<S, M> = {
   shortcuts: S;
+  messages: M;
 };
 
 export const HeadingsGroup = (
-  {shortcuts}: Props<BlockShortcuts>
+  props: Props<BlockShortcuts, BlockMessages>
 ): JSX.Element => {
+  const {shortcuts, messages} = props;
   const editor = useSlate();
   const options = {
     at: editor.selection || editor.blurSelection || undefined,
@@ -52,7 +54,7 @@ export const HeadingsGroup = (
   return (
     <Toolbar.Group name='Headings'>
       <Toolbar.Button
-        label='Heading 1'
+        label={messages.heading1()}
         checked={isBlockActive(editor, 'heading1', options)}
         shortcut={shortcuts.heading1}
         onClick={() => editor.formatBlock('heading1', options)}
@@ -60,7 +62,7 @@ export const HeadingsGroup = (
         <H1Icon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label='Heading 2'
+        label={messages.heading2()}
         checked={isBlockActive(editor, 'heading2', options)}
         shortcut={shortcuts.heading2}
         onClick={() => editor.formatBlock('heading2', options)}
@@ -72,8 +74,9 @@ export const HeadingsGroup = (
 };
 
 export const InlineFormatGroup = (
-  {shortcuts}: Props<InlineShortcuts>
+  props: Props<InlineShortcuts, InlineMessages>
 ): JSX.Element => {
+  const {shortcuts, messages} = props;
   const editor = useSlate();
   const marks = Editor.marks(editor) || {};
 
@@ -88,7 +91,7 @@ export const InlineFormatGroup = (
   return (
     <Toolbar.Group name='Format'>
       <Toolbar.Button
-        label='Bold'
+        label={messages.bold()}
         checked={marks.bold === true}
         shortcut={shortcuts.bold}
         onClick={() => toggleMark('bold')}
@@ -96,7 +99,7 @@ export const InlineFormatGroup = (
         <BoldIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label='Italic'
+        label={messages.italic()}
         checked={marks.italic === true}
         shortcut={shortcuts.italic}
         onClick={() => toggleMark('italic')}
@@ -104,7 +107,7 @@ export const InlineFormatGroup = (
         <ItalicIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label='Underline'
+        label={messages.underline()}
         checked={marks.underline === true}
         shortcut={shortcuts.underline}
         onClick={() => toggleMark('underline')}
@@ -112,7 +115,7 @@ export const InlineFormatGroup = (
         <UnderlineIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label='Strike through'
+        label={messages.strikethrough()}
         checked={marks.strikethrough === true}
         shortcut={shortcuts.strikethrough}
         onClick={() => toggleMark('strikethrough')}
@@ -120,7 +123,7 @@ export const InlineFormatGroup = (
         <StrikethroughIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label='Subscript'
+        label={messages.subscript()}
         checked={marks.subscript === true}
         shortcut={shortcuts.subscript}
         onClick={() => {
@@ -131,7 +134,7 @@ export const InlineFormatGroup = (
         <SubscriptIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label='Superscript'
+        label={messages.superscript()}
         checked={marks.superscript === true}
         shortcut={shortcuts.superscript}
         onClick={() => {
@@ -146,10 +149,11 @@ export const InlineFormatGroup = (
 };
 
 export const LinkGroup = (
-  {shortcuts, onSetLink}: Props<LinkShortcuts> & {
+  props: Props<LinkShortcuts, LinkMessages> & {
     onSetLink: () => void;
   }
 ): JSX.Element => {
+  const {shortcuts, messages, onSetLink} = props;
   const editor = useSlate();
   const at = editor.selection || editor.blurSelection || undefined;
   const options = {at};
@@ -157,7 +161,7 @@ export const LinkGroup = (
   return (
     <Toolbar.Group name='Link'>
       <Toolbar.Button
-        label='Add/edit link'
+        label={messages.addEditLink()}
         shortcut={shortcuts.addLink}
         checked={hasLink}
         disabled={at === undefined}
@@ -166,7 +170,7 @@ export const LinkGroup = (
         <LinkIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label='Remove link'
+        label={messages.removeLink()}
         shortcut={shortcuts.removeLink}
         disabled={!hasLink}
         onClick={() => editor.removeLink(options)}
@@ -178,8 +182,9 @@ export const LinkGroup = (
 };
 
 export const BlockFormatGroup = (
-  {shortcuts}: Props<BlockShortcuts>
+  props: Props<BlockShortcuts, BlockMessages>
 ): JSX.Element => {
+  const {shortcuts, messages} = props;
   const editor = useSlate();
   const options = {
     at: editor.selection || editor.blurSelection || undefined,
@@ -187,7 +192,7 @@ export const BlockFormatGroup = (
   return <>
     <Toolbar.Group name='List style'>
       <Toolbar.Button
-        label='Bulleted list'
+        label={messages.bulletedList()}
         checked={isBlockActive(editor, 'bulletListItem', options)}
         shortcut={shortcuts.bulletList}
         onClick={() => editor.formatBlock('bulletListItem', options)}
@@ -195,7 +200,7 @@ export const BlockFormatGroup = (
         <BulletedListIcon className='rtl-mirror'/>
       </Toolbar.Button>
       <Toolbar.Button
-        label='Numbered list'
+        label={messages.numberedList()}
         checked={isBlockActive(editor, 'numberListItem', options)}
         shortcut={shortcuts.numberList}
         onClick={() => editor.formatBlock('numberListItem', options)}
@@ -206,7 +211,7 @@ export const BlockFormatGroup = (
 
     <Toolbar.Group>
       <Toolbar.Button
-        label='Increase indentation'
+        label={messages.indent()}
         shortcut={shortcuts.indent}
         disabled={!canIndent(editor, options)}
         onClick={() => editor.indent(options)}
@@ -214,7 +219,7 @@ export const BlockFormatGroup = (
         <IndentMoreIcon className='rtl-mirror'/>
       </Toolbar.Button>
       <Toolbar.Button
-        label='Decrease indentation'
+        label={messages.unindent()}
         shortcut={shortcuts.unindent}
         disabled={!canUnindent(editor, options)}
         onClick={() => editor.unindent(options)}
@@ -226,14 +231,15 @@ export const BlockFormatGroup = (
 };
 
 export const HelpersGroup = (
-  {shortcuts, onOpenIpaDialog}: Props<HelperShortcuts> & {
+  props: Props<HelperShortcuts, BlockMessages> & {
     onOpenIpaDialog: () => void;
   }
 ): JSX.Element => {
+  const {shortcuts, messages, onOpenIpaDialog} = props;
   const editor = useSlate();
   return (
     <Toolbar.Button
-      label='Insert IPA'
+      label={messages.insertIpa()}
       disabled={editor.selection === null && editor.blurSelection === null}
       shortcut={shortcuts.insertIpa}
       onClick={onOpenIpaDialog}

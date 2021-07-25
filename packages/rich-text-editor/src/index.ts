@@ -1,12 +1,5 @@
-export {
-  default as DescriptionEditor,
-  Props as DescriptionEditorProps,
-  SearchResult,
-} from './description-editor';
-export {
-  default as TableCaptionEditor,
-  Props as TableCaptionEditorProps,
-} from './caption-editor';
+export * from './description-editor';
+export * from './caption-editor';
 
 export {
   AllShortcuts,

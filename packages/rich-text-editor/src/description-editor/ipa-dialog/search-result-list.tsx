@@ -1,6 +1,8 @@
-import React, {Ref, useMemo} from 'react';
+import {Ref, useMemo} from 'react';
 
 import {Match} from '@condict/ipa';
+
+import {Messages} from '../types';
 
 import SearchResult from './search-result';
 import ConvertResult from './convert-result';
@@ -13,6 +15,7 @@ export type Props = {
   results: readonly Result[];
   currentIndex: number;
   currentResultRef: Ref<HTMLElement>;
+  messages: Messages;
   onHover: (index: number) => void;
   onEmit: (ipa: string) => void;
 };
@@ -33,6 +36,7 @@ const SearchResultList = (props: Props): JSX.Element => {
     results,
     currentIndex,
     currentResultRef,
+    messages,
     onHover,
     onEmit,
   } = props;
@@ -43,10 +47,10 @@ const SearchResultList = (props: Props): JSX.Element => {
     return (
       <div id={`${dialogId}-no-results`}>
         <S.NoSearchResults>
-          No matches for <i>{query}</i>.
+          {messages.ipaDialogNoMatches(query)}
         </S.NoSearchResults>
         <S.NoResultsSuggestion>
-          Check your spelling or try a less specific query.
+          {messages.ipaDialogCheckSpelling()}
         </S.NoResultsSuggestion>
       </div>
     );
@@ -74,6 +78,7 @@ const SearchResultList = (props: Props): JSX.Element => {
           ipa={result.ipa}
           index={index}
           selected={index === currentIndex}
+          messages={messages}
           onMouseEnter={onHover}
           onClick={onEmit}
           ref={index === currentIndex ? currentResultRef : undefined}

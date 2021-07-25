@@ -30,17 +30,19 @@ import {
 import {isLink, firstMatchingNode} from '../node-utils';
 import {BlockElement, LinkTarget} from '../types';
 
+import DefaultMessages from './messages';
 import ContextualPopup, {ContextualPopupHandle} from './contextual-popup';
 import {PlacementRect} from './popup';
 import LinkDialog, {SearchResult} from './link-dialog';
 import IpaDialog from './ipa-dialog';
-import * as S from './styles';
+import {Messages} from './types';
 
 export type Props = {
   className?: string;
   value: BlockElement[];
   toolbarAlwaysVisible?: boolean;
   shortcuts?: AllShortcuts;
+  messages?: Messages;
   onChange: (value: BlockElement[]) => void;
   onFindLinkTarget: (query: string) => Promise<readonly SearchResult[]>;
 };
@@ -73,6 +75,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
   const {
     value,
     shortcuts = DefaultShortcuts,
+    messages = DefaultMessages,
     onChange,
     onFindLinkTarget,
     ...otherProps
@@ -225,11 +228,19 @@ const DescriptionEditor = (props: Props): JSX.Element => {
         {...otherProps}
         singleLine={false}
         toolbarItems={<>
-          <HeadingsGroup shortcuts={shortcuts}/>
-          <InlineFormatGroup shortcuts={shortcuts}/>
-          <LinkGroup shortcuts={shortcuts} onSetLink={openLinkDialog}/>
-          <BlockFormatGroup shortcuts={shortcuts}/>
-          <HelpersGroup shortcuts={shortcuts} onOpenIpaDialog={openIpaDialog}/>
+          <HeadingsGroup shortcuts={shortcuts} messages={messages}/>
+          <InlineFormatGroup shortcuts={shortcuts} messages={messages}/>
+          <LinkGroup
+            shortcuts={shortcuts}
+            messages={messages}
+            onSetLink={openLinkDialog}
+          />
+          <BlockFormatGroup shortcuts={shortcuts} messages={messages}/>
+          <HelpersGroup
+            shortcuts={shortcuts}
+            messages={messages}
+            onOpenIpaDialog={openIpaDialog}
+          />
         </>}
         onKeyDown={handleKeyDown}
         onFocusChanged={handleFocusChanged}
@@ -239,6 +250,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
           <LinkDialog
             initialValue={dialogProps.initialValue}
             placement={dialogProps.placement}
+            messages={messages}
             onFindLinkTarget={onFindLinkTarget}
             onSubmit={target => {
               const at = dialogProps.selection;
@@ -251,6 +263,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
         {dialogProps && dialogProps.type === 'ipa' &&
           <IpaDialog
             placement={dialogProps.placement}
+            messages={messages}
             onEmit={ipa => {
               const selection = Editor.rangeRef(editor, dialogProps.selection, {
                 affinity: 'forward',
@@ -265,6 +278,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
         {!dialogProps && showPopup &&
           <ContextualPopup
             editorRef={editorRef}
+            messages={messages}
             onOpenLinkDialog={openLinkDialog}
             onOpenIpaDialog={openIpaDialog}
             ref={popupRef}

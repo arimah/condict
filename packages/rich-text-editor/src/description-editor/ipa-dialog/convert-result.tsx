@@ -1,5 +1,6 @@
 import React, {Ref} from 'react';
 
+import {Messages} from '../types';
 import * as S from './styles';
 
 export type Props = {
@@ -7,6 +8,7 @@ export type Props = {
   ipa: string;
   index: number;
   selected: boolean;
+  messages: Messages;
   onMouseEnter: (index: number) => void;
   onClick: (ipa: string) => void;
 };
@@ -20,6 +22,7 @@ const ConvertResult = React.memo(React.forwardRef((
     ipa,
     index,
     selected,
+    messages,
     onMouseEnter,
     onClick,
   } = props;
@@ -34,7 +37,7 @@ const ConvertResult = React.memo(React.forwardRef((
       ref={ref as Ref<HTMLDivElement>}
     >
       <S.TargetIpa>{ipa}</S.TargetIpa>
-      <S.ConvertText>Convert to IPA</S.ConvertText>
+      <S.ConvertText>{messages.convertToIpa()}</S.ConvertText>
     </S.Result>
   );
 }));

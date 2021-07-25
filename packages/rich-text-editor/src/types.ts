@@ -137,3 +137,42 @@ declare module 'slate' {
     Text: CustomText;
   }
 }
+
+export interface InlineMessages {
+  /** "Bold", toolbar button tooltip. */
+  bold(): string;
+  /** "Italic", toolbar button tooltip. */
+  italic(): string;
+  /** "Underline", toolbar button tooltip. */
+  underline(): string;
+  /** "Strike through", toolbar button tooltip. */
+  strikethrough(): string;
+  /** "Subscript", toolbar button tooltip. */
+  subscript(): string;
+  /** "Superscript", toolbar button tooltip. */
+  superscript(): string;
+}
+
+export interface BlockMessages {
+  /** "Heading 1", toolbar button tooltip. */
+  heading1(): string;
+  /** "Heading 2", toolbar button tooltip. */
+  heading2(): string;
+  /** "Bulleted list", toolbar button tooltip. */
+  bulletedList(): string;
+  /** "Numbered list", toolbar button tooltip. */
+  numberedList(): string;
+  /** "Increase indentation", toolbar button tooltip. */
+  indent(): string;
+  /** "Decrease indentation", toolbar button tooltip. */
+  unindent(): string;
+  /** "Insert phonetic writing", toolbar button tooltip. */
+  insertIpa(): string;
+}
+
+export interface LinkMessages {
+  /** "Add/edit link", toolbar button tooltip. */
+  addEditLink(): string;
+  /** "Remove link", toolbar button tooltip. */
+  removeLink(): string;
+}

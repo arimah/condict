@@ -1,4 +1,4 @@
-import React, {
+import {
   ChangeEvent,
   KeyboardEvent,
   MouseEvent,
@@ -22,6 +22,7 @@ import Dialog, {
   PrevResultKey,
   NextResultKey,
 } from '../dialog';
+import {Messages} from '../types';
 
 import SearchResultItem from './search-result';
 import {SearchResult} from './types';
@@ -30,6 +31,7 @@ import * as S from './styles';
 export type Props = {
   initialValue?: LinkTarget;
   placement: PlacementRect;
+  messages: Messages;
   onFindLinkTarget: (query: string) => Promise<readonly SearchResult[]>;
   onSubmit: (target: LinkTarget) => void;
   onCancel: () => void;
@@ -210,7 +212,7 @@ const cancelMouseEvent = (e: MouseEvent) => {
 };
 
 const LinkDialog = (props: Props): JSX.Element => {
-  const {placement, onFindLinkTarget, onSubmit, onCancel} = props;
+  const {placement, messages, onFindLinkTarget, onSubmit, onCancel} = props;
 
   const id = useUniqueId();
 
@@ -290,7 +292,7 @@ const LinkDialog = (props: Props): JSX.Element => {
   return (
     <Dialog
       placement={placement}
-      aria-label='Link target'
+      aria-label={messages.linkDialogTitle()}
       onSubmit={handleSubmit}
       onKeyDown={handleFormKeyDown}
       onPointerDownOutside={cancel}
@@ -302,7 +304,7 @@ const LinkDialog = (props: Props): JSX.Element => {
         aria-haspopup='listbox'
       >
         <SearchInput
-          placeholder='Web address or search term'
+          placeholder={messages.linkDialogPlaceholder()}
           value={state.value}
           aria-autocomplete='list'
           aria-controls={`${id}-results`}
@@ -315,12 +317,12 @@ const LinkDialog = (props: Props): JSX.Element => {
           onChange={handleInput}
           onKeyDown={handleInputKeyDown}
         />
-        <SubmitButton label='Save'/>
+        <SubmitButton label={messages.linkDialogSave()}/>
       </SearchWrapper>
 
       {hasError &&
         <S.Error id={`${id}-error`}>
-          Please enter a web address, or a search term to select an item from the dictionary.
+          {messages.linkDialogError()}
         </S.Error>}
 
       <S.SearchResultList
