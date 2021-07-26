@@ -1,5 +1,6 @@
 import {
   KeyboardEvent,
+  FocusEvent,
   useState,
   useMemo,
   useCallback,
@@ -38,6 +39,9 @@ import IpaDialog from './ipa-dialog';
 import {Messages} from './types';
 
 export type Props = {
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
   className?: string;
   value: BlockElement[];
   toolbarAlwaysVisible?: boolean;
@@ -45,6 +49,8 @@ export type Props = {
   messages?: Messages;
   onChange: (value: BlockElement[]) => void;
   onFindLinkTarget: (query: string) => Promise<readonly SearchResult[]>;
+  onFocus?: (e: FocusEvent) => void;
+  onBlur?: (e: FocusEvent) => void;
 };
 
 type SlateChangeFn = (value: Descendant[]) => void;

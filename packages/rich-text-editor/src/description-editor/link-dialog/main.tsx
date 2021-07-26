@@ -2,7 +2,6 @@ import {
   ChangeEvent,
   KeyboardEvent,
   MouseEvent,
-  FormEvent,
   useReducer,
   useCallback,
   useRef,
@@ -19,6 +18,7 @@ import Dialog, {
   SearchInput,
   SubmitButton,
   CloseKey,
+  SubmitKey,
   PrevResultKey,
   NextResultKey,
 } from '../dialog';
@@ -218,11 +218,21 @@ const LinkDialog = (props: Props): JSX.Element => {
 
   const [state, dispatch] = useReducer(reduce, props, initState);
 
-  const mainRef = useRef<HTMLFormElement>(null);
+  const mainRef = useRef<HTMLDivElement>(null);
   const cancel = useCallback(() => {
     // HACK: Get around problems with Slate, focus and selection management.
     void Promise.resolve().then(onCancel);
   }, [onCancel]);
+
+  const submit = useCallback(() => {
+    if (state.index === -1) {
+      dispatch({type: 'showError'});
+    } else {
+      // HACK: Going directly from input to Slate causes selection problems.
+      mainRef.current?.focus();
+      onSubmit(state.results[state.index].target);
+    }
+  }, [onSubmit, state]);
 
   const searchRequest = useRef(0);
   const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -244,7 +254,11 @@ const LinkDialog = (props: Props): JSX.Element => {
   }, [onFindLinkTarget]);
 
   const handleInputKeyDown = useCallback((e: KeyboardEvent) => {
-    if (Shortcut.matches(PrevResultKey, e)) {
+    if (Shortcut.matches(SubmitKey, e)) {
+      e.preventDefault();
+      e.stopPropagation();
+      submit();
+    } else if (Shortcut.matches(PrevResultKey, e)) {
       e.preventDefault();
       e.stopPropagation();
       dispatch({type: 'prev'});
@@ -253,30 +267,19 @@ const LinkDialog = (props: Props): JSX.Element => {
       e.stopPropagation();
       dispatch({type: 'next'});
     }
-  }, []);
+  }, [submit]);
 
   const handleHoverResult = useCallback((index: number) => {
     dispatch({type: 'hover', index});
   }, []);
 
-  const handleFormKeyDown = useCallback((e: KeyboardEvent) => {
+  const handleDialogKeyDown = useCallback((e: KeyboardEvent) => {
     if (Shortcut.matches(CloseKey, e)) {
       e.preventDefault();
       e.stopPropagation();
       cancel();
     }
   }, [cancel]);
-
-  const handleSubmit = useCallback((e: FormEvent) => {
-    e.preventDefault();
-
-    if (state.index === -1) {
-      dispatch({type: 'showError'});
-    } else {
-      mainRef.current?.focus();
-      onSubmit(state.results[state.index].target);
-    }
-  }, [onSubmit, state]);
 
   const currentResultRef = useRef<HTMLLIElement>(null);
   useEffect(() => {
@@ -293,8 +296,7 @@ const LinkDialog = (props: Props): JSX.Element => {
     <Dialog
       placement={placement}
       aria-label={messages.linkDialogTitle()}
-      onSubmit={handleSubmit}
-      onKeyDown={handleFormKeyDown}
+      onKeyDown={handleDialogKeyDown}
       onPointerDownOutside={cancel}
       ref={mainRef}
     >
@@ -317,7 +319,7 @@ const LinkDialog = (props: Props): JSX.Element => {
           onChange={handleInput}
           onKeyDown={handleInputKeyDown}
         />
-        <SubmitButton label={messages.linkDialogSave()}/>
+        <SubmitButton label={messages.linkDialogSave()} onClick={submit}/>
       </SearchWrapper>
 
       {hasError &&

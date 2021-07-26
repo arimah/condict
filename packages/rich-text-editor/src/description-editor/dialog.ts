@@ -4,6 +4,8 @@ import {TextInput, Button, Shortcut} from '@condict/ui';
 
 import Popup from './popup';
 
+export const SubmitKey = Shortcut.parse('Enter');
+
 export const CloseKey = Shortcut.parse('Escape');
 
 export const PrevResultKey = Shortcut.parse('ArrowUp');
@@ -53,7 +55,6 @@ export const SubmitButton = styled(Button).attrs({
   intent: 'accent',
   bold: true,
   slim: true,
-  type: 'submit',
 })`
   padding: 1px 12px;
   flex: none;

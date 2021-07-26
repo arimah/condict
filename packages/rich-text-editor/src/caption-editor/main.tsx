@@ -1,4 +1,4 @@
-import {KeyboardEvent, useState, useMemo, useCallback} from 'react';
+import {KeyboardEvent, FocusEvent, useState, useMemo, useCallback} from 'react';
 import {Descendant} from 'slate';
 import {Slate} from 'slate-react';
 
@@ -16,12 +16,17 @@ import {BlockElement} from '../types';
 import {Messages} from './types';
 
 export type Props = {
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
   className?: string;
   value: BlockElement[];
   toolbarAlwaysVisible?: boolean;
   shortcuts?: InlineShortcuts;
   messages?: Messages;
   onChange: (value: BlockElement[]) => void;
+  onFocus?: (e: FocusEvent) => void;
+  onBlur?: (e: FocusEvent) => void;
 };
 
 type SlateChangeFn = (value: Descendant[]) => void;

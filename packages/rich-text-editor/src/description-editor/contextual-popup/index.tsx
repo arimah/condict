@@ -67,7 +67,7 @@ const ContextualPopup = React.forwardRef((
 
   const editor = useSlate();
 
-  const rootRef = useRef<HTMLFormElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   const [link, setLink] = useState<LinkContextValue | null>(null);
   const [phonetic, setPhonetic] = useState<PhoneticContextValue | null>(null);

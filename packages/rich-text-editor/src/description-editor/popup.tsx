@@ -10,7 +10,7 @@ export type Props = {
   restoreFocus?: boolean;
   onPointerDownOutside?: (target: Element) => void;
 } & Omit<
-  HTMLAttributes<HTMLFormElement>,
+  HTMLAttributes<HTMLDivElement>,
   'placement' | 'role' | 'tabIndex' | 'aria-modal'
 >;
 
@@ -35,7 +35,7 @@ const Margin = 6;
 
 const Popup = React.forwardRef((
   props: Props,
-  ref: Ref<HTMLFormElement>
+  ref: Ref<HTMLDivElement>
 ): JSX.Element => {
   const {
     placement,
@@ -47,7 +47,7 @@ const Popup = React.forwardRef((
     ...otherProps
   } = props;
 
-  const ownRef = useRef<HTMLFormElement>(null);
+  const ownRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (ownRef.current) {
       const width = ownRef.current.offsetWidth;

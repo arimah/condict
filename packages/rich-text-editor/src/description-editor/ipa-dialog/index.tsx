@@ -2,7 +2,6 @@ import {
   ChangeEvent,
   MouseEvent,
   KeyboardEvent,
-  FormEvent,
   useReducer,
   useCallback,
   useRef,
@@ -20,6 +19,7 @@ import Dialog, {
   SearchInput,
   SubmitButton,
   CloseKey,
+  SubmitKey,
   PrevResultKey,
   NextResultKey,
 } from '../dialog';
@@ -160,24 +160,7 @@ const IpaDialog = (props: Props): JSX.Element => {
     void Promise.resolve().then(onClose);
   }, [onClose]);
 
-  const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    dispatch({type: 'input', value: e.target.value});
-  }, []);
-
-  const handleInputKeyDown = useCallback((e: KeyboardEvent) => {
-    if (Shortcut.matches(PrevResultKey, e)) {
-      e.preventDefault();
-      e.stopPropagation();
-      dispatch({type: 'prev'});
-    } else if (Shortcut.matches(NextResultKey, e)) {
-      e.preventDefault();
-      e.stopPropagation();
-      dispatch({type: 'next'});
-    }
-  }, [state]);
-
-  const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const submit = useCallback(() => {
     if (index !== -1) {
       let input: string;
       if (results) {
@@ -194,7 +177,27 @@ const IpaDialog = (props: Props): JSX.Element => {
     }
   }, [emit, results, index]);
 
-  const handleFormKeyDown = useCallback((e: KeyboardEvent) => {
+  const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    dispatch({type: 'input', value: e.target.value});
+  }, []);
+
+  const handleInputKeyDown = useCallback((e: KeyboardEvent) => {
+    if (Shortcut.matches(SubmitKey, e)) {
+      e.preventDefault();
+      e.stopPropagation();
+      submit();
+    } else if (Shortcut.matches(PrevResultKey, e)) {
+      e.preventDefault();
+      e.stopPropagation();
+      dispatch({type: 'prev'});
+    } else if (Shortcut.matches(NextResultKey, e)) {
+      e.preventDefault();
+      e.stopPropagation();
+      dispatch({type: 'next'});
+    }
+  }, [submit]);
+
+  const handleDialogKeyDown = useCallback((e: KeyboardEvent) => {
     if (Shortcut.matches(CloseKey, e)) {
       e.preventDefault();
       e.stopPropagation();
@@ -219,8 +222,7 @@ const IpaDialog = (props: Props): JSX.Element => {
     <Dialog
       aria-label={messages.ipaDialogTitle()}
       placement={placement}
-      onSubmit={handleSubmit}
-      onKeyDown={handleFormKeyDown}
+      onKeyDown={handleDialogKeyDown}
       onPointerDownOutside={close}
     >
       <SearchWrapper
@@ -245,7 +247,7 @@ const IpaDialog = (props: Props): JSX.Element => {
           onKeyDown={handleInputKeyDown}
           ref={inputRef}
         />
-        <SubmitButton label={messages.ipaDialogInsert()}/>
+        <SubmitButton label={messages.ipaDialogInsert()} onClick={submit}/>
       </SearchWrapper>
       <S.CharacterList id={`${id}-list`} onMouseDown={cancelMouseEvent}>
         {results ? (

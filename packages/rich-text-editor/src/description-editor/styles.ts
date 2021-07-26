@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Popup = styled.form.attrs({
+export const Popup = styled.div.attrs({
   role: 'dialog',
   tabIndex: -1,
   'aria-modal': true,

@@ -18,12 +18,17 @@ const preventFocus = (e: MouseEvent) => {
 };
 
 export type Props = {
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
   className?: string;
   toolbarItems: ReactNode;
   toolbarAlwaysVisible?: boolean;
   singleLine: boolean;
   onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => void;
   onFocusChanged?: (nextFocus: Element | null) => void;
+  onFocus?: (e: FocusEvent) => void;
+  onBlur?: (e: FocusEvent) => void;
   children?: ReactNode;
 };
 
@@ -39,6 +44,7 @@ const BaseEditor = React.forwardRef((
     onKeyDown,
     onFocusChanged,
     children,
+    ...otherProps
   } = props;
 
   const editor = useSlateStatic();
@@ -109,6 +115,7 @@ const BaseEditor = React.forwardRef((
       </S.Toolbar>
 
       <S.Editable
+        {...otherProps}
         $singleLine={singleLine}
         $toolbarAlwaysVisible={toolbarAlwaysVisible}
         renderElement={renderElement}
