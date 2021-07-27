@@ -1,9 +1,8 @@
 import React, {ReactChild, Ref} from 'react';
 import {Localized} from '@fluent/react';
 
-import {ResourceIcon, intersperse} from '../../ui';
+import {HighlightedSnippet, ResourceIcon, intersperse} from '../../ui';
 
-import HighlightedSnippet from './highlighted-snippet';
 import {
   SearchResult,
   LemmaSearchResult,

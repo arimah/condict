@@ -50,15 +50,6 @@ query($query: String!, $scopes: [SearchScope!]!) {
   }
 }
 
-fragment SnippetFragment on MatchingSnippet {
-  partialStart
-  partialEnd
-  parts {
-    isMatch
-    text
-  }
-}
-
 fragment LanguageFragment on Language {
   id
   name

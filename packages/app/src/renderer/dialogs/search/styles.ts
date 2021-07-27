@@ -210,14 +210,6 @@ export const ResultBody = styled.div`
   border-top: 1px solid ${p => p.theme.general.border};
 `;
 
-export const Ellipsis = styled.span`
-  opacity: 0.7;
-`;
-
-export const Highlight = styled.b`
-  color: ${p => p.theme.accent.defaultFg};
-`;
-
 export const ResultText = styled.div`
   margin-top: 16px;
 

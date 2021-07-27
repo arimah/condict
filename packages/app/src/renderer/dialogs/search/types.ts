@@ -1,5 +1,6 @@
 import {LanguageId, LemmaId, DefinitionId} from '../../graphql';
 import {Page, LemmaPage, DefinitionPage, LanguagePage} from '../../page';
+import {Snippet} from '../../ui';
 
 export interface SearchResultState {
   readonly query: string;
@@ -66,17 +67,6 @@ export interface DefinitionSearchResult {
   readonly term: string;
   readonly partOfSpeechName: string;
   readonly language: ParentLanguage;
-}
-
-export interface Snippet {
-  readonly partialStart: boolean;
-  readonly partialEnd: boolean;
-  readonly parts: readonly SnippetPart[];
-}
-
-export interface SnippetPart {
-  readonly isMatch: boolean;
-  readonly text: string;
 }
 
 export interface ParentLanguage {

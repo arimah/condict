@@ -1,0 +1,8 @@
+fragment SnippetFragment on MatchingSnippet {
+  partialStart
+  partialEnd
+  parts {
+    isMatch
+    text
+  }
+}
