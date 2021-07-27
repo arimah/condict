@@ -34,11 +34,12 @@ export const SearchResultName = styled.span`
   flex: 1 1 auto;
   white-space: nowrap;
   text-overflow: ellipsis;
+  font-weight: 500;
   overflow: hidden;
 `;
 
 export const SearchResultType = styled.span`
-  margin-inline-end: 8px;
+  margin-inline-start: 8px;
   flex: none;
   max-width: 175px;
   white-space: nowrap;
@@ -50,8 +51,21 @@ export const SearchResultType = styled.span`
 export const SearchResultMatch = styled.div`
   margin-top: 2px;
   padding-top: 2px;
-  font-style: italic;
+  line-height: 20px;
   border-top: 1px solid ${p => p.theme.general.border};
+
+  /* Tighter spacing around paragraphs for better coherence */
+  > p {
+    margin-block: 4px;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 `;
 
 export type SearchResultListProps = {
