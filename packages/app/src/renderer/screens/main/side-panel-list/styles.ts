@@ -53,9 +53,9 @@ export const SidePanel = styled.div.attrs({
   'aria-modal': false,
 })<SidePanelProps>`
   box-sizing: border-box;
-  padding: 24px 32px;
   position: absolute;
   overflow: auto;
+  z-index: 0;
   top: 0;
   inset-inline-start: ${p =>
     p.state === 'background'
@@ -83,6 +83,10 @@ export const SidePanel = styled.div.attrs({
   &:focus {
     outline: none;
   }
+`;
+
+export const Content = styled.div`
+  padding: 24px 32px;
 
   h1 {
     margin-top: 36px;

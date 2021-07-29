@@ -90,7 +90,9 @@ const SidePanel = React.forwardRef((
         onTransitionEnd={handleTransitionEnd}
         ref={panelRef}
       >
-        {panel.render()}
+        <S.Content>
+          {panel.render()}
+        </S.Content>
         <S.Overlay active={state === 'background'}/>
       </S.SidePanel>
     </FocusScope>
