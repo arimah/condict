@@ -1,34 +1,36 @@
-import {
-  DependencyList,
-  useState,
-  useRef,
-  useContext,
-  useEffect,
-} from 'react';
+import {useState, useRef, useContext, useEffect} from 'react';
 import shallowEqual from 'shallowequal';
+
+import type {DictionaryEventListener} from '@condict/server';
 
 import {Query, OperationArgs} from '../graphql';
 
 import DataContext from './context';
-import {QueryResult, LoadingResult, ExecuteFn} from './types';
+import {QueryResult, LoadingResult, ExecuteFn, EventPredicate} from './types';
 
 interface PrevArgs<Q extends Query<any, any>> {
-  readonly query: Q,
-  readonly variableValues: OperationArgs<Q>,
-  readonly deps: DependencyList | undefined,
+  readonly query: Q;
+  readonly variableValues: OperationArgs<Q>;
 }
 
 export function useData<Q extends Query<any, any>>(
   query: Q,
   variableValues: OperationArgs<Q>,
-  deps?: DependencyList
+  reloadOn?: EventPredicate
 ): QueryResult<Q> {
-  const {execute} = useContext(DataContext);
+  const {execute, subscribe, unsubscribe} = useContext(DataContext);
 
   const [result, setResult] = useState<QueryResult<Q>>(LoadingResult);
 
   // Arguments from previous run, or null on the first run.
   const prevArgs = useRef<PrevArgs<Q> | null>(null);
+
+  // Reference to the current reload predicate.
+  const reloadOnRef = useRef<EventPredicate | undefined>(reloadOn);
+  reloadOnRef.current = reloadOn;
+
+  // A simple toggle that we can update to force a re-render.
+  const [_reloadState, setReloadState] = useState(false);
 
   // Request ID counter that we can use to:
   //
@@ -37,11 +39,10 @@ export function useData<Q extends Query<any, any>>(
   //      discarded correctly.
   const requestId = useRef(0);
 
-  if (needRefetch(prevArgs.current, query, variableValues, deps)) {
+  if (needRefetch(prevArgs.current, query, variableValues)) {
     prevArgs.current = {
       query,
       variableValues,
-      deps,
     };
     requestId.current++;
   }
@@ -73,14 +74,41 @@ export function useData<Q extends Query<any, any>>(
     );
   }, [requestId.current, execute]);
 
+  useEffect(() => {
+    if (reloadOn) {
+      const handleEvent: DictionaryEventListener = ({events}) => {
+        // We never register an event subscription unless there's a reload
+        // predicate, but an event may still be received between runs of this
+        // effect, where reloadOnRef.current is undefined. We should never
+        // reload in that case.
+        const reloadOn = reloadOnRef.current;
+        if (!reloadOn) {
+          return;
+        }
+
+        for (let i = 0; i < events.length; i++) {
+          if (reloadOn(events[i])) {
+            setReloadState(s => !s);
+            requestId.current++;
+            break;
+          }
+        }
+      };
+      subscribe(handleEvent);
+      return () => {
+        unsubscribe(handleEvent);
+      };
+    }
+    return;
+  }, [reloadOn !== undefined]);
+
   return result;
 }
 
 function needRefetch<Q extends Query<any, any>>(
   prev: PrevArgs<Q> | null,
   nextQuery: Q,
-  nextVariables: OperationArgs<Q>,
-  nextDeps: DependencyList | undefined
+  nextVariables: OperationArgs<Q>
 ): boolean {
   if (!prev) {
     // Always fetch on the first call.
@@ -90,19 +118,6 @@ function needRefetch<Q extends Query<any, any>>(
   if (prev.query !== nextQuery) {
     // We always need to refetch if the query changes.
     return true;
-  }
-
-  if (nextDeps) {
-    // If dependencies are specified, they take precedence over variable values.
-    const prevDeps = prev.deps;
-    return (
-      // No dependencies previously = need refetch.
-      !prevDeps ||
-      // Length changed = need refetch.
-      nextDeps.length !== prevDeps.length ||
-      // Value differs = need refetch.
-      nextDeps.some((x, i) => x !== prevDeps[i])
-    );
   }
 
   // Same query, no dependencies. Let's compare variable values.

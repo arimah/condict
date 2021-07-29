@@ -6,4 +6,5 @@ export {
   QueryResult,
   ExecuteFn,
   ExecuteResult,
+  EventPredicate,
 } from './types';

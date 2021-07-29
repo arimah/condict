@@ -1,4 +1,6 @@
-import {ReactNode, useMemo} from 'react';
+import {ReactNode, useMemo, useRef, useEffect} from 'react';
+
+import type {DictionaryEventListener} from '@condict/server';
 
 import {OperationResult as ExecuteResult} from '../../types';
 
@@ -15,6 +17,8 @@ export type Props = {
 const DataProvider = (props: Props): JSX.Element => {
   const {children} = props;
 
+  const subscribers = useRef(new Set<DictionaryEventListener>());
+
   const value = useMemo<DataContextValue>(() => ({
     execute<Op extends Operation<'query' | 'mutation', any, any>>(
       operation: Op,
@@ -26,7 +30,19 @@ const DataProvider = (props: Props): JSX.Element => {
         variableValues,
       }) as Promise<ExecuteResult<OperationResult<Op>>>;
     },
+    subscribe(f) {
+      subscribers.current.add(f);
+    },
+    unsubscribe(f) {
+      subscribers.current.delete(f);
+    },
   }), []);
+
+  useEffect(() => {
+    ipc.on('dictionary-event-batch', (_e, batch) => {
+      subscribers.current.forEach(f => f(batch));
+    });
+  }, []);
 
   return (
     <DataContext.Provider value={value}>
