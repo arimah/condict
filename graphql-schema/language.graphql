@@ -227,6 +227,9 @@ extend type Query {
 
   "Finds a language by ID."
   language(id: LanguageId!): Language
+
+  "Finds a language by name."
+  languageByName(name: String!): Language
 }
 
 "Input type for a new language."

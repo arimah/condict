@@ -1883,6 +1883,12 @@ export type Query = {
     id: LanguageId;
   }, Language | null>;
   /**
+   * Finds a language by name.
+   */
+  languageByName: WithArgs<{
+    name: string;
+  }, Language | null>;
+  /**
    * Finds a lemma by ID. For richer lemma search, see the `Language` type.
    */
   lemma: WithArgs<{

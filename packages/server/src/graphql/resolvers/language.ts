@@ -96,6 +96,8 @@ const Query: ResolversFor<QueryType, null> = {
   languages: (_root, _args, {db}) => LanguageModel.all(db),
 
   language: (_root, {id}, {db}) => LanguageModel.byId(db, id),
+
+  languageByName: (_root, {name}, {db}) => LanguageModel.byName(db, name),
 };
 
 const Mutation: Mutators = {
