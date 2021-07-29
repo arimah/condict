@@ -52,6 +52,10 @@ const main = (): void => {
     });
   }
 
+  server.onEventBatch = batch => {
+    mainWindow.send('dictionary-event-batch', batch);
+  };
+
   translations.onLocaleUpdated = locale => {
     mainWindow.send('locale-updated', locale);
   };

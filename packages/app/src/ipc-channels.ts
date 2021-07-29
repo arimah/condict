@@ -4,6 +4,8 @@ import {
   OpenDialogReturnValue,
 } from 'electron';
 
+import type {DictionaryEventBatch} from '@condict/server';
+
 import {
   IpcRendererMessage,
   ExecuteOperationArg,
@@ -34,6 +36,9 @@ export type MainChannels = {
 
   /** Informs the renderer that the update status has changed. */
   'update-status-changed': UpdateStatus;
+
+  /** Sends an event batch of dictionary changes to the renderer. */
+  'dictionary-event-batch': DictionaryEventBatch;
 
   /**
    * Informs the renderer that the current version u pdate download progress has

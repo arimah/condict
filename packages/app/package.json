@@ -37,7 +37,8 @@
     "react-dom": "^17.0.2",
     "react-is": "^17.0.2",
     "shallowequal": "^1.1.0",
-    "styled-components": "5.1.1"
+    "styled-components": "5.1.1",
+    "ws": "^7.5.3"
   },
   "optionalDependencies": {
     "fsevents": "~2.3.2"

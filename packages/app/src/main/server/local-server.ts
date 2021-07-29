@@ -1,6 +1,11 @@
 import {GraphQLError} from 'graphql';
 
-import {CondictServer, Logger, executeLocalOperation} from '@condict/server';
+import {
+  CondictServer,
+  Logger,
+  DictionaryEventListener,
+  executeLocalOperation,
+} from '@condict/server';
 
 import {
   LocalServerConfig,
@@ -43,6 +48,14 @@ export default class LocalServer implements ServerImpl {
       return {data, errors: convertErrors(errors)};
     }
     return {data};
+  }
+
+  public addEventListener(listener: DictionaryEventListener): void {
+    this.server.addEventListener(listener);
+  }
+
+  public removeEventListener(listener: DictionaryEventListener): void {
+    this.server.removeEventListener(listener);
   }
 }
 

@@ -1,3 +1,5 @@
+import {DictionaryEventListener} from '@condict/server';
+
 import {OperationResult, VariableValues} from '../../types';
 
 export interface ServerImpl {
@@ -28,4 +30,23 @@ export interface ServerImpl {
     operation: string,
     variableValues: VariableValues | null
   ): Promise<OperationResult<unknown>>;
+
+  /**
+   * Adds an event listener to the server. The event listener is invoked when
+   * dictionary events are emitted, and receives a batch of one or more events.
+   *
+   * This method can safely be called before the server has started and after
+   * the server has been stopped.
+   * @param listener The listener function to add.
+   */
+  addEventListener(listener: DictionaryEventListener): void;
+
+  /**
+   * Removes an event listener from the server.
+   *
+   * This method can safely be called before the server has started and after
+   * the server has been stopped.
+   * @param listener The listener function to remove.
+   */
+  removeEventListener(listener: DictionaryEventListener): void;
 }

@@ -1,6 +1,6 @@
 import {IpcMainInvokeEvent, app, dialog} from 'electron';
 
-import {Logger} from '@condict/server';
+import {DictionaryEventListener, Logger} from '@condict/server';
 
 import {ServerConfig, ExecuteOperationArg, OperationResult} from '../../types';
 
@@ -15,6 +15,7 @@ export type ReadyCallback = () => void;
 export interface ServerInstance {
   readonly ready: boolean;
   onReady: ReadyCallback | null;
+  onEventBatch: DictionaryEventListener | null;
 }
 
 const serverImplFromConfig = (
@@ -26,7 +27,7 @@ const serverImplFromConfig = (
     case 'local':
       return new LocalServer(logger, config);
     case 'remote':
-      return new RemoteServer(config, getSessionId);
+      return new RemoteServer(logger, config, getSessionId);
   }
 };
 
@@ -39,6 +40,7 @@ const initServer = (
 
   let ready = false;
   let onReady: ReadyCallback | null = null;
+  let onEventBatch: DictionaryEventListener | null = null;
 
   const handleRequest = (
     _event: IpcMainInvokeEvent,
@@ -62,6 +64,10 @@ const initServer = (
         })
         .then(() => app.quit());
     }
+  });
+
+  server.addEventListener(batch => {
+    onEventBatch?.(batch);
   });
 
   server.start()
@@ -92,6 +98,14 @@ const initServer = (
     },
     set onReady(value: ReadyCallback | null) {
       onReady = value;
+    },
+
+    get onEventBatch(): DictionaryEventListener | null {
+      return onEventBatch;
+    },
+
+    set onEventBatch(value: DictionaryEventListener | null) {
+      onEventBatch = value;
     },
   };
 };
