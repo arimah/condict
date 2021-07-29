@@ -16,6 +16,8 @@ export {
   LanguageEvent,
   LemmaEvent,
   DefinitionEvent,
+  CreateOrDeleteDefinitionEvent,
+  UpdateDefinitionEvent,
   PartOfSpeechEvent,
   InflectionTableEvent,
   TagEvent,

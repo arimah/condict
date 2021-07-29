@@ -1,11 +1,6 @@
-import {
-  LanguageId,
-  LemmaId,
-  DefinitionId,
-  PartOfSpeechId,
-  InflectionTableId,
-  TagId,
-} from './graphql';
+// In this file, we use `number` instead of the dedicated ID types. We don't
+// expose the generated ID types, and event types are exported publicly, so we
+// can't make use of ID types here.
 
 /**
  * A generic dictionary event emitter.
@@ -104,14 +99,14 @@ interface BaseEvent<T extends string, A extends EventAction = EventAction> {
 
 export interface LanguageEvent extends BaseEvent<'language'> {
   /** The ID of the language. */
-  readonly id: LanguageId;
+  readonly id: number;
 }
 
 export interface LemmaEvent extends BaseEvent<'lemma'> {
   /** The ID of the lemma. */
-  readonly id: LemmaId;
+  readonly id: number;
   /** The ID of the language that the lemma belongs/belonged to. */
-  readonly languageId: LanguageId;
+  readonly languageId: number;
 }
 
 export type DefinitionEvent =
@@ -122,49 +117,49 @@ export interface CreateOrDeleteDefinitionEvent extends
   BaseEvent<'definition', 'create' | 'delete'>
 {
   /** The ID of the definition. */
-  readonly id: DefinitionId;
+  readonly id: number;
   /** The ID of the lemma that the definition belongs/belonged to. */
-  readonly lemmaId: LemmaId;
+  readonly lemmaId: number;
   /** The ID of the language that the definition belongs/belonged to. */
-  readonly languageId: LanguageId;
+  readonly languageId: number;
 }
 
 export interface UpdateDefinitionEvent extends
   BaseEvent<'definition', 'update'>
 {
   /** The ID of the definition. */
-  readonly id: DefinitionId;
+  readonly id: number;
   /** The ID of the lemma that the definition belongs/belonged to. */
-  readonly lemmaId: LemmaId;
+  readonly lemmaId: number;
   /**
    * The ID of the lemma that the definition previously belonged to. If this
    * value is the same as `lemmaId`, then the definition has not moved to a new
    * lemma.
    */
-  readonly prevLemmaId: LemmaId;
+  readonly prevLemmaId: number;
   /** The ID of the language that the definition belongs/belonged to. */
-  readonly languageId: LanguageId;
+  readonly languageId: number;
 }
 
 export interface PartOfSpeechEvent extends BaseEvent<'partOfSpeech'> {
   /** The ID of the part of speech. */
-  readonly id: PartOfSpeechId;
+  readonly id: number;
   /** The ID of the language that the part of speech belongs/belonged to. */
-  readonly languageId: LanguageId;
+  readonly languageId: number;
 }
 
 export interface InflectionTableEvent extends BaseEvent<'inflectionTable'> {
   /** The ID of the inflection table. */
-  readonly id: InflectionTableId;
+  readonly id: number;
   /**
    * The ID of the part of speech that the inflection table belongs/belonged to.
    */
-  readonly partOfSpeechId: PartOfSpeechId;
+  readonly partOfSpeechId: number;
   /** The ID of the language that the inflection table belongs/belonged to. */
-  readonly languageId: LanguageId;
+  readonly languageId: number;
 }
 
 export interface TagEvent extends BaseEvent<'tag'> {
   /** The ID of the tag. */
-  readonly id: TagId;
+  readonly id: number;
 }
