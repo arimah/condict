@@ -1,0 +1,5 @@
+query CheckNameQuery($name: String!) {
+  languageByName(name: $name) {
+    id
+  }
+}

@@ -56,3 +56,10 @@ query($tagsPage: Int!) {
     }
   }
 }
+
+mutation AddLanguageMut($data: NewLanguageInput!) {
+  addLanguage(data: $data) {
+    id
+    name
+  }
+}

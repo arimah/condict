@@ -8,7 +8,7 @@ settings-accent-color-label = Accent colour
 # or equivalent.
 settings-danger-color-label = Danger colour
 
-settings-danger-color-description = This colour is used for destructive actions, such as “Delete” buttons.
+settings-danger-color-description = This colour is used for destructive actions, such as “Delete” buttons, and for error messages.
 
 settings-sidebar-color-label = Sidebar colour
 

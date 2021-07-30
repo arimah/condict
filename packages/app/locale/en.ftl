@@ -165,7 +165,7 @@ settings-accent-color-label = Accent color
 # or equivalent.
 settings-danger-color-label = Danger color
 
-settings-danger-color-description = This color is used for destructive actions, such as “Delete” buttons.
+settings-danger-color-description = This color is used for destructive actions, such as “Delete” buttons, and for error messages.
 
 settings-sidebar-color-label = Sidebar color
 
@@ -204,11 +204,11 @@ settings-motion-none-description = Completely disables all motion and animations
 settings-help-translate =
   Want Condict in your language? Found a translation error? You can <help-link>help translate Condict</help-link>.
 
-settings-locale-en = English (United States)
+settings-locale-en = English, United States
 
-settings-locale-en-ca = English (Canada)
+settings-locale-en-ca = English, Canada
 
-settings-locale-en-gb = English (United Kingdom)
+settings-locale-en-gb = English, United Kingdom
 
 ## Settings > Application updates section
 
@@ -260,6 +260,99 @@ settings-about-third-party-licenses-title = Third-party licenses
 
 settings-about-third-party-licenses-intro = This section does not yet have any content.
 
+## Rich text editor messages
+
+rich-text-format-group = Format
+
+rich-text-bold = Bold
+
+rich-text-italic = Italic
+
+rich-text-underline = Underline
+
+rich-text-strikethrough = Strike through
+
+rich-text-subscript = Subscript
+
+rich-text-superscript = Superscript
+
+rich-text-headings-group = Headings
+
+rich-text-heading1 = Heading 1
+
+rich-text-heading2 = Heading 2
+
+rich-text-list-style-group = List style
+
+rich-text-bulleted-list = Bulleted list
+
+rich-text-numbered-list = Numbered list
+
+rich-text-indent = Increase indentation
+
+rich-text-unindent = Decrease indentation
+
+rich-text-insert-ipa = Insert IPA
+
+rich-text-link-group = Link
+
+rich-text-add-edit-link = Add/edit link
+
+rich-text-remove-link = Remove link
+
+rich-text-contextual-tools-title = Contextual tools
+
+rich-text-edit-link = Edit link
+# Screen reader label of "Edit link" button in contextual tools popup.
+#
+# Variables:
+#   target: The link target. This is either hte name of a dictionary resource or a URL.
+rich-text-edit-link-label = Edit link: {$target} - {$targetType}
+
+# Keep this label brief, below about 25 graphemes. It's okay to abbreviate "convert" if necessary.
+rich-text-convert-to-ipa = Convert to IPA
+
+# Screen reader label of "Convert to IPA" button. This one does not need abbreviating.
+#
+# Variables:
+#   ipa: The IPA text that the user's input will be converted to.
+rich-text-convert-to-ipa-label = Convert to IPA: {$ipa}
+
+rich-text-ipa-dialog-title = IPA
+
+# Example search terms. Note that IPA search is currently only available in English.
+rich-text-ipa-dialog-placeholder = nasal, alveolar, high tone, Eks-\s{"{"}mp@, ...
+
+rich-text-ipa-dialog-insert = Insert
+
+# Variables:
+#   query: The user's search query.
+# Elements:
+#   <query>: Wraps around $query to highlight it. Should not contain anything else.
+rich-text-ipa-dialog-no-matches = No matches for <query>{$query}</query>.
+
+rich-text-ipa-dialog-search-hint = Check your spelling or try a less specific query.
+
+rich-text-link-dialog-title = Link target
+
+rich-text-link-dialog-placeholder = Web address or search term
+
+rich-text-link-dialog-save = Save
+
+rich-text-link-dialog-error = Please enter a web address, or a search term to select an item from the dictionary.
+
+# Variables:
+#   language: The name of the language that the lemma belongs to.
+rich-text-link-search-lemma-description = Headword in {$language}
+
+# Variables:
+#   language: The name of the language that the definition belongs to.
+rich-text-link-search-definition-description = Definition in {$language}
+
+# Variables:
+#   language: The name of the language that the lemma belongs to.
+rich-text-link-search-part-of-speech-description = Part of speech in {$language}
+
 ## Home page messages
 
 home-languages-title = Languages
@@ -296,6 +389,8 @@ home-add-language-button = Add language
 
 home-add-language-title = Add language
 
+home-add-language-error = An error occurred when saving the language. {-check-form-data}
+
 home-tags-title = Tags
 
 home-no-tags-description = Tags will show up here when you add them to word definitions.
@@ -331,13 +426,31 @@ home-recent-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "sh
 
 home-recent-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
+## Language form messages
+
+language-name-label = Name
+
+language-name-required-error = A language name is required.
+
+language-name-taken-error = There is already a language with this name. The language name must be unique.
+
+language-description-label = Description (optional)
+
 ## Generic messages
 
 generic-loading = Loading...
 
+generic-saving = Saving...
+
 generic-broken-link-title = Oops, this link is broken!
 
 generic-broken-link-message = This link leads to a dictionary item that has been deleted.
+
+generic-form-save = Save
+
+generic-form-cancel = Cancel
+
+-check-form-data = Check the information above and try again.
 
 # Variables:
 #   errorCount: The number of errors that were returned from the server. Always greater than 0.

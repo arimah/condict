@@ -1,20 +1,20 @@
 import {useCallback} from 'react';
-import {Localized, ReactLocalization, useLocalization} from '@fluent/react';
+import {Localized, useLocalization} from '@fluent/react';
 
-import {Button, useUniqueId} from '@condict/ui';
+import {useUniqueId} from '@condict/ui';
 
-import {LanguageId} from '../../graphql';
 import {DataViewer, FlowContent, Tag} from '../../ui';
-import {PanelParams, PanelProps, useOpenPanel} from '../../navigation';
-import {useData} from '../../data';
+import {useOpenPanel} from '../../navigation';
+import {EventPredicate, useData} from '../../data';
 
 import HomeQuery from './query';
 import LanguageList from './language-list';
-import * as S from './styles';
 import RecentChangeCard from './recent-change-card';
+import addLanguagePanel from './add-language-panel';
+import * as S from './styles';
 
 const HomePage = (): JSX.Element => {
-  const data = useData(HomeQuery, {tagsPage: 0});
+  const data = useData(HomeQuery, {tagsPage: 0}, shouldReload);
 
   const {l10n} = useLocalization();
 
@@ -72,30 +72,14 @@ const HomePage = (): JSX.Element => {
               <Localized id='home-no-recent-changes-description'/>
             </p>
           )}
-        </FlowContent>}
+        </FlowContent>
+      }
     />
   </>;
 };
 
 export default HomePage;
 
-const addLanguagePanel = (
-  l10n: ReactLocalization
-): PanelParams<LanguageId | null> => ({
-  initialTitle: l10n.getString('home-add-language-title'),
-  // eslint-disable-next-line react/display-name
-  render: props => <AddLanguagePanel {...props}/>,
-});
-
-const AddLanguagePanel = (props: PanelProps<LanguageId | null>) => {
-  const {onResolve} = props;
-  return <>
-    <h1>
-      <Localized id='home-add-language-title'/>
-    </h1>
-    <p>Here you will be able to add a language.</p>
-    <p>
-      <Button label='Cancel' onClick={() => onResolve(null)}/>
-    </p>
-  </>;
-};
+const shouldReload: EventPredicate = event =>
+  // TODO: Add more event types
+  event.type === 'language';
