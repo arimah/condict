@@ -1,1 +1,2 @@
-export {default as useDelayedMountEffect} from './delayed-mount-effect';
+export {useDelayedMountEffect} from './delayed-mount-effect';
+export {useRichTextEditorMessages} from './rich-text-editor-messages';

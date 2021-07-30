@@ -129,3 +129,109 @@ export type UtcInstant = number;
  */
 export type InflectionTableId = IdOf<'InflectionTable'>;
 
+/**
+ * Input type for a new language.
+ */
+export type NewLanguageInput = {
+  /**
+   * The display name of the language.
+   */
+  name: string;
+  /**
+   * Formatted text that provides a description of the language. If omitted or
+   * null, the language has no description.
+   */
+  description?: BlockElementInput[] | null | undefined;
+};
+
+/**
+ * Input type for a block element.
+ */
+export type BlockElementInput = {
+  /**
+   * The block kind.
+   */
+  kind: BlockKind;
+  /**
+   * The indentation level of the element, starting at 0. If omitted, the default
+   * value of 0 is used.
+   */
+  level?: number | null | undefined;
+  /**
+   * A list of inlines, which contain the block's formatted text content as well
+   * as links.
+   */
+  inlines: InlineElementInput[];
+};
+
+/**
+ * Input type for an inline element.
+ */
+export type InlineElementInput = {
+  /**
+   * If set, the inline element is a piece of formatted text, and this field
+   * contains the text and its associated formatting.
+   * 
+   * `text` and `linkTarget` are mutually exclusive.
+   */
+  text?: FormattedTextInput | null | undefined;
+  /**
+   * If set, the inline element is a link, and this field contains the link target
+   * and its formatted text content.
+   */
+  link?: LinkInlineInput | null | undefined;
+};
+
+/**
+ * Input type for a piece of formatted text.
+ */
+export type FormattedTextInput = {
+  /**
+   * The formatted text.
+   */
+  text: string;
+  /**
+   * If true, the text is bold.
+   */
+  bold?: boolean | null | undefined;
+  /**
+   * If true, the text is italicized.
+   */
+  italic?: boolean | null | undefined;
+  /**
+   * If true, the text is underlined.
+   */
+  underline?: boolean | null | undefined;
+  /**
+   * If true, the text is struck through.
+   */
+  strikethrough?: boolean | null | undefined;
+  /**
+   * If true, the text is formatted as subscript characters.
+   * 
+   * `subscript` and `superscript` are mutually exclusive.
+   */
+  subscript?: boolean | null | undefined;
+  /**
+   * If true, the text is formatted as superscript characters.
+   * 
+   * `subscript` and `superscript` are mutually exclusive.
+   */
+  superscript?: boolean | null | undefined;
+};
+
+/**
+ * Input type for a link inline element.
+ */
+export type LinkInlineInput = {
+  /**
+   * Contains the target of the link. For details, see `LinkInline.linkTarget`.
+   */
+  linkTarget: string;
+  /**
+   * A list of formatted text parts that make up the link's text. Note that links
+   * are not permitted here.
+   */
+  inlines: FormattedTextInput[];
+};
+

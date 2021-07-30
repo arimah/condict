@@ -9,7 +9,7 @@ import {useEffect, useRef} from 'react';
  * If the component is unmounted before the callback has been called, then the
  * timeout is aborted and the callback will never be called.
  */
-const useDelayedMountEffect = (timeout: number, fn: () => void) => {
+export const useDelayedMountEffect = (timeout: number, fn: () => void) => {
   const fnRef = useRef(fn);
   fnRef.current = fn;
 
@@ -23,5 +23,3 @@ const useDelayedMountEffect = (timeout: number, fn: () => void) => {
     };
   }, []);
 };
-
-export default useDelayedMountEffect;
