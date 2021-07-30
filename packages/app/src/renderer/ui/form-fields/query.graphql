@@ -1,4 +1,4 @@
-query linkTarget($query: String!) {
+query LinkTargetQuery($query: String!) {
   search(
     params: {
       query: $query

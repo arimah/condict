@@ -15,7 +15,7 @@ import {useExecute} from '../../data';
 
 import HighlightedSnippet from '../highlighted-snippet';
 
-import {linkTarget as LinkTargetQuery} from './query';
+import {LinkTargetQuery} from './query';
 import * as S from './styles';
 
 export type Props<D extends FieldValues> = {
