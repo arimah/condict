@@ -52,7 +52,7 @@ export const HeadingsGroup = (
     at: editor.selection || editor.blurSelection || undefined,
   };
   return (
-    <Toolbar.Group name='Headings'>
+    <Toolbar.Group name={messages.headingsGroup()}>
       <Toolbar.Button
         label={messages.heading1()}
         checked={isBlockActive(editor, 'heading1', options)}
@@ -89,7 +89,7 @@ export const InlineFormatGroup = (
   }, [marks]);
 
   return (
-    <Toolbar.Group name='Format'>
+    <Toolbar.Group name={messages.formatGroup()}>
       <Toolbar.Button
         label={messages.bold()}
         checked={marks.bold === true}
@@ -159,7 +159,7 @@ export const LinkGroup = (
   const options = {at};
   const hasLink = isInlineActive(editor, 'link', options);
   return (
-    <Toolbar.Group name='Link'>
+    <Toolbar.Group name={messages.linkGroup()}>
       <Toolbar.Button
         label={messages.addEditLink()}
         shortcut={shortcuts.addLink}
@@ -190,7 +190,7 @@ export const BlockFormatGroup = (
     at: editor.selection || editor.blurSelection || undefined,
   };
   return <>
-    <Toolbar.Group name='List style'>
+    <Toolbar.Group name={messages.listStyleGroup()}>
       <Toolbar.Button
         label={messages.bulletedList()}
         checked={isBlockActive(editor, 'bulletListItem', options)}

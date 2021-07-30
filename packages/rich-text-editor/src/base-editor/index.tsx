@@ -25,6 +25,7 @@ export type Props = {
   toolbarItems: ReactNode;
   toolbarAlwaysVisible?: boolean;
   singleLine: boolean;
+  readOnly?: boolean;
   onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => void;
   onFocusChanged?: (nextFocus: Element | null) => void;
   onFocus?: (e: FocusEvent) => void;

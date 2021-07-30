@@ -1,6 +1,7 @@
 import {InlineMessages, BlockMessages, LinkMessages} from './types';
 
 export const DefaultInlineMessages: InlineMessages = {
+  formatGroup: () => 'Format',
   bold: () => 'Bold',
   italic: () => 'Italic',
   underline: () => 'Underline',
@@ -10,8 +11,10 @@ export const DefaultInlineMessages: InlineMessages = {
 };
 
 export const DefaultBlockMessages: BlockMessages = {
+  headingsGroup: () => 'Headings',
   heading1: () => 'Heading 1',
   heading2: () => 'Heading 2',
+  listStyleGroup: () => 'List style',
   bulletedList: () => 'Bulleted list',
   numberedList: () => 'Numbered list',
   indent: () => 'Increase indentation',
@@ -20,6 +23,7 @@ export const DefaultBlockMessages: BlockMessages = {
 };
 
 export const DefaultLinkMessages: LinkMessages = {
+  linkGroup: () => 'Link',
   addEditLink: () => 'Add/edit link',
   removeLink: () => 'Remove link',
 };

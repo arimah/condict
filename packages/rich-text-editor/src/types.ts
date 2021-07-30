@@ -139,6 +139,8 @@ declare module 'slate' {
 }
 
 export interface InlineMessages {
+  /** "Formatting", toolbar group name. */
+  formatGroup(): string;
   /** "Bold", toolbar button tooltip. */
   bold(): string;
   /** "Italic", toolbar button tooltip. */
@@ -154,10 +156,14 @@ export interface InlineMessages {
 }
 
 export interface BlockMessages {
+  /** "Headings", toolbar group name. */
+  headingsGroup(): string;
   /** "Heading 1", toolbar button tooltip. */
   heading1(): string;
   /** "Heading 2", toolbar button tooltip. */
   heading2(): string;
+  /** "List style", toolbar group name. */
+  listStyleGroup(): string;
   /** "Bulleted list", toolbar button tooltip. */
   bulletedList(): string;
   /** "Numbered list", toolbar button tooltip. */
@@ -171,6 +177,8 @@ export interface BlockMessages {
 }
 
 export interface LinkMessages {
+  /** "Link", toolbar group name. */
+  linkGroup(): string;
   /** "Add/edit link", toolbar button tooltip. */
   addEditLink(): string;
   /** "Remove link", toolbar button tooltip. */

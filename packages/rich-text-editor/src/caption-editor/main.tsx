@@ -22,6 +22,7 @@ export type Props = {
   className?: string;
   value: BlockElement[];
   toolbarAlwaysVisible?: boolean;
+  readOnly?: boolean;
   shortcuts?: InlineShortcuts;
   messages?: Messages;
   onChange: (value: BlockElement[]) => void;
