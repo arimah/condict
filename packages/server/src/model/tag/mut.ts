@@ -1,17 +1,19 @@
-import {DataWriter} from '../../database';
 import {TagId} from '../../graphql';
 
 import {SearchIndexMut} from '../search-index';
+import {WriteContext} from '../types';
 
 import {Tag} from './model';
 import {ValidTag} from './validators';
 
 const TagMut = {
-  ensureAllExist(db: DataWriter, tags: ValidTag[]): Map<string, TagId> {
+  ensureAllExist(context: WriteContext, tags: ValidTag[]): Map<string, TagId> {
     type Row = {
       id: TagId;
       name: string;
     };
+
+    const {db, events} = context;
 
     if (tags.length === 0) {
       // Nothing to do
@@ -37,6 +39,11 @@ const TagMut = {
 
       for (const tag of newTags) {
         tagToId.set(tag.name, tag.id);
+        events.emit({
+          type: 'tag',
+          action: 'create',
+          id: tag.id,
+        });
       }
 
       SearchIndexMut.insertTags(db, newTags);
@@ -45,7 +52,8 @@ const TagMut = {
     return tagToId;
   },
 
-  deleteOrphaned(db: DataWriter): void {
+  deleteOrphaned(context: WriteContext): void {
+    const {db, events} = context;
     const deleted = db.all<{id: TagId}>`
       with orphaned_tags(id) as (
         select t.id
@@ -64,6 +72,11 @@ const TagMut = {
 
       for (const id of ids) {
         db.clearCache(Tag.byIdKey, id);
+        events.emit({
+          type: 'tag',
+          action: 'delete',
+          id,
+        });
       }
 
       SearchIndexMut.deleteTags(db, ids);

@@ -1,11 +1,17 @@
 import {DataWriter} from '../../database';
-import {DefinitionId} from '../../graphql';
+import {DefinitionId, TagId} from '../../graphql';
 
 import {TagMut, validateTag} from '../tag';
+import {WriteContext} from '../types';
 
 const DefinitionTagMut = {
-  insertAll(db: DataWriter, definitionId: DefinitionId, tags: string[]): void {
-    const tagToId = TagMut.ensureAllExist(db, tags.map(validateTag));
+  insertAll(
+    context: WriteContext,
+    definitionId: DefinitionId,
+    tags: string[]
+  ): TagId[] {
+    const {db} = context;
+    const tagToId = TagMut.ensureAllExist(context, tags.map(validateTag));
 
     if (tagToId.size > 0) {
       const tagIds = Array.from(tagToId.values());
@@ -14,24 +20,35 @@ const DefinitionTagMut = {
         insert into definition_tags (definition_id, tag_id)
         values ${tagIds.map(id => db.raw`(${definitionId}, ${id})`)}
       `;
+      return tagIds;
     }
+    return [];
   },
 
-  update(db: DataWriter, definitionId: DefinitionId, tags: string[]): void {
+  update(
+    context: WriteContext,
+    definitionId: DefinitionId,
+    tags: string[]
+  ): [TagId[], TagId[]] {
+    const {db} = context;
     // We could compute a delta here, but it's kind of messy and complex, and
     // this all happens inside a transaction anyway.
-    this.deleteAll(db, definitionId);
-    this.insertAll(db, definitionId, tags);
+    const prevTagIds = this.deleteAll(db, definitionId);
+    const nextTagIds = this.insertAll(context, definitionId, tags);
 
     // This may have orphaned a number of tags, so we need to delete those.
-    TagMut.deleteOrphaned(db);
+    TagMut.deleteOrphaned(context);
+
+    return [prevTagIds, nextTagIds];
   },
 
-  deleteAll(db: DataWriter, definitionId: DefinitionId): void {
-    db.exec`
+  deleteAll(db: DataWriter, definitionId: DefinitionId): TagId[] {
+    const rows = db.all<{tag_id: TagId}>`
       delete from definition_tags
       where definition_id = ${definitionId}
+      returning tag_id
     `;
+    return rows.map(r => r.tag_id);
   },
 };
 

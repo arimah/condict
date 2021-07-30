@@ -64,7 +64,8 @@ export type DictionaryEvent =
   | DefinitionEvent
   | PartOfSpeechEvent
   | InflectionTableEvent
-  | TagEvent;
+  | TagEvent
+  | DefinitionTagEvent;
 
 export const DictionaryEvent = {
   /**
@@ -73,17 +74,7 @@ export const DictionaryEvent = {
    * @return The event key.
    */
   key(event: DictionaryEvent): string {
-    // Resources generally can't move from one parent to another. When creating
-    // this key, we generally don't have to look at the IDs of parent resources.
-    // However, definitions can move between lemmas, which we must take into
-    // account. In the extremely unlikely case that a definition is added twice
-    // in the same request, we might get *two* updates with a total of three
-    // different lemma IDs. We can't overwrite either.
-    if (event.type === 'definition' && event.action === 'update') {
-      const {type, action, id, lemmaId, prevLemmaId} = event;
-      return `${type} ${action} ${id} ${lemmaId} ${prevLemmaId}`;
-    }
-    return `${event.type} ${event.action} ${event.id}`;
+    return JSON.stringify(event);
   },
 } as const;
 
@@ -162,4 +153,27 @@ export interface InflectionTableEvent extends BaseEvent<'inflectionTable'> {
 export interface TagEvent extends BaseEvent<'tag'> {
   /** The ID of the tag. */
   readonly id: number;
+}
+
+/**
+ * Occurs when the tags associated with a definition are changed. When a
+ * definition is created, a DefinitionTagEvent is emitted with prevTagIds set
+ * to the empty array. Likewise, a deleted definition emits one of these events
+ * with nextTagIds set to the empty array. Both of the aforementioned events can
+ * also occur when a definition is edited to receive its first tags or lose all
+ * of its tags.
+ */
+export interface DefinitionTagEvent extends
+  BaseEvent<'definitionTag', 'update'>
+{
+  /** The ID of the definition whose tags were edited. */
+  readonly definitionId: number;
+  /** The ID of the lemma that the definition belongs/belonged to. */
+  readonly lemmaId: number;
+  /** The ID of the language that the definition belongs to. */
+  readonly languageId: number;
+  /** The IDs of the tags that were previously assigned to the definition. */
+  readonly prevTagIds: readonly number[];
+  /** The IDs of the tags that are now assigned to the definition. */
+  readonly nextTagIds: readonly number[];
 }
