@@ -22,7 +22,7 @@ export const FormButtons = (props: Props): JSX.Element => {
       <S.SubmitButton aria-busy={isSubmitting}>
         {submitLabel ?? <Localized id='generic-form-save'/>}
       </S.SubmitButton>
-      <S.CancelButton onClick={onCancel}>
+      <S.CancelButton disabled={isSubmitting} onClick={onCancel}>
         {cancelLabel ?? <Localized id='generic-form-cancel'/>}
       </S.CancelButton>
       {isSubmitting &&
