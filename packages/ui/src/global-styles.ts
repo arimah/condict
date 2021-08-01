@@ -26,35 +26,35 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   h2 {
-    margin-block: 30px 8px;
+    margin-block: 28px 8px;
     font-size: 25px;
     line-height: 28px;
     font-weight: bold;
   }
 
   h3 {
-    margin-block: 26px 8px;
+    margin-block: 22px 8px;
     font-size: 22px;
     line-height: 26px;
     font-weight: bold;
   }
 
   h4 {
-    margin-block: 24px 8px;
+    margin-block: 16px 8px;
     font-size: 20px;
     line-height: 24px;
     font-weight: bold;
   }
 
   h5 {
-    margin-block: 22px 8px;
+    margin-block: 14px 8px;
     font-size: 18px;
     line-height: 20px;
     font-weight: bold;
   }
 
   h6 {
-    margin-block: 16px 8px;
+    margin-block: 14px 8px;
     font-size: 16px;
     line-height: 18px;
     font-weight: bold;
