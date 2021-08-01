@@ -389,8 +389,6 @@ home-add-language-button = Add language
 
 home-add-language-title = Add language
 
-home-add-language-error = An error occurred when saving the language. {-check-form-data}
-
 home-tags-title = Tags
 
 home-no-tags-description = Tags will show up here when you add them to word definitions.
@@ -426,7 +424,13 @@ home-recent-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "sh
 
 home-recent-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
-## Language form messages
+## Language messages
+
+language-about-heading = About this language
+
+language-parts-of-speech-heading = Parts of speech
+
+language-add-part-of-speech-button = Add part of speech
 
 language-name-label = Name
 
@@ -435,6 +439,10 @@ language-name-required-error = A language name is required.
 language-name-taken-error = There is already a language with this name. The language name must be unique.
 
 language-description-label = Description (optional)
+
+language-edit-title = Edit language
+
+language-save-error = An error occurred when saving the language. {-check-form-data}
 
 ## Generic messages
 
@@ -449,6 +457,8 @@ generic-broken-link-message = This link leads to a dictionary item that has been
 generic-form-save = Save
 
 generic-form-cancel = Cancel
+
+generic-edit-button = Edit
 
 -check-form-data = Check the information above and try again.
 

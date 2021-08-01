@@ -12,7 +12,7 @@ import {useExecute} from '../../data';
 import {AddLanguageMut} from './query';
 
 const AddLanguagePanel = (props: PanelProps<void>) => {
-  const {onResolve} = props;
+  const {updatePanel, onResolve} = props;
 
   const navigateTo = useNavigateTo();
   const execute = useExecute();
@@ -52,9 +52,10 @@ const AddLanguagePanel = (props: PanelProps<void>) => {
         <Localized id='home-add-language-title'/>
       </h1>
       <LanguageForm
-        submitError={submitError && <Localized id='home-add-language-error'/>}
+        submitError={submitError && <Localized id='language-save-error'/>}
         onSubmit={onSubmit}
         onCancel={onResolve}
+        onDirtyChange={dirty => updatePanel({dirty})}
       />
     </FlowContent>
   );

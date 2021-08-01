@@ -3,6 +3,7 @@ export {
   RichContentProps,
   RichText,
   RichTextProps,
+  hasRichContent,
 } from './main';
 export {
   BlockFields,

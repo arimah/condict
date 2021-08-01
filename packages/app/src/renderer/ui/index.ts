@@ -23,6 +23,6 @@ export {
   useImmediateEntryAndExit,
 } from './transition-list';
 
-export {FlowContent} from './styles';
+export * from './styles';
 
-export {intersperse} from './utils';
+export * from './utils';

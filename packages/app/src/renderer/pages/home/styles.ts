@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 import {BodyText} from '@condict/ui';
 
+import {CardGrid} from '../../ui';
+
 // TODO
 export const LanguageList = styled.section`
   margin-block: 8px 16px;
@@ -39,10 +41,9 @@ export const TagList = styled.ul`
   }
 `;
 
-export const RecentChangesList = styled.section`
-  display: grid;
-  margin-block: 8px 16px;
-  align-items: start;
+export const RecentChangesList = styled(CardGrid).attrs({
+  as: 'section',
+})`
   grid-template-columns: 1fr;
   gap: 4px;
 

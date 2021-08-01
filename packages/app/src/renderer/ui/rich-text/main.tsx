@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {formatBlocks, formatInlines} from './format';
-import {HeadingType, BlockFields, InlineFields} from './types';
+import {HeadingType, BlockFields, InlineFields, FormattedText} from './types';
 
 export type RichContentProps = {
   value: readonly BlockFields[];
@@ -54,3 +54,23 @@ export const RichText = React.memo((props: RichTextProps): JSX.Element => {
 });
 
 RichText.displayName = 'RichText';
+
+/**
+ * Determines whether the given rich text content actually has content. The rich
+ * text blocks are considered to have content if there exists at least one block
+ * whose text content is not empty.
+ * @param value The rich content to check.
+ * @return True if there is at least one block whose text content is not empty.
+ */
+export const hasRichContent = (value: readonly BlockFields[]): boolean =>
+  value.some(blockHasContent);
+
+const blockHasContent = (block: BlockFields): boolean =>
+  block.inlines.some(inlineHasContent);
+
+const inlineHasContent = (inline: InlineFields): boolean =>
+  inline.__typename === 'FormattedText'
+    ? inline.text !== ''
+    : inline.inlines.some(textIsNotEmpty);
+
+const textIsNotEmpty = (text: FormattedText): boolean => text.text !== '';

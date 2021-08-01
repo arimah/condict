@@ -12,3 +12,19 @@ query($id: LanguageId!) {
     }
   }
 }
+
+query EditLanguageQuery($id: LanguageId!) {
+  language(id: $id) {
+    id
+    name
+    description {
+      ...RichTextBlockFragment
+    }
+  }
+}
+
+mutation EditLanguageMut($id: LanguageId!, $data: EditLanguageInput!) {
+  editLanguage(id: $id, data: $data) {
+    id
+  }
+}

@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import {ReactNode, useEffect} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import {Localized} from '@fluent/react';
 
@@ -15,6 +15,7 @@ export type Props = {
   submitError?: ReactNode;
   onSubmit: (data: LanguageData) => Promise<void> | void;
   onCancel: () => void;
+  onDirtyChange?: (dirty: boolean) => void;
 };
 
 export interface LanguageData {
@@ -30,7 +31,13 @@ const EmptyData: LanguageData = {
 };
 
 export const LanguageForm = (props: Props): JSX.Element => {
-  const {initialData = EmptyData, submitError, onSubmit, onCancel} = props;
+  const {
+    initialData = EmptyData,
+    submitError,
+    onSubmit,
+    onCancel,
+    onDirtyChange,
+  } = props;
 
   // The ID shouldn't change; we can safely get it from initialData.
   const {id} = initialData;
@@ -39,6 +46,11 @@ export const LanguageForm = (props: Props): JSX.Element => {
     mode: 'onTouched',
     defaultValues: initialData,
   });
+
+  const {isDirty} = form.formState;
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty]);
 
   const execute = useExecute();
 

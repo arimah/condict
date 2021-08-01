@@ -235,3 +235,17 @@ export type LinkInlineInput = {
   inlines: FormattedTextInput[];
 };
 
+/**
+ * Input type for editing an existing language.
+ */
+export type EditLanguageInput = {
+  /**
+   * If set, updates the display name of the language.
+   */
+  name?: string | null | undefined;
+  /**
+   * If set, updates the language's description.
+   */
+  description?: BlockElementInput[] | null | undefined;
+};
+
