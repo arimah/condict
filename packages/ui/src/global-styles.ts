@@ -43,21 +43,21 @@ export const GlobalStyles = createGlobalStyle`
     margin-block: 16px 8px;
     font-size: 20px;
     line-height: 24px;
-    font-weight: bold;
+    font-weight: 600;
   }
 
   h5 {
     margin-block: 14px 8px;
     font-size: 18px;
     line-height: 20px;
-    font-weight: bold;
+    font-weight: 600;
   }
 
   h6 {
     margin-block: 14px 8px;
     font-size: 16px;
     line-height: 18px;
-    font-weight: bold;
+    font-weight: 600;
   }
 
   h1,

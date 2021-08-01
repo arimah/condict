@@ -74,6 +74,7 @@ export const EditorStyles = css`
 
   ${Heading2} {
     margin-block: 12px 4px;
+    font-weight: 600;
     font-size: 18px;
     line-height: 20px;
   }
