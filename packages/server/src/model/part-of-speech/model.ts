@@ -3,7 +3,7 @@ import {UserInputError} from 'apollo-server';
 import {DataReader} from '../../database';
 import {LanguageId, PartOfSpeechId} from '../../graphql';
 
-import {PartOfSpeechRow} from './types';
+import {PartOfSpeechRow, PartOfSpeechStatsRow} from './types';
 
 const PartOfSpeech = {
   byIdKey: 'PartOfSpeech.byId',
@@ -56,4 +56,30 @@ const PartOfSpeech = {
   },
 } as const;
 
-export {PartOfSpeech};
+const PartOfSpeechStats = {
+  byIdKey: 'PartOfSpeechStats.byId',
+
+  byId(
+    db: DataReader,
+    id: PartOfSpeechId
+  ): Promise<PartOfSpeechStatsRow | null> {
+    return db.batchOneToOne(
+      this.byIdKey,
+      id,
+      (db, ids) => db.all<PartOfSpeechStatsRow>`
+        select
+          pos.id as id,
+          count(distinct it.id) as inflection_table_count,
+          count(distinct d.id) as definition_count
+        from parts_of_speech pos
+        left join inflection_tables it on it.part_of_speech_id = pos.id
+        left join definitions d on d.part_of_speech_id = pos.id
+        where pos.id in (${ids})
+        group by pos.id
+      `,
+      row => row.id
+    );
+  },
+};
+
+export {PartOfSpeech, PartOfSpeechStats};

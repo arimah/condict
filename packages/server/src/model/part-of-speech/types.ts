@@ -7,3 +7,9 @@ export type PartOfSpeechRow = {
   time_updated: number;
   name: string;
 };
+
+export type PartOfSpeechStatsRow = {
+  id: PartOfSpeechId;
+  inflection_table_count: number;
+  definition_count: number;
+};

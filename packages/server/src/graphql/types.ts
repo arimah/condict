@@ -1802,6 +1802,10 @@ export type PartOfSpeech = {
    * inflection tables.
    */
   timeUpdated: UtcInstant;
+  /**
+   * Assorted statistics about a part of speech.
+   */
+  statistics: PartOfSpeechStats;
 };
 
 /**
@@ -1836,6 +1840,20 @@ export type PartOfSpeechSearchResult = {
    * The part of speech that matched the search.
    */
   partOfSpeech: PartOfSpeech;
+};
+
+/**
+ * Contains statistics about a part of speech.
+ */
+export type PartOfSpeechStats = {
+  /**
+   * The number of inflection tables in the part of speech.
+   */
+  inflectionTableCount: number;
+  /**
+   * The total number of definitions that use the part of speech.
+   */
+  definitionCount: number;
 };
 
 /**

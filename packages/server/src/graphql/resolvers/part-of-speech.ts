@@ -1,14 +1,20 @@
 import {
   PartOfSpeech as PartOfSpeechModel,
+  PartOfSpeechStats as PartOfSpeechStatsModel,
   PartOfSpeechMut,
   InflectionTable,
   Language,
   Definition,
   PartOfSpeechRow,
+  PartOfSpeechStatsRow,
   MutContext,
 } from '../../model';
 
-import {PartOfSpeech as PartOfSpeechType, Query as QueryType} from '../types';
+import {
+  PartOfSpeech as PartOfSpeechType,
+  PartOfSpeechStats as PartOfSpeechStatsType,
+  Query as QueryType,
+} from '../types';
 import {mutator} from '../helpers';
 
 import {ResolversFor, Mutators} from './types';
@@ -27,6 +33,17 @@ const PartOfSpeech: ResolversFor<PartOfSpeechType, PartOfSpeechRow> = {
   timeCreated: p => p.time_created,
 
   timeUpdated: p => p.time_updated,
+
+  statistics: (p, _args, {db}) => PartOfSpeechStatsModel.byId(db, p.id),
+};
+
+const PartOfSpeechStats: ResolversFor<
+  PartOfSpeechStatsType,
+  PartOfSpeechStatsRow
+> = {
+  inflectionTableCount: p => p.inflection_table_count,
+
+  definitionCount: p => p.definition_count,
 };
 
 const Query: ResolversFor<QueryType, null> = {
@@ -49,6 +66,7 @@ const Mutation: Mutators = {
 
 export default {
   PartOfSpeech,
+  PartOfSpeechStats,
   Query,
   Mutation,
 };

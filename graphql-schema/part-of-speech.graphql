@@ -49,6 +49,18 @@ type PartOfSpeech implements RecentItem {
   inflection tables.
   """
   timeUpdated: UtcInstant!
+
+  "Assorted statistics about a part of speech."
+  statistics: PartOfSpeechStats!
+}
+
+"Contains statistics about a part of speech."
+type PartOfSpeechStats {
+  "The number of inflection tables in the part of speech."
+  inflectionTableCount: Int!
+
+  "The total number of definitions that use the part of speech."
+  definitionCount: Int!
 }
 
 extend type Query {
