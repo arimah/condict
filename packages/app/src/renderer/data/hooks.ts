@@ -88,8 +88,10 @@ export function useData<Q extends Query<any, any>>(
 
         for (let i = 0; i < events.length; i++) {
           if (reloadOn(events[i])) {
-            setReloadState(s => !s);
-            requestId.current++;
+            setReloadState(s => {
+              requestId.current++;
+              return !s;
+            });
             break;
           }
         }

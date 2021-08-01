@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {Page} from '../page';
 
 import HomePage from './home';
@@ -9,7 +11,7 @@ export type Props = {
   page: Page;
 };
 
-const PageContent = ({page}: Props): JSX.Element => {
+const PageContent = React.memo(({page}: Props): JSX.Element => {
   switch (page.type) {
     case 'home':
       return <HomePage/>;
@@ -20,6 +22,8 @@ const PageContent = ({page}: Props): JSX.Element => {
     default:
       return <UnimplementedPage/>;
   }
-};
+});
+
+PageContent.displayName = 'PageContent';
 
 export default PageContent;
