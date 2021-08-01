@@ -40,6 +40,10 @@ const DataProvider = (props: Props): JSX.Element => {
 
   useEffect(() => {
     ipc.on('dictionary-event-batch', (_e, batch) => {
+      console.log(
+        `Sending event batch to ${subscribers.current.size} subscribers:`,
+        batch
+      );
       subscribers.current.forEach(f => f(batch));
     });
   }, []);

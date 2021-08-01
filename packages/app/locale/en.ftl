@@ -210,6 +210,8 @@ settings-locale-en-ca = English, Canada
 
 settings-locale-en-gb = English, United Kingdom
 
+settings-locale-sv = Svenska – Swedish
+
 ## Settings > Application updates section
 
 # Elements:
@@ -431,6 +433,24 @@ language-about-heading = About this language
 language-parts-of-speech-heading = Parts of speech
 
 language-add-part-of-speech-button = Add part of speech
+
+# Variables:
+#   tableCount: The total number of inflection tables in the part of speech.
+language-part-of-speech-tables =
+  {$tableCount ->
+    [0] No inflection tables
+    [one] {$tableCount} inflection table
+   *[other] {$tableCount} inflection tables
+  }
+
+# Variables:
+#   definitionCount: The total number of definitions that use the part of speech.
+language-part-of-speech-used-by-definitions =
+  {$definitionCount ->
+    [0] Not used by any definitions
+    [one] Used by {$definitionCount} definition
+   *[other] Used by {$definitionCount} definitions
+  }
 
 language-name-label = Name
 

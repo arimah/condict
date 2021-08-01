@@ -36,7 +36,18 @@ const PartOfSpeechList = (props: Props): JSX.Element => {
           to={PartOfSpeechPage(pos.id, pos.name, parent)}
           title={pos.name}
         >
-          TODO: More details here
+          <p>
+            <Localized
+              id='language-part-of-speech-tables'
+              vars={{tableCount: pos.statistics.inflectionTableCount}}
+            />
+          </p>
+          <p>
+            <Localized
+              id='language-part-of-speech-used-by-definitions'
+              vars={{definitionCount: pos.statistics.definitionCount}}
+            />
+          </p>
         </LinkCard>
       )}
       <FullRow>

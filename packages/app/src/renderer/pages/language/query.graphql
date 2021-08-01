@@ -9,6 +9,10 @@ query($id: LanguageId!) {
     partsOfSpeech {
       id
       name
+      statistics {
+        inflectionTableCount
+        definitionCount
+      }
     }
   }
 }
