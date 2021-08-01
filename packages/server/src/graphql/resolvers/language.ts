@@ -5,6 +5,7 @@ import {
   LanguageStats as LanguageStatsModel,
   LanguageMut,
   Description,
+  Definition,
   PartOfSpeech,
   Lemma,
   Tag,
@@ -40,12 +41,15 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
       db,
       p.id,
       page,
-      filter || 'ALL_LEMMAS',
+      filter ?? 'ALL_LEMMAS',
       info
     ),
 
   tags: (p, {page}, {db}, info) =>
     Tag.allByLanguage(db, p.id, page, info),
+
+  recentDefinitions: (p, {page, order}, {db}, info) =>
+    Definition.recentByLanguage(db, p.id, page, order, info),
 
   search: (p, {params, page}, {db}, info) => {
     const {scopes} = params;

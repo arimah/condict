@@ -301,7 +301,8 @@ const tables: readonly TableSchema[] = [
           on delete restrict
       )`,
       `create index \`definitions(lemma_id)\` on definitions(lemma_id)`,
-      `create index \`definitions(language_id)\` on definitions(language_id)`,
+      `create index \`definitions(language_id,time_created)\` on definitions(language_id,time_created)`,
+      `create index \`definitions(language_id,time_updated)\` on definitions(language_id,time_updated)`,
       `create index \`definitions(part_of_speech_id)\` on definitions(part_of_speech_id)`,
       // Descriptions are unique per definition.
       `create unique index \`definitions(description_id)\` on definitions(description_id)`,

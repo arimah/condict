@@ -71,6 +71,21 @@ type Language implements RecentItem {
   tags(page: PageParams): TagConnection!
 
   """
+  Lists recently changed definitions. The results can be sorted by creation date
+  or by last update/edit date.
+
+  The `order` parameter determines the sort order. If omitted or null, defaults
+  to MOST_RECENTLY_UPDATED.
+
+  Since a language may contain many definitions, this field is always paginated.
+  If provided, `page.perPage` cannot exceed 100.
+  """
+  recentDefinitions(
+    page: PageParams
+    order: RecentItemOrder
+  ): DefinitionConnection!
+
+  """
   Searches the language. This field behaves like `Query.search` with an implicit
   language filter. See that field for more documentation and examples.
 

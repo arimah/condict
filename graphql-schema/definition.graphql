@@ -80,6 +80,7 @@ type Definition implements RecentItem {
 """
 Contains paginated results from one of the following fields:
 
+* `Language.recentDefinitions`
 * `InflectionTable.usedByDefinitions`
 * `PartOfSpeech.usedByDefinitions`
 """

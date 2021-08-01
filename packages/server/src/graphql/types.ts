@@ -209,6 +209,7 @@ export type Definition = {
 /**
  * Contains paginated results from one of the following fields:
  * 
+ * * `Language.recentDefinitions`
  * * `InflectionTable.usedByDefinitions`
  * * `PartOfSpeech.usedByDefinitions`
  */
@@ -1111,6 +1112,20 @@ export type Language = {
   tags: WithArgs<{
     page?: PageParams | null;
   }, TagConnection>;
+  /**
+   * Lists recently changed definitions. The results can be sorted by creation date
+   * or by last update/edit date.
+   * 
+   * The `order` parameter determines the sort order. If omitted or null, defaults
+   * to MOST_RECENTLY_UPDATED.
+   * 
+   * Since a language may contain many definitions, this field is always paginated.
+   * If provided, `page.perPage` cannot exceed 100.
+   */
+  recentDefinitions: WithArgs<{
+    page?: PageParams | null;
+    order?: RecentItemOrder | null;
+  }, DefinitionConnection>;
   /**
    * Searches the language. This field behaves like `Query.search` with an implicit
    * language filter. See that field for more documentation and examples.

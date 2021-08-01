@@ -5,10 +5,12 @@ import {DataReader, RawSql} from '../../database';
 import {
   DefinitionId,
   DefinitionInflectionTableId,
+  LanguageId,
   LemmaId,
   PartOfSpeechId,
   InflectionTableId,
   InflectionTableLayoutId,
+  RecentItemOrder,
   PageParams,
   validatePageParams,
 } from '../../graphql';
@@ -32,6 +34,7 @@ const Definition = {
     perPage: 50,
   },
   maxPerPage: 200,
+  maxRecentPerPage: 100,
 
   byId(db: DataReader, id: DefinitionId): Promise<DefinitionRow | null> {
     return db.batchOneToOne(
@@ -211,6 +214,44 @@ const Definition = {
         inner join lemmas l on l.id = d.lemma_id
         where ${condition}
         order by l.term, d.id
+        limit ${limit} offset ${offset}
+      `,
+      info
+    );
+  },
+
+  recentByLanguage(
+    db: DataReader,
+    languageId: LanguageId,
+    page: PageParams | undefined | null,
+    order: RecentItemOrder | undefined | null,
+    info?: GraphQLResolveInfo
+  ): ItemConnection<DefinitionRow> {
+    const condition = db.raw`
+      d.language_id = ${languageId}
+    `;
+    return paginate(
+      validatePageParams(page || this.defaultPagination, this.maxRecentPerPage),
+      () => {
+        const {total} = db.getRequired<{total: number}>`
+          select count(*) as total
+          from definitions d
+          where ${condition}
+        `;
+        return total;
+      },
+      (limit, offset) => db.all<DefinitionRow>`
+        select
+          d.*,
+          l.term as term
+        from definitions d
+        inner join lemmas l on l.id = d.lemma_id
+        where ${condition}
+        order by ${
+          order === 'MOST_RECENTLY_CREATED'
+            ? db.raw`d.time_created`
+            : db.raw`d.time_updated`
+        } desc
         limit ${limit} offset ${offset}
       `,
       info
