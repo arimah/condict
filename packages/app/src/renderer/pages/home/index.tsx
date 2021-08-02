@@ -3,7 +3,7 @@ import {Localized, useLocalization} from '@fluent/react';
 
 import {useUniqueId} from '@condict/ui';
 
-import {DataViewer, FlowContent, Tag} from '../../ui';
+import {DataViewer, FlowContent, Tag, TagList} from '../../ui';
 import {useOpenPanel} from '../../navigation';
 import {EventPredicate, useData} from '../../data';
 
@@ -44,13 +44,13 @@ const HomePage = (): JSX.Element => {
           </h1>
           <section aria-labelledby={`${id}-tags-title`}>
             {tags.nodes.length > 0 ? (
-              <S.TagList>
+              <TagList>
                 {tags.nodes.map(tag =>
                   <li key={tag.id}>
                     <Tag id={tag.id} name={tag.name}/>
                   </li>
                 )}
-              </S.TagList>
+              </TagList>
             ) : (
               <p>
                 <Localized id='home-no-tags-description'/>

@@ -2,7 +2,7 @@ import {ReactNode} from 'react';
 import {Localized} from '@fluent/react';
 
 import {OperationResult} from '../../graphql';
-import {Card, Link, ResourceIcon, ResourceType} from '../../ui';
+import {Card, Link, ResourceIcon, ResourceType, Secondary} from '../../ui';
 import {
   Page,
   LanguagePage,
@@ -12,7 +12,6 @@ import {
 } from '../../page';
 
 import HomeQuery from './query';
-import * as S from './styles';
 
 export type Props = {
   item: RecentChange;
@@ -99,21 +98,20 @@ const RecentChangeCard = ({item}: Props): JSX.Element => {
   const time = new Date(item.timeUpdated);
   return (
     <Card
-
       title={<Link to={page}>{name}</Link>}
       iconAfter={<ResourceIcon type={iconType}/>}
     >
       <p>{description}</p>
-      <S.SecondaryDetail>
+      <Secondary as='p'>
         <Localized
           id={
-            item.timeCreated == item.timeUpdated
+            item.timeCreated === item.timeUpdated
               ? 'home-recent-added-on'
               : 'home-recent-edited-on'
           }
           vars={{time}}
         />
-      </S.SecondaryDetail>
+      </Secondary>
     </Card>
   );
 };

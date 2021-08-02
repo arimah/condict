@@ -25,7 +25,7 @@ export const TabPanel = styled.div.attrs({
 
 export const BackButtonColumn = styled.div`
   flex: 0 0 32px;
-  padding-top: 16px;
+  padding-top: 24px;
   padding-inline-start: 16px;
   position: sticky;
   top: 0;

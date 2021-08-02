@@ -4,12 +4,17 @@ import AddIcon from 'mdi-react/PlusIcon';
 
 import {Button, ConlangFlag, NonIdealState} from '@condict/ui';
 
-import {LinkCard, RichContent} from '../../ui';
+import {
+  CardList,
+  LinkCard,
+  ClampedBodyText,
+  RichContent,
+  Secondary,
+} from '../../ui';
 import {OperationResult} from '../../graphql';
 import {LanguagePage} from '../../page';
 
 import HomeQuery from './query';
-import * as S from './styles';
 
 export type Props = {
   'aria-labelledby': string;
@@ -26,7 +31,7 @@ const LanguageList = (props: Props): JSX.Element => {
 
   if (languages.length === 0) {
     return (
-      <S.LanguageList aria-labelledby={ariaLabelledby}>
+      <CardList as='section' aria-labelledby={ariaLabelledby}>
         <NonIdealState
           minimal
           image={<ConlangFlag width={188} height={116}/>}
@@ -41,12 +46,12 @@ const LanguageList = (props: Props): JSX.Element => {
             </Button>
           }
         />
-      </S.LanguageList>
+      </CardList>
     );
   }
 
   return (
-    <S.LanguageList aria-labelledby={ariaLabelledby}>
+    <CardList as='section' aria-labelledby={ariaLabelledby}>
       {languages.map(lang =>
         <LanguageCard key={lang.id} lang={lang}/>
       )}
@@ -56,7 +61,7 @@ const LanguageList = (props: Props): JSX.Element => {
           <Localized id='home-add-language-button'/>
         </span>
       </Button>
-    </S.LanguageList>
+    </CardList>
   );
 };
 
@@ -73,16 +78,17 @@ const LanguageCard = ({lang}: LanguageCardProps): JSX.Element =>
     title={lang.name}
     iconAfter={<LinkArrow className='rtl-mirror'/>}
   >
-    <S.LanguageDesc>
+    <ClampedBodyText maxLines={3}>
       <RichContent
         value={lang.description}
         heading1='h3'
         heading2='h4'
         stripLinks
-        maxBlocks={3} // -webkit-line-clamp: 3
+        // 1 more than maxLines, to guarantee "..." if there's >3 blocks
+        maxBlocks={4}
       />
-    </S.LanguageDesc>
-    <S.SecondaryDetail>
+    </ClampedBodyText>
+    <Secondary as='p'>
       <Localized id='home-language-statistics' vars={lang.statistics}/>
-    </S.SecondaryDetail>
+    </Secondary>
   </LinkCard>;

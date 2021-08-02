@@ -1,5 +1,9 @@
 export {default as BrokenLink, Props as BrokenLinkProps} from './broken-link';
 export {Card, CardProps, LinkCard, LinkCardProps} from './card';
+export {
+  default as ClampedBodyText,
+  Props as ClampedBodyTextProps,
+} from './clamped-body-text';
 export {default as DataViewer, Props as DataViewerProps} from './data-viewer';
 export * from './form-fields';
 export {

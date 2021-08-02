@@ -1,22 +1,38 @@
 import React from 'react';
 
 import {TagId} from '../../graphql';
-import {TagPage} from '../../page';
+import {Page, TagPage} from '../../page';
 
 import {Props as LinkProps} from '../link';
 import {TagIcon} from '../resource-icons';
 
 import * as S from './styles';
 
-export type Props = {
-  id: TagId;
+export type Props = (IdProps | LinkTargetProps) & {
   name: string;
 } & Omit<LinkProps, 'id' | 'name' | 'to'>;
 
+type IdProps = {
+  id: TagId;
+  linkTo?: undefined;
+};
+
+type LinkTargetProps = {
+  id?: undefined;
+  linkTo: Page;
+};
+
 const Tag = React.memo((props: Props): JSX.Element => {
-  const {id, name, ...otherProps} = props;
+  const {id, linkTo, name, ...otherProps} = props;
+  let target: Page;
+  if (linkTo) {
+    target = linkTo;
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    target = TagPage(id!, name);
+  }
   return (
-    <S.Main to={TagPage(id, name)} {...otherProps}>
+    <S.Main to={target} {...otherProps}>
       <TagIcon/>
       {name}
     </S.Main>
