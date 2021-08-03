@@ -65,6 +65,18 @@ type Language implements RecentItem {
   ): LemmaConnection!
 
   """
+  The first lemma in the language, ordered alphabetically. If the language has
+  no lemmas, this field is null.
+  """
+  firstLemma: Lemma
+
+  """
+  The last lemma in the language, ordered alphabetically. If the language has no
+  lemmas, this field is null.
+  """
+  lastLemma: Lemma
+
+  """
   The tags used by this language. Since a language may use many tags, this field
   is always paginated. If provided, `page.perPage` cannot exceed 200.
   """

@@ -1106,6 +1106,16 @@ export type Language = {
     filter?: LemmaFilter | null;
   }, LemmaConnection>;
   /**
+   * The first lemma in the language, ordered alphabetically. If the language has
+   * no lemmas, this field is null.
+   */
+  firstLemma: Lemma | null;
+  /**
+   * The last lemma in the language, ordered alphabetically. If the language has no
+   * lemmas, this field is null.
+   */
+  lastLemma: Lemma | null;
+  /**
    * The tags used by this language. Since a language may use many tags, this field
    * is always paginated. If provided, `page.perPage` cannot exceed 200.
    */

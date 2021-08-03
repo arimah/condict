@@ -95,6 +95,26 @@ const Lemma = {
       info
     );
   },
+
+  firstInLanguage(db: DataReader, languageId: LanguageId): LemmaRow | null {
+    return db.get<LemmaRow>`
+      select *
+      from lemmas
+      where language_id = ${languageId}
+      order by term asc
+      limit 1
+    `;
+  },
+
+  lastInLanguage(db: DataReader, languageId: LanguageId): LemmaRow | null {
+    return db.get<LemmaRow>`
+      select *
+      from lemmas
+      where language_id = ${languageId}
+      order by term desc
+      limit 1
+    `;
+  },
 } as const;
 
 export {Lemma};

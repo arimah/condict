@@ -45,6 +45,10 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
       info
     ),
 
+  firstLemma: (p, _args, {db}) => Lemma.firstInLanguage(db, p.id),
+
+  lastLemma: (p, _args, {db}) => Lemma.lastInLanguage(db, p.id),
+
   tags: (p, {page}, {db}, info) =>
     Tag.allByLanguage(db, p.id, page, info),
 
