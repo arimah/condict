@@ -65,14 +65,14 @@ export type SearchScope =
 ;
 
 /**
- * Represents a lemma ID.
- */
-export type LemmaId = IdOf<'Lemma'>;
-
-/**
  * Represents a language ID.
  */
 export type LanguageId = IdOf<'Language'>;
+
+/**
+ * Represents a lemma ID.
+ */
+export type LemmaId = IdOf<'Lemma'>;
 
 /**
  * Represents a definition ID.

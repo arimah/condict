@@ -1,7 +1,7 @@
 import {Localized} from '@fluent/react';
 import AddIcon from 'mdi-react/PlusIcon';
 
-import {Button} from '@condict/ui';
+import {Button, BodyText} from '@condict/ui';
 
 import {PartOfSpeechPage, LanguagePage} from '../../page';
 import {LinkCard, FullRow} from '../../ui';
@@ -29,36 +29,52 @@ const PartOfSpeechList = (props: Props): JSX.Element => {
     onAddPartOfSpeech,
   } = props;
   return (
-    <S.PartOfSpeechList aria-labelledby={ariaLabelledby}>
-      {partsOfSpeech.map(pos =>
-        <LinkCard
-          key={pos.id}
-          to={PartOfSpeechPage(pos.id, pos.name, parent)}
-          title={pos.name}
-        >
-          <p>
-            <Localized
-              id='language-part-of-speech-tables'
-              vars={{tableCount: pos.statistics.inflectionTableCount}}
-            />
-          </p>
-          <p>
-            <Localized
-              id='language-part-of-speech-used-by-definitions'
-              vars={{definitionCount: pos.statistics.definitionCount}}
-            />
-          </p>
-        </LinkCard>
-      )}
-      <FullRow>
-        <Button bold={partsOfSpeech.length === 0} onClick={onAddPartOfSpeech}>
-          <AddIcon/>
-          <span>
-            <Localized id='language-add-part-of-speech-button'/>
-          </span>
-        </Button>
-      </FullRow>
-    </S.PartOfSpeechList>
+    <section aria-labelledby={ariaLabelledby}>
+      {partsOfSpeech.length > 0 ? (
+        <S.PartOfSpeechList>
+          {partsOfSpeech.map(pos =>
+            <LinkCard
+              key={pos.id}
+              to={PartOfSpeechPage(pos.id, pos.name, parent)}
+              title={pos.name}
+            >
+              <p>
+                <Localized
+                  id='language-part-of-speech-tables'
+                  vars={{tableCount: pos.statistics.inflectionTableCount}}
+                />
+              </p>
+              <p>
+                <Localized
+                  id='language-part-of-speech-used-by-definitions'
+                  vars={{definitionCount: pos.statistics.definitionCount}}
+                />
+              </p>
+            </LinkCard>
+          )}
+          <FullRow>
+            <Button onClick={onAddPartOfSpeech}>
+              <AddIcon/>
+              <span>
+                <Localized id='language-add-part-of-speech-button'/>
+              </span>
+            </Button>
+          </FullRow>
+        </S.PartOfSpeechList>
+      ) : <>
+        <BodyText as='p'>
+          <Localized id='language-no-parts-of-speech-description'/>
+        </BodyText>
+        <p>
+          <Button bold onClick={onAddPartOfSpeech}>
+            <AddIcon/>
+            <span>
+              <Localized id='language-add-part-of-speech-button'/>
+            </span>
+          </Button>
+        </p>
+      </>}
+    </section>
   );
 };
 

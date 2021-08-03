@@ -437,11 +437,52 @@ home-recent-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "
 
 ## Language messages
 
+language-search-button = Search in this language
+
 language-about-heading = About this language
+
+language-words-in-language-heading = Words in this language
+
+# Variables:
+#   lemmaCount: The total number of headwords in the language.
+language-browse-lemmas-title =
+  Browse {$lemmaCount ->
+    [one] {$lemmaCount} headword
+   *[other] all {$lemmaCount} headwords
+  }
+
+# Variables:
+#   firstWord: The first headword in the language.
+#   lastWord: The last headword in the language.
+#
+# Elements:
+#   <term>: Wraps around $firstWord and $lastWord. Should not contain anything else.
+language-browse-lemmas-description =
+  Complete list of the headwords in this language, from <term>{$firstWord}</term> to <term>{$lastWord}</term>.
+
+language-no-words-heading = This language has no words!
+
+# This message does not need to be translated literally. Be friendly and playful, and encourage the user to define a word.
+language-no-words-description = Every dictionary needs a good vocabulary. Start yours by defining the first word.
+
+language-define-word-button = Define a word
+
+language-recent-definitions-heading = Recent definitions
+
+language-definition-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+language-definition-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
 language-parts-of-speech-heading = Parts of speech
 
 language-add-part-of-speech-button = Add part of speech
+
+language-no-parts-of-speech-description =
+  There are no parts of speech in this language. Parts of speech are a way to group your words. They can also contain inflection rules for words.
+
+language-tags-heading = Tags
+
+language-no-tags-description = The definitions in this language do not have any tags. You can add tags to a definition when you create or edit it.
 
 # Variables:
 #   tableCount: The total number of inflection tables in the part of speech.
@@ -488,6 +529,8 @@ generic-form-save = Save
 generic-form-cancel = Cancel
 
 generic-edit-button = Edit
+
+generic-delete-button = Delete
 
 -check-form-data = Check the information above and try again.
 

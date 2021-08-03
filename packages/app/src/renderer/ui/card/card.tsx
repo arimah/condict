@@ -17,7 +17,7 @@ export const Card = (props: Props): JSX.Element => {
       {iconBefore}
       <div>
         <S.Title>{title}</S.Title>
-        <S.Content>{children}</S.Content>
+        {children && <S.Content>{children}</S.Content>}
       </div>
       {iconAfter}
     </S.Card>

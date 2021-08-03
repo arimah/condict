@@ -17,3 +17,7 @@ settings-about-third-party-licenses-title = Third-party licences
 home-recent-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
 home-recent-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+language-definition-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+language-definition-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}

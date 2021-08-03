@@ -1,24 +1,29 @@
 import {useCallback, useEffect} from 'react';
 import {Localized, useLocalization} from '@fluent/react';
 
-import {Button, BodyText, useUniqueId} from '@condict/ui';
+import {BodyText, useUniqueId} from '@condict/ui';
 
-import {LanguagePage as LanguageTarget} from '../../page';
+import {LanguagePage as LanguageTarget, SearchPage} from '../../page';
 import {useOpenPanel, useUpdateTab} from '../../navigation';
 import {
   DataViewer,
   FlowContent,
+  MainHeader,
+  HeaderAction,
   Selectable,
   RichContent,
+  TagList,
+  Tag,
   hasRichContent,
 } from '../../ui';
 import {LanguageId} from '../../graphql';
 import {EventPredicate, useData} from '../../data';
 
 import LanguageQuery from './query';
+import LanguageSearch from './language-search';
+import LemmaAndDefinitionList from './lemma-and-definition-list';
 import PartOfSpeechList from './part-of-speech-list';
 import editLanguagePanel from './edit-language-panel';
-import * as S from './styles';
 
 export type Props = {
   id: LanguageId;
@@ -71,12 +76,24 @@ const LanguagePage = (props: Props): JSX.Element => {
         const langPage = LanguageTarget(id, language.name);
         return (
           <FlowContent>
-            <S.Header>
-              <S.LanguageName>{language.name}</S.LanguageName>
-              <Button onClick={handleEditLanguage}>
+            <MainHeader>
+              <Selectable as='h1'>{language.name}</Selectable>
+              <HeaderAction onClick={handleEditLanguage}>
                 <Localized id='generic-edit-button'/>
-              </Button>
-            </S.Header>
+              </HeaderAction>
+            </MainHeader>
+
+            <LanguageSearch id={id} name={language.name}/>
+
+            <LemmaAndDefinitionList
+              parent={langPage}
+              lemmaCount={language.lemmaCount}
+              firstWord={language.firstLemma?.term}
+              lastWord={language.lastLemma?.term}
+              recentDefinitions={language.recentDefinitions.nodes}
+              htmlId={htmlId}
+              onAddDefinition={() => {/* TODO */}}
+            />
 
             {hasRichContent(language.description) && <>
               <h2>
@@ -100,6 +117,31 @@ const LanguagePage = (props: Props): JSX.Element => {
               partsOfSpeech={language.partsOfSpeech}
               onAddPartOfSpeech={() => {/* TODO */}}
             />
+
+            <h2 id={`${htmlId}-tags-title`}>
+              <Localized id='language-tags-heading'/>
+            </h2>
+            <section aria-labelledby={`${htmlId}-tags-title`}>
+              {language.tags.nodes.length > 0 ? (
+                <TagList>
+                  {language.tags.nodes.map(tag =>
+                    <li key={tag.id}>
+                      <Tag
+                        linkTo={SearchPage('', {
+                          tag: tag.id,
+                          language: id,
+                        })}
+                        name={tag.name}
+                      />
+                    </li>
+                  )}
+                </TagList>
+              ) : (
+                <BodyText as='p'>
+                  <Localized id='language-no-tags-description'/>
+                </BodyText>
+              )}
+            </section>
           </FlowContent>
         );
       }}

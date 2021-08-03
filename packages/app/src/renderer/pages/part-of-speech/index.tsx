@@ -1,6 +1,6 @@
 import {Button, Spinner} from '@condict/ui';
 
-import {Link} from '../../ui';
+import {MainHeader, Link} from '../../ui';
 import {LanguagePage, PartOfSpeechPage as PartOfSpeechTarget} from '../../page';
 import {useUpdateTab} from '../../navigation';
 import {PartOfSpeechId} from '../../graphql';
@@ -38,6 +38,9 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
   const langPage = LanguagePage(lang.id, lang.name);
 
   return <>
+    <MainHeader>
+      <h1>{pos.name}</h1>
+    </MainHeader>
     <p>This is the page for part of speech {pos.name} (ID: {id}).</p>
     <p>Other parts of speech in the language <Link to={langPage}>{lang.name}</Link>:</p>
     <ul>

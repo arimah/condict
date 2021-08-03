@@ -1,32 +1,43 @@
 import styled from 'styled-components';
 
-import {Selectable, CardGrid} from '../../ui';
+import {Button, NonIdealState} from '@condict/ui';
 
-export const Header = styled.div`
+import {CardGrid} from '../../ui';
+
+export const Search = styled.section`
   display: flex;
-  flex-direction: row;
-  margin-bottom: 12px;
-  gap: 16px;
-
-  > button {
-    flex: none;
-    align-self: flex-start;
-    min-width: 96px;
-  }
+  margin: 24px auto;
+  max-width: 632px;
 `;
 
-export const LanguageName = styled(Selectable).attrs({
-  as: 'h1',
-})`
+export const SearchButton = styled(Button)`
   flex: 1 1 auto;
-  && {
-    margin-block: 0;
+  text-align: start;
+  border-radius: 7px;
+  border-color: ${p => p.theme.general.border};
+  background-color: ${p => p.theme.defaultBg};
+  color: ${p => p.theme.defaultFg};
+
+  &:hover {
+    background-color: ${p => p.theme.defaultHoverBg};
+  }
+
+  &:active {
+    background-color: ${p => p.theme.defaultActiveBg};
   }
 `;
 
-export const PartOfSpeechList = styled(CardGrid).attrs({
-  as: 'section',
-})`
+export const NoLemmas = styled(NonIdealState)`
+  width: 320px;
+`;
+
+export const PartOfSpeechName = styled.span`
+  margin-inline-start: 16px;
+  font-size: 15px;
+  line-height: 16px;
+`;
+
+export const PartOfSpeechList = styled(CardGrid)`
   grid-template-columns: 1fr 1fr;
 
   @media (min-width: 960px) {

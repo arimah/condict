@@ -6,7 +6,7 @@ import {
   descriptionToGraphQLInput,
 } from '@condict/rich-text-editor';
 
-import {DataViewer, FlowContent} from '../../ui';
+import {DataViewer, FlowContent, MainHeader, HeaderAction} from '../../ui';
 import {PanelParams, PanelProps} from '../../navigation';
 import {LanguageData, LanguageForm} from '../../forms';
 import {LanguageId} from '../../graphql';
@@ -60,9 +60,16 @@ const EditLanguagePanel = (props: Props) => {
 
   return (
     <FlowContent>
-      <h1>
-        <Localized id='language-edit-title'/>
-      </h1>
+      <MainHeader>
+        <h1>
+          <Localized id='language-edit-title'/>
+        </h1>
+        {data.state === 'data' && data.result.data?.language &&
+          // TODO: Make this button do something
+          <HeaderAction intent='danger'>
+            <Localized id='generic-delete-button'/>
+          </HeaderAction>}
+      </MainHeader>
       <DataViewer
         result={data}
         render={({language}) =>

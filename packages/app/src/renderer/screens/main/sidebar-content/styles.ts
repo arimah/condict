@@ -17,7 +17,6 @@ const FlexButton = styled(ButtonBase)`
 `;
 
 export const SearchButton = styled(FlexButton)`
-  border-radius: 16px;
   border-color: ${p => p.theme.defaultBg};
   background-color: ${p => p.theme.defaultBg};
   color: ${p => p.theme.defaultFg};

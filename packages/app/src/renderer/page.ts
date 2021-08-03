@@ -213,9 +213,18 @@ export interface SearchPage {
    * and not all white space.
    */
   readonly query: string;
+  /** The initially selected language to search in. */
+  readonly language?: LanguageId;
+  /** The initially selected tag to search in. */
+  readonly tag?: TagId;
 }
 
-export const SearchPage = (query = ''): SearchPage => ({
+export const SearchPage = (
+  query = '',
+  {language, tag}: Omit<SearchPage, 'type' | 'query'> = {}
+): SearchPage => ({
   type: 'search',
   query,
+  language,
+  tag,
 });

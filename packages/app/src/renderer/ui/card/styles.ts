@@ -15,6 +15,7 @@ const BaseStyles = css`
   > .mdi-icon {
     flex: none;
     align-self: center;
+    margin-block: -8px;
     color: ${p => p.theme.defaultFg};
   }
 
