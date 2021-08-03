@@ -101,6 +101,15 @@ export const SearchOptions = styled.p`
   margin: 8px 0 -4px;
   gap: 24px;
   align-items: center;
+
+  button {
+    flex: none;
+  }
+`;
+
+export const SearchLanguage = styled.span`
+  flex: 1 1 auto;
+  font-weight: bold;
 `;
 
 export const SearchScopes = styled.span.attrs({

@@ -94,6 +94,15 @@ search-box-input-label = Search terms
 
 search-box-input-placeholder = Type something to search for!
 
+# Variables:
+#   language: The name of the language that will be searched.
+#
+# Elements:
+#   <language>: Wraps around $language. Should not contain anything else.
+search-box-in-language-label = Searching only in <language>{$language}</language>
+
+search-box-search-everywhere-button = Search everywhere
+
 search-box-scopes-label = Search in:
 
 search-box-scope-lemmas = Headwords

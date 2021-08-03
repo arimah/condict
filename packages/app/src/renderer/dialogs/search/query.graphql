@@ -1,7 +1,8 @@
-query($query: String!, $scopes: [SearchScope!]!) {
+query($query: String!, $scopes: [SearchScope!]!, $language: [LanguageId!]) {
   search(params: {
     query: $query
     scopes: $scopes
+    inLanguages: $language
   }) {
     nodes {
       __typename

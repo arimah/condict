@@ -5,14 +5,15 @@
 import {
   Query,
   SearchScope,
-  LemmaId,
   LanguageId,
+  LemmaId,
   DefinitionId
 } from "../../graphql";
 
-export default "query($query:String!,$scopes:[SearchScope!]!){search(params:{query:$query,scopes:$scopes}){nodes{__typename...on LemmaSearchResult{termSnippet{...SnippetFragment}lemma{id,term,definitions{partOfSpeech{name}}derivedDefinitions{inflectedForm{displayName}derivedFrom{term}}language{...LanguageFragment}}}...on DefinitionSearchResult{descriptionSnippet{...SnippetFragment}definition{id,term,partOfSpeech{name}language{...LanguageFragment}}}}}}fragment SnippetFragment on MatchingSnippet{partialStart,partialEnd,parts{isMatch,text}}fragment LanguageFragment on Language{id,name}" as Query<{
+export default "query($query:String!,$scopes:[SearchScope!]!,$language:[LanguageId!]){search(params:{query:$query,scopes:$scopes,inLanguages:$language}){nodes{__typename...on LemmaSearchResult{termSnippet{...SnippetFragment}lemma{id,term,definitions{partOfSpeech{name}}derivedDefinitions{inflectedForm{displayName}derivedFrom{term}}language{...LanguageFragment}}}...on DefinitionSearchResult{descriptionSnippet{...SnippetFragment}definition{id,term,partOfSpeech{name}language{...LanguageFragment}}}}}}fragment SnippetFragment on MatchingSnippet{partialStart,partialEnd,parts{isMatch,text}}fragment LanguageFragment on Language{id,name}" as Query<{
   query: string;
   scopes: SearchScope[];
+  language?: LanguageId[] | null | undefined;
 }, {
   search: {
     nodes: ({

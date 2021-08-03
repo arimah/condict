@@ -5,7 +5,7 @@ export {
   OKCancel,
   messageBox,
 } from './message-box';
-export {default as searchDialog} from './search';
+export {searchDialog, searchInLanguageDialog} from './search';
 export {default as settingsDialog} from './settings';
 export {
   default as StandardDialog,

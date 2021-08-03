@@ -1,10 +1,10 @@
-import {KeyboardEvent, ChangeEvent, useState, useCallback} from 'react';
+import {KeyboardEvent, ChangeEvent, useState, useCallback, useRef} from 'react';
 import {Localized, useLocalization} from '@fluent/react';
 import SearchIcon from 'mdi-react/MagnifyIcon';
 
 import {Shortcut, Checkbox, Button, useUniqueId} from '@condict/ui';
 
-import {SearchScope} from '../../graphql';
+import {SearchScope, LanguageId} from '../../graphql';
 import {DialogParams, DialogProps} from '../../dialog-stack';
 import {AcceptKey, CancelKey} from '../../shortcuts';
 import {useImmediateEntryAndExit} from '../../ui';
@@ -15,14 +15,28 @@ import SearchResultList from './search-result-list';
 import {SearchResult} from './types';
 import * as S from './styles';
 
+type Props = {
+  initialLanguage?: SearchLanguage;
+} & DialogProps<Page | null>;
+
+type SearchLanguage = {
+  id: LanguageId;
+  name: string;
+};
+
 const PrevResultKey = Shortcut.parse('ArrowUp');
 
 const NextResultKey = Shortcut.parse('ArrowDown');
 
 const InitialScopes: SearchScope[] = ['SEARCH_LEMMAS', 'SEARCH_DEFINITIONS'];
 
-const SearchDialog = (props: DialogProps<Page | null>): JSX.Element => {
-  const {animationPhase, onAnimationPhaseEnd, onResolve} = props;
+const SearchDialog = (props: Props): JSX.Element => {
+  const {
+    initialLanguage,
+    animationPhase,
+    onAnimationPhaseEnd,
+    onResolve,
+  } = props;
 
   const {l10n} = useLocalization();
 
@@ -30,6 +44,7 @@ const SearchDialog = (props: DialogProps<Page | null>): JSX.Element => {
 
   const [query, setQuery] = useState('');
   const [scopes, setScopes] = useState(InitialScopes);
+  const [language, setLanguage] = useState(initialLanguage);
 
   const {
     query: searchedQuery,
@@ -38,7 +53,7 @@ const SearchDialog = (props: DialogProps<Page | null>): JSX.Element => {
     currentIndex,
     scrollToCurrent,
     onSelect,
-  } = useSearchState(query, scopes);
+  } = useSearchState(query, scopes, language?.id);
 
   const handleChangeScope = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const shouldInclude = e.target.checked;
@@ -79,12 +94,14 @@ const SearchDialog = (props: DialogProps<Page | null>): JSX.Element => {
   }, [currentResult, onResolve]);
 
   const handleAdvancedSearch = useCallback(() => {
-    onResolve(SearchPage(query));
-  }, [query, onResolve]);
+    onResolve(SearchPage(query, {language: language?.id}));
+  }, [query, language, onResolve]);
 
   const handleClickResult = useCallback((result: SearchResult) => {
     onResolve(SearchResult.toPage(result));
   }, [onResolve]);
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useImmediateEntryAndExit(animationPhase, onAnimationPhaseEnd);
 
@@ -101,9 +118,32 @@ const SearchDialog = (props: DialogProps<Page | null>): JSX.Element => {
             placeholder={l10n.getString('search-box-input-placeholder')}
             onKeyDown={handleInputKeyDown}
             onChange={e => setQuery(e.target.value)}
+            ref={inputRef}
           />
           {loading && <S.Spinner/>}
         </S.InputWrapper>
+        {language &&
+          <S.SearchOptions>
+            <S.SearchLanguage>
+              <Localized
+                id='search-box-in-language-label'
+                vars={{language: language.name}}
+                elems={{language: <i/>}}
+              >
+                <></>
+              </Localized>
+            </S.SearchLanguage>
+            <Button
+              slim
+              borderless
+              onClick={() => {
+                inputRef.current?.focus();
+                setLanguage(undefined);
+              }}
+            >
+              <Localized id='search-box-search-everywhere-button'/>
+            </Button>
+          </S.SearchOptions>}
         <S.SearchOptions>
           <S.SearchScopes aria-labelledby={`${id}-scopes-label`}>
             <span id={`${id}-scopes-label`}>
@@ -143,11 +183,23 @@ const SearchDialog = (props: DialogProps<Page | null>): JSX.Element => {
   );
 };
 
-const searchDialog: DialogParams<Page | null> = {
+export const searchDialog: DialogParams<Page | null> = {
   backdrop: true,
   pointerDownOutside: {value: null},
   // eslint-disable-next-line react/display-name
   render: props => <SearchDialog {...props}/>,
 };
 
-export default searchDialog;
+export const searchInLanguageDialog = (
+  languageId: LanguageId,
+  languageName: string
+): DialogParams<Page | null> => ({
+  backdrop: true,
+  pointerDownOutside: {value: null},
+  // eslint-disable-next-line react/display-name
+  render: props =>
+    <SearchDialog
+      {...props}
+      initialLanguage={{id: languageId, name: languageName}}
+    />,
+});

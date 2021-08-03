@@ -1,7 +1,7 @@
 import {useReducer, useCallback, useEffect, useRef} from 'react';
 import produce, {Draft} from 'immer';
 
-import {SearchScope} from '../../graphql';
+import {SearchScope, LanguageId} from '../../graphql';
 import {ExecuteResult, useExecute} from '../../data';
 
 import searchQuery from './query';
@@ -36,7 +36,8 @@ const NoResults: ExecuteResult<typeof searchQuery> = {
 
 const useSearchState = (
   query: string,
-  scopes: SearchScope[]
+  scopes: SearchScope[],
+  languageId: LanguageId | undefined
 ): SearchResultState => {
   const execute = useExecute();
 
@@ -62,7 +63,11 @@ const useSearchState = (
     // Don't send empty queries to the server - they could never match
     // anything anyway.
     const results = query !== ''
-      ? execute(searchQuery, {query, scopes})
+      ? execute(searchQuery, {
+        query,
+        scopes,
+        language: languageId && [languageId],
+      })
       : Promise.resolve(NoResults);
 
     void results.then(data => {
@@ -73,7 +78,7 @@ const useSearchState = (
         dispatch({type: 'results', query, data});
       }
     });
-  }, [trimmedQuery, scopes]);
+  }, [trimmedQuery, scopes, languageId]);
 
   const onSelect = useCallback((index: number | 'next' | 'prev') => {
     dispatch({type: 'select', index});
