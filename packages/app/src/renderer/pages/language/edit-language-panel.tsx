@@ -1,4 +1,4 @@
-import {useState, useCallback, useMemo} from 'react';
+import {useState, useCallback, useMemo, useRef} from 'react';
 import {Localized, ReactLocalization} from '@fluent/react';
 
 import {
@@ -11,6 +11,7 @@ import {PanelParams, PanelProps} from '../../navigation';
 import {LanguageData, LanguageForm} from '../../forms';
 import {LanguageId} from '../../graphql';
 import {useData, useExecute} from '../../data';
+import {useRefocusOnData} from '../../hooks';
 
 import {EditLanguageQuery, EditLanguageMut} from './query';
 
@@ -19,7 +20,7 @@ type Props = {
 } & PanelProps<void>;
 
 const EditLanguagePanel = (props: Props) => {
-  const {id, updatePanel, onResolve} = props;
+  const {id, updatePanel, panelRef, entering, onResolve} = props;
 
   const execute = useExecute();
 
@@ -58,6 +59,14 @@ const EditLanguagePanel = (props: Props) => {
     );
   }, [data]);
 
+  const firstFieldRef = useRef<HTMLInputElement>(null);
+
+  useRefocusOnData(data, {
+    focus: firstFieldRef,
+    ownedElem: panelRef,
+    preventScroll: entering,
+  });
+
   return (
     <FlowContent>
       <MainHeader>
@@ -80,6 +89,7 @@ const EditLanguagePanel = (props: Props) => {
                 description,
               }}
               submitError={submitError && <Localized id='language-save-error'/>}
+              firstFieldRef={firstFieldRef}
               onSubmit={onSubmit}
               onCancel={onResolve}
               onDirtyChange={dirty => updatePanel({dirty})}

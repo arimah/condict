@@ -1,4 +1,4 @@
-import {ReactNode, useEffect} from 'react';
+import {ReactNode, RefObject, useEffect} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import {Localized} from '@fluent/react';
 
@@ -13,6 +13,7 @@ import {CheckNameQuery} from './query';
 export type Props = {
   initialData?: LanguageData;
   submitError?: ReactNode;
+  firstFieldRef?: RefObject<HTMLElement>;
   onSubmit: (data: LanguageData) => Promise<void> | void;
   onCancel: () => void;
   onDirtyChange?: (dirty: boolean) => void;
@@ -34,6 +35,7 @@ export const LanguageForm = (props: Props): JSX.Element => {
   const {
     initialData = EmptyData,
     submitError,
+    firstFieldRef,
     onSubmit,
     onCancel,
     onDirtyChange,
@@ -85,6 +87,7 @@ export const LanguageForm = (props: Props): JSX.Element => {
           }}
           defaultError={<Localized id='language-name-required-error'/>}
           required
+          inputRef={firstFieldRef as RefObject<HTMLInputElement> | undefined}
         />
         <DescriptionField
           name='description'

@@ -18,6 +18,9 @@ import {
 } from '../../ui';
 import {LanguageId} from '../../graphql';
 import {EventPredicate, useData} from '../../data';
+import {useRefocusOnData} from '../../hooks';
+
+import {PageProps} from '../types';
 
 import LanguageQuery from './query';
 import LanguageSearch from './language-search';
@@ -27,10 +30,10 @@ import editLanguagePanel from './edit-language-panel';
 
 export type Props = {
   id: LanguageId;
-};
+} & PageProps;
 
 const LanguagePage = (props: Props): JSX.Element => {
-  const {id} = props;
+  const {id, pageRef} = props;
 
   const shouldReloadPage = useCallback<EventPredicate>(
     event =>
@@ -62,6 +65,8 @@ const LanguagePage = (props: Props): JSX.Element => {
   }, [title]);
 
   const htmlId = useUniqueId();
+
+  useRefocusOnData(data, {ownedElem: pageRef});
 
   return (
     <DataViewer

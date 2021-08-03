@@ -121,7 +121,7 @@ const TabPanel = React.forwardRef((
             )}
           </S.BackButtonColumn>
           <S.MainColumn ref={mainColumnRef}>
-            <PageContent page={page}/>
+            <PageContent page={page} pageRef={panelRef}/>
           </S.MainColumn>
         </S.TabPanel>
       </FocusScope>

@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React, {ReactNode, Ref} from 'react';
 import {
   FieldValues,
   FieldPath,
@@ -7,7 +7,7 @@ import {
   useFormContext,
 } from 'react-hook-form';
 
-import {TextInputProps, useUniqueId} from '@condict/ui';
+import {TextInputProps, useUniqueId, combineRefs} from '@condict/ui';
 
 import {Validators} from './types';
 import * as S from './styles';
@@ -19,6 +19,7 @@ export type Props<D extends FieldValues> = {
   validate?: Validators<string>;
   defaultError?: ReactNode;
   errorMessages?: Record<string, ReactNode>;
+  inputRef?: Ref<HTMLInputElement>;
 } & Omit<
   TextInputProps,
   | 'name'
@@ -45,6 +46,7 @@ export const TextField = React.memo((
     label,
     defaultError,
     errorMessages,
+    inputRef,
     ...otherProps
   } = props;
 
@@ -52,7 +54,7 @@ export const TextField = React.memo((
   const {register, formState} = useFormContext();
   const {touchedFields, errors, isSubmitting} = formState;
 
-  const field = register(name, {
+  const {ref: fieldRef, ...field} = register(name, {
     required: otherProps.required,
     minLength: otherProps.minLength,
     maxLength: otherProps.maxLength,
@@ -82,6 +84,7 @@ export const TextField = React.memo((
         readOnly={isSubmitting}
         $touched={touched}
         $invalid={Boolean(fieldError)}
+        ref={combineRefs(inputRef, fieldRef)}
       />
       {errorMessage &&
         <S.ErrorMessage id={`${autoId}-error`}>

@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import {ReactNode, RefObject} from 'react';
 import {ReactLocalization} from '@fluent/react';
 
 import {Page} from '../page';
@@ -169,7 +169,7 @@ export interface Panel {
   /** True if the panel is dirty (has unsaved changes). */
   readonly dirty: boolean;
   /** Renders the main content of the panel. */
-  readonly render: () => ReactNode;
+  readonly render: (props: DynamicPanelProps) => ReactNode;
 }
 
 export interface PanelParams<R> {
@@ -194,6 +194,10 @@ export type PanelProps<R> = {
       dirty?: boolean;
     }
   ) => void;
+  /** The outer element that contains the panel, for focus management. */
+  panelRef: RefObject<HTMLElement>;
+  /** True if the panel is still entering, for focus management. */
+  entering: boolean;
   /**
    * A function to be called when the panel has a result. The panel will close
    * upon calling this function.
@@ -201,6 +205,11 @@ export type PanelProps<R> = {
    */
   onResolve: (value: R) => void;
 };
+
+export type DynamicPanelProps = Pick<
+  PanelProps<unknown>,
+  'panelRef' | 'entering'
+>;
 
 export type NavigateFn = (page: Page, options?: NavigateOptions) => void;
 

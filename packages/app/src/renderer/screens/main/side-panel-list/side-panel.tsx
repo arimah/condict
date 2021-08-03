@@ -91,7 +91,7 @@ const SidePanel = React.forwardRef((
         ref={panelRef}
       >
         <S.Content>
-          {panel.render()}
+          {panel.render({panelRef, entering})}
         </S.Content>
         <S.Overlay active={state === 'background'}/>
       </S.SidePanel>

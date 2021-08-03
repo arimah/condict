@@ -6,6 +6,9 @@ import {useUniqueId} from '@condict/ui';
 import {DataViewer, FlowContent, Tag, TagList} from '../../ui';
 import {useOpenPanel} from '../../navigation';
 import {EventPredicate, useData} from '../../data';
+import {useRefocusOnData} from '../../hooks';
+
+import {PageProps} from '../types';
 
 import HomeQuery from './query';
 import LanguageList from './language-list';
@@ -13,7 +16,7 @@ import RecentChangeCard from './recent-change-card';
 import addLanguagePanel from './add-language-panel';
 import * as S from './styles';
 
-const HomePage = (): JSX.Element => {
+const HomePage = (props: PageProps): JSX.Element => {
   const data = useData(HomeQuery, {tagsPage: 0}, shouldReload);
 
   const {l10n} = useLocalization();
@@ -25,7 +28,9 @@ const HomePage = (): JSX.Element => {
 
   const id = useUniqueId();
 
-  return <>
+  useRefocusOnData(data, {ownedElem: props.pageRef});
+
+  return (
     <DataViewer
       result={data}
       render={({languages, tags, recentChanges}) =>
@@ -75,7 +80,7 @@ const HomePage = (): JSX.Element => {
         </FlowContent>
       }
     />
-  </>;
+  );
 };
 
 export default HomePage;

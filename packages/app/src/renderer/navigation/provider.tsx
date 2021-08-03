@@ -289,9 +289,11 @@ const NavigationProvider = (props: Props): JSX.Element => {
       }
 
       return new Promise<R>((resolve, reject) => {
+        type StaticProps = Omit<PanelProps<R>, 'panelRef' | 'entering'>;
+
         const panelId = genId();
         const {render} = params;
-        const renderProps: PanelProps<R> = {
+        const staticProps: StaticProps = {
           updatePanel: ({title, dirty}) => dispatch({
             type: 'updatePanel',
             tabId,
@@ -319,9 +321,9 @@ const NavigationProvider = (props: Props): JSX.Element => {
             title: params.initialTitle,
             dirty: false,
             // eslint-disable-next-line react/display-name
-            render: () =>
+            render: props =>
               <OpenPanelContext.Provider value={openNestedPanel}>
-                {render(renderProps)}
+                {render({...staticProps, ...props})}
               </OpenPanelContext.Provider>,
           },
           reject,
