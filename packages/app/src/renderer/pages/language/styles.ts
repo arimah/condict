@@ -38,9 +38,5 @@ export const PartOfSpeechName = styled.span`
 `;
 
 export const PartOfSpeechList = styled(CardGrid)`
-  grid-template-columns: 1fr 1fr;
-
-  @media (min-width: 960px) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 `;

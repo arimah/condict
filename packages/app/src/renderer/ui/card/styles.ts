@@ -21,6 +21,10 @@ const BaseStyles = css`
 
   > div {
     flex: 1 1 auto;
+    /* Allows the title text to overflow with "...". Content that wraps will
+     * still wrap correctly.
+     */
+    overflow: hidden;
   }
 `;
 
