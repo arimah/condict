@@ -10,6 +10,7 @@ import {
   ClampedBodyText,
   RichContent,
   Secondary,
+  hasRichContent,
 } from '../../ui';
 import {OperationResult} from '../../graphql';
 import {LanguagePage} from '../../page';
@@ -78,16 +79,18 @@ const LanguageCard = ({lang}: LanguageCardProps): JSX.Element =>
     title={lang.name}
     iconAfter={<LinkArrow className='rtl-mirror'/>}
   >
-    <ClampedBodyText maxLines={3}>
-      <RichContent
-        value={lang.description}
-        heading1='h3'
-        heading2='h4'
-        stripLinks
-        // 1 more than maxLines, to guarantee "..." if there's >3 blocks
-        maxBlocks={4}
-      />
-    </ClampedBodyText>
+    {hasRichContent(lang.description) &&
+      <ClampedBodyText maxLines={3}>
+        <RichContent
+          value={lang.description}
+          heading1='h3'
+          heading2='h4'
+          stripLinks
+          // 1 more than maxLines, to guarantee "..." if there's >3 blocks
+          maxBlocks={4}
+        />
+      </ClampedBodyText>
+    }
     <Secondary as='p'>
       <Localized id='home-language-statistics' vars={lang.statistics}/>
     </Secondary>
