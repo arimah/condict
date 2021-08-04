@@ -1,5 +1,5 @@
 import {useCallback} from 'react';
-import {Localized, useLocalization} from '@fluent/react';
+import {Localized} from '@fluent/react';
 
 import {useUniqueId} from '@condict/ui';
 
@@ -19,12 +19,10 @@ import * as S from './styles';
 const HomePage = (props: PageProps): JSX.Element => {
   const data = useData(HomeQuery, {tagsPage: 0}, shouldReload);
 
-  const {l10n} = useLocalization();
-
   const openPanel = useOpenPanel();
   const handleAddLanguage = useCallback(() => {
-    void openPanel(addLanguagePanel(l10n));
-  }, [l10n]);
+    void openPanel(addLanguagePanel);
+  }, [openPanel]);
 
   const id = useUniqueId();
 

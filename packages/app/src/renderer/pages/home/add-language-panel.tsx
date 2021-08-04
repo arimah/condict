@@ -1,5 +1,5 @@
 import {useState, useCallback} from 'react';
-import {Localized, ReactLocalization} from '@fluent/react';
+import {Localized} from '@fluent/react';
 
 import {descriptionToGraphQLInput} from '@condict/rich-text-editor';
 
@@ -12,7 +12,7 @@ import {useExecute} from '../../data';
 import {AddLanguageMut} from './query';
 
 const AddLanguagePanel = (props: PanelProps<void>) => {
-  const {updatePanel, onResolve} = props;
+  const {updatePanel, titleId, onResolve} = props;
 
   const navigateTo = useNavigateTo();
   const execute = useExecute();
@@ -48,7 +48,7 @@ const AddLanguagePanel = (props: PanelProps<void>) => {
 
   return (
     <FlowContent>
-      <h1>
+      <h1 id={titleId}>
         <Localized id='home-add-language-title'/>
       </h1>
       <LanguageForm
@@ -61,10 +61,9 @@ const AddLanguagePanel = (props: PanelProps<void>) => {
   );
 };
 
-const addLanguagePanel = (l10n: ReactLocalization): PanelParams<void> => ({
-  initialTitle: l10n.getString('home-add-language-title'),
+const addLanguagePanel: PanelParams<void> = {
   // eslint-disable-next-line react/display-name
   render: props => <AddLanguagePanel {...props}/>,
-});
+};
 
 export default addLanguagePanel;

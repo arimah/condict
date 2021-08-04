@@ -61,7 +61,6 @@ type Message =
     type: 'updatePanel';
     tabId: string;
     panelId: string;
-    title?: string;
     dirty?: boolean;
   }
   | {
@@ -289,16 +288,18 @@ const NavigationProvider = (props: Props): JSX.Element => {
       }
 
       return new Promise<R>((resolve, reject) => {
-        type StaticProps = Omit<PanelProps<R>, 'panelRef' | 'entering'>;
+        type StaticProps = Omit<
+          PanelProps<R>,
+          'titleId' | 'panelRef' | 'entering'
+        >;
 
         const panelId = genId();
         const {render} = params;
         const staticProps: StaticProps = {
-          updatePanel: ({title, dirty}) => dispatch({
+          updatePanel: ({dirty}) => dispatch({
             type: 'updatePanel',
             tabId,
             panelId,
-            title,
             dirty,
           }),
           onResolve: value => dispatch({
@@ -318,7 +319,6 @@ const NavigationProvider = (props: Props): JSX.Element => {
           panelIndex,
           panel: {
             id: panelId,
-            title: params.initialTitle,
             dirty: false,
             // eslint-disable-next-line react/display-name
             render: props =>
@@ -451,13 +451,10 @@ const reduce = produce<State, [Message]>((state, message) => {
       break;
     }
     case 'updatePanel': {
-      const {tabId, panelId, title, dirty} = message;
+      const {tabId, panelId, dirty} = message;
       const tab = state.tabs.find(t => t.id === tabId);
       const panel = tab && tab.panels.find(p => p.id === panelId);
       if (panel) {
-        if (title !== undefined) {
-          panel.title = title;
-        }
         if (dirty !== undefined) {
           panel.dirty = dirty;
         }

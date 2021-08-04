@@ -164,8 +164,6 @@ export interface PreviousTab {
 export interface Panel {
   /** A unique, randomly generated identifier for the panel. */
   readonly id: string;
-  /** The title of the panel, for accessibility purposes. */
-  readonly title: string;
   /** True if the panel is dirty (has unsaved changes). */
   readonly dirty: boolean;
   /** Renders the main content of the panel. */
@@ -173,8 +171,6 @@ export interface Panel {
 }
 
 export interface PanelParams<R> {
-  /** The initial title of the panel. */
-  readonly initialTitle: string;
   /**
    * Renders the panel's content. This is *not* a component type, but a render
    * function that returns a React tree. It is not possible to use hooks inside
@@ -190,10 +186,14 @@ export type PanelProps<R> = {
    */
   updatePanel: (
     values: {
-      title?: string;
       dirty?: boolean;
     }
   ) => void;
+  /**
+   * An HTML ID that must be assigned to the panel's main title, for
+   * accessibility reasons.
+   */
+  titleId: string;
   /** The outer element that contains the panel, for focus management. */
   panelRef: RefObject<HTMLElement>;
   /** True if the panel is still entering, for focus management. */
@@ -208,7 +208,7 @@ export type PanelProps<R> = {
 
 export type DynamicPanelProps = Pick<
   PanelProps<unknown>,
-  'panelRef' | 'entering'
+  'titleId' | 'panelRef' | 'entering'
 >;
 
 export type NavigateFn = (page: Page, options?: NavigateOptions) => void;

@@ -9,7 +9,7 @@ import React, {
   useLayoutEffect,
 } from 'react';
 
-import {FocusScope, getTabReachable} from '@condict/ui';
+import {FocusScope, getTabReachable, useUniqueId} from '@condict/ui';
 
 import {Panel} from '../../../navigation';
 
@@ -81,9 +81,12 @@ const SidePanel = React.forwardRef((
     }
   }, [onPhaseEnd]);
 
+  const titleId = useUniqueId();
+
   return (
     <FocusScope active={state === 'current'}>
       <S.SidePanel
+        aria-labelledby={titleId}
         state={needToEnter ? 'hidden' : state}
         entering={entering}
         onFocus={handleFocus}
@@ -91,7 +94,7 @@ const SidePanel = React.forwardRef((
         ref={panelRef}
       >
         <S.Content>
-          {panel.render({panelRef, entering})}
+          {panel.render({titleId, panelRef, entering})}
         </S.Content>
         <S.Overlay active={state === 'background'}/>
       </S.SidePanel>

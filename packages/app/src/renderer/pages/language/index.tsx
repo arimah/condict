@@ -1,5 +1,5 @@
 import {useCallback, useEffect} from 'react';
-import {Localized, useLocalization} from '@fluent/react';
+import {Localized} from '@fluent/react';
 
 import {BodyText, useUniqueId} from '@condict/ui';
 
@@ -49,12 +49,10 @@ const LanguagePage = (props: Props): JSX.Element => {
 
   const data = useData(LanguageQuery, {id}, shouldReloadPage);
 
-  const {l10n} = useLocalization();
-
   const openPanel = useOpenPanel();
   const handleEditLanguage = useCallback(() => {
-    void openPanel(editLanguagePanel(id, l10n));
-  }, [id, l10n]);
+    void openPanel(editLanguagePanel(id));
+  }, [id]);
 
   const updateTab = useUpdateTab();
   const title = data.state === 'data' && data.result.data?.language?.name;

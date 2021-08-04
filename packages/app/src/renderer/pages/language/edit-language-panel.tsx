@@ -1,5 +1,5 @@
 import {useState, useCallback, useMemo, useRef} from 'react';
-import {Localized, ReactLocalization} from '@fluent/react';
+import {Localized} from '@fluent/react';
 
 import {
   descriptionFromGraphQLResponse,
@@ -20,12 +20,11 @@ type Props = {
 } & PanelProps<void>;
 
 const EditLanguagePanel = (props: Props) => {
-  const {id, updatePanel, panelRef, entering, onResolve} = props;
+  const {id, updatePanel, titleId, panelRef, entering, onResolve} = props;
 
   const execute = useExecute();
 
   const data = useData(EditLanguageQuery, {id});
-
   const [submitError, setSubmitError] = useState(false);
 
   const onSubmit = useCallback(async (formData: LanguageData) => {
@@ -70,7 +69,7 @@ const EditLanguagePanel = (props: Props) => {
   return (
     <FlowContent>
       <MainHeader>
-        <h1>
+        <h1 id={titleId}>
           <Localized id='language-edit-title'/>
         </h1>
         {data.state === 'data' && data.result.data?.language &&
@@ -85,7 +84,8 @@ const EditLanguagePanel = (props: Props) => {
           language ? (
             <LanguageForm
               initialData={{
-                ...language,
+                id: language.id,
+                name: language.name,
                 description,
               }}
               submitError={submitError && <Localized id='language-save-error'/>}
@@ -105,11 +105,7 @@ const EditLanguagePanel = (props: Props) => {
   );
 };
 
-const editLanguagePanel = (
-  id: LanguageId,
-  l10n: ReactLocalization
-): PanelParams<void> => ({
-  initialTitle: l10n.getString('home-add-language-title'),
+const editLanguagePanel = (id: LanguageId): PanelParams<void> => ({
   // eslint-disable-next-line react/display-name
   render: props => <EditLanguagePanel id={id} {...props}/>,
 });
