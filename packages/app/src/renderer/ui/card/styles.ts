@@ -8,7 +8,7 @@ const BaseStyles = css`
   padding: 14px;
   gap: 16px;
   border: 2px solid ${p => p.theme.defaultBg};
-  border-radius: 9px;
+  border-radius: 7px;
   background-color: ${p => p.theme.defaultBg};
   box-shadow: ${p => p.theme.shadow.elevation1};
 
@@ -41,7 +41,7 @@ export const LinkCard = styled(Link)`
   &:focus,
   &:focus-visible {
     border-color: ${p => p.theme.focus.color};
-    border-radius: 9px;
+    border-radius: 7px;
     box-shadow: ${p => p.theme.shadow.elevation1};
   }
 

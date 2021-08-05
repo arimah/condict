@@ -12,7 +12,7 @@ export const Main = styled.div.attrs({
   align-items: center;
   margin: 16px auto;
   width: 260px;
-  border-radius: 3px;
+  border-radius: 7px;
   background: ${p => p.theme.defaultBg};
   color: ${p => p.theme.defaultFg};
 

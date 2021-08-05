@@ -18,7 +18,7 @@ const Panel = styled.div<Props>`
     border: 2px solid ${p => p.theme.general.border};
   `}
 
-  border-radius: 3px;
+  border-radius: 7px;
   box-shadow: ${p => p.raised && p.theme.shadow.elevation1};
 
   /* Panel is not focusable by default, but make sure it supports tabindex. */
