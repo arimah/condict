@@ -132,6 +132,17 @@ const LemmaMut = {
     }
   },
 
+  deleteAllInLanguage(db: DataWriter, languageId: LanguageId): void {
+    // Delete from the search index first; otherwise we can't know which lemmas
+    // belong to the language.
+    SearchIndexMut.deleteAllLemmasInLanguage(db, languageId);
+
+    db.exec`
+      delete from lemmas
+      where language_id = ${languageId}
+    `;
+  },
+
   updateLemmaCount(db: DataWriter, languageId: LanguageId): void {
     db.exec`
       update languages

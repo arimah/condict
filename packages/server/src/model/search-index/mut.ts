@@ -54,6 +54,17 @@ const SearchIndexMut = {
     `;
   },
 
+  deleteAllLemmasInLanguage(db: DataWriter, languageId: LanguageId) {
+    db.exec`
+      delete from lemmas_fts
+      where rowid in (
+        select id
+        from lemmas
+        where language_id = ${languageId}
+      )
+    `;
+  },
+
   insertDefinition(
     db: DataWriter,
     id: DefinitionId,
@@ -86,6 +97,17 @@ const SearchIndexMut = {
     `;
   },
 
+  deleteAllDefinitionsInLanguage(db: DataWriter, languageId: LanguageId): void {
+    db.exec`
+      delete from definitions_fts
+      where rowid in (
+        select id
+        from definitions
+        where language_id = ${languageId}
+      )
+    `;
+  },
+
   insertPartOfSpeech(db: DataWriter, id: PartOfSpeechId, name: string): void {
     db.exec`
       insert into parts_of_speech_fts (rowid, name)
@@ -105,6 +127,20 @@ const SearchIndexMut = {
     db.exec`
       delete from parts_of_speech_fts
       where rowid = ${id}
+    `;
+  },
+
+  deleteAllPartsOfSpeechInLanguage(
+    db: DataWriter,
+    languageId: LanguageId
+  ): void {
+    db.exec`
+      delete from parts_of_speech_fts
+      where rowid in (
+        select id
+        from parts_of_speech
+        where language_id = ${languageId}
+      )
     `;
   },
 

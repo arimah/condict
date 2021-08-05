@@ -116,6 +116,10 @@ const Mutation: Mutators = {
   editLanguage: mutator((_root, {id, data}, context) =>
     LanguageMut.update(MutContext.from(context), id, data)
   ),
+
+  deleteLanguage: mutator((_root, {id}, context) =>
+    LanguageMut.delete(MutContext.from(context), id)
+  ),
 };
 
 export default {

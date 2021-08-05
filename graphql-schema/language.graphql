@@ -294,4 +294,11 @@ extend type Mutation {
   Requires authentication.
   """
   editLanguage(id: LanguageId!, data: EditLanguageInput!): Language
+
+  """
+  Deletes a language.
+
+  Requires authentication.
+  """
+  deleteLanguage(id: LanguageId!): Boolean
 }

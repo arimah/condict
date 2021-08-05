@@ -1,8 +1,9 @@
 import {UserInputError} from 'apollo-server';
 
-import {DataReader} from '../../database';
+import {DataReader, DataWriter} from '../../database';
 import {
   PartOfSpeechId,
+  LanguageId,
   NewPartOfSpeechInput,
   EditPartOfSpeechInput,
 } from '../../graphql';
@@ -129,6 +130,15 @@ const PartOfSpeechMut = {
 
     db.clearCache(PartOfSpeech.byIdKey, partOfSpeech.id);
     return true;
+  },
+
+  deleteAllInLanguage(db: DataWriter, languageId: LanguageId): void {
+    SearchIndexMut.deleteAllPartsOfSpeechInLanguage(db, languageId);
+
+    db.exec`
+      delete from parts_of_speech
+      where language_id = ${languageId}
+    `;
   },
 
   ensureUnused(db: DataReader, id: PartOfSpeechId) {

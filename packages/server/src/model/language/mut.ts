@@ -3,6 +3,10 @@ import {LanguageId, NewLanguageInput, EditLanguageInput} from '../../graphql';
 import FieldSet from '../field-set';
 import {DescriptionMut} from '../description';
 import {SearchIndexMut} from '../search-index';
+import {DefinitionMut} from '../definition';
+import {LemmaMut} from '../lemma';
+import {PartOfSpeechMut} from '../part-of-speech';
+import {TagMut} from '../tag';
 
 import {Language} from './model';
 import {LanguageRow} from './types';
@@ -76,6 +80,51 @@ const LanguageMut = {
       });
     }
     return Language.byIdRequired(db, id);
+  },
+
+  async delete(context: MutContext, id: LanguageId): Promise<boolean> {
+    const {db} = context;
+
+    const language = await Language.byId(db, id);
+    if (!language) {
+      return false;
+    }
+
+    await MutContext.transact(context, context => {
+      const {db, events, logger} = context;
+
+      logger.debug(`Begin deletion of language: ${language.id}`);
+
+      // Definitions reference lemmas, parts of speech, inflection tables,
+      // inflected forms... We must delete them before anything else.
+      DefinitionMut.deleteAllInLanguage(db, language.id);
+      logger.debug('Deleted all definitions');
+
+      LemmaMut.deleteAllInLanguage(db, language.id);
+      logger.debug('Deleted all lemmas');
+
+      PartOfSpeechMut.deleteAllInLanguage(db, language.id);
+      logger.debug('Deleted all parts of speech');
+
+      logger.debug(`Deleting language row: ${language.id}`);
+      db.exec`
+        delete from languages
+        where id = ${language.id}
+      `;
+
+      DescriptionMut.delete(db, language.description_id);
+      logger.debug('Deleted description');
+
+      SearchIndexMut.deleteLanguage(db, language.id);
+
+      events.emit({type: 'language', action: 'delete', id: language.id});
+
+      logger.debug(`Deleting orphaned tags`);
+      TagMut.deleteOrphaned(context);
+
+      logger.debug(`Language deleted: ${language.id}`);
+    });
+    return true;
   },
 } as const;
 

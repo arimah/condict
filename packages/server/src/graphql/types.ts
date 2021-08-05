@@ -1582,6 +1582,14 @@ export type Mutation = {
     data: EditLanguageInput;
   }, Language | null>;
   /**
+   * Deletes a language.
+   * 
+   * Requires authentication.
+   */
+  deleteLanguage: WithArgs<{
+    id: LanguageId;
+  }, boolean | null>;
+  /**
    * Adds a part of speech.
    * 
    * Requires authentication.

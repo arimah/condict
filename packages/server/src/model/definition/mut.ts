@@ -6,6 +6,7 @@ import {
   PartOfSpeechId,
   InflectedFormId,
   InflectionTableLayoutId,
+  LanguageId,
   NewDefinitionInput,
   EditDefinitionInput,
   EditDefinitionInflectionTableInput,
@@ -170,7 +171,7 @@ const DefinitionMut = {
       ) {
         inflectionTables = [];
         logger.debug(
-          'Clearing inflection tables: part of speech changed, but has no new tables given'
+          'Clearing inflection tables: part of speech changed, but no new tables given'
         );
       }
 
@@ -331,6 +332,43 @@ const DefinitionMut = {
       logger.verbose(`Definition deleted: ${definition.id}`);
     });
     return true;
+  },
+
+  deleteAllInLanguage(db: DataWriter, languageId: LanguageId): void {
+    // Delete from the search index first; otherwise we can't know which lemmas
+    // belong to the language.
+    SearchIndexMut.deleteAllDefinitionsInLanguage(db, languageId);
+
+    // We need to know which definitions have been deleted in order to delete
+    // their corresponding descriptions, but we can't delete a description until
+    // the corresponding definition is gone. One could fetch the IDs of all
+    // deleted definitions, but there may be thousands or tens of thousands.
+    // Instead, we build a temporary table of all `description_id`s of the
+    // definitions in the language.
+
+    db.exec`
+      create temporary table orphaned_descriptions as
+      select description_id as id
+      from definitions
+      where language_id = ${languageId}
+    `;
+
+    // Cascade deletions take care of tables, stems, custom forms, etc.
+    db.exec`
+      delete from definitions
+      where language_id = ${languageId}
+    `;
+
+    db.exec`
+      delete from descriptions
+      where id in (
+        select id
+        from orphaned_descriptions
+      )
+    `;
+    db.exec`
+      drop table orphaned_descriptions
+    `;
   },
 
   async updateInflectionTablesAndForms(
