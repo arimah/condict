@@ -1,18 +1,20 @@
 import {useState, useCallback, useMemo, useRef} from 'react';
 import {Localized} from '@fluent/react';
 
+import {Button} from '@condict/ui';
 import {
   descriptionFromGraphQLResponse,
   descriptionToGraphQLInput,
 } from '@condict/rich-text-editor';
 
 import {DataViewer, FlowContent, MainHeader, HeaderAction} from '../../ui';
-import {PanelParams, PanelProps} from '../../navigation';
+import {PanelParams, PanelProps, useOpenPanel} from '../../navigation';
 import {LanguageData, LanguageForm} from '../../forms';
 import {LanguageId} from '../../graphql';
 import {useData, useExecute} from '../../data';
 import {useRefocusOnData} from '../../hooks';
 
+import deleteLanguagePanel from './delete-language-panel';
 import {EditLanguageQuery, EditLanguageMut} from './query';
 
 type Props = {
@@ -22,6 +24,7 @@ type Props = {
 const EditLanguagePanel = (props: Props) => {
   const {id, updatePanel, titleId, panelRef, entering, onResolve} = props;
 
+  const openPanel = useOpenPanel();
   const execute = useExecute();
 
   const data = useData(EditLanguageQuery, {id});
@@ -40,7 +43,7 @@ const EditLanguagePanel = (props: Props) => {
     if (res.errors) {
       // TODO: Distinguish between different kinds of errors.
       // TODO: Prompt for reauthentication when necessary.
-      console.log('Could not add language:', res.errors);
+      console.log('Could not edit language:', res.errors);
       setSubmitError(true);
       return;
     }
@@ -48,6 +51,22 @@ const EditLanguagePanel = (props: Props) => {
     // If there were no errors, we should have an updated language.
     onResolve();
   }, [id, onResolve]);
+
+  const onDelete = useCallback(() => {
+    if (data.state === 'loading' || !data.result.data?.language) {
+      return;
+    }
+
+    const {language} = data.result.data;
+    void openPanel(deleteLanguagePanel(
+      language.id,
+      language.statistics
+    )).then(deleted => {
+      if (deleted) {
+        onResolve();
+      }
+    });
+  }, [id, data, onResolve]);
 
   const description = useMemo(() => {
     if (data.state === 'loading' || !data.result.data?.language) {
@@ -73,8 +92,7 @@ const EditLanguagePanel = (props: Props) => {
           <Localized id='language-edit-title'/>
         </h1>
         {data.state === 'data' && data.result.data?.language &&
-          // TODO: Make this button do something
-          <HeaderAction intent='danger'>
+          <HeaderAction intent='danger' onClick={onDelete}>
             <Localized id='generic-delete-button'/>
           </HeaderAction>}
       </MainHeader>
@@ -94,11 +112,16 @@ const EditLanguagePanel = (props: Props) => {
               onCancel={onResolve}
               onDirtyChange={dirty => updatePanel({dirty})}
             />
-          ) : (
-            // TODO: Better error message
-            // TODO: l10n
-            <p>Language not found.</p>
-          )
+          ) : <>
+            <p>
+              <Localized id='language-not-found-error'/>
+            </p>
+            <p>
+              <Button onClick={() => onResolve()}>
+                <Localized id='generic-form-cancel'/>
+              </Button>
+            </p>
+          </>
         }
       />
     </FlowContent>

@@ -96,7 +96,7 @@ const SidePanel = React.forwardRef((
         <S.Content>
           {panel.render({titleId, panelRef, entering})}
         </S.Content>
-        <S.Overlay active={state === 'background'}/>
+        <S.Overlay style={{zIndex: 1}} active={state === 'background'}/>
       </S.SidePanel>
     </FocusScope>
   );

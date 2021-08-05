@@ -57,6 +57,12 @@ query EditLanguageQuery($id: LanguageId!) {
     description {
       ...RichTextBlockFragment
     }
+
+    statistics {
+      lemmaCount
+      definitionCount
+      partOfSpeechCount
+    }
   }
 }
 
@@ -64,4 +70,8 @@ mutation EditLanguageMut($id: LanguageId!, $data: EditLanguageInput!) {
   editLanguage(id: $id, data: $data) {
     id
   }
+}
+
+mutation DeleteLanguageMut($id: LanguageId!) {
+  deleteLanguage(id: $id)
 }

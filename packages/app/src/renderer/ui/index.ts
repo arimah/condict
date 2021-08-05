@@ -4,6 +4,10 @@ export {
   default as ClampedBodyText,
   Props as ClampedBodyTextProps,
 } from './clamped-body-text';
+export {
+  default as ConfirmButton,
+  Props as ConfirmButtonProps,
+} from './confirm-button';
 export {default as DataViewer, Props as DataViewerProps} from './data-viewer';
 export * from './form-fields';
 export {

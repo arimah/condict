@@ -185,7 +185,7 @@ export default "query($id:LanguageId!){language(id:$id){name,description{...Rich
   } | null;
 }>;
 
-export const EditLanguageQuery = "query EditLanguageQuery($id:LanguageId!){language(id:$id){id,name,description{...RichTextBlockFragment}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Query<{
+export const EditLanguageQuery = "query EditLanguageQuery($id:LanguageId!){language(id:$id){id,name,description{...RichTextBlockFragment}statistics{lemmaCount,definitionCount,partOfSpeechCount}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Query<{
   id: LanguageId;
 }, {
   language: {
@@ -254,6 +254,11 @@ export const EditLanguageQuery = "query EditLanguageQuery($id:LanguageId!){langu
         }[];
       })[];
     }[];
+    statistics: {
+      lemmaCount: number;
+      definitionCount: number;
+      partOfSpeechCount: number;
+    };
   } | null;
 }>;
 
@@ -264,5 +269,11 @@ export const EditLanguageMut = "mutation EditLanguageMut($id:LanguageId!,$data:E
   editLanguage: {
     id: LanguageId;
   } | null;
+}>;
+
+export const DeleteLanguageMut = "mutation DeleteLanguageMut($id:LanguageId!){deleteLanguage(id:$id)}" as Mutation<{
+  id: LanguageId;
+}, {
+  deleteLanguage: boolean | null;
 }>;
 

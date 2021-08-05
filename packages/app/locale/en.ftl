@@ -514,6 +514,44 @@ language-edit-title = Edit language
 
 language-save-error = An error occurred when saving the language. {-check-form-data}
 
+language-delete-title = Delete language
+
+# Elements:
+#   <bold>: Bold text.
+language-delete-warning =
+  <bold>Hold up!</bold> You are about to <bold>delete an entire language</bold>. This will delete everything associated with the language, and <bold>cannot be undone</bold>.
+
+language-delete-stats-intro = Things that will be deleted include:
+
+# Variables:
+#   lemmaCount: The total number of lemmas that will be deleted.
+#   definitionCount: The total number of definitions that will be deleted.
+#   partOfSpeechCount: The total number of parts of speech that will be deleted.
+#
+# Elements:
+#   <list-item>: Marks an item in the list.
+language-delete-stats-list =
+  <list-item>{$lemmaCount ->
+    [one] {$lemmaCount} headword
+   *[other] {$lemmaCount} headwords
+  }</list-item>
+  <list-item>{$definitionCount ->
+    [one] {$definitionCount} definition
+   *[other] {$definitionCount} definitions
+  }</list-item>
+  <list-item>{$partOfSpeechCount ->
+    [one] {$partOfSpeechCount} part of speech
+   *[other] {$partOfSpeechCount} parts of speech
+  }</list-item>
+
+language-delete-confirm = If you are completely sure you want to delete the language, press and hold the button below.
+
+language-delete-button = Delete entire language
+
+language-delete-error = An error occurred when deleting the language. It may help to try again.
+
+language-not-found-error = Language not found. This language has been deleted.
+
 ## Generic messages
 
 generic-loading = Loading...
@@ -531,6 +569,8 @@ generic-form-cancel = Cancel
 generic-edit-button = Edit
 
 generic-delete-button = Delete
+
+generic-press-and-hold-helper = Press and hold to confirm
 
 -check-form-data = Check the information above and try again.
 

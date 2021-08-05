@@ -5,6 +5,8 @@ import {
   DescriptionEditor as DescriptionEditorBase,
 } from '@condict/rich-text-editor';
 
+import ConfirmButton from '../confirm-button';
+
 export const Field = styled.div`
   display: flex;
   margin-block: 16px;
@@ -60,6 +62,15 @@ export const SubmitButton = styled(Button).attrs({
   bold: true,
   intent: 'accent',
   type: 'submit',
+})`
+  flex: none;
+  align-self: flex-end;
+  min-width: 128px;
+`;
+
+export const DeleteButton = styled(ConfirmButton).attrs({
+  bold: true,
+  intent: 'danger',
 })`
   flex: none;
   align-self: flex-end;
