@@ -48,6 +48,7 @@ export const Title = styled.h2`
 export const Description = styled.p`
   margin-top: 8px;
   margin-bottom: 8px;
+  line-height: 20px;
 `;
 
 export const Action = styled.div`
