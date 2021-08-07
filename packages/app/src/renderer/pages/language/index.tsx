@@ -27,6 +27,7 @@ import LanguageSearch from './language-search';
 import LemmaAndDefinitionList from './lemma-and-definition-list';
 import PartOfSpeechList from './part-of-speech-list';
 import editLanguagePanel from './edit-language-panel';
+import addPartOfSpeechPanel from './add-part-of-speech-panel';
 
 export type Props = {
   id: LanguageId;
@@ -54,6 +55,10 @@ const LanguagePage = (props: Props): JSX.Element => {
     void openPanel(editLanguagePanel(id));
   }, [id]);
 
+  const handleAddPartOfSpeech = useCallback(() => {
+    void openPanel(addPartOfSpeechPanel(id));
+  }, [id]);
+
   const updateTab = useUpdateTab();
   const title = data.state === 'data' && data.result.data?.language?.name;
   useEffect(() => {
@@ -67,18 +72,20 @@ const LanguagePage = (props: Props): JSX.Element => {
   useRefocusOnData(data, {ownedElem: pageRef});
 
   return (
-    <DataViewer
-      result={data}
-      render={({language}) => {
-        if (!language) {
-          // TODO: Better error screen
-          // TODO: l10n
-          return <p>Language not found.</p>;
-        }
+    <FlowContent>
+      <DataViewer
+        result={data}
+        render={({language}) => {
+          if (!language) {
+            return (
+              <p>
+                <Localized id='language-not-found-error'/>
+              </p>
+            );
+          }
 
-        const langPage = LanguageTarget(id, language.name);
-        return (
-          <FlowContent>
+          const langPage = LanguageTarget(id, language.name);
+          return <>
             <MainHeader>
               <Selectable as='h1'>{language.name}</Selectable>
               <HeaderAction onClick={handleEditLanguage}>
@@ -118,7 +125,7 @@ const LanguagePage = (props: Props): JSX.Element => {
               aria-labelledby={`${htmlId}-pos-title`}
               parent={langPage}
               partsOfSpeech={language.partsOfSpeech}
-              onAddPartOfSpeech={() => {/* TODO */}}
+              onAddPartOfSpeech={handleAddPartOfSpeech}
             />
 
             <h2 id={`${htmlId}-tags-title`}>
@@ -145,10 +152,10 @@ const LanguagePage = (props: Props): JSX.Element => {
                 </BodyText>
               )}
             </section>
-          </FlowContent>
-        );
-      }}
-    />
+          </>;
+        }}
+      />
+    </FlowContent>
   );
 };
 

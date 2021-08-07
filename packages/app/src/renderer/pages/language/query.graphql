@@ -75,3 +75,14 @@ mutation EditLanguageMut($id: LanguageId!, $data: EditLanguageInput!) {
 mutation DeleteLanguageMut($id: LanguageId!) {
   deleteLanguage(id: $id)
 }
+
+mutation AddPartOfSpeechMut($data: NewPartOfSpeechInput!) {
+  addPartOfSpeech(data: $data) {
+    id
+    name
+    language {
+      id
+      name
+    }
+  }
+}

@@ -552,6 +552,18 @@ language-delete-error = An error occurred when deleting the language. It may hel
 
 language-not-found-error = Language not found. This language has been deleted.
 
+language-add-part-of-speech-title = Add part of speech
+
+## Part of speech messages
+
+part-of-speech-name-label = Name
+
+part-of-speech-name-required-error = A part of speech name is required.
+
+part-of-speech-name-taken-error = The language already has a part of speech with this name. The name must be unique within the language.
+
+part-of-speech-save-error = An error occurred when saving the part of speech. {-check-form-data}
+
 ## Generic messages
 
 generic-loading = Loading...

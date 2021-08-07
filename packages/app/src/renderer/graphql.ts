@@ -80,6 +80,11 @@ export type LemmaId = IdOf<'Lemma'>;
 export type DefinitionId = IdOf<'Definition'>;
 
 /**
+ * Represents a part of speech ID.
+ */
+export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
+
+/**
  * The kind of a block element.
  */
 export type BlockKind =
@@ -106,11 +111,6 @@ export type BlockKind =
    */
   | 'ULIST_ITEM'
 ;
-
-/**
- * Represents a part of speech ID.
- */
-export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
 
 /**
  * Represents a tag ID.
@@ -247,5 +247,19 @@ export type EditLanguageInput = {
    * If set, updates the language's description.
    */
   description?: BlockElementInput[] | null | undefined;
+};
+
+/**
+ * Input type for a new part of speech.
+ */
+export type NewPartOfSpeechInput = {
+  /**
+   * The language that the part of speech will be added to.
+   */
+  languageId: LanguageId;
+  /**
+   * The display name of the part of speech.
+   */
+  name: string;
 };
 

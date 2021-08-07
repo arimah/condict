@@ -84,5 +84,11 @@ const HomePage = (props: PageProps): JSX.Element => {
 export default HomePage;
 
 const shouldReload: EventPredicate = event =>
-  // TODO: Add more event types
-  event.type === 'language';
+  // The home page shows a summary of the dictionary as well as recent changes,
+  // so we have to reload on almost any kind of event.
+  event.type === 'language' ||
+  event.type === 'lemma' ||
+  event.type === 'definition' ||
+  event.type === 'partOfSpeech' ||
+  event.type === 'inflectionTable' ||
+  event.type === 'tag';

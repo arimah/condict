@@ -1,0 +1,7 @@
+query CheckNameQuery($lang: LanguageId!, $name: String!) {
+  language(id: $lang) {
+    partOfSpeechByName(name: $name) {
+      id
+    }
+  }
+}

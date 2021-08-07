@@ -12,7 +12,8 @@ import {
   UtcInstant,
   TagId,
   Mutation,
-  EditLanguageInput
+  EditLanguageInput,
+  NewPartOfSpeechInput
 } from "../../graphql";
 
 export default "query($id:LanguageId!){language(id:$id){name,description{...RichTextBlockFragment}lemmaCount,firstLemma{term}lastLemma{term}recentDefinitions(page:{page:0,perPage:5}){nodes{id,term,partOfSpeech{name}description{...RichTextBlockFragment}timeCreated,timeUpdated}}partsOfSpeech{id,name,statistics{inflectionTableCount,definitionCount}}tags(page:{page:0,perPage:100}){page{page,hasNext}nodes{id,name}}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Query<{
@@ -275,5 +276,18 @@ export const DeleteLanguageMut = "mutation DeleteLanguageMut($id:LanguageId!){de
   id: LanguageId;
 }, {
   deleteLanguage: boolean | null;
+}>;
+
+export const AddPartOfSpeechMut = "mutation AddPartOfSpeechMut($data:NewPartOfSpeechInput!){addPartOfSpeech(data:$data){id,name,language{id,name}}}" as Mutation<{
+  data: NewPartOfSpeechInput;
+}, {
+  addPartOfSpeech: {
+    id: PartOfSpeechId;
+    name: string;
+    language: {
+      id: LanguageId;
+      name: string;
+    };
+  } | null;
 }>;
 
