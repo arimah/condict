@@ -2,11 +2,14 @@ import styled, {css} from 'styled-components';
 
 import Link from '../link';
 
+// The slightly weird margins and paddings here are to make sure a link title
+// has a fully visible focus rectangle, as the <div> with the content has
+// overflow: hidden.
+
 const BaseStyles = css`
   display: flex;
   flex-direction: row;
-  padding: 14px;
-  gap: 16px;
+  padding: 6px;
   border: 2px solid ${p => p.theme.defaultBg};
   border-radius: 7px;
   background-color: ${p => p.theme.defaultBg};
@@ -16,11 +19,13 @@ const BaseStyles = css`
     flex: none;
     align-self: center;
     margin-block: -8px;
+    padding-inline: 8px;
     color: ${p => p.theme.defaultFg};
   }
 
   > div {
     flex: 1 1 auto;
+    padding: 8px;
     /* Allows the title text to overflow with "...". Content that wraps will
      * still wrap correctly.
      */
