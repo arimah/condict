@@ -8,7 +8,7 @@ export const TabList = styled.div.attrs({
 })`
   flex: 1 1 auto;
   margin-block: 8px;
-  margin-inline-end: -8px;
+  margin-inline-end: -16px;
   max-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;

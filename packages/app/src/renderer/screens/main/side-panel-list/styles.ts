@@ -61,12 +61,12 @@ export const SidePanel = styled.div.attrs({
     p.state === 'background'
       ? '0'
       : p.state === 'current'
-        ? 'calc(100% - min(1650px, max(85%, 600px)))'
+        ? 'calc(100% - min(1650px, max(85%, 584px)))'
         // Add a little extra to prevent box-shadow bleed
         : 'calc(100% + 10px)'
   };
   width: 85%;
-  min-width: 600px;
+  min-width: 584px;
   max-width: 1650px;
   height: 100%;
   background-color: ${p => p.theme.defaultBg};

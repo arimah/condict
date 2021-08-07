@@ -15,19 +15,19 @@ export const MainContent = styled.main`
   position: relative;
 `;
 
-const SidebarMinWidth = 248;
+const SidebarMinWidth = 264;
 
-const SidebarMaxWidth = 320;
+const SidebarMaxWidth = 336;
 
 export const Sidebar = styled.nav`
   display: flex;
   box-sizing: border-box;
   flex-direction: column;
   grid-column: 1;
-  padding: 16px 8px;
+  padding: 24px 16px;
   gap: 8px;
 
-  width: 23vw;
+  width: 24vw;
   min-width: ${SidebarMinWidth}px;
   max-width: ${SidebarMaxWidth}px;
   max-height: 100vh;
