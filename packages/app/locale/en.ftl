@@ -584,6 +584,8 @@ generic-delete-button = Delete
 
 generic-press-and-hold-helper = Press and hold to confirm
 
+generic-release-to-confirm-helper = Release to confirm
+
 -check-form-data = Check the information above and try again.
 
 # Variables:

@@ -55,7 +55,11 @@ export type HelperProps = {
   $visible: boolean;
 };
 
-export const Helper = styled.span<HelperProps>`
+export const Helper = styled.span.attrs({
+  'aria-live': 'assertive',
+  'aria-relevant': 'text',
+  'aria-atomic': true,
+})<HelperProps>`
   display: block;
   padding: 8px 12px;
   position: absolute;

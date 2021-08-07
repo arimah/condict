@@ -26,13 +26,16 @@ interface HoldState {
   readonly startTime: number;
   readonly timeoutId: number;
   animFrameId: number;
+  confirmed: boolean;
 }
+
+type Helper = 'press' | 'release' | null;
 
 const ConfirmKey = Shortcut.parse('Enter Space');
 
 const ConfirmButton = (props: Props): JSX.Element => {
   const {
-    holdTime = 3000,
+    holdTime = 2000,
     className,
     bold,
     intent,
@@ -44,7 +47,7 @@ const ConfirmButton = (props: Props): JSX.Element => {
   const holdState = useRef<HoldState | null>(null);
   const progressRef = useRef<HTMLElement>(null);
   const countdownRef = useRef<HTMLElement>(null);
-  const [showHelper, setShowHelper] = useState(false);
+  const [helper, setHelper] = useState<Helper>(null);
 
   const beginHold = useCallback(() => {
     if (holdState.current) {
@@ -60,7 +63,10 @@ const ConfirmButton = (props: Props): JSX.Element => {
         return;
       }
 
-      const timeHeld = Date.now() - holdState.current.startTime;
+      const timeHeld = Math.min(
+        Date.now() - holdState.current.startTime,
+        holdTime
+      );
 
       if (progressRef.current) {
         const progress = Math.floor(100 * timeHeld / holdTime);
@@ -80,31 +86,57 @@ const ConfirmButton = (props: Props): JSX.Element => {
     holdState.current = {
       startTime: Date.now(),
       timeoutId: window.setTimeout(() => {
-        if (!holdState.current) {
+        const state = holdState.current;
+        if (!state) {
           return;
         }
 
-        window.cancelAnimationFrame(holdState.current.animFrameId);
-        holdState.current = null;
+        state.confirmed = true;
+        window.cancelAnimationFrame(state.animFrameId);
 
         if (progressRef.current) {
           progressRef.current.style.width = '100%';
         }
 
-        onConfirm();
+        // Tell the user to release now.
+        setHelper('release');
       }, holdTime),
       animFrameId: requestAnimationFrame(updateProgress),
+      confirmed: false,
     };
-  }, [holdTime, onConfirm]);
+  }, [holdTime]);
 
   const endHold = useCallback(() => {
-    if (holdState.current) {
-      window.clearTimeout(holdState.current.timeoutId);
-      window.cancelAnimationFrame(holdState.current.animFrameId);
-      holdState.current = null;
+    const state = holdState.current;
+    if (state) {
+      window.clearTimeout(state.timeoutId);
+      window.cancelAnimationFrame(state.animFrameId);
 
-      // Show the helper in case the user didn't understand what to do.
-      setShowHelper(true);
+      if (state.confirmed) {
+        void Promise.resolve().then(onConfirm);
+      } else {
+        // Show helper in case the user didn't understand what to do.
+        setHelper('press');
+      }
+
+      holdState.current = null;
+    }
+
+    if (progressRef.current) {
+      progressRef.current.style.width = '';
+    }
+  }, [onConfirm]);
+
+  const cancelHold = useCallback(() => {
+    const state = holdState.current;
+    if (state) {
+      window.clearTimeout(state.timeoutId);
+      window.cancelAnimationFrame(state.animFrameId);
+
+      // Show helper in case the user didn't understand what to do.
+      setHelper('press');
+
+      holdState.current = null;
     }
 
     if (progressRef.current) {
@@ -140,14 +172,19 @@ const ConfirmButton = (props: Props): JSX.Element => {
         onKeyUp={endHold}
         onMouseDown={handleMouseDown}
         onMouseUp={endHold}
-        onMouseLeave={endHold}
-        onBlur={endHold}
+        onMouseLeave={cancelHold}
+        onBlur={cancelHold}
       >
         <S.Content>{children}</S.Content>
         <S.Progress bold={bold} intent={intent} ref={progressRef}/>
       </S.Button>
-      <S.Helper id={id} $visible={showHelper}>
-        <Localized id='generic-press-and-hold-helper'/>
+      <S.Helper id={id} $visible={helper !== null}>
+        <Localized
+          id={helper === 'release'
+            ? 'generic-release-to-confirm-helper'
+            : 'generic-press-and-hold-helper'
+          }
+        />
       </S.Helper>
       <SROnly
         aria-live='assertive'
