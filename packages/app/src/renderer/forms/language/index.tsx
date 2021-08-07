@@ -8,6 +8,8 @@ import {LanguageId} from '../../graphql';
 import {TextField, DescriptionField, FormButtons} from '../../ui';
 import {useExecute} from '../../data';
 
+import {notEmpty, nameNotTaken} from '../validators';
+
 import {CheckNameQuery} from './query';
 
 export type Props = {
@@ -41,9 +43,6 @@ export const LanguageForm = (props: Props): JSX.Element => {
     onDirtyChange,
   } = props;
 
-  // The ID shouldn't change; we can safely get it from initialData.
-  const {id} = initialData;
-
   const form = useForm<LanguageData>({
     mode: 'onTouched',
     defaultValues: initialData,
@@ -63,24 +62,12 @@ export const LanguageForm = (props: Props): JSX.Element => {
           name='name'
           label={<Localized id='language-name-label'/>}
           validate={{
-            notEmpty: name => /\S/.test(name),
-            notTaken: async name => {
-              const res = await execute(CheckNameQuery, {name: name.trim()});
-              if (!res.data || res.errors) {
-                // Let validation pass until we try to submit the form.
-                if (res.errors) {
-                  console.error(
-                    'Check language name: GraphQL error:',
-                    res.errors
-                  );
-                }
-                return true;
-              }
-              return (
-                res.data.languageByName === null ||
-                res.data.languageByName.id === id
-              );
-            },
+            notEmpty,
+            notTaken: nameNotTaken(
+              initialData.id,
+              name => execute(CheckNameQuery, {name}),
+              data => data.languageByName?.id ?? null
+            ),
           }}
           errorMessages={{
             notTaken: <Localized id='language-name-taken-error'/>,

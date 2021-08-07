@@ -6,6 +6,8 @@ import {PartOfSpeechId, LanguageId} from '../../graphql';
 import {TextField, FormButtons} from '../../ui';
 import {useExecute} from '../../data';
 
+import {notEmpty, nameNotTaken} from '../validators';
+
 import {CheckNameQuery} from './query';
 
 export type Props = {
@@ -39,9 +41,6 @@ export const PartOfSpeechForm = (props: Props): JSX.Element => {
     onDirtyChange,
   } = props;
 
-  // The ID shouldn't change; we can safely get it from initialData.
-  const {id} = initialData;
-
   const form = useForm<PartOfSpeechData>({
     mode: 'onTouched',
     defaultValues: initialData,
@@ -61,33 +60,12 @@ export const PartOfSpeechForm = (props: Props): JSX.Element => {
           name='name'
           label={<Localized id='part-of-speech-name-label'/>}
           validate={{
-            notEmpty: name => /\S/.test(name),
-            notTaken: async name => {
-              const res = await execute(CheckNameQuery, {
-                lang: languageId,
-                name: name.trim(),
-              });
-              if (!res.data || res.errors) {
-                // Let validation pass until we try to submit the form.
-                if (res.errors) {
-                  console.error(
-                    'Check language name: GraphQL error:',
-                    res.errors
-                  );
-                }
-                return true;
-              }
-
-              if (!res.data.language) {
-                // The language has been deleted. An error will occur when the
-                // form is submitted.
-                return true;
-              }
-              return (
-                res.data.language.partOfSpeechByName === null ||
-                res.data.language.partOfSpeechByName.id === id
-              );
-            },
+            notEmpty,
+            notTaken: nameNotTaken(
+              initialData.id,
+              name => execute(CheckNameQuery, {lang: languageId, name}),
+              data => data.language?.partOfSpeechByName?.id ?? null
+            ),
           }}
           errorMessages={{
             notTaken: <Localized id='part-of-speech-name-taken-error'/>,
