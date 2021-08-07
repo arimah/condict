@@ -37,6 +37,19 @@ const PartOfSpeech = {
     return partOfSpeech;
   },
 
+  byName(
+    db: DataReader,
+    languageId: LanguageId,
+    name: string
+  ): PartOfSpeechRow | null {
+    return db.get<PartOfSpeechRow>`
+      select *
+      from parts_of_speech
+      where language_id = ${languageId}
+        and name = ${name}
+    `;
+  },
+
   allByLanguage(
     db: DataReader,
     languageId: LanguageId

@@ -51,6 +51,9 @@ type Language implements RecentItem {
   "The parts of speech that belong to this language."
   partsOfSpeech: [PartOfSpeech!]!
 
+  "Finds a part of speech by name."
+  partOfSpeechByName(name: String!): PartOfSpeech
+
   "The total number of lemmas in the dictionary."
   lemmaCount: Int!
 

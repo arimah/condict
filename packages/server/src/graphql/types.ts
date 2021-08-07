@@ -1093,6 +1093,12 @@ export type Language = {
    */
   partsOfSpeech: PartOfSpeech[];
   /**
+   * Finds a part of speech by name.
+   */
+  partOfSpeechByName: WithArgs<{
+    name: string;
+  }, PartOfSpeech | null>;
+  /**
    * The total number of lemmas in the dictionary.
    */
   lemmaCount: number;

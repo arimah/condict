@@ -34,6 +34,8 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
 
   partsOfSpeech: (p, _args, {db}) => PartOfSpeech.allByLanguage(db, p.id),
 
+  partOfSpeechByName: (p, {name}, {db}) => PartOfSpeech.byName(db, p.id, name),
+
   lemmaCount: p => p.lemma_count,
 
   lemmas: (p, {page, filter}, {db}, info) =>
