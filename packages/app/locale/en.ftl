@@ -469,10 +469,6 @@ language-define-word-button = Define a word
 
 language-recent-definitions-heading = Recent definitions
 
-language-definition-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
-
-language-definition-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
-
 language-parts-of-speech-heading = Parts of speech
 
 language-add-part-of-speech-button = Add part of speech
@@ -554,6 +550,12 @@ language-not-found-error = Language not found. This language has been deleted.
 
 language-add-part-of-speech-title = Add part of speech
 
+## Definition messages
+
+definition-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+definition-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
 ## Part of speech messages
 
 # Variables:
@@ -572,9 +574,9 @@ part-of-speech-table-used-by-definitions =
    *[other] Used by {$definitionCount} definitions
   }
 
-part-of-speech-table-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+part-of-speech-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
-part-of-speech-table-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+part-of-speech-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
 part-of-speech-add-table-button = Add inflection table
 
@@ -591,6 +593,12 @@ part-of-speech-edit-title = Edit part of speech
 part-of-speech-save-error = An error occurred when saving the part of speech. {-check-form-data}
 
 part-of-speech-not-found-error = Part of speech not found. This part of speech has been deleted.
+
+## Inflection table messages
+
+inflection-table-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+inflection-table-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
 ## Generic messages
 

@@ -54,8 +54,8 @@ const InflectionTableList = (props: Props): JSX.Element => {
                 <Localized
                   id={
                     table.timeCreated === table.timeUpdated
-                      ? 'part-of-speech-table-added-on'
-                      : 'part-of-speech-table-edited-on'
+                      ? 'inflection-table-added-on'
+                      : 'inflection-table-edited-on'
                   }
                   vars={{time: new Date(table.timeUpdated)}}
                 />

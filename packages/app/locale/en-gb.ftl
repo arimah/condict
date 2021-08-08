@@ -18,10 +18,14 @@ home-recent-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "sh
 
 home-recent-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
-language-definition-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+definition-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
-language-definition-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+definition-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
-part-of-speech-table-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+part-of-speech-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
-part-of-speech-table-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+part-of-speech-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+inflection-table-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+inflection-table-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}

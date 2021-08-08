@@ -154,8 +154,8 @@ const RecentDefinitionCard = (
         <Localized
           id={
             definition.timeCreated === definition.timeUpdated
-              ? 'language-definition-added-on'
-              : 'language-definition-edited-on'
+              ? 'definition-added-on'
+              : 'definition-edited-on'
           }
           vars={{time: new Date(definition.timeUpdated)}}
         />
