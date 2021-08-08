@@ -58,7 +58,10 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
 
   const htmlId = useUniqueId();
 
-  useRefocusOnData(data, {ownedElem: pageRef});
+  useRefocusOnData(data, {
+    isEmpty: data => data.partOfSpeech === null,
+    ownedElem: pageRef,
+  });
 
   return (
     <FlowContent>

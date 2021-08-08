@@ -69,7 +69,10 @@ const LanguagePage = (props: Props): JSX.Element => {
 
   const htmlId = useUniqueId();
 
-  useRefocusOnData(data, {ownedElem: pageRef});
+  useRefocusOnData(data, {
+    isEmpty: data => data.language === null,
+    ownedElem: pageRef,
+  });
 
   return (
     <FlowContent>

@@ -1,10 +1,11 @@
 import {RefObject, useRef, useEffect} from 'react';
 
-import {QueryResult} from '../data';
+import {Query, OperationResult} from '../graphql';
+import {QueryResult, DataResult} from '../data';
 
 import {getTabReachable} from '@condict/ui';
 
-export type Options = {
+export type Options<D> = {
   /**
    * The element to focus when data is available, or a function that focuses an
    * element. If errors are present, `errorFocus` will be tried first.
@@ -16,10 +17,23 @@ export type Options = {
    */
   errorFocus?: RefObject<HTMLElement> | FocusFn;
   /**
+   * The element that will receive focus when the data is empty (according to
+   * `isEmpty`), or a function that focuses an element under that condition. If
+   * errors are present, `errorFocus` will be tried first.
+   */
+  emptyFocus?: RefObject<HTMLElement> | FocusFn;
+  /**
    * The element that owns the content area. If focus is outside this area, then
    * the hook will not interfere with it.
    */
   ownedElem: RefObject<HTMLElement>;
+  /**
+   * Determines whether the data is empty. When the data goes from non-empty to
+   * empty, that typically signifies a deletion, in which case focus generally
+   * needs to be repaired. If specified, focus will be repaired when the data
+   * state goes from non-empty data to empty-data, or vice versa.
+   */
+  isEmpty?: (data: D) => boolean;
   /** If true, the focused element is not scrolled into view. */
   preventScroll?: boolean;
 };
@@ -37,16 +51,32 @@ export type FocusFn = () => void;
  * @param data The data to watch.
  * @param options Determines how to move focus.
  */
-export const useRefocusOnData = (
-  data: QueryResult<any>,
-  options: Options
+export const useRefocusOnData = <Q extends Query<any, any>>(
+  data: QueryResult<Q>,
+  options: Options<OperationResult<Q>>
 ): void => {
   const lastState = useRef(data.state);
+  const lastEmpty = useRef(false);
+
+  const isEmpty =
+    data.state === 'data' &&
+    data.result.data != null &&
+    (options.isEmpty?.(data.result.data) ?? false);
 
   useEffect(() => {
-    if (lastState.current === 'loading' && data.state === 'data') {
-      // We've gone from loading to data. Let's try to focus something.
+    const needRefocus =
+      data.state === 'data' && (
+        // If we were previously loading and now have data, always refocus.
+        lastState.current == 'loading' ||
+        // If we have data, refocus if the emptiness of the data has changed.
+        // If the data object itself is null or undefined, we view it as empty
+        // (usually the result of an error).
+        lastEmpty.current !== isEmpty
+      );
+    lastState.current = data.state;
+    lastEmpty.current = isEmpty;
 
+    if (needRefocus) {
       const {ownedElem, preventScroll} = options;
       // First we need to figure out whether we are even allowed to move the
       // focus anywhere. If the focus is inside ownedElem, then we own it and
@@ -65,12 +95,16 @@ export const useRefocusOnData = (
       if (canMoveFocus) {
         let hasFocus =
           // If there are errors and errorFocus is specified, try that first.
-          data.result.errors && tryFocus(options.errorFocus, preventScroll) ||
+          // We cannot get here unless data.state === 'data'.
+          (data as DataResult<Q>).result.errors &&
+            tryFocus(options.errorFocus, preventScroll) ||
+          // Empty data? Try `emptyFocus`.
+          isEmpty && tryFocus(options.emptyFocus, preventScroll) ||
           // Try regular focus next.
           tryFocus(options.focus, preventScroll);
 
-        // If we didn't focus `errorFocus` or `focus`, then try to find the
-        // first tab reachable thing inside ownedElem.
+        // If we didn't focus anything above, then try to find the first tab
+        // reachable thing inside ownedElem.
         if (!hasFocus && ownedElem.current) {
           const targets = getTabReachable(ownedElem.current, {
             includeRoot: false,
@@ -87,8 +121,7 @@ export const useRefocusOnData = (
         }
       }
     }
-    lastState.current = data.state;
-  }, [data.state]);
+  }, [data.state, isEmpty]);
 };
 
 const tryFocus = (
