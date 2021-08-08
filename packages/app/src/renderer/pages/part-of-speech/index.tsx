@@ -1,72 +1,111 @@
-import {Button, Spinner} from '@condict/ui';
+import {useCallback, useEffect} from 'react';
+import {Localized} from '@fluent/react';
 
-import {MainHeader, Link} from '../../ui';
-import {LanguagePage, PartOfSpeechPage as PartOfSpeechTarget} from '../../page';
-import {useUpdateTab} from '../../navigation';
-import {PartOfSpeechId} from '../../graphql';
-import {useData} from '../../data';
+import {useUniqueId} from '@condict/ui';
 
+import {useOpenPanel, useUpdateTab} from '../../navigation';
+import {LanguagePage} from '../../page';
+import {
+  DataViewer,
+  FlowContent,
+  MainHeader,
+  HeaderAction,
+  Subheader,
+  Selectable,
+  Link,
+} from '../../ui';
+import {PartOfSpeechId, LanguageId} from '../../graphql';
+import {EventPredicate, useData} from '../../data';
+import {useRefocusOnData} from '../../hooks';
+
+import {PageProps} from '../types';
+
+import InflectionTableList from './inflection-table-list';
+import editPartOfSpeechPanel from './edit-part-of-speech-panel';
 import PartOfSpeechQuery from './query';
 
 export type Props = {
   id: PartOfSpeechId;
-};
+  languageId: LanguageId;
+} & PageProps;
 
 const PartOfSpeechPage = (props: Props): JSX.Element => {
-  const {id} = props;
+  const {id, languageId, pageRef} = props;
 
-  const data = useData(PartOfSpeechQuery, {id});
+  const shouldReloadPage = useCallback<EventPredicate>(
+    event =>
+      event.type === 'partOfSpeech' && event.id === id ||
+      event.type === 'inflectionTable' && event.partOfSpeechId === id ||
+      event.type === 'definition' && event.languageId === languageId ||
+      event.type === 'language' && event.id === languageId,
+    [id]
+  );
+
+  const data = useData(PartOfSpeechQuery, {id}, shouldReloadPage);
+
+  const openPanel = useOpenPanel();
+  const handleEditPartOfSpeech = useCallback(() => {
+    void openPanel(editPartOfSpeechPanel(id));
+  }, [id]);
 
   const updateTab = useUpdateTab();
+  const title = data.state === 'data' && data.result.data?.partOfSpeech?.name;
+  useEffect(() => {
+    if (title) {
+      updateTab({title});
+    }
+  }, [title]);
 
-  if (data.state === 'loading') {
-    // TODO: Better loading screen
-    // TODO: l10n
-    return <p><Spinner/> Loading...</p>;
-  }
+  const htmlId = useUniqueId();
 
-  const pos = data.result.data?.partOfSpeech;
-  if (!pos) {
-    // TODO: Better error screen
-    // TODO: l10n
-    return <p>Part of speech not found.</p>;
-  }
+  useRefocusOnData(data, {ownedElem: pageRef});
 
-  const lang = pos.language;
-  const otherPosInLanguage = lang.partsOfSpeech.filter(p => p.id !== id);
+  return (
+    <FlowContent>
+      <DataViewer
+        result={data}
+        render={({partOfSpeech: pos}) => {
+          if (!pos) {
+            return (
+              <p>
+                <Localized id='part-of-speech-not-found-error'/>
+              </p>
+            );
+          }
 
-  const langPage = LanguagePage(lang.id, lang.name);
+          const lang = pos.language;
+          const langPage = LanguagePage(lang.id, lang.name);
+          return <>
+            <MainHeader>
+              <Selectable as='h1'>{pos.name}</Selectable>
+              <HeaderAction onClick={handleEditPartOfSpeech}>
+                <Localized id='generic-edit-button'/>
+              </HeaderAction>
+            </MainHeader>
+            <Subheader>
+              <Localized
+                id='part-of-speech-subheading'
+                vars={{language: lang.name}}
+                elems={{'lang-link': <Link to={langPage}/>}}
+              >
+                <></>
+              </Localized>
+            </Subheader>
 
-  return <>
-    <MainHeader>
-      <h1>{pos.name}</h1>
-    </MainHeader>
-    <p>This is the page for part of speech {pos.name} (ID: {id}).</p>
-    <p>Other parts of speech in the language <Link to={langPage}>{lang.name}</Link>:</p>
-    <ul>
-      {otherPosInLanguage.map(pos =>
-        <li key={pos.id}>
-          <Link to={PartOfSpeechTarget(pos.id, pos.name, langPage)}>
-            {pos.name}
-          </Link>
-        </li>
-      )}
-    </ul>
-    <hr/>
-    <p>
-      <Button
-        label='Mark tab as dirty'
-        bold
-        onClick={() => updateTab({dirty: true})}
+            <h2 id={`${htmlId}-tables-heading`}>
+              <Localized id='part-of-speech-tables-heading'/>
+            </h2>
+            <InflectionTableList
+              aria-labelledby={`${htmlId}-tables-heading`}
+              language={langPage}
+              tables={pos.inflectionTables}
+              onAddTable={() => { /* TODO */ }}
+            />
+          </>;
+        }}
       />
-      {' '}
-      <Button
-        label='Mark tab as not dirty'
-        bold
-        onClick={() => updateTab({dirty: false})}
-      />
-    </p>
-  </>;
+    </FlowContent>
+  );
 };
 
 export default PartOfSpeechPage;

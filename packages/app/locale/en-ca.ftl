@@ -21,3 +21,7 @@ home-recent-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "
 language-definition-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
 language-definition-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+part-of-speech-table-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+part-of-speech-table-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}

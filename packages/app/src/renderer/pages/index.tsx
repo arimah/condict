@@ -19,7 +19,13 @@ const PageContent = React.memo(({page, ...commonProps}: Props): JSX.Element => {
     case 'language':
       return <LanguagePage {...commonProps} id={page.id}/>;
     case 'partOfSpeech':
-      return <PartOfSpeechPage {...commonProps} id={page.id}/>;
+      return (
+        <PartOfSpeechPage
+          {...commonProps}
+          id={page.id}
+          languageId={page.language.id}
+        />
+      );
     default:
       return <UnimplementedPage/>;
   }

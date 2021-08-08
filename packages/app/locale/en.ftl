@@ -556,13 +556,41 @@ language-add-part-of-speech-title = Add part of speech
 
 ## Part of speech messages
 
+# Variables:
+#   language: The name of the language that the part of speech belongs to.
+#
+# Elements:
+#   <lang-link>: Link to the language that the part of speech belongs to. Wraps around $language.
+part-of-speech-subheading = Part of speech in language <lang-link>{$language}</lang-link>
+
+part-of-speech-tables-heading = Inflection tables
+
+part-of-speech-table-used-by-definitions =
+  {$definitionCount ->
+    [0] Not used by any definitions
+    [one] Used by {$definitionCount} definition
+   *[other] Used by {$definitionCount} definitions
+  }
+
+part-of-speech-table-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+part-of-speech-table-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+part-of-speech-add-table-button = Add inflection table
+
+part-of-speech-no-tables-description = There are no inflection tables in this part of speech. Inflection tables can be added to a word to display its inflected forms. Inflected forms can also be added to the dictionary as searchable terms.
+
 part-of-speech-name-label = Name
 
 part-of-speech-name-required-error = A part of speech name is required.
 
 part-of-speech-name-taken-error = The language already has a part of speech with this name. The name must be unique within the language.
 
+part-of-speech-edit-title = Edit part of speech
+
 part-of-speech-save-error = An error occurred when saving the part of speech. {-check-form-data}
+
+part-of-speech-not-found-error = Part of speech not found. This part of speech has been deleted.
 
 ## Generic messages
 

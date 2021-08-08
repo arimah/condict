@@ -22,6 +22,10 @@ export const HeaderAction = styled(Button)`
   min-width: 96px;
 `;
 
+export const Subheader = styled.p`
+  margin-block: -8px 12px;
+`;
+
 export const FlowContent = styled.div`
   max-width: 800px;
 `;

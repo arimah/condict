@@ -263,3 +263,13 @@ export type NewPartOfSpeechInput = {
   name: string;
 };
 
+/**
+ * Input type for editing an existing part of speech.
+ */
+export type EditPartOfSpeechInput = {
+  /**
+   * If set, renames the part of speech.
+   */
+  name?: string | null | undefined;
+};
+

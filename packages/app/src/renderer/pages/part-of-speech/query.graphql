@@ -5,11 +5,42 @@ query($id: PartOfSpeechId!) {
     language {
       id
       name
+    }
 
-      partsOfSpeech {
-        id
-        name
+    inflectionTables {
+      id
+      name
+      timeCreated
+      timeUpdated
+
+      usedByDefinitions {
+        page {
+          totalCount
+        }
       }
     }
+  }
+}
+
+query EditPartOfSpeechQuery($id: PartOfSpeechId!) {
+  partOfSpeech(id: $id) {
+    id
+    name
+
+    language {
+      id
+      name
+    }
+
+    isInUse
+  }
+}
+
+mutation EditPartOfSpeechMut(
+  $id: PartOfSpeechId!
+  $data: EditPartOfSpeechInput!
+) {
+  editPartOfSpeech(id: $id, data: $data) {
+    id
   }
 }

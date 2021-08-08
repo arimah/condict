@@ -5,10 +5,14 @@
 import {
   Query,
   PartOfSpeechId,
-  LanguageId
+  LanguageId,
+  InflectionTableId,
+  UtcInstant,
+  Mutation,
+  EditPartOfSpeechInput
 } from "../../graphql";
 
-export default "query($id:PartOfSpeechId!){partOfSpeech(id:$id){name,language{id,name,partsOfSpeech{id,name}}}}" as Query<{
+export default "query($id:PartOfSpeechId!){partOfSpeech(id:$id){name,language{id,name}inflectionTables{id,name,timeCreated,timeUpdated,usedByDefinitions{page{totalCount}}}}}" as Query<{
   id: PartOfSpeechId;
 }, {
   partOfSpeech: {
@@ -16,11 +20,41 @@ export default "query($id:PartOfSpeechId!){partOfSpeech(id:$id){name,language{id
     language: {
       id: LanguageId;
       name: string;
-      partsOfSpeech: {
-        id: PartOfSpeechId;
-        name: string;
-      }[];
     };
+    inflectionTables: {
+      id: InflectionTableId;
+      name: string;
+      timeCreated: UtcInstant;
+      timeUpdated: UtcInstant;
+      usedByDefinitions: {
+        page: {
+          totalCount: number;
+        };
+      };
+    }[];
+  } | null;
+}>;
+
+export const EditPartOfSpeechQuery = "query EditPartOfSpeechQuery($id:PartOfSpeechId!){partOfSpeech(id:$id){id,name,language{id,name}isInUse}}" as Query<{
+  id: PartOfSpeechId;
+}, {
+  partOfSpeech: {
+    id: PartOfSpeechId;
+    name: string;
+    language: {
+      id: LanguageId;
+      name: string;
+    };
+    isInUse: boolean;
+  } | null;
+}>;
+
+export const EditPartOfSpeechMut = "mutation EditPartOfSpeechMut($id:PartOfSpeechId!,$data:EditPartOfSpeechInput!){editPartOfSpeech(id:$id,data:$data){id}}" as Mutation<{
+  id: PartOfSpeechId;
+  data: EditPartOfSpeechInput;
+}, {
+  editPartOfSpeech: {
+    id: PartOfSpeechId;
   } | null;
 }>;
 
