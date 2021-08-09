@@ -4,24 +4,32 @@ import {Localized} from '@fluent/react';
 import {useUniqueId} from '@condict/ui';
 
 import {DataViewer, FlowContent, Tag, TagList} from '../../ui';
-import {useOpenPanel} from '../../navigation';
+import {useNavigateTo, useOpenPanel} from '../../navigation';
 import {EventPredicate, useData} from '../../data';
 import {useRefocusOnData} from '../../hooks';
+import {addLanguagePanel} from '../../panels';
 
 import {PageProps} from '../types';
 
 import HomeQuery from './query';
 import LanguageList from './language-list';
 import RecentChangeCard from './recent-change-card';
-import addLanguagePanel from './add-language-panel';
 import * as S from './styles';
 
 const HomePage = (props: PageProps): JSX.Element => {
   const data = useData(HomeQuery, {tagsPage: 0}, shouldReload);
 
+  const navigateTo = useNavigateTo();
   const openPanel = useOpenPanel();
   const handleAddLanguage = useCallback(() => {
-    void openPanel(addLanguagePanel);
+    void openPanel(addLanguagePanel).then(language => {
+      if (language) {
+        navigateTo(language, {
+          openInNewTab: true,
+          openInBackground: false,
+        });
+      }
+    });
   }, [openPanel]);
 
   const id = useUniqueId();

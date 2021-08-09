@@ -17,11 +17,11 @@ import {
 import {PartOfSpeechId, LanguageId} from '../../graphql';
 import {EventPredicate, useData} from '../../data';
 import {useRefocusOnData} from '../../hooks';
+import {editPartOfSpeechPanel} from '../../panels';
 
 import {PageProps} from '../types';
 
 import InflectionTableList from './inflection-table-list';
-import editPartOfSpeechPanel from './edit-part-of-speech-panel';
 import PartOfSpeechQuery from './query';
 
 export type Props = {

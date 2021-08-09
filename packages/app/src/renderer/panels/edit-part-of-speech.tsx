@@ -3,12 +3,12 @@ import {Localized} from '@fluent/react';
 
 import {Button} from '@condict/ui';
 
-import {DataViewer, FlowContent, MainHeader, HeaderAction} from '../../ui';
-import {PanelParams, PanelProps, useOpenPanel} from '../../navigation';
-import {PartOfSpeechData, PartOfSpeechForm} from '../../forms';
-import {PartOfSpeechId} from '../../graphql';
-import {useData, useExecute} from '../../data';
-import {useRefocusOnData} from '../../hooks';
+import {DataViewer, FlowContent, MainHeader, HeaderAction} from '../ui';
+import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
+import {PartOfSpeechData, PartOfSpeechForm} from '../forms';
+import {PartOfSpeechId} from '../graphql';
+import {useData, useExecute} from '../data';
+import {useRefocusOnData} from '../hooks';
 
 import {EditPartOfSpeechQuery, EditPartOfSpeechMut} from './query';
 
@@ -104,9 +104,9 @@ const EditPartOfSpeechPanel = (props: Props) => {
   );
 };
 
-const editLanguagePanel = (id: PartOfSpeechId): PanelParams<void> => ({
+export const editPartOfSpeechPanel = (
+  id: PartOfSpeechId
+): PanelParams<void> => ({
   // eslint-disable-next-line react/display-name
   render: props => <EditPartOfSpeechPanel id={id} {...props}/>,
 });
-
-export default editLanguagePanel;

@@ -4,7 +4,7 @@ import {Localized} from '@fluent/react';
 import {BodyText, useUniqueId} from '@condict/ui';
 
 import {LanguagePage as LanguageTarget, SearchPage} from '../../page';
-import {useOpenPanel, useUpdateTab} from '../../navigation';
+import {useNavigateTo, useOpenPanel, useUpdateTab} from '../../navigation';
 import {
   DataViewer,
   FlowContent,
@@ -19,6 +19,7 @@ import {
 import {LanguageId} from '../../graphql';
 import {EventPredicate, useData} from '../../data';
 import {useRefocusOnData} from '../../hooks';
+import {editLanguagePanel, addPartOfSpeechPanel} from '../../panels';
 
 import {PageProps} from '../types';
 
@@ -26,8 +27,6 @@ import LanguageQuery from './query';
 import LanguageSearch from './language-search';
 import LemmaAndDefinitionList from './lemma-and-definition-list';
 import PartOfSpeechList from './part-of-speech-list';
-import editLanguagePanel from './edit-language-panel';
-import addPartOfSpeechPanel from './add-part-of-speech-panel';
 
 export type Props = {
   id: LanguageId;
@@ -50,13 +49,21 @@ const LanguagePage = (props: Props): JSX.Element => {
 
   const data = useData(LanguageQuery, {id}, shouldReloadPage);
 
+  const navigateTo = useNavigateTo();
   const openPanel = useOpenPanel();
   const handleEditLanguage = useCallback(() => {
     void openPanel(editLanguagePanel(id));
   }, [id]);
 
   const handleAddPartOfSpeech = useCallback(() => {
-    void openPanel(addPartOfSpeechPanel(id));
+    void openPanel(addPartOfSpeechPanel(id)).then(partOfSpeech => {
+      if (partOfSpeech) {
+        navigateTo(partOfSpeech, {
+          openInNewTab: true,
+          openInBackground: false,
+        });
+      }
+    });
   }, [id]);
 
   const updateTab = useUpdateTab();

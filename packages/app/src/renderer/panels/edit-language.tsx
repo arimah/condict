@@ -7,14 +7,14 @@ import {
   descriptionToGraphQLInput,
 } from '@condict/rich-text-editor';
 
-import {DataViewer, FlowContent, MainHeader, HeaderAction} from '../../ui';
-import {PanelParams, PanelProps, useOpenPanel} from '../../navigation';
-import {LanguageData, LanguageForm} from '../../forms';
-import {LanguageId} from '../../graphql';
-import {useData, useExecute} from '../../data';
-import {useRefocusOnData} from '../../hooks';
+import {DataViewer, FlowContent, MainHeader, HeaderAction} from '../ui';
+import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
+import {LanguageData, LanguageForm} from '../forms';
+import {LanguageId} from '../graphql';
+import {useData, useExecute} from '../data';
+import {useRefocusOnData} from '../hooks';
 
-import deleteLanguagePanel from './delete-language-panel';
+import {deleteLanguagePanel} from './delete-language';
 import {EditLanguageQuery, EditLanguageMut} from './query';
 
 type Props = {
@@ -128,9 +128,7 @@ const EditLanguagePanel = (props: Props) => {
   );
 };
 
-const editLanguagePanel = (id: LanguageId): PanelParams<void> => ({
+export const editLanguagePanel = (id: LanguageId): PanelParams<void> => ({
   // eslint-disable-next-line react/display-name
   render: props => <EditLanguagePanel id={id} {...props}/>,
 });
-
-export default editLanguagePanel;

@@ -21,26 +21,3 @@ query($id: PartOfSpeechId!) {
     }
   }
 }
-
-query EditPartOfSpeechQuery($id: PartOfSpeechId!) {
-  partOfSpeech(id: $id) {
-    id
-    name
-
-    language {
-      id
-      name
-    }
-
-    isInUse
-  }
-}
-
-mutation EditPartOfSpeechMut(
-  $id: PartOfSpeechId!
-  $data: EditPartOfSpeechInput!
-) {
-  editPartOfSpeech(id: $id, data: $data) {
-    id
-  }
-}

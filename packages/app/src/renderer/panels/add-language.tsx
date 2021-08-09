@@ -3,15 +3,15 @@ import {Localized} from '@fluent/react';
 
 import {descriptionToGraphQLInput} from '@condict/rich-text-editor';
 
-import {FlowContent} from '../../ui';
-import {PanelParams, PanelProps, useNavigateTo} from '../../navigation';
-import {LanguagePage} from '../../page';
-import {LanguageData, LanguageForm} from '../../forms';
-import {useExecute} from '../../data';
+import {FlowContent} from '../ui';
+import {PanelParams, PanelProps, useNavigateTo} from '../navigation';
+import {LanguagePage} from '../page';
+import {LanguageData, LanguageForm} from '../forms';
+import {useExecute} from '../data';
 
 import {AddLanguageMut} from './query';
 
-const AddLanguagePanel = (props: PanelProps<void>) => {
+const AddLanguagePanel = (props: PanelProps<LanguagePage | null>) => {
   const {updatePanel, titleId, onResolve} = props;
 
   const navigateTo = useNavigateTo();
@@ -39,11 +39,7 @@ const AddLanguagePanel = (props: PanelProps<void>) => {
     // If there were no errors, we should have a language.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const lang = res.data!.addLanguage!;
-    navigateTo(LanguagePage(lang.id, lang.name), {
-      openInNewTab: true,
-      openInBackground: false,
-    });
-    onResolve();
+    onResolve(LanguagePage(lang.id, lang.name));
   }, [onResolve, navigateTo]);
 
   return (
@@ -54,16 +50,14 @@ const AddLanguagePanel = (props: PanelProps<void>) => {
       <LanguageForm
         submitError={submitError && <Localized id='language-save-error'/>}
         onSubmit={onSubmit}
-        onCancel={onResolve}
+        onCancel={() => onResolve(null)}
         onDirtyChange={dirty => updatePanel({dirty})}
       />
     </FlowContent>
   );
 };
 
-const addLanguagePanel: PanelParams<void> = {
+export const addLanguagePanel: PanelParams<LanguagePage | null> = {
   // eslint-disable-next-line react/display-name
   render: props => <AddLanguagePanel {...props}/>,
 };
-
-export default addLanguagePanel;

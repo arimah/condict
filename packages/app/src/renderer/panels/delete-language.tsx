@@ -3,10 +3,10 @@ import {Localized} from '@fluent/react';
 
 import {BodyText} from '@condict/ui';
 
-import {FlowContent, DeleteFormButtons} from '../../ui';
-import {PanelParams, PanelProps} from '../../navigation';
-import {LanguageId} from '../../graphql';
-import {useExecute} from '../../data';
+import {FlowContent, DeleteFormButtons} from '../ui';
+import {PanelParams, PanelProps} from '../navigation';
+import {LanguageId} from '../graphql';
+import {useExecute} from '../data';
 
 import {DeleteLanguageMut} from './query';
 
@@ -85,12 +85,10 @@ const DeleteLanguagePanel = (props: Props): JSX.Element => {
   );
 };
 
-const deleteLanguagePanel = (
+export const deleteLanguagePanel = (
   id: LanguageId,
   stats: LanguageStats
 ): PanelParams<boolean> => ({
   // eslint-disable-next-line react/display-name
   render: props => <DeleteLanguagePanel id={id} stats={stats} {...props}/>,
 });
-
-export default deleteLanguagePanel;
