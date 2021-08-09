@@ -590,6 +590,24 @@ part-of-speech-name-taken-error = The language already has a part of speech with
 
 part-of-speech-edit-title = Edit part of speech
 
+part-of-speech-delete-title = Delete part of speech
+
+# Elements:
+#   <bold>: Bold text.
+part-of-speech-delete-confirm = The part of speech and all inflection tables in it will be deleted. This <bold>cannot be undone</bold>.
+
+# Elements:
+#   <bold>: Bold text.
+part-of-speech-delete-not-possible =
+    This part of speech <bold>cannot be deleted</bold> because it is in use by {$definitionCount ->
+      [one] {$definitionCount} definition
+     *[other] {$definitionCount} definitions
+    }.
+
+part-of-speech-delete-button = Delete part of speech and tables
+
+part-of-speech-delete-error = An error occurred when deleting the part of speech. It may help to try again.
+
 part-of-speech-save-error = An error occurred when saving the part of speech. {-check-form-data}
 
 part-of-speech-not-found-error = Part of speech not found. This part of speech has been deleted.
@@ -617,6 +635,8 @@ generic-form-cancel = Cancel
 generic-edit-button = Edit
 
 generic-delete-button = Delete
+
+generic-close-button = Close
 
 generic-press-and-hold-helper = Press and hold to confirm
 

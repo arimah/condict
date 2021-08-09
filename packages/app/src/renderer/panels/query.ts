@@ -130,7 +130,7 @@ export const AddPartOfSpeechMut = "mutation AddPartOfSpeechMut($data:NewPartOfSp
   } | null;
 }>;
 
-export const EditPartOfSpeechQuery = "query EditPartOfSpeechQuery($id:PartOfSpeechId!){partOfSpeech(id:$id){id,name,language{id,name}isInUse}}" as Query<{
+export const EditPartOfSpeechQuery = "query EditPartOfSpeechQuery($id:PartOfSpeechId!){partOfSpeech(id:$id){id,name,language{id,name}isInUse,usedByDefinitions{page{totalCount}}}}" as Query<{
   id: PartOfSpeechId;
 }, {
   partOfSpeech: {
@@ -141,6 +141,11 @@ export const EditPartOfSpeechQuery = "query EditPartOfSpeechQuery($id:PartOfSpee
       name: string;
     };
     isInUse: boolean;
+    usedByDefinitions: {
+      page: {
+        totalCount: number;
+      };
+    };
   } | null;
 }>;
 
@@ -151,5 +156,11 @@ export const EditPartOfSpeechMut = "mutation EditPartOfSpeechMut($id:PartOfSpeec
   editPartOfSpeech: {
     id: PartOfSpeechId;
   } | null;
+}>;
+
+export const DeletePartOfSpeechMut = "mutation DeletePartOfSpeechMut($id:PartOfSpeechId!){deletePartOfSpeech(id:$id)}" as Mutation<{
+  id: PartOfSpeechId;
+}, {
+  deletePartOfSpeech: boolean | null;
 }>;
 

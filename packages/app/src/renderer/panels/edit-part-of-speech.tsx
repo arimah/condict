@@ -3,14 +3,19 @@ import {Localized} from '@fluent/react';
 
 import {Button} from '@condict/ui';
 
-import {DataViewer, FlowContent, MainHeader, HeaderAction} from '../ui';
-import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
+import {DataViewer, FlowContent, MainHeader} from '../ui';
+import {PanelParams, PanelProps} from '../navigation';
 import {PartOfSpeechData, PartOfSpeechForm} from '../forms';
 import {PartOfSpeechId} from '../graphql';
 import {useData, useExecute} from '../data';
 import {useRefocusOnData} from '../hooks';
 
-import {EditPartOfSpeechQuery, EditPartOfSpeechMut} from './query';
+import ConfirmDeleteButton from './confirm-delete-button';
+import {
+  EditPartOfSpeechQuery,
+  EditPartOfSpeechMut,
+  DeletePartOfSpeechMut,
+} from './query';
 
 type Props = {
   id: PartOfSpeechId;
@@ -19,7 +24,6 @@ type Props = {
 const EditPartOfSpeechPanel = (props: Props) => {
   const {id, updatePanel, titleId, panelRef, entering, onResolve} = props;
 
-  // const openPanel = useOpenPanel();
   const execute = useExecute();
 
   const data = useData(EditPartOfSpeechQuery, {id});
@@ -44,14 +48,15 @@ const EditPartOfSpeechPanel = (props: Props) => {
     onResolve();
   }, [id, onResolve]);
 
-  const onDelete = useCallback(() => {
+  const onDelete = useCallback(async () => {
     if (data.state === 'loading' || !data.result.data?.partOfSpeech) {
       return;
     }
 
     const {partOfSpeech} = data.result.data;
-    // TODO
-  }, [id, data, onResolve]);
+    const res = await execute(DeletePartOfSpeechMut, {id: partOfSpeech.id});
+    return res.errors;
+  }, [data, execute, onResolve]);
 
   const firstFieldRef = useRef<HTMLInputElement>(null);
 
@@ -61,16 +66,34 @@ const EditPartOfSpeechPanel = (props: Props) => {
     preventScroll: entering,
   });
 
+  const pos = data.state === 'data' && data.result.data?.partOfSpeech;
   return (
     <FlowContent>
       <MainHeader>
         <h1 id={titleId}>
           <Localized id='part-of-speech-edit-title'/>
         </h1>
-        {data.state === 'data' && data.result.data?.partOfSpeech &&
-          <HeaderAction intent='danger' onClick={onDelete}>
-            <Localized id='generic-delete-button'/>
-          </HeaderAction>}
+        {pos &&
+          <ConfirmDeleteButton
+            canDelete={!pos.isInUse}
+            description={
+              <Localized
+                id={
+                  pos.isInUse
+                    ? 'part-of-speech-delete-not-possible'
+                    : 'part-of-speech-delete-confirm'
+                }
+                vars={{definitionCount: pos.usedByDefinitions.page.totalCount}}
+                elems={{bold: <strong/>}}
+              >
+                <></>
+              </Localized>
+            }
+            confirmLabel={<Localized id='part-of-speech-delete-button'/>}
+            deleteError={<Localized id='part-of-speech-delete-error'/>}
+            onExecuteDelete={onDelete}
+            onAfterDelete={onResolve}
+          />}
       </MainHeader>
       <DataViewer
         result={data}

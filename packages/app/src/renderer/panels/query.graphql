@@ -57,6 +57,11 @@ query EditPartOfSpeechQuery($id: PartOfSpeechId!) {
     }
 
     isInUse
+    usedByDefinitions {
+      page {
+        totalCount
+      }
+    }
   }
 }
 
@@ -67,4 +72,8 @@ mutation EditPartOfSpeechMut(
   editPartOfSpeech(id: $id, data: $data) {
     id
   }
+}
+
+mutation DeletePartOfSpeechMut($id: PartOfSpeechId!) {
+  deletePartOfSpeech(id: $id)
 }
