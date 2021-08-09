@@ -179,12 +179,14 @@ const ConfirmButton = (props: Props): JSX.Element => {
         <S.Progress bold={bold} intent={intent} ref={progressRef}/>
       </S.Button>
       <S.Helper id={id} $visible={helper !== null}>
-        <Localized
-          id={helper === 'release'
-            ? 'generic-release-to-confirm-helper'
-            : 'generic-press-and-hold-helper'
-          }
-        />
+        <S.HelperContent>
+          <Localized
+            id={helper === 'release'
+              ? 'generic-release-to-confirm-helper'
+              : 'generic-press-and-hold-helper'
+            }
+          />
+        </S.HelperContent>
       </S.Helper>
       <SROnly
         aria-live='assertive'

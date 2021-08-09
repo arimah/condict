@@ -60,17 +60,12 @@ export const Helper = styled.span.attrs({
   'aria-relevant': 'text',
   'aria-atomic': true,
 })<HelperProps>`
-  display: block;
-  padding: 8px 12px;
+  display: flex;
   position: absolute;
   left: 50%;
   bottom: 100%;
-  white-space: nowrap;
+  width: calc(100% + 16px);
 
-  border-radius: 5px;
-  background-color: ${p => p.theme.general.boldBg};
-  color: ${p => p.theme.general.boldFg};
-  box-shadow: ${p => p.theme.shadow.elevation3};
   opacity: 0;
   transform: translateX(-50%);
 
@@ -86,6 +81,17 @@ export const Helper = styled.span.attrs({
       opacity: 1;
     }
   `}
+`;
+
+export const HelperContent = styled.span`
+  display: block;
+  margin-inline: auto;
+  padding: 8px 12px;
+
+  border-radius: 5px;
+  background-color: ${p => p.theme.general.boldBg};
+  color: ${p => p.theme.general.boldFg};
+  box-shadow: ${p => p.theme.shadow.elevation3};
 
   &::after {
     content: '';
