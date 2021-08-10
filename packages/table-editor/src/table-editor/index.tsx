@@ -2,6 +2,7 @@ import React, {
   Component,
   KeyboardEvent,
   MouseEvent as SyntheticMouseEvent,
+  FocusEvent,
   MutableRefObject,
   ReactNode,
 } from 'react';
@@ -29,10 +30,16 @@ export type Props<D, M extends Messages> = {
   table: Table<D>;
   className?: string;
   disabled: boolean;
+  readOnly: boolean;
   contextMenuExtra?: ReactNode;
   messages: M;
   commands: CommandGroup;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
   onChange: (table: Table<D>) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
 };
 
 export type TableCommandFn<D> = (table: Table<D>) => Table<D>;
@@ -50,6 +57,12 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
 
   public static defaultProps = {
     disabled: false,
+    readOnly: false,
+    'aria-label': undefined,
+    'aria-labelledby': undefined,
+    'aria-describedby': undefined,
+    onFocus: undefined,
+    onBlur: undefined,
   };
 
   public declare context: EditorContextValue<D, M>;
@@ -62,15 +75,20 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
     contextMenuOpen: false,
   };
 
-  private table = React.createRef<HTMLTableElement>();
-  private tableId = genUniqueId();
-  private contextMenuRef = React.createRef<MenuType>();
-  private contextMenuParent: MutableRefObject<RelativeParent> = {
+  private readonly table = React.createRef<HTMLTableElement>();
+  private readonly tableId = genUniqueId();
+  private readonly contextMenuRef = React.createRef<MenuType>();
+  private readonly contextMenuParent: MutableRefObject<RelativeParent> = {
     current: {x: 0, y: 0},
   };
+  private hasFocus = false;
+
+  private get canEdit(): boolean {
+    return !(this.props.disabled || this.props.readOnly);
+  }
 
   private handleKeyDown = (e: KeyboardEvent) => {
-    if (this.props.disabled || this.state.editing) {
+    if (!this.canEdit || this.state.editing) {
       return;
     }
 
@@ -91,7 +109,7 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
   };
 
   private handleKeyPress = (e: KeyboardEvent) => {
-    if (this.props.disabled || this.state.editing) {
+    if (!this.canEdit || this.state.editing) {
       return;
     }
 
@@ -125,7 +143,7 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
       e.preventDefault();
     }
 
-    if (this.props.disabled) {
+    if (!this.canEdit) {
       return;
     }
 
@@ -156,7 +174,7 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
 
   private handleMouseMove = (e: SyntheticMouseEvent) => {
     e.preventDefault();
-    if (this.props.disabled) {
+    if (!this.canEdit) {
       return;
     }
 
@@ -258,6 +276,23 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
     });
   };
 
+  private handleFocus = () => {
+    if (!this.hasFocus) {
+      this.hasFocus = true;
+      this.props.onFocus?.();
+    }
+  };
+
+  private handleBlur = (e: FocusEvent) => {
+    // relatedTarget is the element that receives focus
+    this.hasFocus =
+      this.table.current?.contains(e.relatedTarget as Element) ??
+      false;
+    if (!this.hasFocus) {
+      this.props.onBlur?.();
+    }
+  };
+
   private findNearestCellKey(node: HTMLElement) {
     const tableElem = this.table.current;
     while (
@@ -315,9 +350,13 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
       className,
       commands,
       disabled,
+      readOnly,
       table,
       messages,
       contextMenuExtra,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledby,
+      'aria-describedby': ariaDescribedby,
     } = this.props;
     const {mouseDown, editing, editingTypedValue, contextMenuOpen} = this.state;
     const {multiSelect} = this.context;
@@ -335,14 +374,23 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
                 : undefined
             }
             aria-disabled={disabled}
+            aria-readonly={readOnly}
             aria-multiselectable={multiSelect}
-            aria-describedby={`${this.tableId}-tableHint`}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledby}
+            aria-describedby={
+              ariaDescribedby
+                ? `${ariaDescribedby} ${this.tableId}-tableHint`
+                : `${this.tableId}-tableHint`
+            }
             className={contextMenuOpen ? 'force-focus' : undefined}
             onKeyDown={this.handleKeyDown}
             onKeyPress={this.handleKeyPress}
             onMouseDown={this.handleMouseDown}
             onMouseMove={mouseDown ? this.handleMouseMove : undefined}
             onContextMenu={this.handleContextMenu}
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
             ref={this.table}
           >
             <tbody>

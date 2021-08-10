@@ -1,4 +1,4 @@
-import React, {ReactNode, useMemo} from 'react';
+import {ReactNode, useMemo} from 'react';
 
 import {CommandSpecMap, CommandGroup} from '@condict/ui';
 
@@ -22,6 +22,23 @@ import {
   Messages,
 } from './types';
 
+export type Props = {
+  value: DefinitionTable;
+  term: string;
+  stems: ReadonlyMap<string, string>;
+  className?: string;
+  disabled?: boolean;
+  readOnly?: boolean;
+  contextMenuExtra?: ReactNode;
+  messages?: Messages;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  onChange: (value: DefinitionTable) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
+};
+
 const AllCommands: CommandSpecMap<DefinitionTableCommandFn> = {
   ...NavigationCommands,
   ...DefinitionTableCommands,
@@ -37,27 +54,14 @@ const Context: EditorContextValue<DefinitionTableData, Messages> = {
   hasContextMenu,
 };
 
-export type Props = {
-  value: DefinitionTable;
-  term: string;
-  stems: ReadonlyMap<string, string>;
-  className?: string;
-  disabled?: boolean;
-  contextMenuExtra?: ReactNode;
-  messages?: Messages;
-  onChange: (value: DefinitionTable) => void;
-};
-
 const DefinitionTableEditor = (props: Props): JSX.Element => {
   const {
     value,
     term,
     stems,
-    className,
-    disabled = false,
-    contextMenuExtra,
     messages = DefaultMessages,
     onChange,
+    ...otherProps
   } = props;
 
   const commands = useTableCommands({value, onChange, commands: AllCommands});
@@ -67,10 +71,8 @@ const DefinitionTableEditor = (props: Props): JSX.Element => {
     <StemsContext.Provider value={stemsContext}>
       <EditorContext.Provider value={Context}>
         <TableEditor
+          {...otherProps}
           table={value}
-          className={className}
-          disabled={disabled}
-          contextMenuExtra={contextMenuExtra}
           messages={messages}
           commands={commands}
           onChange={onChange}

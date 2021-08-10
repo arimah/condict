@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import {ReactNode} from 'react';
 
 import {CommandSpecMap, CommandGroup} from '@condict/ui';
 
@@ -25,6 +25,21 @@ import {
   Messages,
 } from './types';
 
+export type Props = {
+  value: InflectionTable;
+  className?: string;
+  disabled?: boolean;
+  readOnly?: boolean;
+  contextMenuExtra?: ReactNode;
+  messages?: Messages;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  onChange: (value: InflectionTable) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
+};
+
 const AllCommands: CommandSpecMap<InflectionTableCommandFn> = {
   ...NavigationCommands,
   ...MultiselectCommands,
@@ -47,23 +62,12 @@ const Context: EditorContextValue<InflectionTableData, Messages> = {
   hasContextMenu: () => true,
 };
 
-export type Props = {
-  value: InflectionTable;
-  className?: string;
-  disabled?: boolean;
-  contextMenuExtra?: ReactNode;
-  messages?: Messages;
-  onChange: (value: InflectionTable) => void;
-};
-
 const InflectionTableEditor = (props: Props): JSX.Element => {
   const {
     value,
-    className,
-    disabled = false,
-    contextMenuExtra,
     messages = DefaultMessages,
     onChange,
+    ...otherProps
   } = props;
 
   const commands = useTableCommands({value, onChange, commands: AllCommands});
@@ -71,10 +75,8 @@ const InflectionTableEditor = (props: Props): JSX.Element => {
   return (
     <EditorContext.Provider value={Context}>
       <TableEditor
+        {...otherProps}
         table={value}
-        className={className}
-        disabled={disabled}
-        contextMenuExtra={contextMenuExtra}
         messages={messages}
         commands={commands}
         onChange={onChange}
