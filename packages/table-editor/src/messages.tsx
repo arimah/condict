@@ -1,14 +1,6 @@
-import React from 'react';
-
 import {Messages} from './types';
 
 const DefaultMessages: Messages = {
-  // eslint-disable-next-line react/display-name
-  tableEditorHelper: () =>
-    <>Press <b>Enter</b> or <b>F2</b> to edit the current cell.</>,
-  // eslint-disable-next-line react/display-name
-  cellEditorHelper: () =>
-    <>Press <b>Enter</b> or <b>ESC</b> when done.</>,
   cellEditorSRHelper: () => 'Press enter or escape to save and return.',
   cellEditorTitle: () => 'Edit cell',
   cellValueLabel: () => 'Cell value',

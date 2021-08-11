@@ -13,12 +13,3 @@ export const Table = styled.table.attrs({
     outline: none;
   }
 `;
-
-export type HelperProps = {
-  disabled: boolean;
-};
-
-export const Helper = styled.div<HelperProps>`
-  margin-top: 8px;
-  color: ${p => p.disabled ? p.theme.general.disabledFg : p.theme.defaultFg};
-`;

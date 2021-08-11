@@ -1,4 +1,4 @@
-import {ReactNode, ComponentType} from 'react';
+import {ComponentType} from 'react';
 
 import {Table, Cell, SelectionShape} from './value';
 
@@ -49,16 +49,6 @@ export interface CellWithData<D> {
 }
 
 export interface Messages {
-  /**
-   * "Press <b>Enter</b> or <b>F2</b> to edit the current cell.", visible helper
-   * text beneath the table (when cell editor dialog is closed).
-   */
-  tableEditorHelper(): ReactNode;
-  /**
-   * "Press <b>Enter</b> or <b>ESC</b> when done.", visible helper text beneath
-   * the table (when cell editor dialog is open).
-   */
-  cellEditorHelper(): ReactNode;
   /**
    * "Press enter or escape to save and return.", SR-only helper text in cell
    * editor dialog.

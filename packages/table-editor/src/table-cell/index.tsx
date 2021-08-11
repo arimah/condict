@@ -102,6 +102,7 @@ const TableCell = React.memo(
     prevProps.disabled === nextProps.disabled &&
     prevProps.focused === nextProps.focused &&
     prevProps.selected === nextProps.selected &&
+    prevProps.messages === nextProps.messages &&
     prevProps.editing === nextProps.editing &&
     prevProps.editingTypedValue === nextProps.editingTypedValue
     // editingTable is only passed to the cell editor, and does not change

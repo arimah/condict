@@ -378,11 +378,7 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
             aria-multiselectable={multiSelect}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledby}
-            aria-describedby={
-              ariaDescribedby
-                ? `${ariaDescribedby} ${this.tableId}-tableHint`
-                : `${this.tableId}-tableHint`
-            }
+            aria-describedby={ariaDescribedby}
             className={contextMenuOpen ? 'force-focus' : undefined}
             onKeyDown={this.handleKeyDown}
             onKeyPress={this.handleKeyPress}
@@ -426,13 +422,7 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
               })}
             </tbody>
           </S.Table>
-          <Helper
-            tableId={this.tableId}
-            editing={editing !== null}
-            disabled={disabled}
-            table={table}
-            messages={messages}
-          />
+          <Helper tableId={this.tableId} table={table} messages={messages}/>
           <ContextMenu
             tableId={this.tableId}
             table={table}
