@@ -1808,6 +1808,12 @@ export type PartOfSpeech = {
    */
   inflectionTables: InflectionTable[];
   /**
+   * Finds an inflection table by name.
+   */
+  inflectionTableByName: WithArgs<{
+    name: string;
+  }, InflectionTable | null>;
+  /**
    * The language that the part of speech belongs to.
    */
   language: Language;

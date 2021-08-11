@@ -23,6 +23,9 @@ const PartOfSpeech: ResolversFor<PartOfSpeechType, PartOfSpeechRow> = {
   inflectionTables: (p, _args, {db}) =>
     InflectionTable.allByPartOfSpeech(db, p.id),
 
+  inflectionTableByName: (p, {name}, {db}) =>
+    InflectionTable.byName(db, p.id, name),
+
   language: (p, _args, {db}) => Language.byId(db, p.language_id),
 
   isInUse: (p, _args, {db}) => Definition.anyUsesPartOfSpeech(db, p.id),

@@ -17,6 +17,9 @@ type PartOfSpeech implements RecentItem {
   "The inflection tables defined in this part of speech."
   inflectionTables: [InflectionTable!]!
 
+  "Finds an inflection table by name."
+  inflectionTableByName(name: String!): InflectionTable
+
   "The language that the part of speech belongs to."
   language: Language!
 

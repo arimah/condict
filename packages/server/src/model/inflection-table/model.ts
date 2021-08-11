@@ -55,6 +55,19 @@ const InflectionTable = {
     return inflectionTable;
   },
 
+  byName(
+    db: DataReader,
+    partOfSpeechId: PartOfSpeechId,
+    name: string
+  ): InflectionTableRow | null {
+    return db.get`
+      select *
+      from inflection_tables
+      where part_of_speech_id = ${partOfSpeechId}
+        and name = ${name}
+    `;
+  },
+
   allByPartOfSpeech(
     db: DataReader,
     partOfSpeechId: PartOfSpeechId
