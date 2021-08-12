@@ -8,11 +8,11 @@ const CurlyBrace = /[{}]/;
 
 export type Props = {
   pattern: string;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 const InflectionPattern = React.memo((props: Props) => {
-  const {pattern, disabled} = props;
+  const {pattern, disabled = false} = props;
 
   // If the pattern doesn't contain any '{' or '}' at all (unlikely), we can
   // just return it as-is.
