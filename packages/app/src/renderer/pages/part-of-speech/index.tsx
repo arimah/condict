@@ -3,7 +3,7 @@ import {Localized} from '@fluent/react';
 
 import {useUniqueId} from '@condict/ui';
 
-import {useOpenPanel, useUpdateTab} from '../../navigation';
+import {useNavigateTo, useOpenPanel, useUpdateTab} from '../../navigation';
 import {LanguagePage} from '../../page';
 import {
   DataViewer,
@@ -17,7 +17,7 @@ import {
 import {PartOfSpeechId, LanguageId} from '../../graphql';
 import {EventPredicate, useData} from '../../data';
 import {useRefocusOnData} from '../../hooks';
-import {editPartOfSpeechPanel} from '../../panels';
+import {editPartOfSpeechPanel, addInflectionTablePanel} from '../../panels';
 
 import {PageProps} from '../types';
 
@@ -46,6 +46,18 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
   const openPanel = useOpenPanel();
   const handleEditPartOfSpeech = useCallback(() => {
     void openPanel(editPartOfSpeechPanel(id));
+  }, [id]);
+
+  const navigateTo = useNavigateTo();
+  const handleAddTable = useCallback(() => {
+    void openPanel(addInflectionTablePanel(id)).then(table => {
+      if (table) {
+        navigateTo(table, {
+          openInNewTab: true,
+          openInBackground: false,
+        });
+      }
+    });
   }, [id]);
 
   const updateTab = useUpdateTab();
@@ -102,7 +114,7 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
               aria-labelledby={`${htmlId}-tables-heading`}
               language={langPage}
               tables={pos.inflectionTables}
-              onAddTable={() => { /* TODO */ }}
+              onAddTable={handleAddTable}
             />
           </>;
         }}

@@ -1,0 +1,7 @@
+query CheckNameQuery($pos: PartOfSpeechId!, $name: String!) {
+  partOfSpeech(id: $pos) {
+    inflectionTableByName(name: $name) {
+      id
+    }
+  }
+}

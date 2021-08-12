@@ -13,7 +13,9 @@ import {
   PartOfSpeechId,
   EditLanguageInput,
   NewPartOfSpeechInput,
-  EditPartOfSpeechInput
+  EditPartOfSpeechInput,
+  NewInflectionTableInput,
+  InflectionTableId
 } from "../graphql";
 
 export const AddLanguageMut = "mutation AddLanguageMut($data:NewLanguageInput!){addLanguage(data:$data){id,name}}" as Mutation<{
@@ -162,5 +164,20 @@ export const DeletePartOfSpeechMut = "mutation DeletePartOfSpeechMut($id:PartOfS
   id: PartOfSpeechId;
 }, {
   deletePartOfSpeech: boolean | null;
+}>;
+
+export const AddInflectionTableMut = "mutation AddInflectionTableMut($data:NewInflectionTableInput!){addInflectionTable(data:$data){id,name,partOfSpeech{language{id,name}}}}" as Mutation<{
+  data: NewInflectionTableInput;
+}, {
+  addInflectionTable: {
+    id: InflectionTableId;
+    name: string;
+    partOfSpeech: {
+      language: {
+        id: LanguageId;
+        name: string;
+      };
+    };
+  } | null;
 }>;
 

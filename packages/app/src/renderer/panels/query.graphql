@@ -77,3 +77,18 @@ mutation EditPartOfSpeechMut(
 mutation DeletePartOfSpeechMut($id: PartOfSpeechId!) {
   deletePartOfSpeech(id: $id)
 }
+
+# Inflection table operations
+
+mutation AddInflectionTableMut($data: NewInflectionTableInput!) {
+  addInflectionTable(data: $data) {
+    id
+    name
+    partOfSpeech {
+      language {
+        id
+        name
+      }
+    }
+  }
+}

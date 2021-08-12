@@ -724,6 +724,8 @@ part-of-speech-save-error = An error occurred when saving the part of speech. {-
 
 part-of-speech-not-found-error = Part of speech not found. This part of speech has been deleted.
 
+part-of-speech-add-table-title = Add inflection table
+
 ## Inflection table messages
 
 inflection-table-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}

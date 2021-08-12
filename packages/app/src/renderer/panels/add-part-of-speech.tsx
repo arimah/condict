@@ -14,7 +14,7 @@ type Props = {
   languageId: LanguageId;
 } & PanelProps<PartOfSpeechPage | null>;
 
-const AddLanguagePanel = (props: Props) => {
+const AddPartOfSpeechPanel = (props: Props) => {
   const {languageId, updatePanel, titleId, onResolve} = props;
 
   const execute = useExecute();
@@ -65,5 +65,5 @@ export const addPartOfSpeechPanel = (
   languageId: LanguageId
 ): PanelParams<PartOfSpeechPage | null> => ({
   // eslint-disable-next-line react/display-name
-  render: props => <AddLanguagePanel {...props} languageId={languageId}/>,
+  render: props => <AddPartOfSpeechPanel {...props} languageId={languageId}/>,
 });
