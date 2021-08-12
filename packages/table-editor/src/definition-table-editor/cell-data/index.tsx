@@ -13,7 +13,7 @@ export type Props = CellDataProps<DefinitionTableData>;
 
 const CellData = ({cell, data, disabled}: Props): JSX.Element => {
   if (cell.header) {
-    return <S.CellData>{data.text}</S.CellData>;
+    return <S.CellData>{data.text || ' '}</S.CellData>;
   }
   if (data.customForm !== null) {
     return (
@@ -24,7 +24,7 @@ const CellData = ({cell, data, disabled}: Props): JSX.Element => {
   }
   return (
     <S.CellData inflected disabled={disabled}>
-      <InflectedForm pattern={data.text}/>
+      <InflectedForm pattern={data.text || ' '}/>
     </S.CellData>
   );
 };

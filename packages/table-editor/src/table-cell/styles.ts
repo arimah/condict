@@ -12,7 +12,7 @@ export type CellProps = {
 export const Cell = styled.td<CellProps>`
   position: relative;
   text-align: start;
-  white-space: pre-wrap;
+  white-space: pre;
   min-width: 16px;
   cursor: default;
 
