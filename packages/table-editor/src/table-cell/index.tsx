@@ -48,7 +48,7 @@ const TableCell = React.memo(
     // NB: Don't attempt to change the cell tag from th to td or vice versa
     // whilst editing the cell, as that will force the editor to be remounted
     // (i.e. closed).
-    // Also, don't read layout stuff or the cell key from editingCell, as cell
+    // Also, don't read layout stuff or the cell key from `editing`, as cell
     // editors aren't allowed to change those values and it can seriously mess
     // up the table.
     return (

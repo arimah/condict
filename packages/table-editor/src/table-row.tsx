@@ -57,8 +57,8 @@ const TableRow = React.memo(
     return (
       <tr>
         {cells.map(item => {
-          const focused = !!selection && selection.focus === item.cell.key;
-          const selected = !!selection && selection.cells.has(item.cell.key);
+          const focused = selection?.focus === item.cell.key;
+          const selected = selection?.cells.has(item.cell.key) ?? false;
 
           return (
             <TableCell

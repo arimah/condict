@@ -2,7 +2,7 @@ import styled, {css} from 'styled-components';
 
 import {Button, TextInput} from '@condict/ui';
 
-import {CellPopup as CellPopupBase} from '../../cell-dialog';
+import CellPopupBase from '../../cell-popup';
 
 export type CellInputProps = {
   inflected: boolean;

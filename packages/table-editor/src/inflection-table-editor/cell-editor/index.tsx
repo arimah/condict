@@ -32,7 +32,6 @@ type State = {
 
 export default class CellEditor extends PureComponent<Props, State> {
   private readonly dialogId = genUniqueId();
-  private readonly displayNameDescId = genUniqueId();
   private readonly inputRef = React.createRef<HTMLInputElement>();
   private readonly displayNameRef = React.createRef<HTMLInputElement>();
 
@@ -180,7 +179,7 @@ export default class CellEditor extends PureComponent<Props, State> {
             onChange={this.handleTextChange}
             ref={this.inputRef}
           />
-          <S.CellPopup>
+          <S.CellPopup cell={this.inputRef}>
             <SettingToggle
               checked={value.cell.header}
               label={messages.headerCellOption()}

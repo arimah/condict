@@ -135,7 +135,7 @@ export default class CellEditor extends PureComponent<Props, State> {
               {messages.cellDialogInputHelper()}
             </SROnly>}
           {value.data.customForm !== null &&
-            <S.CellPopup>
+            <S.CellPopup cell={this.inputRef}>
               <S.RevertButton
                 label={messages.useDefaultFormButton()}
                 onClick={this.handleRevertClick}

@@ -4,8 +4,6 @@ import EditorShortcuts from '../editor-shortcuts';
 
 import * as S from './styles';
 
-export {CellPopup} from './styles';
-
 export type Props = {
   id: string;
   'aria-label': string;
