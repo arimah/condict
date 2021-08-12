@@ -8,3 +8,8 @@ export {
   Props as PartOfSpeechFormProps,
   PartOfSpeechData,
 } from './part-of-speech';
+export {
+  InflectionTableForm,
+  Props as InflectionTableFormProps,
+  InflectionTableData,
+} from './inflection-table';

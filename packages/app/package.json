@@ -21,6 +21,7 @@
   "dependencies": {
     "@condict/platform": "^0.1.0",
     "@condict/rich-text-editor": "^0.1.0",
+    "@condict/table-editor": "^0.1.0",
     "@condict/server": "^0.1.0",
     "@condict/ui": "^0.1.0",
     "@fluent/bundle": "^0.16.1",

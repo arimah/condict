@@ -364,6 +364,118 @@ rich-text-link-search-definition-description = Definition in {$language}
 #   language: The name of the language that the lemma belongs to.
 rich-text-link-search-part-of-speech-description = Part of speech in {$language}
 
+## Table editor messages
+
+table-editor-save-cell-sr-helper = Press enter or escape to save and return
+
+table-editor-cell-editor-title = Edit cell
+
+table-editor-cell-value-label = Cell value
+
+# Describes a selection that spans 2 or more columns and 2 or more rows. This message is used when the selection spans at least 2 cells.
+#
+# Variables:
+#   totalCells: The total number of cells that are selected.
+#   firstColumn: The 1-based number of the first column in the selection.
+#   lastColumn: The 1-based number of the last column in the selection.
+#   firstRow: The 1-based number of the first row in the selection.
+#   lastRow: The 1-based number of the last row in the selection.
+table-editor-selection-columns-rows =
+  {$totalCells} cells selected: column {$firstColumn} through {$lastColumn}, row {$firstRow} through {$lastRow}
+
+# Describes a selection that spans 2 or more columns and 1 row. This message is used when the selection spans at least 2 cells.
+#
+# Variables:
+#   totalCells: The total number of cells that are selected.
+#   firstColumn: The 1-based number of the first column in the selection.
+#   lastColumn: The 1-based number of the last column in the selection.
+#   row: The 1-based number of the selected row.
+table-editor-selection-columns-1-row =
+  {$totalCells} cells selected: column {$firstColumn} through {$lastColumn}, row {$row}
+
+# Describes a selection that spans 1 column and 2 or more rows. This message is used when the selection spans at least 2 cells.
+#
+# Variables:
+#   totalCells: The total number of cells that are selected.
+#   column: The 1-based number of the selected column.
+#   firstRow: The 1-based number of the first row in the selection.
+#   lastRow: The 1-based number of the last row in the selection.
+table-editor-selection-1-column-rows =
+  {$totalCells} cells selected: column {$column}, row {$firstRow} through {$lastRow}
+
+table-editor-not-derived-lemma = Not added to the dictionary.
+
+table-editor-form-has-custom-name = Form has custom name.
+
+table-editor-header-cell-option-label = Header cell
+
+table-editor-derive-lemma-option-label = Add form to dictionary
+
+table-editor-form-name-label = Name of this form:
+
+table-editor-use-automatic-name-button = Use automatic name
+
+table-editor-automatic-name-helper = The name is calculated automatically. Type here to change it.
+
+table-editor-header-cell-menu = Header cell
+
+table-editor-derive-lemma-menu = Add form to dictionary
+
+table-editor-merge-cells = Merge cells
+
+table-editor-separate-cells = Separate cells
+
+table-editor-insert-submenu = Insert
+
+table-editor-insert-row-above = Row above
+
+table-editor-insert-row-above-button = Insert row above
+
+table-editor-insert-row-below = Row below
+
+table-editor-insert-row-below-button = Insert row below
+
+table-editor-insert-column-before = Column before
+
+table-editor-insert-column-before-button = Insert column before
+
+table-editor-insert-column-after = Column after
+
+table-editor-insert-column-after-button = Insert column after
+
+# Variables:
+#   count: The total number of selected rows.
+table-editor-delete-rows =
+  Delete {$count ->
+    [1] row
+   *[other] {$count} rows
+  }
+
+# Variables:
+#   count: The total number of selected columns.
+table-editor-delete-columns =
+  Delete {$count ->
+    [1] column
+   *[other] {$count} columns
+  }
+
+table-editor-form-is-inflected = Form is inflected automatically.
+
+table-editor-form-is-deleted = Form is deleted.
+
+# "Custom" here means that the form is not inflected according to the table's pre-defined rules. It does NOT mean that the form is *irregular* per se, so should not be translated as "irregular form".
+# It is acceptable to translate as "special form", "deviating form", or similar, so long as the text does not imply the form *has to be* irregular.
+table-editor-custom-form = Custom form.
+
+# See remarks on `table-editor-custom-form`.
+table-editor-cell-dialog-input-helper = Type here to define a custom form.
+
+table-editor-use-default-form-button = Revert to default form
+
+table-editor-use-default-form-menu = Use default form
+
+table-editor-delete-form-menu = Delete this form
+
 ## Home page messages
 
 home-languages-title = Languages
@@ -618,6 +730,16 @@ inflection-table-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle
 
 inflection-table-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
+inflection-table-name-label = Name
+
+inflection-table-name-required-error = An inflection table name is required.
+
+inflection-table-name-taken-error = The part of speech already has an inflection table with this name. The name must be unique within the part of speech.
+
+inflection-table-layout-label = Layout
+
+inflection-table-save-error = An error occurred when saving the inflection table. {-check-form-data}
+
 ## Generic messages
 
 generic-loading = Loading...
@@ -637,6 +759,10 @@ generic-edit-button = Edit
 generic-delete-button = Delete
 
 generic-close-button = Close
+
+generic-undo-button = Undo
+
+generic-redo-button = Redo
 
 generic-press-and-hold-helper = Press and hold to confirm
 

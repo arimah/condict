@@ -85,6 +85,11 @@ export type DefinitionId = IdOf<'Definition'>;
 export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
 
 /**
+ * Represents an inflection table ID.
+ */
+export type InflectionTableId = IdOf<'InflectionTable'>;
+
+/**
  * The kind of a block element.
  */
 export type BlockKind =
@@ -123,11 +128,6 @@ export type TagId = IdOf<'Tag'>;
  * `Date` type).
  */
 export type UtcInstant = number;
-
-/**
- * Represents an inflection table ID.
- */
-export type InflectionTableId = IdOf<'InflectionTable'>;
 
 /**
  * Input type for a new language.
@@ -272,4 +272,100 @@ export type EditPartOfSpeechInput = {
    */
   name?: string | null | undefined;
 };
+
+/**
+ * Input type for a new inflection table.
+ */
+export type NewInflectionTableInput = {
+  /**
+   * The part of speech that the inflection table will be added to.
+   */
+  partOfSpeechId: PartOfSpeechId;
+  /**
+   * The name of the inflection table.
+   */
+  name: string;
+  /**
+   * Describes the layout of the inflection table. Each row contains a number of
+   * cells; each cell is either a header or an inflected form.
+   */
+  layout: InflectionTableRowInput[];
+};
+
+/**
+ * Input type for an inflection table row. This type is used for both new and
+ * existing tables.
+ */
+export type InflectionTableRowInput = {
+  /**
+   * Header and data cells of the table.
+   */
+  cells: InflectionTableCellInput[];
+};
+
+/**
+ * Input type for an inflection table cell. This type combines header cells and
+ * inflected forms, and is used for both new and existing tables.
+ */
+export type InflectionTableCellInput = {
+  /**
+   * The column span of the cell. The value must be greater than 0. If omitted,
+   * defaults to 1.
+   */
+  columnSpan?: number | null | undefined;
+  /**
+   * The row span of the cell. The value must be greater than 0. If omitted,
+   * defaults to 1.
+   */
+  rowSpan?: number | null | undefined;
+  /**
+   * The text displayed in the header cell. If this field is set, the cell is a
+   * header.
+   */
+  headerText?: string | null | undefined;
+  /**
+   * The inflected form displayed in the cell. If this field is set, the cell is
+   * a data cell. In a new table, the cell's `id` property is ignored.
+   */
+  inflectedForm?: InflectedFormInput | null | undefined;
+};
+
+/**
+ * Input type for an inflected form. This type is used for both new and existing
+ * forms.
+ */
+export type InflectedFormInput = {
+  /**
+   * The ID of the inflected form. In a new table, this property is ignored. When
+   * editing an existing table, if set, it will update an existing form.
+   */
+  id?: InflectedFormId | null | undefined;
+  /**
+   * Whether the inflected form is automatically added to the dictionary.
+   */
+  deriveLemma: boolean;
+  /**
+   * A pattern, such as `{~}s`, which describes how to construct the inflected
+   * form.
+   */
+  inflectionPattern: string;
+  /**
+   * The display name of the inflected form.
+   */
+  displayName: string;
+  /**
+   * Determines whether the display name was entered specifically by the user. If
+   * false, the display name was derived automatically from the header cells in
+   * the containing table.
+   * 
+   * Note that `displayName` must be set regardless of the value of this field.
+   * The server does not compute any display names.
+   */
+  hasCustomDisplayName: boolean;
+};
+
+/**
+ * Represents an inflected form ID.
+ */
+export type InflectedFormId = IdOf<'InflectedForm'>;
 

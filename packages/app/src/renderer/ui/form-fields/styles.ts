@@ -1,9 +1,16 @@
 import styled, {css} from 'styled-components';
 
-import {Button, TextInput as TextInputBase} from '@condict/ui';
+import {
+  Button,
+  TextInput as TextInputBase,
+  Toolbar,
+} from '@condict/ui';
 import {
   DescriptionEditor as DescriptionEditorBase,
 } from '@condict/rich-text-editor';
+import {
+  InflectionTableEditor as InflectionTableEditorBase,
+} from '@condict/table-editor';
 
 import ConfirmButton from '../confirm-button';
 
@@ -44,6 +51,29 @@ export const TextInput = styled(TextInputBase)<TextInputProps>`
 
 export const DescriptionEditor = styled(DescriptionEditorBase)`
   margin-block: 0;
+`;
+
+export const TableBorder = styled.div`
+  border: 2px solid ${p => p.theme.general.border};
+  border-radius: 5px;
+`;
+
+export const TableToolbar = styled(Toolbar)`
+  border-radius: 3px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: 2px solid ${p => p.theme.general.border};
+`;
+
+export const TableContainer = styled.div`
+  display: flex;
+  overflow-x: auto;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+`;
+
+export const InflectionTableEditor = styled(InflectionTableEditorBase)`
+  border: 6px solid transparent;
 `;
 
 export const FormButtons = styled.div`
