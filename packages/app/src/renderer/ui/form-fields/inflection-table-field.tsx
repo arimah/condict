@@ -60,25 +60,49 @@ export type Props<D extends FieldValues> = {
  * tab will appear dirty if you so much as move the selection around inside the
  * table.
  *
- * Hence, the form value contains everything except those two properties, which
- * we fill as necessary. This does lead to a bit of extra work as we destroy and
- * recreate those things.
+ * Hence, the form value contains everything except those three properties. This
+ * does lead to a bit of extra work as we destroy and recreate those things.
+ * Unfortunately, react-hook-form cannot compare Maps and Sets when it
+ * calculates whether the form is dirty. We add our own `version` field to keep
+ * perfect track of dirtiness.
  */
 
-export type InflectionTableValue = Omit<
+export type InflectionTableValue = {
+  readonly version: number;
+} & Omit<
   InflectionTable,
   'selection' | 'layout' | 'selectionShape'
 >;
 
 export const InflectionTableValue = {
-  fromTable(table: InflectionTable): InflectionTableValue {
-    const {
-      selection: _s,
-      layout: _l,
-      selectionShape: _sh,
-      ...value
-    } = table;
-    return value;
+  empty(): InflectionTableValue {
+    // Generic empty table
+    return InflectionTableValue.fromGraphQLResponse([
+      {
+        cells: [
+          {
+            inflectedForm: {
+              id: null,
+              inflectionPattern: '',
+              deriveLemma: true,
+              displayName: '',
+              hasCustomDisplayName: false,
+            },
+          },
+        ],
+      },
+    ]);
+  },
+
+  fromTable(table: InflectionTable, version = 0): InflectionTableValue {
+    return {
+      cellData: table.cellData,
+      cells: table.cells,
+      defaultData: table.defaultData,
+      isCellEmpty: table.isCellEmpty,
+      rows: table.rows,
+      version,
+    };
   },
 
   toTable(value: InflectionTableValue): InflectionTable {
@@ -126,16 +150,20 @@ export const InflectionTableField = React.memo((
     );
   }
 
+  const version = useRef(0);
   const handleChange = useCallback((value: InflectionTable) => {
     // It should not be possible to get here without a valid history.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const history = historyRef.current!;
+    let nextVersion: number;
     if (shouldReplaceHistory(history.current, value)) {
       HistoryValue.replace(history, value);
+      nextVersion = version.current;
     } else {
       HistoryValue.push(history, value);
+      nextVersion = ++version.current;
     }
-    onChange(InflectionTableValue.fromTable(value));
+    onChange(InflectionTableValue.fromTable(value, nextVersion));
   }, [onChange]);
 
   // Logic above ensures historyRef.current is non-null.
