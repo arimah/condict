@@ -62,6 +62,7 @@ export const MainColumn = styled.div`
   padding-block: 24px;
   padding-inline: 16px 32px;
   flex: 1 1 auto;
+  overflow: auto;
 
   h1 {
     margin-top: 36px;

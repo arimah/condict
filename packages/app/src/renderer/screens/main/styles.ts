@@ -1,5 +1,11 @@
 import styled from 'styled-components';
 
+const SidebarIdealWidth = '24vw';
+
+const SidebarMinWidth = '264px';
+
+const SidebarMaxWidth = '336px';
+
 export const MainScreen = styled.div`
   display: grid;
   grid-template-columns: auto 1fr;
@@ -11,13 +17,16 @@ export const MainScreen = styled.div`
 export const MainContent = styled.main`
   box-sizing: border-box;
   grid-column: 2;
+  width: calc(
+    100vw - clamp(
+      ${SidebarMinWidth},
+      ${SidebarIdealWidth},
+      ${SidebarMaxWidth}
+    )
+  );
   height: 100vh;
   position: relative;
 `;
-
-const SidebarMinWidth = 264;
-
-const SidebarMaxWidth = 336;
 
 export const Sidebar = styled.nav`
   display: flex;
@@ -27,10 +36,10 @@ export const Sidebar = styled.nav`
   padding: 24px 16px;
   gap: 8px;
 
-  width: 24vw;
-  min-width: ${SidebarMinWidth}px;
-  max-width: ${SidebarMaxWidth}px;
-  max-height: 100vh;
+  width: ${SidebarIdealWidth};
+  min-width: ${SidebarMinWidth};
+  max-width: ${SidebarMaxWidth};
+  height: 100vh;
 
   background-color: ${p => p.theme.sidebar.bg};
   color: ${p => p.theme.sidebar.fg};
