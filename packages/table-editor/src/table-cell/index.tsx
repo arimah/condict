@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Ref} from 'react';
 
 import {useEditor} from '../context';
 import {Table} from '../value';
@@ -16,6 +16,7 @@ export type Props<D, M extends Messages> = {
   editingTable: Table<D> | null;
   editingTypedValue: string | null;
   messages: Messages & M;
+  cellRef: Ref<HTMLElement>;
   onInput: CellEditFn<D>;
   onCommit: CellEditFn<D>;
 };
@@ -36,6 +37,7 @@ const TableCell = React.memo(
       editingTable,
       editingTypedValue,
       messages,
+      cellRef,
       onInput,
       onCommit,
     } = props;
@@ -66,6 +68,7 @@ const TableCell = React.memo(
         aria-labelledby={`${cellKey}-content`}
         aria-describedby={`${tableId}-cellHint`}
         aria-owns={editing ? `${cellKey}-editor` : undefined}
+        ref={cellRef as Ref<HTMLTableDataCellElement>}
       >
         <S.CellDataWrapper id={`${cellKey}-content`}>
           <CellData

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Ref} from 'react';
 
 import {Table, SelectionShape} from './value';
 import TableCell from './table-cell';
@@ -13,6 +13,7 @@ export type Props<D, M extends Messages> = {
   editingTable: Table<D> | null;
   editingTypedValue: string | null;
   messages: Messages & M;
+  focusedCellRef: Ref<HTMLElement>;
   onInput: CellEditFn<D>;
   onCommit: CellEditFn<D>;
 };
@@ -50,6 +51,7 @@ const TableRow = React.memo(
       editingTable,
       editingTypedValue,
       messages,
+      focusedCellRef,
       onInput,
       onCommit,
     } = props;
@@ -80,6 +82,7 @@ const TableRow = React.memo(
                   : null
               }
               messages={messages}
+              cellRef={focused ? focusedCellRef : null}
               onInput={onInput}
               onCommit={onCommit}
             />
@@ -97,7 +100,8 @@ const TableRow = React.memo(
     prevProps.selection === nextProps.selection &&
     prevProps.messages === nextProps.messages &&
     prevProps.editing === nextProps.editing &&
-    prevProps.editingTypedValue === nextProps.editingTypedValue
+    prevProps.editingTypedValue === nextProps.editingTypedValue &&
+    prevProps.focusedCellRef === nextProps.focusedCellRef
     // editingTable is only passed to the cell editor, and does not change
     // (the new value is committed when the editor is closed), so we don't
     // need to check that.

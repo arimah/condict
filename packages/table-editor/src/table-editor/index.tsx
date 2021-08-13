@@ -77,11 +77,23 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
 
   private readonly table = React.createRef<HTMLTableElement>();
   private readonly tableId = genUniqueId();
+  private readonly focusedCellRef = React.createRef<HTMLElement>();
   private readonly contextMenuRef = React.createRef<MenuType>();
   private readonly contextMenuParent: MutableRefObject<RelativeParent> = {
     current: {x: 0, y: 0},
   };
   private hasFocus = false;
+
+  public componentDidUpdate(): void {
+    // NB: We don't need this logic in componentDidMount, as it is impossible
+    // for the table to be focused immediately after mount.
+    if (this.hasFocus) {
+      this.focusedCellRef.current?.scrollIntoView({
+        block: 'nearest',
+        inline: 'nearest',
+      });
+    }
+  }
 
   private get canEdit(): boolean {
     return !(this.props.disabled || this.props.readOnly);
@@ -415,6 +427,7 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
                       containsEditor ? editingTypedValue : null
                     }
                     messages={messages}
+                    focusedCellRef={this.focusedCellRef}
                     onInput={this.handleEditInput}
                     onCommit={this.handleEditCommit}
                   />
