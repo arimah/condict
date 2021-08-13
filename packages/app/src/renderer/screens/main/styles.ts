@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
-const SidebarIdealWidth = '24vw';
-
-const SidebarMinWidth = '264px';
-
-const SidebarMaxWidth = '336px';
+import {
+  SidebarIdealWidth,
+  SidebarMinWidth,
+  SidebarMaxWidth,
+  MainContentWidth,
+} from '../../ui';
 
 export const MainScreen = styled.div`
   display: grid;
@@ -17,13 +18,7 @@ export const MainScreen = styled.div`
 export const MainContent = styled.main`
   box-sizing: border-box;
   grid-column: 2;
-  width: calc(
-    100vw - clamp(
-      ${SidebarMinWidth},
-      ${SidebarIdealWidth},
-      ${SidebarMaxWidth}
-    )
-  );
+  width: calc(${MainContentWidth});
   height: 100vh;
   position: relative;
 `;

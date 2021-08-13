@@ -2,6 +2,21 @@ import styled from 'styled-components';
 
 import {Button} from '@condict/ui';
 
+// Dimensions
+
+export const SidebarIdealWidth = '24vw';
+
+export const SidebarMinWidth = '264px';
+
+export const SidebarMaxWidth = '336px';
+
+/**
+ * CSS expression, minus the `calc()`, that evaluates to the width of the main
+ * content area.
+ */
+export const MainContentWidth =
+  `100vw - clamp(${SidebarMinWidth}, ${SidebarIdealWidth}, ${SidebarMaxWidth})`;
+
 // General-purpose simple styled components.
 
 export const MainHeader = styled.div`
@@ -28,6 +43,13 @@ export const Subheader = styled.p`
 
 export const FlowContent = styled.div`
   max-width: 800px;
+`;
+
+// NB: The 96px value MUST be synchronised with the left gutter and the various
+// left/right paddings in the tab panel area!
+// 64px gutter + 32px inline-end padding = 96px
+export const FullWidth = styled.div`
+  width: calc(${MainContentWidth} - 96px);
 `;
 
 export const Selectable = styled.div`

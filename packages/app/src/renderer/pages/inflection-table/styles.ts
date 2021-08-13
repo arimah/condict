@@ -1,13 +1,14 @@
 import styled from 'styled-components';
 
-import {Selectable} from '../../ui';
+import {FullWidth} from '../../ui';
 
-export const TableContainer = styled(Selectable).attrs({
+export const TableContainer = styled(FullWidth).attrs({
   as: 'section',
 })`
   margin-block: 16px;
   padding-block: 8px;
   overflow-x: auto;
+  user-select: text;
 `;
 
 export const Table = styled.table`
