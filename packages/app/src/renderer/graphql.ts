@@ -369,3 +369,21 @@ export type InflectedFormInput = {
  */
 export type InflectedFormId = IdOf<'InflectedForm'>;
 
+/**
+ * Input type for editing an existing inflection table. It is not possible to move
+ * an inflection table to another part of speech.
+ */
+export type EditInflectionTableInput = {
+  /**
+   * If set, renames the inflection table.
+   */
+  name?: string | null | undefined;
+  /**
+   * If set, updates the layout of the inflection table.
+   * 
+   * If the table is used by any definitions, changing the layout will cause a new
+   * new layout version to be created. See the documentation of `InflectionTable`.
+   */
+  layout?: InflectionTableRowInput[] | null | undefined;
+};
+

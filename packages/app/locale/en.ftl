@@ -708,6 +708,9 @@ part-of-speech-delete-title = Delete part of speech
 #   <bold>: Bold text.
 part-of-speech-delete-confirm = The part of speech and all inflection tables in it will be deleted. This <bold>cannot be undone</bold>.
 
+# Variables:
+#   definitionCount: The total number of definitions that use the part of speech.
+#
 # Elements:
 #   <bold>: Bold text.
 part-of-speech-delete-not-possible =
@@ -728,6 +731,17 @@ part-of-speech-add-table-title = Add inflection table
 
 ## Inflection table messages
 
+# Variables:
+#   partOfSpeech: The name of the part of speech that the table belongs to.
+#   language: The name of the language that the table belongs to.
+#
+# Elements:
+#   <pos-link>: Link to the part of speech that the table belongs to. Wraps around $partOfSpeech.
+#   <lang-link>: Link to the language that the table belongs to. Wraps around $language.
+inflection-table-subheading = Inflection table in part of speech <pos-link>{$partOfSpeech}</pos-link>, in language <lang-link>{$language}</lang-link>
+
+inflection-table-layout-heading = Layout
+
 inflection-table-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
 inflection-table-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
@@ -740,7 +754,30 @@ inflection-table-name-taken-error = The part of speech already has an inflection
 
 inflection-table-layout-label = Layout
 
+inflection-table-edit-title = Edit inflection table
+
+# Elements:
+#   <bold>: Bold text.
+inflection-table-delete-confirm = The inflection table will be deleted. This <bold>cannot be undone</bold>.
+
+# Variables:
+#   definitionCount: The total number of definitions that use the inflection table.
+#
+# Elements:
+#   <bold>: Bold text.
+inflection-table-delete-not-possible =
+  This inflection table <bold>cannot be deleted</bold> because it is in use by {$definitionCount ->
+    [one] {$definitionCount} definition
+   *[other] {$definitionCount} definitions
+  }.
+
+inflection-table-delete-button = Delete inflection table
+
+inflection-table-delete-error = An error occurred when deleting the inflection table. It may help to try again.
+
 inflection-table-save-error = An error occurred when saving the inflection table. {-check-form-data}
+
+inflection-table-not-found-error = Inflection table not found. This inflection table has been deleted.
 
 ## Generic messages
 

@@ -39,12 +39,12 @@ const EditPartOfSpeechPanel = (props: Props) => {
     if (res.errors) {
       // TODO: Distinguish between different kinds of errors.
       // TODO: Prompt for reauthentication when necessary.
-      console.log('Could not edit language:', res.errors);
+      console.log('Could not edit part of speech:', res.errors);
       setSubmitError(true);
       return;
     }
 
-    // If there were no errors, we should have an updated language.
+    // If there were no errors, we should have an updated part of speech.
     onResolve();
   }, [id, onResolve]);
 

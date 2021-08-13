@@ -15,7 +15,9 @@ import {
   NewPartOfSpeechInput,
   EditPartOfSpeechInput,
   NewInflectionTableInput,
-  InflectionTableId
+  InflectionTableId,
+  InflectedFormId,
+  EditInflectionTableInput
 } from "../graphql";
 
 export const AddLanguageMut = "mutation AddLanguageMut($data:NewLanguageInput!){addLanguage(data:$data){id,name}}" as Mutation<{
@@ -179,5 +181,58 @@ export const AddInflectionTableMut = "mutation AddInflectionTableMut($data:NewIn
       };
     };
   } | null;
+}>;
+
+export const EditInflectionTableQuery = "query EditInflectionTableQuery($id:InflectionTableId!){inflectionTable(id:$id){id,name,layout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern,deriveLemma,displayName,hasCustomDisplayName}}...on InflectionTableHeaderCell{headerText}}}isInUse}partOfSpeech{id}isInUse,usedByDefinitions{page{totalCount}}}}" as Query<{
+  id: InflectionTableId;
+}, {
+  inflectionTable: {
+    id: InflectionTableId;
+    name: string;
+    layout: {
+      rows: {
+        cells: ({
+          rowSpan: number;
+          columnSpan: number;
+          inflectedForm: {
+            id: InflectedFormId;
+            inflectionPattern: string;
+            deriveLemma: boolean;
+            displayName: string;
+            hasCustomDisplayName: boolean;
+          };
+        } | {
+          rowSpan: number;
+          columnSpan: number;
+          headerText: string;
+        })[];
+      }[];
+      isInUse: boolean;
+    };
+    partOfSpeech: {
+      id: PartOfSpeechId;
+    };
+    isInUse: boolean;
+    usedByDefinitions: {
+      page: {
+        totalCount: number;
+      };
+    };
+  } | null;
+}>;
+
+export const EditInflectionTableMut = "mutation EditInflectionTableMut($id:InflectionTableId!,$data:EditInflectionTableInput!){editInflectionTable(id:$id,data:$data){id}}" as Mutation<{
+  id: InflectionTableId;
+  data: EditInflectionTableInput;
+}, {
+  editInflectionTable: {
+    id: InflectionTableId;
+  } | null;
+}>;
+
+export const DeleteInflectionTableMut = "mutation DeleteInflectionTableMut($id:InflectionTableId!){deleteInflectionTable(id:$id)}" as Mutation<{
+  id: InflectionTableId;
+}, {
+  deleteInflectionTable: boolean | null;
 }>;
 

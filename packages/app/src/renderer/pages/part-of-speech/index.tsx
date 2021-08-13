@@ -38,7 +38,7 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
       event.type === 'inflectionTable' && event.partOfSpeechId === id ||
       event.type === 'definition' && event.languageId === languageId ||
       event.type === 'language' && event.id === languageId,
-    [id]
+    [id, languageId]
   );
 
   const data = useData(PartOfSpeechQuery, {id}, shouldReloadPage);

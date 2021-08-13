@@ -92,3 +92,57 @@ mutation AddInflectionTableMut($data: NewInflectionTableInput!) {
     }
   }
 }
+
+query EditInflectionTableQuery($id: InflectionTableId!) {
+  inflectionTable(id: $id) {
+    id
+    name
+
+    layout {
+      rows {
+        cells {
+          rowSpan
+          columnSpan
+          ...on InflectionTableDataCell {
+            inflectedForm {
+              id
+              inflectionPattern
+              deriveLemma
+              displayName
+              hasCustomDisplayName
+            }
+          }
+          ...on InflectionTableHeaderCell {
+            headerText
+          }
+        }
+      }
+
+      isInUse
+    }
+
+    partOfSpeech {
+      id
+    }
+
+    isInUse
+    usedByDefinitions {
+      page {
+        totalCount
+      }
+    }
+  }
+}
+
+mutation EditInflectionTableMut(
+  $id: InflectionTableId!
+  $data: EditInflectionTableInput!
+) {
+  editInflectionTable(id: $id, data: $data) {
+    id
+  }
+}
+
+mutation DeleteInflectionTableMut($id: InflectionTableId!) {
+  deleteInflectionTable(id: $id)
+}

@@ -1,0 +1,33 @@
+query($id: InflectionTableId!) {
+  inflectionTable(id: $id) {
+    name
+
+    partOfSpeech {
+      id
+      name
+
+      language {
+        id
+        name
+      }
+    }
+
+    layout {
+      rows {
+        cells {
+          rowSpan
+          columnSpan
+          ...on InflectionTableDataCell {
+            inflectedForm {
+              inflectionPattern
+              displayName
+            }
+          }
+          ...on InflectionTableHeaderCell {
+            headerText
+          }
+        }
+      }
+    }
+  }
+}
