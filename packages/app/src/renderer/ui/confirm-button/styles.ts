@@ -64,7 +64,7 @@ export const Helper = styled.span.attrs({
   position: absolute;
   left: 50%;
   bottom: 100%;
-  width: calc(100% + 16px);
+  width: calc(100% + 32px);
 
   opacity: 0;
   transform: translateX(-50%);
