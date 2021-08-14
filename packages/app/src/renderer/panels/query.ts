@@ -183,7 +183,7 @@ export const AddInflectionTableMut = "mutation AddInflectionTableMut($data:NewIn
   } | null;
 }>;
 
-export const EditInflectionTableQuery = "query EditInflectionTableQuery($id:InflectionTableId!){inflectionTable(id:$id){id,name,layout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern,deriveLemma,displayName,hasCustomDisplayName}}...on InflectionTableHeaderCell{headerText}}}isInUse}partOfSpeech{id}isInUse,usedByDefinitions{page{totalCount}}}}" as Query<{
+export const EditInflectionTableQuery = "query EditInflectionTableQuery($id:InflectionTableId!){inflectionTable(id:$id){id,name,layout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern,deriveLemma,displayName,hasCustomDisplayName}}...on InflectionTableHeaderCell{headerText}}}isInUse}partOfSpeech{id,language{id}}isInUse,usedByDefinitions{page{totalCount}}}}" as Query<{
   id: InflectionTableId;
 }, {
   inflectionTable: {
@@ -211,6 +211,9 @@ export const EditInflectionTableQuery = "query EditInflectionTableQuery($id:Infl
     };
     partOfSpeech: {
       id: PartOfSpeechId;
+      language: {
+        id: LanguageId;
+      };
     };
     isInUse: boolean;
     usedByDefinitions: {

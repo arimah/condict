@@ -20,9 +20,7 @@ export type Props<Q extends Query<any, any>> = {
   ) => ReactNode;
 };
 
-function DataViewer<Q extends Query<any, any>>(
-  props: Props<Q>
-): JSX.Element {
+function DataViewer<Q extends Query<any, any>>(props: Props<Q>): JSX.Element {
   const {
     result,
     allowErrors = false,

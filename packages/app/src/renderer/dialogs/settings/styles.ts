@@ -1,6 +1,8 @@
 import styled, {css} from 'styled-components';
 
-import {Button, BodyText} from '@condict/ui';
+import {BodyText} from '@condict/ui';
+
+import {NakedButton} from '../../ui';
 
 import StandardDialog from '../standard-dialog';
 
@@ -115,29 +117,13 @@ export const SectionTitle = styled.h2<SectionProps>`
   grid-column: 2;
 `;
 
-export const CloseButton = styled(Button)`
+export const CloseButton = styled(NakedButton)`
   padding: 6px;
   position: absolute;
   top: 8px;
   inset-inline-end: 8px;
 
   border-radius: 50%;
-  border-color: ${p => p.theme.defaultBg};
-  background-color: ${p => p.theme.defaultBg};
-
-  &:hover {
-    border-color: ${p => p.theme.defaultHoverBg};
-    background-color: ${p => p.theme.defaultHoverBg};
-  }
-
-  &:active {
-    border-color: ${p => p.theme.defaultActiveBg};
-    background-color: ${p => p.theme.defaultActiveBg};
-  }
-
-  &:focus {
-    border-color: ${p => p.theme.focus.color};
-  }
 
   && > .mdi-icon {
     display: block;

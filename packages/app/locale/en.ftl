@@ -488,6 +488,24 @@ table-editor-use-default-form-menu = Use default form
 
 table-editor-delete-form-menu = Delete this form
 
+table-editor-tools-menu = Table tools
+
+table-editor-import-layout-menu = Import layout...
+
+table-editor-import-layout-title = Import layout
+
+table-editor-import-same-pos-heading = From the same part of speech
+
+table-editor-import-same-pos-empty = There are no other inflection tables in this part of speech.
+
+table-editor-import-other-pos-heading = From another part of speech
+
+table-editor-import-other-pos-empty = There are no inflection tables in any other part of speech in this language.
+
+table-editor-import-open-table-button = View the table in a new tab
+
+table-editor-import-error = The selected table could not be loaded. It may help to try again.
+
 ## Home page messages
 
 home-languages-title = Languages

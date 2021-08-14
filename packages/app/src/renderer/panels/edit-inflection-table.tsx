@@ -114,16 +114,19 @@ const EditInflectionTablePanel = (props: Props) => {
       </MainHeader>
       <DataViewer
         result={data}
-        render={({inflectionTable}) =>
-          inflectionTable ? (
+        render={({inflectionTable: table}) =>
+          table ? (
             <InflectionTableForm
               initialData={{
-                id: inflectionTable.id,
-                name: inflectionTable.name,
+                id: table.id,
+                name: table.name,
                 layout,
               }}
-              partOfSpeechId={inflectionTable.partOfSpeech.id}
-              submitError={submitError && <Localized id='inflection-table-save-error'/>}
+              languageId={table.partOfSpeech.language.id}
+              partOfSpeechId={table.partOfSpeech.id}
+              submitError={
+                submitError && <Localized id='inflection-table-save-error'/>
+              }
               firstFieldRef={firstFieldRef}
               onSubmit={onSubmit}
               onCancel={onResolve}

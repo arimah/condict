@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
-import {Button} from '@condict/ui';
-
-import {FlowContent} from '../../../ui';
+import {FlowContent, NakedButton} from '../../../ui';
 
 export type TabPanelProps = {
   isCurrent?: boolean;
@@ -31,26 +29,8 @@ export const BackButtonColumn = styled.div`
   top: 0;
 `;
 
-export const BackButton = styled(Button)`
+export const BackButton = styled(NakedButton)`
   padding: 2px;
-
-  background-color: ${p => p.theme.defaultBg};
-  border-color: ${p => p.theme.defaultBg};
-  color: ${p => p.theme.defaultFg};
-
-  &:hover {
-    background-color: ${p => p.theme.defaultHoverBg};
-    border-color: ${p => p.theme.defaultHoverBg};
-  }
-
-  &:active {
-    background-color: ${p => p.theme.defaultActiveBg};
-    border-color: ${p => p.theme.defaultActiveBg};
-  }
-
-  &:focus {
-    border-color: ${p => p.theme.focus.color};
-  }
 
   > .mdi-icon.mdi-icon {
     display: block;

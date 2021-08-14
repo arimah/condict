@@ -2,7 +2,7 @@ import {ReactNode, RefObject, useEffect} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import {Localized} from '@fluent/react';
 
-import {InflectionTableId, PartOfSpeechId} from '../../graphql';
+import {InflectionTableId, LanguageId, PartOfSpeechId} from '../../graphql';
 import {
   TextField,
   InflectionTableField,
@@ -16,6 +16,7 @@ import {notEmpty, nameNotTaken} from '../validators';
 import {CheckNameQuery} from './query';
 
 export type Props = {
+  languageId: LanguageId;
   partOfSpeechId: PartOfSpeechId;
   initialData?: InflectionTableData;
   submitError?: ReactNode;
@@ -66,6 +67,7 @@ const EmptyData: InflectionTableData = {
 
 export const InflectionTableForm = (props: Props): JSX.Element => {
   const {
+    languageId,
     partOfSpeechId,
     initialData = EmptyData,
     submitError,
@@ -111,6 +113,9 @@ export const InflectionTableForm = (props: Props): JSX.Element => {
         <InflectionTableField
           name='layout'
           label={<Localized id='inflection-table-layout-label'/>}
+          languageId={languageId}
+          partOfSpeechId={partOfSpeechId}
+          inflectionTableId={initialData.id}
         />
         <FormButtons submitError={submitError} onCancel={onCancel}/>
       </form>

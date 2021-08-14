@@ -50,7 +50,10 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
 
   const navigateTo = useNavigateTo();
   const handleAddTable = useCallback(() => {
-    void openPanel(addInflectionTablePanel(id)).then(table => {
+    void openPanel(addInflectionTablePanel({
+      languageId,
+      partOfSpeechId: id,
+    })).then(table => {
       if (table) {
         navigateTo(table, {
           openInNewTab: true,

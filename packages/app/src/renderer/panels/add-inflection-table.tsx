@@ -6,16 +6,17 @@ import {PanelParams, PanelProps} from '../navigation';
 import {InflectionTablePage, LanguagePage} from '../page';
 import {InflectionTableData, InflectionTableForm} from '../forms';
 import {useExecute} from '../data';
-import {PartOfSpeechId} from '../graphql';
+import {LanguageId, PartOfSpeechId} from '../graphql';
 
 import {AddInflectionTableMut} from './query';
 
 type Props = {
+  languageId: LanguageId;
   partOfSpeechId: PartOfSpeechId;
 } & PanelProps<InflectionTablePage | null>;
 
 const AddInflectionTablePanel = (props: Props) => {
-  const {partOfSpeechId, updatePanel, titleId, onResolve} = props;
+  const {languageId, partOfSpeechId, updatePanel, titleId, onResolve} = props;
 
   const execute = useExecute();
 
@@ -53,6 +54,7 @@ const AddInflectionTablePanel = (props: Props) => {
         <Localized id='part-of-speech-add-table-title'/>
       </h1>
       <InflectionTableForm
+        languageId={languageId}
         partOfSpeechId={partOfSpeechId}
         submitError={submitError && <Localized id='inflection-table-save-error'/>}
         onSubmit={onSubmit}
@@ -63,13 +65,10 @@ const AddInflectionTablePanel = (props: Props) => {
   );
 };
 
-export const addInflectionTablePanel = (
-  partOfSpeechId: PartOfSpeechId
-): PanelParams<InflectionTablePage | null> => ({
+export const addInflectionTablePanel = (ids: {
+  languageId: LanguageId;
+  partOfSpeechId: PartOfSpeechId;
+}): PanelParams<InflectionTablePage | null> => ({
   // eslint-disable-next-line react/display-name
-  render: props =>
-    <AddInflectionTablePanel
-      {...props}
-      partOfSpeechId={partOfSpeechId}
-    />,
+  render: props => <AddInflectionTablePanel {...props} {...ids}/>,
 });

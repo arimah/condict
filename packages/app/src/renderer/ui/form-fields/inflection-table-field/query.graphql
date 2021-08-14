@@ -1,0 +1,40 @@
+query AllTableLayoutsQuery($lang: LanguageId!) {
+  language(id: $lang) {
+    id
+    name
+
+    partsOfSpeech {
+      id
+      name
+
+      inflectionTables {
+        id
+        name
+      }
+    }
+  }
+}
+
+query TableLayoutQuery($table: InflectionTableId!) {
+  inflectionTable(id: $table) {
+    layout {
+      rows {
+        cells {
+          columnSpan
+          rowSpan
+          ...on InflectionTableHeaderCell {
+            headerText
+          }
+          ...on InflectionTableDataCell {
+            inflectedForm {
+              inflectionPattern
+              deriveLemma
+              displayName
+              hasCustomDisplayName
+            }
+          }
+        }
+      }
+    }
+  }
+}

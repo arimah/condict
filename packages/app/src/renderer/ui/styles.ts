@@ -91,3 +91,24 @@ export const TagList = styled.ul`
 export const Secondary = styled.span`
   opacity: 0.7;
 `;
+
+export const NakedButton = styled(Button)`
+  border-color: ${p => p.theme.defaultBg};
+  background-color: ${p => p.theme.defaultBg};
+  color: ${p => p.theme.defaultFg};
+
+  &:hover {
+    border-color: ${p => p.theme.defaultHoverBg};
+    background-color: ${p => p.theme.defaultHoverBg};
+  }
+
+  &:active {
+    border-color: ${p => p.theme.defaultActiveBg};
+    background-color: ${p => p.theme.defaultActiveBg};
+  }
+
+  &:focus,
+  &.force-focus {
+    border-color: ${p => p.theme.focus.color};
+  }
+`;
