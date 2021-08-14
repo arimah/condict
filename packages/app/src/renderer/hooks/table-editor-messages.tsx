@@ -60,8 +60,10 @@ export const useTableEditorMessages = (): TableEditorMessages => {
       l10n.getString('table-editor-use-automatic-name-button'),
     automaticNameHelper: () =>
       l10n.getString('table-editor-automatic-name-helper'),
-    headerCellMenu: () => l10n.getString('table-editor-header-cell-menu'),
-    deriveLemmaMenu: () => l10n.getString('table-editor-derive-lemma-menu'),
+    headerCellMenu: count =>
+      l10n.getString('table-editor-header-cell-menu', {count}),
+    deriveLemmaMenu: count =>
+      l10n.getString('table-editor-derive-lemma-menu', {count}),
     mergeCells: () => l10n.getString('table-editor-merge-cells'),
     separateCells: () => l10n.getString('table-editor-separate-cells'),
     insertSubmenu: () => l10n.getString('table-editor-insert-submenu'),

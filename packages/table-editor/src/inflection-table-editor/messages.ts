@@ -4,10 +4,10 @@ import {Messages} from './types';
 
 const DefaultMessages: Messages = {
   ...DefaultEditorMessages,
-  noDerivedLemma: () => 'Not added to the dictionary.',
+  noDerivedLemma: () => 'No headword created from this form.',
   hasCustomName: () => 'Form has custom name.',
   headerCellOption: () => 'Header cell',
-  deriveLemmaOption: () => 'Add form to dictionary',
+  deriveLemmaOption: () => 'Create headword from this form',
   formNameLabel: () => 'Name of this form:',
   useAutomaticNameButton: () => 'Use automatic name',
   automaticNameHelper: () =>
@@ -15,7 +15,7 @@ const DefaultMessages: Messages = {
   headerCellMenu: (n: number) =>
     n === 1 ? 'Header cell' : 'Header cells',
   deriveLemmaMenu: (n: number) =>
-    n === 1 ? 'Add form to dictionary' : 'Add forms to dictionary',
+    n === 1 ? 'Create headword' : 'Create headwords',
   mergeCells: () => 'Merge cells',
   separateCells: () => 'Separate cells',
   insertSubmenu: () => 'Insert',

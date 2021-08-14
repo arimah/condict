@@ -403,13 +403,13 @@ table-editor-selection-columns-1-row =
 table-editor-selection-1-column-rows =
   {$totalCells} cells selected: column {$column}, row {$firstRow} through {$lastRow}
 
-table-editor-not-derived-lemma = Not added to the dictionary.
+table-editor-not-derived-lemma = No headword created from this form.
 
 table-editor-form-has-custom-name = Form has custom name.
 
 table-editor-header-cell-option-label = Header cell
 
-table-editor-derive-lemma-option-label = Add form to dictionary
+table-editor-derive-lemma-option-label = Create headword from this form
 
 table-editor-form-name-label = Name of this form:
 
@@ -417,9 +417,21 @@ table-editor-use-automatic-name-button = Use automatic name
 
 table-editor-automatic-name-helper = The name is calculated automatically. Type here to change it.
 
-table-editor-header-cell-menu = Header cell
+# Variables:
+#   count: The total number of selected cells. The option applies to all of them.
+table-editor-header-cell-menu =
+  {$count ->
+    [one] Header cell
+   *[other] Header cells
+  }
 
-table-editor-derive-lemma-menu = Add form to dictionary
+# Variables:
+#   count: The total number of selected cells. The option applies to all of them.
+table-editor-derive-lemma-menu =
+  {$count ->
+    [one] Create headword
+   *[other] Create headwords
+  }
 
 table-editor-merge-cells = Merge cells
 
