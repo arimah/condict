@@ -3,7 +3,7 @@ import {FormProvider, useForm} from 'react-hook-form';
 import {Localized} from '@fluent/react';
 
 import {PartOfSpeechId, LanguageId} from '../../graphql';
-import {TextField, FormButtons} from '../../ui';
+import {TextField, FormButtons} from '../../form-fields';
 import {useExecute} from '../../data';
 
 import {notEmpty, nameNotTaken} from '../validators';

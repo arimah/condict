@@ -1,7 +1,7 @@
 import {ReactNode} from 'react';
 import {Localized} from '@fluent/react';
 
-import Loading from '../loading';
+import {Loading} from '../ui';
 
 import * as S from './styles';
 

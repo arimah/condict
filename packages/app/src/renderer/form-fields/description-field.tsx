@@ -9,11 +9,10 @@ import {
   SearchResult,
 } from '@condict/rich-text-editor';
 
-import {OperationResult} from '../../graphql';
-import {useRichTextEditorMessages} from '../../hooks';
-import {useExecute} from '../../data';
-
-import HighlightedSnippet from '../highlighted-snippet';
+import {useExecute} from '../data';
+import {OperationResult} from '../graphql';
+import {useRichTextEditorMessages} from '../hooks';
+import {HighlightedSnippet} from '../ui';
 
 import {LinkTargetQuery} from './query';
 import * as S from './styles';

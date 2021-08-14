@@ -8,7 +8,7 @@ import {
   InflectionTableField,
   InflectionTableValue,
   FormButtons,
-} from '../../ui';
+} from '../../form-fields';
 import {useExecute} from '../../data';
 
 import {notEmpty, nameNotTaken} from '../validators';

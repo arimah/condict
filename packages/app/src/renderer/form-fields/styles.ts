@@ -12,7 +12,7 @@ import {
   InflectionTableEditor as InflectionTableEditorBase,
 } from '@condict/table-editor';
 
-import ConfirmButton from '../confirm-button';
+import {ConfirmButton} from '../ui';
 
 export const Field = styled.div`
   display: flex;

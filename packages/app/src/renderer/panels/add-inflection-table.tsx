@@ -1,7 +1,8 @@
 import {useState, useCallback} from 'react';
 import {Localized} from '@fluent/react';
 
-import {FlowContent, InflectionTableValue} from '../ui';
+import {FlowContent} from '../ui';
+import {InflectionTableValue} from '../form-fields';
 import {PanelParams, PanelProps} from '../navigation';
 import {InflectionTablePage, LanguagePage} from '../page';
 import {InflectionTableData, InflectionTableForm} from '../forms';

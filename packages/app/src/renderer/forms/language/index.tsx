@@ -5,7 +5,7 @@ import {Localized} from '@fluent/react';
 import {BlockElement, emptyDescription} from '@condict/rich-text-editor';
 
 import {LanguageId} from '../../graphql';
-import {TextField, DescriptionField, FormButtons} from '../../ui';
+import {TextField, DescriptionField, FormButtons} from '../../form-fields';
 import {useExecute} from '../../data';
 
 import {notEmpty, nameNotTaken} from '../validators';

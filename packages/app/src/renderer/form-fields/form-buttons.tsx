@@ -2,7 +2,7 @@ import {ReactNode} from 'react';
 import {useFormContext} from 'react-hook-form';
 import {Localized} from '@fluent/react';
 
-import Loading from '../loading';
+import {Loading} from '../ui';
 
 import * as S from './styles';
 

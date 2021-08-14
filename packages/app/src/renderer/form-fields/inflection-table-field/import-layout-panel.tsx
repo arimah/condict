@@ -5,15 +5,18 @@ import OpenLinkIcon from 'mdi-react/OpenInNewIcon';
 import {useUniqueId} from '@condict/ui';
 import {InflectionTableJson} from '@condict/table-editor';
 
-import {EventPredicate, useData, useExecute} from '../../../data';
-import {PanelParams, PanelProps} from '../../../navigation';
-import {LanguageId, PartOfSpeechId, InflectionTableId} from '../../../graphql';
-import {InflectionTablePage, LanguagePage} from '../../../page';
-
-import DataViewer from '../../data-viewer';
-import Loading from '../../loading';
-import {InflectionTableIcon} from '../../resource-icons';
-import {FlowContent, HeaderAction, MainHeader} from '../../styles';
+import {EventPredicate, useData, useExecute} from '../../data';
+import {PanelParams, PanelProps} from '../../navigation';
+import {LanguageId, PartOfSpeechId, InflectionTableId} from '../../graphql';
+import {InflectionTablePage, LanguagePage} from '../../page';
+import {
+  DataViewer,
+  FlowContent,
+  MainHeader,
+  HeaderAction,
+  InflectionTableIcon,
+  Loading,
+} from '../../ui';
 
 import {AllTableLayoutsQuery, TableLayoutQuery} from './query';
 import {InflectionTableValue} from './types';

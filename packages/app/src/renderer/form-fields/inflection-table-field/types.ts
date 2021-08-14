@@ -5,7 +5,7 @@ import {
   Selection,
 } from '@condict/table-editor';
 
-import {InflectionTableRowInput} from '../../../graphql';
+import {InflectionTableRowInput} from '../../graphql';
 
 /*
  * The base InflectionTable contains three extra properties – `selection`,

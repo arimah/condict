@@ -7,7 +7,7 @@ import {
   LanguageId,
   PartOfSpeechId,
   InflectionTableId
-} from "../../../graphql";
+} from "../../graphql";
 
 export const AllTableLayoutsQuery = "query AllTableLayoutsQuery($lang:LanguageId!){language(id:$lang){id,name,partsOfSpeech{id,name,inflectionTables{id,name}}}}" as Query<{
   lang: LanguageId;

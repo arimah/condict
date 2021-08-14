@@ -11,7 +11,6 @@ export {
   Props as ConfirmButtonProps,
 } from './confirm-button';
 export {default as DataViewer, Props as DataViewerProps} from './data-viewer';
-export * from './form-fields';
 export {
   default as HighlightedSnippet,
   Props as HighlightedSnippetProps,

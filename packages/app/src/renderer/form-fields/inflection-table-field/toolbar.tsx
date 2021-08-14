@@ -15,8 +15,8 @@ import DotsIcon from 'mdi-react/DotsVerticalIcon';
 import {Toolbar, Menu} from '@condict/ui';
 import {SelectionShape} from '@condict/table-editor';
 
-import {useOpenPanel} from '../../../navigation';
-import {InflectionTableId, LanguageId, PartOfSpeechId} from '../../../graphql';
+import {useOpenPanel} from '../../navigation';
+import {InflectionTableId, LanguageId, PartOfSpeechId} from '../../graphql';
 
 import * as S from '../styles';
 

@@ -8,8 +8,8 @@ import {
   useInflectionTableCommands,
 } from '@condict/table-editor';
 
-import {useTableEditorMessages} from '../../../hooks';
-import {LanguageId, PartOfSpeechId, InflectionTableId} from '../../../graphql';
+import {useTableEditorMessages} from '../../hooks';
+import {LanguageId, PartOfSpeechId, InflectionTableId} from '../../graphql';
 
 import {HistoryValue, useHistoryCommands} from '../history-value';
 import * as S from '../styles';

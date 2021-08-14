@@ -3,7 +3,8 @@ import {Localized} from '@fluent/react';
 
 import {BodyText} from '@condict/ui';
 
-import {FlowContent, DeleteFormButtons} from '../ui';
+import {FlowContent} from '../ui';
+import {DeleteFormButtons} from '../form-fields';
 import {PanelParams, PanelProps} from '../navigation';
 import {LanguageId} from '../graphql';
 import {useExecute} from '../data';

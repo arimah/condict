@@ -3,12 +3,8 @@ import {Localized} from '@fluent/react';
 
 import {Button} from '@condict/ui';
 
-import {
-  DataViewer,
-  FlowContent,
-  MainHeader,
-  InflectionTableValue,
-} from '../ui';
+import {DataViewer, FlowContent, MainHeader} from '../ui';
+import {InflectionTableValue} from '../form-fields';
 import {PanelParams, PanelProps} from '../navigation';
 import {InflectionTableData, InflectionTableForm} from '../forms';
 import {InflectionTableId} from '../graphql';

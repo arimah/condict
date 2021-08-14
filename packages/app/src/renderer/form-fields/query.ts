@@ -8,7 +8,7 @@ import {
   LemmaId,
   DefinitionId,
   PartOfSpeechId
-} from "../../graphql";
+} from "../graphql";
 
 export const LinkTargetQuery = "query LinkTargetQuery($query:String!){search(params:{query:$query,scopes:[SEARCH_LANGUAGES,SEARCH_LEMMAS,SEARCH_DEFINITIONS,SEARCH_PARTS_OF_SPEECH]}page:{page:0,perPage:50}){nodes{__typename...on LanguageSearchResult{nameSnippet{...SnippetFragment}language{...LanguageFragment}}...on LemmaSearchResult{termSnippet{...SnippetFragment}lemma{id,term,language{...LanguageFragment}}}...on DefinitionSearchResult{descriptionSnippet{...SnippetFragment}definition{id,term,partOfSpeech{name}language{...LanguageFragment}}}...on PartOfSpeechSearchResult{nameSnippet{...SnippetFragment}partOfSpeech{id,name,language{...LanguageFragment}}}}}}fragment SnippetFragment on MatchingSnippet{partialStart,partialEnd,parts{isMatch,text}}fragment LanguageFragment on Language{id,name}" as Query<{
   query: string;

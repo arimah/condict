@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
-import {CardGrid, NakedButton} from '../../styles';
-import Link from '../../link';
+import {CardGrid, NakedButton, Link} from '../../ui';
 
 export const SubmitError = styled.p`
   color: ${p => p.theme.danger.defaultFg};
