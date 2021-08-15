@@ -132,16 +132,16 @@ export const InflectionTableField = React.memo((
               selection={table.selectionShape}
               canUndo={history.undo.length > 0}
               canRedo={history.redo.length > 0}
+              valueRef={history}
               languageId={languageId}
               partOfSpeechId={partOfSpeechId}
               inflectionTableId={inflectionTableId}
               onImportLayout={handleImportLayout}
+              onChange={handleChange}
             />
             <S.TableContainer>
               <S.InflectionTableEditor
                 {...otherProps}
-                // Logic above ensures table.current is non-null.
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 value={table}
                 aria-labelledby={label ? `${id}-label` : undefined}
                 aria-describedby={errorMessage ? `${id}-error` : undefined}

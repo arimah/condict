@@ -13,7 +13,7 @@ import SeparateIcon from 'mdi-react/TableSplitCellIcon';
 import DotsIcon from 'mdi-react/DotsVerticalIcon';
 
 import {Toolbar, Menu} from '@condict/ui';
-import {SelectionShape} from '@condict/table-editor';
+import {InflectionTable, SelectionShape} from '@condict/table-editor';
 
 import {useOpenPanel} from '../../navigation';
 import {InflectionTableId, LanguageId, PartOfSpeechId} from '../../graphql';
@@ -21,16 +21,19 @@ import {InflectionTableId, LanguageId, PartOfSpeechId} from '../../graphql';
 import * as S from '../styles';
 
 import importLayoutPanel from './import-layout-panel';
+import transposeTable from './transpose-table';
 import {InflectionTableValue} from './types';
 
 type Props = {
   selection: SelectionShape;
   canUndo: boolean;
   canRedo: boolean;
+  valueRef: { current: InflectionTable };
   languageId: LanguageId;
   partOfSpeechId: PartOfSpeechId;
   inflectionTableId: InflectionTableId | null;
   onImportLayout: (layout: InflectionTableValue) => void;
+  onChange: (table: InflectionTable) => void;
 };
 
 const preventDefault = (e: MouseEvent) => {
@@ -42,10 +45,12 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
     selection,
     canUndo,
     canRedo,
+    valueRef,
     languageId,
     partOfSpeechId,
     inflectionTableId,
     onImportLayout,
+    onChange,
   } = props;
   const {l10n} = useLocalization();
 
@@ -67,6 +72,10 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
     openPanel,
     onImportLayout,
   ]);
+
+  const handleTranspose = useCallback(() => {
+    onChange(transposeTable(valueRef.current));
+  }, [onChange]);
 
   const colCount = selection.maxColumn - selection.minColumn + 1;
   const rowCount = selection.maxRow - selection.minRow + 1;
@@ -156,6 +165,10 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
             <Menu.Item
               label={l10n.getString('table-editor-import-layout-menu')}
               onActivate={handleImportLayout}
+            />
+            <Menu.Item
+              label={l10n.getString('table-editor-transpose-menu')}
+              onActivate={handleTranspose}
             />
           </Menu>
         }

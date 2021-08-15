@@ -492,6 +492,8 @@ table-editor-tools-menu = Table tools
 
 table-editor-import-layout-menu = Import layout...
 
+table-editor-transpose-menu = Swap rows and columns
+
 table-editor-import-layout-title = Import layout
 
 table-editor-import-same-pos-heading = From the same part of speech
