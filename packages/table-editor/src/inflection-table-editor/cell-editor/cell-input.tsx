@@ -40,8 +40,10 @@ const CellInput = React.forwardRef((
       />
       {needIcons &&
         <S.CellIcons>
-          {!data.deriveLemma && <DoNotDeriveLemmaIcon/>}
-          {data.hasCustomDisplayName && <CustomDisplayNameIcon/>}
+          {!data.deriveLemma &&
+            <DoNotDeriveLemmaIcon title={messages.noDeriveLemmaIconTitle()}/>}
+          {data.hasCustomDisplayName &&
+            <CustomDisplayNameIcon title={messages.hasCustomNameIconTitle()}/>}
         </S.CellIcons>
       }
     </S.CellInputWrapper>

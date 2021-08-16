@@ -6,7 +6,7 @@ export interface EditorContextValue<D, M extends Messages> {
   /** The cell editor component, rendered once for the cell being edited. */
   readonly CellEditor: ComponentType<CellEditorProps<D, M>>;
   /** The cell data component, rendered once for each cell. */
-  readonly CellData: ComponentType<CellDataProps<D>>;
+  readonly CellData: ComponentType<CellDataProps<D, M>>;
   /** The editor's context menu component, rendered on demand. */
   readonly ContextMenu: ComponentType<ContextMenuProps<D, M>>;
   /** Determines whether multiple cells can be selected. */
@@ -31,11 +31,12 @@ export type CellEditorProps<D, M extends Messages> = {
 
 export type CellEditFn<D> = (cell: CellWithData<D>) => void;
 
-export type CellDataProps<D> = {
+export type CellDataProps<D, M extends Messages> = {
   cell: Cell;
   data: D;
   editing: boolean;
   disabled: boolean;
+  messages: M;
 };
 
 export type ContextMenuProps<D, M extends Messages> = {

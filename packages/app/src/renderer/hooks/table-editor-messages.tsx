@@ -76,6 +76,10 @@ export const useTableEditorMessages = (): TableEditorMessages => {
       l10n.getString('table-editor-delete-rows', {count}),
     deleteColumns: count =>
       l10n.getString('table-editor-delete-columns', {count}),
+    noDeriveLemmaIconTitle: () =>
+      l10n.getString('table-editor-not-derive-lemma-icon-title'),
+    hasCustomNameIconTitle: () =>
+      l10n.getString('table-editor-form-has-custom-name-icon-title'),
 
     // Definition table editor messages.
     formIsInflected: () => l10n.getString('table-editor-form-is-inflected'),

@@ -183,4 +183,8 @@ export interface Messages extends EditorMessages {
    * @param n The number of selected columns.
    */
   deleteColumns(n: number): string;
+  /** "Headword is not created from this form", dot icon tooltip. */
+  noDeriveLemmaIconTitle(): string;
+  /** "This form has a custom name", pen icon tooltip. */
+  hasCustomNameIconTitle(): string;
 }

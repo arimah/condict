@@ -5,11 +5,11 @@ import {inflectWord} from '@condict/inflect';
 import {CellDataProps} from '../../types';
 
 import StemsContext from '../stems-context';
-import {DefinitionTableData} from '../types';
+import {DefinitionTableData, Messages} from '../types';
 
 import * as S from './styles';
 
-export type Props = CellDataProps<DefinitionTableData>;
+export type Props = CellDataProps<DefinitionTableData, Messages>;
 
 const CellData = ({cell, data, disabled}: Props): JSX.Element => {
   if (cell.header) {

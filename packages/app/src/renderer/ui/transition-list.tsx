@@ -96,7 +96,7 @@ function TransitionList<T>(props: Props<T>): JSX.Element {
     }
   }, [state]);
 
-  const tree = <>
+  return <>
     {state.itemStates.map(item =>
       <Item
         key={item.key}
@@ -106,8 +106,6 @@ function TransitionList<T>(props: Props<T>): JSX.Element {
       />
     )}
   </>;
-
-  return tree;
 }
 
 export default TransitionList;

@@ -1,16 +1,16 @@
-import React from 'react';
-
 import {DoNotDeriveLemmaIcon, CustomDisplayNameIcon} from '../../icons';
 import InflectionPattern from '../../inflection-pattern';
 import {CellDataProps} from '../../types';
 
-import {InflectionTableData} from '../types';
+import {InflectionTableData, Messages} from '../types';
 
 import * as S from './styles';
 
-export type Props = CellDataProps<InflectionTableData>;
+export type Props = CellDataProps<InflectionTableData, Messages>;
 
-const CellData = ({cell, data, editing, disabled}: Props): JSX.Element => {
+const CellData = (props: Props): JSX.Element => {
+  const {cell, data, editing, disabled, messages} = props;
+
   if (cell.header) {
     return <S.CellData>{data.text || ' '}</S.CellData>;
   }
@@ -27,8 +27,10 @@ const CellData = ({cell, data, editing, disabled}: Props): JSX.Element => {
     </S.CellData>
     {needIcons &&
       <S.CellIcons disabled={disabled} aria-hidden='true'>
-        {!data.deriveLemma && <DoNotDeriveLemmaIcon/>}
-        {data.hasCustomDisplayName && <CustomDisplayNameIcon/>}
+        {!data.deriveLemma &&
+          <DoNotDeriveLemmaIcon title={messages.noDeriveLemmaIconTitle()}/>}
+        {data.hasCustomDisplayName &&
+          <CustomDisplayNameIcon title={messages.hasCustomNameIconTitle()}/>}
       </S.CellIcons>}
   </>;
 };

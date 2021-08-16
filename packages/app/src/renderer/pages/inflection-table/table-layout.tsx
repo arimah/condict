@@ -24,11 +24,7 @@ const TableLayout = React.memo((props: Props): JSX.Element => {
           <tr key={r}>
             {row.cells.map((cell, c) =>
               'headerText' in cell ? (
-                <th
-                  key={c}
-                  colSpan={cell.columnSpan}
-                  rowSpan={cell.rowSpan}
-                >
+                <th key={c} colSpan={cell.columnSpan} rowSpan={cell.rowSpan}>
                   {cell.headerText || ' '}
                 </th>
               ) : (

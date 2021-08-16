@@ -405,7 +405,11 @@ table-editor-selection-1-column-rows =
 
 table-editor-not-derived-lemma = No headword created from this form.
 
+table-editor-not-derived-lemma-icon-title = Headword is not created from this form
+
 table-editor-form-has-custom-name = Form has custom name.
+
+table-editor-form-has-custom-name-icon-title = This form has a custom name
 
 table-editor-header-cell-option-label = Header cell
 

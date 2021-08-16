@@ -76,6 +76,7 @@ const TableCell = React.memo(
             data={effectiveItem.data}
             editing={!!editing}
             disabled={disabled}
+            messages={messages}
           />
         </S.CellDataWrapper>
         <S.CellBorder

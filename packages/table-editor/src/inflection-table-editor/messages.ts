@@ -27,6 +27,8 @@ const DefaultMessages: Messages = {
     n === 1 ? 'Delete row' : `Delete ${n} rows`,
   deleteColumns: (n: number) =>
     n === 1 ? 'Delete column' : `Delete ${n} columns`,
+  noDeriveLemmaIconTitle: () => 'Headword is not created from this form',
+  hasCustomNameIconTitle: () => 'This form has a custom name',
 };
 
 export default DefaultMessages;
