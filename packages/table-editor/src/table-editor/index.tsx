@@ -83,6 +83,7 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
     current: {x: 0, y: 0},
   };
   private hasFocus = false;
+  private hadFocusOnMouseDown = false;
 
   public componentDidUpdate(): void {
     // NB: We don't need this logic in componentDidMount, as it is impossible
@@ -159,6 +160,8 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
       return;
     }
 
+    this.hadFocusOnMouseDown = this.hasFocus;
+
     const cellKey = this.findNearestCellKey(e.target as HTMLElement);
     if (cellKey) {
       const {table: {selectionShape: sel}} = this.props;
@@ -179,7 +182,7 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
 
     // Because we preventDefault above, the table won't get focused
     // as a result of the click, so we have to focus it manually.
-    if (this.table.current) {
+    if (!this.hasFocus && this.table.current) {
       this.table.current.focus();
     }
   };
@@ -210,7 +213,11 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
       const cellKey = this.findNearestCellKey(e.target as HTMLElement);
 
       this.setState({mouseDown: false}, () => {
+        // Only open the editor if the table already had focus. It's disruptive
+        // if the editor pops up when you just want to focus the table, since
+        // the selection is invisible when the table is unfocused.
         if (
+          this.hadFocusOnMouseDown &&
           e.button === 0 &&
           mouseDownCellKey !== null &&
           mouseDownCellKey === cellKey
