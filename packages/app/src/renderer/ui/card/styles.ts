@@ -65,8 +65,8 @@ export type TitleProps = {
 // overflow: hidden.
 
 export const Title = styled.p<TitleProps>`
-  margin: -4px;
-  padding: 4px;
+  margin: -6px;
+  padding: 6px;
   font-size: 18px;
   line-height: 20px;
 

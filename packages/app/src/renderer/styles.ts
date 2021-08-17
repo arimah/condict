@@ -26,7 +26,9 @@ export const AppStyles = createGlobalStyle`
   }
 
   a:focus-visible {
-    box-shadow: 0 0 2px 2px ${p => p.theme.focus.color};
+    box-shadow:
+      0 0 0 1px ${p => p.theme.defaultBg},
+      0 0 2px 3px ${p => p.theme.focus.color};
     border-radius: 1px;
   }
 `;
