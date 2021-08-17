@@ -23,7 +23,7 @@ export const lightTheme = (accent: ShadeGroup, danger: ShadeGroup): Theme => ({
 
   focus: {
     color: `hsl(${FocusHue}, 95%, 55%)`,
-    shadow: `0 0 4px hsl(${FocusHue}, 95%, 55%)`,
+    shadow: `0 0 0 1px hsl(${FocusHue}, 95%, 55%)`,
   },
 
   shadow: {

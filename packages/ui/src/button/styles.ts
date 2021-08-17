@@ -55,7 +55,9 @@ export const ButtonStyle = css<Props>`
   &.force-focus {
     outline: none;
     border: 2px solid ${p => p.theme.focus.color};
-    box-shadow: ${p => p.theme.focus.shadow};
+    box-shadow:
+      inset 0 0 0 1px ${p => p.theme.defaultBg},
+      ${p => p.theme.focus.shadow};
   }
 
   > .mdi-icon {

@@ -47,11 +47,19 @@ export const LinkCard = styled(Link)`
   &:focus-visible {
     border-color: ${p => p.theme.focus.color};
     border-radius: 7px;
-    box-shadow: ${p => p.theme.shadow.elevation1};
+    box-shadow:
+      ${p => p.theme.shadow.elevation1},
+      ${p => p.theme.focus.shadow};
   }
 
   &:hover {
     box-shadow: ${p => p.theme.shadow.elevation3};
+  }
+
+  &:hover:focus {
+    box-shadow:
+      ${p => p.theme.shadow.elevation3},
+      ${p => p.theme.focus.shadow};
   }
 `;
 

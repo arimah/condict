@@ -77,9 +77,9 @@ export const Tab = styled.div.attrs({
   &:focus::before {
     content: '';
     position: absolute;
-    inset-block: 2px;
-    inset-inline: 2px 0;
-    border: 2px solid ${p => p.theme.focus.color};
+    inset-block: 1px;
+    inset-inline: 1px 0;
+    border: 3px solid ${p => p.theme.focus.color};
     border-start-start-radius: 6px;
     border-end-start-radius: 6px;
     pointer-events: none;

@@ -33,6 +33,9 @@ export const SearchButton = styled(FlexButton)`
 
   &:focus {
     border-color: ${p => p.theme.focus.color};
+    box-shadow:
+      inset 0 0 0 1px ${p => p.theme.sidebar.bg},
+      ${p => p.theme.focus.shadow};
   }
 `;
 
@@ -53,5 +56,8 @@ export const Button = styled(FlexButton)`
 
   &:focus {
     border-color: ${p => p.theme.focus.color};
+    box-shadow:
+      inset 0 0 0 1px ${p => p.theme.sidebar.bg},
+      ${p => p.theme.focus.shadow};
   }
 `;
