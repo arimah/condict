@@ -41,15 +41,27 @@ export type Props = {
 type State = {
   tabs: readonly Tab[];
   currentTabIndex: number;
+  prevTabId: string | null;
 };
 
 type Message =
-  | {type: 'select'; index: number | 'prev' | 'next'}
+  | {type: 'select'; index: number | 'prev' | 'next'; keepPrev?: boolean}
   | {type: 'open'; tabs: Tab[]; insertIndex: number; background: boolean}
   | {type: 'navigate'; index: number; page: Page; title: string}
   | {type: 'update', index: number; title?: string; dirty?: boolean}
   | {type: 'back'; index: number}
-  | {type: 'close'; startIndex: number; endIndex: number}
+  | {
+    type: 'close';
+    /**
+     * The previously current tab index; that is, the index of the tab that was
+     * current when the user initiated the close action. When this message is
+     * dispatched, the current index might be something different, if a close
+     * confirmation dialog has popped up.
+     */
+    fromIndex: number;
+    startIndex: number;
+    endIndex: number;
+  }
   | {
     type: 'openPanel';
     tabIndex: number;
@@ -229,6 +241,7 @@ const NavigationProvider = (props: Props): JSX.Element => {
 
       const message: Message = {
         type: 'close',
+        fromIndex: state.currentTabIndex,
         startIndex,
         endIndex,
       };
@@ -354,26 +367,34 @@ export default NavigationProvider;
 const getInitialState = (): State => ({
   tabs: [Tab.fromPage('home', HomePage)],
   currentTabIndex: 0,
+  prevTabId: null,
 });
 
 const reduce = produce<State, [Message]>((state, message) => {
   switch (message.type) {
     case 'select': {
-      const {index} = message;
+      const {index, keepPrev} = message;
+      let nextIndex = state.currentTabIndex;
       switch (index) {
         case 'prev':
           if (state.currentTabIndex > 0) {
-            state.currentTabIndex--;
+            nextIndex = state.currentTabIndex - 1;
           }
           break;
         case 'next':
           if (state.currentTabIndex < state.tabs.length - 1) {
-            state.currentTabIndex++;
+            nextIndex = state.currentTabIndex + 1;
           }
           break;
         default:
-          state.currentTabIndex = index;
+          nextIndex = index;
           break;
+      }
+      if (state.currentTabIndex !== nextIndex) {
+        if (!keepPrev) {
+          state.prevTabId = state.tabs[state.currentTabIndex].id;
+        }
+        state.currentTabIndex = nextIndex;
       }
       break;
     }
@@ -382,6 +403,7 @@ const reduce = produce<State, [Message]>((state, message) => {
       state.tabs.splice(insertIndex, 0, ...tabs as Draft<Tab>[]);
       if (!background) {
         // Focus the last of the created tabs.
+        state.prevTabId = state.tabs[state.currentTabIndex].id;
         state.currentTabIndex = insertIndex + tabs.length - 1;
       } else if (state.currentTabIndex >= insertIndex) {
         // Offset the current tab index to account for the newly created tabs.
@@ -426,17 +448,30 @@ const reduce = produce<State, [Message]>((state, message) => {
       break;
     }
     case 'close': {
-      const {startIndex, endIndex} = message;
+      const {fromIndex, startIndex, endIndex} = message;
       state.tabs.splice(startIndex, endIndex - startIndex);
 
-      if (state.currentTabIndex >= endIndex) {
-        // Try to keep the current tab selected.
-        const closedCount = endIndex - startIndex;
-        state.currentTabIndex -= closedCount;
-      }
-
-      if (state.currentTabIndex >= state.tabs.length) {
-        state.currentTabIndex = state.tabs.length - 1;
+      if (startIndex <= fromIndex && fromIndex < endIndex) {
+        // The current tab (fromIndex) was closed. If there is a valid
+        // `prevTabId`, then use that. Otherwise, select the tab that is
+        // now immediately after the closed group (startIndex).
+        const prevTabIndex = state.tabs.findIndex(t =>
+          t.id === state.prevTabId
+        );
+        if (prevTabIndex !== -1) {
+          state.currentTabIndex = prevTabIndex;
+          state.prevTabId = null;
+        } else {
+          state.currentTabIndex = Math.min(startIndex, state.tabs.length - 1);
+        }
+      } else {
+        // If fromIndex was *not* closed, return to it.
+        state.currentTabIndex = Math.min(
+          fromIndex >= endIndex
+            ? fromIndex - (endIndex - startIndex)
+            : fromIndex,
+          state.tabs.length - 1
+        );
       }
       break;
     }
@@ -542,7 +577,7 @@ const confirmClose = async (
     }
 
     // First, move to the tab so the user can see what's being confirmed.
-    dispatch({type: 'select', index: i});
+    dispatch({type: 'select', index: i, keepPrev: true});
 
     // Wait one tick for the UI to update. This allows focus to move into the
     // tab, so it can be restored correctly when the dialog is closed.

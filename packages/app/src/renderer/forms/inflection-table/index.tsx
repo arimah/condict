@@ -37,20 +37,11 @@ const EmptyData: InflectionTableData = {
   name: '',
   layout: InflectionTableValue.fromGraphQLResponse([
     {
-      cells: [
-        {
-          headerText: '',
-        },
-        {
-          headerText: '',
-        },
-      ],
+      cells: [{headerText: ''}, {headerText: ''}],
     },
     {
       cells: [
-        {
-          headerText: '',
-        },
+        {headerText: ''},
         {
           inflectedForm: {
             id: null,
