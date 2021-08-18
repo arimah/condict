@@ -70,10 +70,10 @@ export const Tab = styled.div.attrs({
     &::after {
       content: '';
       position: absolute;
-      inset-block: 2px;
+      inset-block: 1px;
       inset-inline: 8px;
-      border: 2px solid ${p => p.theme.focus.color};
-      border-radius: 3px;
+      border: 3px solid ${p => p.theme.focus.color};
+      border-radius: 4px;
     }
   }
 
