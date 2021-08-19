@@ -12,6 +12,11 @@ export {
 } from './confirm-button';
 export {default as DataViewer, Props as DataViewerProps} from './data-viewer';
 export {
+  default as DefinitionCard,
+  Props as DefinitionCardProps,
+  DefinitionCardData,
+} from './definition-card';
+export {
   default as HighlightedSnippet,
   Props as HighlightedSnippetProps,
   Snippet,

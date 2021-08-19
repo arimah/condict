@@ -4,7 +4,7 @@ import {Localized} from '@fluent/react';
 import {useUniqueId} from '@condict/ui';
 
 import {useNavigateTo, useOpenPanel, useUpdateTab} from '../../navigation';
-import {LanguagePage} from '../../page';
+import {LanguagePage, PartOfSpeechPage as PartOfSpeechTarget} from '../../page';
 import {
   DataViewer,
   FlowContent,
@@ -22,6 +22,7 @@ import {editPartOfSpeechPanel, addInflectionTablePanel} from '../../panels';
 import {PageProps} from '../types';
 
 import InflectionTableList from './inflection-table-list';
+import DefinitionList from './definition-list';
 import PartOfSpeechQuery from './query';
 
 export type Props = {
@@ -93,6 +94,7 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
 
           const lang = pos.language;
           const langPage = LanguagePage(lang.id, lang.name);
+          const usedBy = pos.usedByDefinitions;
           return <>
             <MainHeader>
               <Selectable as='h1'>{pos.name}</Selectable>
@@ -118,6 +120,16 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
               language={langPage}
               tables={pos.inflectionTables}
               onAddTable={handleAddTable}
+            />
+
+            <h2 id={`${htmlId}-defs-heading`}>
+              <Localized id='part-of-speech-definitions-heading'/>
+            </h2>
+            <DefinitionList
+              aria-labelledby={`${htmlId}-defs-heading`}
+              definitions={usedBy.nodes}
+              totalCount={usedBy.page.totalCount}
+              parent={PartOfSpeechTarget(id, pos.name, langPage)}
             />
           </>;
         }}

@@ -71,6 +71,16 @@ export const CardGrid = styled.div`
   gap: 8px;
 `;
 
+/**
+ * A small bit of extra context, such as a part of speech name or parent
+ * language, that is placed in a card title.
+ */
+export const CardTitleContext = styled.span`
+  margin-inline-start: 16px;
+  font-size: 15px;
+  line-height: 16px;
+`;
+
 export const FullRow = styled.div`
   grid-column: 1 / -1;
 `;

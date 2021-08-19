@@ -4,14 +4,8 @@ import PencilIcon from 'mdi-react/PencilIcon';
 
 import {Button, BodyText, SROnly} from '@condict/ui';
 
-import {LanguagePage, DefinitionPage} from '../../page';
-import {
-  CardList,
-  LinkCard,
-  Secondary,
-  ClampedBodyText,
-  RichContent,
-} from '../../ui';
+import {LanguagePage} from '../../page';
+import {CardList, LinkCard, DefinitionCard} from '../../ui';
 import {OperationResult} from '../../graphql';
 
 import LanguageQuery from './query';
@@ -104,12 +98,8 @@ const LemmaAndDefinitionList = (props: Props): JSX.Element => {
           <Localized id='language-recent-definitions-heading'/>
         </h3>
         <CardList as='section' aria-labelledby={`${htmlId}-recent-title`}>
-          {recentDefinitions.map(definition =>
-            <RecentDefinitionCard
-              key={definition.id}
-              parent={parent}
-              definition={definition}
-            />
+          {recentDefinitions.map(def =>
+            <DefinitionCard key={def.id} parent={parent} definition={def}/>
           )}
         </CardList>
       </>}
@@ -118,48 +108,3 @@ const LemmaAndDefinitionList = (props: Props): JSX.Element => {
 };
 
 export default LemmaAndDefinitionList;
-
-type RecentDefinitionCardProps = {
-  parent: LanguagePage;
-  definition: RecentDefinition;
-};
-
-type RecentDefinition = RecentDefinitions extends (infer T)[] ? T : never;
-
-const RecentDefinitionCard = (
-  props: RecentDefinitionCardProps
-): JSX.Element => {
-  const {parent, definition} = props;
-  return (
-    <LinkCard
-      to={DefinitionPage(definition.id, definition.term, parent)}
-      title={<>
-        {definition.term}
-        <S.PartOfSpeechName>
-          {definition.partOfSpeech.name}
-        </S.PartOfSpeechName>
-      </>}
-      iconAfter={<LinkArrow className='rtl-mirror'/>}
-    >
-      <ClampedBodyText maxLines={5}>
-        <RichContent
-          value={definition.description}
-          heading1='h3'
-          heading2='h4'
-          // 1 more than maxLines, to guarantee "..." if there's >5 blocks
-          maxBlocks={6}
-        />
-      </ClampedBodyText>
-      <Secondary as='p'>
-        <Localized
-          id={
-            definition.timeCreated === definition.timeUpdated
-              ? 'definition-added-on'
-              : 'definition-edited-on'
-          }
-          vars={{time: new Date(definition.timeUpdated)}}
-        />
-      </Secondary>
-    </LinkCard>
-  );
-};

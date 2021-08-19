@@ -722,6 +722,16 @@ part-of-speech-table-used-by-definitions =
    *[other] Used by {$definitionCount} definitions
   }
 
+part-of-speech-definitions-heading = Definitions of this part of speech
+
+part-of-speech-browse-definitions-title =
+  Browse {$definitionCount ->
+    [one] {$definitionCount} definition
+   *[other] all {$definitionCount} definitions
+  } of this part of speech
+
+part-of-speech-no-definitions-description = Words that use this part of speech will show up here when you add the part of speech a definition.
+
 part-of-speech-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
 part-of-speech-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}

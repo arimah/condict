@@ -19,5 +19,22 @@ query($id: PartOfSpeechId!) {
         }
       }
     }
+
+    usedByDefinitions(page: {page: 0, perPage: 5}) {
+      page {
+        totalCount
+      }
+      nodes {
+        id
+        term
+
+        description {
+          ...RichTextBlockFragment
+        }
+
+        timeCreated
+        timeUpdated
+      }
+    }
   }
 }

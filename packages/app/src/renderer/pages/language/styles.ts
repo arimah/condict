@@ -31,12 +31,6 @@ export const NoLemmas = styled(NonIdealState)`
   width: 320px;
 `;
 
-export const PartOfSpeechName = styled.span`
-  margin-inline-start: 16px;
-  font-size: 15px;
-  line-height: 16px;
-`;
-
 export const PartOfSpeechList = styled(CardGrid)`
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 `;
