@@ -35,7 +35,7 @@ const DefinitionList = (props: Props): JSX.Element => {
               key={def.id}
               definition={def}
               parent={parent.language}
-              hideTime
+              time={null}
             />
           )}
           <LinkCard

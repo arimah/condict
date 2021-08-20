@@ -25,6 +25,10 @@ export {
 export {default as Link, Props as LinkProps} from './link';
 export {default as Loading, Props as LoadingProps} from './loading';
 export * from './resource-icons';
+export {
+  default as ResourceTime,
+  Props as ResourceTimeProps,
+} from './resource-time';
 export * from './rich-text';
 export {default as SidebarColors} from './sidebar-colors';
 export {default as Tag, Props as TagProps} from './tag';

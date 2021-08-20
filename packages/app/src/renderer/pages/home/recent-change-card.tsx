@@ -2,7 +2,14 @@ import {ReactNode} from 'react';
 import {Localized} from '@fluent/react';
 
 import {OperationResult} from '../../graphql';
-import {Card, Link, ResourceIcon, ResourceType, Secondary} from '../../ui';
+import {
+  Card,
+  Link,
+  ResourceIcon,
+  ResourceType,
+  ResourceTime,
+  Secondary,
+} from '../../ui';
 import {
   Page,
   LanguagePage,
@@ -93,9 +100,6 @@ const RecentChangeCard = ({item}: Props): JSX.Element => {
     }
   }
 
-  // Excepting unusual space-time anomalies or system time changes, timeUpdated
-  // should always be >= timeCreated; in other words, it's the most recent.
-  const time = new Date(item.timeUpdated);
   return (
     <Card
       title={<Link to={page}>{name}</Link>}
@@ -103,13 +107,10 @@ const RecentChangeCard = ({item}: Props): JSX.Element => {
     >
       <p>{description}</p>
       <Secondary as='p'>
-        <Localized
-          id={
-            item.timeCreated === item.timeUpdated
-              ? 'home-recent-added-on'
-              : 'home-recent-edited-on'
-          }
-          vars={{time}}
+        <ResourceTime
+          of={item}
+          createdLabelId='home-recent-added-on'
+          updatedLabelId='home-recent-edited-on'
         />
       </Secondary>
     </Card>

@@ -4,7 +4,7 @@ import AddIcon from 'mdi-react/PlusIcon';
 import {Button, BodyText} from '@condict/ui';
 
 import {PartOfSpeechPage, LanguagePage} from '../../page';
-import {LinkCard, FullRow, Secondary} from '../../ui';
+import {LinkCard, FullRow, ResourceTime, Secondary} from '../../ui';
 import {OperationResult} from '../../graphql';
 
 import LanguageQuery from './query';
@@ -51,13 +51,10 @@ const PartOfSpeechList = (props: Props): JSX.Element => {
                 />
               </p>
               <Secondary as='p'>
-                <Localized
-                  id={
-                    pos.timeCreated === pos.timeUpdated
-                      ? 'part-of-speech-added-on'
-                      : 'part-of-speech-edited-on'
-                  }
-                  vars={{time: new Date(pos.timeUpdated)}}
+                <ResourceTime
+                  of={pos}
+                  createdLabelId='part-of-speech-added-on'
+                  updatedLabelId='part-of-speech-edited-on'
                 />
               </Secondary>
             </LinkCard>

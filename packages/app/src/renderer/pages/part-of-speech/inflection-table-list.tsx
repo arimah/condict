@@ -4,11 +4,7 @@ import AddIcon from 'mdi-react/PlusIcon';
 import {Button, BodyText} from '@condict/ui';
 
 import {InflectionTablePage, LanguagePage} from '../../page';
-import {
-  LinkCard,
-  FullRow,
-  Secondary,
-} from '../../ui';
+import {LinkCard, FullRow, Secondary, ResourceTime} from '../../ui';
 import {OperationResult} from '../../graphql';
 
 import PartOfSpeechQuery from './query';
@@ -51,13 +47,10 @@ const InflectionTableList = (props: Props): JSX.Element => {
                 />
               </p>
               <Secondary as='p'>
-                <Localized
-                  id={
-                    table.timeCreated === table.timeUpdated
-                      ? 'inflection-table-added-on'
-                      : 'inflection-table-edited-on'
-                  }
-                  vars={{time: new Date(table.timeUpdated)}}
+                <ResourceTime
+                  of={table}
+                  createdLabelId='inflection-table-added-on'
+                  updatedLabelId='inflection-table-edited-on'
                 />
               </Secondary>
             </LinkCard>
