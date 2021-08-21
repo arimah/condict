@@ -1,7 +1,6 @@
 import React, {
   Component,
   FocusEventHandler,
-  FormEventHandler,
   KeyboardEventHandler,
   MouseEventHandler,
 } from 'react';
@@ -16,22 +15,7 @@ import DefaultMessages from './messages';
 import {TagInputChild, Messages} from './types';
 import * as S from './styles';
 
-const Separators = /[,;]/;
-
 const normalizeTag = (tag: string) => tag.replace(/\s+/g, ' ').trim();
-
-const uniqueTags = (tags: string[]) => {
-  const seenTags = new Set<string>();
-  return tags.reduce((result, tag) => {
-    const lowerTag = tag.toLowerCase();
-    if (seenTags.has(lowerTag)) {
-      return result;
-    }
-    seenTags.add(lowerTag);
-    result.push(tag);
-    return result;
-  }, [] as string[]);
-};
 
 export type Props = {
   className?: string;
@@ -112,7 +96,7 @@ export default class TagInput extends Component<Props, State> {
     // value of the text input.
     if (!this.hasFocus && this.state.inputFocused) {
       this.setState({inputFocused: false});
-      this.commitTags(false);
+      this.commitTags();
     }
   };
 
@@ -144,59 +128,19 @@ export default class TagInput extends Component<Props, State> {
     this.deleteTag(child.tag, items => Descendants.last(items));
   };
 
-  private handleInput: FormEventHandler = e => {
-    const {value} = e.target as HTMLInputElement;
-
-    if (Separators.test(value)) {
-      // When the value changes, the last tag name stays in the text box.
-      // If you type one of the separator characters at the end, the last
-      // tag name will be the empty string, which means the tag just gets
-      // converted to a pill button and all is well. If you paste a value
-      // like "One, Two, Three", it means "Three" will remain in the text
-      // box, which at least means you can edit "Three". And finally, if
-      // you type a separator character anywhere other than the end, the
-      // text up to the separator will be committed.
-      this.commitTags(true);
-    }
-  };
-
-  public commitTags(keepLast: boolean): void {
+  public commitTags(): void {
     const input = this.input.current;
     if (!input) {
       return;
     }
-    const newTags = input.value.split(Separators);
-
-    if (keepLast) {
-      const lastTag = newTags.pop() as string;
-
-      // To ensure the cursor doesn't jump about weirdly, offset it by
-      // the number of characters that will be removed as a result of
-      // adding tags.
-      const prevLength = input.value.length;
-      const removed = prevLength - lastTag.length;
-      const {selectionStart, selectionEnd, selectionDirection} = input;
-      input.value = lastTag;
-      input.setSelectionRange(
-        (selectionStart as number) - removed,
-        (selectionEnd as number) - removed,
-        selectionDirection || 'none'
-      );
-    } else {
-      input.value = '';
-    }
+    const newTag = normalizeTag(input.value);
+    input.value = '';
 
     const {tags: prevTags, messages} = this.props;
 
-    const nextTags = uniqueTags([
-      ...prevTags,
-      ...newTags.map(normalizeTag).filter(Boolean),
-    ]);
-    this.setTags(nextTags);
-
-    const actualNewTags = nextTags.filter(t => !prevTags.includes(t));
-    if (actualNewTags.length > 0) {
-      this.announcements.announce(messages.tagsAdded(actualNewTags));
+    if (newTag && !prevTags.includes(newTag)) {
+      this.setTags([...prevTags, newTag]);
+      this.announcements.announce(messages.tagAdded(newTag));
     } else {
       this.announcements.announce(messages.noNewTags());
     }
@@ -306,7 +250,6 @@ export default class TagInput extends Component<Props, State> {
           size={1}
           tabIndex={selected.tag === null ? 0 : -1}
           disabled={disabled}
-          onInput={this.handleInput}
           ref={this.input}
         />
       </S.Main>

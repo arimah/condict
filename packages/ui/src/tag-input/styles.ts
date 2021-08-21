@@ -51,7 +51,7 @@ export const Tag = styled.button.attrs({
   padding-block: 2px;
   padding-inline: 8px 24px;
   position: relative;
-  max-width: calc(100% - 2px);
+  max-width: calc(100% - 4px);
   font: inherit;
   text-align: start;
   background-color: ${p => p.theme.general.bg};

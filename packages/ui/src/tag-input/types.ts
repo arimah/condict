@@ -40,11 +40,10 @@ export interface Messages {
    */
   tagPosition(n: number, count: number): string;
   /**
-   * "Tag added: TAGS" or "N tags added: TAGS", SR-only announcement when one
-   * or more tags are added. This message is not used when `tags` is empty.
+   * "Tag added: TAG", SR-only announcement when one tag is added.
    * @param tags The added tags.
    */
-  tagsAdded(tags: readonly string[]): string;
+  tagAdded(tag: string): string;
   /**
    * "No new tags added.", SR-only announcement when no tags were added as a
    * result of the user committing the current value.

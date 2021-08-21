@@ -22,7 +22,7 @@ const KeyboardMap = new ShortcutMap<KeyCommand>(
       key: Shortcut.parse(['Enter', 'Shift+Enter', 'Primary+Enter']),
       exec(tagInput: TagInput) {
         if (tagInput.state.selected.tag === null) {
-          tagInput.commitTags(false);
+          tagInput.commitTags();
           return true;
         }
         return false;

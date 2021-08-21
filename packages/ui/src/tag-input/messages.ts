@@ -12,13 +12,7 @@ const DefaultMessages: Messages = {
     }
   },
   tagPosition: (n, count) => `Tag ${n} of ${count}`,
-  tagsAdded: tags => {
-    if (tags.length === 1) {
-      return `Tag added: ${tags[0]}`;
-    } else {
-      return `${tags.length} tags added: ${tags.join(', ')}`;
-    }
-  },
+  tagAdded: tag => `Tag added: ${tag}`,
   noNewTags: () => 'No new tags added.',
   tagRemoved: tag => `Tag removed: ${tag}`,
   editingTag: (tag, newTag) =>
