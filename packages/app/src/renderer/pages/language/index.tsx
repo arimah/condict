@@ -10,6 +10,9 @@ import {
   FlowContent,
   MainHeader,
   HeaderAction,
+  Subheader,
+  ResourceMeta,
+  ResourceTime,
   Selectable,
   RichContent,
   TagList,
@@ -102,6 +105,15 @@ const LanguagePage = (props: Props): JSX.Element => {
                 <Localized id='generic-edit-button'/>
               </HeaderAction>
             </MainHeader>
+            <Subheader>
+              <ResourceMeta>
+                <ResourceTime
+                  of={language}
+                  createdLabelId='language-added-on'
+                  updatedLabelId='language-edited-on'
+                />
+              </ResourceMeta>
+            </Subheader>
 
             <LanguageSearch id={id} name={language.name}/>
 

@@ -11,6 +11,8 @@ import {
   MainHeader,
   HeaderAction,
   Subheader,
+  ResourceMeta,
+  ResourceTime,
   Selectable,
   Link,
 } from '../../ui';
@@ -108,8 +110,15 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
                 vars={{language: lang.name}}
                 elems={{'lang-link': <Link to={langPage}/>}}
               >
-                <></>
+                <span></span>
               </Localized>
+              <ResourceMeta>
+                <ResourceTime
+                  of={pos}
+                  createdLabelId='part-of-speech-added-on'
+                  updatedLabelId='part-of-speech-edited-on'
+                />
+              </ResourceMeta>
             </Subheader>
 
             <h2 id={`${htmlId}-tables-heading`}>

@@ -5,15 +5,18 @@
 import {
   Query,
   InflectionTableId,
+  UtcInstant,
   PartOfSpeechId,
   LanguageId
 } from "../../graphql";
 
-export default "query($id:InflectionTableId!){inflectionTable(id:$id){name,partOfSpeech{id,name,language{id,name}}layout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{inflectionPattern,displayName}}...on InflectionTableHeaderCell{headerText}}}}}}" as Query<{
+export default "query($id:InflectionTableId!){inflectionTable(id:$id){name,timeCreated,timeUpdated,partOfSpeech{id,name,language{id,name}}layout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{inflectionPattern,displayName}}...on InflectionTableHeaderCell{headerText}}}}}}" as Query<{
   id: InflectionTableId;
 }, {
   inflectionTable: {
     name: string;
+    timeCreated: UtcInstant;
+    timeUpdated: UtcInstant;
     partOfSpeech: {
       id: PartOfSpeechId;
       name: string;

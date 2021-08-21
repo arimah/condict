@@ -2,6 +2,9 @@ query($id: PartOfSpeechId!) {
   partOfSpeech(id: $id) {
     name
 
+    timeCreated
+    timeUpdated
+
     language {
       id
       name

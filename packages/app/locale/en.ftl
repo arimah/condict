@@ -646,6 +646,10 @@ language-part-of-speech-used-by-definitions =
    *[other] Used by {$definitionCount} definitions
   }
 
+language-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+language-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
 language-name-label = Name
 
 language-name-required-error = A language name is required.

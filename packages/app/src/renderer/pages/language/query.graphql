@@ -10,6 +10,9 @@ query($id: LanguageId!) {
     firstLemma { term }
     lastLemma { term }
 
+    timeCreated
+    timeUpdated
+
     recentDefinitions(page: {page: 0, perPage: 5}) {
       nodes {
         id

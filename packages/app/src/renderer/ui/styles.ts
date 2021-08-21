@@ -4,7 +4,7 @@ import {Button} from '@condict/ui';
 
 // Dimensions
 
-export const SidebarIdealWidth = '24vw';
+export const SidebarIdealWidth = '25vw';
 
 export const SidebarMinWidth = '264px';
 
@@ -38,7 +38,16 @@ export const HeaderAction = styled(Button)`
 `;
 
 export const Subheader = styled.p`
+  display: flex;
+  flex-direction: row;
   margin-block: -8px 12px;
+  gap: 16px;
+`;
+
+export const ResourceMeta = styled.span`
+  flex: 1 1 auto;
+  text-align: end;
+  opacity: 0.7;
 `;
 
 export const FlowContent = styled.div`

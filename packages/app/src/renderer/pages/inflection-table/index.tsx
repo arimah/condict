@@ -14,6 +14,8 @@ import {
   MainHeader,
   HeaderAction,
   Subheader,
+  ResourceMeta,
+  ResourceTime,
   Selectable,
   Link,
 } from '../../ui';
@@ -99,8 +101,15 @@ const InflectionTablePage = (props: Props): JSX.Element => {
                   'lang-link': <Link to={langPage}/>,
                 }}
               >
-                <></>
+                <span></span>
               </Localized>
+              <ResourceMeta>
+                <ResourceTime
+                  of={table}
+                  createdLabelId='inflection-table-added-on'
+                  updatedLabelId='inflection-table-edited-on'
+                />
+              </ResourceMeta>
             </Subheader>
 
             <SROnly as='h2' id={`${htmlId}-layout-title`}>

@@ -2,6 +2,9 @@ query($id: InflectionTableId!) {
   inflectionTable(id: $id) {
     name
 
+    timeCreated
+    timeUpdated
+
     partOfSpeech {
       id
       name

@@ -18,6 +18,10 @@ home-recent-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "sh
 
 home-recent-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
+language-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
+language-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
+
 definition-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
 definition-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
