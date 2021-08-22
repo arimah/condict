@@ -12,6 +12,12 @@ import {
 import paginate from '../paginate';
 import {ItemConnection} from '../types';
 
+import {
+  isFilteringNeeded,
+  isFilterImpossible,
+  buildOwnDefinitionsSource,
+  buildDerivedDefinitionsSource,
+} from './filter';
 import {LemmaRow} from './types';
 
 const Lemma = {
@@ -64,22 +70,81 @@ const Lemma = {
     db: DataReader,
     languageId: LanguageId,
     page: PageParams | undefined | null,
+    filter: LemmaFilter | undefined | null,
+    info?: GraphQLResolveInfo
+  ): ItemConnection<LemmaRow> {
+    page = validatePageParams(page || this.defaultPagination, this.maxPerPage);
+    if (filter && isFilteringNeeded(filter)) {
+      return this.allByLanguageFiltered(db, languageId, page, filter, info);
+    } else {
+      return this.allByLanguageUnfiltered(db, languageId, page, info);
+    }
+  },
+
+  allByLanguageUnfiltered(
+    db: DataReader,
+    languageId: LanguageId,
+    page: PageParams,
+    info?: GraphQLResolveInfo
+  ): ItemConnection<LemmaRow> {
+    return paginate(
+      page,
+      () => {
+        const {total} = db.getRequired<{total: number}>`
+          select lng.lemma_count as total
+          from languages lng
+          where lng.id = ${languageId}
+        `;
+        return total;
+      },
+      (limit, offset) => db.all<LemmaRow>`
+        select l.*
+        from lemmas l
+        where l.language_id = ${languageId}
+        order by l.term
+        limit ${limit} offset ${offset}
+      `,
+      info
+    );
+  },
+
+  allByLanguageFiltered(
+    db: DataReader,
+    languageId: LanguageId,
+    page: PageParams,
     filter: LemmaFilter,
     info?: GraphQLResolveInfo
   ): ItemConnection<LemmaRow> {
-    const join =
-      filter === 'DEFINED_LEMMAS_ONLY'
-        ? db.raw`inner join definitions d on d.lemma_id = l.id`
-        : filter === 'DERIVED_LEMMAS_ONLY'
-          ? db.raw`inner join derived_definitions dd on dd.lemma_id = l.id`
-          : db.raw``;
+    if (isFilterImpossible(filter)) {
+      return {
+        page: {
+          ...page,
+          totalCount: 0,
+        },
+        nodes: [],
+      };
+    }
+
+    // If tags are specified, force DEFINED_LEMMAS_ONLY, as we currently do not
+    // support tag matching on derived definitions. If the value were previously
+    // DERIVED_LEMMAS_ONLY, then the filter would be impossible, and we would
+    // have returned above.
+    if (filter.withTags) {
+      filter.kind = 'DEFINED_LEMMAS_ONLY';
+    }
+
+    const joinType = filter.kind === 'ALL_LEMMAS' ? 'left' : 'inner';
+    const source = db.raw`
+      ${buildOwnDefinitionsSource(db, joinType, filter)}
+      ${buildDerivedDefinitionsSource(db, joinType, filter)}
+    `;
     return paginate(
       validatePageParams(page || this.defaultPagination, this.maxPerPage),
       () => {
         const {total} = db.getRequired<{total: number}>`
           select count(*) as total
           from lemmas l
-          ${join}
+          ${source}
           where l.language_id = ${languageId}
         `;
         return total;
@@ -87,7 +152,7 @@ const Lemma = {
       (limit, offset) => db.all<LemmaRow>`
         select l.*
         from lemmas l
-        ${join}
+        ${source}
         where l.language_id = ${languageId}
         order by l.term
         limit ${limit} offset ${offset}

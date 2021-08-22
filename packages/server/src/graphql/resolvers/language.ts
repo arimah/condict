@@ -39,13 +39,7 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
   lemmaCount: p => p.lemma_count,
 
   lemmas: (p, {page, filter}, {db}, info) =>
-    Lemma.allByLanguage(
-      db,
-      p.id,
-      page,
-      filter ?? 'ALL_LEMMAS',
-      info
-    ),
+    Lemma.allByLanguage(db, p.id, page, filter, info),
 
   firstLemma: (p, _args, {db}) => Lemma.firstInLanguage(db, p.id),
 

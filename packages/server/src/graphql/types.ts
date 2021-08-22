@@ -1065,10 +1065,13 @@ export type InternalLinkTarget =
  * A language contains:
  * 
  * * Parts of speech (see `PartOfSpeech`), which words can be associated with.
+ *   Each part of speech can contain any number of inflection tables (see
+ *   `InflectionTable`).
  * * Lemmas (see `Lemma`), which are basically the words of the dictionary. Each
  *   lemma can contain any number of definitions (see `Definition`).
  * 
- * In addition, every language has a (unique) name.
+ * In addition, every language has a (unique) name, an optional description, and
+ * various metadata.
  */
 export type Language = {
   /**
@@ -1302,9 +1305,81 @@ export type LemmaConnection = {
 };
 
 /**
- * Determines how to filter lemmas.
+ * Contains filtering options for lemmas.
  */
-export type LemmaFilter =
+export type LemmaFilter = {
+  /**
+   * Determines which kind of lemmas to include. See the `LemmaKind` enum for
+   * details.
+   */
+  kind?: LemmaKind | null;
+  /**
+   * If specified, restricts the lemma list to lemmas where a definition belongs
+   * to one of the given parts of speech.
+   * 
+   * For direct definitions (those in `Lemma.definitions`), the lemma matches if
+   * at least one definition belongs to one of the specified parts of speech. For
+   * derived definitions (in `Lemma.derivedDefinitions`), the lemma matches if
+   * the derived definition comes from an inflected form in one of the specified
+   * parts of speech.
+   * 
+   * If this parameter is the empty list, no lemmas are returned.
+   */
+  inPartsOfSpeech?: PartOfSpeechId[] | null;
+  /**
+   * If specified, restricts the lemma list to lemmas where a definition uses one
+   * of the given inflection tables.
+   * 
+   * For direct definitions (those in `Lemma.definitions`), the lemma matches if
+   * at least one definition uses one of the specified inflection tables. For
+   * derived definitions (in `Lemma.derivedDefinitions`), the lemma matches if
+   * the derived definition comes from an inflected form in one of the specified
+   * tables.
+   * 
+   * If this parameter is the empty list, no lemmas are returned.
+   */
+  inflectsLike?: InflectionTableId[] | null;
+  /**
+   * If specified, restricts the lemma list to lemmas where a definition contains
+   * any or all (depending on `tagMatching`) of the given tags.
+   * 
+   * The value of `tagMatching` determines how these values are used:
+   * 
+   * * If `tagMatching` is `MATCH_ANY`, then a lemma is included if one of its
+   *   definitions has *any* of the specified tags. In this mode, an empty list
+   *   means nothing matches; the lemma list will be empty.
+   * * If `tagMatching` is `MATCH_ALL`, then a lemma is included if one of its
+   *   definitions taken together have *all* of the specified tags. In this mode,
+   *   an empty list means all lemmas match (`[]` is a subset of every list).
+   * 
+   * When filtering by tag, only direct definitions (those in `Lemma.definitions`)
+   * are considered. Derived definitions (in `Lemma.derivedDefinitions`) are not
+   * included in the search.
+   * 
+   * Note: if tags are specified and `kind` is `DERIVED_LEMMAS_ONLY`, the lemma
+   * list will be empty.
+   * 
+   * If omitted or null, no tag filter is applied.
+   */
+  withTags?: TagId[] | null;
+  /**
+   * Determines how `withTags` matches. See the documentation of `withTags` for
+   * more details. If omitted or null, the default value is `MATCH_ANY`.
+   * 
+   * This field has no effect if `withTags` is omitted or null.
+   */
+  tagMatching?: MatchingMode | null;
+};
+
+/**
+ * Represents a lemma ID.
+ */
+export type LemmaId = IdOf<'Lemma'>;
+
+/**
+ * Determines which kind of lemmas to include.
+ */
+export type LemmaKind =
   /**
    * All lemmas are included in the result.
    */
@@ -1320,11 +1395,6 @@ export type LemmaFilter =
    */
   | 'DERIVED_LEMMAS_ONLY'
 ;
-
-/**
- * Represents a lemma ID.
- */
-export type LemmaId = IdOf<'Lemma'>;
 
 /**
  * Contains the lemma that a lemma link points to.
