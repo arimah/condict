@@ -50,7 +50,7 @@ export {
 } from './layout';
 export {Pages, Props as PagesProps, Messages as PagesMessages} from './pages';
 export {Radio, Props as RadioProps} from './radio';
-export {Select, Props as SelectProps} from './select';
+export {Select, Props as SelectProps, Option as SelectOption} from './select';
 export {Spinner, Props as SpinnerProps} from './spinner';
 export {Switch, Props as SwitchProps} from './switch';
 export {

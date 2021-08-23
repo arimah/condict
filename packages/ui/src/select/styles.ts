@@ -6,12 +6,13 @@ export type Props = {
 };
 
 export const Wrapper = styled.span`
-  display: inline-block;
+  display: inline-flex;
   position: relative;
 `;
 
 export const Select = styled.select<Props>`
   appearance: none;
+  width: 100%;
   font: inherit;
   border-radius: ${p => p.borderRadius || '3px'};
   border-color: ${p => p.theme.general.border};

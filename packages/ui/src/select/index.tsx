@@ -3,17 +3,50 @@ import React, {ReactNode, Ref, SelectHTMLAttributes} from 'react';
 import * as S from './styles';
 
 export type Props = {
-  value?: string | number;
+  value?: string;
+  defaultValue?: string;
   options?: readonly Option[];
 } & S.Props & Omit<
   SelectHTMLAttributes<HTMLSelectElement>,
-  'value'
+  'value' | 'defaultValue'
 >;
 
 export type Option = {
-  readonly value: string | number;
+  readonly value: string;
   readonly name: ReactNode;
 };
+
+export const Select = React.forwardRef((
+  props: Props,
+  ref: Ref<HTMLSelectElement>
+) => {
+  const {
+    className,
+    options,
+    disabled = false,
+    children,
+    minimal = false,
+    ...otherProps
+  } = props;
+
+  return (
+    <S.Wrapper className={className}>
+      <S.Select
+        {...otherProps}
+        minimal={minimal}
+        disabled={disabled}
+        ref={ref}
+      >
+        {renderOptions(children, options)}
+      </S.Select>
+      <S.Arrow disabled={disabled}>
+        <path d='M0,1 H8 L4,7 Z' fill='currentColor'/>
+      </S.Arrow>
+    </S.Wrapper>
+  );
+});
+
+Select.displayName = 'Select';
 
 const renderOptions = (
   children: ReactNode,
@@ -49,35 +82,3 @@ const renderOptions = (
   }
   return null;
 };
-
-export const Select = React.forwardRef((
-  props: Props,
-  ref: Ref<HTMLSelectElement>
-) => {
-  const {
-    className,
-    options,
-    disabled = false,
-    children,
-    minimal = false,
-    ...otherProps
-  } = props;
-
-  return (
-    <S.Wrapper className={className}>
-      <S.Select
-        {...otherProps}
-        minimal={minimal}
-        disabled={disabled}
-        ref={ref}
-      >
-        {renderOptions(children, options)}
-      </S.Select>
-      <S.Arrow disabled={disabled}>
-        <path d='M0,1 H8 L4,7 Z' fill='currentColor'/>
-      </S.Arrow>
-    </S.Wrapper>
-  );
-});
-
-Select.displayName = 'Select';
