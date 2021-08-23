@@ -127,3 +127,22 @@ function needRefetch<Q extends Query<any, any>>(
 }
 
 export const useExecute = (): ExecuteFn => useContext(DataContext).execute;
+
+export const useDictionaryEvents = (
+  subscriber: DictionaryEventListener
+): void => {
+  const {subscribe, unsubscribe} = useContext(DataContext);
+
+  const subscriberRef = useRef(subscriber);
+  subscriberRef.current = subscriber;
+
+  useEffect(() => {
+    const listener: DictionaryEventListener = batch => {
+      subscriberRef.current(batch);
+    };
+    subscribe(listener);
+    return () => {
+      unsubscribe(listener);
+    };
+  }, []);
+};
