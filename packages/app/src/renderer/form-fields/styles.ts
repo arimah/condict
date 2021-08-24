@@ -3,6 +3,7 @@ import styled, {css} from 'styled-components';
 import {
   Button,
   TextInput as TextInputBase,
+  Select as SelectBase,
   Toolbar,
 } from '@condict/ui';
 import {
@@ -33,12 +34,38 @@ export const ErrorMessage = styled.p`
 `;
 
 export type TextInputProps = {
-  $touched: boolean;
   $invalid: boolean;
 };
 
 export const TextInput = styled(TextInputBase)<TextInputProps>`
-  ${p => p.$touched && css<TextInputProps>`
+  ${p => p.$invalid && css`&:not(:focus):not(.force-focus) {
+    border-color: ${p => p.theme.danger.boldBg};
+  }`}
+
+  &:invalid:not(:focus):not(.force-focus) {
+    border-color: ${p => p.theme.danger.boldBg};
+  }
+`;
+
+export const SelectWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 8px;
+
+  > button {
+    flex: none;
+  }
+`;
+
+export type SelectProps = {
+  $invalid: boolean;
+};
+
+export const Select = styled(SelectBase)<SelectProps>`
+  flex: 0 1 auto;
+
+  > select {
     ${p => p.$invalid && css`&:not(:focus):not(.force-focus) {
       border-color: ${p => p.theme.danger.boldBg};
     }`}
@@ -46,7 +73,7 @@ export const TextInput = styled(TextInputBase)<TextInputProps>`
     &:invalid:not(:focus):not(.force-focus) {
       border-color: ${p => p.theme.danger.boldBg};
     }
-  `}
+  }
 `;
 
 export const DescriptionEditor = styled(DescriptionEditorBase)`

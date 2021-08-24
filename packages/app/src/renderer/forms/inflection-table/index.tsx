@@ -68,10 +68,7 @@ export const InflectionTableForm = (props: Props): JSX.Element => {
     onDirtyChange,
   } = props;
 
-  const form = useForm<InflectionTableData>({
-    mode: 'onTouched',
-    defaultValues: initialData,
-  });
+  const form = useForm<InflectionTableData>({defaultValues: initialData});
 
   const {isDirty} = form.formState;
   useEffect(() => {
@@ -86,6 +83,7 @@ export const InflectionTableForm = (props: Props): JSX.Element => {
         <TextField
           name='name'
           label={<Localized id='inflection-table-name-label'/>}
+          aria-required
           validate={{
             notEmpty,
             notTaken: nameNotTaken(
@@ -98,7 +96,6 @@ export const InflectionTableForm = (props: Props): JSX.Element => {
             notTaken: <Localized id='inflection-table-name-taken-error'/>,
           }}
           defaultError={<Localized id='inflection-table-name-required-error'/>}
-          required
           inputRef={firstFieldRef as RefObject<HTMLInputElement> | undefined}
         />
         <InflectionTableField

@@ -41,10 +41,7 @@ export const PartOfSpeechForm = (props: Props): JSX.Element => {
     onDirtyChange,
   } = props;
 
-  const form = useForm<PartOfSpeechData>({
-    mode: 'onTouched',
-    defaultValues: initialData,
-  });
+  const form = useForm<PartOfSpeechData>({defaultValues: initialData});
 
   const {isDirty} = form.formState;
   useEffect(() => {
@@ -59,6 +56,7 @@ export const PartOfSpeechForm = (props: Props): JSX.Element => {
         <TextField
           name='name'
           label={<Localized id='part-of-speech-name-label'/>}
+          aria-required
           validate={{
             notEmpty,
             notTaken: nameNotTaken(
@@ -71,7 +69,6 @@ export const PartOfSpeechForm = (props: Props): JSX.Element => {
             notTaken: <Localized id='part-of-speech-name-taken-error'/>,
           }}
           defaultError={<Localized id='part-of-speech-name-required-error'/>}
-          required
           inputRef={firstFieldRef as RefObject<HTMLInputElement> | undefined}
         />
         <FormButtons submitError={submitError} onCancel={onCancel}/>

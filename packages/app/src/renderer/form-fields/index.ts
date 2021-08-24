@@ -7,6 +7,7 @@ export {
   Props as InflectionTableFieldProps,
   InflectionTableValue,
 } from './inflection-table-field';
+export {SelectField, Props as SelectFieldProps} from './select-field';
 export {TextField, Props as TextFieldProps} from './text-field';
 
 export {FormButtons, Props as FormButtonsProps} from './form-buttons';

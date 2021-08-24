@@ -29,6 +29,7 @@ export type Props<D extends FieldValues> = {
   | 'aria-label'
   | 'aria-labelledby'
   | 'aria-describedby'
+  | 'aria-invalid'
 >;
 
 export type TextFieldComponent = <D extends FieldValues>(
@@ -52,7 +53,7 @@ export const TextField = React.memo((
 
   const autoId = useUniqueId();
   const {register, formState} = useFormContext();
-  const {touchedFields, errors, isSubmitting} = formState;
+  const {errors, isSubmitting} = formState;
 
   const {ref: fieldRef, ...field} = register(name, {
     required: otherProps.required,
@@ -60,8 +61,6 @@ export const TextField = React.memo((
     maxLength: otherProps.maxLength,
     validate,
   });
-
-  const touched = !!get(touchedFields, name, false);
 
   const fieldError = get(errors, name) as FieldError | undefined;
   const errorMessage = fieldError && getErrorMessage(
@@ -81,8 +80,8 @@ export const TextField = React.memo((
         {...field}
         id={id || autoId}
         aria-describedby={fieldError ? `${autoId}-error` : undefined}
+        aria-invalid={Boolean(fieldError)}
         readOnly={isSubmitting}
-        $touched={touched}
         $invalid={Boolean(fieldError)}
         ref={combineRefs(inputRef, fieldRef)}
       />

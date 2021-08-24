@@ -43,10 +43,7 @@ export const LanguageForm = (props: Props): JSX.Element => {
     onDirtyChange,
   } = props;
 
-  const form = useForm<LanguageData>({
-    mode: 'onTouched',
-    defaultValues: initialData,
-  });
+  const form = useForm<LanguageData>({defaultValues: initialData});
 
   const {isDirty} = form.formState;
   useEffect(() => {
@@ -61,6 +58,7 @@ export const LanguageForm = (props: Props): JSX.Element => {
         <TextField
           name='name'
           label={<Localized id='language-name-label'/>}
+          aria-required
           validate={{
             notEmpty,
             notTaken: nameNotTaken(
@@ -73,7 +71,6 @@ export const LanguageForm = (props: Props): JSX.Element => {
             notTaken: <Localized id='language-name-taken-error'/>,
           }}
           defaultError={<Localized id='language-name-required-error'/>}
-          required
           inputRef={firstFieldRef as RefObject<HTMLInputElement> | undefined}
         />
         <DescriptionField
