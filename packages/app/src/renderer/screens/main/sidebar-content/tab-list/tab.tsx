@@ -49,6 +49,8 @@ const Tab = React.forwardRef((
     onClose(id);
   }, [id, onClose]);
 
+  const isDirty = NavTab.isDirty(tab);
+
   return (
     <S.Tab
       id={`tab-${id}`}
@@ -69,7 +71,7 @@ const Tab = React.forwardRef((
       {NavTab.canClose(tab) && (
         <S.CloseButton
           title={l10n.getString(
-            tab.dirty
+            isDirty
               ? 'sidebar-tab-close-button-unsaved-tooltip'
               : 'sidebar-tab-close-button-tooltip'
           )}
@@ -77,7 +79,7 @@ const Tab = React.forwardRef((
           onMouseDown={handleCloseButtonMouseDown}
           onClick={handleCloseButtonClick}
         >
-          {NavTab.isDirty(tab) && <DirtyIcon/>}
+          {isDirty && <DirtyIcon/>}
           <CloseIcon/>
         </S.CloseButton>
       )}
