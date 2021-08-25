@@ -90,11 +90,13 @@ export default class CellEditor extends PureComponent<Props, State> {
   }
 
   private commit = () => {
-    this.props.onCommit(
-      produce(this.state.value, value => {
-        value.data.text = normalizePattern(value.data.text);
-      })
-    );
+    this.setState({trapActive: false}, () => {
+      this.props.onCommit(
+        produce(this.state.value, value => {
+          value.data.text = normalizePattern(value.data.text);
+        })
+      );
+    });
   };
 
   private handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {

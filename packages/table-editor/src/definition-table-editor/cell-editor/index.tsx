@@ -76,7 +76,9 @@ export default class CellEditor extends PureComponent<Props, State> {
   }
 
   private commit = () => {
-    this.props.onCommit(this.state.value);
+    this.setState({trapActive: false}, () => {
+      this.props.onCommit(this.state.value);
+    });
   };
 
   private handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
