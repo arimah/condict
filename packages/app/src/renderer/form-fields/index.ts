@@ -8,6 +8,10 @@ export {
   InflectionTableValue,
 } from './inflection-table-field';
 export {SelectField, Props as SelectFieldProps} from './select-field';
+export {
+  TableCaptionField,
+  Props as TableCaptionFieldProps,
+} from './table-caption-field';
 export {TextField, Props as TextFieldProps} from './text-field';
 
 export {FormButtons, Props as FormButtonsProps} from './form-buttons';

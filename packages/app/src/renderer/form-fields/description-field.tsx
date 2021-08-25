@@ -20,6 +20,7 @@ import * as S from './styles';
 export type Props<D extends FieldValues> = {
   name: FieldPath<D>;
   label?: ReactNode;
+  defaultValue?: BlockElement[];
   errorMessage?: ReactNode;
 } & Omit<
   DescriptionEditorProps,
@@ -34,7 +35,7 @@ export type Props<D extends FieldValues> = {
   | 'onBlur'
 >;
 
-export type DescriptionEditorComponent = <D extends FieldValues>(
+export type DescriptionFieldComponent = <D extends FieldValues>(
   props: Props<D>
 ) => JSX.Element;
 
@@ -42,12 +43,12 @@ export type DescriptionEditorComponent = <D extends FieldValues>(
 export const DescriptionField = React.memo((
   props: Props<FieldValues>
 ): JSX.Element => {
-  const {name, label, errorMessage, ...otherProps} = props;
+  const {name, label, defaultValue, errorMessage, ...otherProps} = props;
 
   const id = useUniqueId();
   const execute = useExecute();
 
-  const {field, formState} = useController({name});
+  const {field, formState} = useController({name, defaultValue});
   const {onChange, onBlur} = field;
   const {isSubmitting} = formState;
   const value = field.value as BlockElement[];
@@ -91,7 +92,7 @@ export const DescriptionField = React.memo((
         </S.ErrorMessage>}
     </S.Field>
   );
-}) as DescriptionEditorComponent;
+}) as DescriptionFieldComponent;
 
 type GqlSearchResults = NonNullable<
   OperationResult<typeof LinkTargetQuery>['search']

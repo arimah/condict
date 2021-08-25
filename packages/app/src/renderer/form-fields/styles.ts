@@ -8,6 +8,7 @@ import {
 } from '@condict/ui';
 import {
   DescriptionEditor as DescriptionEditorBase,
+  TableCaptionEditor as TableCaptionEditorBase,
 } from '@condict/rich-text-editor';
 import {
   InflectionTableEditor as InflectionTableEditorBase,
@@ -77,6 +78,10 @@ export const Select = styled(SelectBase)<SelectProps>`
 `;
 
 export const DescriptionEditor = styled(DescriptionEditorBase)`
+  margin-block: 0;
+`;
+
+export const TableCaptionEditor = styled(TableCaptionEditorBase)`
   margin-block: 0;
 `;
 

@@ -37,7 +37,7 @@ export type Props<D extends FieldValues> = {
   | 'onFocus'
 >;
 
-export type InflectionTableEditorComponent = <D extends FieldValues>(
+export type InflectionTableFieldComponent = <D extends FieldValues>(
   props: Props<D>
 ) => JSX.Element;
 
@@ -161,7 +161,7 @@ export const InflectionTableField = React.memo((
         </S.ErrorMessage>}
     </S.Field>
   );
-}) as InflectionTableEditorComponent;
+}) as InflectionTableFieldComponent;
 
 const tableNeedsUpdate = (
   history: HistoryValue<InflectionTable> | null,
