@@ -34,7 +34,14 @@ export type TableCaptionFieldComponent = <D extends FieldValues>(
 export const TableCaptionField = React.memo((
   props: Props<FieldValues>
 ): JSX.Element => {
-  const {name, label, defaultValue, errorMessage, ...otherProps} = props;
+  const {
+    name,
+    label,
+    defaultValue,
+    readOnly,
+    errorMessage,
+    ...otherProps
+  } = props;
 
   const id = useUniqueId();
 
@@ -56,7 +63,7 @@ export const TableCaptionField = React.memo((
         value={value}
         aria-labelledby={label ? `${id}-label` : undefined}
         aria-describedby={errorMessage ? `${id}-error` : undefined}
-        readOnly={isSubmitting}
+        readOnly={readOnly || isSubmitting}
         toolbarAlwaysVisible={false}
         messages={messages}
         onChange={onChange}

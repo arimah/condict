@@ -43,7 +43,14 @@ export type DescriptionFieldComponent = <D extends FieldValues>(
 export const DescriptionField = React.memo((
   props: Props<FieldValues>
 ): JSX.Element => {
-  const {name, label, defaultValue, errorMessage, ...otherProps} = props;
+  const {
+    name,
+    label,
+    defaultValue,
+    readOnly,
+    errorMessage,
+    ...otherProps
+  } = props;
 
   const id = useUniqueId();
   const execute = useExecute();
@@ -80,7 +87,7 @@ export const DescriptionField = React.memo((
         value={value}
         aria-labelledby={label ? `${id}-label` : undefined}
         aria-describedby={errorMessage ? `${id}-error` : undefined}
-        readOnly={isSubmitting}
+        readOnly={readOnly || isSubmitting}
         messages={messages}
         onChange={onChange}
         onFindLinkTarget={handleFindLinkTarget}
