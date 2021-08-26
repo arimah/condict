@@ -1,4 +1,9 @@
 export {
+  DefinitionTableField,
+  Props as DefinitionTableFieldProps,
+  DefinitionTableValue,
+} from './definition-table-field';
+export {
   DescriptionField,
   Props as DescriptionFieldProps,
 } from './description-field';

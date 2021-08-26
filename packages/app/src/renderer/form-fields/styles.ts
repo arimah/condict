@@ -12,6 +12,7 @@ import {
 } from '@condict/rich-text-editor';
 import {
   InflectionTableEditor as InflectionTableEditorBase,
+  DefinitionTableEditor as DefinitionTableEditorBase,
 } from '@condict/table-editor';
 
 import {ConfirmButton} from '../ui';
@@ -106,6 +107,14 @@ export const TableContainer = styled.div`
 
 export const InflectionTableEditor = styled(InflectionTableEditorBase)`
   border: 6px solid transparent;
+`;
+
+export const DefinitionTableContainer = styled(TableContainer)`
+  margin: -4px;
+`;
+
+export const DefinitionTableEditor = styled(DefinitionTableEditorBase)`
+  border: 4px solid transparent;
 `;
 
 export const FormButtons = styled.div`
