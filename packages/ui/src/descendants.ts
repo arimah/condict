@@ -144,7 +144,7 @@ export const Descendants = {
     Descendants.ensureSorted(desc);
 
     const {items} = desc;
-    let index = (items.indexOf(current) + 1) % items.length;
+    let index = items.indexOf(current) + 1;
     while (index < items.length) {
       const item = items[index];
       if (filter(item)) {
@@ -209,7 +209,7 @@ export const Descendants = {
     Descendants.ensureSorted(desc);
 
     const {items} = desc;
-    let index = (items.indexOf(current) + items.length - 1) % items.length;
+    let index = items.indexOf(current) - 1;
     while (index >= 0) {
       const item = items[index];
       if (filter(item)) {

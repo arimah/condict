@@ -8,11 +8,13 @@ import React, {
   useMemo,
   useCallback,
   useEffect,
+  useRef,
 } from 'react';
 
 import {Shortcut, ShortcutMap} from '../shortcut';
 import {Descendants, compareNodes} from '../descendants';
 import {WritingDirection, useWritingDirection} from '../writing-direction';
+import combineRefs from '../combine-refs';
 
 import {Context, ContextValue, ItemElement} from './focus-manager';
 import Button from './button';
@@ -142,6 +144,9 @@ export const Toolbar = Object.assign(
       }
     }, [context, onKeyDown, keyboardMap]);
 
+    const ownRef = useRef<HTMLDivElement>(null);
+    const hadFocus = ownRef.current?.contains(document.activeElement);
+
     // After rendering, ensure the current item is one of the enabled children
     // of the toolbar. If you press a Redo button that then becomes disabled
     // because the redo stack is empty, we have to move the focus to something
@@ -155,6 +160,12 @@ export const Toolbar = Object.assign(
       // Avoid infinite update loops.
       if (nextFocus !== activeChild) {
         setActiveChild(nextFocus);
+
+        // If the toolbar had focus and has now lost it, repair it by focusing
+        // the next focusable.
+        if (hadFocus) {
+          nextFocus?.current?.focus();
+        }
       }
     });
 
@@ -164,7 +175,7 @@ export const Toolbar = Object.assign(
           {...otherProps}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
-          ref={ref}
+          ref={combineRefs(ref, ownRef)}
         >
           {children}
         </S.Toolbar>
