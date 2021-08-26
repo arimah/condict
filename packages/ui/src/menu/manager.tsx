@@ -1,4 +1,4 @@
-import React, {Component, MouseEvent as SyntheticMouseEvent} from 'react';
+import {Component, MouseEvent as SyntheticMouseEvent} from 'react';
 import memoizeOne from 'memoize-one';
 
 import {Shortcut, ShortcutMap} from '../shortcut';
@@ -75,19 +75,6 @@ import {PhantomFadeTime} from './styles';
 |*| (typically a menu bar, button or similar). This is handled entirely by the
 |*| component that opened the menu (MenuTrigger, menu bar, whatever).
 \*/
-
-// In development, it's impossible to debug menus if they keep closing whenever
-// the page loses focus; you can't inspect it in your dev tools that way. This
-// variable can be set to keep menus open when the page loses focus.
-declare global {
-  interface Window {
-    __CONDICT_DEV_KEEP_MENUS_OPEN__: boolean;
-  }
-}
-
-if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
-  window.__CONDICT_DEV_KEEP_MENUS_OPEN__ = false;
-}
 
 // The time, in milliseconds, that the mouse has to stay still before menu
 // items are automatically opened/closed.
@@ -411,12 +398,6 @@ export default class MenuManager extends Component<Props, State> {
   };
 
   private handleWindowBlur = () => {
-    if (process.env.NODE_ENV === 'development') {
-      if (window.__CONDICT_DEV_KEEP_MENUS_OPEN__) {
-        return;
-      }
-    }
-
     // When the window loses focus, the entire menu tree closes immediately.
     this.setState({stack: EmptyStack});
   };

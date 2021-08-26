@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key, react/display-name */
-import React, {Ref, useEffect} from 'react';
+import React, {Ref} from 'react';
 import FileIcon from 'mdi-react/FileOutlineIcon';
 import OpenIcon from 'mdi-react/FolderOpenIcon';
 import SaveIcon from 'mdi-react/FloppyIcon';
@@ -163,10 +163,6 @@ const DemoMenu = React.forwardRef((
 const Main = (): JSX.Element => {
   const {state, set, reset} = useDemoState(StorageKey, InitialState);
 
-  useEffect(() => {
-    window.__CONDICT_DEV_KEEP_MENUS_OPEN__ = state.keepOpen;
-  }, [state.keepOpen]);
-
   return (
     <Demo
       name='Menu'
@@ -178,11 +174,6 @@ const Main = (): JSX.Element => {
             onChange={e => set('placement', e.target.value as Placement)}
           />
         </label>,
-        <Checkbox
-          label='Keep menu open when window loses focus (dev only)'
-          checked={state.keepOpen}
-          onChange={e => set('keepOpen', e.target.checked)}
-        />,
       ]}
       onReset={reset}
     >
