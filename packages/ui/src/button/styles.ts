@@ -38,7 +38,8 @@ export const ButtonStyle = css<Props>`
     `}
   }
 
-  &:active {
+  &:active,
+  &.force-active {
     background-color: ${buttonColor('activeBg', 'boldActiveBg')};
     ${p => p.borderless && css<Props>`
       border-color: ${buttonColor('activeBg', 'boldActiveBg')};

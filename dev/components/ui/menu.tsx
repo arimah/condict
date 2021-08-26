@@ -188,7 +188,10 @@ const Main = (): JSX.Element => {
     >
       <List>
         <Row>
-          <MenuTrigger menu={<DemoMenu state={state} set={set}/>}>
+          <MenuTrigger
+            openClass='force-active'
+            menu={<DemoMenu state={state} set={set}/>}
+          >
             <Button label='Open menu'/>
           </MenuTrigger>
         </Row>

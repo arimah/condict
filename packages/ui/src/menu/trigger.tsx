@@ -1,4 +1,4 @@
-import React, {Ref, useRef, useCallback} from 'react';
+import React, {Ref, useState, useRef, useCallback} from 'react';
 
 import combineRefs from '../combine-refs';
 import {RelativeParent} from '../placement';
@@ -10,6 +10,7 @@ import ManagedMenu from './managed-menu';
 
 export type Props = {
   menu: MenuElement;
+  openClass?: string;
   onToggle?: (open: boolean) => void;
   children: JSX.Element & {
     ref?: Ref<ChildType>;
@@ -25,11 +26,13 @@ const DefaultOnToggle = () => { /* no-op */ };
 const MenuTrigger = (props: Props): JSX.Element => {
   const {
     menu,
+    openClass = 'menu-open',
     onToggle = DefaultOnToggle,
     children,
   } = props;
 
   const menuId = useUniqueId();
+  const [isOpen, setOpen] = useState(false);
   const menuRef = useRef<ManagedMenu>(null);
   const childRef = useRef<ChildType>(null);
   const openMenu = useCallback(() => {
@@ -37,6 +40,7 @@ const MenuTrigger = (props: Props): JSX.Element => {
       // TODO: See if we can distinguish between mouse and keyboard clicks
       // in this event.
       menuRef.current.open(false);
+      setOpen(true);
       onToggle(true);
     }
   }, [onToggle]);
@@ -44,6 +48,7 @@ const MenuTrigger = (props: Props): JSX.Element => {
     if (childRef.current) {
       childRef.current.focus();
     }
+    setOpen(false);
     onToggle(false);
   }, [onToggle]);
 
@@ -52,9 +57,14 @@ const MenuTrigger = (props: Props): JSX.Element => {
     parentRef: childRef,
     ref: combineRefs(menuRef, menu.ref),
   });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const childClassName = children.props?.className as string | undefined;
   const childWithMenu = React.cloneElement(children, {
     'aria-owns': menuId,
     'aria-haspopup': 'menu',
+    className: isOpen && openClass
+      ? `${childClassName || ''} ${openClass}`
+      : childClassName,
     onClick: openMenu,
     ref: combineRefs(childRef, children.ref),
   });

@@ -1,4 +1,4 @@
-import React, {MouseEvent, Ref, useRef, useCallback} from 'react';
+import React, {MouseEvent, Ref, useState, useRef, useCallback} from 'react';
 
 import combineRefs from '../combine-refs';
 import {RelativeParent} from '../placement';
@@ -10,6 +10,7 @@ import ManagedMenu from './managed-menu';
 
 export type Props = {
   menu: MenuElement;
+  openClass?: string;
   onToggle?: (open: boolean) => void;
   children: JSX.Element & {
     ref?: Ref<ChildType>;
@@ -25,11 +26,13 @@ const DefaultOnToggle = () => { /* no-op */ };
 const ContextMenuTrigger = (props: Props): JSX.Element => {
   const {
     menu,
+    openClass,
     onToggle = DefaultOnToggle,
     children,
   } = props;
 
   const menuId = useUniqueId();
+  const [isOpen, setOpen] = useState(false);
   const menuRef = useRef<ManagedMenu>(null);
   const childRef = useRef<ChildType>(null);
   const menuParentRef = useRef<RelativeParent>({ x: 0, y: 0});
@@ -50,13 +53,13 @@ const ContextMenuTrigger = (props: Props): JSX.Element => {
 
     if (menuRef.current) {
       menuRef.current.open(e.button === 0);
+      setOpen(true);
       onToggle(true);
     }
   }, [onToggle]);
   const handleClose = useCallback(() => {
-    if (childRef.current) {
-      childRef.current.focus();
-    }
+    childRef.current?.focus();
+    setOpen(false);
     onToggle(false);
   }, [onToggle]);
 
@@ -65,9 +68,14 @@ const ContextMenuTrigger = (props: Props): JSX.Element => {
     parentRef: menuParentRef,
     ref: combineRefs(menuRef, menu.ref),
   });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const childClassName = children.props?.className as string | undefined;
   const childWithMenu = React.cloneElement(children, {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     'aria-owns': `${menuId} ${children.props['aria-owns'] || ''}`,
+    className: isOpen && openClass
+      ? `${childClassName || ''} ${openClass}`
+      : childClassName,
     onContextMenu: openMenu,
     ref: combineRefs(childRef, children.ref),
   });

@@ -237,7 +237,8 @@ The `<MenuTrigger>` component is used to attach a menu to a component. It is cur
 * Attaches a ref to the trigger element (any existing ref will still be called/updated);
 * Passes the trigger element ref into the menu's `parentRef` prop (hence, the menu is positioned relative to the trigger);
 * Adds an `onClick` prop to the trigger element, which opens the menu (any existing `onClick` handler will _not_ be called);
-* Adds the `aria-owns` and `aria-haspopup="menu"` props to the trigger element; and
+* Adds the `aria-owns` and `aria-haspopup="menu"` props to the trigger element;
+* Adds the trigger's `openClass` to the trigger element's `className` (any existing classes are preserved); and
 * Wraps the menu in a [`<MenuManager>`](#menumanager).
 
 The end result is that the trigger element opens the menu when clicked, and it reports correct accessibility information about the presence of a menu.
@@ -251,6 +252,7 @@ The `<MenuTrigger>` component does _not_ forward its ref to any underlying eleme
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `menu` | element | _none; required_ | Any React element (but not other renderable, such as string, array or fragment) whose ref resolves to a [`<Menu>`](#menu). Note that you _can_ use a custom component here, as long the ref is forwarded to a `<Menu>`. |
+| `openClass` | string | `menu-open` | A class name (or list of space-separated class names) that are passed to the trigger element's `className` when the menu is open. Note: the default value is used when `undefined` is passed. To disable class name injection, use `openClass=''`. |
 | `onToggle` | function | no-op | A function that is called when the menu opens or closes. This can be used to track the state of the menu in the trigger component. It receives a single boolean argument which is `true` if the menu just opened, `false` if it just closed. The return value is ignored. |
 | `children` | element | _none; required_ | A single React element (but not other renderable) whose ref resolves to a DOM element. This becomes the menu trigger. The element must support an `onClick` event handler, along with the `aria-owns` and `aria-haspopup` props. The menu is positioned relative to the element in the ref. |
 
@@ -263,7 +265,8 @@ The `<ContextMenuTrigger>` component is similar to [`<MenuTrigger>`](#menutrigge
 * Attaches a unique, random `id` to the menu;
 * Attaches a ref to the trigger element (any existing ref will still be called/updated);
 * Adds an `onContextMenu` prop to the trigger element, which, when called, cancels the default behaviour and opens the custom context menu (any existing `onContextMenu` handler will _not_ be called);
-* Adds the `aria-owns` prop to the trigger element; and
+* Adds the `aria-owns` prop to the trigger element;
+* Adds the trigger's `openClass` to the trigger element's `className`, if specified (any existing classes are preserved); and
 * Wraps the menu in a [`<MenuManager>`](#menumanager).
 
 The menu is positioned relative to the pointer when opened by right-clicking, and relative to the trigger element when opened by keyboard. The menu's `parentRef`, if any, is overwritten by the `<ContextMenuTrigger>`.
@@ -273,6 +276,7 @@ The menu is positioned relative to the pointer when opened by right-clicking, an
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `menu` | element | _none; required_ | Any React element (but not other renderable, such as string, array or fragment) whose ref resolves to a [`<Menu>`](#menu). Note that you _can_ use a custom component here, as long the ref is forwarded to a `<Menu>`. |
+| `openClass` | string | `undefined` | If specified, contains a class name (or list of space-separated class names) that are passed to the trigger element's `className` when the menu is open. |
 | `onToggle` | function | no-op | A function that is called when the menu opens or closes. This can be used to track the state of the menu in the trigger component. It receives a single boolean argument which is `true` if the menu just opened, `false` if it just closed. The return value is ignored. |
 | `children` | element | _none; required_ | A single React element (but not other renderable) whose ref resolves to a DOM element. This becomes the menu trigger. The element must support an `onContextMenu` event handler, along with the `aria-owns` prop. The menu is positioned relative to the element in the ref when opened by keyboard. |
 

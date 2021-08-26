@@ -1,10 +1,5 @@
 import styled, {css} from 'styled-components';
 
-export type ButtonProps = {
-  checked?: boolean;
-  menuOpen?: boolean;
-};
-
 export const Toolbar = styled.div.attrs({
   role: 'toolbar',
 })`
@@ -29,6 +24,10 @@ export const Group = styled.div.attrs({
     margin-inline-end: 16px;
   }
 `;
+
+export type ButtonProps = {
+  checked?: boolean;
+};
 
 export const Button = styled.button.attrs({
   type: 'button',
@@ -59,7 +58,8 @@ export const Button = styled.button.attrs({
     background-color: ${p => p.theme.general.hoverBg};
   }
 
-  &:active {
+  &:active,
+  &.menu-open {
     background-color: ${p => p.theme.general.activeBg};
   }
 
@@ -81,12 +81,6 @@ export const Button = styled.button.attrs({
           ? '0.75'
           : '0.4'
         });
-    }
-  `}
-
-  ${p => p.menuOpen && css`
-    && {
-      background-color: ${p => p.theme.general.activeBg};
     }
   `}
 
