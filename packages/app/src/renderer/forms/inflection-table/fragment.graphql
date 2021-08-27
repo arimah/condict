@@ -1,0 +1,20 @@
+fragment InflectionTableFragment on InflectionTableLayout {
+  rows {
+    cells {
+      rowSpan
+      columnSpan
+      ...on InflectionTableDataCell {
+        inflectedForm {
+          id
+          inflectionPattern
+          deriveLemma
+          displayName
+          hasCustomDisplayName
+        }
+      }
+      ...on InflectionTableHeaderCell {
+        headerText
+      }
+    }
+  }
+}

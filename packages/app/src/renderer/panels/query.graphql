@@ -4,6 +4,9 @@ mutation AddLanguageMut($data: NewLanguageInput!) {
   addLanguage(data: $data) {
     id
     name
+    description {
+      ...RichTextBlockFragment
+    }
   }
 }
 
@@ -84,7 +87,14 @@ mutation AddInflectionTableMut($data: NewInflectionTableInput!) {
   addInflectionTable(data: $data) {
     id
     name
+    layout {
+      id
+      stems
+      ...InflectionTableFragment
+    }
     partOfSpeech {
+      id
+      name
       language {
         id
         name
@@ -99,26 +109,8 @@ query EditInflectionTableQuery($id: InflectionTableId!) {
     name
 
     layout {
-      rows {
-        cells {
-          rowSpan
-          columnSpan
-          ...on InflectionTableDataCell {
-            inflectedForm {
-              id
-              inflectionPattern
-              deriveLemma
-              displayName
-              hasCustomDisplayName
-            }
-          }
-          ...on InflectionTableHeaderCell {
-            headerText
-          }
-        }
-      }
-
       isInUse
+      ...InflectionTableFragment
     }
 
     partOfSpeech {

@@ -3,15 +3,21 @@ import {Localized} from '@fluent/react';
 
 import {descriptionToGraphQLInput} from '@condict/rich-text-editor';
 
-import {FlowContent} from '../ui';
+import {FlowContent, BlockFields} from '../ui';
 import {PanelParams, PanelProps, useNavigateTo} from '../navigation';
-import {LanguagePage} from '../page';
 import {LanguageData, LanguageForm} from '../forms';
 import {useExecute} from '../data';
+import {LanguageId} from '../graphql';
 
 import {AddLanguageMut} from './query';
 
-const AddLanguagePanel = (props: PanelProps<LanguagePage | null>) => {
+export interface NewLanguage {
+  id: LanguageId;
+  name: string;
+  description: BlockFields[];
+}
+
+const AddLanguagePanel = (props: PanelProps<NewLanguage | null>) => {
   const {updatePanel, titleId, onResolve} = props;
 
   const navigateTo = useNavigateTo();
@@ -38,8 +44,7 @@ const AddLanguagePanel = (props: PanelProps<LanguagePage | null>) => {
 
     // If there were no errors, we should have a language.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const lang = res.data!.addLanguage!;
-    onResolve(LanguagePage(lang.id, lang.name));
+    onResolve(res.data!.addLanguage);
   }, [onResolve, navigateTo]);
 
   return (
@@ -57,7 +62,7 @@ const AddLanguagePanel = (props: PanelProps<LanguagePage | null>) => {
   );
 };
 
-export const addLanguagePanel: PanelParams<LanguagePage | null> = {
+export const addLanguagePanel: PanelParams<NewLanguage | null> = {
   // eslint-disable-next-line react/display-name
   render: props => <AddLanguagePanel {...props}/>,
 };

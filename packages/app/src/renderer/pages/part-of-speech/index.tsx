@@ -4,7 +4,11 @@ import {Localized} from '@fluent/react';
 import {useUniqueId} from '@condict/ui';
 
 import {useNavigateTo, useOpenPanel, useUpdateTab} from '../../navigation';
-import {LanguagePage, PartOfSpeechPage as PartOfSpeechTarget} from '../../page';
+import {
+  LanguagePage,
+  PartOfSpeechPage as PartOfSpeechTarget,
+  InflectionTablePage,
+} from '../../page';
 import {
   DataViewer,
   FlowContent,
@@ -58,7 +62,9 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
       partOfSpeechId: id,
     })).then(table => {
       if (table) {
-        navigateTo(table, {
+        const lang = table.partOfSpeech.language;
+        const langPage = LanguagePage(lang.id, lang.name);
+        navigateTo(InflectionTablePage(table.id, table.name, langPage), {
           openInNewTab: true,
           openInBackground: false,
         });

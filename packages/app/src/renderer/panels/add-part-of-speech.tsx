@@ -3,16 +3,24 @@ import {Localized} from '@fluent/react';
 
 import {FlowContent} from '../ui';
 import {PanelParams, PanelProps} from '../navigation';
-import {PartOfSpeechPage, LanguagePage} from '../page';
 import {PartOfSpeechData, PartOfSpeechForm} from '../forms';
 import {useExecute} from '../data';
-import {LanguageId} from '../graphql';
+import {PartOfSpeechId, LanguageId} from '../graphql';
 
 import {AddPartOfSpeechMut} from './query';
 
+export interface NewPartOfSpeech {
+  id: PartOfSpeechId;
+  name: string;
+  language: {
+    id: LanguageId;
+    name: string;
+  };
+}
+
 type Props = {
   languageId: LanguageId;
-} & PanelProps<PartOfSpeechPage | null>;
+} & PanelProps<NewPartOfSpeech | null>;
 
 const AddPartOfSpeechPanel = (props: Props) => {
   const {languageId, updatePanel, titleId, onResolve} = props;
@@ -40,9 +48,7 @@ const AddPartOfSpeechPanel = (props: Props) => {
 
     // If there were no errors, we should have a part of speech.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const pos = res.data!.addPartOfSpeech!;
-    const lang = LanguagePage(pos.language.id, pos.language.name);
-    onResolve(PartOfSpeechPage(pos.id, pos.name, lang));
+    onResolve(res.data!.addPartOfSpeech);
   }, [languageId, onResolve]);
 
   return (
@@ -63,7 +69,7 @@ const AddPartOfSpeechPanel = (props: Props) => {
 
 export const addPartOfSpeechPanel = (
   languageId: LanguageId
-): PanelParams<PartOfSpeechPage | null> => ({
+): PanelParams<NewPartOfSpeech | null> => ({
   // eslint-disable-next-line react/display-name
   render: props => <AddPartOfSpeechPanel {...props} languageId={languageId}/>,
 });

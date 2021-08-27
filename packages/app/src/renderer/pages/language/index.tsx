@@ -3,7 +3,11 @@ import {Localized} from '@fluent/react';
 
 import {BodyText, useUniqueId} from '@condict/ui';
 
-import {LanguagePage as LanguageTarget, SearchPage} from '../../page';
+import {
+  LanguagePage as LanguageTarget,
+  PartOfSpeechPage,
+  SearchPage,
+} from '../../page';
 import {useNavigateTo, useOpenPanel, useUpdateTab} from '../../navigation';
 import {
   DataViewer,
@@ -59,9 +63,11 @@ const LanguagePage = (props: Props): JSX.Element => {
   }, [id]);
 
   const handleAddPartOfSpeech = useCallback(() => {
-    void openPanel(addPartOfSpeechPanel(id)).then(partOfSpeech => {
-      if (partOfSpeech) {
-        navigateTo(partOfSpeech, {
+    void openPanel(addPartOfSpeechPanel(id)).then(pos => {
+      if (pos) {
+        const lang = pos.language;
+        const langPage = LanguageTarget(lang.id, lang.name);
+        navigateTo(PartOfSpeechPage(pos.id, pos.name, langPage), {
           openInNewTab: true,
           openInBackground: false,
         });

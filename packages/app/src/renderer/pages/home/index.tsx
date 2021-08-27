@@ -5,6 +5,7 @@ import {useUniqueId} from '@condict/ui';
 
 import {DataViewer, FlowContent, Tag, TagList} from '../../ui';
 import {useNavigateTo, useOpenPanel} from '../../navigation';
+import {LanguagePage} from '../../page';
 import {EventPredicate, useData} from '../../data';
 import {useRefocusOnData} from '../../hooks';
 import {addLanguagePanel} from '../../panels';
@@ -24,7 +25,7 @@ const HomePage = (props: PageProps): JSX.Element => {
   const handleAddLanguage = useCallback(() => {
     void openPanel(addLanguagePanel).then(language => {
       if (language) {
-        navigateTo(language, {
+        navigateTo(LanguagePage(language.id, language.name), {
           openInNewTab: true,
           openInBackground: false,
         });
