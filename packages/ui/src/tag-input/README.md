@@ -37,10 +37,12 @@ import {TagInput} from '@condict/ui';
 | `className` | string | `''` | One or more class names that are forwarded to the tag input's outer wrapper (a `<span>`). |
 | `tags` | Array&lt;string&gt; | `[]` | The currently selected tags. Tags should be [normalized](#tag-normalization) and unique. If any tag contains `,` or `;`, editing behaviour is undefined (and almost certainly weird for the user). |
 | `minimal` | boolean | `false` | If true, applies minimal styling to the tag input. Basically, it removes the outer border. |
+| `readOnly` | boolean | `false` | If true, the tag input is read-only. It can be focused, and text in the textbox can be selected, but edits are disallowed. |
 | `disabled` | boolean | `false` | If true, the tag input is disabled. You cannot type into a disabled tag input, nor delete existing tags. |
-| `onChange` | function | no-op | Handles changes to the tag input's tags. The function is passed the new list of tags, as an array of strings. |
 | `aria-label` | string | `undefined` | Attaches an accessible label to the tag input. This should not be used together with `aria-labelledby`. |
 | `aria-labelledby` | string | `undefined` | Contains a space-separated list of IDs of element whose textual content label the tag input. This should not be used together with `aria-label`. |
+| `aria-describedby` | string | `undefined` | Attaches an accessible description to the tag input. |
+| `onChange` | function | no-op | Handles changes to the tag input's tags. The function is passed the new list of tags, as an array of strings. |
 
 Other props are _not_ forwarded to any underlying element.
 

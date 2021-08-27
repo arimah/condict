@@ -21,11 +21,15 @@ export type Props = {
   className?: string;
   tags: string[];
   minimal?: boolean;
+  readOnly?: boolean;
   disabled?: boolean;
   messages: Messages;
-  onChange: (tags: string[]) => void;
   'aria-label'?: string;
   'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  onChange: (tags: string[]) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
 };
 
 type State = {
@@ -36,8 +40,8 @@ type State = {
 export default class TagInput extends Component<Props, State> {
   public static defaultProps: Partial<Props> = {
     tags: [],
-    onChange: (): void => { /* no-op */ },
     messages: DefaultMessages,
+    onChange: (): void => { /* no-op */ },
   };
 
   public input = React.createRef<HTMLInputElement>();
@@ -62,8 +66,6 @@ export default class TagInput extends Component<Props, State> {
   }
 
   private handleFocus: FocusEventHandler<HTMLButtonElement | HTMLInputElement> = e => {
-    this.hasFocus = true;
-
     const selected = Descendants.first(
       this.items,
       ({elem}) => elem.contains(e.target)
@@ -76,6 +78,11 @@ export default class TagInput extends Component<Props, State> {
       selected,
       inputFocused: selected.tag === null,
     });
+
+    if (!this.hasFocus) {
+      this.hasFocus = true;
+      this.props.onFocus?.();
+    }
   };
 
   private handleBlur: FocusEventHandler = e => {
@@ -94,9 +101,13 @@ export default class TagInput extends Component<Props, State> {
     // inputFocused to false, as we know that can't be true anymore.
     // Additionally, when the component is left, we commit the current
     // value of the text input.
-    if (!this.hasFocus && this.state.inputFocused) {
-      this.setState({inputFocused: false});
-      this.commitTags();
+    if (!this.hasFocus) {
+      if (this.state.inputFocused) {
+        this.setState({inputFocused: false});
+        this.commitTags();
+      }
+
+      this.props.onBlur?.();
     }
   };
 
@@ -119,6 +130,9 @@ export default class TagInput extends Component<Props, State> {
   };
 
   private handleTagClick: MouseEventHandler = e => {
+    if (this.props.readOnly) {
+      return;
+    }
     const child = this.items.items.find(item =>
       item.elem.contains(e.target as Node)
     );
@@ -201,10 +215,12 @@ export default class TagInput extends Component<Props, State> {
       className,
       tags,
       minimal,
+      readOnly,
       disabled,
       messages,
       'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
+      'aria-labelledby': ariaLabelledby,
+      'aria-describedby': ariaDescribedby,
     } = this.props;
     const {inputFocused, selected} = this.state;
 
@@ -216,8 +232,12 @@ export default class TagInput extends Component<Props, State> {
         role='application'
         aria-roledescription={messages.componentName()}
         aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        aria-describedby={this.mainDescId}
+        aria-labelledby={ariaLabelledby}
+        aria-describedby={
+          ariaDescribedby
+            ? `${ariaDescribedby} ${this.mainDescId}`
+            : this.mainDescId
+        }
         inputFocused={inputFocused}
         onMouseUp={this.handleMouseUp}
         onKeyDown={this.handleKeyDown}
@@ -249,6 +269,7 @@ export default class TagInput extends Component<Props, State> {
           aria-label={messages.inputLabel()}
           size={1}
           tabIndex={selected.tag === null ? 0 : -1}
+          readOnly={readOnly}
           disabled={disabled}
           ref={this.input}
         />
