@@ -17,7 +17,10 @@ const TabPanelList = (props: Props): JSX.Element => {
 
   const currentTab = nav.tabs[nav.currentTabIndex];
   const currentPage = currentTab.page;
-  const currentSidePanels = currentTab.panels;
+  const currentSidePanel =
+    currentTab.panels.length > 0
+      ? currentTab.panels[currentTab.panels.length - 1].id
+      : null;
 
   const prevTabs = useRef(nav.tabs);
   const isNewTab = !prevTabs.current.some(t => t.id === currentTab.id);
@@ -60,7 +63,7 @@ const TabPanelList = (props: Props): JSX.Element => {
     ) {
       currentPanel.restoreFocus();
     }
-  }, [currentPage, currentSidePanels]);
+  }, [currentPage, currentSidePanel]);
 
   return <>
     {nav.tabs.map((tab, i) =>
