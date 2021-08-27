@@ -512,6 +512,54 @@ table-editor-import-open-table-button = View the table in a new tab
 
 table-editor-import-error = The selected table could not be loaded. It may help to try again.
 
+## Tag input messages
+
+# Can also be translated as "tag list" or similar.
+tag-input-component-name = Tag input
+
+tag-input-input-label = New tag
+
+tag-input-usage-helper = Use arrow keys to select tags
+
+tag-input-no-tags = No tags
+
+# Variables:
+#   tagCount: The total number of tags in the tag input.
+#   tagList: Separated list of tags in the tag input.
+tag-input-current-tags =
+  {$tagCount ->
+    [one] {$tagCount} tag
+   *[other] {$tagCount} tags: {$tagList}
+  }
+
+# Variables:
+#   index: The 1-based index of the currently selected tag.
+#   total: The total number of tags in the tag input.
+tag-input-tag-position = Tag {$index} of {$total}
+
+# Variables:
+#   tag: The tag that was added.
+tag-input-tag-added = Tag added: {$tag}
+
+tag-input-no-new-tags = No new tags added
+
+# Variables:
+#   tag: The tag that was removed.
+tag-input-tag-removed = Tag removed: {$tag}
+
+# SR-only announcement when the user edits a tag.
+#
+# Variables:
+#   tag: The tag that is being edited.
+tag-input-editing-tag = Editing tag: {$tag}
+
+# SR-only announcement when user edits a tag, and the previous text was added as a tag.
+#
+# Variables:
+#   tag: The tag that is being edited.
+#   newTag: The tag that was added from the previous text.
+tag-input-editing-added-tag = Editing tag: {$tag}; and added: {$newTag}
+
 ## Home page messages
 
 home-languages-title = Languages
