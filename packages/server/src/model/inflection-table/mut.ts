@@ -25,7 +25,11 @@ import {
   validateFormDisplayName,
 } from './validators';
 import buildTableLayout from './build-table-layout';
-import {InflectionTableRow, InflectionTableLayoutRow} from './types';
+import {
+  InflectionTableRow,
+  InflectionTableLayoutRow,
+  InflectedFormRow,
+} from './types';
 
 const InflectionTableMut = {
   async insert(
@@ -195,11 +199,12 @@ const InflectionTableLayoutMut = {
 
     const currentLayout =
       await InflectionTableLayout.currentByTableRequired(db, tableId);
+    const currentForms = await InflectedForm.allByTableLayout(
+      db,
+      currentLayout.id
+    );
 
-    const needNewLayoutVersion =
-      Definition.anyUsesInflectionTableLayout(db, currentLayout.id);
-
-    if (needNewLayoutVersion) {
+    if (this.needsNewVersion(db, currentLayout, currentForms, rows)) {
       const layoutId = this.createNewTableLayout(db, tableId, rows);
 
       // Ensure this table has only one current layout.
@@ -210,7 +215,7 @@ const InflectionTableLayoutMut = {
       `;
       logger.debug('Created new table layout: previous is still in use');
     } else {
-      await this.updateCurrentTableLayout(db, currentLayout, rows);
+      this.updateCurrentTableLayout(db, currentLayout, currentForms, rows);
       logger.debug('Updated current table layout');
     }
 
@@ -252,17 +257,15 @@ const InflectionTableLayoutMut = {
     return layoutId;
   },
 
-  async updateCurrentTableLayout(
+  updateCurrentTableLayout(
     db: DataWriter,
     layout: InflectionTableLayoutRow,
+    prevForms: InflectedFormRow[],
     rows: InflectionTableRowInput[]
-  ): Promise<void> {
+  ): void {
     // Fetch existing forms, so we can figure out which ones need
     // to be deleted.
-    const deletedFormIds = new Set(
-      (await InflectedForm.allByTableLayout(db, layout.id))
-        .map(form => form.id)
-    );
+    const deletedFormIds = new Set(prevForms.map(form => form.id));
 
     const {finalLayout, stems} = buildTableLayout(
       rows,
@@ -355,6 +358,70 @@ const InflectionTableLayoutMut = {
 
       logger.debug(`Deleted obsolete table layouts: count = ${updated.length}`);
     }
+  },
+
+  needsNewVersion(
+    db: DataReader,
+    currentLayout: InflectionTableLayoutRow,
+    currentForms: InflectedFormRow[],
+    newRows: InflectionTableRowInput[]
+  ): boolean {
+    // The basic idea is this: if the user has changed the table in a way that
+    // would require derived definitions to be recomputed, then we need a new
+    // layout version. Changes to header cells, form names, and layout changes
+    // such as changing row and column spans do not necessitate a new version.
+
+    if (!Definition.anyUsesInflectionTableLayout(db, currentLayout.id)) {
+      // If no definition uses the current layout, we can safely replace it.
+      return false;
+    }
+
+    // This map contains forms that do not appear in newRows.
+    // That is, deleted forms.
+    const deletedForms = new Map(currentForms.map(form => [form.id, form]));
+
+    for (const row of newRows) {
+      for (const cell of row.cells) {
+        const form = cell.inflectedForm;
+        if (!form) {
+          continue;
+        }
+
+        if (form.id != null) {
+          // Existing inflected form.
+          const existingForm = deletedForms.get(form.id);
+          deletedForms.delete(form.id);
+          if (!existingForm) {
+            throw new Error(`Form ${form.id} does not belong to this table`);
+          }
+
+          if (
+            // If we've either gone to or from deriving a definition, something
+            // would have to be recomputed.
+            (existingForm.derive_lemma === 1) !== form.deriveLemma ||
+            // If the inflection pattern has changed, derived definitions would
+            // need to be recomputed.
+            form.deriveLemma &&
+            form.inflectionPattern !== existingForm.inflection_pattern
+          ) {
+            return true;
+          }
+        } else if (form.deriveLemma) {
+          // New inflected form that needs a definition derived from it.
+          return true;
+        }
+      }
+    }
+
+    for (const form of deletedForms.values()) {
+      if (form.derive_lemma) {
+        // The definitions derived from this form would have to be deleted, so
+        // we need a new layout version.
+        return true;
+      }
+    }
+
+    return false;
   },
 } as const;
 
