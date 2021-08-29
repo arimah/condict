@@ -13,3 +13,8 @@ export {
   Props as InflectionTableFormProps,
   InflectionTableData,
 } from './inflection-table';
+export {
+  DefinitionForm,
+  Props as DefinitionFormProps,
+  DefinitionData,
+} from './definition';

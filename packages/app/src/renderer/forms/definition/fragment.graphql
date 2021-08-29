@@ -1,0 +1,35 @@
+fragment DefinitionFormPartsOfSpeechFragment on Language {
+  partsOfSpeech {
+    id
+    name
+
+    inflectionTables {
+      id
+      name
+
+      layout {
+        id
+        stems
+        ...DefinitionTableFragment
+      }
+    }
+  }
+}
+
+fragment DefinitionTableFragment on InflectionTableLayout {
+  rows {
+    cells {
+      rowSpan
+      columnSpan
+      ...on InflectionTableDataCell {
+        inflectedForm {
+          id
+          inflectionPattern
+        }
+      }
+      ...on InflectionTableHeaderCell {
+        headerText
+      }
+    }
+  }
+}

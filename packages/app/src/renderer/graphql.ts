@@ -90,6 +90,16 @@ export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
 export type InflectionTableId = IdOf<'InflectionTable'>;
 
 /**
+ * Represents an inflection table layout ID.
+ */
+export type InflectionTableLayoutId = IdOf<'InflectionTableLayout'>;
+
+/**
+ * Represents an inflected form ID.
+ */
+export type InflectedFormId = IdOf<'InflectedForm'>;
+
+/**
  * The kind of a block element.
  */
 export type BlockKind =
@@ -365,11 +375,6 @@ export type InflectedFormInput = {
 };
 
 /**
- * Represents an inflected form ID.
- */
-export type InflectedFormId = IdOf<'InflectedForm'>;
-
-/**
  * Input type for editing an existing inflection table. It is not possible to move
  * an inflection table to another part of speech.
  */
@@ -386,4 +391,100 @@ export type EditInflectionTableInput = {
    */
   layout?: InflectionTableRowInput[] | null | undefined;
 };
+
+/**
+ * Input type for adding new definitions.
+ */
+export type NewDefinitionInput = {
+  /**
+   * The language that the definition will be added to.
+   */
+  languageId: LanguageId;
+  /**
+   * The term that this definition defines.
+   * 
+   * If there is no lemma for this term, it will automatically be created.
+   */
+  term: string;
+  /**
+   * The part of speech that the definition belongs to.
+   */
+  partOfSpeechId: PartOfSpeechId;
+  /**
+   * Formatted text that describes the definition.
+   */
+  description: BlockElementInput[];
+  /**
+   * Inflection stems that belong to this definition.
+   */
+  stems: StemInput[];
+  /**
+   * Inflection tables that are used by this definiton.
+   */
+  inflectionTables: NewDefinitionInflectionTableInput[];
+  /**
+   * Tags associated with this definition.
+   */
+  tags: string[];
+};
+
+/**
+ * Input type for a definition inflection stem.
+ */
+export type StemInput = {
+  /**
+   * The name of the stem.
+   */
+  name: string;
+  /**
+   * The value of the stem.
+   */
+  value: string;
+};
+
+/**
+ * Input type for a new definition's inflection table.
+ */
+export type NewDefinitionInflectionTableInput = {
+  /**
+   * An optional formatted text that describes the table.
+   */
+  caption?: TableCaptionInput | null | undefined;
+  /**
+   * A list of custom inflected forms, which replace forms in the table. These are
+   * _generally_ irregular forms, but this is not guaranteed.
+   */
+  customForms: CustomInflectedFormInput[];
+  /**
+   * The inflection table used by the definition.
+   */
+  inflectionTableId: InflectionTableId;
+};
+
+/**
+ * Input type for a table caption, which is a single paragraph of formatted text.
+ */
+export type TableCaptionInput = {
+  /**
+   * A list of formatted text parts that make up the caption's content. Note that
+   * unlike a definition's description, a table caption cannot contain links.
+   */
+  inlines: FormattedTextInput[];
+};
+
+export type CustomInflectedFormInput = {
+  /**
+   * The inflected form that this value replaces within its table.
+   */
+  inflectedFormId: InflectedFormId;
+  /**
+   * The inflected word itself; the value of the table cell.
+   */
+  value: string;
+};
+
+/**
+ * Represents a definition inflection table ID.
+ */
+export type DefinitionInflectionTableId = IdOf<'DefinitionInflectionTable'>;
 

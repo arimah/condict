@@ -1,0 +1,5 @@
+query AllPartsOfSpeechQuery($lang: LanguageId!) {
+  language(id: $lang) {
+    ...DefinitionFormPartsOfSpeechFragment
+  }
+}

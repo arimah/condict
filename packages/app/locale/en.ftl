@@ -756,6 +756,73 @@ definition-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "sho
 
 definition-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
+definition-term-label = Term
+
+definition-term-required-error = Please enter a term to define.
+
+definition-part-of-speech-label = Part of speech
+
+# Variables:
+#   hasPartsOfSpeech: "yes" if the language has a selectable part of speech; "no" if it has none.
+definition-part-of-speech-empty-hint =
+  {$hasPartsOfSpeech ->
+    [no] (Create a part of speech)
+   *[yes] (Select or create a part of speech)
+  }
+
+# Variables:
+#   hasPartsOfSpeech: "yes" if the language has a selectable part of speech; "no" if it has none.
+definition-part-of-speech-required-error =
+  The definition must have a part of speech. {$hasPartsOfSpeech ->
+    [no] You can create a part of speech using the button above.
+   *[yes] Select or create a part of speech.
+  }
+
+# Can also be translated as "create part of speech" if that makes more sense. Keep reasonably short.
+#
+# Avoid translating as "add part of speech". Since the definition only has one part of speech, "add" can be misleading if it sounds like the part of speech will be added to the *definition* rather than the language.
+definition-create-part-of-speech-button = New part of speech
+
+definition-description-label = Description
+
+definition-inflection-tables-label = Inflection tables
+
+# Variables:
+#   index: The 1-based index of the table.
+#   total: The total number of tables in the list.
+#   name: The name of the table within the part of speech (not the table caption within the definition).
+definition-inflection-table-title = Table {$index} of {$total}: {$name}
+
+definition-table-deleted-heading = (Deleted table)
+
+definition-table-move-up-button = Move up
+
+definition-table-move-down-button = Move down
+
+definition-table-remove-button = Remove table
+
+definition-table-caption-label = Caption (optional)
+
+definition-table-has-new-version-notice = A new version of this table is available.
+
+definition-table-needs-new-version-error = A new version of this table is available. The table must be upgraded before you save the definition.
+
+definition-table-wrong-part-of-speech-error = This table belongs to a different part of speech. It cannot be added to the definition.
+
+definition-table-deleted-error = This table has been deleted. It cannot be added to the definition.
+
+definition-add-table-button = Add inflection table
+
+definition-new-table-menu = New inflection table...
+
+definition-tables-select-part-of-speech-helper = Select a part of speech to add inflections to this word.
+
+definition-stems-label = Inflection stems
+
+definition-stems-description = These stem names are used by the selected inflection tables.
+
+definition-tags-label = Tags
+
 ## Part of speech messages
 
 # Variables:
