@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 
 import genUniqueId from '../unique-id';
 import {SROnly} from './sr-only';
@@ -36,6 +36,11 @@ const Announcer = React.memo((props: Props): JSX.Element => {
 
   const [messages, setMessages] = useState<readonly Message[]>([]);
 
+  const mounted = useRef(true);
+  useEffect(() => () => {
+    mounted.current = false;
+  }, []);
+
   useEffect(() => {
     const receive = (message: string) => {
       const key = genUniqueId();
@@ -43,10 +48,10 @@ const Announcer = React.memo((props: Props): JSX.Element => {
 
       // Remove the message again after a short time, to (hopefully) prevent
       // the user from discovering it by moving through the document.
-      // FIXME: If the component is unmounted before the timeout completes,
-      // React will complain.
       window.setTimeout(() => {
-        setMessages(all => all.filter(m => m.key !== key));
+        if (!mounted.current) {
+          setMessages(all => all.filter(m => m.key !== key));
+        }
       }, 750);
     };
 
