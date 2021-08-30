@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 import {TextInput, Toolbar} from '@condict/ui';
 
+import {NakedButton} from '../../ui';
+
 export const TableItemGap = 16;
 
 export const TableList = styled.ul`
@@ -101,8 +103,33 @@ export type StemValueProps = {
 };
 
 export const StemValue = styled(TextInput)<StemValueProps>`
-  margin-inline-end: 8px;
+  margin-inline-end: 4px;
   font-style: ${p => p.usesTerm && 'italic'};
+  color: ${p => !p.usesTerm && p.theme.accent.defaultFg};
+`;
+
+export const StemStatus = styled.span`
+  flex: none;
+`;
+
+export type StemActionProps = {
+  usesTerm: boolean;
+};
+
+export const StemAction = styled(NakedButton)<StemActionProps>`
+  display: block;
+  margin-block: -3px;
+  padding: 1px;
+  color: ${p => !p.usesTerm && p.theme.accent.defaultFg};
+
+  &:focus {
+    padding: 1px;
+  }
+
+  > .mdi-icon.mdi-icon {
+    display: block;
+    margin: 0;
+  }
 `;
 
 export const ListTools = styled.div`

@@ -819,7 +819,21 @@ definition-tables-select-part-of-speech-helper = Select a part of speech to add 
 
 definition-stems-label = Inflection stems
 
-definition-stems-description = These stem names are used by the selected inflection tables.
+definition-stem-same-as-term-status = This stem is kept identical to the definition term.
+
+definition-stem-custom-status = This stem has a custom value.
+
+definition-stem-same-as-term-tooltip =
+  {definition-stem-same-as-term-status}
+  Press to use a custom value, or type over the stem value.
+
+definition-stem-custom-tooltip =
+  {definition-stem-custom-status}
+  Press to revert to the definition term.
+
+definition-stem-source-label = Keep stem identical to the definition term
+
+definition-stems-description = These stem names are used in the selected inflection tables.
 
 definition-tags-label = Tags
 

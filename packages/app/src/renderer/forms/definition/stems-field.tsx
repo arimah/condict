@@ -1,9 +1,11 @@
 import React from 'react';
 import {useController, useWatch} from 'react-hook-form';
-import {Localized} from '@fluent/react';
+import {Localized, useLocalization} from '@fluent/react';
 import produce from 'immer';
+import DefaultStemIcon from 'mdi-react/LinkBoxVariantOutlineIcon';
+import CustomStemIcon from 'mdi-react/PencilBoxIcon';
 
-import {useUniqueId} from '@condict/ui';
+import {SROnly, useUniqueId} from '@condict/ui';
 
 import {Field, Label} from '../../form-fields';
 
@@ -80,7 +82,10 @@ type StemProps = {
 const Stem = React.memo((props: StemProps): JSX.Element => {
   const {name, value, term, readOnly, onChange, onBlur} = props;
 
+  const {l10n} = useLocalization();
+
   const id = useUniqueId();
+  const usesTerm = value == null;
 
   return <>
     <S.StemName htmlFor={`${id}-name`}>
@@ -90,11 +95,35 @@ const Stem = React.memo((props: StemProps): JSX.Element => {
       id={`${id}-name`}
       value={value ?? term}
       readOnly={readOnly}
-      usesTerm={value == null}
+      usesTerm={usesTerm}
+      aria-describedby={`${id}-status`}
       onChange={e => onChange(name, e.target.value)}
       onBlur={onBlur}
     />
-    <span/>
+    <S.StemStatus>
+      <SROnly id={`${id}-status`}>
+        <Localized
+          id={
+            usesTerm
+              ? 'definition-stem-same-as-term-status'
+              : 'definition-stem-custom-status'
+          }
+        />
+      </SROnly>
+      <S.StemAction
+        label={l10n.getString('definition-stem-source-label')}
+        aria-pressed={usesTerm}
+        usesTerm={usesTerm}
+        title={l10n.getString(
+          usesTerm
+            ? 'definition-stem-same-as-term-tooltip'
+            : 'definition-stem-custom-tooltip'
+        )}
+        onClick={() => onChange(name, usesTerm ? term : undefined)}
+      >
+        {value != null ? <CustomStemIcon/> : <DefaultStemIcon/>}
+      </S.StemAction>
+    </S.StemStatus>
   </>;
 });
 
