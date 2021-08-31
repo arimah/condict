@@ -1,9 +1,10 @@
-import {ReactNode} from 'react';
+import {ReactNode, useState} from 'react';
 import {useFormContext} from 'react-hook-form';
 import {Localized} from '@fluent/react';
 
 import {Loading} from '../ui';
 
+import useFormButtonsStickiness from './form-buttons-stickiness';
 import * as S from './styles';
 
 export type Props = {
@@ -17,8 +18,12 @@ export type Props = {
 export const FormButtons = (props: Props): JSX.Element => {
   const {submitLabel, cancelLabel, loadingLabel, submitError, onCancel} = props;
   const {formState: {isSubmitting}} = useFormContext();
+
+  const [stuck, setStuck] = useState(false);
+  const mainRef = useFormButtonsStickiness(setStuck);
+
   return (
-    <S.FormButtons>
+    <S.FormButtons stuck={stuck} ref={mainRef}>
       <S.SubmitButton aria-busy={isSubmitting}>
         {submitLabel ?? <Localized id='generic-form-save'/>}
       </S.SubmitButton>

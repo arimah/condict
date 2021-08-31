@@ -1,8 +1,9 @@
-import {ReactNode} from 'react';
+import {ReactNode, useState} from 'react';
 import {Localized} from '@fluent/react';
 
 import {Loading} from '../ui';
 
+import useFormButtonsStickiness from './form-buttons-stickiness';
 import * as S from './styles';
 
 export type Props = {
@@ -25,8 +26,12 @@ export const DeleteFormButtons = (props: Props): JSX.Element => {
     onDelete,
     onCancel,
   } = props;
+
+  const [stuck, setStuck] = useState(false);
+  const mainRef = useFormButtonsStickiness(setStuck);
+
   return (
-    <S.FormButtons>
+    <S.FormButtons stuck={stuck} ref={mainRef}>
       <S.DeleteButton aria-busy={isDeleting} onConfirm={onDelete}>
         {deleteLabel ?? <Localized id='generic-delete-button'/>}
       </S.DeleteButton>

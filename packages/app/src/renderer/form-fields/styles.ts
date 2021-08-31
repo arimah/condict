@@ -117,16 +117,23 @@ export const DefinitionTableEditor = styled(DefinitionTableEditorBase)`
   border: 4px solid transparent;
 `;
 
-export const FormButtons = styled.div`
+export type FormButtonsProps = {
+  stuck: boolean;
+};
+
+export const FormButtons = styled.div<FormButtonsProps>`
   display: flex;
   flex-direction: row;
-  margin: -8px -16px -16px;
-  padding: 24px 16px;
+  margin: -8px -16px -17px;
+  padding: 24px 16px 25px;
   align-items: center;
   gap: 8px;
   position: sticky;
-  bottom: 0;
+  bottom: -1px;
+  z-index: 10;
   background-color: ${p => p.theme.defaultBg};
+  box-shadow: ${p => p.stuck && `0 -8px 4px -6px ${p.theme.shadow.color}`};
+  transition: box-shadow ${p => p.theme.timing.short}ms linear;
 `;
 
 export const SubmitButton = styled(Button).attrs({
