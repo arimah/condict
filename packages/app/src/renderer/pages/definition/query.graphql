@@ -1,0 +1,26 @@
+query($id: DefinitionId!) {
+  definition(id: $id) {
+    term
+
+    description {
+      ...RichTextBlockFragment
+    }
+
+    timeCreated
+    timeUpdated
+
+    tags {
+      id
+      name
+    }
+
+    lemma {
+      id
+    }
+
+    language {
+      id
+      name
+    }
+  }
+}

@@ -32,6 +32,7 @@ export interface DefinitionTableData {
   readonly table: DefinitionTableValue;
   readonly tableId: InflectionTableId;
   readonly layoutId: InflectionTableLayoutId;
+  readonly upgraded: boolean;
 }
 
 export interface PartOfSpeechFields {

@@ -128,16 +128,16 @@ export type BlockKind =
 ;
 
 /**
- * Represents a tag ID.
- */
-export type TagId = IdOf<'Tag'>;
-
-/**
  * Represents an instant in time. The value is sent as the number of milliseconds
  * since midnight 1 January 1970 UTC (that is, a value compatible with the JS
  * `Date` type).
  */
 export type UtcInstant = number;
+
+/**
+ * Represents a tag ID.
+ */
+export type TagId = IdOf<'Tag'>;
 
 /**
  * Input type for a new language.
@@ -487,4 +487,73 @@ export type CustomInflectedFormInput = {
  * Represents a definition inflection table ID.
  */
 export type DefinitionInflectionTableId = IdOf<'DefinitionInflectionTable'>;
+
+/**
+ * Input type for editing an existing definition. The ID is a separate argument.
+ */
+export type EditDefinitionInput = {
+  /**
+   * If set, updates the definition term.
+   */
+  term?: string | null | undefined;
+  /**
+   * If set, updates the part of speech.
+   * 
+   * If this field is set to a value other than the definition's current part of
+   * speech, and `inflectionTables` is _not_ set, then the definition's inflection
+   * tables will all be deleted. In other words, changing the part of speech will
+   * delete inflection tables unless you specify new ones.
+   */
+  partOfSpeechId?: PartOfSpeechId | null | undefined;
+  /**
+   * If set, updates the definition description.
+   */
+  description?: BlockElementInput[] | null | undefined;
+  /**
+   * If set, updates the definition's inflection stems.
+   */
+  stems?: StemInput[] | null | undefined;
+  /**
+   * If set, updates the definition's inflection tables. If the `id` property is
+   * set on any table in this list, it will update that existing table. For each
+   * table _without_ an `id`, a new definition inflection table is created.
+   */
+  inflectionTables?: EditDefinitionInflectionTableInput[] | null | undefined;
+  /**
+   * If set, updates the definition's tags.
+   */
+  tags?: string[] | null | undefined;
+};
+
+/**
+ * Input type for editing a definition's inflection table.
+ */
+export type EditDefinitionInflectionTableInput = {
+  /**
+   * The ID of the definition inflection table. If set, it will update an existing
+   * definition inflection table.
+   */
+  id?: DefinitionInflectionTableId | null | undefined;
+  /**
+   * An optional formatted text that describes the table.
+   */
+  caption?: TableCaptionInput | null | undefined;
+  /**
+   * A list of custom inflected forms, which replace forms in the table. These are
+   * _generally_ irregular forms, but this is not guaranteed.
+   */
+  customForms: CustomInflectedFormInput[];
+  /**
+   * The inflection table used by the definition. When editing an existing table
+   * (`id` is not null), this property is ignored; you cannot change to another table.
+   */
+  inflectionTableId: InflectionTableId;
+  /**
+   * If true, upgrades the inflection table's layout to the current version. If the
+   * table already uses the current version, this field has no effect. When adding
+   * a new table (`id` is null), this field is ignored; the latest layout version
+   * is always used. If omitted, defaults to false.
+   */
+  upgradeTableLayout?: boolean | null | undefined;
+};
 

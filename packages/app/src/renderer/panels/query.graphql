@@ -142,3 +142,89 @@ mutation EditInflectionTableMut(
 mutation DeleteInflectionTableMut($id: InflectionTableId!) {
   deleteInflectionTable(id: $id)
 }
+
+# Definition operations
+
+query AddDefinitionQuery($lang: LanguageId!) {
+  language(id: $lang) {
+    ...DefinitionFormPartsOfSpeechFragment
+  }
+}
+
+mutation AddDefinitionMut($data: NewDefinitionInput!) {
+  addDefinition(data: $data) {
+    # Fewer fields returned here than in other mutations, as we don't really
+    # need more.
+    id
+    term
+    description {
+      ...RichTextBlockFragment
+    }
+    language {
+      id
+      name
+    }
+  }
+}
+
+query EditDefinitionQuery($id: DefinitionId!) {
+  definition(id: $id) {
+    id
+    term
+
+    partOfSpeech {
+      id
+    }
+
+    description {
+      ...RichTextBlockFragment
+    }
+
+    stems {
+      name
+      value
+    }
+
+    inflectionTables {
+      id
+      caption {
+        inlines {
+          ...RichTextFragment
+        }
+      }
+      customForms {
+        inflectedForm {
+          id
+        }
+        value
+      }
+      inflectionTable {
+        id
+      }
+      inflectionTableLayout {
+        id
+        isCurrent
+        ...DefinitionTableFragment
+      }
+    }
+
+    tags {
+      name
+    }
+
+    language {
+      id
+      ...DefinitionFormPartsOfSpeechFragment
+    }
+  }
+}
+
+mutation EditDefinitionMut($id: DefinitionId!, $data: EditDefinitionInput!) {
+  editDefinition(id: $id, data: $data) {
+    id
+  }
+}
+
+mutation DeleteDefinitionMut($id: DefinitionId!) {
+  deleteDefinition(id: $id)
+}

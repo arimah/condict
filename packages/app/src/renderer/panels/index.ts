@@ -6,3 +6,6 @@ export {editPartOfSpeechPanel} from './edit-part-of-speech';
 
 export {NewInflectionTable, addInflectionTablePanel} from './add-inflection-table';
 export {editInflectionTablePanel} from './edit-inflection-table';
+
+export {NewDefinition, addDefinitionPanel} from './add-definition';
+export {editDefinitionPanel} from './edit-definition';

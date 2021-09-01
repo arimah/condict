@@ -6,11 +6,11 @@ import {
   Mutation,
   NewLanguageInput,
   LanguageId,
-  Query,
   BlockKind,
   LemmaId,
   DefinitionId,
   PartOfSpeechId,
+  Query,
   EditLanguageInput,
   NewPartOfSpeechInput,
   EditPartOfSpeechInput,
@@ -18,7 +18,10 @@ import {
   InflectionTableId,
   InflectionTableLayoutId,
   InflectedFormId,
-  EditInflectionTableInput
+  EditInflectionTableInput,
+  NewDefinitionInput,
+  DefinitionInflectionTableId,
+  EditDefinitionInput
 } from "../graphql";
 
 export const AddLanguageMut = "mutation AddLanguageMut($data:NewLanguageInput!){addLanguage(data:$data){id,name,description{...RichTextBlockFragment}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Mutation<{
@@ -324,5 +327,281 @@ export const DeleteInflectionTableMut = "mutation DeleteInflectionTableMut($id:I
   id: InflectionTableId;
 }, {
   deleteInflectionTable: boolean | null;
+}>;
+
+export const AddDefinitionQuery = "query AddDefinitionQuery($lang:LanguageId!){language(id:$lang){...DefinitionFormPartsOfSpeechFragment}}fragment DefinitionFormPartsOfSpeechFragment on Language{partsOfSpeech{id,name,inflectionTables{id,name,layout{id,stems...DefinitionTableFragment}}}}fragment DefinitionTableFragment on InflectionTableLayout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern}}...on InflectionTableHeaderCell{headerText}}}}" as Query<{
+  lang: LanguageId;
+}, {
+  language: {
+    partsOfSpeech: {
+      id: PartOfSpeechId;
+      name: string;
+      inflectionTables: {
+        id: InflectionTableId;
+        name: string;
+        layout: {
+          id: InflectionTableLayoutId;
+          stems: string[];
+          rows: {
+            cells: ({
+              rowSpan: number;
+              columnSpan: number;
+              inflectedForm: {
+                id: InflectedFormId;
+                inflectionPattern: string;
+              };
+            } | {
+              rowSpan: number;
+              columnSpan: number;
+              headerText: string;
+            })[];
+          }[];
+        };
+      }[];
+    }[];
+  } | null;
+}>;
+
+export const AddDefinitionMut = "mutation AddDefinitionMut($data:NewDefinitionInput!){addDefinition(data:$data){id,term,description{...RichTextBlockFragment}language{id,name}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Mutation<{
+  data: NewDefinitionInput;
+}, {
+  addDefinition: {
+    id: DefinitionId;
+    term: string;
+    description: {
+      kind: BlockKind;
+      level: number;
+      inlines: ({
+        __typename: 'FormattedText';
+        text: string;
+        bold: boolean;
+        italic: boolean;
+        underline: boolean;
+        strikethrough: boolean;
+        subscript: boolean;
+        superscript: boolean;
+      } | {
+        __typename: 'LinkInline';
+        linkTarget: string;
+        internalLinkTarget: ({
+          __typename: 'LanguageLinkTarget';
+          language: {
+            id: LanguageId;
+            name: string;
+          } | null;
+        } | {
+          __typename: 'LemmaLinkTarget';
+          lemma: {
+            id: LemmaId;
+            term: string;
+            language: {
+              id: LanguageId;
+              name: string;
+            };
+          } | null;
+        } | {
+          __typename: 'DefinitionLinkTarget';
+          definition: {
+            id: DefinitionId;
+            term: string;
+            language: {
+              id: LanguageId;
+              name: string;
+            };
+          } | null;
+        } | {
+          __typename: 'PartOfSpeechLinkTarget';
+          partOfSpeech: {
+            id: PartOfSpeechId;
+            name: string;
+            language: {
+              id: LanguageId;
+              name: string;
+            };
+          } | null;
+        }) | null;
+        inlines: {
+          text: string;
+          bold: boolean;
+          italic: boolean;
+          underline: boolean;
+          strikethrough: boolean;
+          subscript: boolean;
+          superscript: boolean;
+        }[];
+      })[];
+    }[];
+    language: {
+      id: LanguageId;
+      name: string;
+    };
+  } | null;
+}>;
+
+export const EditDefinitionQuery = "query EditDefinitionQuery($id:DefinitionId!){definition(id:$id){id,term,partOfSpeech{id}description{...RichTextBlockFragment}stems{name,value}inflectionTables{id,caption{inlines{...RichTextFragment}}customForms{inflectedForm{id}value}inflectionTable{id}inflectionTableLayout{id,isCurrent...DefinitionTableFragment}}tags{name}language{id...DefinitionFormPartsOfSpeechFragment}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}fragment DefinitionTableFragment on InflectionTableLayout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern}}...on InflectionTableHeaderCell{headerText}}}}fragment DefinitionFormPartsOfSpeechFragment on Language{partsOfSpeech{id,name,inflectionTables{id,name,layout{id,stems...DefinitionTableFragment}}}}" as Query<{
+  id: DefinitionId;
+}, {
+  definition: {
+    id: DefinitionId;
+    term: string;
+    partOfSpeech: {
+      id: PartOfSpeechId;
+    };
+    description: {
+      kind: BlockKind;
+      level: number;
+      inlines: ({
+        __typename: 'FormattedText';
+        text: string;
+        bold: boolean;
+        italic: boolean;
+        underline: boolean;
+        strikethrough: boolean;
+        subscript: boolean;
+        superscript: boolean;
+      } | {
+        __typename: 'LinkInline';
+        linkTarget: string;
+        internalLinkTarget: ({
+          __typename: 'LanguageLinkTarget';
+          language: {
+            id: LanguageId;
+            name: string;
+          } | null;
+        } | {
+          __typename: 'LemmaLinkTarget';
+          lemma: {
+            id: LemmaId;
+            term: string;
+            language: {
+              id: LanguageId;
+              name: string;
+            };
+          } | null;
+        } | {
+          __typename: 'DefinitionLinkTarget';
+          definition: {
+            id: DefinitionId;
+            term: string;
+            language: {
+              id: LanguageId;
+              name: string;
+            };
+          } | null;
+        } | {
+          __typename: 'PartOfSpeechLinkTarget';
+          partOfSpeech: {
+            id: PartOfSpeechId;
+            name: string;
+            language: {
+              id: LanguageId;
+              name: string;
+            };
+          } | null;
+        }) | null;
+        inlines: {
+          text: string;
+          bold: boolean;
+          italic: boolean;
+          underline: boolean;
+          strikethrough: boolean;
+          subscript: boolean;
+          superscript: boolean;
+        }[];
+      })[];
+    }[];
+    stems: {
+      name: string;
+      value: string;
+    }[];
+    inflectionTables: {
+      id: DefinitionInflectionTableId;
+      caption: {
+        inlines: {
+          text: string;
+          bold: boolean;
+          italic: boolean;
+          underline: boolean;
+          strikethrough: boolean;
+          subscript: boolean;
+          superscript: boolean;
+        }[];
+      } | null;
+      customForms: {
+        inflectedForm: {
+          id: InflectedFormId;
+        };
+        value: string;
+      }[];
+      inflectionTable: {
+        id: InflectionTableId;
+      };
+      inflectionTableLayout: {
+        id: InflectionTableLayoutId;
+        isCurrent: boolean;
+        rows: {
+          cells: ({
+            rowSpan: number;
+            columnSpan: number;
+            inflectedForm: {
+              id: InflectedFormId;
+              inflectionPattern: string;
+            };
+          } | {
+            rowSpan: number;
+            columnSpan: number;
+            headerText: string;
+          })[];
+        }[];
+      };
+    }[];
+    tags: {
+      name: string;
+    }[];
+    language: {
+      id: LanguageId;
+      partsOfSpeech: {
+        id: PartOfSpeechId;
+        name: string;
+        inflectionTables: {
+          id: InflectionTableId;
+          name: string;
+          layout: {
+            id: InflectionTableLayoutId;
+            stems: string[];
+            rows: {
+              cells: ({
+                rowSpan: number;
+                columnSpan: number;
+                inflectedForm: {
+                  id: InflectedFormId;
+                  inflectionPattern: string;
+                };
+              } | {
+                rowSpan: number;
+                columnSpan: number;
+                headerText: string;
+              })[];
+            }[];
+          };
+        }[];
+      }[];
+    };
+  } | null;
+}>;
+
+export const EditDefinitionMut = "mutation EditDefinitionMut($id:DefinitionId!,$data:EditDefinitionInput!){editDefinition(id:$id,data:$data){id}}" as Mutation<{
+  id: DefinitionId;
+  data: EditDefinitionInput;
+}, {
+  editDefinition: {
+    id: DefinitionId;
+  } | null;
+}>;
+
+export const DeleteDefinitionMut = "mutation DeleteDefinitionMut($id:DefinitionId!){deleteDefinition(id:$id)}" as Mutation<{
+  id: DefinitionId;
+}, {
+  deleteDefinition: boolean | null;
 }>;
 

@@ -5,6 +5,7 @@ import {BodyText, useUniqueId} from '@condict/ui';
 
 import {
   LanguagePage as LanguageTarget,
+  DefinitionPage,
   PartOfSpeechPage,
   SearchPage,
 } from '../../page';
@@ -26,7 +27,11 @@ import {
 import {LanguageId} from '../../graphql';
 import {EventPredicate, useData} from '../../data';
 import {useRefocusOnData} from '../../hooks';
-import {editLanguagePanel, addPartOfSpeechPanel} from '../../panels';
+import {
+  editLanguagePanel,
+  addDefinitionPanel,
+  addPartOfSpeechPanel,
+} from '../../panels';
 
 import {PageProps} from '../types';
 
@@ -60,6 +65,19 @@ const LanguagePage = (props: Props): JSX.Element => {
   const openPanel = useOpenPanel();
   const handleEditLanguage = useCallback(() => {
     void openPanel(editLanguagePanel(id));
+  }, [id]);
+
+  const handleAddDefinition = useCallback(() => {
+    void openPanel(addDefinitionPanel(id)).then(def => {
+      if (def) {
+        const lang = def.language;
+        const langPage = LanguageTarget(lang.id, lang.name);
+        navigateTo(DefinitionPage(def.id, def.term, langPage), {
+          openInNewTab: true,
+          openInBackground: false,
+        });
+      }
+    });
   }, [id]);
 
   const handleAddPartOfSpeech = useCallback(() => {
@@ -130,7 +148,7 @@ const LanguagePage = (props: Props): JSX.Element => {
               lastWord={language.lastLemma?.term}
               recentDefinitions={language.recentDefinitions.nodes}
               htmlId={htmlId}
-              onAddDefinition={() => {/* TODO */}}
+              onAddDefinition={handleAddDefinition}
             />
 
             {hasRichContent(language.description) && <>

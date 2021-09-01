@@ -748,9 +748,20 @@ language-delete-error = An error occurred when deleting the language. It may hel
 
 language-not-found-error = Language not found. This language has been deleted.
 
+language-define-word-title = Define a word
+
 language-add-part-of-speech-title = Add part of speech
 
 ## Definition messages
+
+# Variables:
+#   term: The term (headword) that the definition belongs to.
+#   language: The name of the language that the definition belongs to.
+#
+# Elements:
+#   <lemma-link>: Link to the headword (lemma) that the definition belongs to. Wraps around $term.
+#   <lang-link>: Link to the language that the definition belongs to. Wraps around $language.
+definition-subheading = Definition of headword <lemma-link>{$term}</lemma-link>, in language <lang-link>{$language}</lang-link>
 
 definition-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
@@ -836,6 +847,20 @@ definition-stem-source-label = Keep stem identical to the definition term
 definition-stems-description = These stem names are used in the selected inflection tables.
 
 definition-tags-label = Tags
+
+definition-edit-title = Edit definition
+
+# Elements:
+#   <bold>: Bold text.
+definition-delete-confirm = The definition will be deleted. This <bold>cannot be undone</bold>.
+
+definition-delete-button = Delete definition
+
+definition-delete-error = An error occurred when deleting the definition. It may help to try again.
+
+definition-save-error = An error occurred when saving the definition. {-check-form-data}
+
+definition-not-found-error = Definition not found. This definition has been deleted.
 
 ## Part of speech messages
 

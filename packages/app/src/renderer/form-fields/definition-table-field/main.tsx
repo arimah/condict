@@ -4,7 +4,6 @@ import {FieldValues, FieldPath, useController} from 'react-hook-form';
 import {CommandProvider, CommandGroup, useUniqueId} from '@condict/ui';
 import {
   DefinitionTable,
-  DefinitionTableEditor,
   DefinitionTableEditorProps,
   useDefinitionTableCommands,
 } from '@condict/table-editor';

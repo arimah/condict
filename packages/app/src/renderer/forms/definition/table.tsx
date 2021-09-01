@@ -109,6 +109,7 @@ const Table = React.memo((props: Props): JSX.Element => {
     status === 'wrongPartOfSpeech' ||
     status === 'needsUpgrade';
 
+  // TODO: Table upgrade functionality
   return (
     <S.TableItem
       aria-label={l10n.getString('definition-inflection-table-title', {
