@@ -4,7 +4,7 @@ import {useWatch} from 'react-hook-form';
 import {PartOfSpeechId, InflectionTableId} from '../../graphql';
 
 import NeutralCollator from './neutral-collator';
-import {DefinitionTableData, PartOfSpeechFields} from './types';
+import {DefinitionTables, PartOfSpeechFields} from './types';
 
 const useActiveStemNames = (
   partsOfSpeech: readonly PartOfSpeechFields[]
@@ -14,7 +14,7 @@ const useActiveStemNames = (
   }) as PartOfSpeechId | null;
   const inflectionTables = useWatch({
     name: 'inflectionTables',
-  }) as DefinitionTableData[];
+  }) as DefinitionTables;
 
   const availableTables = useMemo(() => {
     const pos = partsOfSpeech.find(p => p.id === partOfSpeechId);
@@ -33,7 +33,8 @@ const useActiveStemNames = (
     const active: string[] = [];
 
     const seen = new Set<string>();
-    for (const table of inflectionTables) {
+    for (const {id} of inflectionTables.list) {
+      const table = inflectionTables.data[id];
       const tableStems = availableTables.get(table.tableId);
       if (!tableStems) {
         // The table belongs to a different part of speech; ignore it.

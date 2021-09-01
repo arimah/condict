@@ -58,7 +58,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
             : null,
           upgradeTableLayout: table.upgraded,
         })),
-        stems: [...formData.stems.map].map(([name, value]) => ({
+        stems: [...formData.stems].map(([name, value]) => ({
           name,
           value,
         })),
@@ -141,9 +141,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
         ),
         upgraded: false,
       })),
-      stems: {
-        map: new Map(def.stems.map(s => [s.name, s.value])),
-      },
+      stems: new Map(def.stems.map(s => [s.name, s.value])),
       tags: def.tags.map(t => t.name),
     };
   }, [data]);

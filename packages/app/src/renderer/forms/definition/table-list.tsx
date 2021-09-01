@@ -1,10 +1,10 @@
 import React, {useState, useMemo, useCallback, useEffect, useRef} from 'react';
-import {useFieldArray, useWatch} from 'react-hook-form';
+import {useFormContext, useFieldArray, useWatch} from 'react-hook-form';
 import {Localized, useLocalization} from '@fluent/react';
 import produce from 'immer';
 import AddIcon from 'mdi-react/PlusIcon';
 
-import {Button, Menu, MenuTrigger, useUniqueId} from '@condict/ui';
+import {Button, Menu, MenuTrigger, genUniqueId, useUniqueId} from '@condict/ui';
 import {emptyTableCaption} from '@condict/rich-text-editor';
 
 import {DefinitionTableValue, Field, Label} from '../../form-fields';
@@ -17,7 +17,8 @@ import type {NewInflectionTable} from '../../panels';
 
 import Table from './table';
 import {
-  DefinitionData,
+  DefinitionTableId,
+  DefinitionTableData,
   Stems,
   PartOfSpeechFields,
   InflectionTableInfo,
@@ -27,6 +28,7 @@ import * as S from './styles';
 
 export type Props = {
   partsOfSpeech: readonly PartOfSpeechFields[];
+  defaultTableData: Record<string, DefinitionTableData>;
   defaultStems: Stems;
   onCreateInflectionTable: (
     partOfSpeechId: PartOfSpeechId
@@ -59,23 +61,47 @@ const AllMovingState = {
 const EmptyCustomForms = new Map<InflectedFormId, string>();
 
 const TableList = React.memo((props: Props): JSX.Element => {
-  const {partsOfSpeech, defaultStems, onCreateInflectionTable} = props;
+  const {
+    partsOfSpeech,
+    defaultTableData,
+    defaultStems,
+    onCreateInflectionTable,
+  } = props;
 
   const {l10n} = useLocalization();
 
   const id = useUniqueId();
 
-  const {
-    fields,
-    append,
-    remove,
-    move,
-  } = useFieldArray<DefinitionData, 'inflectionTables', 'key'>({
-    name: 'inflectionTables',
+  const form = useFormContext();
+
+  const fieldArray = useFieldArray({
+    name: 'inflectionTables.list',
     keyName: 'key',
   });
+  const fields = fieldArray.fields as (DefinitionTableId & {key: string})[];
+  const append = fieldArray.append as (value: DefinitionTableId) => void;
+  const remove = fieldArray.remove as (index: number) => void;
+  const move = fieldArray.move as (from: number, to: number) => void;
 
+  // Default values for tables added since the component was mounted. Tables
+  // that are in the form's default values are in the form's default values.
+  const newTableDefaults = useRef<Record<string, DefinitionTableData>>({});
   const [moving, setMoving] = useState<AllMovingState | undefined>();
+
+  const addTable = useCallback((table: DefinitionTableData) => {
+    const id = genUniqueId();
+    newTableDefaults.current[id] = table;
+    form.setValue(`inflectionTables.data.${id}`, table);
+    append({id});
+  }, [append]);
+
+  const handleRemove = useCallback((index: number) => {
+    const data = form.getValues('inflectionTables.list') as DefinitionTableId[];
+    const id = data[index].id;
+    delete newTableDefaults.current[id];
+    remove(index);
+    // The table data is removed when the corresponding <Table> unmounts.
+  }, [remove]);
 
   const listRef = useRef<HTMLUListElement>(null);
   const handleMove = useCallback((from: number, to: number) => {
@@ -138,7 +164,7 @@ const TableList = React.memo((props: Props): JSX.Element => {
         move(from, to);
       });
     }
-  }, [move, moving]);
+  }, [moving]);
 
   const partOfSpeechId = useWatch({
     name: 'partOfSpeech',
@@ -168,7 +194,7 @@ const TableList = React.memo((props: Props): JSX.Element => {
       <Menu.Item
         key={t.id}
         label={t.name}
-        onActivate={() => append({
+        onActivate={() => addTable({
           id: null,
           caption: emptyTableCaption(),
           table: DefinitionTableValue.fromGraphQLResponse(
@@ -177,6 +203,7 @@ const TableList = React.memo((props: Props): JSX.Element => {
           ),
           tableId: t.id,
           layoutId: t.layout.id,
+          upgraded: false,
         })}
       />
     );
@@ -192,9 +219,9 @@ const TableList = React.memo((props: Props): JSX.Element => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     void onCreateInflectionTable(partOfSpeechId!).then(table => {
       if (table) {
-        // It's not really necessary to add the table to the table list, as
+        // It's not really necessary to add the table to the table menu, as
         // it will refresh fairly soon anyway (hopefully).
-        append({
+        addTable({
           id: null,
           caption: emptyTableCaption(),
           table: DefinitionTableValue.fromGraphQLResponse(
@@ -203,10 +230,11 @@ const TableList = React.memo((props: Props): JSX.Element => {
           ),
           tableId: table.id,
           layoutId: table.layout.id,
+          upgraded: false,
         });
       }
     });
-  }, [partOfSpeechId, onCreateInflectionTable]);
+  }, [partOfSpeechId, addTable, onCreateInflectionTable]);
 
   return (
     <Field role='group' aria-labelledby={`${id}-label`}>
@@ -217,9 +245,13 @@ const TableList = React.memo((props: Props): JSX.Element => {
         {fields.map((field, index) =>
           <Table
             key={field.key}
+            id={field.id}
             index={index}
             totalCount={fields.length}
-            defaultValues={field}
+            defaultValues={
+              newTableDefaults.current[field.id] ??
+              defaultTableData[field.id]
+            }
             allTableMap={inflectionTableMap}
             partOfSpeechId={partOfSpeechId}
             stems={stems.map}
@@ -230,7 +262,7 @@ const TableList = React.memo((props: Props): JSX.Element => {
                 : undefined
             }
             onMove={handleMove}
-            onRemove={remove}
+            onRemove={handleRemove}
           />
         )}
       </S.TableList>

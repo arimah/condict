@@ -9,10 +9,10 @@ import type {NewPartOfSpeech} from '../../panels';
 
 import NeutralCollator from './neutral-collator';
 import {AllPartsOfSpeechQuery} from './query';
-import {DefinitionData, PartOfSpeechFields} from './types';
+import {PartOfSpeechFields} from './types';
 
 export type Options = {
-  form: UseFormReturn<DefinitionData>;
+  form: UseFormReturn<any>;
   languageId: LanguageId;
   initialPartsOfSpeech: readonly PartOfSpeechFields[];
   onCreatePartOfSpeech: () => Promise<NewPartOfSpeech | null>;

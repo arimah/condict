@@ -16,14 +16,47 @@ export interface DefinitionData {
   partOfSpeech: PartOfSpeechId | null;
   description: BlockElement[];
   inflectionTables: DefinitionTableData[];
+  stems: Map<string, string>;
+  tags: string[];
+}
+
+/**
+ * Internal form state. This is separate from DefinitionData to keep the public
+ * interface cleaner and less difficult to work with. This type has a few design
+ * decisions that are caused entirely by react-hook-form's quirky behaviour.
+ */
+export interface DefinitionFormState {
+  id: DefinitionId | null;
+  term: string;
+  partOfSpeech: PartOfSpeechId | null;
+  description: BlockElement[];
+  inflectionTables: DefinitionTables;
   stems: Stems;
   tags: string[];
 }
 
-// HACK: Have to use an object with a property to avoid issues with shallow
-// cloning in react-hook-form.
-export interface Stems {
-  map: Map<string, string>;
+export interface DefinitionTables {
+  /**
+   * IDs of current tables, kept in their display order. This value is owned
+   * and managed by `useFieldArray()`.
+   */
+  list: DefinitionTableId[];
+  /**
+   * The actual table data, indexed by table key. Kept separate from the list
+   * of tables exlusively to prevent default value pollution. If we put this
+   * data inside `list`, when the user goes to *edit* an existing definition,
+   * if they remove a table and add another in its place, then the new table
+   * will use the values that are already in the form's `defaultValues` - i.e.
+   * the initial state of the removed table. It's weird.
+   *
+   * These fields are set up to unregister on unmount, ensuring we clean up
+   * after removing tables.
+   */
+  data: Record<string, DefinitionTableData>;
+}
+
+export interface DefinitionTableId {
+  id: string;
 }
 
 export interface DefinitionTableData {
@@ -33,6 +66,12 @@ export interface DefinitionTableData {
   readonly tableId: InflectionTableId;
   readonly layoutId: InflectionTableLayoutId;
   readonly upgraded: boolean;
+}
+
+// HACK: Have to use an object with a property to avoid issues with shallow
+// cloning in react-hook-form.
+export interface Stems {
+  map: Map<string, string>;
 }
 
 export interface PartOfSpeechFields {

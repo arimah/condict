@@ -51,8 +51,6 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
   const onSubmit = useCallback(async (formData: DefinitionData) => {
     setSubmitError(false);
 
-    console.log('Form data:', formData);
-
     if (formData.partOfSpeech === null) {
       throw new Error(`Unexpected partOfSpeech: ${formData.partOfSpeech}`);
     }
@@ -70,7 +68,7 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
             ? tableCaptionToGraphQLInput(table.caption)
             : null,
         })),
-        stems: [...formData.stems.map].map(([name, value]) => ({
+        stems: [...formData.stems].map(([name, value]) => ({
           name,
           value,
         })),

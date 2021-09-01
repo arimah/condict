@@ -1,5 +1,5 @@
 import React, {TransitionEvent, useMemo, useRef} from 'react';
-import {useWatch} from 'react-hook-form';
+import {useFormContext, useWatch} from 'react-hook-form';
 import {Localized, useLocalization} from '@fluent/react';
 import MoveUpIcon from 'mdi-react/ArrowUpIcon';
 import MoveDownIcon from 'mdi-react/ArrowDownIcon';
@@ -17,6 +17,7 @@ import {DefinitionTableData, InflectionTableMap, MovingState} from './types';
 import * as S from './styles';
 
 export type Props = {
+  id: string;
   index: number;
   totalCount: number;
   defaultValues: DefinitionTableData;
@@ -52,6 +53,7 @@ const StatusMessages = {
 
 const Table = React.memo((props: Props): JSX.Element => {
   const {
+    id: key,
     index,
     totalCount,
     defaultValues,
@@ -71,6 +73,10 @@ const Table = React.memo((props: Props): JSX.Element => {
     layoutId: defaultLayoutId,
   } = defaultValues;
 
+  useFormContext().register(`inflectionTables.data.${key}`, {
+    shouldUnregister: true,
+  });
+
   const {l10n} = useLocalization();
 
   const itemRef = useRef<HTMLLIElement>(null);
@@ -87,7 +93,7 @@ const Table = React.memo((props: Props): JSX.Element => {
 
   const term = useWatch({name: 'term'}) as string;
   const layoutId = useWatch({
-    name: `inflectionTables.${index}.layoutId`,
+    name: `inflectionTables.data.${key}.layoutId`,
     defaultValue: defaultLayoutId,
   }) as InflectionTableLayoutId;
 
@@ -134,13 +140,13 @@ const Table = React.memo((props: Props): JSX.Element => {
       />
 
       <TableCaptionField
-        name={`inflectionTables.${index}.caption`}
+        name={`inflectionTables.data.${key}.caption`}
         label={<Localized id='definition-table-caption-label'/>}
         defaultValue={caption}
         readOnly={hasError}
       />
       <DefinitionTableField
-        name={`inflectionTables.${index}.table`}
+        name={`inflectionTables.data.${key}.table`}
         defaultValue={table}
         term={term}
         stems={stems}

@@ -2,6 +2,7 @@ import {ReactNode, RefObject, useMemo, useCallback, useEffect} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import {Localized, useLocalization} from '@fluent/react';
 
+import {genUniqueId} from '@condict/ui';
 import {emptyDescription} from '@condict/rich-text-editor';
 
 import {LanguageId, PartOfSpeechId} from '../../graphql';
@@ -19,7 +20,12 @@ import {notEmpty} from '../validators';
 import usePartOfSpeechOptions from './part-of-speech-options';
 import TableList from './table-list';
 import StemsField from './stems-field';
-import {DefinitionData, PartOfSpeechFields} from './types';
+import {
+  DefinitionData,
+  DefinitionFormState,
+  DefinitionTables,
+  PartOfSpeechFields,
+} from './types';
 
 export type Props = {
   languageId: LanguageId;
@@ -44,9 +50,7 @@ const emptyData = (): DefinitionData => ({
   partOfSpeech: null,
   description: emptyDescription(),
   inflectionTables: [],
-  stems: {
-    map: new Map<string, string>(),
-  },
+  stems: new Map<string, string>(),
   tags: [],
 });
 
@@ -69,9 +73,33 @@ export const DefinitionForm = (props: Props): JSX.Element => {
   // HACK: useFieldArray is weird and sometimes updates defaultValues... This
   // obviously doesn't work well with a shared empty data object, so we need
   // to construct it on demand.
-  const defaultValues = useMemo(() => initialData ?? emptyData(), []);
+  const defaultValues = useMemo<DefinitionFormState>(() => {
+    const data = initialData ?? emptyData();
 
-  const form = useForm<DefinitionData>({defaultValues});
+    const inflectionTables: DefinitionTables = {
+      list: [],
+      data: {},
+    };
+    for (const table of data.inflectionTables) {
+      const id = genUniqueId();
+      inflectionTables.list.push({id});
+      inflectionTables.data[id] = table;
+    }
+
+    return {
+      id: data.id,
+      term: data.term,
+      description: data.description,
+      partOfSpeech: data.partOfSpeech,
+      inflectionTables,
+      stems: {
+        map: data.stems,
+      },
+      tags: data.tags,
+    };
+  }, []);
+
+  const form = useForm<DefinitionFormState>({defaultValues});
 
   const {isDirty} = form.formState;
   useEffect(() => {
@@ -90,7 +118,7 @@ export const DefinitionForm = (props: Props): JSX.Element => {
   });
 
   const handleSubmit = useCallback((
-    data: DefinitionData
+    data: DefinitionFormState
   ): Promise<void> | void => {
     const pos = partsOfSpeech.find(p => p.id === data.partOfSpeech);
 
@@ -99,20 +127,22 @@ export const DefinitionForm = (props: Props): JSX.Element => {
       pos?.inflectionTables.flatMap(t => t.layout.stems)
     );
 
+    const tables = data.inflectionTables;
+
     const submittedData: DefinitionData = {
       ...data,
       // Remove inflection tables that belong to a different part of speech.
-      inflectionTables: data.inflectionTables.filter(t =>
-        availableTables.has(t.tableId)
-      ),
-      // Remove stems that are not used by any of the inflection tables.
-      stems: {
-        map: new Map(
-          [...data.stems.map].filter(([name]) =>
-            exportedStems.has(name)
-          )
+      inflectionTables: data.inflectionTables.list
+        .map(({id}) => tables.data[id])
+        .filter(t =>
+          availableTables.has(t.tableId)
         ),
-      },
+      // Remove stems that are not used by any of the inflection tables.
+      stems: new Map(
+        [...data.stems.map].filter(([name]) =>
+          exportedStems.has(name)
+        )
+      ),
     };
     return onSubmit(submittedData);
   }, [partsOfSpeech, onSubmit]);
@@ -160,6 +190,7 @@ export const DefinitionForm = (props: Props): JSX.Element => {
         </SelectField>
         <TableList
           partsOfSpeech={partsOfSpeech}
+          defaultTableData={defaultValues.inflectionTables.data}
           defaultStems={defaultValues.stems}
           onCreateInflectionTable={onCreateInflectionTable}
         />
