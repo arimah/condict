@@ -46,6 +46,7 @@ const DefinitionCard = React.memo((props: Props): JSX.Element => {
           value={definition.description}
           heading1='h3'
           heading2='h4'
+          stripLinks
           // 1 more than maxLines, to guarantee "..." if there's >5 blocks
           maxBlocks={6}
         />

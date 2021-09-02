@@ -20,8 +20,6 @@ import {
   FormattedText,
 } from './types';
 
-const Indent = 32; // pixels
-
 /*
  * A few noteworthy things:
  *
@@ -66,6 +64,29 @@ const Indent = 32; // pixels
  *    indentation is 1 - 1 = 0.
  */
 
+type NestedBlock =
+  | SimpleBlock
+  | ListBlock;
+
+interface SimpleBlock {
+  readonly kind: Exclude<BlockKind, 'OLIST_ITEM' | 'ULIST_ITEM'>;
+  readonly indent: number;
+  readonly inlines: readonly InlineFields[];
+}
+
+interface ListBlock {
+  readonly kind: 'OLIST_ITEM' | 'ULIST_ITEM';
+  readonly indent: number;
+  readonly items: readonly ListItem[];
+}
+
+interface ListItem {
+  readonly inlines: readonly InlineFields[];
+  readonly children: readonly NestedBlock[];
+}
+
+const Indent = 32; // pixels
+
 export const formatBlocks = (
   blocks: readonly BlockFields[],
   h1: HeadingType,
@@ -80,77 +101,17 @@ export const formatBlocks = (
     ULIST_ITEM: 'ul',
   };
 
-  let nextIndex = 0;
-
-  const elements: JSX.Element[] = [];
-  while (nextIndex < blocks.length) {
-    const block = blocks[nextIndex++];
-    elements.push(formatBlock(block, 0));
-  }
-  return elements;
-
-  function formatBlock(block: BlockFields, baseIndent: number): JSX.Element {
-    const key = nextIndex;
-
-    let children: ReactNode = null;
-    switch (block.kind) {
-      case 'PARAGRAPH':
-      case 'HEADING_1':
-      case 'HEADING_2':
-        children = formatInlines(block.inlines, stripLinks);
-        break;
-      case 'OLIST_ITEM':
-      case 'ULIST_ITEM': {
-        const items = [formatListItem(block)];
-        // Collect subsequent list items of the same type and at the same level
-        // as children of this list.
-        while (nextIndex < blocks.length) {
-          const nextBlock = blocks[nextIndex];
-          if (
-            nextBlock.kind !== block.kind ||
-            nextBlock.level !== block.level
-          ) {
-            // Not a list item of the same kind or a list item at a different
-            // level of indentation.
-            break;
-          }
-
-          nextIndex++;
-          items.push(formatListItem(nextBlock));
-        }
-        children = items;
-        break;
-      }
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const Tag = blockTags[block.kind] as any;
-    const indent = block.level - baseIndent;
-    const style = indent > 0
-      ? {marginInlineStart: `${indent * Indent}px`}
-      : undefined;
-    return <Tag key={key} style={style}>{children}</Tag>;
-  }
-
-  function formatListItem(item: BlockFields): JSX.Element {
-    // The list item's own content is *not* wrapped in a <p> or anything else.
-    const key = nextIndex;
-    const children: ReactNode[] = [formatInlines(item.inlines, stripLinks)];
-
-    while (nextIndex < blocks.length) {
-      const nextBlock = blocks[nextIndex];
-      // If the next block is indented deeper than the list item, then it
-      // belongs to the list item.
-      if (nextBlock.level <= item.level) {
-        break;
-      }
-
-      nextIndex++;
-      children.push(formatBlock(nextBlock, item.level + 1));
-    }
-
-    return <li key={key}>{children}</li>;
-  }
+  const tree = nestBlocks(blocks);
+  return tree.map((block, i) =>
+    formatBlock(
+      i,
+      block,
+      blockTags,
+      stripLinks,
+      i === 0,
+      i === tree.length - 1
+    )
+  );
 };
 
 export const formatInlines = (
@@ -165,6 +126,154 @@ export const formatInlines = (
   }
   return elements;
 };
+
+const nestBlocks = (blocks: readonly BlockFields[]): NestedBlock[] => {
+  let nextIndex = 0;
+
+  const items: NestedBlock[] = [];
+  while (nextIndex < blocks.length) {
+    const block = blocks[nextIndex++];
+    items.push(visitBlock(block, 0));
+  }
+  return items;
+
+  function visitBlock(block: BlockFields, baseLevel: number): NestedBlock {
+    const indent = block.level - baseLevel;
+    switch (block.kind) {
+      case 'PARAGRAPH':
+      case 'HEADING_1':
+      case 'HEADING_2':
+        return {kind: block.kind, indent, inlines: block.inlines};
+      case 'OLIST_ITEM':
+      case 'ULIST_ITEM': {
+        const items = [visitListItem(block)];
+        // Collect subsequent list items of the same type and at the same level
+        // as children of this list.
+        while (nextIndex < blocks.length) {
+          const nextBlock = blocks[nextIndex];
+          if (
+            nextBlock.kind !== block.kind ||
+            nextBlock.level !== block.level
+          ) {
+            // Not a list item of the same kind or a list item at a different
+            // level of indentation.
+            break;
+          }
+
+          nextIndex++;
+          items.push(visitListItem(nextBlock));
+        }
+        return {kind: block.kind, indent, items};
+      }
+    }
+  }
+
+  function visitListItem(item: BlockFields): ListItem {
+    const children: NestedBlock[] = [];
+
+    while (nextIndex < blocks.length) {
+      const nextBlock = blocks[nextIndex];
+      // If the next block is indented deeper than the list item, then it
+      // belongs to the list item.
+      if (nextBlock.level <= item.level) {
+        break;
+      }
+
+      nextIndex++;
+      children.push(visitBlock(nextBlock, item.level + 1));
+    }
+
+    return {inlines: item.inlines, children};
+  }
+};
+
+const formatBlock = (
+  key: number,
+  block: NestedBlock,
+  tags: Record<BlockKind, any>,
+  stripLinks: boolean,
+  isFirst: boolean,
+  isLast: boolean
+): JSX.Element => {
+  let children: ReactNode;
+  switch (block.kind) {
+    case 'PARAGRAPH':
+    case 'HEADING_1':
+    case 'HEADING_2':
+      children = formatInlines(block.inlines, stripLinks);
+      break;
+    case 'OLIST_ITEM':
+    case 'ULIST_ITEM': {
+      const count = block.items.length;
+      children = block.items.map((item, i) =>
+        formatListItem(
+          i,
+          item,
+          tags,
+          stripLinks,
+          isFirst && i === 0,
+          isLast && i === count - 1
+        )
+      );
+      break;
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const Tag = tags[block.kind];
+  const style = block.indent > 0
+    ? {marginInlineStart: `${block.indent * Indent}px`}
+    : undefined;
+  return (
+    <Tag
+      key={key}
+      className={getBlockClass(isFirst, isLast)}
+      style={style}
+    >
+      {children}
+    </Tag>
+  );
+};
+
+const formatListItem = (
+  key: number,
+  item: ListItem,
+  tags: Record<BlockKind, any>,
+  stripLinks: boolean,
+  isFirst: boolean,
+  isLast: boolean
+): JSX.Element => {
+  const childCount = item.children.length;
+  return (
+    <li key={key} className={getBlockClass(isFirst, isLast)}>
+      {formatInlines(item.inlines, stripLinks)}
+      {childCount > 0 ? (
+        item.children.map((child, i) =>
+          formatBlock(
+            i,
+            child,
+            tags,
+            stripLinks,
+            false,
+            isLast && i === childCount - 1
+          )
+        )
+      ) : null}
+    </li>
+  );
+};
+
+const getBlockClass = (
+  isFirst: boolean,
+  isLast: boolean
+): string | undefined =>
+  isFirst
+    ? isLast
+      ? 'first-block last-block'
+      : 'first-block'
+    : isLast
+      ? 'last-block'
+      : undefined;
 
 const formatInline = (
   inline: InlineFields,

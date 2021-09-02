@@ -15,15 +15,12 @@ export const Main = styled(BodyText)<MainProps>`
   `}
 
   /* Margins cannot "bleed" outside a -webkit-box, so delete them altogether. */
-  > :first-child,
-  > ol:first-child > li:first-child,
-  > ul:first-child > li:first-child {
+
+  .first-block.first-block {
     margin-top: 0;
   }
 
-  > :last-child,
-  > ol:last-child > li:last-child,
-  > ul:last-child > li:last-child {
+  .last-block.last-block {
     margin-bottom: 0;
   }
 `;
