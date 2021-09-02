@@ -36,25 +36,27 @@ interface ItemState<T> {
   readonly phase: ItemPhase;
 }
 
-function TransitionList<T>(props: Props<T>): JSX.Element {
+function TransitionList<T>(props: Props<T>): JSX.Element | null {
   const {list, getKey, children: renderItem} = props;
 
   // This component is a bit hacky. When the input list changes, we want new
   // items to be added and old items to start leaving in the same render. To
   // accomplish this, we compute the next state during render. But we also
   // need some way to tell React to re-render when items finish transitioning.
-  // Hence, the current up-to-date canonical state is kept in a ref (stateRef),
-  // which is synchronised with the most recently rendered state (lastState)
-  // through an effect.
   //
-  // When onPhaseEnd is called, we derive the next state from stateRef, and
-  // write it to lastState to force the component to update.
+  // Hence, the current up-to-date canonical state is kept in a ref (stateRef),
+  // and then when onPhaseEnd is called, we derive the next state from stateRef
+  // and toggle setRender to force the component to update.
 
-  const [lastState, setLastState] = useState(() => getInitialState(list, getKey));
-  const stateRef = useRef(lastState);
+  const [_render, setRender] = useState(false);
+  const stateRef = useRef<ListState<T> | null>(null);
+  if (stateRef.current === null) {
+    stateRef.current = getInitialState(list, getKey);
+  }
 
   const onPhaseEnd = useCallback((key: Key) => {
-    const state = stateRef.current;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const state = stateRef.current!;
 
     const index = state.itemStates.findIndex(i => i.key === key);
     if (index === -1) {
@@ -80,7 +82,7 @@ function TransitionList<T>(props: Props<T>): JSX.Element {
     });
 
     stateRef.current = nextState;
-    setLastState(nextState);
+    setRender(r => !r);
   }, []);
 
   // Compute the next state eagerly, so we don't end up out-of-sync with the
@@ -89,12 +91,6 @@ function TransitionList<T>(props: Props<T>): JSX.Element {
     ? getNextState(stateRef.current, list, getKey)
     : stateRef.current;
   stateRef.current = state;
-
-  useEffect(() => {
-    if (state !== lastState) {
-      setLastState(lastState);
-    }
-  }, [state]);
 
   return <>
     {state.itemStates.map(item =>

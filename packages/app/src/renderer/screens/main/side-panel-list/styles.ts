@@ -30,8 +30,7 @@ export const Overlay = styled.div<OverlayProps>`
   bottom: 0;
   background-color: ${p => p.theme.defaultBg};
   opacity: ${p => p.active ? '0.6' : '0'};
-  /* At least 1ms to force transitionend event even with disabled animations. */
-  transition: opacity ${p => Math.max(2 * p.theme.timing.long, 1)}ms linear;
+  transition: opacity ${p => 2 * p.theme.timing.long}ms linear;
   pointer-events: ${p => p.active ? 'auto' : 'none'};
 `;
 
@@ -74,7 +73,10 @@ export const SidePanel = styled.div.attrs({
 
   transition:
     inset-inline-start
-    ${p => 2.25 * p.theme.timing.long}ms
+    ${p =>
+      // At least 1ms to force transitionend event even with disabled animations.
+      Math.max(2.25 * p.theme.timing.long, 1)
+    }ms
     ${p =>
       // When entering for the first time, use EaseOut to reveal the panel faster.
       p.entering ? EaseOut : Ease
