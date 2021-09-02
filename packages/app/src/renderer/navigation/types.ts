@@ -72,20 +72,24 @@ export const Tab = {
   },
 
   /**
-   * Determines whether navigation is allowed within the specified tab.
-   * @param page The tab to test.
-   * @return True if navigation is permitted within the tab; false if links must
-   *         open new tabs.
+   * Determines whether navigation is allowed within the specified tab to the
+   * specified page.
+   * @param tab The tab to test.
+   * @param page The page to navigate to.
+   * @return True if navigation is the tab is permitted to navigate to the page;
+   *         false if the page must open in a new tab.
    */
-  canNavigateWithin(tab: Tab): boolean {
-    switch (tab.page.type) {
-      case 'home':
-      case 'language':
-      case 'tag':
-        return false;
-      default:
-        return tab.panels.length === 0;
+  canNavigateWithin(tab: Tab, page: Page): boolean {
+    if (tab.panels.length > 0) {
+      // If there is an open side panel, we can never navigate inside the tab.
+      return false;
     }
+    if (Page.isLanguageChild(tab.page) && Page.isLanguageChild(page)) {
+      // If both pages are inside a language, we can navigate if both are
+      // in the *same* language.
+      return tab.page.language.id === page.language.id;
+    }
+    return false;
   },
 
   /**

@@ -134,7 +134,7 @@ const NavigationProvider = (props: Props): JSX.Element => {
       const currentTab = state.tabs[state.currentTabIndex];
       const shouldNavigateWithinCurrent =
         !openInNewTab &&
-        Tab.canNavigateWithin(currentTab) &&
+        Tab.canNavigateWithin(currentTab, page) &&
         !PageConditions.alwaysOpenInNewTab(page);
       if (shouldNavigateWithinCurrent) {
         const message: Message = {
