@@ -9,6 +9,18 @@ export const BodyText = styled.div<BodyTextProps>`
 
   /* Headings have their own line-height that is good enough. */
 
+  sup {
+    font-size: 12px;
+    line-height: 13px;
+    vertical-align: 4px;
+  }
+
+  sub {
+    font-size: 12px;
+    line-height: 13px;
+    vertical-align: -3px;
+  }
+
   ${p => p.underlineLinks && `
     a:link,
     a:visited,
