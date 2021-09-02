@@ -32,7 +32,7 @@ export const Popup = styled.div.attrs({
   top: ${p => p.$visible ? 'calc(100% + 2px)' : 'calc(100% - 6px)'};
   right: 0;
   width: 304px;
-  z-index: 2;
+  z-index: 10;
 
   border-radius: 7px;
   border: 2px solid ${p => p.theme.general.border};

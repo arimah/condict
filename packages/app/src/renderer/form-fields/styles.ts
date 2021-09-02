@@ -130,7 +130,7 @@ export const FormButtons = styled.div<FormButtonsProps>`
   gap: 8px;
   position: sticky;
   bottom: -1px;
-  z-index: 10;
+  z-index: 5;
   background-color: ${p => p.theme.defaultBg};
   box-shadow: ${p => p.stuck && `0 -8px 4px -6px ${p.theme.shadow.color}`};
   transition: box-shadow ${p => p.theme.timing.short}ms linear;
