@@ -10,7 +10,7 @@ export const Popup = styled.div.attrs({
   box-sizing: border-box;
   overflow: hidden;
   position: absolute;
-  z-index: 5;
+  z-index: 10;
   border-radius: 7px;
   border: 2px solid ${p => p.theme.general.border};
   background-color: ${p => p.theme.general.bg};

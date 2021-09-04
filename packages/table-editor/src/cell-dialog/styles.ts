@@ -10,7 +10,7 @@ export const CellDialog = styled.div.attrs({
   left: -2px;
   right: -2px;
   bottom: -2px;
-  z-index: 3;
+  z-index: 10;
 
   &:focus {
     outline: none;
