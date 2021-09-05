@@ -10,26 +10,3 @@ export const TableContainer = styled(FullWidth).attrs({
   overflow-x: auto;
   user-select: text;
 `;
-
-export const Table = styled.table`
-  border-collapse: collapse;
-
-  th,
-  td {
-    padding: 6px;
-    text-align: start;
-    white-space: pre;
-    border: 2px solid ${p => p.theme.general.border};
-  }
-
-  td {
-    background-color: ${p => p.theme.defaultBg};
-    color: ${p => p.theme.defaultFg};
-  }
-
-  th {
-    font-weight: bold;
-    background-color: ${p => p.theme.general.bg};
-    color: ${p => p.theme.general.fg};
-  }
-`;

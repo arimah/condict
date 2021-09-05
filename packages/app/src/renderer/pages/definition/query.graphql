@@ -6,6 +6,37 @@ query($id: DefinitionId!) {
       ...RichTextBlockFragment
     }
 
+    partOfSpeech {
+      id
+      name
+    }
+
+    stems {
+      name
+      value
+    }
+
+    inflectionTables {
+      id
+      caption {
+        inlines {
+          __typename
+          ...RichTextFragment
+        }
+      }
+      customForms {
+        inflectedForm { id }
+        value
+      }
+      inflectionTable {
+        id
+        name
+      }
+      inflectionTableLayout {
+        ...DefinitionTableFragment
+      }
+    }
+
     timeCreated
     timeUpdated
 
@@ -16,6 +47,9 @@ query($id: DefinitionId!) {
 
     lemma {
       id
+      definitions {
+        id
+      }
     }
 
     language {

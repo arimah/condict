@@ -131,3 +131,44 @@ export const NakedButton = styled(Button)`
     border-color: ${p => p.theme.focus.color};
   }
 `;
+
+export const Table = styled.table`
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 6px;
+    text-align: start;
+    white-space: pre;
+    border: 2px solid ${p => p.theme.general.border};
+  }
+
+  td {
+    background-color: ${p => p.theme.defaultBg};
+    color: ${p => p.theme.defaultFg};
+  }
+
+  th {
+    font-weight: bold;
+    background-color: ${p => p.theme.general.bg};
+    color: ${p => p.theme.general.fg};
+  }
+
+  caption {
+    margin-bottom: 4px;
+    text-align: start;
+    font-weight: 600;
+
+    b {
+      font-weight: 800;
+    }
+  }
+`;
+
+export const DeletedForm = styled.span`
+  display: inline-block;
+  width: 16px;
+  height: 2px;
+  vertical-align: middle;
+  background-color: ${p => p.theme.general.border};
+`;

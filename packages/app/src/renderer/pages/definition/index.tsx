@@ -27,6 +27,7 @@ import {editDefinitionPanel} from '../../panels';
 import {PageProps} from '../types';
 
 import DefinitionQuery from './query';
+import Inflection from './inflection';
 
 export type Props = {
   id: DefinitionId;
@@ -95,7 +96,11 @@ const DefinitionPage = (props: Props): JSX.Element => {
             <Subheader>
               <Localized
                 id='definition-subheading'
-                vars={{term: def.term, language: lang.name}}
+                vars={{
+                  term: def.term,
+                  language: lang.name,
+                  defCount: def.lemma.definitions.length,
+                }}
                 elems={{
                   'lemma-link': <Link to={lemmaPage}/>,
                   'lang-link': <Link to={langPage}/>,
@@ -112,25 +117,44 @@ const DefinitionPage = (props: Props): JSX.Element => {
               </ResourceMeta>
             </Subheader>
 
-            <Selectable as={BodyText}>
-              <RichContent
-                value={def.description}
-                heading1='h3'
-                heading2='h4'
-              />
-            </Selectable>
+            <section>
+              <h2>
+                {def.partOfSpeech.name}
+              </h2>
+              <Selectable as={BodyText}>
+                <RichContent
+                  value={def.description}
+                  heading1='h3'
+                  heading2='h4'
+                />
+              </Selectable>
+            </section>
+
+            {def.inflectionTables.length > 0 &&
+              <Inflection
+                id={`${htmlId}-tables`}
+                term={def.term}
+                stems={def.stems}
+                tables={def.inflectionTables}
+                parent={langPage}
+              />}
 
             {def.tags.length > 0 &&
-              <TagList>
-                {def.tags.map(tag =>
-                  <li key={tag.id}>
-                    <Tag
-                      linkTo={SearchPage('', {tag: tag.id, language: lang.id})}
-                      name={tag.name}
-                    />
-                  </li>
-                )}
-              </TagList>}
+              <section aria-labelledby={`${htmlId}-tags`}>
+                <h2 id={`${htmlId}-tags`}>
+                  <Localized id='definition-tags-heading'/>
+                </h2>
+                <TagList>
+                  {def.tags.map(tag =>
+                    <li key={tag.id}>
+                      <Tag
+                        linkTo={SearchPage('', {tag: tag.id, language: lang.id})}
+                        name={tag.name}
+                      />
+                    </li>
+                  )}
+                </TagList>
+              </section>}
           </>;
         }}
       />

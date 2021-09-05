@@ -86,7 +86,7 @@ function TransitionList<T>(props: Props<T>): JSX.Element | null {
   }, []);
 
   // Compute the next state eagerly, so we don't end up out-of-sync with the
-  // list by one render. This does lead to double renders.
+  // list by one render.
   const state = stateRef.current.list !== list
     ? getNextState(stateRef.current, list, getKey)
     : stateRef.current;

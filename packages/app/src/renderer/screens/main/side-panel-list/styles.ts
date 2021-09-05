@@ -91,8 +91,7 @@ export const Content = styled.div`
   padding: 24px 32px;
 
   h1 {
-    margin-top: 36px;
-    margin-bottom: 12px;
+    margin-block: 36px 12px;
   }
 
   > :first-child,

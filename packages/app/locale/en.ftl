@@ -757,11 +757,29 @@ language-add-part-of-speech-title = Add part of speech
 # Variables:
 #   term: The term (headword) that the definition belongs to.
 #   language: The name of the language that the definition belongs to.
+#   defCount: The total number of definitions in the parent headword.
 #
 # Elements:
 #   <lemma-link>: Link to the headword (lemma) that the definition belongs to. Wraps around $term.
 #   <lang-link>: Link to the language that the definition belongs to. Wraps around $language.
-definition-subheading = Definition of headword <lemma-link>{$term}</lemma-link>, in language <lang-link>{$language}</lang-link>
+definition-subheading =
+  {$defCount ->
+    [1] Only definition
+   *[other] One of {$defCount} definitions
+  } of headword <lemma-link>{$term}</lemma-link>, in language <lang-link>{$language}</lang-link>
+
+definition-inflection-heading = Inflection
+
+definition-table-deleted-form = This form is deleted
+
+# Variables:
+#   tableName: The name of the table that the layout comes from.
+#
+# Elements:
+#   <table-link>: Link to the table that the layout comes from. Wraps around $tableName.
+definition-table-layout-from = From <table-link>{$tableName}</table-link>
+
+definition-tags-heading = Tags
 
 definition-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 

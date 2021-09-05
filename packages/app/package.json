@@ -19,6 +19,7 @@
     "watch:graphql": "condict-graphql-typer --schema-dir ../../graphql-schema --target=client --src=./src/renderer/ --defs=./src/renderer/graphql.ts --watch"
   },
   "dependencies": {
+    "@condict/inflect": "^0.1.0",
     "@condict/platform": "^0.1.0",
     "@condict/rich-text-editor": "^0.1.0",
     "@condict/table-editor": "^0.1.0",

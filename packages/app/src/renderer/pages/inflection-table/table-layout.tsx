@@ -3,9 +3,9 @@ import React from 'react';
 import {InflectionPattern} from '@condict/table-editor';
 
 import {OperationResult} from '../../graphql';
+import {Table} from '../../ui';
 
 import InflectionTableQuery from './query';
-import * as S from './styles';
 
 export type Props = {
   layout: LayoutData;
@@ -18,7 +18,7 @@ type LayoutData = NonNullable<
 const TableLayout = React.memo((props: Props): JSX.Element => {
   const {layout} = props;
   return (
-    <S.Table>
+    <Table>
       <tbody>
         {layout.rows.map((row, r) =>
           <tr key={r}>
@@ -43,7 +43,7 @@ const TableLayout = React.memo((props: Props): JSX.Element => {
           </tr>
         )}
       </tbody>
-    </S.Table>
+    </Table>
   );
 });
 

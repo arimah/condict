@@ -69,7 +69,7 @@ export const EditorStyles = css`
   ${Heading1} {
     margin-block: 16px 8px;
     font-size: 20px;
-    line-height: 24px;
+    line-height: 22px;
   }
 
   ${Heading2} {

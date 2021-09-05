@@ -17,6 +17,15 @@ export {
   DefinitionCardData,
 } from './definition-card';
 export {
+  default as DefinitionTable,
+  Props as DefinitionTableProps,
+  DefinitionTableRow,
+  DefinitionTableCell,
+  DefinitionTableDataCell,
+  DefinitionTableHeaderCell,
+  CustomForm,
+} from './definition-table';
+export {
   default as HighlightedSnippet,
   Props as HighlightedSnippetProps,
   Snippet,

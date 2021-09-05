@@ -128,6 +128,11 @@ export type BlockKind =
 ;
 
 /**
+ * Represents a definition inflection table ID.
+ */
+export type DefinitionInflectionTableId = IdOf<'DefinitionInflectionTable'>;
+
+/**
  * Represents an instant in time. The value is sent as the number of milliseconds
  * since midnight 1 January 1970 UTC (that is, a value compatible with the JS
  * `Date` type).
@@ -482,11 +487,6 @@ export type CustomInflectedFormInput = {
    */
   value: string;
 };
-
-/**
- * Represents a definition inflection table ID.
- */
-export type DefinitionInflectionTableId = IdOf<'DefinitionInflectionTable'>;
 
 /**
  * Input type for editing an existing definition. The ID is a separate argument.
