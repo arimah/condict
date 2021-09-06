@@ -41,11 +41,13 @@ type State = {
   /** Typed input value. */
   value: string;
   /** True if the dictionary is currently being searched. */
-  searching: boolean;
-  /** Current search results. */
-  results: readonly SearchResult[];
+  loading: boolean;
   /** Currently selected search result index. */
   index: number;
+  /** Current search results. */
+  results: readonly SearchResult[];
+  /** Search results from the previous call to `onFindLinkTarget`. */
+  prevResults: readonly SearchResult[];
   /** True if the currently selected result should be scrolled into view. */
   showSelected: boolean;
   /**
@@ -57,155 +59,12 @@ type State = {
 
 type Message =
   | {type: 'input', value: string}
+  | {type: 'loading'}
   | {type: 'results', results: readonly SearchResult[]}
   | {type: 'hover', index: number}
   | {type: 'prev'}
   | {type: 'next'}
   | {type: 'showError'};
-
-const initState = (props: Props): State => {
-  const {initialValue} = props;
-  if (initialValue) {
-    return {
-      value: initialValue.name || initialValue.url,
-      searching: false,
-      results: [{
-        target: initialValue,
-        name: initialValue.name || initialValue.url,
-      }],
-      index: 0,
-      showSelected: false,
-      showError: false,
-    };
-  } else {
-    return {
-      value: '',
-      searching: false,
-      results: [],
-      index: -1,
-      showSelected: false,
-      showError: false,
-    };
-  }
-};
-
-const reduce = (state: State, msg: Message): State => {
-  switch (msg.type) {
-    case 'input': {
-      const webResult = getWebResult(msg.value);
-      return {
-        ...state,
-        value: msg.value,
-        searching: msg.value !== '',
-        index: webResult ? 0 : -1,
-        results: webResult ? [webResult] : [],
-        showError: false,
-      };
-    }
-    case 'results':  {
-      const {value, results: prevResults, index: prevIndex} = state;
-
-      let nextResults = msg.results;
-      const webResult = getWebResult(value);
-      if (webResult) {
-        nextResults = [webResult].concat(nextResults);
-      }
-
-      // Retain the previous selection if possible.
-      let nextIndex = -1;
-      if (prevIndex !== -1) {
-        const prevResult = prevResults[prevIndex];
-        // Assume same target URL == same resource.
-        nextIndex = nextResults.findIndex(r =>
-          r.target.url === prevResult.target.url
-        );
-      }
-
-      if (nextIndex === -1 && nextResults.length > 0) {
-        nextIndex = 0;
-      }
-
-      return {
-        ...state,
-        searching: false,
-        results: nextResults,
-        index: nextIndex,
-        showSelected: true,
-        // Continue to show the error if there are no results and we showed
-        // the error previously.
-        showError: nextResults.length === 0 && state.showError,
-      };
-    }
-    case 'hover':
-      return {
-        ...state,
-        index: msg.index,
-        // Don't move things around under the mouse pointer.
-        showSelected: false,
-      };
-    case 'prev': {
-      const {searching, index, results} = state;
-      if (searching || results.length === 0) {
-        return state;
-      }
-      return {
-        ...state,
-        index: (index - 1 + results.length) % results.length,
-        showSelected: true,
-      };
-    }
-    case 'next': {
-      const {searching, index, results} = state;
-      if (searching || results.length === 0) {
-        return state;
-      }
-      return {
-        ...state,
-        index: (index + 1) % results.length,
-        showSelected: true,
-      };
-    }
-    case 'showError':
-      return {...state, showError: true};
-  }
-};
-
-const MaybeUrlPattern = /^[a-z0-9-_]+(?:\.[a-z0-9-_]+)+\.?(?:$|[/:?#])/i;
-const ValidProtocolPattern = /^https?:$/;
-
-const getWebResult = (value: string): SearchResult | null => {
-  value = value.trimLeft();
-
-  // If it looks vaguely like a URL that doesn't start with a protocol,
-  // automatically prepend 'http://'.
-  if (MaybeUrlPattern.test(value)) {
-    value = `http://${value}`;
-  }
-
-  let url: URL;
-  try {
-    url = new URL(value);
-  } catch (e) {
-    return null;
-  }
-
-  if (
-    !ValidProtocolPattern.test(url.protocol) ||
-    url.username ||
-    url.password
-  ) {
-    return null;
-  }
-
-  const urlText = url.toString();
-  return {
-    target: {
-      url: urlText,
-      type: 'web address',
-    },
-    name: urlText,
-  };
-};
 
 const cancelMouseEvent = (e: MouseEvent) => {
   e.preventDefault();
@@ -234,23 +93,8 @@ const LinkDialog = (props: Props): JSX.Element => {
     }
   }, [onSubmit, state]);
 
-  const searchRequest = useRef(0);
   const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target;
-
-    dispatch({type: 'input', value});
-    // Have to invalidate the previous request even if the value is empty.
-    searchRequest.current++;
-
-    // Don't search if it's empty or all white space.
-    if (!/^\s*$/.test(value)) {
-      const requestId = searchRequest.current;
-      void onFindLinkTarget(value).then(results => {
-        if (searchRequest.current === requestId) {
-          dispatch({type: 'results', results});
-        }
-      });
-    }
+    dispatch({type: 'input', value: e.target.value});
   }, [onFindLinkTarget]);
 
   const handleInputKeyDown = useCallback((e: KeyboardEvent) => {
@@ -280,6 +124,45 @@ const LinkDialog = (props: Props): JSX.Element => {
       cancel();
     }
   }, [cancel]);
+
+  const requestId = useRef(0);
+  const loadingTimeoutId = useRef<number | undefined>(undefined);
+
+  const trimmedQuery = state.value.trim();
+  const firstRender = useRef(true);
+  useEffect(() => {
+    // Don't search when the dialog first opens, only once the user starts
+    // typing. Otherwise we might overwrite the initial target with something
+    // totally different.
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+
+    const id = ++requestId.current;
+
+    if (loadingTimeoutId.current === undefined) {
+      // Add a small delay before showing the loading state, to reduce flicker
+      // if the query returns results very quickly (common for local servers).
+      loadingTimeoutId.current = window.setTimeout(() => {
+        dispatch({type: 'loading'});
+      }, 200);
+    }
+
+    // Don't search if it's empty or all white space.
+    const request = trimmedQuery !== ''
+      ? onFindLinkTarget(trimmedQuery)
+      : Promise.resolve([]);
+
+    void request.then(results => {
+      if (id === requestId.current) {
+        window.clearTimeout(loadingTimeoutId.current);
+        loadingTimeoutId.current = undefined;
+
+        dispatch({type: 'results', results});
+      }
+    });
+  }, [trimmedQuery, onFindLinkTarget]);
 
   const currentResultRef = useRef<HTMLLIElement>(null);
   useEffect(() => {
@@ -319,6 +202,7 @@ const LinkDialog = (props: Props): JSX.Element => {
           onChange={handleInput}
           onKeyDown={handleInputKeyDown}
         />
+        {state.loading && <S.Spinner/>}
         <SubmitButton label={messages.linkDialogSave()} onClick={submit}/>
       </SearchWrapper>
 
@@ -351,3 +235,142 @@ const LinkDialog = (props: Props): JSX.Element => {
 };
 
 export default LinkDialog;
+
+const initState = (props: Props): State => {
+  const {initialValue} = props;
+  if (initialValue) {
+    const results = [{
+      target: initialValue,
+      name: initialValue.name || initialValue.url,
+    }];
+    return {
+      value: initialValue.name || initialValue.url,
+      loading: false,
+      index: 0,
+      results,
+      prevResults: results,
+      showSelected: false,
+      showError: false,
+    };
+  } else {
+    return {
+      value: '',
+      loading: false,
+      index: -1,
+      results: [],
+      prevResults: [],
+      showSelected: false,
+      showError: false,
+    };
+  }
+};
+
+const reduce = (state: State, msg: Message): State => {
+  switch (msg.type) {
+    case 'input': {
+      const results = getAllResults(msg.value, state.prevResults);
+      return {
+        ...state,
+        value: msg.value,
+        index: results.length > 0 ? 0 : -1,
+        results,
+        showError: false,
+      };
+    }
+    case 'loading':
+      return {...state, loading: true};
+    case 'results':  {
+      const results = getAllResults(state.value, msg.results);
+      return {
+        ...state,
+        loading: false,
+        index: results.length > 0 ? 0 : -1,
+        results,
+        prevResults: msg.results,
+        showSelected: true,
+        // Continue to show the error if there are no results and we showed
+        // the error previously.
+        showError: results.length === 0 && state.showError,
+      };
+    }
+    case 'hover':
+      return {
+        ...state,
+        index: msg.index,
+        // Don't move things around under the mouse pointer.
+        showSelected: false,
+      };
+    case 'prev': {
+      const {index, results} = state;
+      if (results.length === 0) {
+        return state;
+      }
+      return {
+        ...state,
+        index: (index - 1 + results.length) % results.length,
+        showSelected: true,
+      };
+    }
+    case 'next': {
+      const {index, results} = state;
+      if (results.length === 0) {
+        return state;
+      }
+      return {
+        ...state,
+        index: (index + 1) % results.length,
+        showSelected: true,
+      };
+    }
+    case 'showError':
+      return {...state, showError: true};
+  }
+};
+
+const MaybeUrlPattern = /^[a-z0-9-_]+(?:\.[a-z0-9-_]+)+\.?(?:$|[/:?#])/i;
+const ValidProtocolPattern = /^https?:$/;
+
+const getAllResults = (
+  value: string,
+  results: readonly SearchResult[]
+): readonly SearchResult[] => {
+  const webResult = getWebResult(value);
+  if (webResult) {
+    return [webResult].concat(results);
+  }
+  return results;
+};
+
+const getWebResult = (value: string): SearchResult | null => {
+  value = value.trimLeft();
+
+  // If it looks vaguely like a URL that doesn't start with a protocol,
+  // automatically prepend 'http://'.
+  if (MaybeUrlPattern.test(value)) {
+    value = `http://${value}`;
+  }
+
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch (e) {
+    return null;
+  }
+
+  if (
+    !ValidProtocolPattern.test(url.protocol) ||
+    url.username ||
+    url.password
+  ) {
+    return null;
+  }
+
+  const urlText = url.toString();
+  return {
+    target: {
+      url: urlText,
+      type: 'web address',
+    },
+    name: urlText,
+  };
+};

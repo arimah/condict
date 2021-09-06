@@ -1,5 +1,16 @@
 import styled from 'styled-components';
 
+import {Spinner as SpinnerBase} from '@condict/ui';
+
+export const Spinner = styled(SpinnerBase).attrs({
+  size: 20,
+})`
+  display: block;
+  margin-inline-end: 4px;
+  flex: none;
+  align-self: center;
+`;
+
 export const Error = styled.div`
   margin: 8px;
   color: ${p => p.theme.danger.fg};
