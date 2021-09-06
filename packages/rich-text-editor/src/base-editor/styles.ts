@@ -26,6 +26,8 @@ export const Toolbar = styled(ToolbarBase)<ToolbarProps>`
     top: 0;
     z-index: 1;
   ` : css<ToolbarProps>`
+    margin-bottom: -3px;
+    padding-bottom: 5px;
     position: absolute;
     bottom: 100%;
     left: 0;
@@ -108,11 +110,6 @@ export const EditorContainer = styled.div<EditorContainerProps>`
 
   ${p => !p.toolbarAlwaysVisible && `
     &:focus-within {
-      > ${Editable} {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-      }
-
       > ${Toolbar} {
         max-height: 150%;
         transform: translate(0, 0);
