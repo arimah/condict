@@ -210,15 +210,21 @@ const DefinitionMut = {
           definition.id,
           tags
         );
-        events.emit({
-          type: 'definitionTag',
-          action: 'update',
-          definitionId: definition.id,
-          lemmaId: newFields.get('lemma_id') ?? definition.lemma_id,
-          languageId: definition.language_id,
-          prevTagIds,
-          nextTagIds,
-        });
+
+        if (
+          nextTagIds.length !== prevTagIds.length ||
+          nextTagIds.some((id, index) => id !== prevTagIds[index])
+        ) {
+          events.emit({
+            type: 'definitionTag',
+            action: 'update',
+            definitionId: definition.id,
+            lemmaId: newFields.get('lemma_id') ?? definition.lemma_id,
+            languageId: definition.language_id,
+            prevTagIds,
+            nextTagIds,
+          });
+        }
       }
 
       // If the derived definitions or term have changed, we may have orphaned
