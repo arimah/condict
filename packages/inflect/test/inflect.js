@@ -10,13 +10,13 @@ describe('inflectWord', () => {
   ]);
 
   const unusedStems = {
-    has(stem) { throw new Error('This method should not be called!'); },
-    get(stem) { throw new Error('This method should not be called!'); },
+    has(stem) { throw new Error(`Unexpected call to stems.has: ${stem}`); },
+    get(stem) { throw new Error(`Unexpected call to stems.get: ${stem}`); },
   };
 
   it('should replace {~} with the term', () => {
-    assert.equal(inflectWord('{~}', term, unusedStems), term);
-    assert.equal(inflectWord('beep{~}boop', term, unusedStems), 'beepfooboop');
+    assert.equal(inflectWord('{~}', term, stems), term);
+    assert.equal(inflectWord('beep{~}boop', term, stems), 'beepfooboop');
   });
 
   it('should replace stems with the corresponding value', () => {
@@ -29,16 +29,16 @@ describe('inflectWord', () => {
     assert.equal(inflectWord('{notdef}{stem1}', term, stems), 'foobar');
   });
 
-  it('should should escape braces', () => {
+  it('should escape braces', () => {
     assert.equal(inflectWord('{{', term, unusedStems), '{');
     assert.equal(inflectWord('}}', term, unusedStems), '}');
-    assert.equal(inflectWord('{{{~}}}', term, unusedStems), '{foo}');
+    assert.equal(inflectWord('{{{~}}}', term, stems), '{foo}');
   });
 
   it('should ignore a lone "}"', () => {
     assert.equal(inflectWord('}', term, unusedStems), '}');
     // The '{~}' placeholder gets parsed first, then it finds the '}'
-    assert.equal(inflectWord('{~}}', term, unusedStems), 'foo}');
+    assert.equal(inflectWord('{~}}', term, stems), 'foo}');
     assert.equal(inflectWord('foo}bar', term, unusedStems), 'foo}bar');
   });
 
@@ -53,8 +53,8 @@ describe('inflectWord', () => {
   });
 
   it('should strip leading and trailing whitespace', () => {
-    assert.equal(inflectWord('  {~}', term, unusedStems), 'foo');
-    assert.equal(inflectWord('{~}  ', term, unusedStems), 'foo');
-    assert.equal(inflectWord('  {~}  ', term, unusedStems), 'foo');
+    assert.equal(inflectWord('  {~}', term, stems), 'foo');
+    assert.equal(inflectWord('{~}  ', term, stems), 'foo');
+    assert.equal(inflectWord('  {~}  ', term, stems), 'foo');
   });
 });

@@ -134,7 +134,9 @@ describe('Language: editLanguage', () => {
       }`,
       {id},
       {
-        data: null,
+        data: {
+          editLanguage: null,
+        },
         errors: [inputError(
           'Language name cannot be empty',
           'editLanguage',
@@ -165,7 +167,9 @@ describe('Language: editLanguage', () => {
       }`,
       {id},
       {
-        data: null,
+        data: {
+          editLanguage: null,
+        },
         errors: [inputError(
           'Language name cannot be empty',
           'editLanguage',
@@ -197,7 +201,9 @@ describe('Language: editLanguage', () => {
       }`,
       {id: id2},
       {
-        data: null,
+        data: {
+          editLanguage: null,
+        },
         errors: [inputError(
           "There is already a language with the name 'Hello'",
           'editLanguage',
