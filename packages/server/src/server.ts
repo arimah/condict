@@ -1,5 +1,5 @@
 import {GraphQLSchema} from 'graphql';
-import {makeExecutableSchema} from 'graphql-tools';
+import {makeExecutableSchema} from '@graphql-tools/schema';
 
 import {createPrefixLogger} from './create-logger';
 import performStartupChecks from './startup-checks';
@@ -68,11 +68,13 @@ export default class CondictServer {
   public constructor(logger: Logger, config: ServerConfig) {
     this.logger = logger;
     this.config = config;
-    this.schema = makeExecutableSchema({
-      typeDefs: getTypeDefs(),
-      resolvers: getResolvers(),
-      schemaTransforms: getDirectives(),
-    });
+    this.schema = getDirectives().reduce(
+      (schema, directive) => directive(schema),
+      makeExecutableSchema({
+        typeDefs: getTypeDefs(),
+        resolvers: getResolvers(),
+      })
+    );
   }
 
   /**

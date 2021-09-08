@@ -1,5 +1,5 @@
 import {AuthenticationError, UserInputError} from 'apollo-server';
-import {IFieldResolver} from 'graphql-tools';
+import {IFieldResolver} from '@graphql-tools/utils';
 
 import {PageParams} from './types';
 import {Context, MutatorFn} from './resolvers';

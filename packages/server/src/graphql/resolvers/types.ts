@@ -1,4 +1,4 @@
-import {IFieldResolver} from 'graphql-tools';
+import {IFieldResolver} from '@graphql-tools/utils';
 
 import {DataAccessor} from '../../database';
 import {DictionaryEventEmitter} from '../../event';

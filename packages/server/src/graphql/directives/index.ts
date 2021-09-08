@@ -1,9 +1,11 @@
-import {ExecutableSchemaTransformation} from 'graphql-tools';
+import {GraphQLSchema} from 'graphql';
 
 import idDirectiveTransformer from './id';
 import marshalDirectiveTransformer from './marshal';
 
-export const getDirectives = (): ExecutableSchemaTransformation[] => [
+type SchemaTransformer = (schema: GraphQLSchema) => GraphQLSchema;
+
+export const getDirectives = (): SchemaTransformer[] => [
   idDirectiveTransformer,
   marshalDirectiveTransformer,
 ];

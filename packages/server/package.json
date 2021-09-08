@@ -31,32 +31,33 @@
   },
   "dependencies": {
     "@condict/inflect": "^0.1.0",
-    "apollo-server": "^3.0.0",
-    "apollo-server-core": "^3.0.0",
-    "apollo-server-plugin-base": "^3.0.0",
+    "@graphql-tools/schema": "^8.2.0",
+    "@graphql-tools/utils": "^8.2.2",
+    "apollo-server": "^3.3.0",
+    "apollo-server-core": "^3.3.0",
+    "apollo-server-plugin-base": "^3.2.0",
     "bcrypt": "^5.0.1",
-    "better-sqlite3": "^7.3.0",
+    "better-sqlite3": "^7.4.3",
     "bindings": "^1.5.0",
-    "chalk": "^4.1.1",
-    "command-line-args": "^5.1.1",
+    "chalk": "^4.1.2",
+    "command-line-args": "^5.2.0",
     "dataloader": "^2.0.0",
     "deepmerge": "^4.2.2",
-    "graphql": "^15.5.1",
-    "graphql-tools": "^7.0.5",
-    "nanoid": "^3.1.22",
+    "graphql": "^15.5.3",
+    "nanoid": "^3.1.25",
     "winston": "^3.3.3",
-    "ws": "^7.5.3"
+    "ws": "^8.2.1"
   },
   "devDependencies": {
     "@condict/graphql-typer": "^0.1.0",
     "@types/bcrypt": "^3.0.1",
     "@types/bindings": "^1.5.0",
-    "@types/command-line-args": "^5.0.0",
-    "@types/node": "^14.14.41",
+    "@types/command-line-args": "^5.2.0",
+    "@types/node": "^16.7.13",
     "@types/ws": "^7.4.7",
     "copyfiles": "^2.4.1",
-    "mocha": "^8.3.2",
-    "node-gyp": "^8.0.0",
-    "prebuild-install": "^6.1.1"
+    "mocha": "^9.1.1",
+    "node-gyp": "^8.2.0",
+    "prebuild-install": "^6.1.4"
   }
 }

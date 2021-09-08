@@ -142,7 +142,7 @@ const main = () => {
     }
   } catch (e) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    console.error(e.message);
+    console.error((e as any).message);
     process.exitCode = 1;
     return;
   }
@@ -210,8 +210,7 @@ const watchSchema = (
     try {
       schema = buildGraphqlSchema(schemaDir);
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      console.error(`Error in GraphQL schema: ${e}`);
+      console.error('Error in GraphQL schema:', e);
       return;
     }
 

@@ -1,10 +1,5 @@
-import {ValueNode, Kind} from 'graphql';
-import {
-  ExecutableSchemaTransformation,
-  MapperKind,
-  mapSchema,
-  getDirectives,
-} from 'graphql-tools';
+import {ValueNode, Kind, GraphQLSchema} from 'graphql';
+import {MapperKind, mapSchema, getDirectives} from '@graphql-tools/utils';
 
 const serialize = (value: any) => value as unknown;
 
@@ -36,11 +31,11 @@ const parseLiteral = (node: ValueNode) => {
   );
 };
 
-const idDirectiveTransformer: ExecutableSchemaTransformation = schema =>
+const idDirectiveTransformer = (schema: GraphQLSchema): GraphQLSchema =>
   mapSchema(schema, {
     [MapperKind.SCALAR_TYPE]: scalarType => {
       const directives = getDirectives(schema, scalarType);
-      if (directives['id']) {
+      if (directives.some(d => d.name === 'id')) {
         scalarType.serialize = serialize;
         scalarType.parseValue = parseValue;
         scalarType.parseLiteral = parseLiteral;

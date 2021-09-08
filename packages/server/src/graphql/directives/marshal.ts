@@ -1,15 +1,11 @@
 import {
+  GraphQLSchema,
   GraphQLScalarSerializer,
   GraphQLScalarValueParser,
   GraphQLScalarLiteralParser,
   Kind,
 } from 'graphql';
-import {
-  ExecutableSchemaTransformation,
-  MapperKind,
-  mapSchema,
-  getDirectives,
-} from 'graphql-tools';
+import {MapperKind, mapSchema, getDirectives} from '@graphql-tools/utils';
 
 import {MarshalType} from '../types';
 
@@ -73,12 +69,14 @@ const MarshalImpls: Record<MarshalType, MarshalImpl> = {
   },
 };
 
-const marshalDirectiveTransformer: ExecutableSchemaTransformation = schema =>
+const marshalDirectiveTransformer = (schema: GraphQLSchema): GraphQLSchema =>
   mapSchema(schema, {
     [MapperKind.SCALAR_TYPE]: scalarType => {
-      const directives = getDirectives(schema, scalarType);
-      const directiveArgs = directives['marshal'] as MarshalArgs | undefined;
-      if (directiveArgs) {
+      const directive = getDirectives(schema, scalarType).find(d =>
+        d.name === 'marshal'
+      );
+      if (directive) {
+        const directiveArgs = directive.args as MarshalArgs;
         const impl = MarshalImpls[directiveArgs.as];
         if (!impl) {
           // This should never happen.
