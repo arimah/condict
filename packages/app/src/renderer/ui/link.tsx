@@ -1,4 +1,4 @@
-import React, {MouseEvent, AnchorHTMLAttributes, useCallback} from 'react';
+import React, {MouseEvent, DragEvent, AnchorHTMLAttributes, useCallback} from 'react';
 import shallowEqual from 'shallowequal';
 
 import {selectPlatform} from '@condict/platform';
@@ -27,12 +27,17 @@ const arePropsEqual = (prev: Props, next: Props) =>
     return;
   });
 
+const cancelDragEvent = (e: DragEvent) => {
+  e.preventDefault();
+};
+
 const Link = React.memo((props: Props): JSX.Element => {
   const {
     to: targetPage,
     newTab,
     onClick,
     onAuxClick,
+    onDragStart = cancelDragEvent,
     children,
     ...otherProps
   } = props;
@@ -78,6 +83,7 @@ const Link = React.memo((props: Props): JSX.Element => {
       href='condict://internal-link'
       onClick={handleClick}
       onAuxClick={handleAuxClick}
+      onDragStart={onDragStart}
     >
       {children}
     </a>
