@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import {intentVar, transition} from '../theme';
+import {intentVar} from '../theme';
 import Intent from '../intent';
 import MarkerLocation, {
   markerLocationToFlexDirection,
@@ -36,7 +36,7 @@ export const Dot = styled.span`
   border-radius: 50%;
   background-color: ${p => p.theme.general.border};
 
-  ${transition('inset-inline-start')}
+  transition: inset-inline-start ${p => p.theme.timing.short}ms ease-in-out;
 `;
 
 export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`

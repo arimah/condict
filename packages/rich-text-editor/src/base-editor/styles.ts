@@ -1,7 +1,7 @@
 import styled, {css} from 'styled-components';
 import {Editable as BaseEditable} from 'slate-react';
 
-import {Toolbar as ToolbarBase, transition} from '@condict/ui';
+import {Toolbar as ToolbarBase} from '@condict/ui';
 
 import {EditorStyles as BlockStyles} from './block-styles';
 
@@ -38,7 +38,9 @@ export const Toolbar = styled(ToolbarBase)<ToolbarProps>`
     pointer-events: none;
     transform: translate(0, 100%) translate(0, 1px);
 
-    ${transition('max-height, transform, opacity')};
+    transition-property: max-height, transform, opacity;
+    transition-duration: ${p => p.theme.timing.short}ms;
+    transition-timing-function: ease-in-out;
   `}
 `;
 
@@ -66,8 +68,6 @@ export const Editable = styled(BaseEditable)<EditableProps>`
   border-radius: 3px;
   background-color: ${p => p.theme.defaultBg};
   color: ${p => p.theme.defaultFg};
-
-  ${transition('border-radius')}
 
   ${p => p.$toolbarAlwaysVisible ? `
     margin-top: -10px;

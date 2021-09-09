@@ -105,7 +105,6 @@ export {
   lightTheme,
   darkTheme,
   intentVar,
-  transition,
 } from './theme';
 
 export {default as Intent} from './intent';
