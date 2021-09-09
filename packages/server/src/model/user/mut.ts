@@ -121,6 +121,15 @@ const UserSessionMut = {
     });
   },
 
+  logOutAll(db: DataAccessor, userId: UserId): Promise<void> {
+    return db.transact(db => {
+      db.exec`
+        delete from user_sesions
+        where user_id = ${userId}
+      `;
+    });
+  },
+
   resumeSession(db: DataAccessor, sessionId: string): Promise<UserSessionType | null> {
     const now = Date.now();
     const session = UserSession.byId(db, sessionId);

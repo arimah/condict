@@ -9,6 +9,7 @@ import {
   User as UserModel,
   UserSession,
   UserMut,
+  UserSessionMut,
   UserId,
   UserRow,
   NewUserInput,
@@ -335,6 +336,26 @@ export default class CondictServer {
       db.finish();
     }
     return {id: user.id, name: user.name};
+  }
+
+  /**
+   * Terminates every session associated with the specified user. This method
+   * is used to force the user to log out, for example in case credentials have
+   * been compromised.
+   * @param id The ID of the user to log out of all sessions.
+   * @return A promise that resolves when the user has been logged out of all
+   *         sessions. The promise is rejected if the server is not running or
+   *         an unexpected database error occurs.
+   */
+  public async logOutUser(id: UserId): Promise<void> {
+    const database = this.getDatabase();
+
+    const db = await database.getAccessor();
+    try {
+      await UserSessionMut.logOutAll(db, id);
+    } finally {
+      db.finish();
+    }
   }
 
   /**

@@ -158,6 +158,35 @@ export const editUser = async (
   }
 };
 
+export const logOutUser = async (
+  logger: Logger,
+  config: ServerConfig,
+  userNameOrId: string | number
+): Promise<void> => {
+  try {
+    await withServer(logger, config, async server => {
+      let userId: UserId;
+      if (typeof userNameOrId === 'number') {
+        userId = userNameOrId as UserId;
+      } else {
+        const user = await server.getUserByName(userNameOrId);
+        if (!user) {
+          logger.warn(`User does not exist: ${userNameOrId}`);
+          return;
+        }
+        userId = user.id;
+      }
+
+      await server.logOutUser(userId);
+      logger.info(`User logged out of all sessions: ${userNameOrId}`);
+    });
+  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    logger.error(`An error occurred: ${e.message || e}`);
+    process.exitCode = 1;
+  }
+};
+
 export const deleteUser = async (
   logger: Logger,
   config: ServerConfig,
@@ -183,8 +212,6 @@ export const deleteUser = async (
       } else {
         logger.warn(`User not found: ${userNameOrId}`);
       }
-
-      return Promise.resolve();
     });
   } catch (e) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

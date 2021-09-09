@@ -107,7 +107,7 @@ The `CondictServer` class is the heart of the Condict server. It implements reso
 
 See [the examples above](#examples) for sample uses of this class.
 
-#### `Condictserver` constructor
+#### `CondictServer` constructor
 
 > `constructor(logger: Logger, config: ServerConfig)`
 
@@ -145,7 +145,7 @@ The returned promise resolves when the server has shut down fully. If any error 
 
 > `getContextValue(sessionId?: string | typeof LocalSession | null, requestId?: string): Promise<Context>`
 
-Gets a GraphQL execution context value. This value required when executing GraphQL operations. The [`executeLocalOperation()`](#executelocaloperation) function calls this method internally.
+Gets a GraphQL execution context value. This value is required when executing GraphQL operations. The [`executeLocalOperation()`](#executelocaloperation) function calls this method internally.
 
 The `sessionId` parameter is used for mutation authentication. It takes one of the following values:
 
@@ -188,6 +188,16 @@ The returned promise resolves with details of the newly created user. The promis
 Edits the user with the specified ID. This method can be used to rename the user and/or change their password. Editing a user does _not_ invalidate existing sessions.
 
 The returned promise resolves with updated user details when the user has been updated. The promise is rejected if the new name or new password is invalid, if the user is being renamed and the name is taken by an existing user, or if the server is not [started](#condictserverprototypestart).
+
+#### `CondictServer.prototype.logOutUser()`
+
+> `logOutUser(id: UserId): Promise<void>`
+
+Terminates every session associated with the specified user. This method is used to force the user to log out, for example in case credentials have been compromised.
+
+The returned promise resolves when the user has been logged out of all sessions. The promise is rejected if the server is not [started](#condictserverprototypestart) or an unexpected database error occurs.
+
+_**Note:** The name is capitalised as `logOutUser`, not `logoutUser`._
 
 #### `CondictServer.prototype.deleteUser()`
 
@@ -259,7 +269,7 @@ The `operation` parameter takes the GraphQL operation (query or mutation) to exe
 
 The `variableValues` parameter receives values for each variable in the operation.
 
-The returned promise resolves with the result of the execution, which is an object containing at minimum an object under `data`, and any errors that may have occurred under `errors`. See [the GraphQL website][] for details. The promise is rejected only if an unexpected error happens (e.g. lost database connection, bug in Condict).
+The returned promise resolves with the result of the execution, which is an object containing at minimum an object under `data`, and any errors that may have occurred under `errors`. See [the GraphQL website][graphql] for details. The promise is rejected only if an unexpected error happens (e.g. lost database connection, bug in Condict).
 
 ### `loadConfigFile()`
 
@@ -286,7 +296,7 @@ Running `condict-server` without a command name is equivalent to `condict-server
 
 * `-c <file>` / `--config=<file>`: Specifies the file name of the [configuration file](#configuration).
 
-These can be used with all commands. They can come before or after the command name.
+This can be used with all commands. It can come before or after the command name.
 
 ### `condict-server start`
 
@@ -316,20 +326,33 @@ Edits an existing [user](#users). This command can rename a user and change thei
 If there is a user with the new name, or if the new password is invalid, the process exits with the code 1.
 
 ```
-condict-server edit-user [-n <new-name>] [-p <new-password>] [--id <id> | [-u] <name>]
+condict-server edit-user [-n <new-name>] [-p <new-password>] (--id <id> | [-u] <name>)
 ```
 
 * `-u <name>` / `--user=<name>`: The name of the user to edit. Cannot be combined with `--id`.
-* `--id <id>`: The ID of the user to edit. Cannot be combined with a username.
+* `--id=<id>`: The ID of the user to edit. Cannot be combined with a username.
 * `-n <new-name>` / `--new-name=<new-name>`: The name to rename the user to.
 * `-p <new-password>` / `--new-password=<new-password>`: The new password to assign the user.
+
+### `condict-server log-out-user`
+
+Terminates every session associated with the specified user. This method is used to force the user to log out, for example in case credentials have been compromised.
+
+_**Note:** This command is spelled `log-out-user`, not `logout-user`._
+
+```
+condict-server log-out-user (--id <id> | [-u] name)
+```
+
+* `-u <name>` / `--user=<name>`: The name of the user to log out. Cannot be combined with `--id`.
+* `--id=<id>`: The ID of the user to log out. Cannot be combined with a username.
 
 ### `condict-server delete-user`
 
 Deletes a [user](#user). This command can delete a user by name or ID. If there is no user matching the supplied name or ID, the process exits with the code 2. If any other error occurs, the exit code is 1.
 
 ```
-condict-server delete-user [--id=<id> | [-u] <name>]
+condict-server delete-user (--id <id> | [-u] <name>)
 ```
 
 * `-u <name>` / `--user=<name>`: The name of the user to delete. Cannot be combined with `--id`.
@@ -364,7 +387,7 @@ Users are identified by a name and a password. No other information is stored fo
 There are three [GraphQL][] mutations that can be executed without authentication:
 
 * The `logIn` mutation is used for authentication. If successful, it returns a session ID. The default [Condict HTTP server](#condicthttpserver) accepts the the session ID through the custom request header `X-Condict-Session-Id`. Custom servers can accept the session ID in any way they wish, and pass it into [`getContextValue()`](#condictserverprototypegetcontextvalue).
-* The `resumeSession` verifies the current session ID, returning the logged-in username if successful, or an error if the session is invalid.
+* The `resumeSession` mutation verifies the current session ID, returning the logged-in username if successful, or an error if the session is invalid.
 * The `logOut` mutation terminates the current session. Subsequent mutations that use the same session ID are rejected.
 
 [graphql]: https://graphql.org/

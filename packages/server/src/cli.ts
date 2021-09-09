@@ -10,7 +10,7 @@ import {
   loadConfigFile,
   getTableSchema,
 } from '.';
-import {addUser, editUser, deleteUser} from './manage-users';
+import {addUser, editUser, logOutUser, deleteUser} from './manage-users';
 
 type MaybeString = string | null | undefined;
 type MaybeNumber = number | null | undefined;
@@ -33,6 +33,10 @@ const commandOptions: Record<string, OptionDefinition[]> = {
     {name: 'id', type: Number},
     {name: 'new-name', alias: 'n', type: String},
     {name: 'new-password', alias: 'p', type: String},
+  ],
+  'log-out-user': [
+    {name: 'user', alias: 'u', type: String, defaultOption: true},
+    {name: 'id', type: Number},
   ],
   'delete-user': [
     {name: 'user', alias: 'u', type: String, defaultOption: true},
@@ -119,7 +123,7 @@ const main = async () => {
       case 'edit-user': {
         const userName = cmdArgs.user as MaybeString;
         const userId = cmdArgs.id as MaybeNumber;
-        const userNameOrId = userId != null ? userId : userName;
+        const userNameOrId = userId ?? userName;
         if (userNameOrId == null) {
           console.error(`Please specify a user to edit (by name or '--id')`);
           process.exitCode = 2;
@@ -134,10 +138,22 @@ const main = async () => {
         );
         break;
       }
+      case 'log-out-user': {
+        const userName = cmdArgs.user as MaybeString;
+        const userId = cmdArgs.id as MaybeNumber;
+        const userNameOrId = userId ?? userName;
+        if (userNameOrId == null) {
+          console.error(`Please specify a user to log out (by name or '--id')`);
+          process.exitCode = 2;
+          break;
+        }
+        await logOutUser(logger, config, userNameOrId);
+        break;
+      }
       case 'delete-user': {
         const userName = cmdArgs.user as MaybeString;
         const userId = cmdArgs.id as MaybeNumber;
-        const userNameOrId = userId != null ? userId : userName;
+        const userNameOrId = userId ?? userName;
         if (userNameOrId == null) {
           console.error(`Please specify a user to delete (by name or '--id')`);
           process.exitCode = 2;
