@@ -1,6 +1,6 @@
 import styled, {StyledProps} from 'styled-components';
 
-import {Panel} from '@condict/ui';
+import {Panel} from '../styles';
 
 export type ScopeProps = {
   kind?: 'scope' | 'trap';

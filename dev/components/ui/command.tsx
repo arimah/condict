@@ -8,11 +8,12 @@ import {
   CommandProvider,
   Button,
   Checkbox,
-  Panel,
   useCommandGroup,
 } from '@condict/ui';
 
 import Demo, {useDemoState} from '../demo';
+
+import * as S from './styles';
 
 type ResultDisplayProps = {
   italic?: boolean;
@@ -113,7 +114,7 @@ const Main = (): JSX.Element => {
       ]}
       onReset={reset}
     >
-      <Panel tabIndex={0} onKeyDown={handleOuterKeyDown}>
+      <S.Panel tabIndex={0} onKeyDown={handleOuterKeyDown}>
         <CommandProvider commands={outerCommands}>
           <div>
             <Button
@@ -133,7 +134,7 @@ const Main = (): JSX.Element => {
           <ResultDisplay italic={italicOuter} bold={bold}>
             outer state: italic={String(italicOuter)}, bold={String(bold)}
           </ResultDisplay>
-          <Panel tabIndex={0} onKeyDown={handleInnerKeyDown}>
+          <S.Panel tabIndex={0} onKeyDown={handleInnerKeyDown}>
             <CommandProvider commands={innerCommands}>
               <div>
                 <Button
@@ -154,9 +155,9 @@ const Main = (): JSX.Element => {
                 inner state: italic={String(italicInner)}
               </ResultDisplay>
             </CommandProvider>
-          </Panel>
+          </S.Panel>
         </CommandProvider>
-      </Panel>
+      </S.Panel>
     </Demo>
   );
 };
