@@ -840,6 +840,8 @@ definition-table-wrong-part-of-speech-error = This table belongs to a different 
 
 definition-table-deleted-error = This table has been deleted. It cannot be added to the definition.
 
+definition-upgrade-layout-button = Upgrade to latest layout
+
 definition-add-table-button = Add inflection table
 
 definition-new-table-menu = New inflection table...

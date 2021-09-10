@@ -134,9 +134,7 @@ export const DefinitionForm = (props: Props): JSX.Element => {
       // Remove inflection tables that belong to a different part of speech.
       inflectionTables: data.inflectionTables.list
         .map(({id}) => tables.data[id])
-        .filter(t =>
-          availableTables.has(t.tableId)
-        ),
+        .filter(t => availableTables.has(t.tableId)),
       // Remove stems that are not used by any of the inflection tables.
       stems: new Map(
         [...data.stems.map].filter(([name]) =>

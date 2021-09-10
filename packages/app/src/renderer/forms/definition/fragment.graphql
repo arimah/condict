@@ -25,6 +25,7 @@ fragment DefinitionTableFragment on InflectionTableLayout {
         inflectedForm {
           id
           inflectionPattern
+          displayName
         }
       }
       ...on InflectionTableHeaderCell {

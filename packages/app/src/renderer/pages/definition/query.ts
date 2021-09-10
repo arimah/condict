@@ -16,7 +16,7 @@ import {
   TagId
 } from "../../graphql";
 
-export default "query($id:DefinitionId!){definition(id:$id){term,description{...RichTextBlockFragment}partOfSpeech{id,name}stems{name,value}inflectionTables{id,caption{inlines{__typename...RichTextFragment}}customForms{inflectedForm{id}value}inflectionTable{id,name}inflectionTableLayout{...DefinitionTableFragment}}timeCreated,timeUpdated,tags{id,name}lemma{id,definitions{id}}language{id,name}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}fragment DefinitionTableFragment on InflectionTableLayout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern}}...on InflectionTableHeaderCell{headerText}}}}" as Query<{
+export default "query($id:DefinitionId!){definition(id:$id){term,description{...RichTextBlockFragment}partOfSpeech{id,name}stems{name,value}inflectionTables{id,caption{inlines{__typename...RichTextFragment}}customForms{inflectedForm{id}value}inflectionTable{id,name}inflectionTableLayout{...DefinitionTableFragment}}timeCreated,timeUpdated,tags{id,name}lemma{id,definitions{id}}language{id,name}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}fragment DefinitionTableFragment on InflectionTableLayout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern,displayName}}...on InflectionTableHeaderCell{headerText}}}}" as Query<{
   id: DefinitionId;
 }, {
   definition: {
@@ -124,6 +124,7 @@ export default "query($id:DefinitionId!){definition(id:$id){term,description{...
             inflectedForm: {
               id: InflectedFormId;
               inflectionPattern: string;
+              displayName: string;
             };
           } | {
             rowSpan: number;

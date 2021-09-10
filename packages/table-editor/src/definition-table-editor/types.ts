@@ -15,6 +15,7 @@ export interface DefinitionTableCellJson {
 export interface DefinitionInflectedFormJson {
   readonly id: number | null;
   readonly inflectionPattern: string;
+  readonly displayName: string;
 }
 
 export type DefinitionTable = Table<DefinitionTableData>;
@@ -45,6 +46,7 @@ export const DefinitionTable = {
               ? customForms.get(form.id) as string
               : null,
             inflectedFormId: form.id,
+            displayName: form.displayName,
           };
         } else {
           data = {
@@ -89,12 +91,17 @@ export interface DefinitionTableData {
    * cells.
    */
   readonly inflectedFormId: number | null;
+  /**
+   * The display name of the inflected form, or null for header cells.
+   */
+  readonly displayName: string | null;
 }
 
 const DefaultData: DefinitionTableData = {
   text: '',
   customForm: null,
   inflectedFormId: null,
+  displayName: null,
 };
 
 export interface StemsContextValue {

@@ -1,4 +1,4 @@
-import React, {TransitionEvent, useMemo, useRef} from 'react';
+import React, {TransitionEvent, useMemo, useCallback, useRef} from 'react';
 import {useFormContext, useWatch} from 'react-hook-form';
 import {Localized, useLocalization} from '@fluent/react';
 import MoveUpIcon from 'mdi-react/ArrowUpIcon';
@@ -8,11 +8,16 @@ import ErrorIcon from 'mdi-react/AlertCircleIcon';
 import TableUpgradeIcon from 'mdi-react/TableAlertIcon';
 import TableWarningIcon from 'mdi-react/TableArrowUpIcon';
 
-import {Toolbar} from '@condict/ui';
+import {Button, Toolbar} from '@condict/ui';
 
-import {TableCaptionField, DefinitionTableField} from '../../form-fields';
+import {
+  TableCaptionField,
+  DefinitionTableField,
+  DefinitionTableValue,
+} from '../../form-fields';
 import {PartOfSpeechId, InflectionTableLayoutId} from '../../graphql';
 
+import upgradeLayout from './upgrade-layout';
 import {DefinitionTableData, InflectionTableMap, MovingState} from './types';
 import * as S from './styles';
 
@@ -73,7 +78,9 @@ const Table = React.memo((props: Props): JSX.Element => {
     layoutId: defaultLayoutId,
   } = defaultValues;
 
-  useFormContext().register(`inflectionTables.data.${key}`, {
+  const {register, getValues, setValue} = useFormContext();
+
+  register(`inflectionTables.data.${key}`, {
     shouldUnregister: true,
   });
 
@@ -109,6 +116,21 @@ const Table = React.memo((props: Props): JSX.Element => {
   } else {
     status = 'ok';
   }
+
+  const canUpgrade = status === 'hasUpgrade' || status === 'needsUpgrade';
+  const handleUpgrade = useCallback(() => {
+    if (!canUpgrade || !tableInfo) {
+      return;
+    }
+
+    const path = `inflectionTables.data.${key}`;
+    const prevTable = getValues(`${path}.table`) as DefinitionTableValue;
+    const nextLayout = tableInfo.table.layout;
+    const nextTable = upgradeLayout(prevTable, nextLayout);
+    setValue(`${path}.table`, nextTable);
+    setValue(`${path}.layoutId`, nextLayout.id);
+    setValue(`${path}.upgraded`, true);
+  }, [tableInfo, canUpgrade, getValues, setValue]);
 
   const hasError =
     status === 'deleted' ||
@@ -159,6 +181,14 @@ const Table = React.memo((props: Props): JSX.Element => {
           <span>
             <Localized id={StatusMessages[status]}/>
           </span>
+          {canUpgrade &&
+            <Button
+              slim
+              bold={status === 'needsUpgrade'}
+              onClick={handleUpgrade}
+            >
+              <Localized id='definition-upgrade-layout-button'/>
+            </Button>}
         </S.TableStatus>
       }
     </S.TableItem>
