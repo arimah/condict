@@ -6,6 +6,7 @@ export type BodyTextProps = {
 
 export const BodyText = styled.div<BodyTextProps>`
   line-height: 20px;
+  white-space: pre-wrap;
 
   /* Headings have their own line-height that is good enough. */
 
