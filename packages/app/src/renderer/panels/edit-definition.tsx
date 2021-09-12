@@ -58,7 +58,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
             : null,
           upgradeTableLayout: table.upgraded,
         })),
-        stems: [...formData.stems].map(([name, value]) => ({
+        stems: Array.from(formData.stems, ([name, value]) => ({
           name,
           value,
         })),

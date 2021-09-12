@@ -1,6 +1,13 @@
-import React, {TransitionEvent, useMemo, useCallback, useRef} from 'react';
+import React, {
+  MouseEvent,
+  TransitionEvent,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import {useFormContext, useWatch} from 'react-hook-form';
 import {Localized, useLocalization} from '@fluent/react';
+import DragIcon from 'mdi-react/DragIcon';
 import MoveUpIcon from 'mdi-react/ArrowUpIcon';
 import MoveDownIcon from 'mdi-react/ArrowDownIcon';
 import RemoveIcon from 'mdi-react/TableRemoveIcon';
@@ -32,6 +39,7 @@ export type Props = {
   moving?: MovingState;
   onMove: (from: number, to: number) => void;
   onRemove: (index: number) => void;
+  onDragStart: (e: MouseEvent, index: number) => void;
   onMoveDone?: () => void;
 };
 
@@ -68,6 +76,7 @@ const Table = React.memo((props: Props): JSX.Element => {
     moving,
     onMove,
     onRemove,
+    onDragStart,
     onMoveDone,
   } = props;
   const {
@@ -146,7 +155,7 @@ const Table = React.memo((props: Props): JSX.Element => {
         name: tableInfo?.table.name ?? '',
       })}
       style={moving && {
-        top: moving.target,
+        top: moving.offset,
         zIndex: moving.primary ? 1 : 0,
       }}
       moving={moving?.animate}
@@ -159,6 +168,7 @@ const Table = React.memo((props: Props): JSX.Element => {
         tableName={tableInfo?.table.name}
         onMove={onMove}
         onRemove={onRemove}
+        onDragStart={onDragStart}
       />
 
       <TableCaptionField
@@ -205,10 +215,11 @@ type TableToolbarProps = {
   tableName: string | undefined;
   onMove: (from: number, to: number) => void;
   onRemove: (index: number) => void;
+  onDragStart: (e: MouseEvent, index: number) => void;
 };
 
 const TableToolbar = React.memo((props: TableToolbarProps): JSX.Element => {
-  const {index, isLast, tableName, onMove, onRemove} = props;
+  const {index, isLast, tableName, onMove, onRemove, onDragStart} = props;
 
   const {l10n} = useLocalization();
 
@@ -216,6 +227,9 @@ const TableToolbar = React.memo((props: TableToolbarProps): JSX.Element => {
 
   return (
     <S.TableToolbar>
+      <S.DragHandle onMouseDown={e => onDragStart(e, index)}>
+        <DragIcon/>
+      </S.DragHandle>
       <S.TableName>
         {tableName ?? <Localized id='definition-table-deleted-heading'/>}
       </S.TableName>

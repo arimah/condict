@@ -68,7 +68,7 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
             ? tableCaptionToGraphQLInput(table.caption)
             : null,
         })),
-        stems: [...formData.stems].map(([name, value]) => ({
+        stems: Array.from(formData.stems, ([name, value]) => ({
           name,
           value,
         })),

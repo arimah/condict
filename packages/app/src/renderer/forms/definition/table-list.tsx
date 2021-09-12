@@ -1,7 +1,6 @@
-import React, {useState, useMemo, useCallback, useEffect, useRef} from 'react';
+import React, {useMemo, useCallback, useRef} from 'react';
 import {useFormContext, useFieldArray, useWatch} from 'react-hook-form';
 import {Localized, useLocalization} from '@fluent/react';
-import produce from 'immer';
 import AddIcon from 'mdi-react/PlusIcon';
 
 import {Button, Menu, MenuTrigger, genUniqueId, useUniqueId} from '@condict/ui';
@@ -15,6 +14,7 @@ import {
 } from '../../graphql';
 import type {NewInflectionTable} from '../../panels';
 
+import useTableReordering, {CurrentMovingState} from './table-reordering';
 import Table from './table';
 import {
   DefinitionTableId,
@@ -22,7 +22,6 @@ import {
   Stems,
   PartOfSpeechFields,
   InflectionTableInfo,
-  MovingState,
 } from './types';
 import * as S from './styles';
 
@@ -34,29 +33,6 @@ export type Props = {
     partOfSpeechId: PartOfSpeechId
   ) => Promise<NewInflectionTable | null>;
 };
-
-interface AllMovingState {
-  readonly phase: 'moving' | 'done';
-  readonly from: number;
-  readonly to: number;
-  readonly primary: MovingState;
-  readonly other: MovingState;
-}
-
-const AllMovingState = {
-  get(state: AllMovingState, index: number): MovingState | undefined {
-    if (index === state.from) {
-      return state.primary;
-    }
-    const inRange = state.from < state.to
-      ? state.from <= index && index <= state.to
-      : state.to <= index && index <= state.from;
-    if (inRange) {
-      return state.other;
-    }
-    return;
-  },
-} as const;
 
 const EmptyCustomForms = new Map<InflectedFormId, string>();
 
@@ -86,7 +62,6 @@ const TableList = React.memo((props: Props): JSX.Element => {
   // Default values for tables added since the component was mounted. Tables
   // that are in the form's default values are in the form's default values.
   const newTableDefaults = useRef<Record<string, DefinitionTableData>>({});
-  const [moving, setMoving] = useState<AllMovingState | undefined>();
 
   const addTable = useCallback((table: DefinitionTableData) => {
     const id = genUniqueId();
@@ -95,6 +70,14 @@ const TableList = React.memo((props: Props): JSX.Element => {
     append({id});
   }, [append]);
 
+  const {
+    listRef,
+    moving,
+    onMove,
+    onMoveDone,
+    onDragStart,
+  } = useTableReordering(move);
+
   const handleRemove = useCallback((index: number) => {
     const data = form.getValues('inflectionTables.list') as DefinitionTableId[];
     const id = data[index].id;
@@ -102,69 +85,6 @@ const TableList = React.memo((props: Props): JSX.Element => {
     remove(index);
     // The table data is removed when the corresponding <Table> unmounts.
   }, [remove]);
-
-  const listRef = useRef<HTMLUListElement>(null);
-  const handleMove = useCallback((from: number, to: number) => {
-    if (moving || !listRef.current) {
-      // Wait until we're done.
-      return;
-    }
-
-    const list = listRef.current;
-    const fromItem = list.children[from];
-    const fromRect = fromItem.getBoundingClientRect();
-    const toItem = list.children[to];
-    const toRect = toItem.getBoundingClientRect();
-
-    let primaryTarget: number;
-    let otherTarget: number;
-    if (from < to) {
-      // Moving down: fromRect.bottom moves to toRect.bottom.
-      primaryTarget = toRect.bottom - fromRect.bottom;
-      otherTarget = -(fromRect.height + S.TableItemGap);
-    } else {
-      // Moving up: fromRect.top moves to toRect.top.
-      primaryTarget = toRect.top - fromRect.top;
-      otherTarget = fromRect.height + S.TableItemGap;
-    }
-
-    setMoving({
-      phase: 'moving',
-      from,
-      to,
-      primary: {
-        target: primaryTarget,
-        primary: true,
-        animate: true,
-      },
-      other: {
-        target: otherTarget,
-        primary: false,
-        animate: true,
-      },
-    });
-  }, [moving]);
-
-  const handleMoveDone = useCallback(() => {
-    setMoving(produce(prev => {
-      if (!prev) {
-        return;
-      }
-      prev.phase = 'done';
-      prev.primary.animate = false;
-      prev.other.animate = false;
-    }));
-  }, []);
-
-  useEffect(() => {
-    if (moving && moving.phase === 'done') {
-      const {from, to} = moving;
-      void Promise.resolve().then(() => {
-        setMoving(undefined);
-        move(from, to);
-      });
-    }
-  }, [moving]);
 
   const partOfSpeechId = useWatch({
     name: 'partOfSpeech',
@@ -255,14 +175,15 @@ const TableList = React.memo((props: Props): JSX.Element => {
             allTableMap={inflectionTableMap}
             partOfSpeechId={partOfSpeechId}
             stems={stems.map}
-            moving={moving && AllMovingState.get(moving, index)}
+            moving={moving && CurrentMovingState.get(moving, index)}
+            onMove={onMove}
+            onDragStart={onDragStart}
+            onRemove={handleRemove}
             onMoveDone={
               moving && index === moving.from
-                ? handleMoveDone
+                ? onMoveDone
                 : undefined
             }
-            onMove={handleMove}
-            onRemove={handleRemove}
           />
         )}
       </S.TableList>

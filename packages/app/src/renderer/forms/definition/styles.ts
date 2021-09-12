@@ -39,9 +39,25 @@ export const TableItem = styled.li<TableItemProps>`
 
 export const TableToolbar = styled(Toolbar)`
   margin-inline: -16px;
-  padding-inline-start: 16px;
+  padding-inline-start: 0;
   border-bottom: 2px solid ${p => p.theme.general.border};
   border-radius: 1px 0 0 1px;
+`;
+
+export const DragHandle = styled.div`
+  flex: none;
+  margin-block: -2px;
+  padding: 4px 2px;
+  opacity: 0.5;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  > .mdi-icon {
+    display: block;
+  }
 `;
 
 export type TableStatusProps = {

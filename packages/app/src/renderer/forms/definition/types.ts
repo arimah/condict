@@ -101,7 +101,7 @@ export type InflectionTableMap = Map<InflectionTableId, InflectionTableInfo>;
 
 // Used when moving
 export interface MovingState {
-  readonly target: number; // pixels
+  readonly offset: number; // pixels
   readonly primary: boolean;
   readonly animate: boolean;
 }
