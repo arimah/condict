@@ -88,7 +88,7 @@ const loadConfig = (
   let configText: string;
   try {
     configText = fs.readFileSync(fileName, {encoding: 'utf-8'});
-  } catch (e) {
+  } catch (e: any) {
     const code = e.code as string;
     if (code !== 'ENOENT') {
       errors.push(`Error reading config file: ${e.message}`);
@@ -99,7 +99,7 @@ const loadConfig = (
   let config: unknown;
   try {
     config = JSON.parse(configText);
-  } catch (e) {
+  } catch (e: any) {
     errors.push(
       `Could not parse config file as JSON: ${e.message || String(e)}`
     );
@@ -252,7 +252,7 @@ const validateLoggerConfig = (
 ): LoggerOptions => {
   try {
     return validateLoggerOptions(value);
-  } catch (e) {
+  } catch (e: any) {
     errors.push(`log: Error validating config: ${e.message || String(e)}`);
     return DefaultConfig.log;
   }
@@ -272,7 +272,7 @@ const validateServerConfig = (
       try {
         const config = validateLocalServerConfig(value);
         return {kind: 'local', ...config};
-      } catch (e) {
+      } catch (e: any) {
         errors.push(
           `server: Error validating local config: ${e.message || String(e)}`
         );

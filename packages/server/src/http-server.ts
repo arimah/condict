@@ -247,8 +247,7 @@ export default class CondictHttpServer {
         client.send(data);
       } catch (e) {
         this.logger.warn(
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          `Error sending event batch to WS client: ${e.message || e}`
+          `Error sending event batch to WS client: ${String(e)}`
         );
       }
     });

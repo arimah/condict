@@ -96,7 +96,7 @@ export const addUser = async (
 
       logger.info(`User created: ${user.name} (id = ${user.id})`);
     });
-  } catch (e) {
+  } catch (e: any) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     logger.error(`An error occurred: ${e.message || e}`);
     process.exitCode = 1;
@@ -151,7 +151,7 @@ export const editUser = async (
         logger.debug(`Password changed for user ${newUser.name}`);
       }
     });
-  } catch (e) {
+  } catch (e: any) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     logger.error(`An error occurred: ${e.message || e}`);
     process.exitCode = 1;
@@ -180,7 +180,7 @@ export const logOutUser = async (
       await server.logOutUser(userId);
       logger.info(`User logged out of all sessions: ${userNameOrId}`);
     });
-  } catch (e) {
+  } catch (e: any) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     logger.error(`An error occurred: ${e.message || e}`);
     process.exitCode = 1;
@@ -213,7 +213,7 @@ export const deleteUser = async (
         logger.warn(`User not found: ${userNameOrId}`);
       }
     });
-  } catch (e) {
+  } catch (e: any) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     logger.error(`An error occurred: ${e.message || e}`);
     process.exitCode = 1;

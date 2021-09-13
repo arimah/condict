@@ -168,8 +168,8 @@ const main = async () => {
         break;
     }
   } catch (e) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    logger.error(`Unhandled server error: ${e}\n${e.stack}`);
+    const err = e as Error;
+    logger.error(`Unhandled server error: ${err.message}\n${err.stack}`);
     process.exitCode = 1;
   }
 };

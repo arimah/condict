@@ -71,7 +71,7 @@ export default class RemoteServer implements ServerImpl {
           [SessionIdHeader]: this.getSessionId() || '-',
         },
       });
-    } catch (e) {
+    } catch (e: any) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       return error(`Could not fetch from remote server: ${e.message || e}`);
     }
@@ -79,7 +79,7 @@ export default class RemoteServer implements ServerImpl {
     let json: unknown;
     try {
       json = await response.json();
-    } catch (e) {
+    } catch (e: any) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       return error(`Could not parse response as JSON: ${e.message || e}`);
     }
@@ -125,7 +125,7 @@ export default class RemoteServer implements ServerImpl {
       const text = getTextFromData(data);
       const json: unknown = JSON.parse(text);
       batch = parseEventBatch(json);
-    } catch (e) {
+    } catch (e: any) {
       this.logger.error(
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         `Could not parse WebSocket message as event batch: ${e.message || e}`
