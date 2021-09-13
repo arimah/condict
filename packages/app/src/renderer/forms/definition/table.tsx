@@ -1,10 +1,4 @@
-import React, {
-  MouseEvent,
-  TransitionEvent,
-  useMemo,
-  useCallback,
-  useRef,
-} from 'react';
+import React, {TransitionEvent, useMemo, useCallback, useRef} from 'react';
 import {useFormContext, useWatch} from 'react-hook-form';
 import {Localized, useLocalization} from '@fluent/react';
 import DragIcon from 'mdi-react/DragIcon';
@@ -39,7 +33,7 @@ export type Props = {
   moving?: MovingState;
   onMove: (from: number, to: number) => void;
   onRemove: (index: number) => void;
-  onDragStart: (e: MouseEvent, index: number) => void;
+  onDragStart: (index: number) => void;
   onMoveDone?: () => void;
 };
 
@@ -215,7 +209,7 @@ type TableToolbarProps = {
   tableName: string | undefined;
   onMove: (from: number, to: number) => void;
   onRemove: (index: number) => void;
-  onDragStart: (e: MouseEvent, index: number) => void;
+  onDragStart: (index: number) => void;
 };
 
 const TableToolbar = React.memo((props: TableToolbarProps): JSX.Element => {
@@ -227,12 +221,12 @@ const TableToolbar = React.memo((props: TableToolbarProps): JSX.Element => {
 
   return (
     <S.TableToolbar>
-      <S.DragHandle onMouseDown={e => onDragStart(e, index)}>
+      <S.DragHandle onMouseDown={() => onDragStart(index)}>
         <DragIcon/>
+        <S.TableName>
+          {tableName ?? <Localized id='definition-table-deleted-heading'/>}
+        </S.TableName>
       </S.DragHandle>
-      <S.TableName>
-        {tableName ?? <Localized id='definition-table-deleted-heading'/>}
-      </S.TableName>
       {!(isFirst && isLast) && <>
         <Toolbar.Button
           label={l10n.getString('definition-table-move-up-button')}

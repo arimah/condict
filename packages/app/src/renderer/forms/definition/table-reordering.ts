@@ -1,11 +1,4 @@
-import {
-  RefObject,
-  MouseEvent as SyntheticMouseEvent,
-  useState,
-  useCallback,
-  useEffect,
-  useRef,
-} from 'react';
+import {RefObject, useState, useCallback, useEffect, useRef} from 'react';
 import produce from 'immer';
 
 import {MovingState} from './types';
@@ -16,7 +9,7 @@ export interface ReorderState {
   moving: CurrentMovingState | undefined;
   onMove: (from: number, to: number) => void;
   onMoveDone: () => void;
-  onDragStart: (e: SyntheticMouseEvent, index: number) => void;
+  onDragStart: (index: number) => void;
 }
 
 export interface CurrentMovingState {
@@ -86,7 +79,7 @@ const useTableReordering = (
     });
   }, [moving]);
 
-  const onDragStart = useCallback((e: SyntheticMouseEvent, index: number) => {
+  const onDragStart = useCallback((index: number) => {
     if (moving || !listRef.current) {
       // Wait until we're done.
       return;
@@ -239,22 +232,27 @@ const getDragTargetIndex = (
   dragIndex: number,
   offsetY: number
 ): number => {
-  const pos = items[dragIndex];
-  const midY = pos.top + pos.height / 2 + offsetY;
+  const draggedPos = items[dragIndex];
+  const draggedTop = draggedPos.top + offsetY;
+  const draggedMidY = draggedTop + draggedPos.height / 2;
 
   let result = dragIndex;
   if (offsetY < 0) {
     // Dragging up - look at earlier items.
     for (let i = dragIndex - 1; i >= 0; i--) {
       const otherPos = items[i];
-      if (midY < otherPos.bottom) {
+      const otherMidY = otherPos.top + otherPos.height / 2;
+      if (draggedMidY < otherPos.bottom || draggedTop < otherMidY) {
         result = i;
       }
     }
   } else {
     // Dragging down - look at later items.
+    const draggedBottom = draggedPos.bottom + offsetY;
     for (let i = dragIndex + 1; i < items.length; i++) {
-      if (midY > items[i].top) {
+      const otherPos = items[i];
+      const otherMidY = otherPos.top + otherPos.height / 2;
+      if (draggedMidY > otherPos.top || draggedBottom > otherMidY) {
         result = i;
       }
     }

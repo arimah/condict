@@ -45,10 +45,10 @@ export const TableToolbar = styled(Toolbar)`
 `;
 
 export const DragHandle = styled.div`
-  flex: none;
+  display: flex;
+  flex: 1 1 auto;
   margin-block: -2px;
   padding: 4px 2px;
-  opacity: 0.5;
   cursor: grab;
 
   &:active {
@@ -57,6 +57,8 @@ export const DragHandle = styled.div`
 
   > .mdi-icon {
     display: block;
+    flex: none;
+    opacity: 0.5;
   }
 `;
 
