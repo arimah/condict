@@ -47,6 +47,8 @@ export default [
       browser: true,
       packagePath: '.',
       declarationDir: null,
+      cacheDir: './.buildcache/renderer',
+      tsBuildInfoFile: './dist/.renderer.tsbuildinfo',
     }),
 
     onwarn,
@@ -78,6 +80,8 @@ export default [
       browser: false,
       packagePath: '.',
       declarationDir: null,
+      cacheDir: './.buildcache/main',
+      tsBuildInfoFile: './dist/.main.tsbuildinfo',
     }),
 
     onwarn,

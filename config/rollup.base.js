@@ -51,8 +51,8 @@ export const getPlugins = (options = {}) => {
     browser = true,
     declarationDir = null,
     packagePath = '.',
-    tsBuildInfoFile = null,
     cacheDir = null,
+    tsBuildInfoFile = null,
   } = options;
 
   return [
@@ -66,6 +66,7 @@ export const getPlugins = (options = {}) => {
       tsconfig: `${packagePath}/tsconfig.json`,
       rootDir: `./src`,
       noEmitOnError: false,
+      outputToFilesystem: true,
       ...declarationDir ? {
         declaration: true,
         declarationDir,
@@ -166,10 +167,8 @@ export const configureTarget = (pkg, output, options = {}) => {
       env,
       browser,
       declarationDir: declarations && path.dirname(realOutput),
-      cacheDir: declarations && `${packagePath}/.buildcache/${outputName}`,
-      tsBuildInfoFile:
-        declarations &&
-        `${path.dirname(output)}/.${outputName}.tsbuildinfo`,
+      cacheDir: `${packagePath}/.buildcache/${outputName}`,
+      tsBuildInfoFile: `${path.dirname(output)}/.${outputName}.tsbuildinfo`,
       packagePath,
     }),
 
