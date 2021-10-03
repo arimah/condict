@@ -65,6 +65,7 @@ const initMainWindow = (getConfig: () => AppConfig): MainWindowInstance => {
         nodeIntegration: true,
         contextIsolation: false,
         zoomFactor: config.appearance.zoomLevel / 100,
+        spellcheck: false,
       },
     });
 
