@@ -2,13 +2,15 @@ import React from 'react';
 
 import {formatBlocks, formatInlines} from './format';
 import {HeadingType, BlockFields, InlineFields, FormattedText} from './types';
+import * as S from './styles';
 
 export type RichContentProps = {
   value: readonly BlockFields[];
   heading1?: HeadingType;
   heading2?: HeadingType;
   stripLinks?: boolean;
-  maxBlocks?: number;
+  maxLines?: number;
+  selectable?: boolean;
 };
 
 // The basic component for a rich text block.
@@ -20,20 +22,27 @@ export const RichContent = React.memo((
     heading1 = 'h2',
     heading2 = 'h3',
     stripLinks = false,
-    maxBlocks = -1,
+    maxLines = 0,
+    selectable = false,
   } = props;
 
   const blocks = formatBlocks(
-    maxBlocks > 0 ? value.slice(0, maxBlocks) : value,
+    // +1 so we are guaranteed "..." overflow if there are overflowing blocks.
+    maxLines > 0 ? value.slice(0, maxLines + 1) : value,
     heading1,
     heading2,
     stripLinks
   );
 
-  if (blocks.length === 1) {
-    return blocks[0];
-  }
-  return <>{blocks}</>;
+  return (
+    <S.Container
+      clamped={maxLines > 0}
+      selectable={selectable}
+      style={maxLines > 0 ? {WebkitLineClamp: maxLines} : undefined}
+    >
+      {blocks}
+    </S.Container>
+  );
 });
 
 RichContent.displayName = 'RichContent';

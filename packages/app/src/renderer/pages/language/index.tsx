@@ -155,13 +155,12 @@ const LanguagePage = (props: Props): JSX.Element => {
               <h2>
                 <Localized id='language-about-heading'/>
               </h2>
-              <Selectable as={BodyText}>
-                <RichContent
-                  value={language.description}
-                  heading1='h3'
-                  heading2='h4'
-                />
-              </Selectable>
+              <RichContent
+                value={language.description}
+                heading1='h3'
+                heading2='h4'
+                selectable
+              />
             </>}
 
             <h2 id={`${htmlId}-pos-title`}>

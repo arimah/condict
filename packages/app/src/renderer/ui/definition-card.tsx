@@ -5,7 +5,6 @@ import {LanguagePage, DefinitionPage} from '../page';
 import {DefinitionId} from '../graphql';
 
 import {RichContent, BlockFields} from './rich-text';
-import ClampedBodyText from './clamped-body-text';
 import ResourceTime from './resource-time';
 import {LinkCard} from './card';
 import * as S from './styles';
@@ -41,16 +40,13 @@ const DefinitionCard = React.memo((props: Props): JSX.Element => {
       </>}
       iconAfter={<LinkArrow className='rtl-mirror'/>}
     >
-      <ClampedBodyText maxLines={5}>
-        <RichContent
-          value={definition.description}
-          heading1='h3'
-          heading2='h4'
-          stripLinks
-          // 1 more than maxLines, to guarantee "..." if there's >5 blocks
-          maxBlocks={6}
-        />
-      </ClampedBodyText>
+      <RichContent
+        value={definition.description}
+        heading1='h3'
+        heading2='h4'
+        stripLinks
+        maxLines={5}
+      />
       {time !== null &&
         <S.Secondary as='p'>
           <ResourceTime

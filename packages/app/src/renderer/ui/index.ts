@@ -3,10 +3,6 @@ export * from './styles';
 export {default as BrokenLink, Props as BrokenLinkProps} from './broken-link';
 export {Card, CardProps, LinkCard, LinkCardProps} from './card';
 export {
-  default as ClampedBodyText,
-  Props as ClampedBodyTextProps,
-} from './clamped-body-text';
-export {
   default as ConfirmButton,
   Props as ConfirmButtonProps,
 } from './confirm-button';

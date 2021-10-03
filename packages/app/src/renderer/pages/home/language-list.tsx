@@ -7,7 +7,6 @@ import {Button, ConlangFlag, NonIdealState} from '@condict/ui';
 import {
   CardList,
   LinkCard,
-  ClampedBodyText,
   RichContent,
   Secondary,
   hasRichContent,
@@ -80,16 +79,13 @@ const LanguageCard = ({lang}: LanguageCardProps): JSX.Element =>
     iconAfter={<LinkArrow className='rtl-mirror'/>}
   >
     {hasRichContent(lang.description) &&
-      <ClampedBodyText maxLines={3}>
-        <RichContent
-          value={lang.description}
-          heading1='h3'
-          heading2='h4'
-          stripLinks
-          // 1 more than maxLines, to guarantee "..." if there's >3 blocks
-          maxBlocks={4}
-        />
-      </ClampedBodyText>
+      <RichContent
+        value={lang.description}
+        heading1='h3'
+        heading2='h4'
+        stripLinks
+        maxLines={3}
+      />
     }
     <Secondary as='p'>
       <Localized id='home-language-statistics' vars={lang.statistics}/>

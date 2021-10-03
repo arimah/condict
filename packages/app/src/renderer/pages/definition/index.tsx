@@ -121,13 +121,12 @@ const DefinitionPage = (props: Props): JSX.Element => {
               <h2>
                 {def.partOfSpeech.name}
               </h2>
-              <Selectable as={BodyText}>
-                <RichContent
-                  value={def.description}
-                  heading1='h3'
-                  heading2='h4'
-                />
-              </Selectable>
+              <RichContent
+                value={def.description}
+                heading1='h3'
+                heading2='h4'
+                selectable
+              />
             </section>
 
             {def.inflectionTables.length > 0 &&
