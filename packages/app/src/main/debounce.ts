@@ -1,3 +1,7 @@
+export type OriginalFn = () => void;
+
+export type DebouncedFn = () => NodeJS.Timeout;
+
 /**
  * Delays execution of the specified function for an amount of time. If the
  * function is called again before that time has elapsed, the timeout is
@@ -5,10 +9,12 @@
  * duration has elapsed.
  * @param timeout The timeout, in milliseconds.
  * @param func The function to call.
- * @return A debounced wrapper of {@param func}.
+ * @return A debounced wrapper of {@param func}. The wrapper function returns
+ *         the Node timeout, so that the delayed invocation can be cancelled
+ *         if necessary.
  */
-const debounce = (timeout: number, func: () => void): (() => void) => {
-  let currentTimeout: NodeJS.Timeout | number | undefined = undefined;
+const debounce = (timeout: number, func: OriginalFn): DebouncedFn => {
+  let currentTimeout: NodeJS.Timeout | undefined = undefined;
   let lastCall = 0;
   const maybeCall = () => {
     const remaining = timeout - (Date.now() - lastCall);
@@ -16,7 +22,8 @@ const debounce = (timeout: number, func: () => void): (() => void) => {
       currentTimeout = undefined;
       func();
     } else {
-      currentTimeout = setTimeout(maybeCall, remaining);
+      // Node's types interfere with DOM types; need to cast.
+      currentTimeout = setTimeout(maybeCall, remaining) as NodeJS.Timeout;
     }
   };
   return () => {
@@ -24,6 +31,7 @@ const debounce = (timeout: number, func: () => void): (() => void) => {
     if (currentTimeout === undefined) {
       currentTimeout = setTimeout(maybeCall, timeout);
     }
+    return currentTimeout;
   };
 };
 

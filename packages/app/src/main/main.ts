@@ -14,15 +14,7 @@ const main = (): void => {
   const translations = initTranslations();
 
   const config = initConfig(translations.availableLocales);
-
-  const logger = createLogger(config.current.log);
-
-  const configErrors = config.takeErrors();
-  if (configErrors.length > 0) {
-    logger.error(`Errors while loading app config:\n${
-      configErrors.map(err => `- ${err}`).join('\n')
-    }`);
-  }
+  const {logger} = config;
 
   const server = initServer(
     logger,

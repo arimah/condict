@@ -3,9 +3,11 @@ import fs from 'fs';
 import {app, nativeTheme} from 'electron';
 
 import {
+  Logger,
   LoggerOptions,
   validateConfig as validateLocalServerConfig,
   validateLoggerOptions,
+  createLogger,
 } from '@condict/server';
 import type {MotionPreference} from '@condict/ui';
 
@@ -21,12 +23,12 @@ import {
 
 import DefaultConfig from './default-config';
 import {ConfigFile} from './paths';
-import debounce from './debounce';
+import persistDebounced from './persist-debounced';
 import ipc from './ipc';
 
 export interface ConfigInstance {
   readonly current: AppConfig;
-  takeErrors(): string[];
+  readonly logger: Logger;
 }
 
 type PlainObject = {
@@ -37,13 +39,19 @@ const initConfig = (availableLocales: readonly string[]): ConfigInstance => {
   let errors: string[] = [];
   let config: AppConfig = loadConfig(ConfigFile, availableLocales, errors);
 
+  const logger = createLogger(config.log);
+  if (errors.length > 0) {
+    logger.error(`Errors while loading app config:\n${
+      errors.map(err => `- ${err}`).join('\n')
+    }`);
+    errors = [];
+  }
+
   nativeTheme.themeSource = config.appearance.theme;
 
-  const writeConfig = debounce(1000, () => {
-    saveConfig(ConfigFile, config).then(
-      () => console.log('Saved new app config.'),
-      err => console.error('Error saving app config:', err)
-    );
+  const saveConfig = persistDebounced(logger, 'App/Config', () => {
+    writeConfig(ConfigFile, config);
+    logger.debug('App/Config: Saved');
   });
 
   ipc.handle('get-config', () => config);
@@ -55,23 +63,14 @@ const initConfig = (availableLocales: readonly string[]): ConfigInstance => {
     if (nativeTheme.themeSource !== newConfig.appearance.theme) {
       nativeTheme.themeSource = newConfig.appearance.theme;
     }
-    writeConfig();
-  });
-
-  app.on('before-quit', () => {
-    // Attempt to save the config immediately.
-    saveConfig(ConfigFile, config).catch(() => { /* ignore */ });
+    saveConfig();
   });
 
   return {
     get current(): AppConfig {
       return config;
     },
-    takeErrors(): string[] {
-      const result = errors;
-      errors = [];
-      return result;
-    },
+    logger,
   };
 };
 
@@ -330,16 +329,8 @@ const validateLoginConfig = (value: unknown, errors: string[]): LoginConfig => {
 /* eslint-enable @typescript-eslint/no-unsafe-member-access */
 /* eslint-enable @typescript-eslint/restrict-template-expressions */
 
-const saveConfig = (fileName: string, config: AppConfig): Promise<void> => {
+const writeConfig = (fileName: string, config: AppConfig): void => {
   const configText = JSON.stringify(config, undefined, '  ');
   const options = {encoding: 'utf8'} as const;
-  return new Promise<void>((resolve, reject) => {
-    fs.writeFile(fileName, configText, options, error => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve();
-      }
-    });
-  });
+  fs.writeFileSync(fileName, configText, options);
 };
