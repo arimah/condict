@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {Localized} from '@fluent/react';
 
 import {useDelayedMountEffect} from '../hooks';
 
@@ -12,7 +13,9 @@ const LoadingScreen = (): JSX.Element => {
   return (
     <S.LoadingScreen visible={visible}>
       <S.LoadingSpinner size={64}/>
-      <S.LoadingText>Loading</S.LoadingText>
+      <S.LoadingText>
+        <Localized id='generic-loading'/>
+      </S.LoadingText>
     </S.LoadingScreen>
   );
 };
