@@ -26,3 +26,16 @@ export const LoadingSpinner = styled(Spinner)`
 export const LoadingText = styled.div`
   margin-top: 8px;
 `;
+
+export const ErrorScreen = styled.main.attrs({
+  tabIndex: -1,
+})`
+  align-self: center;
+  justify-self: center;
+  width: calc(100vw - 64px);
+  max-width: 600px;
+
+  &:focus {
+    outline: none;
+  }
+`;

@@ -43,6 +43,15 @@ export const Tab = {
   },
 
   /**
+   * Determines whether a tab has crashed.
+   * @param tab The tab to test.
+   * @return True if the tab has crashed.
+   */
+  isCrashed(tab: Tab): boolean {
+    return tab.state === 'crashed';
+  },
+
+  /**
    * Determines whether the tab can have children. This does not mean the tab
    * definitely has children; only that it *might* have children.
    * @param tab The tab to test.
@@ -297,7 +306,9 @@ export type UpdateFreeTabFn = (id: string, values: UpdatableTabProps) => void;
  */
 export type UpdateTabFn = (values: UpdatableTabProps) => void;
 
-export type UpdatableTabProps = Partial<Pick<Tab, 'title' | 'dirty'>>;
+export type UpdatableTabProps = Partial<Pick<Tab, 'title' | 'dirty'> & {
+  crashed: boolean;
+}>;
 
 /**
  * Opens a modal panel.

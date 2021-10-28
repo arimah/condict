@@ -22,6 +22,10 @@ export {
   CustomForm,
 } from './definition-table';
 export {
+  default as ErrorBoundary,
+  Props as ErrorBoundaryProps,
+} from './error-boundary';
+export {
   default as HighlightedSnippet,
   Props as HighlightedSnippetProps,
   Snippet,
@@ -29,12 +33,17 @@ export {
 } from './highlighted-snippet';
 export {default as Link, Props as LinkProps} from './link';
 export {default as Loading, Props as LoadingProps} from './loading';
+export {default as PageIcon, Props as PageIconProps} from './page-icon';
 export * from './resource-icons';
 export {
   default as ResourceTime,
   Props as ResourceTimeProps,
 } from './resource-time';
 export * from './rich-text';
+export {
+  default as RuntimeError,
+  Props as RuntimeErrorProps,
+} from './runtime-error';
 export {default as SidebarColors} from './sidebar-colors';
 export {default as Tag, Props as TagProps} from './tag';
 export {

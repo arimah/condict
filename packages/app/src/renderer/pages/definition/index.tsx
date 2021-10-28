@@ -1,7 +1,7 @@
 import {useCallback, useEffect} from 'react';
 import {Localized} from '@fluent/react';
 
-import {BodyText, useUniqueId} from '@condict/ui';
+import {useUniqueId} from '@condict/ui';
 
 import {LanguagePage, LemmaPage, SearchPage} from '../../page';
 import {useOpenPanel, useUpdateTab} from '../../navigation';

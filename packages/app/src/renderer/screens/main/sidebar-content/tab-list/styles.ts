@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components';
+import styled, {css, keyframes} from 'styled-components';
 
 import {Spinner} from '@condict/ui';
 
@@ -37,9 +37,21 @@ export const TabSpinner = styled(Spinner).attrs({
   }
 `;
 
+const AngryShake = keyframes`
+  0%   { transform: translateX(0); }
+  5%   { transform: translateX(4px); }
+  23%  { transform: translateX(-4px); }
+  41%  { transform: translateX(4px); }
+  59%  { transform: translateX(-4px); }
+  77%  { transform: translateX(4px); }
+  95%  { transform: translateX(-4px); }
+  100% { transform: translate(0px); }
+`;
+
 export type TabProps = {
   isCurrent?: boolean;
   isChild?: boolean;
+  isCrashed?: boolean;
 };
 
 export const Tab = styled.div.attrs({
@@ -70,6 +82,13 @@ export const Tab = styled.div.attrs({
     }
   `}
 
+  ${p => p.isCrashed && css`
+    animation-name: ${AngryShake};
+    animation-duration: 600ms;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+  `}
+
   &:focus {
     outline: none;
   }
@@ -97,6 +116,10 @@ export const Tab = styled.div.attrs({
     margin-block: -4px;
     margin-inline: -4px 8px;
     flex: none;
+    color: ${p => p.isCurrent && p.isCrashed
+      ? p.theme.danger.defaultFg
+      : undefined
+    };
   }
 `;
 

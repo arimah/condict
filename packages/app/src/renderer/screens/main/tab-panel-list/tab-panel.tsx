@@ -12,9 +12,11 @@ import {FocusScope, getTabReachable} from '@condict/ui';
 
 import PageContent from '../../../pages';
 import {Tab, TabContextProvider} from '../../../navigation';
+import {ErrorBoundary} from '../../../ui';
 
 import SidePanelList, {SidePanelListHandle} from '../side-panel-list';
 
+import ErrorPanel from './error-panel';
 import * as S from './styles';
 
 export type Props = {
@@ -106,30 +108,37 @@ const TabPanel = React.forwardRef((
           onFocus={handleFocus}
           ref={panelRef}
         >
-          <S.BackButtonColumn>
-            {tab.previous && (
-              <S.BackButton
-                label={l10n.getString('tab-back-button')}
-                title={l10n.getString('tab-back-button-tooltip', {
-                  previousPageTitle: tab.previous.title,
-                })}
-                onClick={() => onBack(id)}
-                ref={backButtonRef}
-              >
-                <BackArrow className='rtl-mirror'/>
-              </S.BackButton>
-            )}
-          </S.BackButtonColumn>
-          <S.MainColumn ref={mainColumnRef}>
-            <PageContent page={page} pageRef={panelRef}/>
-          </S.MainColumn>
+          <ErrorBoundary
+            renderError={(error, reload) =>
+              <ErrorPanel error={error} onReload={reload} ref={mainColumnRef}/>
+            }
+          >
+            <S.BackButtonColumn>
+              {tab.previous && (
+                <S.BackButton
+                  label={l10n.getString('tab-back-button')}
+                  title={l10n.getString('tab-back-button-tooltip', {
+                    previousPageTitle: tab.previous.title,
+                  })}
+                  onClick={() => onBack(id)}
+                  ref={backButtonRef}
+                >
+                  <BackArrow className='rtl-mirror'/>
+                </S.BackButton>
+              )}
+            </S.BackButtonColumn>
+            <S.MainColumn ref={mainColumnRef}>
+              <PageContent page={page} pageRef={panelRef}/>
+            </S.MainColumn>
+          </ErrorBoundary>
         </S.TabPanel>
       </FocusScope>
-      <SidePanelList
-        panels={tab.panels}
-        visible={isCurrent}
-        ref={sidePanelListRef}
-      />
+      {tab.state !== 'crashed' &&
+        <SidePanelList
+          panels={tab.panels}
+          visible={isCurrent}
+          ref={sidePanelListRef}
+        />}
     </TabContextProvider>
   );
 });

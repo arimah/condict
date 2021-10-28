@@ -3,15 +3,12 @@ import ReactDOM from 'react-dom';
 import {webFrame} from 'electron';
 import produce, {enableMapSet} from 'immer';
 
-import {GlobalStyles as UIStyles} from '@condict/ui';
-
 import {AppConfig, ThemeName, Locale} from '../types';
 
 import ipc from './ipc';
 import AppContexts from './app-contexts';
 import {LoadingScreen, MainScreen} from './screens';
 import {ConfigRecipe} from './types';
-import * as S from './styles';
 
 type Props = {
   initialConfig: AppConfig;
@@ -111,9 +108,6 @@ const App = (props: Props): JSX.Element => {
       onUpdateConfig={updateConfig}
     >
       {loading ? <LoadingScreen/> : <MainScreen/>}
-
-      <UIStyles/>
-      <S.AppStyles/>
     </AppContexts>
   );
 };

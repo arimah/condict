@@ -1,6 +1,5 @@
 import {BrowserWindow, app, dialog, nativeTheme} from 'electron';
 
-import {createLogger} from '@condict/server';
 import {isMacOS} from '@condict/platform';
 
 import initConfig from './config';

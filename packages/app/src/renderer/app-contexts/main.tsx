@@ -1,5 +1,7 @@
 import {ReactNode} from 'react';
 
+import {GlobalStyles as UIStyles} from '@condict/ui';
+
 import {AppConfig, ThemeName, Locale} from '../../types';
 
 // Dialog, navigation and data contexts are defined elsewhere
@@ -7,7 +9,10 @@ import {AppConfig, ThemeName, Locale} from '../../types';
 import {DialogStackProvider} from '../dialog-stack';
 import {NavigationProvider} from '../navigation';
 import {DataProvider} from '../data';
+import {ErrorBoundary} from '../ui';
+import {ErrorScreen} from '../screens';
 import {ConfigRecipe} from '../types';
+import {AppStyles} from '../styles';
 
 import ConfigProvider from './config';
 import AppThemeProvider from './theme';
@@ -51,11 +56,20 @@ const AppContexts = (props: Props): JSX.Element => {
           systemTheme={systemTheme}
         >
           <DataProvider>
-            <DialogStackProvider>
-              <NavigationProvider>
-                {children}
-              </NavigationProvider>
-            </DialogStackProvider>
+            <ErrorBoundary
+              renderError={(e, retry) =>
+                <ErrorScreen isGlobalError error={e} onReload={retry}/>
+              }
+            >
+              <DialogStackProvider>
+                <NavigationProvider>
+                  {children}
+                </NavigationProvider>
+              </DialogStackProvider>
+            </ErrorBoundary>
+
+            <UIStyles/>
+            <AppStyles/>
           </DataProvider>
         </AppThemeProvider>
       </TranslationProvider>

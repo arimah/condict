@@ -1,7 +1,7 @@
 import HomeIcon from 'mdi-react/BookshelfIcon';
 import SearchIcon from 'mdi-react/BookSearchOutlineIcon';
 
-import {ResourceIcon} from '../ui';
+import {ResourceIcon} from './resource-icons';
 import {Page} from '../page';
 
 export type Props = {

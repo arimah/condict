@@ -15,6 +15,7 @@ export const TabPanel = styled.div.attrs({
   height: 100%;
   overflow: auto;
   align-items: flex-start;
+  justify-content: center;
 
   &:focus {
     outline: none;
@@ -52,5 +53,19 @@ export const MainColumn = styled.div`
   > :first-child,
   > ${FlowContent}:first-child > :first-child {
     margin-top: 0;
+  }
+`;
+
+export const ErrorPage = styled.div.attrs({
+  tabIndex: -1,
+})`
+  flex: 1 1 auto;
+  margin: 32px 64px;
+  align-self: center;
+  justify-self: center;
+  max-width: 600px;
+
+  &:focus {
+    outline: none;
   }
 `;

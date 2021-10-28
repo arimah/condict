@@ -1042,3 +1042,25 @@ fetch-error =
   }:
 
 fetch-no-data = Something went wrong when loading this content: no data was received.
+
+## Error screen messages
+
+error-title = Oh no!
+
+# Elements:
+#   <bold>: Bold text.
+error-message = Some part of Condict has crashed. Apologies for the inconvenience. <bold>Your data is safe.</bold> The following error message was received:
+
+error-details-button = Error details
+
+error-details-label = Error details
+
+error-global-next-step = You can try to reload the application. If that doesn’t help, please report the error.
+
+error-tab-next-step = You can try to reload the tab. If that doesn’t help, please report the error.
+
+error-reload-app-button = Reload Condict
+
+error-reload-tab-button = Reload tab
+
+error-report-error-button = Report error

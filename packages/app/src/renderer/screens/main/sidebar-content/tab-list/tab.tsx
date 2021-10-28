@@ -1,8 +1,9 @@
 import React, {MouseEvent, Ref, useCallback} from 'react';
 import {useLocalization} from '@fluent/react';
+import CrashedIcon from 'mdi-react/AlertIcon';
 
 import {Tab as NavTab} from '../../../../navigation';
-import PageIcon from '../../../../ui/page-icon';
+import {PageIcon} from '../../../../ui';
 
 import {CloseIcon, DirtyIcon} from './icons';
 import * as S from './styles';
@@ -50,6 +51,7 @@ const Tab = React.forwardRef((
   }, [id, onClose]);
 
   const isDirty = NavTab.isDirty(tab);
+  const isCrashed = NavTab.isCrashed(tab);
 
   return (
     <S.Tab
@@ -57,6 +59,7 @@ const Tab = React.forwardRef((
       tabIndex={isCurrent ? 0 : -1}
       isCurrent={isCurrent}
       isChild={NavTab.isChild(tab)}
+      isCrashed={isCrashed}
       aria-labelledby={`tab-${id}-title`}
       aria-selected={isCurrent}
       aria-controls={`tabpanel-${id}`}
@@ -64,7 +67,7 @@ const Tab = React.forwardRef((
       onAuxClick={handleTabAuxClick}
       ref={ref}
     >
-      <PageIcon page={tab.page}/>
+      {isCrashed ? <CrashedIcon/> : <PageIcon page={tab.page}/>}
       <S.TabTitle id={`tab-${id}-title`}>
         {NavTab.getFullTitle(tab, l10n)}
       </S.TabTitle>

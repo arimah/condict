@@ -48,7 +48,13 @@ type Message =
   | {type: 'select'; index: number | 'prev' | 'next'; keepPrev?: boolean}
   | {type: 'open'; tabs: Tab[]; insertIndex: number; background: boolean}
   | {type: 'navigate'; index: number; page: Page; title: string}
-  | {type: 'update', index: number; title?: string; dirty?: boolean}
+  | {
+    type: 'update';
+    index: number;
+    title?: string;
+    dirty?: boolean;
+    crashed?: boolean;
+  }
   | {type: 'back'; index: number}
   | {
     type: 'close';
@@ -271,11 +277,14 @@ const NavigationProvider = (props: Props): JSX.Element => {
     ...functions,
   }), [state, functions]);
 
-  const updateFreeTab = useCallback<UpdateFreeTabFn>((id, {title, dirty}) => {
+  const updateFreeTab = useCallback<UpdateFreeTabFn>((
+    id,
+    {title, dirty, crashed}
+  ) => {
     const state = stateRef.current;
     const index = state.tabs.findIndex(t => t.id === id);
     if (index !== -1) {
-      dispatch({type: 'update', index, title, dirty});
+      dispatch({type: 'update', index, title, dirty, crashed});
     }
   }, []);
 
@@ -428,13 +437,21 @@ const reduce = produce<State, [Message]>((state, message) => {
       break;
     }
     case 'update': {
-      const {index, title, dirty} = message;
+      const {index, title, dirty, crashed} = message;
       const tab = state.tabs[index];
       if (title !== undefined) {
         tab.title = title;
       }
       if (dirty !== undefined) {
         tab.dirty = dirty;
+      }
+      if (crashed !== undefined) {
+        if (crashed) {
+          tab.panels = [];
+          tab.state = 'crashed';
+        } else {
+          tab.state = tab.title === '' ? 'loading' : 'idle';
+        }
       }
       break;
     }
