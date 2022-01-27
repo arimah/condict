@@ -82,7 +82,7 @@ export const Tab = styled.div.attrs({
       content: '';
       position: absolute;
       inset-block: 2px;
-      inset-inline-start: 0;
+      inset-inline-start: 2px;
       border-left: 4px solid ${p => p.theme.accent.boldBg};
     }
   `}

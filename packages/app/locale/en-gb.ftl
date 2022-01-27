@@ -12,6 +12,8 @@ settings-danger-color-description = This colour is used for destructive actions,
 
 settings-sidebar-color-label = Sidebar colour
 
+settings-color-name-gray = Grey
+
 settings-about-third-party-licenses-title = Third-party licences
 
 home-recent-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}

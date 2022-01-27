@@ -1,4 +1,4 @@
-import {useMemo} from 'react';
+import {Fragment, useMemo} from 'react';
 import {Localized} from '@fluent/react';
 
 import {InflectionTablePage, LanguagePage} from '../../page';
@@ -36,32 +36,34 @@ const Inflection = (props: Props): JSX.Element => {
       <h2 id={id}>
         <Localized id='definition-inflection-heading'/>
       </h2>
-      {tables.map(table => <>
-        <S.TableContainer key={table.id}>
-          <DefinitionTable
-            layout={table.inflectionTableLayout.rows}
-            caption={table.caption?.inlines}
-            term={term}
-            stems={stemMap}
-            customForms={table.customForms}
-          />
-        </S.TableContainer>
-        <S.TableSource>
-          <Localized
-            id='definition-table-layout-from'
-            vars={{tableName: table.inflectionTable.name}}
-            elems={{
-              'table-link': <Link to={InflectionTablePage(
-                table.inflectionTable.id,
-                table.inflectionTable.name,
-                parent
-              )}/>,
-            }}
-          >
-            <></>
-          </Localized>
-        </S.TableSource>
-      </>)}
+      {tables.map(table =>
+        <Fragment key={table.id}>
+          <S.TableContainer>
+            <DefinitionTable
+              layout={table.inflectionTableLayout.rows}
+              caption={table.caption?.inlines}
+              term={term}
+              stems={stemMap}
+              customForms={table.customForms}
+            />
+          </S.TableContainer>
+          <S.TableSource>
+            <Localized
+              id='definition-table-layout-from'
+              vars={{tableName: table.inflectionTable.name}}
+              elems={{
+                'table-link': <Link to={InflectionTablePage(
+                  table.inflectionTable.id,
+                  table.inflectionTable.name,
+                  parent
+                )}/>,
+              }}
+            >
+              <></>
+            </Localized>
+          </S.TableSource>
+        </Fragment>
+      )}
     </section>
   );
 };

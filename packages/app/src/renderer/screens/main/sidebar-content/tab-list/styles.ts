@@ -45,7 +45,7 @@ const AngryShake = keyframes`
   59%  { transform: translateX(-4px); }
   77%  { transform: translateX(4px); }
   95%  { transform: translateX(-4px); }
-  100% { transform: translate(0px); }
+  100% { transform: translateX(0px); }
 `;
 
 export type TabProps = {
