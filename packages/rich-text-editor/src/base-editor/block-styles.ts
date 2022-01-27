@@ -44,8 +44,13 @@ export const NumberListItem = styled(ListItem)`
   }
 
   ${IndentLevels.map(level => `
-    &[data-indent='${level}'] {
+    &&[data-indent='${level}'] {
+      counter-reset: ${
+        // Reset every list counter higher than this.
+        IndentLevels.slice(level + 1).map(l => `list${l}`).join(' ')
+      };
       counter-increment: list${level};
+
       &::before {
         content: counter(list${level}) '.\\A0';
       }
@@ -54,12 +59,14 @@ export const NumberListItem = styled(ListItem)`
 `;
 
 export const EditorStyles = css`
+  counter-reset: ${IndentLevels.map(l => `list${l}`).join(' ')};
+
   ${IndentLevels.map(level => `
     [data-indent='${level}'] {
       margin-inline-start: ${level * Indent}px;
       counter-reset: ${
-        // Reset every list counter higher than this.
-        IndentLevels.slice(level + 1).map(l => `list${l}`).join(' ')
+        // Reset every list counter at this level or higher.
+        IndentLevels.slice(level).map(l => `list${l}`).join(' ')
       };
     }
   `)}
