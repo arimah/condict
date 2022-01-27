@@ -48,6 +48,8 @@ Inflects a word according to the specified pattern. The `term` is used as a fall
 
 ### `StemMap`
 
+> `interface StemMap`
+
 A `StemMap` is any map-like type with string keys and values. It is used to look up a word's stems.
 
 ## `normalizePattern()`
@@ -68,7 +70,7 @@ Stems are normalized by trimming away white space at the start and end, and by c
 
 ## `tokenizePattern()`
 
-> `tokenizePattern(pattern: string): Token[]`
+> `tokenizePattern(pattern: string): Generator<Token>`
 
 Tokenizes the specified pattern.
 

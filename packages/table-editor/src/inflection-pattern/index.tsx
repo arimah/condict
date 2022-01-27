@@ -26,7 +26,7 @@ const InflectionPattern = React.memo((props: Props) => {
   // is rerendered, which forces unnecessary DOM updates. A consistent key
   // will lead to fewer DOM updates.
   let key = 0;
-  const parts = tokenizePattern(pattern).map(t => {
+  const parts = Array.from(tokenizePattern(pattern), t => {
     key += 1;
     switch (t.kind) {
       case 'text':

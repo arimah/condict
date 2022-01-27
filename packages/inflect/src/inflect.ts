@@ -1,9 +1,8 @@
 import {getReplacePattern} from './shared';
 
-export type StemMap = {
-  has(key: string): boolean;
+export interface StemMap {
   get(key: string): string | undefined;
-};
+}
 
 /**
  * Inflects a word according to the specified pattern.
@@ -26,10 +25,7 @@ const inflectWord = (pattern: string, term: string, stems: StemMap): string =>
         if (escapedBrace) {
           return escapedBrace[0];
         }
-        // Note: Don't try to "simplify" this to `stems.get(stem) || term`.
-        // You are allowed to specify empty stem values, e.g. for null affixes.
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return stems.has(stem) ? stems.get(stem)! : term;
+        return stems.get(stem) ?? term;
       }
     )
     .trim();
