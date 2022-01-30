@@ -68,7 +68,9 @@ export const InflectionTableForm = (props: Props): JSX.Element => {
     onDirtyChange,
   } = props;
 
-  const form = useForm<InflectionTableData>({defaultValues: initialData});
+  const form = useForm<InflectionTableData>({
+    defaultValues: initialData,
+  });
 
   const {isDirty} = form.formState;
   useEffect(() => {

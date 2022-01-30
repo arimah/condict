@@ -68,6 +68,8 @@ writeVariableType = (params, type) => {
       const formattedType = writeNullableType(params, type);
       return `${formattedType} | null | undefined`;
     }
+    default:
+      throw new Error(`Unexpected node kind: ${type.kind}`);
   }
 };
 

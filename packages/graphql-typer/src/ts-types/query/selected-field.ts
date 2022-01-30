@@ -55,7 +55,7 @@ type NullableOutputType =
   | GraphQLInterfaceType
   | GraphQLUnionType
   | GraphQLEnumType
-  | GraphQLList<any>;
+  | GraphQLList<GraphQLOutputType>;
 
 type InnerType =
   | GraphQLScalarType
@@ -73,7 +73,7 @@ let writeFieldType: (
 
 const writeListType = (
   result: TextBuilder,
-  type: GraphQLList<any>,
+  type: GraphQLList<GraphQLOutputType>,
   writeInnerType: (result: TextBuilder, type: InnerType) => void
 ) => {
   const isNullable = !isNonNullType(type.ofType);

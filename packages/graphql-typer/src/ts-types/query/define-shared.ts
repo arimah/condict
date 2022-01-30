@@ -7,7 +7,6 @@ import {
   GraphQLObjectType,
   GraphQLInputType,
   GraphQLInputObjectType,
-  OperationTypeNode,
   isScalarType,
   isNonNullType,
   isListType,
@@ -32,7 +31,7 @@ let writeType: (type: GraphQLType) => string;
 const writeScalarType = (type: GraphQLScalarType): string =>
   getBuiltinScalar(type, 'clientRequest') || type.name;
 
-const writeListType = (type: GraphQLList<any>): string => {
+const writeListType = (type: GraphQLList<GraphQLType>): string => {
   const innerType = writeType(type.ofType);
   if (isNonNullType(type.ofType)) {
     return `${innerType}[]`;
@@ -103,7 +102,7 @@ const collectInputFieldTypes = (
 const defineOperationType = (
   result: TextBuilder,
   type: GraphQLObjectType,
-  operation: OperationTypeNode
+  operation: 'query' | 'mutation' | 'subscription'
 ) => {
   result.appendLine(
     `export type ${type.name}<A, R> = Operation<'${operation}', A, R>;\n`

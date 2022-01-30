@@ -9,7 +9,7 @@ const brace = value => ({kind: 'brace', value});
 describe('tokenizePattern', () => {
   it('should handle text tokens', () => {
     assert.deepEqual(
-      tokenizePattern('hello'),
+      Array.from(tokenizePattern('hello')),
       [
         text('hello'),
       ]
@@ -17,14 +17,14 @@ describe('tokenizePattern', () => {
 
     // The empty string contains no tokens
     assert.deepEqual(
-      tokenizePattern(''),
+      Array.from(tokenizePattern('')),
       []
     );
   });
 
   it('should handle placeholder tokens', () => {
     assert.deepEqual(
-      tokenizePattern('{hello}'),
+      Array.from(tokenizePattern('{hello}')),
       [
         placeholder('{hello}', 'hello'),
       ]
@@ -33,14 +33,14 @@ describe('tokenizePattern', () => {
 
   it('should handle escaped braces', () => {
     assert.deepEqual(
-      tokenizePattern('{{'),
+      Array.from(tokenizePattern('{{')),
       [
         brace('{{'),
       ]
     );
 
     assert.deepEqual(
-      tokenizePattern('}}'),
+      Array.from(tokenizePattern('}}')),
       [
         brace('}}'),
       ]
@@ -49,14 +49,14 @@ describe('tokenizePattern', () => {
 
   it('should treat lone "}" as text', () => {
     assert.deepEqual(
-      tokenizePattern('foo}bar'),
+      Array.from(tokenizePattern('foo}bar')),
       [
         text('foo}bar'),
       ]
     );
 
     assert.deepEqual(
-      tokenizePattern('foo}}}bar'),
+      Array.from(tokenizePattern('foo}}}bar')),
       [
         text('foo'),
         brace('}}'),
@@ -67,7 +67,7 @@ describe('tokenizePattern', () => {
 
   it('should treat unmatched "{" as text', () => {
     assert.deepEqual(
-      tokenizePattern('foo{bar'),
+      Array.from(tokenizePattern('foo{bar')),
       [
         text('foo{bar'),
       ]
@@ -76,7 +76,7 @@ describe('tokenizePattern', () => {
 
   it('should treat "{}" as text', () => {
     assert.deepEqual(
-      tokenizePattern('foo{}bar'),
+      Array.from(tokenizePattern('foo{}bar')),
       [
         text('foo{}bar'),
       ]
@@ -85,7 +85,7 @@ describe('tokenizePattern', () => {
 
   it('should handle complex patterns', () => {
     assert.deepEqual(
-      tokenizePattern('prefix{~}suffix'),
+      Array.from(tokenizePattern('prefix{~}suffix')),
       [
         text('prefix'),
         placeholder('{~}', '~'),
@@ -94,7 +94,7 @@ describe('tokenizePattern', () => {
     );
 
     assert.deepEqual(
-      tokenizePattern('{stem}foo{{bar baz}{beep}'),
+      Array.from(tokenizePattern('{stem}foo{{bar baz}{beep}')),
       [
         placeholder('{stem}', 'stem'),
         text('foo'),
@@ -105,7 +105,7 @@ describe('tokenizePattern', () => {
     );
 
     assert.deepEqual(
-      tokenizePattern('{{{foo}bar{{{baz}}}x}'),
+      Array.from(tokenizePattern('{{{foo}bar{{{baz}}}x}')),
       [
         brace('{{'),
         placeholder('{foo}', 'foo'),

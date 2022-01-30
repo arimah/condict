@@ -28,6 +28,8 @@ const writeType = (type: TypeNode): string => {
       return `[${writeType(type.type)}]`;
     case 'NamedType':
       return type.name.value;
+    default:
+      throw new Error(`Unexpected node kind: ${type.kind}`);
   }
 };
 

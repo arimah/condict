@@ -11,6 +11,8 @@ import DeleteColumnIcon from 'mdi-react/TableColumnRemoveIcon';
 import MergeIcon from 'mdi-react/TableMergeCellsIcon';
 import SeparateIcon from 'mdi-react/TableSplitCellIcon';
 import DotsIcon from 'mdi-react/DotsVerticalIcon';
+import ImportIcon from 'mdi-react/TableArrowDownIcon';
+import TransposeIcon from 'mdi-react/TablePivotIcon';
 
 import {Toolbar, Menu} from '@condict/ui';
 import {InflectionTable, SelectionShape} from '@condict/table-editor';
@@ -164,10 +166,12 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
           <Menu placement='BELOW_RIGHT'>
             <Menu.Item
               label={l10n.getString('table-editor-import-layout-menu')}
+              icon={<ImportIcon/>}
               onActivate={handleImportLayout}
             />
             <Menu.Item
               label={l10n.getString('table-editor-transpose-menu')}
+              icon={<TransposeIcon/>}
               onActivate={handleTranspose}
             />
           </Menu>

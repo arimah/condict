@@ -46,7 +46,7 @@ export const withPersistentWindowState = (
   const writeWindowState = () => {
     const newState = getCurrentWindowState();
     lastWindowState = newState;
-    void saveWindowState(fileName, newState);
+    saveWindowState(fileName, newState);
   };
 
   const updateWindowState = debounce(1000, writeWindowState);
@@ -126,16 +126,8 @@ const validateInteger = <D extends number | undefined | null>(
 const saveWindowState = (
   fileName: string,
   windowState: WindowState
-): Promise<void> => {
+) => {
   const windowStateText = JSON.stringify(windowState, undefined, '  ');
   const options = {encoding: 'utf8'} as const;
-  return new Promise<void>((resolve, reject) => {
-    fs.writeFile(fileName, windowStateText, options, error => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve();
-      }
-    });
-  });
+  fs.writeFileSync(fileName, windowStateText, options);
 };

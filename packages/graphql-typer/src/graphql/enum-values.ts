@@ -20,7 +20,7 @@ import {
 
 export type PermittedEnumValues = {
   type: GraphQLEnumType;
-  values: GraphQLEnumValue[];
+  values: readonly GraphQLEnumValue[];
   allowNull: boolean;
 };
 
@@ -89,7 +89,7 @@ const getPermittedEnumValues = (
     return null;
   }
 
-  let values: GraphQLEnumValue[];
+  let values: readonly GraphQLEnumValue[];
   if (restrict.only) {
     values =
       assertIsList(restrict.only)
