@@ -40,10 +40,9 @@ Getting Condict up and running is a slightly involved process. Keep in mind **Co
 
 The first thing you must do is ensure all dependencies are downloaded and installed:
 
-1. `npm install`
-2. Bootstrap dependencies with [Lerna][]: `npm run bootstrap` or, alternatively if you have a globally installed Lerna, `lerna bootstrap --hoist`. Hoisting is strongly recommended, especially on Windows, as module resolution may otherwise fail due to symlinked packages with identical dependencies. Additionally, without hoisting, [styled-components][] may end up with multiple instances, which breaks UI components.
-3. **On Windows:** build the build tools, `node scripts/build -g build-tools`, then bootstrap packages again as above. This is needed because npm cannot correctly install the `condict-graphql-typer` binary if the compiled JS file is missing.
-4. Build everything: `npm run build`
+1. Install basic dependencies: `npm install`
+2. Bootstrap packages with [Lerna][]: `npm run bootstrap`
+3. Build everything: `npm run build`
 
 ### Testing/developing UI components
 
@@ -63,7 +62,7 @@ Source files for the UI component test server are in [dev/](./dev).
 
 If the server fails to start with errors around [better-sqlite3][] or [bcrypt][], you may also need to run `npm run build:native-deps`.
 
-When the server is running, a GraphQL playground will be accessible at `http://localhost:4000`. The server does _not_ automatically reload on recompilation; you must restart it manually.
+When the server is running, a GraphQL playground will be accessible at `http://localhost:4000`. **The server does _not_ automatically reload on recompilation;** you must restart it manually.
 
 ### Testing/developing the app
 
