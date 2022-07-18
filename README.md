@@ -38,11 +38,7 @@ That said, **bug reports and bug fix PRs are welcome**, even at this stage.
 
 Getting Condict up and running is a slightly involved process. Keep in mind **Condict is a work in progress, and many features are missing**, including documentation.
 
-The first thing you must do is ensure all dependencies are downloaded and installed:
-
-1. Install basic dependencies: `npm install`
-2. Bootstrap packages with [Lerna][]: `npm run bootstrap`
-3. Build everything: `npm run build`
+First, run initial setup: `npm run setup`
 
 ### Testing/developing UI components
 
