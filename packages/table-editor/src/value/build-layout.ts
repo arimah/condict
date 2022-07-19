@@ -26,12 +26,12 @@ const buildLayout = (table: TableBase<unknown>): Layout => {
     row.cells.forEach(key => {
       const {columnSpan, rowSpan} = Table.getCell(table, key);
       if (rowSpan === 1) {
-        columnCounts[rowIndex] = (columnCounts[rowIndex] || 0) + columnSpan;
+        columnCounts[rowIndex] = (columnCounts[rowIndex] ?? 0) + columnSpan;
       } else {
         // This cell contributes columnSpan columns to every row it's in.
         for (let r = 0; r < rowSpan; r++) {
           const index = rowIndex + r;
-          columnCounts[index] = (columnCounts[index] || 0) + columnSpan;
+          columnCounts[index] = (columnCounts[index] ?? 0) + columnSpan;
         }
       }
     });

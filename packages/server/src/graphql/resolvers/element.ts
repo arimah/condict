@@ -29,7 +29,7 @@ import {ResolversFor} from './types';
 
 const BlockElement: ResolversFor<BlockElementType, BlockElementJson> = {
   // Level 0 is not stored in the object, to save space.
-  level: p => p.level || 0,
+  level: p => p.level ?? 0,
 };
 
 const InlineElement: ResolversFor<InlineElementType, InlineElementJson> = {
@@ -43,12 +43,12 @@ const InlineElement: ResolversFor<InlineElementType, InlineElementJson> = {
 
 const FormattedText: ResolversFor<FormattedTextType, FormattedTextJson> = {
   // Disabled formatting properties are not stored in the object, to save space.
-  bold: p => p.bold || false,
-  italic: p => p.italic || false,
-  underline: p => p.underline || false,
-  strikethrough: p => p.strikethrough || false,
-  subscript: p => p.subscript || false,
-  superscript: p => p.superscript || false,
+  bold: p => p.bold ?? false,
+  italic: p => p.italic ?? false,
+  underline: p => p.underline ?? false,
+  strikethrough: p => p.strikethrough ?? false,
+  subscript: p => p.subscript ?? false,
+  superscript: p => p.superscript ?? false,
 };
 
 const LinkInline: ResolversFor<LinkInlineType, LinkInlineJson> = {

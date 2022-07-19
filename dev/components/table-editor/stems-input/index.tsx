@@ -27,7 +27,7 @@ const StemsInput = (props: Props): JSX.Element => {
               {name}
               {': '}
               <S.ValueInput
-                value={value.has(name) ? value.get(name) || '' : term}
+                value={value.get(name) ?? term}
                 onChange={e => {
                   onChange(produce(value, value => {
                     value.set(name, e.target.value);

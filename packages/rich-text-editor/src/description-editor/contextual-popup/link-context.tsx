@@ -30,13 +30,13 @@ const LinkContext = (props: Props): JSX.Element => {
   return (
     <S.Columns>
       <S.PrimaryAction
-        label={messages.editLinkLabel(target.name || target.url, target.type)}
+        label={messages.editLinkLabel(target.name ?? target.url, target.type)}
         title={messages.editLink()}
         tabIndex={tabIndex}
         onClick={onEditLink}
       >
         <EditIcon/>
-        <S.PrimaryLabel>{target.name || target.url}</S.PrimaryLabel>
+        <S.PrimaryLabel>{target.name ?? target.url}</S.PrimaryLabel>
         <S.SecondaryLabel>{target.type}</S.SecondaryLabel>
       </S.PrimaryAction>
       <S.Actions>

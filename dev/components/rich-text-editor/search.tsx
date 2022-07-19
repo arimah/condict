@@ -137,8 +137,8 @@ const searchDictionary = (query: string): Promise<readonly SearchResult[]> => {
           name: item.name,
           type: item.type,
         },
-        name: nameMatch || item.name,
-        snippet: descriptionMatch || item.description,
+        name: nameMatch ?? item.name,
+        snippet: descriptionMatch ?? item.description,
       });
     }
   }

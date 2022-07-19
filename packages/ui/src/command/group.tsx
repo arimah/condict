@@ -1,13 +1,12 @@
-import React, {ReactNode, useMemo, useCallback, useRef, useContext} from 'react';
+import React, {ReactNode, useMemo, useRef, useContext} from 'react';
 
-import {Shortcut, ShortcutMap} from '../shortcut';
+import {ShortcutMap} from '../shortcut';
 
 import {
   Command,
   CommandSpecMap,
   CommandGroup,
   CommandGroupChain,
-  DefaultExecFn,
 } from './types';
 
 export const Context = React.createContext<CommandGroupChain | null>(null);
@@ -16,16 +15,16 @@ export type Options<T> = {
   /** Specifies the commands in this group. */
   commands: CommandSpecMap<T>;
   /**
-   * Executes a command in this group. The command's `exec` property is passed
-   * as the argument, and this function is responsible for handling it in an
-   * appropriate manner.
+   * Executes a command in this group. The command's `action` property is
+   * passed as the argument, and this function is responsible for handling
+   * it in an appropriate manner.
    */
   exec: (cmd: T) => void;
   /** If true, every command in the group is disabled. */
   disabled?: boolean;
 };
 
-export function useCommandGroup<T = DefaultExecFn>(
+export function useCommandGroup<T>(
   options: Options<T>
 ): CommandGroup {
   const {commands, exec, disabled: groupDisabled = false} = options;
@@ -35,21 +34,15 @@ export function useCommandGroup<T = DefaultExecFn>(
   // the command map when e.g. users type.
   const execRef = useRef(exec);
   execRef.current = exec;
-  const handleExec = useCallback((cmd: T) => {
-    execRef.current(cmd);
-  }, []);
 
   return useMemo<CommandGroup>(() => {
     const commandMap = Object.keys(commands).reduce((map, name) => {
       const {action, disabled = false, shortcut = null} = commands[name];
 
       map.set(name, {
-        exec: () => handleExec(action),
+        exec: () => execRef.current(action),
         disabled: groupDisabled || disabled,
-        shortcut:
-          typeof shortcut === 'string' || Array.isArray(shortcut)
-            ? Shortcut.parse(shortcut)
-            : shortcut,
+        shortcut,
       });
       return map;
     }, new Map<string, Command>());
@@ -63,7 +56,7 @@ export function useCommandGroup<T = DefaultExecFn>(
       commands: commandMap,
       keyMap,
     };
-  }, [commands, handleExec, groupDisabled]);
+  }, [commands, groupDisabled]);
 }
 
 export type CommandProviderProps = {

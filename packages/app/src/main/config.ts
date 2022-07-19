@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import {app, nativeTheme} from 'electron';
+import {nativeTheme} from 'electron';
 
 import {
   Logger,

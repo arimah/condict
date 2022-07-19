@@ -84,14 +84,14 @@ export const SelectField = React.memo((
   return (
     <S.Field>
       {label &&
-        <S.Label htmlFor={id || autoId}>
+        <S.Label htmlFor={id ?? autoId}>
           {label}
         </S.Label>}
       <S.SelectWrapper>
         <S.Select
           {...otherProps}
           {...fieldProps}
-          id={id || autoId}
+          id={id ?? autoId}
           aria-describedby={fieldError ? `${autoId}-error` : undefined}
           value={mapValueToOption(value)}
           $invalid={Boolean(fieldError)}

@@ -311,11 +311,11 @@ export const Table: TableOps = {
     table: TableBase<D> | Draft<TableBase<D>>,
     key: CellKey
   ): Cell | Draft<Cell> {
-    return table.cells.get(key) || cellNotFound(key);
+    return table.cells.get(key) ?? cellNotFound(key);
   },
 
   getData<D>(table: TableBase<D>, key: CellKey): D {
-    return table.cellData.get(key) || table.defaultData;
+    return table.cellData.get(key) ?? table.defaultData;
   },
 
   updateData<D>(
@@ -424,11 +424,11 @@ export const Layout = {
 
   getCellAt(layout: Layout, row: number, column: number): LayoutCell {
     const key = layout.grid[row * layout.columnCount + column];
-    return layout.cells.get(key) || cellNotFound(key);
+    return layout.cells.get(key) ?? cellNotFound(key);
   },
 
   getCellByKey(layout: Layout, key: CellKey): LayoutCell {
-    return layout.cells.get(key) || cellNotFound(key);
+    return layout.cells.get(key) ?? cellNotFound(key);
   },
 };
 

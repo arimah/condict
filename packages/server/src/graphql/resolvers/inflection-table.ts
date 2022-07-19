@@ -85,18 +85,18 @@ const InflectionTableHeaderCell: ResolversFor<
   InflectionTableHeaderCellType,
   InflectionTableCellJson
 > = {
-  columnSpan: p => p.columnSpan || 1,
+  columnSpan: p => p.columnSpan ?? 1,
 
-  rowSpan: p => p.rowSpan || 1,
+  rowSpan: p => p.rowSpan ?? 1,
 };
 
 const InflectionTableDataCell: ResolversFor<
   InflectionTableDataCellType,
   InflectionTableCellJson
 > = {
-  columnSpan: p => p.columnSpan || 1,
+  columnSpan: p => p.columnSpan ?? 1,
 
-  rowSpan: p => p.rowSpan || 1,
+  rowSpan: p => p.rowSpan ?? 1,
 
   inflectedForm: (p, _args, {db}) =>
     p.inflectedFormId

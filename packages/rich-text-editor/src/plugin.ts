@@ -119,7 +119,7 @@ const withCondict = (
 
   editor.indent = options => Editor.withoutNormalizing(editor, () => {
     for (const [block, path] of blocks(editor, options)) {
-      const indent = block.indent || 0;
+      const indent = block.indent ?? 0;
       if (indent < MaxIndent) {
         Transforms.setNodes(editor, {indent: indent + 1}, {at: path});
       }
@@ -128,7 +128,7 @@ const withCondict = (
 
   editor.unindent = options => Editor.withoutNormalizing(editor, () => {
     for (const [block, path] of blocks(editor, options)) {
-      const indent = block.indent || 0;
+      const indent = block.indent ?? 0;
       if (indent > 0) {
         Transforms.setNodes(editor, {indent: indent - 1}, {at: path});
       }
@@ -154,7 +154,7 @@ const withCondict = (
           }
 
           // Otherwise, insert the target name or URL, and wrap that.
-          const linkText = target.name || target.url;
+          const linkText = target.name ?? target.url;
           Transforms.insertText(editor, linkText, {at});
           at = {
             anchor: at.anchor,

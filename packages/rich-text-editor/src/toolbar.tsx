@@ -49,7 +49,7 @@ export const HeadingsGroup = (
   const {shortcuts, messages} = props;
   const editor = useSlate();
   const options = {
-    at: editor.selection || editor.blurSelection || undefined,
+    at: editor.selection ?? editor.blurSelection ?? undefined,
   };
   return (
     <Toolbar.Group name={messages.headingsGroup()}>
@@ -78,7 +78,7 @@ export const InlineFormatGroup = (
 ): JSX.Element => {
   const {shortcuts, messages} = props;
   const editor = useSlate();
-  const marks = Editor.marks(editor) || {};
+  const marks = Editor.marks(editor) ?? {};
 
   const toggleMark = useCallback((key: MarkType) => {
     if (marks[key]) {
@@ -187,7 +187,7 @@ export const BlockFormatGroup = (
   const {shortcuts, messages} = props;
   const editor = useSlate();
   const options = {
-    at: editor.selection || editor.blurSelection || undefined,
+    at: editor.selection ?? editor.blurSelection ?? undefined,
   };
   return <>
     <Toolbar.Group name={messages.listStyleGroup()}>

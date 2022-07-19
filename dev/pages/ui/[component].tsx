@@ -17,7 +17,7 @@ const Page = (): JSX.Element => {
   return <>
     <Head>
       <title>
-        {selectedComponent?.name || 'Unknown component'}
+        {selectedComponent?.name ?? 'Unknown component'}
         {' '}
         &ndash; Condict UI components
       </title>

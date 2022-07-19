@@ -44,7 +44,7 @@ const SearchIndex = {
     page: PageParams | undefined | null,
     info?: GraphQLResolveInfo
   ): ItemConnection<SearchResultRow> {
-    page = validatePageParams(page || this.defaultPagination, this.maxPerPage);
+    page = validatePageParams(page ?? this.defaultPagination, this.maxPerPage);
 
     // First step: figure out which scopes we can search given the input scopes
     // and current filters.

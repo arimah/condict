@@ -130,7 +130,7 @@ const findMatches = (addMatch: MatchConsumer, query: string) => {
 };
 
 const updateQueryWordScore = (match: WorkingMatch, query: string, score: number) => {
-  const prevScore = match.queryWordScores.get(query) || 0;
+  const prevScore = match.queryWordScores.get(query) ?? 0;
   const nextScore = Math.max(prevScore, score);
   match.queryWordScores.set(query, nextScore);
   match.totalScore += nextScore - prevScore;

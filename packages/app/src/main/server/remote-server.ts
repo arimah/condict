@@ -68,7 +68,7 @@ export default class RemoteServer implements ServerImpl {
         body,
         headers: {
           'Content-Type': 'application/json',
-          [SessionIdHeader]: this.getSessionId() || '-',
+          [SessionIdHeader]: this.getSessionId() ?? '-',
         },
       });
     } catch (e: any) {

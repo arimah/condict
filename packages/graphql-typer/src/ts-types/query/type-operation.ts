@@ -23,7 +23,7 @@ const getTypeWriterParams = (
     useType: type => params.useType(type),
     useFragment: (name, loc) => {
       const fragment =
-        params.ownFragments.get(name) ||
+        params.ownFragments.get(name) ??
         params.fragments.get(name);
       if (!fragment) {
         throw new Error(`${formatLoc(loc)}: Unknown fragment: ${name}`);

@@ -8,7 +8,7 @@ export type Props = {
 export const Input = styled.input<Props>`
   box-sizing: border-box;
   font: inherit;
-  border-radius: ${p => p.borderRadius || '3px'};
+  border-radius: ${p => p.borderRadius ?? '3px'};
   border-color: ${p => p.theme.general.border};
   background-color: ${p => p.theme.defaultBg};
   color: ${p => p.theme.defaultFg};

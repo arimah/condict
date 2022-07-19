@@ -4,15 +4,13 @@ import {Shortcut, ShortcutMap} from '../shortcut';
 
 type AnyKeyboardEvent = KeyboardEvent | SyntheticKeyboardEvent;
 
-export type DefaultExecFn = () => void;
-
-export interface CommandSpec<T = DefaultExecFn> {
+export interface CommandSpec<T> {
   readonly action: T;
   readonly disabled?: boolean;
-  readonly shortcut?: Shortcut | string | string[] | null;
+  readonly shortcut?: Shortcut | null;
 }
 
-export interface CommandSpecMap<T = DefaultExecFn> {
+export interface CommandSpecMap<T> {
   readonly [key: string]: CommandSpec<T>;
 }
 
@@ -40,7 +38,7 @@ export const CommandGroup = {
    * @return The command, or null if no such command was found.
    */
   get(group: CommandGroup, name: string): Command | null {
-    return group.commands.get(name) || null;
+    return group.commands.get(name) ?? null;
   },
 
   /**

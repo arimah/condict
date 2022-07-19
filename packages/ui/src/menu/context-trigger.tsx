@@ -72,9 +72,9 @@ const ContextMenuTrigger = (props: Props): JSX.Element => {
   const childClassName = children.props?.className as string | undefined;
   const childWithMenu = React.cloneElement(children, {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    'aria-owns': `${menuId} ${children.props['aria-owns'] || ''}`,
+    'aria-owns': `${menuId} ${children.props['aria-owns'] ?? ''}`,
     className: isOpen && openClass
-      ? `${childClassName || ''} ${openClass}`
+      ? `${childClassName ?? ''} ${openClass}`
       : childClassName,
     onContextMenu: openMenu,
     ref: combineRefs(childRef, children.ref),

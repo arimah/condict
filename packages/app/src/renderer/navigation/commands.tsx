@@ -30,7 +30,7 @@ const NavigationCommands: CommandSpecMap<NavigationAction> = {
 
 const useNavigationCommands = (): CommandGroup => {
   const nav = useNavigation();
-  return useCommandGroup<NavigationAction>({
+  return useCommandGroup({
     commands: NavigationCommands,
     exec: action => {
       switch (action) {

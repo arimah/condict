@@ -1,11 +1,7 @@
-import {Ref, RefObject, MutableRefObject} from 'react';
-
-type ValidRef<T> =
-  { bivarianceHack(instance: T | null): void }['bivarianceHack'] |
-  RefObject<T>;
+import {Ref, MutableRefObject} from 'react';
 
 export default <T>(...refs: (Ref<T> | undefined)[]): Ref<T> => {
-  const validRefs = refs.filter(Boolean) as ValidRef<T>[];
+  const validRefs = refs.filter(Boolean) as NonNullable<Ref<T>>[];
 
   switch (validRefs.length) {
     case 0:
@@ -14,13 +10,13 @@ export default <T>(...refs: (Ref<T> | undefined)[]): Ref<T> => {
       return validRefs[0];
     default:
       return elem => {
-        validRefs.forEach(ref => {
+        for (const ref of validRefs) {
           if (typeof ref === 'function') {
             ref(elem);
           } else {
             (ref as MutableRefObject<T | null>).current = elem;
           }
-        });
+        }
       };
   }
 };

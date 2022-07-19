@@ -83,7 +83,7 @@ const main = async () => {
   const args = parseCliArgs(globalOptions, {stopAtFirstUnknown: true});
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const configFile: string = args.config || 'config.json';
+  const configFile: string = args.config ?? 'config.json';
   let config: ServerConfigWithLogger;
   try {
     config = loadConfigFile(configFile);
@@ -96,8 +96,8 @@ const main = async () => {
   const logger = createLogger(config.log);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const cmdArgs = parseCliArgs(commandOptions[args.command] || [], {
-    argv: args._unknown || [],
+  const cmdArgs = parseCliArgs(commandOptions[args.command] ?? [], {
+    argv: args._unknown ?? [],
   });
 
   try {
@@ -108,7 +108,7 @@ const main = async () => {
         await start(logger, config);
         break;
       case 'view-table-schema': {
-        const table = (cmdArgs.table as MaybeString) || null;
+        const table = (cmdArgs.table as MaybeString) ?? null;
         printSchema(config, table);
         break;
       }

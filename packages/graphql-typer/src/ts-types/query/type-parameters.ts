@@ -47,7 +47,7 @@ const writeNullableType = (
   }
   if (isScalarType(actualType)) {
     const builtin = getBuiltinScalar(actualType, 'clientRequest');
-    return builtin || params.useType(actualType);
+    return builtin ?? params.useType(actualType);
   }
   if (isEnumType(actualType) || isInputObjectType(actualType)) {
     return params.useType(actualType);

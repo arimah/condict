@@ -51,7 +51,7 @@ const validateLogFile = (config: any): LogFile => {
     throw new Error(`Invalid log level: ${level}`);
   }
 
-  return {path, level: level || 'info'};
+  return {path, level: level ?? 'info'};
 };
 
 /**

@@ -52,4 +52,4 @@ export const defineScalarType = (
 };
 
 export const writeScalarType = (type: GraphQLScalarType): string =>
-  getBuiltin(type, 'server') || type.name;
+  getBuiltin(type, 'server') ?? type.name;

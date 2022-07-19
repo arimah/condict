@@ -518,7 +518,7 @@ const DefinitionMut = {
         term,
         stemMap,
         table.inflection_table_version_id,
-        customForms.get(table.id) || new Map()
+        customForms.get(table.id) ?? new Map<InflectedFormId, string>()
       );
 
       // Add each form as a derived definition. So derivative.

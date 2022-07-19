@@ -73,7 +73,7 @@ const Lemma = {
     filter: LemmaFilter | undefined | null,
     info?: GraphQLResolveInfo
   ): ItemConnection<LemmaRow> {
-    page = validatePageParams(page || this.defaultPagination, this.maxPerPage);
+    page = validatePageParams(page ?? this.defaultPagination, this.maxPerPage);
     if (filter && isFilteringNeeded(filter)) {
       return this.allByLanguageFiltered(db, languageId, page, filter, info);
     } else {
@@ -139,7 +139,7 @@ const Lemma = {
       ${buildDerivedDefinitionsSource(db, joinType, filter)}
     `;
     return paginate(
-      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      validatePageParams(page ?? this.defaultPagination, this.maxPerPage),
       () => {
         const {total} = db.getRequired<{total: number}>`
           select count(*) as total

@@ -36,7 +36,7 @@ const Page = (props: Props): JSX.Element => {
   return (
     <S.Item>
       <S.Page
-        label={label || messages.pageNumber(page + 1, totalPages)}
+        label={label ?? messages.pageNumber(page + 1, totalPages)}
         aria-current={isCurrent ? 'page' : undefined}
         aria-busy={isCurrent ? loading : undefined}
         bold={isCurrent}
@@ -45,7 +45,7 @@ const Page = (props: Props): JSX.Element => {
         disabled={disabled}
         onClick={() => onChange(page)}
       >
-        {children || page + 1}
+        {children ?? page + 1}
       </S.Page>
       {isCurrent && loading &&
         <S.Loading disabled={disabled}>

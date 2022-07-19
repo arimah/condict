@@ -80,9 +80,9 @@ export const addUser = async (
   maybePassword?: string | null
 ): Promise<void> => {
   const args: NewUserInput = await withPrompt(async prompt => {
-    const name = maybeName ||
+    const name = maybeName ??
       await prompt.query('Name of new user: ');
-    const password = maybePassword ||
+    const password = maybePassword ??
       await prompt.queryPassword('Password: ');
 
     return {name, password};

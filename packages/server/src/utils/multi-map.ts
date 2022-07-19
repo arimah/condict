@@ -41,7 +41,7 @@ export default class MultiMap<K, V> {
    * @return The values under the specified key, or null if the key is empty.
    */
   public get(key: K): Set<V> | null {
-    return this.collection.get(key) || null;
+    return this.collection.get(key) ?? null;
   }
 
   /**

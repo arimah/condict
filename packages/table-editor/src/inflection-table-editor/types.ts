@@ -36,8 +36,8 @@ export const InflectionTable = {
       inputCell => {
         const cell: Cell = {
           key: CellKey(),
-          rowSpan: inputCell.rowSpan || 1,
-          columnSpan: inputCell.columnSpan || 1,
+          rowSpan: inputCell.rowSpan ?? 1,
+          columnSpan: inputCell.columnSpan ?? 1,
           // It's a header cell if there is no inflected form.
           header: !inputCell.inflectedForm,
         };
@@ -54,7 +54,7 @@ export const InflectionTable = {
         } else {
           data = {
             ...DefaultData,
-            text: inputCell.headerText || '',
+            text: inputCell.headerText ?? '',
           };
         }
         return [cell, data];

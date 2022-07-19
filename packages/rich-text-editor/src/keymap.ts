@@ -164,7 +164,7 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
         // pressing Ctrl+Enter in a list, we need to indent by one level.
         const [[block, blockPath]] = blocks(editor);
         const indent = isListType(block.type)
-          ? Math.min((block.indent || 0) + 1, MaxIndent)
+          ? Math.min((block.indent ?? 0) + 1, MaxIndent)
           : block.indent;
         Transforms.setNodes(editor, {type: 'paragraph', indent}, {
           at: blockPath,

@@ -14,7 +14,7 @@ export const Select = styled.select<Props>`
   appearance: none;
   width: 100%;
   font: inherit;
-  border-radius: ${p => p.borderRadius || '3px'};
+  border-radius: ${p => p.borderRadius ?? '3px'};
   border-color: ${p => p.theme.general.border};
   background-color: ${p => p.theme.defaultBg};
   color: ${p => p.theme.defaultFg};

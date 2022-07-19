@@ -133,7 +133,7 @@ export const writeSelectedFieldType = (
       writeFieldType(result, field.field.type, (_, type) => {
         if (isScalarType(type)) {
           const builtin = getBuiltinScalar(type, 'clientRequest');
-          result.append(builtin || params.useType(type));
+          result.append(builtin ?? params.useType(type));
         } else if (isEnumType(type)) {
           const permitted = getPermittedEnumValues(field.field);
           if (permitted) {
@@ -196,7 +196,7 @@ export const selectField = (
   selection: FieldNode,
   field: GraphQLField<any, any>
 ): void => {
-  const nameNode = selection.alias || selection.name;
+  const nameNode = selection.alias ?? selection.name;
   const outputName = nameNode.value;
   const subSelections = validateFieldSelection(parentType, field, selection);
 
@@ -225,7 +225,7 @@ export const selectTypename = (
   selection: FieldNode,
   possibleTypes: PossibleTypes
 ): void => {
-  const nameNode = selection.alias || selection.name;
+  const nameNode = selection.alias ?? selection.name;
   const outputName = nameNode.value;
 
   const output = outputFields.get(outputName);

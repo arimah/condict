@@ -21,7 +21,7 @@ const LanguageMut = {
 
     return MutContext.transact(context, context => {
       const {db, events, logger} = context;
-      const desc = DescriptionMut.insert(db, description || []);
+      const desc = DescriptionMut.insert(db, description ?? []);
 
       const now = Date.now();
       const {insertId: languageId} = db.exec<LanguageId>`

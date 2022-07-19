@@ -33,7 +33,7 @@ export const renderElement = (props: RenderElementProps): JSX.Element => {
       Component = B.Paragraph;
       break;
   }
-  const indent = element.indent || 0;
+  const indent = element.indent ?? 0;
   return (
     <Component data-indent={indent} {...attributes}>
       {children}

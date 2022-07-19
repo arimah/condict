@@ -49,7 +49,7 @@ export default class RequestCache {
           acc.set(getRowId(row), row);
           return acc;
         }, new Map<K, Row>());
-        return ids.map(id => rowsById.get(id) || null);
+        return ids.map(id => rowsById.get(id) ?? null);
       });
       this.dataLoaders[batchKey] = dataLoader;
     } else {
@@ -88,7 +88,7 @@ export default class RequestCache {
           }
           return acc;
         }, new Map<K, Row[]>());
-        return ids.map(id => rowsById.get(id) || []);
+        return ids.map(id => rowsById.get(id) ?? []);
       });
       this.dataLoaders[batchKey] = dataLoader;
     } else {

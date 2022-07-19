@@ -59,8 +59,6 @@ export {
   CommandGroup,
   CommandGroupOptions,
   CommandProvider,
-  CommandConsumer,
-  CommandConsumerProps,
   useCommand,
   useCommandGroup,
 } from './command';

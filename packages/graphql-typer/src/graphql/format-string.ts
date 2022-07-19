@@ -24,13 +24,7 @@ const escapes = new Map<string, string>([
 const escapeUnicode = (ch: string) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const codePoint = ch.codePointAt(0)!;
-  const hex = codePoint.toString(16);
-  switch (hex.length) {
-    case 1: return `000${hex}`;
-    case 2: return `00${hex}`;
-    case 3: return `0${hex}`;
-    default: return hex;
-  }
+  return codePoint.toString(16).padStart(4, '0');
 };
 
 /*
@@ -49,7 +43,7 @@ const escapeString = (value: string) =>
   value.replace(
     // eslint-disable-next-line no-control-regex
     /[\u0000-\u001F\\"]/g,
-    ch => escapes.get(ch) || escapeUnicode(ch)
+    ch => escapes.get(ch) ?? escapeUnicode(ch)
   );
 
 const formatString = (value: string): string => {

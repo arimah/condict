@@ -1,14 +1,18 @@
-import React from 'react';
 import {MdiReactIconProps} from 'mdi-react';
 
 // Made to behave and look like MDI icons.
 
 export const SearchIpaIcon = (props: MdiReactIconProps): JSX.Element => {
-  const {className, color = 'currentColor', size = 24, ...otherProps} = props;
+  const {
+    className = '',
+    color = 'currentColor',
+    size = 24,
+    ...otherProps
+  } = props;
   return (
     <svg
       {...otherProps}
-      className={`mdi-icon ${className || ''}`}
+      className={`mdi-icon ${className}`}
       width={size}
       height={size}
       fill={color}
@@ -25,11 +29,16 @@ export const SearchIpaIcon = (props: MdiReactIconProps): JSX.Element => {
 };
 
 export const ConvertToIpaIcon = (props: MdiReactIconProps): JSX.Element => {
-  const {className, color = 'currentColor', size = 24, ...otherProps} = props;
+  const {
+    className = '',
+    color = 'currentColor',
+    size = 24,
+    ...otherProps
+  } = props;
   return (
     <svg
       {...otherProps}
-      className={`mdi-icon ${className || ''}`}
+      className={`mdi-icon ${className}`}
       width={size}
       height={size}
       fill={color}

@@ -120,7 +120,7 @@ const Definition = {
     info?: GraphQLResolveInfo
   ): ItemConnection<DefinitionRow> {
     return paginate(
-      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      validatePageParams(page ?? this.defaultPagination, this.maxPerPage),
       () => {
         const {total} = db.getRequired<{total: number}>`
           select count(distinct dit.definition_id) as total
@@ -197,7 +197,7 @@ const Definition = {
       d.part_of_speech_id = ${partOfSpeechId}
     `;
     return paginate(
-      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      validatePageParams(page ?? this.defaultPagination, this.maxPerPage),
       () => {
         const {total} = db.getRequired<{total: number}>`
           select count(*) as total
@@ -231,7 +231,7 @@ const Definition = {
       d.language_id = ${languageId}
     `;
     return paginate(
-      validatePageParams(page || this.defaultPagination, this.maxRecentPerPage),
+      validatePageParams(page ?? this.defaultPagination, this.maxRecentPerPage),
       () => {
         const {total} = db.getRequired<{total: number}>`
           select count(*) as total
@@ -397,7 +397,7 @@ const DerivedDefinition = {
       dd.original_definition_id = ${definitionId}
     `;
     return paginate(
-      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      validatePageParams(page ?? this.defaultPagination, this.maxPerPage),
       () => {
         const {total} = db.getRequired<{total: number}>`
           select count(*) as total

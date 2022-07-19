@@ -33,7 +33,7 @@ const Tag = {
     info?: GraphQLResolveInfo
   ): ItemConnection<TagRow> {
     return paginate(
-      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      validatePageParams(page ?? this.defaultPagination, this.maxPerPage),
       () => {
         const row = db.getRequired<{total: number}>`
           select count(*) as total
@@ -59,7 +59,7 @@ const Tag = {
     info?: GraphQLResolveInfo
   ): ItemConnection<TagRow> {
     return paginate(
-      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      validatePageParams(page ?? this.defaultPagination, this.maxPerPage),
       () => {
         const row = db.getRequired<{total: number}>`
           select count(distinct t.id) as total

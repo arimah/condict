@@ -5,7 +5,6 @@
 * [`CommandGroup`](#commandgroup)
 * [`<CommandProvider>`](#commandprovider)
 * [`useCommand()`](#usecommand)
-* [`<CommandConsumer>`](#commandconsumer)
 
 ---
 
@@ -17,7 +16,7 @@ A _command_ is a reusable action. Every command is identified by a name, and has
 
 The [`useCommandGroup()`](#usecommandgroup) hook defines a [group of reusable commands](#commandgroup), while the [`<CommandProvider>`](#commandprovider) component makes them available to child components.
 
-Commands can be attached to any component using a [`<CommandConsumer>`](#commandconsumer), or using the hook [`useCommand()`](#usecommand). The following components have built-in support for commands (via the `command` prop, which takes a command name):
+Commands can be attached to any component using the hook [`useCommand()`](#usecommand). The following components have built-in support for commands (via the `command` prop, which takes a command name):
 
 * [Button](../button)
 * [Menu.Item](../menu#menuitem)
@@ -73,23 +72,12 @@ const commands = useCommandGroup({
 </CommandProvider>
 ```
 
-Bind components to some commands using a [`<CommandConsumer>`](#commandconsumer) or the hook [`useCommand()`](#usecommand):
+Bind components to some commands using the hook [`useCommand()`](#usecommand):
 
 ```jsx
-import {CommandConsumer, useCommand} from '@condict/ui';
+import {useCommand} from '@condict/ui';
 
-// Bind to a single command using CommandConsumer:
-<CommandConsumer name='undo'>
-  {command =>
-    <MyButton
-      label='Undo'
-      disabled={command.disabled}
-      onClick={command.exec}
-    />
-  }
-</CommandConsumer>
-
-// Use useCommand to create a new component with command support:
+// Using useCommand to create a new component with command support:
 const MyCommandButton = props => {
   const command = useCommand(props.command);
   return (
@@ -101,14 +89,6 @@ const MyCommandButton = props => {
 <MyCommandButton command='toUpper'>
   ...
 </MyCommandButton>
-// equivalent to:
-<CommandConsumer name='toUpper'>
-  {command =>
-    <MyButton disabled={command.disabled} onClick={command.exec}>
-      ...
-    </MyButton>
-  }
-</CommandConsumer>
 ```
 
 ## `useCommandGroup`
@@ -132,7 +112,7 @@ The `commands` prop takes an object that defines the available commands. The key
 | Name | Type | Description |
 | --- | --- | --- |
 | `action` | any | A value that contains the command's action, typically a function. The command group's `exec` prop is responsible for handling this value. See [`useCommandGroup()`](#usecommandgroup) above for details. |
-| `shortcut` | string, string[], [`Shortcut`][shortcut], null or undefined | Keyboard shortcuts attached to the command. If the value is a string or array, it will be passed to [`Shortcut.parse()`][shortcutparse]; see that function for more details. If set to null or undefined, the command has no keyboard shortcut. |
+| `shortcut` | [`Shortcut`][shortcut], null or undefined | Keyboard shortcuts attached to the command. If set to null or undefined, the command has no keyboard shortcut. |
 | `disabled` | boolean | If true, the command is disabled. A disabled command cannot be triggered by its keyboard shortcut, and components that use it are automatically disabled. Commands are enabled by default. |
 
 Any other properties on the command object are ignored.
@@ -176,9 +156,9 @@ Returns true if the keyboard event was handled (the event was not already handle
 
 ## `<CommandProvider>`
 
-The `<CommandProvider>` component exposes commands to child components. Commands can only be accessed by [`useCommand()`](#usecommand) or [`<CommandConsumer>`](#commandconsumer) when mounted inside a `<CommandProvider>`.
+The `<CommandProvider>` component exposes commands to child components. Commands can only be accessed by [`useCommand()`](#usecommand) when mounted inside a `<CommandProvider>`.
 
-Command groups can be arbitrarily nested. Commands are inherited from groups higher up in the tree. Nested commands can override inherited commands if given the same name. The [`useCommand()`](#usecommand) hook and [`<CommandConsumer>`](#commandconsumer) can reference commands from any parent group. See more under [examples](#examples).
+Command groups can be arbitrarily nested. Commands are inherited from groups higher up in the tree. Nested commands can override inherited commands if given the same name. The [`useCommand()`](#usecommand) hook can reference commands from any parent group. See more under [examples](#examples).
 
 ### Props
 
@@ -204,12 +184,6 @@ The returned command object has the following properties:
 | `exec` | function | Executes the command. This function takes no arguments and returns no value. |
 | `shortcut` | [`Shortcut`][shortcut] or null | The keyboard shortcut(s) bound to the command. This should mainly be used for formatting a string description of the shortcut. |
 | `disabled` | boolean | If true, the command is disabled. The component that uses the command should be enabled or disabled according to this value. |
-
-The command object has the same structure as the command passed to [`<CommandConsumer>`](#commandconsumer).
-
-## `<CommandConsumer>`
-
-A command consumer receives a single command as defined by a [command group](#usecommandgroup). This component resolves commands in the same way as [`useCommand()`](#usecommand); see there for more details.
 
 ### Props
 

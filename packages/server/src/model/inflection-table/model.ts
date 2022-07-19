@@ -240,7 +240,7 @@ const InflectionTableLayout = {
       itv.inflection_table_id = ${tableId} and itv.is_current = 0
     `;
     return paginate(
-      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      validatePageParams(page ?? this.defaultPagination, this.maxPerPage),
       () => {
         const {total} = db.getRequired<{total: number}>`
           select count(*) as total

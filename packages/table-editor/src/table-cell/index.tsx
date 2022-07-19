@@ -42,7 +42,7 @@ const TableCell = React.memo(
       onCommit,
     } = props;
 
-    const effectiveItem = editing || item;
+    const effectiveItem = editing ?? item;
     const cellKey = item.cell.key;
 
     const {CellData, CellEditor, canEditCell} = useEditor<D, M>();

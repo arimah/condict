@@ -29,7 +29,7 @@ import {ImportedType} from './types';
 let writeType: (type: GraphQLType) => string;
 
 const writeScalarType = (type: GraphQLScalarType): string =>
-  getBuiltinScalar(type, 'clientRequest') || type.name;
+  getBuiltinScalar(type, 'clientRequest') ?? type.name;
 
 const writeListType = (type: GraphQLList<GraphQLType>): string => {
   const innerType = writeType(type.ofType);

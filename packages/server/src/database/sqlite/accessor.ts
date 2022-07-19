@@ -15,7 +15,6 @@ import {
   Param,
   RawSql,
   SqlLogger,
-  QueryPlanNode,
 } from './types';
 
 /**
@@ -84,7 +83,7 @@ export default class Accessor implements DataAccessor, DataWriter {
       this.explainQueryPlan(sql, params);
     }
 
-    return stmt.get(params) as Row || null;
+    return stmt.get(params) as Row ?? null;
   }
 
   public getRequired<Row>(parts: Sql, ...values: Value[]): Row {

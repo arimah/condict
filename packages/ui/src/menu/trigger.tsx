@@ -63,7 +63,7 @@ const MenuTrigger = (props: Props): JSX.Element => {
     'aria-owns': menuId,
     'aria-haspopup': 'menu',
     className: isOpen && openClass
-      ? `${childClassName || ''} ${openClass}`
+      ? `${childClassName ?? ''} ${openClass}`
       : childClassName,
     onClick: openMenu,
     ref: combineRefs(childRef, children.ref),

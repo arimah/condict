@@ -241,10 +241,10 @@ const initState = (props: Props): State => {
   if (initialValue) {
     const results = [{
       target: initialValue,
-      name: initialValue.name || initialValue.url,
+      name: initialValue.name ?? initialValue.url,
     }];
     return {
-      value: initialValue.name || initialValue.url,
+      value: initialValue.name ?? initialValue.url,
       loading: false,
       index: 0,
       results,

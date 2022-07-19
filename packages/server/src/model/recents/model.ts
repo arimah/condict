@@ -38,7 +38,7 @@ const RecentChanges = {
       : db.raw`time_updated`;
 
     const {page: pageInfo, nodes} = paginate(
-      validatePageParams(page || this.defaultPagination, this.maxPerPage),
+      validatePageParams(page ?? this.defaultPagination, this.maxPerPage),
       () => {
         const {total} = db.getRequired<{total: number}>`
           select

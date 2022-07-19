@@ -72,13 +72,13 @@ export const TextField = React.memo((
   return (
     <S.Field>
       {label &&
-        <S.Label htmlFor={id || autoId}>
+        <S.Label htmlFor={id ?? autoId}>
           {label}
         </S.Label>}
       <S.TextInput
         {...otherProps}
         {...field}
-        id={id || autoId}
+        id={id ?? autoId}
         aria-describedby={fieldError ? `${autoId}-error` : undefined}
         aria-invalid={Boolean(fieldError)}
         readOnly={isSubmitting}
