@@ -1,101 +1,117 @@
-import React, {RefObject, useState, useContext, useEffect} from 'react';
+import React, {
+  ReactNode,
+  RefObject,
+  KeyboardEventHandler,
+  useContext,
+  useEffect,
+} from 'react';
 
+import {Shortcut} from '../shortcut';
+import Placement, {RelativeParent} from '../placement';
 import {Descendants} from '../descendants';
-import Placement from '../placement';
 
-import {MenuStack} from './menu-stack';
-import ManagedMenu from './managed-menu';
-import MenuManager from './manager';
+import {
+  RegisteredMenu,
+  RegisteredItem,
+  MenuStack,
+  OpenMenu,
+  CheckType,
+} from './types';
+import useLazyRef from '../lazy-ref';
 
-export type ManagedTreeContextValue = {
-  stack: MenuStack;
-  manager: MenuManager;
-};
+export interface OwnerContextValue {
+  readonly stack: MenuStack;
 
-export const ManagedTreeContext =
-  React.createContext<ManagedTreeContextValue | null>(null);
+  register(menu: RegisteredMenu): () => void;
 
-export type MenuContextValue = {
-  items: Descendants<MenuItem>;
-  currentFocus: MenuItem | null;
-  submenuPlacement: Placement;
-};
+  dispatch(msg: OwnerMessage): void;
 
-export const MenuContext = React.createContext<MenuContextValue | null>(null);
+  open(
+    menu: RegisteredMenu,
+    parent: RelativeParent,
+    placement?: Placement,
+    fromKeyboard?: boolean
+  ): void;
 
-export type MenuItemValue = {
-  hasFocus: boolean;
-  submenuPlacement: Placement;
-};
+  onMenuKeyDown?: KeyboardEventHandler;
 
-export class MenuItem {
-  public label!: string;
-  public disabled!: boolean;
-  public onActivate!: () => void;
-  public renderPhantom!: () => JSX.Element;
-
-  private readonly ref: RefObject<HTMLElement>;
-  private readonly submenuRef: RefObject<ManagedMenu> | null;
-
-  public constructor(
-    ref: RefObject<HTMLElement>,
-    submenuRef: RefObject<ManagedMenu> | null
-  ) {
-    this.ref = ref;
-    this.submenuRef = submenuRef;
-  }
-
-  public get id(): string {
-    return this.self.id;
-  }
-
-  public get self(): HTMLElement {
-    if (!this.ref.current) {
-      throw new Error('Menu item has been unmounted but not removed from menu manager');
-    }
-    return this.ref.current;
-  }
-
-  public get submenu(): ManagedMenu | null {
-    return this.submenuRef && this.submenuRef.current;
-  }
+  onMenuKeyPress?: KeyboardEventHandler;
 }
 
-export const useNearestMenu = (
-  ref: RefObject<HTMLElement>,
-  submenuRef: RefObject<ManagedMenu> | null,
+export type OwnerMessage =
+  | {type: 'focusItem'; item: RegisteredItem | null}
+  | {type: 'focusPrev'}
+  | {type: 'focusNext'}
+  | {
+    type: 'openRoot';
+    menu: RegisteredMenu;
+    parent: RelativeParent;
+    placement: Placement;
+    fromKeyboard: boolean;
+  }
+  | {
+    type: 'openSubmenu',
+    menu: RegisteredMenu;
+    placement: Placement;
+    fromKeyboard: boolean;
+  }
+  | {
+    type: 'activate';
+    item?: RegisteredItem;
+    submenuPlacement: Placement;
+    fromKeyboard: boolean;
+  }
+  | {type: 'closeDeepest'}
+  | {type: 'closeUpTo'; menu: OpenMenu}
+  | {type: 'closeAll'}
+  | {type: 'removePhantom'};
+
+export const OwnerContext = React.createContext<OwnerContextValue | null>(null);
+
+export const MenuContext = React.createContext<RegisteredMenu | null>(null);
+
+export const useMenuItem = (
+  id: string,
+  elemRef: RefObject<HTMLDivElement>,
+  submenuRef: RefObject<RegisteredMenu> | null,
+  icon: ReactNode,
   label: string,
+  shortcut: Shortcut | null,
   disabled: boolean,
-  onActivate: () => void,
-  renderPhantom: () => JSX.Element
-): MenuItemValue => {
-  const context = useContext(MenuContext);
-  if (!context) {
-    throw new Error('Menu item must be placed inside a menu');
-  }
+  activate: () => void,
+  checkType: CheckType
+): RegisteredItem => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const parent = useContext(MenuContext)!;
 
-  const [item] = useState(() => new MenuItem(ref, submenuRef));
+  const item = useLazyRef<RegisteredItem>(() => ({
+    id,
+    parent,
+    get elem() {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return elemRef.current!;
+    },
+    get submenu() {
+      return submenuRef ? submenuRef.current : null;
+    },
+    icon,
+    label,
+    shortcut,
+    disabled,
+    activate,
+    checkType,
+  })).current;
+  item.icon = icon;
   item.label = label;
+  item.shortcut = shortcut;
   item.disabled = disabled;
-  item.onActivate = onActivate;
-  item.renderPhantom = renderPhantom;
+  item.activate = activate;
+  item.checkType = checkType;
 
-  // HACK: componentDidUpdate in MenuManager runs before useEffect. :(
-  // This means we can't focus the first menu item reliably, unless we
-  // register the menu item during render.
-  Descendants.register(context.items, item);
-  useEffect(() => () => Descendants.unregister(context.items, item), []);
+  useEffect(() => {
+    Descendants.register(parent.items, item);
+    return () => Descendants.unregister(parent.items, item);
+  }, []);
 
-  return {
-    hasFocus: context.currentFocus === item,
-    submenuPlacement: context.submenuPlacement,
-  };
-};
-
-export const useManagedTree = (): ManagedTreeContextValue => {
-  const value = useContext(ManagedTreeContext);
-  if (!value) {
-    throw new Error('Menu must be mounted inside a MenuManager');
-  }
-  return value;
+  return item;
 };

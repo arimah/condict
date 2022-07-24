@@ -8,7 +8,6 @@ import PageNumbersIcon from 'mdi-react/Numeric1BoxMultipleOutlineIcon';
 
 import {
   Menu,
-  MenuType,
   MenuProps,
   MenuTrigger,
   ContextMenuTrigger,
@@ -16,7 +15,6 @@ import {
   Shortcut,
   Placement,
   Select,
-  Checkbox,
 } from '@condict/ui';
 
 import Demo, {List, Row, useDemoState} from '../demo';
@@ -73,12 +71,9 @@ type DemoMenuProps = {
   set: <K extends keyof State>(key: K, value: State[K]) => void;
 } & Omit<MenuProps, 'children'>;
 
-const DemoMenu = React.forwardRef((
-  {state, set, ...otherProps}: DemoMenuProps,
-  ref: Ref<MenuType>
-) =>
+const DemoMenu = ({state, set, ...otherProps}: DemoMenuProps): JSX.Element =>
   // Please never design a menu like this in real life.
-  <Menu {...otherProps} placement={state.placement} ref={ref}>
+  <Menu {...otherProps}>
     <Item label='New file' icon={<FileIcon/>} shortcut={NewShortcut}/>
     <Item label='Open file...' icon={<OpenIcon/>} shortcut={OpenShortcut}/>
     <Item label='Open recent'>
@@ -157,8 +152,7 @@ const DemoMenu = React.forwardRef((
     <Item label='Close file' shortcut={CloseShortcut}/>
     <Separator/>
     <Item label='Exit'/>
-  </Menu>
-);
+  </Menu>;
 
 const Main = (): JSX.Element => {
   const {state, set, reset} = useDemoState(StorageKey, InitialState);
@@ -180,6 +174,7 @@ const Main = (): JSX.Element => {
       <List>
         <Row>
           <MenuTrigger
+            placement={state.placement}
             openClass='force-active'
             menu={<DemoMenu state={state} set={set}/>}
           >
@@ -187,7 +182,10 @@ const Main = (): JSX.Element => {
           </MenuTrigger>
         </Row>
         <Row>
-          <ContextMenuTrigger menu={<DemoMenu state={state} set={set}/>}>
+          <ContextMenuTrigger
+            placement={state.placement}
+            menu={<DemoMenu state={state} set={set}/>}
+          >
             <Button label='I have a context menu'/>
           </ContextMenuTrigger>
         </Row>

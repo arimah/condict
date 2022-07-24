@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components';
+import styled, {css, keyframes} from 'styled-components';
 
 import {Gray} from '../theme';
 
@@ -21,6 +21,7 @@ export const Menu = styled.div.attrs({
   border-radius: 4px;
   background-color: ${p => p.theme.general.bg};
   color: ${p => p.theme.general.fg};
+  opacity: 0;
   box-shadow: 3px 2px 4px 1px rgba(0, 0, 0, 0.45);
   user-select: none;
 
@@ -120,6 +121,16 @@ export const ItemCheck = styled.span<ItemCheckProps>`
       : p.theme.general.border
     };
     background-color: ${p => p.theme.defaultBg};
+
+    ${p => p.checked && css`
+      &::after {
+        width: 8px;
+        height: 8px;
+        border-radius: 4px;
+        background-color: ${p => p.theme.accent.boldBg};
+        transform: translate(-50%, -50%);
+      }
+    `}
   ` : css<ItemCheckProps>`
     border-radius: 3px;
     border-color: ${p => p.checked
@@ -130,32 +141,26 @@ export const ItemCheck = styled.span<ItemCheckProps>`
       ? p.theme.accent.boldBg
       : p.theme.defaultBg
     };
+
+    ${p => p.checked && css`
+      &::after {
+        width: 10px;
+        height: 6px;
+        border-left: 2px solid ${p => p.theme.defaultBg};
+        border-bottom: 2px solid ${p => p.theme.defaultBg};
+        transform: translate(-50%, -75%) rotate(-45deg);
+      }
+    `}
   `}
-`;
 
-export const CheckMark = styled.span`
-  display: block;
-  box-sizing: border-box;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 10px;
-  height: 6px;
-  border-left: 2px solid ${p => p.theme.defaultBg};
-  border-bottom: 2px solid ${p => p.theme.defaultBg};
-  transform: translate(-50%, -75%) rotate(-45deg);
-`;
-
-export const RadioDot = styled.span`
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  border-radius: 4px;
-  background-color: ${p => p.theme.accent.boldBg};
-  transform: translate(-50%, -50%);
+  &::after {
+    content: '';
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
 `;
 
 export const Separator = styled.div.attrs({
@@ -171,8 +176,23 @@ export const Separator = styled.div.attrs({
 
 export const PhantomFadeTime = 200;
 
-export const PhantomContainer = styled.div`
+const FadeOutAnim = keyframes`
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+`;
+
+export const PhantomContainer = styled.div.attrs({
+  'aria-hidden': true,
+})`
   position: fixed;
+  z-index: 100;
   pointer-events: none;
-  transition: opacity ${PhantomFadeTime}ms ease-in;
+  animation-name: ${FadeOutAnim};
+  animation-duration: ${PhantomFadeTime}ms;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
 `;

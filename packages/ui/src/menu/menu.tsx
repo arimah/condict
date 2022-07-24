@@ -1,82 +1,41 @@
-import React, {ReactNode, Ref, RefObject, useContext} from 'react';
+import React, {ReactNode, Ref, useContext} from 'react';
 
-import Placement, {RelativeParent} from '../placement';
-
-import {ManagedTreeContext} from './context';
-import ManagedMenu from './managed-menu';
-import MenuManager from './manager';
+import {OwnerContext} from './context';
+import OwnedMenu, {MenuHandle} from './owned-menu';
+import MenuOwner from './owner';
 import Item from './item';
 import CheckItem from './check-item';
 import Separator from './separator';
 
 export type Props = {
-  id?: string;
   name?: string;
-  placement?: Placement;
-  parentRef?: RefObject<RelativeParent>;
+  id?: string;
+  label?: string;
   onClose?: () => void;
-  children: ReactNode;
+  children?: ReactNode;
 };
 
-export type MenuElement = JSX.Element & {
-  ref?: Ref<ManagedMenu>;
-};
+const Menu = React.forwardRef((props: Props, ref: Ref<MenuHandle>) => {
+  const {children, ...otherProps} = props;
 
-export type MenuType = ManagedMenu;
+  const owner = useContext(OwnerContext);
 
-const Menu = Object.assign(
-  // eslint-disable-next-line react/display-name
-  React.forwardRef((
-    props: Props,
-    ref: Ref<ManagedMenu>
-  ) => {
-    const {
-      children,
-      placement = 'BELOW_LEFT',
-      parentRef,
-      ...otherProps
-    } = props;
+  const ownedMenu =
+    <OwnedMenu {...otherProps} parentItem={null} publicRef={ref}>
+      {children}
+    </OwnedMenu>;
 
-    if (!parentRef) {
-      throw new Error('Menu must be mounted with a parentRef. Use a MenuTrigger to assign it automatically.');
-    }
-
-    const tree = useContext(ManagedTreeContext);
-    if (tree) {
-      return (
-        <ManagedMenu
-          {...otherProps}
-          placement={placement}
-          parentRef={parentRef}
-          stack={tree.stack}
-          manager={tree.manager}
-          ref={ref}
-        >
-          {children}
-        </ManagedMenu>
-      );
-    } else {
-      return (
-        <MenuManager>
-          <Menu
-            {...otherProps}
-            placement={placement}
-            parentRef={parentRef}
-            ref={ref}
-          >
-            {children}
-          </Menu>
-        </MenuManager>
-      );
-    }
-  }),
-  {
-    Item,
-    CheckItem,
-    Separator,
+  if (owner) {
+    return ownedMenu;
+  } else {
+    return <MenuOwner>{ownedMenu}</MenuOwner>;
   }
-);
+});
 
 Menu.displayName = 'Menu';
 
-export default Menu;
+export default Object.assign(Menu, {
+  Item,
+  CheckItem,
+  Separator,
+});

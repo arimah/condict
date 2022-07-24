@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key */
-import React, {Ref} from 'react';
+import React from 'react';
 import BoldIcon from 'mdi-react/FormatBoldIcon';
 import ItalicIcon from 'mdi-react/FormatItalicIcon';
 import UnderlineIcon from 'mdi-react/FormatUnderlineIcon';
@@ -16,7 +16,6 @@ import {
   Toolbar,
   Menu,
   MenuProps,
-  MenuType,
   Shortcut,
   Shortcuts,
 } from '@condict/ui';
@@ -63,11 +62,8 @@ type Props = {
 } & Omit<MenuProps, 'children'>;
 
 // eslint-disable-next-line react/display-name
-const MoreOptionsMenu = React.forwardRef((
-  {state, set, ...otherProps}: Props,
-  ref: Ref<MenuType>
-) =>
-  <Menu {...otherProps} placement='BELOW_RIGHT' ref={ref}>
+const MoreOptionsMenu = ({state, set, ...otherProps}: Props) =>
+  <Menu {...otherProps}>
     <Menu.Item label='Example menu'/>
     <Menu.Item label='Not suitable for real world'/>
     <Menu.Separator/>
@@ -148,8 +144,7 @@ const MoreOptionsMenu = React.forwardRef((
       <Menu.Item label='Increase indentation'/>
       <Menu.Item label='Decrease indentation'/>
     </Menu.Item>
-  </Menu>
-);
+  </Menu>;
 
 const {
   Button,
@@ -265,6 +260,7 @@ const Main = (): JSX.Element => {
         <Spacer/>
         <MenuButton
           label='More options'
+          placement='BELOW_RIGHT'
           menu={<MoreOptionsMenu state={state} set={set}/>}
         >
           <DotsVerticalIcon/>

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import * as S from './styles';
 
 const Separator = (): JSX.Element => <S.Separator/>;

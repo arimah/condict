@@ -1,12 +1,11 @@
-import React, {ReactNode, Ref, useRef} from 'react';
+import {ReactNode, useContext, useRef} from 'react';
 
+import {useUniqueId} from '../unique-id';
 import {useCommand} from '../command';
 import {Shortcut} from '../shortcut';
-import combineRefs from '../combine-refs';
-import {useUniqueId} from '../unique-id';
 
+import {OwnerContext, useMenuItem} from './context';
 import * as S from './styles';
-import {useNearestMenu} from './context';
 
 export type Props = {
   label: string;
@@ -15,17 +14,17 @@ export type Props = {
   checked?: boolean;
   radio?: boolean;
   disabled?: boolean;
-  command?: string | null;
+  command?: string;
   onActivate?: () => void;
 };
 
 const DefaultOnActivate = () => { /* no-op */ };
 
-const CheckItem = React.forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
+const CheckItem = (props: Props): JSX.Element => {
   const {
     label,
     icon,
-    shortcut,
+    shortcut = null,
     checked = false,
     radio = false,
     disabled = false,
@@ -37,28 +36,29 @@ const CheckItem = React.forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
   const effectiveDisabled = command ? command.disabled || disabled : disabled;
   const effectiveShortcut = command ? command.shortcut : shortcut;
 
-  const ownId = useUniqueId();
-  const ownRef = useRef<HTMLDivElement>(null);
-  const {hasFocus} = useNearestMenu(
-    ownRef,
+  const id = useUniqueId();
+  const elemRef = useRef<HTMLDivElement>(null);
+
+  const item = useMenuItem(
+    id,
+    elemRef,
     null,
+    icon,
     label,
+    shortcut,
     effectiveDisabled,
     command ? command.exec : onActivate,
-    () =>
-      <PhantomItem
-        label={label}
-        icon={icon}
-        shortcut={effectiveShortcut}
-        checked={checked}
-        radio={radio}
-      />
+    radio
+      ? (checked ? 'radioOn' : 'radioOff')
+      : (checked ? 'checkOn' : 'checkOff')
   );
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const {stack} = useContext(OwnerContext)!;
 
   return (
     <S.Item
-      id={ownId}
-      current={hasFocus}
+      id={id}
+      current={item === stack.currentItem}
       disabled={effectiveDisabled}
       role={radio ? 'menuitemradio' : 'menuitemcheckbox'}
       aria-checked={checked}
@@ -68,42 +68,18 @@ const CheckItem = React.forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
           ? Shortcut.formatAria(effectiveShortcut)
           : undefined
       }
-      ref={combineRefs(ref, ownRef)}
+      ref={elemRef}
     >
       <S.ItemIcon>{icon}</S.ItemIcon>
       <S.ItemLabel>{label}</S.ItemLabel>
       {effectiveShortcut &&
         <S.ItemShortcut>
           {Shortcut.format(effectiveShortcut)}
-        </S.ItemShortcut>}
-      <S.ItemCheck checked={checked} radio={radio}>
-        {checked && (radio ? <S.RadioDot/> : <S.CheckMark/>)}
-      </S.ItemCheck>
+        </S.ItemShortcut>
+      }
+      <S.ItemCheck checked={checked} radio={radio}/>
     </S.Item>
   );
-});
-
-CheckItem.displayName = 'CheckItem';
-
-type PhantomProps = {
-  icon: ReactNode;
-  label: string;
-  shortcut?: Shortcut | null;
-  checked: boolean;
-  radio: boolean;
 };
-
-const PhantomItem = ({icon, label, shortcut, checked, radio}: PhantomProps) =>
-  <S.Item aria-hidden='true'>
-    <S.ItemIcon>{icon}</S.ItemIcon>
-    <S.ItemLabel>{label}</S.ItemLabel>
-    {shortcut &&
-      <S.ItemShortcut>
-        {Shortcut.format(shortcut)}
-      </S.ItemShortcut>}
-    <S.ItemCheck checked={checked} radio={radio}>
-      {checked && (radio ? <S.RadioDot/> : <S.CheckMark/>)}
-    </S.ItemCheck>
-  </S.Item>;
 
 export default CheckItem;

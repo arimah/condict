@@ -1,15 +1,14 @@
 import React, {Ref, useState, useRef, useCallback} from 'react';
 
 import combineRefs from '../combine-refs';
-import {RelativeParent} from '../placement';
+import Placement, {RelativeParent} from '../placement';
 import {useUniqueId} from '../unique-id';
 
-import {MenuElement} from '.';
-import MenuManager from './manager';
-import ManagedMenu from './managed-menu';
+import MenuOwner, {MenuOwnerHandle} from './owner';
 
 export type Props = {
-  menu: MenuElement;
+  menu: JSX.Element;
+  placement?: Placement;
   openClass?: string;
   onToggle?: (open: boolean) => void;
   children: JSX.Element & {
@@ -21,42 +20,41 @@ export type ChildType = RelativeParent & {
   focus: () => void;
 };
 
-const DefaultOnToggle = () => { /* no-op */ };
-
 const MenuTrigger = (props: Props): JSX.Element => {
   const {
     menu,
+    placement,
     openClass = 'menu-open',
-    onToggle = DefaultOnToggle,
+    onToggle,
     children,
   } = props;
 
   const menuId = useUniqueId();
   const [isOpen, setOpen] = useState(false);
-  const menuRef = useRef<ManagedMenu>(null);
+  const ownerRef = useRef<MenuOwnerHandle>(null);
   const childRef = useRef<ChildType>(null);
   const openMenu = useCallback(() => {
-    if (menuRef.current) {
+    if (ownerRef.current && childRef.current) {
       // TODO: See if we can distinguish between mouse and keyboard clicks
       // in this event.
-      menuRef.current.open(false);
+      ownerRef.current.open({
+        name: null,
+        parent: childRef.current,
+        placement,
+      });
       setOpen(true);
-      onToggle(true);
+      onToggle?.(true);
     }
-  }, [onToggle]);
+  }, [placement, onToggle]);
   const handleClose = useCallback(() => {
     if (childRef.current) {
       childRef.current.focus();
     }
     setOpen(false);
-    onToggle(false);
+    onToggle?.(false);
   }, [onToggle]);
 
-  const menuWithExtra = React.cloneElement(menu, {
-    id: menuId,
-    parentRef: childRef,
-    ref: combineRefs(menuRef, menu.ref),
-  });
+  const menuWithExtra = React.cloneElement(menu, {id: menuId});
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const childClassName = children.props?.className as string | undefined;
   const childWithMenu = React.cloneElement(children, {
@@ -71,9 +69,9 @@ const MenuTrigger = (props: Props): JSX.Element => {
 
   return <>
     {childWithMenu}
-    <MenuManager onClose={handleClose}>
+    <MenuOwner onCloseRoot={handleClose} ref={ownerRef}>
       {menuWithExtra}
-    </MenuManager>
+    </MenuOwner>
   </>;
 };
 

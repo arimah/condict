@@ -25,11 +25,12 @@ export {GlobalStyles} from './global-styles';
 export {
   Menu,
   MenuProps,
-  MenuElement,
-  MenuType,
+  MenuHandle,
+  MenuOwner,
+  MenuOwnerProps,
+  MenuOwnerHandle,
   MenuTrigger,
   ContextMenuTrigger,
-  MenuManager,
 } from './menu';
 export {NonIdealState, Props as NonIdealStateProps} from './non-ideal-state';
 export {

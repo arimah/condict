@@ -1,39 +1,62 @@
-import React, {useState, useEffect} from 'react';
+import React, {ReactNode, useContext} from 'react';
 import ReactDOM from 'react-dom';
 
+import {Shortcut} from '../shortcut';
+
 import getContainer from './container';
+import {OwnerContext} from './context';
+import {CheckType, PhantomProps} from './types';
 import * as S from './styles';
 
-const nextTick = (fn: () => void) => window.setTimeout(() => fn(), 0);
-
-export type Props = {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-  renderItem: () => JSX.Element;
+const Checks: Record<CheckType, ReactNode> = {
+  checkOn: <S.ItemCheck radio={false} checked={true}/>,
+  checkOff: <S.ItemCheck radio={false} checked={false}/>,
+  radioOn: <S.ItemCheck radio={true} checked={true}/>,
+  radioOff: <S.ItemCheck radio={true} checked={false}/>,
+  none: <S.ItemSubmenu/>,
 };
 
-const PhantomWrapper = (props: Props): JSX.Element => {
+const PhantomItem = React.memo((props: PhantomProps): JSX.Element => {
   const {
-    top,
-    left,
+    x,
+    y,
     width,
     height,
-    renderItem,
+    icon,
+    label,
+    shortcut,
+    checkType,
   } = props;
 
-  const [opacity, setOpacity] = useState(1);
-  useEffect(() => {
-    nextTick(() => setOpacity(0));
-  }, []);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const owner = useContext(OwnerContext)!;
 
   return ReactDOM.createPortal(
-    <S.PhantomContainer style={{top, left, width, height, opacity}}>
-      {renderItem()}
+    <S.PhantomContainer
+      style={{
+        top: `${y}px`,
+        left: `${x}px`,
+        width: `${width}px`,
+        height: `${height}px`,
+      }}
+      // Remove the phantom when it's phaded out.
+      onAnimationEnd={() => owner.dispatch({type: 'removePhantom'})}
+    >
+      <S.Item>
+        <S.ItemIcon>{icon}</S.ItemIcon>
+        <S.ItemLabel>{label}</S.ItemLabel>
+        {shortcut &&
+          <S.ItemShortcut>
+            {Shortcut.format(shortcut)}
+          </S.ItemShortcut>
+        }
+        {Checks[checkType]}
+      </S.Item>
     </S.PhantomContainer>,
     getContainer()
   );
-};
+});
 
-export default PhantomWrapper;
+PhantomItem.displayName = 'PhantomItem';
+
+export default PhantomItem;

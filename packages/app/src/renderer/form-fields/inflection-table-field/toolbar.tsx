@@ -162,8 +162,9 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
 
       <Toolbar.MenuButton
         label={l10n.getString('table-editor-tools-menu')}
+        placement='BELOW_RIGHT'
         menu={
-          <Menu placement='BELOW_RIGHT'>
+          <Menu>
             <Menu.Item
               label={l10n.getString('table-editor-import-layout-menu')}
               icon={<ImportIcon/>}

@@ -1,9 +1,9 @@
+export {default as Menu, Props as MenuProps} from './menu';
+export {MenuHandle} from './owned-menu';
 export {
-  default as Menu,
-  Props as MenuProps,
-  MenuElement,
-  MenuType,
-} from './menu';
+  default as MenuOwner,
+  Props as MenuOwnerProps,
+  MenuOwnerHandle,
+} from './owner';
 export {default as MenuTrigger} from './trigger';
 export {default as ContextMenuTrigger} from './context-trigger';
-export {default as MenuManager} from './manager';

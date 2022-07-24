@@ -1,32 +1,32 @@
-import React, {ReactNode, Ref, useRef} from 'react';
+import {ReactNode, useContext, useRef} from 'react';
 import ChevronRightIcon from 'mdi-react/ChevronRightIcon';
 
+import {useUniqueId} from '../unique-id';
 import {useCommand} from '../command';
 import {Shortcut} from '../shortcut';
-import combineRefs from '../combine-refs';
-import {useUniqueId} from '../unique-id';
 
+import OwnedMenu from './owned-menu';
+import {OwnerContext, useMenuItem} from './context';
+import {RegisteredMenu} from './types';
 import * as S from './styles';
-import ManagedMenu from './managed-menu';
-import {useManagedTree, useNearestMenu} from './context';
 
 export type Props = {
   label: string;
   icon?: ReactNode;
   shortcut?: Shortcut | null;
   disabled?: boolean;
-  command?: string | null;
+  command?: string;
   onActivate?: () => void;
   children?: ReactNode;
 };
 
 const DefaultOnActivate = () => { /* no-op */ };
 
-const Item = React.forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
+const Item = (props: Props): JSX.Element => {
   const {
     label,
     icon,
-    shortcut,
+    shortcut = null,
     disabled = false,
     command: commandName,
     children,
@@ -37,87 +37,75 @@ const Item = React.forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
   const effectiveDisabled = command ? command.disabled || disabled : disabled;
   const effectiveShortcut = command ? command.shortcut : shortcut;
 
-  const ownId = useUniqueId();
-  const ownRef = useRef<HTMLDivElement>(null);
-  const submenuRef = useRef<ManagedMenu>(null);
-  const {hasFocus, submenuPlacement} = useNearestMenu(
-    ownRef,
+  const id = useUniqueId();
+  const elemRef = useRef<HTMLDivElement>(null);
+  const submenuRef = useRef<RegisteredMenu>(null);
+
+  const item = useMenuItem(
+    id,
+    elemRef,
     submenuRef,
+    icon,
     label,
+    shortcut,
     effectiveDisabled,
     command ? command.exec : onActivate,
-    () =>
-      <PhantomItem
-        label={label}
-        icon={icon}
-        shortcut={effectiveShortcut}
-        hasSubmenu={!!children}
-      />
+    'none'
   );
-  const tree = useManagedTree();
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const {stack} = useContext(OwnerContext)!;
+
+  // The item is focused in one of two circumstances:
+  //
+  // 1. If the current item is in the parent menu, we mark as focused if the
+  //    currentItem is the same as item.
+  // 2. Otherwise, the item is focused if its submenu is open.
+  //
+  // Note that if a different item in this menu is hovered, then we never
+  // mark this item as focused.
+  const hasFocus =
+    stack.currentItem && stack.currentItem.parent === item.parent
+      ? item === stack.currentItem
+      : stack.openMenus.some(m => m.menu === item.submenu);
 
   return <>
     <S.Item
-      id={ownId}
+      id={id}
       current={hasFocus}
       disabled={effectiveDisabled}
       role='menuitem'
       aria-disabled={effectiveDisabled}
-      aria-owns={children ? `${ownId}-menu` : undefined}
+      aria-owns={children ? `${id}-menu` : undefined}
       aria-haspopup={children ? 'menu' : undefined}
       aria-keyshortcuts={
         effectiveShortcut
           ? Shortcut.formatAria(effectiveShortcut)
           : undefined
       }
-      ref={combineRefs(ref, ownRef)}
+      ref={elemRef}
     >
       <S.ItemIcon>{icon}</S.ItemIcon>
       <S.ItemLabel>{label}</S.ItemLabel>
       {effectiveShortcut &&
         <S.ItemShortcut>
           {Shortcut.format(effectiveShortcut)}
-        </S.ItemShortcut>}
+        </S.ItemShortcut>
+      }
       <S.ItemSubmenu>
         {children != null && <ChevronRightIcon className='rtl-mirror'/>}
       </S.ItemSubmenu>
     </S.Item>
     {children &&
-      <ManagedMenu
-        id={`${ownId}-menu`}
-        name={label}
-        stack={tree.stack}
-        manager={tree.manager}
-        placement={submenuPlacement}
-        parentRef={ownRef}
-        ref={submenuRef}
+      <OwnedMenu
+        id={`${id}-menu`}
+        label={label}
+        parentItem={item}
+        privateRef={submenuRef}
       >
         {children}
-      </ManagedMenu>
+      </OwnedMenu>
     }
   </>;
-});
-
-Item.displayName = 'Item';
-
-type PhantomProps = {
-  icon: ReactNode;
-  label: string;
-  shortcut?: Shortcut | null;
-  hasSubmenu: boolean;
 };
-
-const PhantomItem = ({icon, label, shortcut, hasSubmenu}: PhantomProps) =>
-  <S.Item aria-hidden='true'>
-    <S.ItemIcon>{icon}</S.ItemIcon>
-    <S.ItemLabel>{label}</S.ItemLabel>
-    {shortcut &&
-      <S.ItemShortcut>
-        {Shortcut.format(shortcut)}
-      </S.ItemShortcut>}
-    <S.ItemSubmenu>
-      {hasSubmenu && <ChevronRightIcon className='rtl-mirror'/>}
-    </S.ItemSubmenu>
-  </S.Item>;
 
 export default Item;

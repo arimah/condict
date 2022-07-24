@@ -3,7 +3,6 @@ import React, {
   KeyboardEvent,
   MouseEvent as SyntheticMouseEvent,
   FocusEvent,
-  MutableRefObject,
   ReactNode,
 } from 'react';
 import {Draft} from 'immer';
@@ -12,7 +11,8 @@ import shallowEqual from 'shallowequal';
 import {
   CommandGroup,
   CommandProvider,
-  MenuType,
+  MenuOwner,
+  MenuOwnerHandle,
   RelativeParent,
   genUniqueId,
 } from '@condict/ui';
@@ -78,10 +78,7 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
   private readonly table = React.createRef<HTMLTableElement>();
   private readonly tableId = genUniqueId();
   private readonly focusedCellRef = React.createRef<HTMLElement>();
-  private readonly contextMenuRef = React.createRef<MenuType>();
-  private readonly contextMenuParent: MutableRefObject<RelativeParent> = {
-    current: {x: 0, y: 0},
-  };
+  private readonly contextMenuRef = React.createRef<MenuOwnerHandle>();
   private hasFocus = false;
   private hadFocusOnMouseDown = false;
 
@@ -243,18 +240,23 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
 
     const {hasContextMenu} = this.context;
     const showContextMenu = hasContextMenu(table) || !!contextMenuExtra;
-    const {contextMenuRef, contextMenuParent} = this;
+    const {contextMenuRef} = this;
     if (showContextMenu && contextMenuRef.current) {
+      let parent: RelativeParent;
       if (e.button === 0) {
         const {selection} = table;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        contextMenuParent.current = document.getElementById(
+        parent = document.getElementById(
           `${this.tableId}-${selection.focus}`
         )!;
       } else {
-        contextMenuParent.current = {x: e.clientX, y: e.clientY};
+        parent = {x: e.clientX, y: e.clientY};
       }
-      contextMenuRef.current.open(e.button === 0);
+      contextMenuRef.current.open({
+        name: null,
+        parent,
+        fromKeyboard: e.button === 0,
+      });
       this.setState({contextMenuOpen: true});
     }
   };
@@ -443,15 +445,17 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
             </tbody>
           </S.Table>
           <Helper tableId={this.tableId} table={table} messages={messages}/>
-          <ContextMenu
-            tableId={this.tableId}
-            table={table}
-            extraItems={contextMenuExtra}
-            parentRef={this.contextMenuParent}
-            messages={messages}
-            onClose={this.handleContextMenuClose}
+          <MenuOwner
+            onCloseRoot={this.handleContextMenuClose}
             ref={this.contextMenuRef}
-          />
+          >
+            <ContextMenu
+              tableId={this.tableId}
+              table={table}
+              extraItems={contextMenuExtra}
+              messages={messages}
+            />
+          </MenuOwner>
         </CommandProvider>
       </S.TableWrapper>
     );
