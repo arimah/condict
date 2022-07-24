@@ -121,7 +121,7 @@ const OwnedMenu = (props: Props): JSX.Element => {
   useEffect(() => {
     if (deepestMenu !== prevState.deepest) {
       // The menu must focus itself when it becomes the deepest menu.
-      if (openMenu === deepestMenu) {
+      if (openMenu && openMenu === deepestMenu) {
         elemRef.current?.focus({preventScroll: true});
       }
       prevState.deepest = deepestMenu;

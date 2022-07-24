@@ -194,7 +194,6 @@ const MenuOwner = React.forwardRef((
   const anyMenuOpen = stack.openMenus.length > 0;
   useEffect(() => {
     if (!anyMenuOpen) {
-      refs.onCloseRoot?.();
       return;
     }
 
@@ -285,6 +284,8 @@ const MenuOwner = React.forwardRef((
       document.removeEventListener('click', click);
       window.removeEventListener('blur', windowBlur);
       enableFocusManager();
+
+      refs.onCloseRoot?.();
     };
   }, [anyMenuOpen]);
 

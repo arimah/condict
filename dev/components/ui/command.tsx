@@ -9,6 +9,7 @@ import {
   Button,
   Checkbox,
   useCommandGroup,
+  Shortcut,
 } from '@condict/ui';
 
 import Demo, {useDemoState} from '../demo';
@@ -47,18 +48,18 @@ const StorageKey = 'condict/ui/command';
 
 const OuterCommands: CommandSpecMap<keyof State> = {
   toggleItalic: {
-    shortcut: 'Primary+I i',
+    shortcut: Shortcut.parse('Primary+I i'),
     action: 'italicOuter',
   },
   toggleBold: {
-    shortcut: 'Primary+B b',
+    shortcut: Shortcut.parse('Primary+B b'),
     action: 'bold',
   },
 };
 
 const InnerCommands: CommandSpecMap<keyof State> = {
   toggleItalic: {
-    shortcut: 'Primary+I i',
+    shortcut: Shortcut.parse('Primary+I i'),
     action: 'italicInner',
   },
 };
