@@ -342,7 +342,7 @@ const getAllResults = (
 };
 
 const getWebResult = (value: string): SearchResult | null => {
-  value = value.trimLeft();
+  value = value.trimStart();
 
   // If it looks vaguely like a URL that doesn't start with a protocol,
   // automatically prepend 'http://'.
