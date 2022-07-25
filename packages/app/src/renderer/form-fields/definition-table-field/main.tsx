@@ -33,9 +33,10 @@ export type Props<D extends FieldValues> = {
   | 'onFocus'
 >;
 
-export type DefinitionTableFieldComponent = <D extends FieldValues>(
-  props: Props<D>
-) => JSX.Element;
+export type DefinitionTableFieldComponent = {
+  <D extends FieldValues>(props: Props<D>): JSX.Element;
+  displayName: string;
+};
 
 export const DefinitionTableField = React.memo((
   props: Props<FieldValues>
@@ -135,6 +136,8 @@ export const DefinitionTableField = React.memo((
     </S.Field>
   );
 }) as DefinitionTableFieldComponent;
+
+DefinitionTableField.displayName = 'DefinitionTableField';
 
 const tableNeedsUpdate = (
   history: HistoryValue<DefinitionTable> | null,

@@ -88,18 +88,23 @@ export const createNullLogger = (): Logger => ({
  */
 export const createPrefixLogger = (inner: Logger, prefix: string): Logger => ({
   error(msg, ...extra) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     inner.error(`${prefix} ${msg}`, ...extra);
   },
   warn(msg, ...extra) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     inner.warn(`${prefix} ${msg}`, ...extra);
   },
   info(msg, ...extra) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     inner.info(`${prefix} ${msg}`, ...extra);
   },
   verbose(msg, ...extra) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     inner.verbose(`${prefix} ${msg}`, ...extra);
   },
   debug(msg, ...extra) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     inner.debug(`${prefix} ${msg}`, ...extra);
   },
 });

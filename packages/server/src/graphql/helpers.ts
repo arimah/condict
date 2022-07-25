@@ -13,7 +13,7 @@ export const mutator = <Args>(
   resolver: IFieldResolver<unknown, Context, Args>
 ): MutatorFn<Args> => {
   const fn: IFieldResolver<unknown, Context, Args> =
-    (p: unknown, args: Args, context: Context, info: any) => {
+    (p, args, context, info) => {
       if (!context.hasValidSession()) {
         throw new AuthenticationError('Session ID is missing, expired or invalid');
       }

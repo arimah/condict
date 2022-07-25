@@ -44,7 +44,7 @@ const commandOptions: Record<string, OptionDefinition[]> = {
   ],
 };
 
-const printSchema = (config: ServerConfig, tableName: string | null) => {
+const printSchema = (tableName: string | null) => {
   const schema = getTableSchema(tableName);
   if (schema === null) {
     console.error(`Table not found: ${tableName}`);
@@ -88,7 +88,7 @@ const main = async () => {
   try {
     config = loadConfigFile(configFile);
   } catch (e) {
-    console.error(`Failed to read config from ${configFile}: ${e}`);
+    console.error(`Failed to read config from ${configFile}: ${String(e)}`);
     process.exitCode = 1;
     return;
   }
@@ -109,7 +109,7 @@ const main = async () => {
         break;
       case 'view-table-schema': {
         const table = (cmdArgs.table as MaybeString) ?? null;
-        printSchema(config, table);
+        printSchema(table);
         break;
       }
       case 'add-user':

@@ -26,7 +26,7 @@ const MarshalImpls: Record<MarshalType, MarshalImpl> = {
       if (typeof value === 'number' && Number.isInteger(value)) {
         return value;
       }
-      throw new TypeError(`Expected an integer value; got '${value}'`);
+      throw new TypeError(`Expected an integer value; got '${String(value)}'`);
     },
     parseLiteral: node => {
       if (node.kind === Kind.INT) {
@@ -41,7 +41,7 @@ const MarshalImpls: Record<MarshalType, MarshalImpl> = {
       if (typeof value === 'number') {
         return value;
       }
-      throw new TypeError(`Expected a number value; got '${value}'`);
+      throw new TypeError(`Expected a number value; got '${String(value)}'`);
     },
     parseLiteral: node => {
       if (node.kind === Kind.INT || node.kind === Kind.FLOAT) {
@@ -58,7 +58,7 @@ const MarshalImpls: Record<MarshalType, MarshalImpl> = {
       if (typeof value === 'string') {
         return value;
       }
-      throw new TypeError(`Expected a string value; got '${value}'`);
+      throw new TypeError(`Expected a string value; got '${String(value)}'`);
     },
     parseLiteral: node => {
       if (node.kind === Kind.STRING) {

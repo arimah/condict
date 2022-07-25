@@ -28,8 +28,7 @@ const Tag = React.memo((props: Props): JSX.Element => {
   if (linkTo) {
     target = linkTo;
   } else {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    target = TagPage(id!, name);
+    target = TagPage(id, name);
   }
   return (
     <S.Main to={target} {...otherProps}>

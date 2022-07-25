@@ -126,7 +126,7 @@ export default class CondictHttpServer {
       try {
         await this.apolloServer.stop();
       } catch (e) {
-        this.logger.error(`Error stopping HTTP server: ${e}`);
+        this.logger.error(`Error stopping HTTP server: ${String(e)}`);
       }
 
 

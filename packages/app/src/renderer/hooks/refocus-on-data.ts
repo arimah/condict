@@ -1,7 +1,7 @@
 import {RefObject, useRef, useEffect} from 'react';
 
 import {Query, OperationResult} from '../graphql';
-import {QueryResult, DataResult} from '../data';
+import {QueryResult} from '../data';
 
 import {getTabReachable} from '@condict/ui';
 
@@ -96,8 +96,7 @@ export const useRefocusOnData = <Q extends Query<any, any>>(
         let hasFocus =
           // If there are errors and errorFocus is specified, try that first.
           // We cannot get here unless data.state === 'data'.
-          (data as DataResult<Q>).result.errors &&
-            tryFocus(options.errorFocus, preventScroll) ||
+          data.result.errors && tryFocus(options.errorFocus, preventScroll) ||
           // Empty data? Try `emptyFocus`.
           isEmpty && tryFocus(options.emptyFocus, preventScroll) ||
           // Try regular focus next.

@@ -1,9 +1,9 @@
-import {GraphQLList, isNonNullType} from 'graphql';
+import {GraphQLList, GraphQLType, isNonNullType} from 'graphql';
 
 import {TypeWriter} from './types';
 
 export const writeListType = (
-  type: GraphQLList<any>,
+  type: GraphQLList<GraphQLType>,
   writeType: TypeWriter
 ): string => {
   const innerType = writeType(type.ofType);

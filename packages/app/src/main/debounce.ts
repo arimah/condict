@@ -22,8 +22,7 @@ const debounce = (timeout: number, func: OriginalFn): DebouncedFn => {
       currentTimeout = undefined;
       func();
     } else {
-      // Node's types interfere with DOM types; need to cast.
-      currentTimeout = setTimeout(maybeCall, remaining) as NodeJS.Timeout;
+      currentTimeout = setTimeout(maybeCall, remaining);
     }
   };
   return () => {

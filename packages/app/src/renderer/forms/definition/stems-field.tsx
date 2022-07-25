@@ -68,6 +68,8 @@ const StemsField = React.memo((props: Props): JSX.Element => {
   );
 });
 
+StemsField.displayName = 'StemsField';
+
 export default StemsField;
 
 type StemProps = {

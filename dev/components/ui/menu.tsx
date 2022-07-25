@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key, react/display-name */
-import React, {Ref} from 'react';
+import React from 'react';
 import FileIcon from 'mdi-react/FileOutlineIcon';
 import OpenIcon from 'mdi-react/FolderOpenIcon';
 import SaveIcon from 'mdi-react/FloppyIcon';

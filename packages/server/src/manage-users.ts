@@ -27,6 +27,7 @@ const withPrompt = async <T>(fn: (prompt: Prompt) => Promise<T>) => {
         const newlines = text.replace(/[^\r\n]/g, '');
         process.stdout.write(newlines, 'utf8');
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         process.stdout.write(chunk, encoding);
       }
       callback();
