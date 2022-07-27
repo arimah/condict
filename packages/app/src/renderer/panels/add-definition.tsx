@@ -7,7 +7,6 @@ import {
 } from '@condict/rich-text-editor';
 
 import {DataViewer, FlowContent, MainHeader, BlockFields} from '../ui';
-import {DefinitionTableValue} from '../form-fields';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {DefinitionData, DefinitionForm} from '../forms';
 import {DefinitionId, LanguageId, PartOfSpeechId} from '../graphql';
@@ -16,7 +15,7 @@ import {useRefocusOnData} from '../hooks';
 
 import {addPartOfSpeechPanel} from './add-part-of-speech';
 import {addInflectionTablePanel} from './add-inflection-table';
-import {hasTableCaption} from './utils';
+import {formatCustomForms, formatStems, hasTableCaption} from './utils';
 import {AddDefinitionQuery, AddDefinitionMut} from './query';
 
 export interface NewDefinition {
@@ -63,15 +62,12 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
         partOfSpeechId: formData.partOfSpeech,
         inflectionTables: formData.inflectionTables.map(table => ({
           inflectionTableId: table.tableId,
-          customForms: DefinitionTableValue.exportCustomForms(table.table),
+          customForms: formatCustomForms(table.table),
           caption: hasTableCaption(table.caption)
             ? tableCaptionToGraphQLInput(table.caption)
             : null,
         })),
-        stems: Array.from(formData.stems, ([name, value]) => ({
-          name,
-          value,
-        })),
+        stems: formatStems(formData.stems),
         tags: formData.tags,
       },
     });

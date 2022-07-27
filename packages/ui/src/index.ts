@@ -109,3 +109,4 @@ export {
 export {default as combineRefs} from './combine-refs';
 export {Descendants, compareNodes, useDescendant} from './descendants';
 export {default as genUniqueId, useUniqueId} from './unique-id';
+export {default as useLazyRef} from './lazy-ref';

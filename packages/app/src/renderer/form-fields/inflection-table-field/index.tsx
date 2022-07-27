@@ -1,5 +1,4 @@
 import React, {ReactNode, KeyboardEvent, useCallback, useRef} from 'react';
-import {FieldValues, FieldPath, useController} from 'react-hook-form';
 
 import {CommandProvider, CommandGroup, useUniqueId} from '@condict/ui';
 import {
@@ -8,6 +7,7 @@ import {
   useInflectionTableCommands,
 } from '@condict/table-editor';
 
+import {useNearestForm, useField, useFormState} from '../../form';
 import {useTableEditorMessages} from '../../hooks';
 import {LanguageId, PartOfSpeechId, InflectionTableId} from '../../graphql';
 
@@ -15,10 +15,10 @@ import {HistoryValue, useHistoryCommands} from '../history-value';
 import * as S from '../styles';
 
 import TableToolbar from './toolbar';
-import {InflectionTableValue} from './types';
 
-export type Props<D extends FieldValues> = {
-  name: FieldPath<D>;
+export type Props = {
+  name: string;
+  path?: string;
   label?: ReactNode;
   languageId: LanguageId;
   partOfSpeechId: PartOfSpeechId;
@@ -37,16 +37,10 @@ export type Props<D extends FieldValues> = {
   | 'onFocus'
 >;
 
-export type InflectionTableFieldComponent = {
-  <D extends FieldValues>(props: Props<D>): JSX.Element;
-  displayName: string;
-};
-
-export const InflectionTableField = React.memo((
-  props: Props<FieldValues>
-): JSX.Element => {
+export const InflectionTableField = React.memo((props: Props): JSX.Element => {
   const {
     name,
+    path,
     label,
     languageId,
     partOfSpeechId,
@@ -56,55 +50,48 @@ export const InflectionTableField = React.memo((
     ...otherProps
   } = props;
 
+  const form = useNearestForm();
+
   const id = useUniqueId();
 
-  const {field, formState} = useController({name});
-  const {onChange, onBlur} = field;
-  const {isSubmitting} = formState;
-  const value = field.value as InflectionTableValue;
+  const field = useField<InflectionTable>(form, name, {path});
+  const {isSubmitting} = useFormState(form);
+  const value = field.value;
 
   // The full inflection table value, with selection, layout and the rest.
   const historyRef = useRef<HistoryValue<InflectionTable> | null>(null);
   if (tableNeedsUpdate(historyRef.current, value)) {
     // Some part of the value has changed unexpectedly. We must update the table
-    // to reflect the changes. Sadly that means resetting the selection, but we
-    // *should* never end up in that situation in normal use anyway.
-    historyRef.current = HistoryValue.createOrPush(
-      InflectionTableValue.toTable(value),
-      historyRef.current
-    );
+    // to reflect the changes.
+    historyRef.current = HistoryValue.createOrPush(value, historyRef.current);
   }
 
-  const version = useRef(0);
   const handleChange = useCallback((value: InflectionTable) => {
     // It should not be possible to get here without a valid history.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const history = historyRef.current!;
-    let nextVersion: number;
     if (shouldReplaceHistory(history.current, value)) {
       HistoryValue.replace(history, value);
-      nextVersion = version.current;
     } else {
       HistoryValue.push(history, value);
-      nextVersion = ++version.current;
     }
-    onChange(InflectionTableValue.fromTable(value, nextVersion));
-  }, [onChange]);
+    field.set(value);
+  }, []);
 
-  const handleImportLayout = useCallback((value: InflectionTableValue) => {
+  const handleImportLayout = useCallback((value: InflectionTable) => {
     // It should not be possible to get here without a valid history.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const history = historyRef.current!;
-    HistoryValue.push(history, InflectionTableValue.toTable(value));
-    onChange(value);
-  }, [onChange]);
+    HistoryValue.push(history, value);
+    field.set(value);
+  }, []);
 
   // Logic above ensures historyRef.current is non-null.
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const history = historyRef.current!;
   const table = history.current;
 
-  const historyCommands = useHistoryCommands(history, onChange);
+  const historyCommands = useHistoryCommands(history, handleChange);
 
   const tableCommands = useInflectionTableCommands({
     value: table,
@@ -150,7 +137,6 @@ export const InflectionTableField = React.memo((
                 readOnly={isSubmitting}
                 messages={messages}
                 onChange={handleChange}
-                onBlur={onBlur}
               />
             </S.TableContainer>
           </S.TableBorder>
@@ -162,13 +148,13 @@ export const InflectionTableField = React.memo((
         </S.ErrorMessage>}
     </S.Field>
   );
-}) as InflectionTableFieldComponent;
+});
 
 InflectionTableField.displayName = 'InflectionTableField';
 
 const tableNeedsUpdate = (
   history: HistoryValue<InflectionTable> | null,
-  value: InflectionTableValue
+  value: InflectionTable
 ): boolean => {
   if (!history) {
     return true;

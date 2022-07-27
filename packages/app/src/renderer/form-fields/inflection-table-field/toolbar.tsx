@@ -24,7 +24,6 @@ import * as S from '../styles';
 
 import importLayoutPanel from './import-layout-panel';
 import transposeTable from './transpose-table';
-import {InflectionTableValue} from './types';
 
 type Props = {
   selection: SelectionShape;
@@ -34,7 +33,7 @@ type Props = {
   languageId: LanguageId;
   partOfSpeechId: PartOfSpeechId;
   inflectionTableId: InflectionTableId | null;
-  onImportLayout: (layout: InflectionTableValue) => void;
+  onImportLayout: (layout: InflectionTable) => void;
   onChange: (table: InflectionTable) => void;
 };
 

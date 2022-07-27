@@ -1,5 +1,4 @@
 import React, {TransitionEvent, useMemo, useCallback, useRef} from 'react';
-import {useFormContext, useWatch} from 'react-hook-form';
 import {Localized, useLocalization} from '@fluent/react';
 import DragIcon from 'mdi-react/DragIcon';
 import MoveUpIcon from 'mdi-react/ArrowUpIcon';
@@ -8,25 +7,27 @@ import RemoveIcon from 'mdi-react/TableRemoveIcon';
 import ErrorIcon from 'mdi-react/AlertCircleIcon';
 import TableUpgradeIcon from 'mdi-react/TableAlertIcon';
 import TableWarningIcon from 'mdi-react/TableArrowUpIcon';
+import {Draft} from 'immer';
 
 import {Button, Toolbar} from '@condict/ui';
+import {DefinitionTable} from '@condict/table-editor';
 
-import {
-  TableCaptionField,
-  DefinitionTableField,
-  DefinitionTableValue,
-} from '../../form-fields';
-import {PartOfSpeechId, InflectionTableLayoutId} from '../../graphql';
+import {useNearestForm, useField, useFormValue} from '../../form';
+import {TableCaptionField, DefinitionTableField} from '../../form-fields';
+import {PartOfSpeechId} from '../../graphql';
 
 import upgradeLayout from './upgrade-layout';
-import {DefinitionTableData, InflectionTableMap, MovingState} from './types';
+import {
+  DefinitionTableFormData,
+  InflectionTableMap,
+  MovingState,
+} from './types';
 import * as S from './styles';
 
 export type Props = {
   id: string;
   index: number;
   totalCount: number;
-  defaultValues: DefinitionTableData;
   allTableMap: InflectionTableMap;
   partOfSpeechId: PartOfSpeechId | null;
   stems: Map<string, string>;
@@ -63,7 +64,6 @@ const Table = React.memo((props: Props): JSX.Element => {
     id: key,
     index,
     totalCount,
-    defaultValues,
     allTableMap,
     partOfSpeechId,
     stems,
@@ -73,19 +73,15 @@ const Table = React.memo((props: Props): JSX.Element => {
     onDragStart,
     onMoveDone,
   } = props;
-  const {
-    id,
-    caption,
-    table,
-    tableId,
-    layoutId: defaultLayoutId,
-  } = defaultValues;
 
-  const {register, getValues, setValue} = useFormContext();
+  const form = useNearestForm();
 
-  register(`inflectionTables.data.${key}`, {
-    shouldUnregister: true,
-  });
+  const field = useField<DefinitionTableFormData>(
+    form,
+    `inflectionTables.${key}`,
+    {path: `inflectionTables.${index}`}
+  );
+  const value = field.value;
 
   const {l10n} = useLocalization();
 
@@ -101,21 +97,17 @@ const Table = React.memo((props: Props): JSX.Element => {
     };
   }, [onMoveDone]);
 
-  const term = useWatch({name: 'term'}) as string;
-  const layoutId = useWatch({
-    name: `inflectionTables.data.${key}.layoutId`,
-    defaultValue: defaultLayoutId,
-  }) as InflectionTableLayoutId;
+  const term = useFormValue<string>(form, 'term');
 
-  const tableInfo = allTableMap.get(tableId);
+  const tableInfo = allTableMap.get(value.tableId);
 
   let status: TableStatus;
   if (!tableInfo) {
     status = 'deleted';
   } else if (tableInfo.parent !== partOfSpeechId) {
     status = 'wrongPartOfSpeech';
-  } else if (tableInfo.table.layout.id !== layoutId) {
-    status = id === null ? 'needsUpgrade' : 'hasUpgrade';
+  } else if (tableInfo.table.layout.id !== value.layoutId) {
+    status = value.id === null ? 'needsUpgrade' : 'hasUpgrade';
   } else {
     status = 'ok';
   }
@@ -126,21 +118,20 @@ const Table = React.memo((props: Props): JSX.Element => {
       return;
     }
 
-    const path = `inflectionTables.data.${key}`;
-    const prevTable = getValues(`${path}.table`) as DefinitionTableValue;
     const nextLayout = tableInfo.table.layout;
-    const nextTable = upgradeLayout(prevTable, nextLayout);
-    setValue(`${path}.table`, nextTable);
-    setValue(`${path}.layoutId`, nextLayout.id);
-    setValue(`${path}.upgraded`, true);
-  }, [tableInfo, canUpgrade, getValues, setValue]);
+    const nextTable = upgradeLayout(field.value.table, nextLayout);
+    field.update(draft => {
+      draft.table = nextTable as Draft<DefinitionTable>;
+      draft.layoutId = nextLayout.id;
+      draft.upgraded = true;
+    });
+  }, [tableInfo, canUpgrade]);
 
   const hasError =
     status === 'deleted' ||
     status === 'wrongPartOfSpeech' ||
     status === 'needsUpgrade';
 
-  // TODO: Table upgrade functionality
   return (
     <S.TableItem
       aria-label={l10n.getString('definition-inflection-table-title', {
@@ -166,14 +157,14 @@ const Table = React.memo((props: Props): JSX.Element => {
       />
 
       <TableCaptionField
-        name={`inflectionTables.data.${key}.caption`}
+        name={`inflectionTables.${key}.caption`}
+        path={`inflectionTables.${index}.caption`}
         label={<Localized id='definition-table-caption-label'/>}
-        defaultValue={caption}
         readOnly={hasError}
       />
       <DefinitionTableField
-        name={`inflectionTables.data.${key}.table`}
-        defaultValue={table}
+        name={`inflectionTables.${key}.table`}
+        path={`inflectionTables.${index}.table`}
         term={term}
         stems={stems}
         disabled={hasError}

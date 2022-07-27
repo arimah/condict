@@ -3,7 +3,7 @@ import {Localized, useLocalization} from '@fluent/react';
 import OpenLinkIcon from 'mdi-react/OpenInNewIcon';
 
 import {useUniqueId} from '@condict/ui';
-import {InflectionTableJson} from '@condict/table-editor';
+import {InflectionTable, InflectionTableJson} from '@condict/table-editor';
 
 import {EventPredicate, useData, useExecute} from '../../data';
 import {PanelParams, PanelProps} from '../../navigation';
@@ -19,14 +19,13 @@ import {
 } from '../../ui';
 
 import {AllTableLayoutsQuery, TableLayoutQuery} from './query';
-import {InflectionTableValue} from './types';
 import * as S from './styles';
 
 type Props = {
   languageId: LanguageId;
   partOfSpeechId: PartOfSpeechId;
   inflectionTableId: InflectionTableId | null;
-} & PanelProps<InflectionTableValue | null>;
+} & PanelProps<InflectionTable | null>;
 
 interface TableGroup {
   id: PartOfSpeechId;
@@ -102,7 +101,7 @@ const ImportLayoutPanel = (props: Props): JSX.Element => {
           }
         ),
       }));
-      onResolve(InflectionTableValue.fromGraphQLResponse(rows));
+      onResolve(InflectionTable.fromJson(rows));
     });
   }, [execute, onResolve]);
 
@@ -182,7 +181,7 @@ const importLayoutPanel = (ids: {
   languageId: LanguageId;
   partOfSpeechId: PartOfSpeechId;
   inflectionTableId: InflectionTableId | null;
-}): PanelParams<InflectionTableValue | null> => ({
+}): PanelParams<InflectionTable | null> => ({
   // eslint-disable-next-line react/display-name
   render: props => <ImportLayoutPanel {...props} {...ids}/>,
 });

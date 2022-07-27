@@ -2,12 +2,12 @@ import {useState, useMemo, useCallback, useRef} from 'react';
 import {Localized} from '@fluent/react';
 
 import {Button} from '@condict/ui';
+import {InflectionTable} from '@condict/table-editor';
 
 import {DataViewer, FlowContent, MainHeader} from '../ui';
-import {InflectionTableValue} from '../form-fields';
 import {PanelParams, PanelProps} from '../navigation';
 import {InflectionTableData, InflectionTableForm} from '../forms';
-import {InflectionTableId} from '../graphql';
+import {InflectionTableId, InflectionTableRowInput} from '../graphql';
 import {useData, useExecute} from '../data';
 import {useRefocusOnData} from '../hooks';
 
@@ -37,7 +37,9 @@ const EditInflectionTablePanel = (props: Props) => {
       id,
       data: {
         name: formData.name,
-        layout: InflectionTableValue.toGraphQLInput(formData.layout),
+        layout:
+          InflectionTable.export(formData.layout) as
+            InflectionTableRowInput[],
       },
     });
     if (res.errors) {
@@ -66,9 +68,9 @@ const EditInflectionTablePanel = (props: Props) => {
 
   const layout = useMemo(() => {
     if (data.state === 'loading' || !data.result.data?.inflectionTable) {
-      return InflectionTableValue.empty();
+      return null;
     }
-    return InflectionTableValue.fromGraphQLResponse(
+    return InflectionTable.fromJson(
       data.result.data.inflectionTable.layout.rows
     );
   }, [data]);
@@ -116,7 +118,8 @@ const EditInflectionTablePanel = (props: Props) => {
               initialData={{
                 id: table.id,
                 name: table.name,
-                layout,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                layout: layout!,
               }}
               languageId={table.partOfSpeech.language.id}
               partOfSpeechId={table.partOfSpeech.id}

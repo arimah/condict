@@ -49,7 +49,7 @@ const Announcer = React.memo((props: Props): JSX.Element => {
       // Remove the message again after a short time, to (hopefully) prevent
       // the user from discovering it by moving through the document.
       window.setTimeout(() => {
-        if (!mounted.current) {
+        if (mounted.current) {
           setMessages(all => all.filter(m => m.key !== key));
         }
       }, 750);

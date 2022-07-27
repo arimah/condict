@@ -1,16 +1,16 @@
 import {useState, useCallback} from 'react';
 import {Localized} from '@fluent/react';
 
-import {InflectionTableJson} from '@condict/table-editor';
+import {InflectionTable, InflectionTableJson} from '@condict/table-editor';
 
 import {FlowContent} from '../ui';
-import {InflectionTableValue} from '../form-fields';
 import {PanelParams, PanelProps} from '../navigation';
 import {InflectionTableData, InflectionTableForm} from '../forms';
 import {useExecute} from '../data';
 import {
   InflectionTableId,
   InflectionTableLayoutId,
+  InflectionTableRowInput,
   LanguageId,
   PartOfSpeechId,
 } from '../graphql';
@@ -54,7 +54,9 @@ const AddInflectionTablePanel = (props: Props) => {
       data: {
         partOfSpeechId,
         name: formData.name,
-        layout: InflectionTableValue.toGraphQLInput(formData.layout),
+        layout:
+          InflectionTable.export(formData.layout) as
+            InflectionTableRowInput[],
       },
     });
     if (res.errors) {

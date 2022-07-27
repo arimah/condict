@@ -1,7 +1,7 @@
 import {ReactNode, useState} from 'react';
-import {useFormContext} from 'react-hook-form';
 import {Localized} from '@fluent/react';
 
+import {useNearestForm, useFormState} from '../form';
 import {Loading} from '../ui';
 
 import useFormButtonsStickiness from './form-buttons-stickiness';
@@ -17,7 +17,9 @@ export type Props = {
 
 export const FormButtons = (props: Props): JSX.Element => {
   const {submitLabel, cancelLabel, loadingLabel, submitError, onCancel} = props;
-  const {formState: {isSubmitting}} = useFormContext();
+
+  const form = useNearestForm();
+  const {isSubmitting} = useFormState(form);
 
   const [stuck, setStuck] = useState(false);
   const mainRef = useFormButtonsStickiness(setStuck);

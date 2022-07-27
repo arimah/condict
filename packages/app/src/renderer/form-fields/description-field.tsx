@@ -1,5 +1,4 @@
 import React, {ReactNode, useCallback} from 'react';
-import {FieldValues, FieldPath, useController} from 'react-hook-form';
 import {Localized} from '@fluent/react';
 
 import {useUniqueId} from '@condict/ui';
@@ -9,6 +8,7 @@ import {
   SearchResult,
 } from '@condict/rich-text-editor';
 
+import {useNearestForm, useField, useFormState} from '../form';
 import {useExecute} from '../data';
 import {OperationResult} from '../graphql';
 import {useRichTextEditorMessages} from '../hooks';
@@ -17,10 +17,10 @@ import {HighlightedSnippet} from '../ui';
 import {LinkTargetQuery} from './query';
 import * as S from './styles';
 
-export type Props<D extends FieldValues> = {
-  name: FieldPath<D>;
+export type Props = {
+  name: string;
+  path?: string;
   label?: ReactNode;
-  defaultValue?: BlockElement[];
   errorMessage?: ReactNode;
 } & Omit<
   DescriptionEditorProps,
@@ -35,30 +35,24 @@ export type Props<D extends FieldValues> = {
   | 'onBlur'
 >;
 
-export type DescriptionFieldComponent = <D extends FieldValues>(
-  props: Props<D>
-) => JSX.Element;
-
 // eslint-disable-next-line react/display-name
-export const DescriptionField = React.memo((
-  props: Props<FieldValues>
-): JSX.Element => {
+export const DescriptionField = React.memo((props: Props): JSX.Element => {
   const {
     name,
+    path,
     label,
-    defaultValue,
     readOnly,
     errorMessage,
     ...otherProps
   } = props;
 
+  const form = useNearestForm();
+
   const id = useUniqueId();
   const execute = useExecute();
 
-  const {field, formState} = useController({name, defaultValue});
-  const {onChange, onBlur} = field;
-  const {isSubmitting} = formState;
-  const value = field.value as BlockElement[];
+  const {isSubmitting} = useFormState(form);
+  const field = useField<BlockElement[]>(form, name, {path});
 
   const messages = useRichTextEditorMessages();
 
@@ -84,14 +78,13 @@ export const DescriptionField = React.memo((
         </S.Label>}
       <S.DescriptionEditor
         {...otherProps}
-        value={value}
+        value={field.value}
         aria-labelledby={label ? `${id}-label` : undefined}
         aria-describedby={errorMessage ? `${id}-error` : undefined}
         readOnly={readOnly || isSubmitting}
         messages={messages}
-        onChange={onChange}
+        onChange={field.set}
         onFindLinkTarget={handleFindLinkTarget}
-        onBlur={onBlur}
       />
       {errorMessage &&
         <S.ErrorMessage id={`${id}-error`}>
@@ -99,7 +92,7 @@ export const DescriptionField = React.memo((
         </S.ErrorMessage>}
     </S.Field>
   );
-}) as DescriptionFieldComponent;
+});
 
 type GqlSearchResults = NonNullable<
   OperationResult<typeof LinkTargetQuery>['search']

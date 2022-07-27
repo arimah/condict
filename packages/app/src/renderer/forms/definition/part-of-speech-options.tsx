@@ -1,10 +1,10 @@
 import {useState, useMemo, useCallback, useRef} from 'react';
-import {UseFormReturn} from 'react-hook-form';
 import produce from 'immer';
 
+import {Form} from '../../form';
 import {useOpenPanel} from '../../navigation';
 import {useExecute, useDictionaryEvents} from '../../data';
-import {LanguageId} from '../../graphql';
+import {LanguageId, PartOfSpeechId} from '../../graphql';
 import type {NewPartOfSpeech} from '../../panels';
 
 import NeutralCollator from './neutral-collator';
@@ -12,7 +12,7 @@ import {AllPartsOfSpeechQuery} from './query';
 import {DefinitionFormState, PartOfSpeechFields} from './types';
 
 export type Options = {
-  form: UseFormReturn<DefinitionFormState>;
+  form: Form<DefinitionFormState>;
   languageId: LanguageId;
   initialPartsOfSpeech: readonly PartOfSpeechFields[];
   onCreatePartOfSpeech: () => Promise<NewPartOfSpeech | null>;
@@ -58,7 +58,7 @@ const usePartOfSpeechOptions = ({
           });
         });
         // Always select the new part of speech.
-        form.setValue('partOfSpeech', newPos.id);
+        form.set('partOfSpeech', newPos.id);
       }
     });
   }, [openPanel, onCreatePartOfSpeech]);
@@ -95,12 +95,12 @@ const usePartOfSpeechOptions = ({
       const partsOfSpeech = result.data!.language?.partsOfSpeech ?? [];
 
       // If the currently selected part of speech has been deleted, deselect it.
-      const selectedPos = form.getValues('partOfSpeech');
+      const selectedPos = form.get<PartOfSpeechId | null>('partOfSpeech');
       if (
         selectedPos !== null &&
         !partsOfSpeech.some(pos => pos.id === selectedPos)
       ) {
-        form.setValue('partOfSpeech', null);
+        form.set('partOfSpeech', null);
       }
       setPartsOfSpeech(partsOfSpeech);
     });

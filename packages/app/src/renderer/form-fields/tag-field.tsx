@@ -1,16 +1,16 @@
 import React, {ReactNode} from 'react';
-import {FieldValues, FieldPath, useController} from 'react-hook-form';
 
 import {TagInput, TagInputProps, useUniqueId} from '@condict/ui';
 
+import {useNearestForm, useField, useFormState} from '../form';
 import {useTagInputMessages} from '../hooks';
 
 import * as S from './styles';
 
-export type Props<D extends FieldValues> = {
-  name: FieldPath<D>;
+export type Props = {
+  name: string;
+  path?: string;
   label?: ReactNode;
-  defaultValue?: readonly string[];
   errorMessage?: ReactNode;
 } & Omit<
   TagInputProps,
@@ -23,27 +23,23 @@ export type Props<D extends FieldValues> = {
   | 'onBlur'
 >;
 
-export type TagFieldComponent = <D extends FieldValues>(
-  props: Props<D>
-) => JSX.Element;
-
 // eslint-disable-next-line react/display-name
-export const TagField = React.memo((props: Props<FieldValues>): JSX.Element => {
+export const TagField = React.memo((props: Props): JSX.Element => {
   const {
     name,
+    path,
     label,
-    defaultValue,
     readOnly,
     errorMessage,
     ...otherProps
   } = props;
 
+  const form = useNearestForm();
+
   const id = useUniqueId();
 
-  const {field, formState} = useController({name, defaultValue});
-  const {onChange, onBlur} = field;
-  const {isSubmitting} = formState;
-  const value = field.value as string[];
+  const {isSubmitting} = useFormState(form);
+  const field = useField<string[]>(form, name, {path});
 
   const messages = useTagInputMessages();
 
@@ -55,13 +51,12 @@ export const TagField = React.memo((props: Props<FieldValues>): JSX.Element => {
         </S.Label>}
       <TagInput
         {...otherProps}
-        tags={value}
+        tags={field.value}
         aria-labelledby={label ? `${id}-label` : undefined}
         aria-describedby={errorMessage ? `${id}-error` : undefined}
         readOnly={readOnly || isSubmitting}
         messages={messages}
-        onChange={onChange}
-        onBlur={onBlur}
+        onChange={field.set}
       />
       {errorMessage &&
         <S.ErrorMessage id={`${id}-error`}>
@@ -69,4 +64,4 @@ export const TagField = React.memo((props: Props<FieldValues>): JSX.Element => {
         </S.ErrorMessage>}
     </S.Field>
   );
-}) as TagFieldComponent;
+});

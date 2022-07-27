@@ -81,8 +81,10 @@ function TransitionList<T>(props: Props<T>): JSX.Element | null {
       }
     });
 
-    stateRef.current = nextState;
-    setRender(r => !r);
+    if (nextState !== stateRef.current) {
+      stateRef.current = nextState;
+      setRender(r => !r);
+    }
   }, []);
 
   // Compute the next state eagerly, so we don't end up out-of-sync with the

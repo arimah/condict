@@ -1,12 +1,13 @@
-import {ReactNode, RefObject, useEffect} from 'react';
-import {FormProvider, useForm} from 'react-hook-form';
+import {ReactNode, RefObject} from 'react';
 import {Localized} from '@fluent/react';
 
-import {PartOfSpeechId, LanguageId} from '../../graphql';
+import {FormProvider, useForm} from '../../form';
 import {TextField, FormButtons} from '../../form-fields';
+import {PartOfSpeechId, LanguageId} from '../../graphql';
 import {useExecute} from '../../data';
 
 import {notEmpty, nameNotTaken} from '../validators';
+import {useSyncFormDirtiness} from '../utils';
 
 import {CheckNameQuery} from './query';
 
@@ -41,32 +42,31 @@ export const PartOfSpeechForm = (props: Props): JSX.Element => {
     onDirtyChange,
   } = props;
 
-  const form = useForm<PartOfSpeechData>({defaultValues: initialData});
+  const form = useForm<PartOfSpeechData>({
+    initValue: () => initialData,
+  });
 
-  const {isDirty} = form.formState;
-  useEffect(() => {
-    onDirtyChange?.(isDirty);
-  }, [isDirty]);
+  useSyncFormDirtiness(form, onDirtyChange);
 
   const execute = useExecute();
 
   return (
-    <FormProvider {...form}>
+    <FormProvider form={form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <TextField
           name='name'
           label={<Localized id='part-of-speech-name-label'/>}
           aria-required
-          validate={{
+          validate={[
             notEmpty,
-            notTaken: nameNotTaken(
+            nameNotTaken(
               initialData.id,
               name => execute(CheckNameQuery, {lang: languageId, name}),
               data => data.language?.partOfSpeechByName?.id ?? null
             ),
-          }}
+          ]}
           errorMessages={{
-            notTaken: <Localized id='part-of-speech-name-taken-error'/>,
+            taken: <Localized id='part-of-speech-name-taken-error'/>,
           }}
           defaultError={<Localized id='part-of-speech-name-required-error'/>}
           inputRef={firstFieldRef as RefObject<HTMLInputElement> | undefined}

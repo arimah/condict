@@ -1,17 +1,16 @@
-import {ReactNode, RefObject, useEffect} from 'react';
-import {FormProvider, useForm} from 'react-hook-form';
+import {ReactNode, RefObject} from 'react';
 import {Localized} from '@fluent/react';
+import shallowEqual from 'shallowequal';
 
+import {InflectionTable} from '@condict/table-editor';
+
+import {FormProvider, useForm} from '../../form';
+import {TextField, InflectionTableField, FormButtons} from '../../form-fields';
 import {InflectionTableId, LanguageId, PartOfSpeechId} from '../../graphql';
-import {
-  TextField,
-  InflectionTableField,
-  InflectionTableValue,
-  FormButtons,
-} from '../../form-fields';
 import {useExecute} from '../../data';
 
 import {notEmpty, nameNotTaken} from '../validators';
+import {useSyncFormDirtiness} from '../utils';
 
 import {CheckNameQuery} from './query';
 
@@ -29,13 +28,13 @@ export type Props = {
 export interface InflectionTableData {
   id: InflectionTableId | null;
   name: string;
-  layout: InflectionTableValue;
+  layout: InflectionTable;
 }
 
 const EmptyData: InflectionTableData = {
   id: null,
   name: '',
-  layout: InflectionTableValue.fromGraphQLResponse([
+  layout: InflectionTable.fromJson([
     {
       cells: [{headerText: ''}, {headerText: ''}],
     },
@@ -69,33 +68,31 @@ export const InflectionTableForm = (props: Props): JSX.Element => {
   } = props;
 
   const form = useForm<InflectionTableData>({
-    defaultValues: initialData,
+    initValue: () => initialData,
+    isUnchanged,
   });
 
-  const {isDirty} = form.formState;
-  useEffect(() => {
-    onDirtyChange?.(isDirty);
-  }, [isDirty]);
+  useSyncFormDirtiness(form, onDirtyChange);
 
   const execute = useExecute();
 
   return (
-    <FormProvider {...form}>
+    <FormProvider form={form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <TextField
           name='name'
           label={<Localized id='inflection-table-name-label'/>}
           aria-required
-          validate={{
+          validate={[
             notEmpty,
-            notTaken: nameNotTaken(
+            nameNotTaken(
               initialData.id,
               name => execute(CheckNameQuery, {pos: partOfSpeechId, name}),
               data => data.partOfSpeech?.inflectionTableByName?.id ?? null
             ),
-          }}
+          ]}
           errorMessages={{
-            notTaken: <Localized id='inflection-table-name-taken-error'/>,
+            taken: <Localized id='inflection-table-name-taken-error'/>,
           }}
           defaultError={<Localized id='inflection-table-name-required-error'/>}
           inputRef={firstFieldRef as RefObject<HTMLInputElement> | undefined}
@@ -111,4 +108,26 @@ export const InflectionTableForm = (props: Props): JSX.Element => {
       </form>
     </FormProvider>
   );
+};
+
+const isUnchanged = (
+  current: InflectionTableData,
+  initial: InflectionTableData
+): boolean =>
+  shallowEqual(current, initial, customCompareTableData);
+
+const customCompareTableData = (
+  a: any,
+  b: any,
+  key: string | number | undefined
+): boolean | void => {
+  if (key === 'layout') {
+    const tableA = a as InflectionTable;
+    const tableB = b as InflectionTable;
+    return (
+      tableA.rows === tableB.rows &&
+      tableA.cells === tableB.cells &&
+      tableA.cellData === tableB.cellData
+    );
+  }
 };

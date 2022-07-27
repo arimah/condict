@@ -1,16 +1,15 @@
 import React from 'react';
-import {useController, useWatch} from 'react-hook-form';
 import {Localized, useLocalization} from '@fluent/react';
-import produce from 'immer';
 import DefaultStemIcon from 'mdi-react/LinkBoxVariantOutlineIcon';
 import CustomStemIcon from 'mdi-react/PencilBoxIcon';
 
 import {SROnly, useUniqueId} from '@condict/ui';
 
+import {useNearestForm, useField, useFormValue, useFormState} from '../../form';
 import {Field, Label} from '../../form-fields';
 
 import useActiveStemNames from './active-stem-names';
-import {Stems, PartOfSpeechFields} from './types';
+import {PartOfSpeechFields} from './types';
 import * as S from './styles';
 
 export type Props = {
@@ -20,25 +19,27 @@ export type Props = {
 const StemsField = React.memo((props: Props): JSX.Element => {
   const {partsOfSpeech} = props;
 
-  const {field, formState} = useController({name: 'stems'});
-  const {onChange, onBlur} = field;
-  const {isSubmitting} = formState;
-  const stems = field.value as Stems;
-
-  const term = useWatch({name: 'term'}) as string;
-  const activeStems = useActiveStemNames(partsOfSpeech);
-
-  const handleStemChange = (name: string, value: string | undefined) => {
-    onChange(produce(stems, draft => {
-      if (value != null) {
-        draft.map.set(name, value);
-      } else {
-        draft.map.delete(name);
-      }
-    }));
-  };
+  const form = useNearestForm();
 
   const id = useUniqueId();
+
+  const {isSubmitting} = useFormState(form);
+  const field = useField<Map<string, string>>(form, 'stems');
+
+  const term = useFormValue<string>(form, 'term');
+  const activeStems = useActiveStemNames(form, partsOfSpeech);
+
+  const handleStemChange = (name: string, value: string | undefined) => {
+    field.update(draft => {
+      if (value != null) {
+        draft.set(name, value);
+      } else {
+        draft.delete(name);
+      }
+    });
+  };
+
+  const stems = field.value;
 
   return (
     <Field>
@@ -53,11 +54,10 @@ const StemsField = React.memo((props: Props): JSX.Element => {
           <Stem
             key={name}
             name={name}
-            value={stems.map.get(name)}
+            value={stems.get(name)}
             term={term}
             readOnly={isSubmitting}
             onChange={handleStemChange}
-            onBlur={onBlur}
           />
         )}
       </S.StemsList>
@@ -78,11 +78,10 @@ type StemProps = {
   term: string;
   readOnly: boolean;
   onChange: (name: string, value: string | undefined) => void;
-  onBlur: () => void;
 };
 
 const Stem = React.memo((props: StemProps): JSX.Element => {
-  const {name, value, term, readOnly, onChange, onBlur} = props;
+  const {name, value, term, readOnly, onChange} = props;
 
   const {l10n} = useLocalization();
 
@@ -100,7 +99,6 @@ const Stem = React.memo((props: StemProps): JSX.Element => {
       usesTerm={usesTerm}
       aria-describedby={`${id}-status`}
       onChange={e => onChange(name, e.target.value)}
-      onBlur={onBlur}
     />
     <S.StemStatus>
       <SROnly id={`${id}-status`}>

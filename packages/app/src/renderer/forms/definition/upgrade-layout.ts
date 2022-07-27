@@ -1,12 +1,13 @@
-import {DefinitionTableValue} from '../../form-fields';
+import {DefinitionTable} from '@condict/table-editor';
+
 import {InflectedFormId} from '../../graphql';
 
 import {InflectionTableLayoutFields} from './types';
 
 const upgradeLayout = (
-  prevValue: DefinitionTableValue,
+  prevValue: DefinitionTable,
   nextLayout: InflectionTableLayoutFields
-): DefinitionTableValue => {
+): DefinitionTable => {
   // When we upgrade the table, try to retain existing custom forms as far as
   // possible. The new layout is guaranteed to have all new inflected form IDs,
   // so we match by inflected form name.
@@ -53,7 +54,7 @@ const upgradeLayout = (
     }
   }
 
-  return DefinitionTableValue.fromGraphQLResponse(
+  return DefinitionTable.fromJson(
     nextLayout.rows,
     newCustomForms
   );

@@ -1,14 +1,15 @@
-import {ReactNode, RefObject, useEffect} from 'react';
-import {FormProvider, useForm} from 'react-hook-form';
+import {ReactNode, RefObject} from 'react';
 import {Localized} from '@fluent/react';
 
 import {BlockElement, emptyDescription} from '@condict/rich-text-editor';
 
-import {LanguageId} from '../../graphql';
+import {FormProvider, useForm} from '../../form';
 import {TextField, DescriptionField, FormButtons} from '../../form-fields';
+import {LanguageId} from '../../graphql';
 import {useExecute} from '../../data';
 
 import {notEmpty, nameNotTaken} from '../validators';
+import {useSyncFormDirtiness} from '../utils';
 
 import {CheckNameQuery} from './query';
 
@@ -43,32 +44,31 @@ export const LanguageForm = (props: Props): JSX.Element => {
     onDirtyChange,
   } = props;
 
-  const form = useForm<LanguageData>({defaultValues: initialData});
+  const form = useForm({
+    initValue: () => initialData,
+  });
 
-  const {isDirty} = form.formState;
-  useEffect(() => {
-    onDirtyChange?.(isDirty);
-  }, [isDirty]);
+  useSyncFormDirtiness(form, onDirtyChange);
 
   const execute = useExecute();
 
   return (
-    <FormProvider {...form}>
+    <FormProvider form={form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <TextField
           name='name'
           label={<Localized id='language-name-label'/>}
           aria-required
-          validate={{
+          validate={[
             notEmpty,
-            notTaken: nameNotTaken(
+            nameNotTaken(
               initialData.id,
               name => execute(CheckNameQuery, {name}),
               data => data.languageByName?.id ?? null
             ),
-          }}
+          ]}
           errorMessages={{
-            notTaken: <Localized id='language-name-taken-error'/>,
+            taken: <Localized id='language-name-taken-error'/>,
           }}
           defaultError={<Localized id='language-name-required-error'/>}
           inputRef={firstFieldRef as RefObject<HTMLInputElement> | undefined}

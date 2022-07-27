@@ -1,20 +1,23 @@
 import {useMemo} from 'react';
-import {useWatch} from 'react-hook-form';
 
+import {Form, useFormValue} from '../../form';
 import {PartOfSpeechId, InflectionTableId} from '../../graphql';
 
 import NeutralCollator from './neutral-collator';
-import {DefinitionTables, PartOfSpeechFields} from './types';
+import {DefinitionTableFormData, PartOfSpeechFields} from './types';
 
 const useActiveStemNames = (
+  form: Form<any>,
   partsOfSpeech: readonly PartOfSpeechFields[]
 ): string[] => {
-  const partOfSpeechId = useWatch({
-    name: 'partOfSpeech',
-  }) as PartOfSpeechId | null;
-  const inflectionTables = useWatch({
-    name: 'inflectionTables',
-  }) as DefinitionTables;
+  const partOfSpeechId = useFormValue<PartOfSpeechId | null>(
+    form,
+    'partOfSpeech'
+  );
+  const inflectionTables = useFormValue<DefinitionTableFormData[]>(
+    form,
+    'inflectionTables'
+  );
 
   const availableTables = useMemo(() => {
     const pos = partsOfSpeech.find(p => p.id === partOfSpeechId);
@@ -33,14 +36,12 @@ const useActiveStemNames = (
     const active: string[] = [];
 
     const seen = new Set<string>();
-    for (const {id} of inflectionTables.list) {
-      const table = inflectionTables.data[id];
+    for (const table of inflectionTables) {
       const tableStems = availableTables.get(table.tableId);
       if (!tableStems) {
         // The table belongs to a different part of speech; ignore it.
         continue;
       }
-
       for (const name of tableStems) {
         if (!seen.has(name)) {
           active.push(name);

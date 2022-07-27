@@ -1,5 +1,4 @@
 import React, {ReactNode, KeyboardEvent, useCallback, useRef} from 'react';
-import {FieldValues, FieldPath, useController} from 'react-hook-form';
 
 import {CommandProvider, CommandGroup, useUniqueId} from '@condict/ui';
 import {
@@ -8,17 +7,16 @@ import {
   useDefinitionTableCommands,
 } from '@condict/table-editor';
 
-import {useTableEditorMessages} from '../../hooks';
+import {useNearestForm, useField, useFormState} from '../form';
+import {useTableEditorMessages} from '../hooks';
 
-import {HistoryValue, useHistoryCommands} from '../history-value';
-import * as S from '../styles';
+import {HistoryValue, useHistoryCommands} from './history-value';
+import * as S from './styles';
 
-import {DefinitionTableValue} from './types';
-
-export type Props<D extends FieldValues> = {
-  name: FieldPath<D>;
+export type Props = {
+  name: string;
+  path?: string;
   label?: ReactNode;
-  defaultValue?: DefinitionTableValue;
   errorMessage?: ReactNode;
 } & Omit<
   DefinitionTableEditorProps,
@@ -33,64 +31,50 @@ export type Props<D extends FieldValues> = {
   | 'onFocus'
 >;
 
-export type DefinitionTableFieldComponent = {
-  <D extends FieldValues>(props: Props<D>): JSX.Element;
-  displayName: string;
-};
-
-export const DefinitionTableField = React.memo((
-  props: Props<FieldValues>
-): JSX.Element => {
+export const DefinitionTableField = React.memo((props: Props): JSX.Element => {
   const {
     name,
+    path,
     label,
-    defaultValue,
     errorMessage,
     disabled,
     ...otherProps
   } = props;
 
+  const form = useNearestForm();
+
   const id = useUniqueId();
 
-  const {field, formState} = useController({name, defaultValue});
-  const {onChange, onBlur} = field;
-  const {isSubmitting} = formState;
-  const value = field.value as DefinitionTableValue;
+  const field = useField<DefinitionTable>(form, name, {path});
+  const {isSubmitting} = useFormState(form);
+  const value = field.value;
 
   // The full definition table value, with selection, layout and the rest.
   const historyRef = useRef<HistoryValue<DefinitionTable> | null>(null);
   if (tableNeedsUpdate(historyRef.current, value)) {
     // Some part of the value has changed unexpectedly. We must update the table
-    // to reflect the changes. Sadly that means resetting the selection, but we
-    // *should* never end up in that situation in normal use anyway.
-    historyRef.current = HistoryValue.createOrPush(
-      DefinitionTableValue.toTable(value),
-      historyRef.current
-    );
+    // to reflect the changes.
+    historyRef.current = HistoryValue.createOrPush(value, historyRef.current);
   }
 
-  const version = useRef(0);
   const handleChange = useCallback((value: DefinitionTable) => {
     // It should not be possible to get here without a valid history.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const history = historyRef.current!;
-    let nextVersion: number;
     if (shouldReplaceHistory(history.current, value)) {
       HistoryValue.replace(history, value);
-      nextVersion = version.current;
     } else {
       HistoryValue.push(history, value);
-      nextVersion = ++version.current;
     }
-    onChange(DefinitionTableValue.fromTable(value, nextVersion));
-  }, [onChange]);
+    field.set(value);
+  }, []);
 
   // Logic above ensures historyRef.current is non-null.
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const history = historyRef.current!;
   const table = history.current;
 
-  const historyCommands = useHistoryCommands(history, onChange);
+  const historyCommands = useHistoryCommands(history, handleChange);
 
   const tableCommands = useDefinitionTableCommands({
     value: table,
@@ -124,7 +108,6 @@ export const DefinitionTableField = React.memo((
               readOnly={isSubmitting}
               messages={messages}
               onChange={handleChange}
-              onBlur={onBlur}
             />
           </S.DefinitionTableContainer>
         </CommandProvider>
@@ -135,13 +118,13 @@ export const DefinitionTableField = React.memo((
         </S.ErrorMessage>}
     </S.Field>
   );
-}) as DefinitionTableFieldComponent;
+});
 
 DefinitionTableField.displayName = 'DefinitionTableField';
 
 const tableNeedsUpdate = (
   history: HistoryValue<DefinitionTable> | null,
-  value: DefinitionTableValue
+  value: DefinitionTable
 ): boolean => {
   if (!history) {
     return true;

@@ -1,20 +1,14 @@
-import React, {ReactNode, Ref} from 'react';
-import {
-  FieldValues,
-  FieldPath,
-  FieldError,
-  get,
-  useFormContext,
-} from 'react-hook-form';
+import React, {ReactNode, Ref, useRef} from 'react';
 
 import {TextInputProps, useUniqueId, combineRefs} from '@condict/ui';
 
-import {Validators} from './types';
-import * as S from './styles';
-import getErrorMessage from './error-message';
+import {Validators, useNearestForm, useField, useFormState} from '../form';
 
-export type Props<D extends FieldValues> = {
-  name: FieldPath<D>;
+import * as S from './styles';
+
+export type Props = {
+  name: string;
+  path?: string;
   label?: ReactNode;
   validate?: Validators<string>;
   defaultError?: ReactNode;
@@ -26,48 +20,45 @@ export type Props<D extends FieldValues> = {
   | 'value'
   | 'defaultValue'
   | 'form'
+  | 'minLength'
+  | 'maxLength'
   | 'aria-label'
   | 'aria-labelledby'
   | 'aria-describedby'
   | 'aria-invalid'
+  | 'onChange'
 >;
 
-export type TextFieldComponent = <D extends FieldValues>(
-  props: Props<D>
-) => JSX.Element;
-
 // eslint-disable-next-line react/display-name
-export const TextField = React.memo((
-  props: Props<FieldValues>
-): JSX.Element => {
+export const TextField = React.memo((props: Props): JSX.Element => {
   const {
     id,
     name,
+    path,
     validate,
     label,
+    readOnly,
     defaultError,
     errorMessages,
     inputRef,
     ...otherProps
   } = props;
 
-  const autoId = useUniqueId();
-  const {register, formState} = useFormContext();
-  const {errors, isSubmitting} = formState;
+  const form = useNearestForm();
 
-  const {ref: fieldRef, ...field} = register(name, {
-    required: otherProps.required,
-    minLength: otherProps.minLength,
-    maxLength: otherProps.maxLength,
+  const autoId = useUniqueId();
+  const ownRef = useRef<HTMLInputElement>(null);
+
+  const {isSubmitting} = useFormState(form);
+  const field = useField<string>(form, name, {
+    path,
+    focus: () => ownRef.current?.focus(),
     validate,
   });
 
-  const fieldError = get(errors, name) as FieldError | undefined;
-  const errorMessage = fieldError && getErrorMessage(
-    fieldError,
-    errorMessages,
-    defaultError
-  );
+  const fieldError = field.error
+    ? errorMessages?.[field.error] ?? defaultError
+    : null;
 
   return (
     <S.Field>
@@ -77,18 +68,19 @@ export const TextField = React.memo((
         </S.Label>}
       <S.TextInput
         {...otherProps}
-        {...field}
+        value={field.value}
         id={id ?? autoId}
-        aria-describedby={fieldError ? `${autoId}-error` : undefined}
-        aria-invalid={Boolean(fieldError)}
-        readOnly={isSubmitting}
-        $invalid={Boolean(fieldError)}
-        ref={combineRefs(inputRef, fieldRef)}
+        aria-describedby={!field.isValid ? `${autoId}-error` : undefined}
+        aria-invalid={!field.isValid}
+        readOnly={readOnly || isSubmitting}
+        $invalid={!field.isValid}
+        onChange={e => field.set(e.target.value)}
+        ref={combineRefs(inputRef, ownRef)}
       />
-      {errorMessage &&
+      {fieldError &&
         <S.ErrorMessage id={`${autoId}-error`}>
-          {errorMessage}
+          {fieldError}
         </S.ErrorMessage>}
     </S.Field>
   );
-}) as TextFieldComponent;
+});

@@ -1,12 +1,14 @@
-import React, {useMemo, useCallback, useRef} from 'react';
-import {useFormContext, useFieldArray, useWatch} from 'react-hook-form';
+import React, {useMemo, useCallback} from 'react';
 import {Localized, useLocalization} from '@fluent/react';
 import AddIcon from 'mdi-react/PlusIcon';
+import {Draft} from 'immer';
 
 import {Button, Menu, MenuTrigger, genUniqueId, useUniqueId} from '@condict/ui';
 import {emptyTableCaption} from '@condict/rich-text-editor';
+import {DefinitionTable} from '@condict/table-editor';
 
-import {DefinitionTableValue, Field, Label} from '../../form-fields';
+import {useNearestForm, useField, useFormValue} from '../../form';
+import {Field, Label} from '../../form-fields';
 import {
   PartOfSpeechId,
   InflectionTableId,
@@ -17,9 +19,7 @@ import type {NewInflectionTable} from '../../panels';
 import useTableReordering, {CurrentMovingState} from './table-reordering';
 import Table from './table';
 import {
-  DefinitionTableId,
-  DefinitionTableData,
-  Stems,
+  DefinitionTableFormData,
   PartOfSpeechFields,
   InflectionTableInfo,
 } from './types';
@@ -27,8 +27,6 @@ import * as S from './styles';
 
 export type Props = {
   partsOfSpeech: readonly PartOfSpeechFields[];
-  defaultTableData: Record<string, DefinitionTableData>;
-  defaultStems: Stems;
   onCreateInflectionTable: (
     partOfSpeechId: PartOfSpeechId
   ) => Promise<NewInflectionTable | null>;
@@ -39,8 +37,6 @@ const EmptyCustomForms = new Map<InflectedFormId, string>();
 const TableList = React.memo((props: Props): JSX.Element => {
   const {
     partsOfSpeech,
-    defaultTableData,
-    defaultStems,
     onCreateInflectionTable,
   } = props;
 
@@ -48,27 +44,27 @@ const TableList = React.memo((props: Props): JSX.Element => {
 
   const id = useUniqueId();
 
-  const form = useFormContext();
+  const form = useNearestForm();
 
-  const fieldArray = useFieldArray({
-    name: 'inflectionTables.list',
-    keyName: 'key',
-  });
-  const fields = fieldArray.fields as (DefinitionTableId & {key: string})[];
-  const append = fieldArray.append as (value: DefinitionTableId) => void;
-  const remove = fieldArray.remove as (index: number) => void;
-  const move = fieldArray.move as (from: number, to: number) => void;
+  const field = useField<readonly DefinitionTableFormData[]>(
+    form,
+    'inflectionTables'
+  );
+  // const tables = field.value;
 
-  // Default values for tables added since the component was mounted. Tables
-  // that are in the form's default values are in the form's default values.
-  const newTableDefaults = useRef<Record<string, DefinitionTableData>>({});
+  const addTable = useCallback((table: DefinitionTableFormData) => {
+    field.update(tables => {
+      tables.push(table as Draft<DefinitionTableFormData>);
+    });
+  }, []);
 
-  const addTable = useCallback((table: DefinitionTableData) => {
-    const id = genUniqueId();
-    newTableDefaults.current[id] = table;
-    form.setValue(`inflectionTables.data.${id}`, table);
-    append({id});
-  }, [append]);
+  const moveTable = useCallback((from: number, to: number) => {
+    field.update(draft => {
+      const table = draft[from];
+      draft.splice(from, 1);
+      draft.splice(to, 0, table);
+    });
+  }, []);
 
   const {
     listRef,
@@ -76,19 +72,18 @@ const TableList = React.memo((props: Props): JSX.Element => {
     onMove,
     onMoveDone,
     onDragStart,
-  } = useTableReordering(move);
+  } = useTableReordering(moveTable);
 
   const handleRemove = useCallback((index: number) => {
-    const data = form.getValues('inflectionTables.list') as DefinitionTableId[];
-    const id = data[index].id;
-    delete newTableDefaults.current[id];
-    remove(index);
-    // The table data is removed when the corresponding <Table> unmounts.
-  }, [remove]);
+    field.update(draft => {
+      draft.splice(index, 1);
+    });
+  }, []);
 
-  const partOfSpeechId = useWatch({
-    name: 'partOfSpeech',
-  }) as PartOfSpeechId | null;
+  const partOfSpeechId = useFormValue<PartOfSpeechId | null>(
+    form,
+    'partOfSpeech'
+  );
 
   const inflectionTableMap = useMemo(() => {
     const result = new Map<InflectionTableId, InflectionTableInfo>();
@@ -115,9 +110,10 @@ const TableList = React.memo((props: Props): JSX.Element => {
         key={t.id}
         label={t.name}
         onActivate={() => addTable({
+          key: genUniqueId(),
           id: null,
           caption: emptyTableCaption(),
-          table: DefinitionTableValue.fromGraphQLResponse(
+          table: DefinitionTable.fromJson(
             t.layout.rows,
             EmptyCustomForms
           ),
@@ -129,10 +125,7 @@ const TableList = React.memo((props: Props): JSX.Element => {
     );
   }, [partsOfSpeech, partOfSpeechId]);
 
-  const stems = useWatch({
-    name: 'stems',
-    defaultValue: defaultStems,
-  }) as Stems;
+  const stems = useFormValue<Map<string, string>>(form, 'stems');
 
   const handleCreateInflectionTable = useCallback(() => {
     // The menu item only renders when partOfSpeechId is not null.
@@ -142,9 +135,10 @@ const TableList = React.memo((props: Props): JSX.Element => {
         // It's not really necessary to add the table to the table menu, as
         // it will refresh fairly soon anyway (hopefully).
         addTable({
+          key: genUniqueId(),
           id: null,
           caption: emptyTableCaption(),
-          table: DefinitionTableValue.fromGraphQLResponse(
+          table: DefinitionTable.fromJson(
             table.layout.rows,
             EmptyCustomForms
           ),
@@ -156,25 +150,22 @@ const TableList = React.memo((props: Props): JSX.Element => {
     });
   }, [partOfSpeechId, addTable, onCreateInflectionTable]);
 
+  const tables = field.value;
   return (
     <Field role='group' aria-labelledby={`${id}-label`}>
       <Label as='span' id={`${id}-label`}>
         <Localized id='definition-inflection-tables-label'/>
       </Label>
       <S.TableList ref={listRef}>
-        {fields.map((field, index) =>
+        {tables.map((table, index) =>
           <Table
-            key={field.key}
-            id={field.id}
+            key={table.key}
+            id={table.key}
             index={index}
-            totalCount={fields.length}
-            defaultValues={
-              newTableDefaults.current[field.id] ??
-              defaultTableData[field.id]
-            }
+            totalCount={tables.length}
             allTableMap={inflectionTableMap}
             partOfSpeechId={partOfSpeechId}
-            stems={stems.map}
+            stems={stems}
             moving={moving && CurrentMovingState.get(moving, index)}
             onMove={onMove}
             onDragStart={onDragStart}

@@ -1,23 +1,18 @@
-import React, {ReactNode, Ref, ChangeEvent, useCallback} from 'react';
-import {
-  FieldValues,
-  FieldPath,
-  FieldPathValue,
-  useController,
-} from 'react-hook-form';
+import React, {ReactNode, Ref, ChangeEvent, useCallback, useRef} from 'react';
 
 import {SelectProps, Button, useUniqueId, combineRefs} from '@condict/ui';
 
-import {Validators} from './types';
-import * as S from './styles';
-import getErrorMessage from './error-message';
+import {Validators, useNearestForm, useField} from '../form';
 
-export type Props<D extends FieldValues, P extends FieldPath<D>> = {
-  name: P;
+import * as S from './styles';
+
+export type Props<T> = {
+  name: string;
+  path?: string;
   label?: ReactNode;
-  mapValueToOption: (value: FieldPathValue<D, P>) => string;
-  mapOptionToValue: (option: string) => FieldPathValue<D, P>;
-  validate?: Validators<FieldPathValue<D, P>>;
+  mapValueToOption: (value: T) => string;
+  mapOptionToValue: (option: string) => T;
+  validate?: Validators<T>;
   defaultError?: ReactNode;
   errorMessages?: Record<string, ReactNode>;
   inputRef?: Ref<HTMLSelectElement>;
@@ -34,17 +29,14 @@ export type Props<D extends FieldValues, P extends FieldPath<D>> = {
   | 'aria-describedby'
 >;
 
-export type SelectFieldComponent = <D extends FieldValues, P extends FieldPath<D>>(
-  props: Props<D, P>
-) => JSX.Element;
+export type SelectFieldComponent = <T = any>(props: Props<T>) => JSX.Element;
 
 // eslint-disable-next-line react/display-name
-export const SelectField = React.memo((
-  props: Props<FieldValues, FieldPath<FieldValues>>
-): JSX.Element => {
+export const SelectField = React.memo((props: Props<any>): JSX.Element => {
   const {
     id,
     name,
+    path,
     validate,
     mapValueToOption,
     mapOptionToValue,
@@ -57,29 +49,26 @@ export const SelectField = React.memo((
     ...otherProps
   } = props;
 
+  const form = useNearestForm();
+
   const autoId = useUniqueId();
-  const {field, fieldState} = useController({
-    name,
-    rules: {
-      required: otherProps.required,
-      validate,
-    },
+  const ownRef = useRef<HTMLSelectElement>(null);
+
+  const field = useField<any>(form, name, {
+    path,
+    validate,
+    focus: () => ownRef.current?.focus(),
   });
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const {value, onChange, ref: fieldRef, ...fieldProps} = field;
 
   const handleChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const value = mapOptionToValue(e.target.value);
-    onChange(value);
-  }, [mapOptionToValue, onChange]);
+    field.set(value);
+  }, [mapOptionToValue]);
 
-  const {error: fieldError} = fieldState;
-  const errorMessage = fieldError && getErrorMessage(
-    fieldError,
-    errorMessages,
-    defaultError
-  );
+  const fieldError = field.error
+    ? errorMessages?.[field.error] ?? defaultError
+    : null;
 
   return (
     <S.Field>
@@ -90,22 +79,22 @@ export const SelectField = React.memo((
       <S.SelectWrapper>
         <S.Select
           {...otherProps}
-          {...fieldProps}
           id={id ?? autoId}
-          aria-describedby={fieldError ? `${autoId}-error` : undefined}
-          value={mapValueToOption(value)}
-          $invalid={Boolean(fieldError)}
+          aria-describedby={!field.isValid ? `${autoId}-error` : undefined}
+          aria-invalid={!field.isValid}
+          value={mapValueToOption(field.value)}
+          $invalid={!field.isValid}
           onChange={handleChange}
-          ref={combineRefs(inputRef, fieldRef)}
+          ref={combineRefs(inputRef, ownRef)}
         />
         {onCreateNew &&
           <Button slim onClick={onCreateNew}>
             {createLabel}
           </Button>}
       </S.SelectWrapper>
-      {errorMessage &&
+      {fieldError &&
         <S.ErrorMessage id={`${autoId}-error`}>
-          {errorMessage}
+          {fieldError}
         </S.ErrorMessage>}
     </S.Field>
   );

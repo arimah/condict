@@ -9,9 +9,9 @@ import {
   tableCaptionToGraphQLInput,
   emptyTableCaption,
 } from '@condict/rich-text-editor';
+import {DefinitionTable} from '@condict/table-editor';
 
 import {DataViewer, FlowContent, MainHeader} from '../ui';
-import {DefinitionTableValue} from '../form-fields';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {DefinitionData, DefinitionForm} from '../forms';
 import {DefinitionId, PartOfSpeechId} from '../graphql';
@@ -21,7 +21,7 @@ import {useRefocusOnData} from '../hooks';
 import ConfirmDeleteButton from './confirm-delete-button';
 import {addPartOfSpeechPanel} from './add-part-of-speech';
 import {addInflectionTablePanel} from './add-inflection-table';
-import {hasTableCaption} from './utils';
+import {formatCustomForms, formatStems, hasTableCaption} from './utils';
 import {
   EditDefinitionQuery,
   EditDefinitionMut,
@@ -52,16 +52,13 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
         inflectionTables: formData.inflectionTables.map(table => ({
           id: table.id,
           inflectionTableId: table.tableId,
-          customForms: DefinitionTableValue.exportCustomForms(table.table),
+          customForms: formatCustomForms(table.table),
           caption: hasTableCaption(table.caption)
             ? tableCaptionToGraphQLInput(table.caption)
             : null,
           upgradeTableLayout: table.upgraded,
         })),
-        stems: Array.from(formData.stems, ([name, value]) => ({
-          name,
-          value,
-        })),
+        stems: formatStems(formData.stems),
         tags: formData.tags,
       },
     });
@@ -135,7 +132,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
           : emptyTableCaption(),
         tableId: t.inflectionTable.id,
         layoutId: t.inflectionTableLayout.id,
-        table: DefinitionTableValue.fromGraphQLResponse(
+        table: DefinitionTable.fromJson(
           t.inflectionTableLayout.rows,
           new Map(t.customForms.map(f => [f.inflectedForm.id, f.value]))
         ),

@@ -4,13 +4,14 @@ import {IdOf} from '../graphql';
 
 const NonWhiteSpace = /\S/;
 
-export const notEmpty = (value: string): boolean => NonWhiteSpace.test(value);
+export const notEmpty = (value: string): 'empty' | null =>
+  !NonWhiteSpace.test(value) ? 'empty' : null;
 
 export function nameNotTaken<I extends IdOf<any>, D>(
   editingId: I | null,
   execute: (name: string) => Promise<OperationResult<D>>,
   getId: (data: D) => I | null
-): (name: string) => Promise<boolean> {
+): (name: string) => Promise<'taken' | null> {
   return async name => {
     const res = await execute(name.trim());
     if (!res.data || res.errors) {
@@ -18,9 +19,12 @@ export function nameNotTaken<I extends IdOf<any>, D>(
       if (res.errors) {
         console.error('Check name: GraphQL error:', res.errors);
       }
-      return true;
+      return null;
     }
     const existingId = getId(res.data);
-    return existingId === null || existingId === editingId;
+    if (existingId === null || existingId === editingId) {
+      return null;
+    }
+    return 'taken';
   };
 }
