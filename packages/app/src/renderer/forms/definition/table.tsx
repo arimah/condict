@@ -91,7 +91,7 @@ const Table = React.memo((props: Props): JSX.Element => {
       return;
     }
     return (e: TransitionEvent) => {
-      if (e.target === itemRef.current) {
+      if (e.target === itemRef.current && e.propertyName === 'top') {
         onMoveDone();
       }
     };
@@ -144,6 +144,7 @@ const Table = React.memo((props: Props): JSX.Element => {
         zIndex: moving.primary ? 1 : 0,
       }}
       moving={moving?.animate}
+      held={moving?.primary}
       onTransitionEnd={handleTransitionEnd}
       ref={itemRef}
     >

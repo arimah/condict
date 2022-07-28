@@ -17,6 +17,7 @@ export const TableList = styled.ul`
 
 export type TableItemProps = {
   moving?: boolean;
+  held?: boolean;
 };
 
 export const TableItem = styled.li<TableItemProps>`
@@ -27,10 +28,14 @@ export const TableItem = styled.li<TableItemProps>`
   border: 2px solid ${p => p.theme.general.border};
   border-radius: 3px;
   background-color: ${p => p.theme.defaultBg};
+  box-shadow: ${p => p.held && p.theme.shadow.elevation2};
 
-  transition: ${p =>
-    p.moving && `top ${Math.max(1, p.theme.timing.long)}ms ease`
-  };
+  transition:
+    ${p => p.moving
+      ? `top ${Math.max(1, p.theme.timing.long)}ms ease,`
+      : ''
+    }
+    box-shadow ${p => p.theme.timing.short}ms ease-in-out;
 
   &:last-child {
     margin-bottom: 8px;
