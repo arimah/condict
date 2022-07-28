@@ -31,7 +31,6 @@ const SidePanel = React.forwardRef((
   props: Props,
   ref: Ref<SidePanelHandle>
 ): JSX.Element => {
-  console.log('SidePanel render');
   const {panel, state, entering, onPhaseEnd} = props;
 
   const [needToEnter, setNeedToEnter] = useState(true);
