@@ -123,6 +123,7 @@ const Table = React.memo((props: Props): JSX.Element => {
     field.update(draft => {
       draft.table = nextTable as Draft<DefinitionTable>;
       draft.layoutId = nextLayout.id;
+      draft.stems = nextLayout.stems as string[];
       draft.upgraded = true;
     });
   }, [tableInfo, canUpgrade]);

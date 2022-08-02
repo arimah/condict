@@ -42,6 +42,7 @@ export interface DefinitionTableData {
   readonly table: DefinitionTable;
   readonly tableId: InflectionTableId;
   readonly layoutId: InflectionTableLayoutId;
+  readonly stems: readonly string[];
   readonly upgraded: boolean;
 }
 

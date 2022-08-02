@@ -119,6 +119,7 @@ const TableList = React.memo((props: Props): JSX.Element => {
           ),
           tableId: t.id,
           layoutId: t.layout.id,
+          stems: t.layout.stems,
           upgraded: false,
         })}
       />
@@ -144,6 +145,7 @@ const TableList = React.memo((props: Props): JSX.Element => {
           ),
           tableId: table.id,
           layoutId: table.layout.id,
+          stems: table.layout.stems,
           upgraded: false,
         });
       }

@@ -22,9 +22,9 @@ const useActiveStemNames = (
   const availableTables = useMemo(() => {
     const pos = partsOfSpeech.find(p => p.id === partOfSpeechId);
     if (!pos) {
-      return new Map<InflectionTableId, readonly string[]>();
+      return new Set<InflectionTableId>();
     }
-    return new Map(pos.inflectionTables.map(t => [t.id, t.layout.stems]));
+    return new Set(pos.inflectionTables.map(t => t.id));
   }, [partsOfSpeech, partOfSpeechId]);
 
   return useMemo(() => {
@@ -37,12 +37,11 @@ const useActiveStemNames = (
 
     const seen = new Set<string>();
     for (const table of inflectionTables) {
-      const tableStems = availableTables.get(table.tableId);
-      if (!tableStems) {
+      if (!availableTables.has(table.tableId)) {
         // The table belongs to a different part of speech; ignore it.
         continue;
       }
-      for (const name of tableStems) {
+      for (const name of table.stems) {
         if (!seen.has(name)) {
           active.push(name);
           seen.add(name);
