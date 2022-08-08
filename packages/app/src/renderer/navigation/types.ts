@@ -207,7 +207,10 @@ export type PanelProps<R> = {
    * accessibility reasons.
    */
   titleId: string;
-  /** The outer element that contains the panel, for focus management. */
+  /**
+   * The outer element that contains the panel, for focus management. The panel
+   * does not need to assign this ref; it is assigned by the panel manager.
+   */
   panelRef: RefObject<HTMLElement>;
   /** True if the panel is still entering, for focus management. */
   entering: boolean;
