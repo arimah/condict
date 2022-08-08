@@ -465,6 +465,7 @@ const InflectedFormMut = {
       update inflected_forms
       set
         derive_lemma = ${form.deriveLemma},
+        custom_display_name = ${form.hasCustomDisplayName},
         inflection_pattern = ${inflectionPattern},
         display_name = ${displayName}
       where id = ${id}
