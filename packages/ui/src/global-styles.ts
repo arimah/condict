@@ -86,7 +86,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   li {
-    margin-block: 4px 4px;
+    margin-block: 4px;
   }
 
   a:link {

@@ -62,6 +62,31 @@ export const InflectionTable = {
     );
   },
 
+  /**
+   * Updates the table to set every inflected form to the default, derived
+   * name that is based on the table's heading cells. Heading cells are not
+   * affected in any way.
+   * @param table The table to update.
+   * @return The new table with updated inflected form display names.
+   */
+  deriveAllNames(table: InflectionTable): InflectionTable {
+    return Table.update(table, draft => {
+      // FIXME: This algorithm is incredibly inefficient for larger tables.
+
+      // Read from table, not draft, for slightly improved performance
+      // (avoids constant lookups through proxy objects and unnecessary
+      // creation of proxies).
+      for (const cell of table.cells.values()) {
+        if (!cell.header) {
+          Table.updateData(draft, cell.key, cellDraft => {
+            cellDraft.displayName = getDerivedName(table, cell.key);
+            cellDraft.hasCustomDisplayName = false;
+          });
+        }
+      }
+    });
+  },
+
   export(table: InflectionTable): InflectionTableJson {
     return table.rows.map(row => ({
       cells: row.cells.map(cellKey => {

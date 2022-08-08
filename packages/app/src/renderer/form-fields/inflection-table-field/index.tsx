@@ -78,14 +78,6 @@ export const InflectionTableField = React.memo((props: Props): JSX.Element => {
     field.set(value);
   }, []);
 
-  const handleImportLayout = useCallback((value: InflectionTable) => {
-    // It should not be possible to get here without a valid history.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const history = historyRef.current!;
-    HistoryValue.push(history, value);
-    field.set(value);
-  }, []);
-
   // Logic above ensures historyRef.current is non-null.
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const history = historyRef.current!;
@@ -124,7 +116,6 @@ export const InflectionTableField = React.memo((props: Props): JSX.Element => {
               languageId={languageId}
               partOfSpeechId={partOfSpeechId}
               inflectionTableId={inflectionTableId}
-              onImportLayout={handleImportLayout}
               onChange={handleChange}
             />
             <S.TableContainer>

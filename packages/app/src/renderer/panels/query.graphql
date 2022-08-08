@@ -204,6 +204,7 @@ query EditDefinitionQuery($id: DefinitionId!) {
       inflectionTableLayout {
         id
         isCurrent
+        stems
         ...DefinitionTableFragment
       }
     }

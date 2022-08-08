@@ -62,3 +62,64 @@ export const TableLink = styled(Link)`
     display: block;
   }
 `;
+
+export const InflectedFormList = styled.ul`
+  margin-bottom: 16px;
+  padding-inline: 0;
+  list-style-type: none;
+
+  > li {
+    display: flex;
+    margin-block: 8px 12px;
+    flex-direction: row;
+    gap: 8px;
+    align-items: flex-end;
+  }
+`;
+
+export const InflectedFormLabel = styled.div`
+  display: flex;
+  gap: 16px;
+
+  > label {
+    flex: none;
+    font-weight: bold;
+  }
+
+  > span {
+    flex: 1 1 auto;
+    font-style: italic;
+    text-align: right;
+  }
+`;
+
+export const InflectedFormInput = styled.div`
+  flex: 1 1 auto;
+
+  > input {
+    display: block;
+    margin-top: 2px;
+    width: 100%;
+  }
+`;
+
+export type InflectedFormActionProps = {
+  hasCustomName: boolean;
+};
+
+export const InflectedFormAction = styled(NakedButton)<InflectedFormActionProps>`
+  display: block;
+  flex: none;
+  margin-block: -3px;
+  padding: 1px;
+  color: ${p => p.hasCustomName && p.theme.accent.defaultFg};
+
+  &:focus {
+    padding: 1px;
+  }
+
+  > .mdi-icon.mdi-icon {
+    display: block;
+    margin: 0;
+  }
+`;

@@ -36,7 +36,13 @@ interface TableGroup {
 type SubmitState = 'loading' | 'error' | null;
 
 const ImportLayoutPanel = (props: Props): JSX.Element => {
-  const {languageId, partOfSpeechId, inflectionTableId, onResolve} = props;
+  const {
+    languageId,
+    partOfSpeechId,
+    inflectionTableId,
+    titleId,
+    onResolve,
+  } = props;
 
   const [submitState, setSubmitState] = useState<SubmitState>(null);
 
@@ -110,7 +116,7 @@ const ImportLayoutPanel = (props: Props): JSX.Element => {
   return (
     <FlowContent>
       <MainHeader>
-        <h1>
+        <h1 id={titleId}>
           <Localized id='table-editor-import-layout-title'/>
         </h1>
         <HeaderAction onClick={() => onResolve(null)}>

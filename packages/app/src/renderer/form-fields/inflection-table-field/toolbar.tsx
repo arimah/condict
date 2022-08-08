@@ -13,6 +13,7 @@ import SeparateIcon from 'mdi-react/TableSplitCellIcon';
 import DotsIcon from 'mdi-react/DotsVerticalIcon';
 import ImportIcon from 'mdi-react/TableArrowDownIcon';
 import TransposeIcon from 'mdi-react/TablePivotIcon';
+import RenameFormsIcon from 'mdi-react/FormTextboxIcon';
 
 import {Toolbar, Menu} from '@condict/ui';
 import {InflectionTable, SelectionShape} from '@condict/table-editor';
@@ -23,6 +24,7 @@ import {InflectionTableId, LanguageId, PartOfSpeechId} from '../../graphql';
 import * as S from '../styles';
 
 import importLayoutPanel from './import-layout-panel';
+import renameFormsPanel from './rename-forms-panel';
 import transposeTable from './transpose-table';
 
 type Props = {
@@ -33,7 +35,6 @@ type Props = {
   languageId: LanguageId;
   partOfSpeechId: PartOfSpeechId;
   inflectionTableId: InflectionTableId | null;
-  onImportLayout: (layout: InflectionTable) => void;
   onChange: (table: InflectionTable) => void;
 };
 
@@ -50,12 +51,21 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
     languageId,
     partOfSpeechId,
     inflectionTableId,
-    onImportLayout,
     onChange,
   } = props;
   const {l10n} = useLocalization();
 
   const openPanel = useOpenPanel();
+
+  const handleRenameForms = useCallback(() => {
+    const table = valueRef.current;
+    void openPanel(renameFormsPanel(table)).then(value => {
+      if (value) {
+        onChange(value);
+      }
+    });
+  }, [openPanel, onChange]);
+
   const handleImportLayout = useCallback(() => {
     void openPanel(importLayoutPanel({
       languageId,
@@ -63,7 +73,7 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
       inflectionTableId,
     })).then(value => {
       if (value) {
-        onImportLayout(value);
+        onChange(value);
       }
     });
   }, [
@@ -71,7 +81,7 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
     partOfSpeechId,
     inflectionTableId,
     openPanel,
-    onImportLayout,
+    onChange,
   ]);
 
   const handleTranspose = useCallback(() => {
@@ -165,14 +175,20 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
         menu={
           <Menu>
             <Menu.Item
-              label={l10n.getString('table-editor-import-layout-menu')}
-              icon={<ImportIcon/>}
-              onActivate={handleImportLayout}
-            />
-            <Menu.Item
               label={l10n.getString('table-editor-transpose-menu')}
               icon={<TransposeIcon/>}
               onActivate={handleTranspose}
+            />
+            <Menu.Item
+              label={l10n.getString('table-editor-rename-forms')}
+              icon={<RenameFormsIcon/>}
+              onActivate={handleRenameForms}
+            />
+            <Menu.Separator/>
+            <Menu.Item
+              label={l10n.getString('table-editor-import-layout-menu')}
+              icon={<ImportIcon/>}
+              onActivate={handleImportLayout}
             />
           </Menu>
         }

@@ -498,6 +498,8 @@ table-editor-import-layout-menu = Import layout...
 
 table-editor-transpose-menu = Swap rows and columns
 
+table-editor-rename-forms = Edit all form names...
+
 table-editor-import-layout-title = Import layout
 
 table-editor-import-same-pos-heading = From the same part of speech
@@ -511,6 +513,28 @@ table-editor-import-other-pos-empty = There are no inflection tables in any othe
 table-editor-import-open-table-button = View the table in a new tab
 
 table-editor-import-error = The selected table could not be loaded. It may help to try again.
+
+table-editor-rename-forms-title = Edit all form names
+
+table-editor-empty-form-label = (empty cell)
+
+table-editor-derived-name-label = Default name:
+
+table-editor-derived-name-label-tooltip = Default name based on nearby heading cells
+
+table-editor-derived-name-status = This inflected form gets its name from nearby heading cells.
+
+table-editor-custom-name-status = This inflected form has a custom display name.
+
+table-editor-derived-name-tooltip =
+  {table-editor-derived-name-status}
+  Press to use a custom name, or type over the current name.
+
+table-editor-custom-name-tooltip =
+  {table-editor-custom-name-status}
+  Press to use the automatic name based on the table’s heading cells.
+
+table-editor-name-source-label = Use automatic name
 
 ## Tag input messages
 

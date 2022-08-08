@@ -1,4 +1,4 @@
-import {ReactNode, useState} from 'react';
+import React, {ReactNode, useState} from 'react';
 import {Localized} from '@fluent/react';
 
 import {useNearestForm, useFormState} from '../form';
@@ -15,7 +15,7 @@ export type Props = {
   onCancel: () => void;
 };
 
-export const FormButtons = (props: Props): JSX.Element => {
+export const FormButtons = React.memo((props: Props): JSX.Element => {
   const {submitLabel, cancelLabel, loadingLabel, submitError, onCancel} = props;
 
   const form = useNearestForm();
@@ -42,4 +42,6 @@ export const FormButtons = (props: Props): JSX.Element => {
       </S.SubmitError>
     </S.FormButtons>
   );
-};
+});
+
+FormButtons.displayName = 'FormButtons';

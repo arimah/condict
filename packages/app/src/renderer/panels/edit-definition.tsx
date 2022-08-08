@@ -127,15 +127,16 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
       partOfSpeech: def.partOfSpeech.id,
       inflectionTables: def.inflectionTables.map(t => ({
         id: t.id,
+        tableId: t.inflectionTable.id,
+        layoutId: t.inflectionTableLayout.id,
         caption: t.caption
           ? tableCaptionFromGraphQLResponse(t.caption)
           : emptyTableCaption(),
-        tableId: t.inflectionTable.id,
-        layoutId: t.inflectionTableLayout.id,
         table: DefinitionTable.fromJson(
           t.inflectionTableLayout.rows,
           new Map(t.customForms.map(f => [f.inflectedForm.id, f.value]))
         ),
+        stems: t.inflectionTableLayout.stems,
         upgraded: false,
       })),
       stems: new Map(def.stems.map(s => [s.name, s.value])),
