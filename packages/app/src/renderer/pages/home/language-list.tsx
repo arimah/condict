@@ -75,7 +75,7 @@ const LanguageCard = ({lang}: LanguageCardProps): JSX.Element =>
   <LinkCard
     key={lang.id}
     to={LanguagePage(lang.id, lang.name)}
-    title={lang.name}
+    title={<h2>{lang.name}</h2>}
     iconAfter={<LinkArrow className='rtl-mirror'/>}
   >
     {hasRichContent(lang.description) &&

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import LinkArrow from 'mdi-react/ChevronRightIcon';
 
 import {LanguagePage, DefinitionPage} from '../page';
@@ -13,6 +13,7 @@ export type Props = {
   definition: DefinitionCardData;
   parent: LanguagePage;
   time?: 'latest' | 'created' | 'updated' | null;
+  wrapTitle?: (title: JSX.Element) => ReactNode;
 };
 
 export interface DefinitionCardData {
@@ -26,18 +27,29 @@ export interface DefinitionCardData {
   readonly timeUpdated: number;
 }
 
+const defaultWrapTitle = (title: JSX.Element) => title;
+
 const DefinitionCard = React.memo((props: Props): JSX.Element => {
-  const {parent, definition, time = 'latest'} = props;
+  const {
+    parent,
+    definition,
+    time = 'latest',
+    wrapTitle = defaultWrapTitle,
+  } = props;
   return (
     <LinkCard
       to={DefinitionPage(definition.id, definition.term, parent)}
-      title={<>
-        {definition.term}
-        {definition.partOfSpeech &&
-          <S.CardTitleContext>
-            {definition.partOfSpeech.name}
-          </S.CardTitleContext>}
-      </>}
+      title={
+        wrapTitle(<>
+          {definition.term}
+          {definition.partOfSpeech &&
+            <S.CardTitleContext>
+              {' '}
+              {definition.partOfSpeech.name}
+            </S.CardTitleContext>
+          }
+        </>)
+      }
       iconAfter={<LinkArrow className='rtl-mirror'/>}
     >
       <RichContent

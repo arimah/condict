@@ -69,7 +69,9 @@ const LemmaAndDefinitionList = (props: Props): JSX.Element => {
       <LinkCard
         to={parent}
         title={
-          <Localized id='language-browse-lemmas-title' vars={{lemmaCount}}/>
+          <h3>
+            <Localized id='language-browse-lemmas-title' vars={{lemmaCount}}/>
+          </h3>
         }
         iconAfter={<LinkArrow className='rtl-mirror'/>}
       >
@@ -99,7 +101,12 @@ const LemmaAndDefinitionList = (props: Props): JSX.Element => {
         </h3>
         <CardList as='section' aria-labelledby={`${htmlId}-recent-title`}>
           {recentDefinitions.map(def =>
-            <DefinitionCard key={def.id} parent={parent} definition={def}/>
+            <DefinitionCard
+              key={def.id}
+              parent={parent}
+              definition={def}
+              wrapTitle={title => <h4>{title}</h4>}
+            />
           )}
         </CardList>
       </>}

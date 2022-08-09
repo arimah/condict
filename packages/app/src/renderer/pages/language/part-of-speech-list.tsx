@@ -36,7 +36,7 @@ const PartOfSpeechList = (props: Props): JSX.Element => {
             <LinkCard
               key={pos.id}
               to={PartOfSpeechPage(pos.id, pos.name, parent)}
-              title={pos.name}
+              title={<h3>{pos.name}</h3>}
             >
               <p>
                 <Localized

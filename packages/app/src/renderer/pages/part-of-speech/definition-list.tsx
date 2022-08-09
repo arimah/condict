@@ -36,6 +36,7 @@ const DefinitionList = (props: Props): JSX.Element => {
               definition={def}
               parent={parent.language}
               time={null}
+              wrapTitle={title => <h3>{title}</h3>}
             />
           )}
           <LinkCard

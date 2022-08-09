@@ -63,26 +63,25 @@ export const LinkCard = styled(Link)`
   }
 `;
 
-export type TitleProps = {
-  wrap?: boolean;
-};
-
 // The weird margins and paddings inside the title are to enable focus
-// rectangles for embedded links even when props.wrap is falsy. Without
-// a bit of extra padding, the link's focus rectangle gets cut off by
-// overflow: hidden.
+// rectangles for embedded links. Without a bit of extra padding, the
+// link's focus rectangle gets cut off by overflow: hidden.
 
-export const Title = styled.p<TitleProps>`
+export const Title = styled.div`
   margin: -6px;
   padding: 6px;
+  overflow: hidden;
+
+  font-weight: normal;
   font-size: 18px;
   line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
-  ${p => !p.wrap && `
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  `}
+  > :is(h2, h3, h4, h5, h6) {
+    display: inline;
+    font: inherit;
+  }
 
   .mdi-icon {
     margin-block: -1px;

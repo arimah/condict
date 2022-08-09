@@ -102,7 +102,7 @@ const RecentChangeCard = ({item}: Props): JSX.Element => {
 
   return (
     <Card
-      title={<Link to={page}>{name}</Link>}
+      title={<h2><Link to={page}>{name}</Link></h2>}
       iconAfter={<ResourceIcon type={iconType}/>}
     >
       <p>{description}</p>
