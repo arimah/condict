@@ -4,6 +4,9 @@ build/
 # Source files are compiled before publish, and are not needed otherwise
 dist/
 
+# The compiled app should definitely not be committed
+bin/
+
 # Main app configuration
 config.json
 

@@ -1,7 +1,7 @@
 // TODO: Find better icons or create our own. Many of these are pretty arbitrary
 // and probably don't fit the resource type very well.
 import LanguageIcon from 'mdi-react/BookOpenPageVariantOutlineIcon';
-import LemmaIcon from 'mdi-react/TextBoxMultipleOutlineIcon';
+import LemmaIcon from 'mdi-react/CardMultipleOutlineIcon';
 import DefinitionIcon from 'mdi-react/CardBulletedOutlineIcon';
 import PartOfSpeechIcon from 'mdi-react/ShapeOutlineIcon';
 import InflectionTableIcon from 'mdi-react/TableIcon';

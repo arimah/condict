@@ -9,26 +9,36 @@ import typescript from '@rollup/plugin-typescript';
 
 const localDepPattern = /^\.\.?\//;
 
-export const getExternal = pkg => {
-  const dependencies = new Set(
+export const getExternal = (pkg, allowDev = false) => {
+  // Map from module ID to true (known external) or false (known non-external).
+  const dependencies = new Map(
     [].concat(Object.keys(pkg.dependencies || {}))
       .concat(Object.keys(pkg.peerDependencies || {}))
+      .map(d => [d, true])
   );
-
-  const devDependencies = new Set(Object.keys(pkg.devDependencies || {}));
+  // Same as above
+  const devDependencies = new Map(
+    Object.keys(pkg.devDependencies || {})
+      .map(d => [d, true])
+  );
 
   const isDependency = (deps, id) => {
     if (!localDepPattern.test(id)) {
       if (deps.has(id)) {
-        return true;
+        return deps.get(id);
       }
 
-      for (const dep of deps) {
+      for (const dep of deps.keys()) {
         // Catch submodule imports like `mdi-react/SomethingIcon`.
         if (id.startsWith(`${dep}/`)) {
+          // Known external dependency; cache it.
+          deps.set(id, true);
           return true;
         }
       }
+
+      // Known non-external dependency; cache it.
+      deps.set(id, false);
     }
     return false;
   };
@@ -38,7 +48,9 @@ export const getExternal = pkg => {
       return true;
     }
     if (isDependency(devDependencies, id)) {
-      console.warn(`(!) Package ${pkg.name} imports dev dependency ${id}`);
+      if (!allowDev) {
+        console.warn(`(!) Package ${pkg.name} imports dev dependency ${id}`);
+      }
       return true;
     }
     return false;

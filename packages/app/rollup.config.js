@@ -10,10 +10,13 @@ const env = process.env.NODE_ENV || 'production';
 // import from it regardless (without warning).
 pkg.dependencies['electron'] = true;
 
-const external = getExternal(pkg);
+const isExternalMain = getExternal(pkg);
 
 const isExternalRenderer = env === 'development'
-  ? external
+  // External dependencies are in devDependencies for the renderer, so they
+  // don't get included in app.asar when we build the app. We must allow dev
+  // dependencies to be referenced.
+  ? getExternal(pkg, true)
   : id => id === 'electron' || id.startsWith('electron/');
 
 // On Windows, paths sometimes inconsistently use `/` instead of `\`, so let's
@@ -73,7 +76,7 @@ export default [
     },
 
     external: id => {
-      if (external(id)) {
+      if (isExternalMain(id)) {
         return true;
       }
 

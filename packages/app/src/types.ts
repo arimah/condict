@@ -1,6 +1,6 @@
-import {SourceLocation} from 'graphql';
+import type {SourceLocation} from 'graphql';
 
-import {
+import type {
   ServerConfig as BaseServerConfig,
   LoggerOptions,
 } from '@condict/server';
