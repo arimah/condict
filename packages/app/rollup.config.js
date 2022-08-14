@@ -12,6 +12,10 @@ pkg.dependencies['electron'] = true;
 
 const external = getExternal(pkg);
 
+const isExternalRenderer = env === 'development'
+  ? external
+  : id => id === 'electron' || id.startsWith('electron/');
+
 // On Windows, paths sometimes inconsistently use `/` instead of `\`, so let's
 // normalize them.
 const normalizePath = path.sep === '\\' ? path.normalize : p => p;
@@ -28,17 +32,19 @@ export default [
       format: 'cjs',
       exports: 'none',
       sourcemap: false,
+      interop: 'auto',
+      generatedCode: 'es2015',
+      externalLiveBindings: false,
     },
 
     external: id => {
-      if (external(id)) {
+      if (isExternalRenderer(id)) {
         return true;
       }
 
       if (path.isAbsolute(id) && normalizePath(id).startsWith(mainDir)) {
         throw new Error(`Renderer references main module ${id}`);
       }
-
       return false;
     },
 
@@ -61,6 +67,9 @@ export default [
       format: 'cjs',
       exports: 'none',
       sourcemap: false,
+      interop: 'auto',
+      generatedCode: 'es2015',
+      externalLiveBindings: false,
     },
 
     external: id => {

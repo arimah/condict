@@ -9,6 +9,7 @@
     "dist/"
   ],
   "main": "dist/index.js",
+  "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "node build",

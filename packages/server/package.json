@@ -10,6 +10,7 @@
     "graphql-schema/"
   ],
   "main": "dist/index.js",
+  "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "bin": {
     "condict-server": "./dist/cli.js"

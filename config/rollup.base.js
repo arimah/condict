@@ -78,7 +78,7 @@ export const getPlugins = (options = {}) => {
       } : null,
     }),
 
-    // Rollup only resolves ES2015 modules by default, so make it work with
+    // Rollup only resolves ES modules by default, so make it work with
     // CommonJS modules too.
     commonjs({
       exclude: [`${packagePath}/src/**`],
@@ -150,16 +150,30 @@ export const configureTarget = (pkg, output, options = {}) => {
   return {
     input,
 
-    output: {
-      format: 'cjs',
-      exports: 'named',
-      sourcemap: false,
-      ...declarations ? {
-        dir: path.dirname(realOutput),
-      } : {
-        file: realOutput,
+    output: [
+      {
+        format: 'cjs',
+        exports: 'named',
+        interop: 'auto',
+        generatedCode: 'es2015',
+        externalLiveBindings: false,
+        sourcemap: false,
+        ...declarations ? {
+          dir: path.dirname(realOutput),
+        } : {
+          file: realOutput,
+        },
       },
-    },
+      {
+        format: 'es',
+        exports: 'auto',
+        interop: 'auto',
+        generatedCode: 'es2015',
+        externalLiveBindings: false,
+        sourcemap: false,
+        file: realOutput.replace(/\.js$/, '.esm.js'),
+      }
+    ],
 
     external,
 
@@ -237,6 +251,9 @@ const configureDefault = (pkg, options = {}) => {
           external: id => binExternal(id, binName),
           entry: input,
         });
+
+        // We only care about CJS for binaries
+        config.output = config.output[0];
         config.output.banner = '#!/usr/bin/env node';
         return config;
       })
