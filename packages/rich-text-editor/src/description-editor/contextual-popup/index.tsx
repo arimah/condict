@@ -81,9 +81,7 @@ const ContextualPopup = React.forwardRef((
     // It should not be possible to get into the contextual popup from anywhere
     // but the editor.
     setTrapActive(false);
-    void Promise.resolve().then(() => {
-      ReactEditor.focus(editor);
-    });
+    setTimeout(() => ReactEditor.focus(editor), 5);
   }, []);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {

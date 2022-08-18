@@ -28,11 +28,13 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
   const ipa = xsampaToIpa(text);
 
   const applyConversion = useCallback(() => {
-    const rangeRef = Editor.rangeRef(editor, range);
+    const focusRef = Editor.pointRef(editor, SlateRange.end(range));
+
+    Transforms.insertText(editor, ipa, {at: range});
+
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    Transforms.insertText(editor, ipa, {at: rangeRef.current!});
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    Transforms.select(editor, rangeRef.unref()!);
+    const point = focusRef.unref()!;
+    Transforms.setSelection(editor, {anchor: point, focus: point});
   }, [range, ipa]);
 
   const tabIndex = focusable ? undefined : -1;

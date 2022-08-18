@@ -77,18 +77,10 @@ const LinkDialog = (props: Props): JSX.Element => {
 
   const [state, dispatch] = useReducer(reduce, props, initState);
 
-  const mainRef = useRef<HTMLDivElement>(null);
-  const cancel = useCallback(() => {
-    // HACK: Get around problems with Slate, focus and selection management.
-    void Promise.resolve().then(onCancel);
-  }, [onCancel]);
-
   const submit = useCallback(() => {
     if (state.index === -1) {
       dispatch({type: 'showError'});
     } else {
-      // HACK: Going directly from input to Slate causes selection problems.
-      mainRef.current?.focus();
       onSubmit(state.results[state.index].target);
     }
   }, [onSubmit, state]);
@@ -121,9 +113,9 @@ const LinkDialog = (props: Props): JSX.Element => {
     if (Shortcut.matches(CloseKey, e)) {
       e.preventDefault();
       e.stopPropagation();
-      cancel();
+      onCancel();
     }
-  }, [cancel]);
+  }, [onCancel]);
 
   const requestId = useRef(0);
   const loadingTimeoutId = useRef<number | undefined>(undefined);
@@ -180,8 +172,7 @@ const LinkDialog = (props: Props): JSX.Element => {
       placement={placement}
       aria-label={messages.linkDialogTitle()}
       onKeyDown={handleDialogKeyDown}
-      onPointerDownOutside={cancel}
-      ref={mainRef}
+      onPointerDownOutside={onCancel}
     >
       <SearchWrapper
         aria-expanded={state.results.length > 0}

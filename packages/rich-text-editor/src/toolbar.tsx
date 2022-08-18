@@ -49,7 +49,7 @@ export const HeadingsGroup = (
   const {shortcuts, messages} = props;
   const editor = useSlate();
   const options = {
-    at: editor.selection ?? editor.blurSelection ?? undefined,
+    at: editor.selection ?? undefined,
   };
   return (
     <Toolbar.Group name={messages.headingsGroup()}>
@@ -155,7 +155,7 @@ export const LinkGroup = (
 ): JSX.Element => {
   const {shortcuts, messages, onSetLink} = props;
   const editor = useSlate();
-  const at = editor.selection || editor.blurSelection || undefined;
+  const at = editor.selection ?? undefined;
   const options = {at};
   const hasLink = isInlineActive(editor, 'link', options);
   return (
@@ -187,7 +187,7 @@ export const BlockFormatGroup = (
   const {shortcuts, messages} = props;
   const editor = useSlate();
   const options = {
-    at: editor.selection ?? editor.blurSelection ?? undefined,
+    at: editor.selection ?? undefined,
   };
   return <>
     <Toolbar.Group name={messages.listStyleGroup()}>
@@ -240,7 +240,7 @@ export const HelpersGroup = (
   return (
     <Toolbar.Button
       label={messages.insertIpa()}
-      disabled={editor.selection === null && editor.blurSelection === null}
+      disabled={editor.selection === null}
       shortcut={shortcuts.insertIpa}
       onClick={onOpenIpaDialog}
     >

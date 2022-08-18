@@ -38,7 +38,7 @@ export const Toolbar = styled(ToolbarBase)<ToolbarProps>`
     pointer-events: none;
     transform: translate(0, 100%) translate(0, 1px);
 
-    transition-property: max-height, transform, opacity;
+    transition-property: max-height, transform, opacity, box-shadow;
     transition-duration: ${p => p.theme.timing.short}ms;
     transition-timing-function: ease-in-out;
   `}
@@ -108,12 +108,13 @@ export const EditorContainer = styled.div<EditorContainerProps>`
   margin-bottom: 16px;
   position: relative;
 
-  ${p => !p.toolbarAlwaysVisible && `
+  ${p => !p.toolbarAlwaysVisible && css`
     &:focus-within {
       > ${Toolbar} {
         max-height: 150%;
         transform: translate(0, 0);
         pointer-events: auto;
+        box-shadow: ${p => p.theme.shadow.elevation1};
       }
     }
   `}

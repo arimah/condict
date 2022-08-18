@@ -155,11 +155,6 @@ const IpaDialog = (props: Props): JSX.Element => {
     inputRef.current?.focus();
   }, [onEmit]);
 
-  const close = useCallback(() => {
-    // HACK: Get around problems with Slate, focus and selection management.
-    void Promise.resolve().then(onClose);
-  }, [onClose]);
-
   const submit = useCallback(() => {
     if (index !== -1) {
       let input: string;
@@ -201,9 +196,9 @@ const IpaDialog = (props: Props): JSX.Element => {
     if (Shortcut.matches(CloseKey, e)) {
       e.preventDefault();
       e.stopPropagation();
-      close();
+      onClose();
     }
-  }, [close]);
+  }, [onClose]);
 
   const handleHover = useCallback((index: number) => {
     dispatch({type: 'hover', index});
@@ -223,7 +218,7 @@ const IpaDialog = (props: Props): JSX.Element => {
       aria-label={messages.ipaDialogTitle()}
       placement={placement}
       onKeyDown={handleDialogKeyDown}
-      onPointerDownOutside={close}
+      onPointerDownOutside={onClose}
     >
       <SearchWrapper
         // If results is null, then we show the full character listing, which

@@ -14,9 +14,8 @@ export const NextResultKey = Shortcut.parse('ArrowDown');
 
 const Dialog = styled(Popup).attrs({
   trapFocus: true,
-  restoreFocus: true,
 })`
-  width: 376px;
+  width: 480px;
 `;
 
 export default Dialog;

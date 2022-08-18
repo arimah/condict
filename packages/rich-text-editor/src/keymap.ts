@@ -275,11 +275,18 @@ export const getBlockCommands = (shortcuts: BlockShortcuts): KeyCommand[] => [
           match: n => isBlock(n, editor),
         })!;
         const atStart = Editor.isStart(editor, selection.focus, blockPath);
-        const atEnd = Editor.isEnd(editor, selection.focus, blockPath);
-        // Backspace in an empty list item resets it to paragraph.
-        if (isListType(block.type) && atStart && atEnd) {
+
+        // Backspace at the start of a list item resets it to paragraph.
+        if (atStart && isListType(block.type)) {
           e.preventDefault();
           editor.formatBlock('paragraph');
+          return;
+        }
+
+        // Backspace at the start of an indented block unindents it.
+        if (atStart && (block as BlockElement).indent) {
+          e.preventDefault();
+          editor.unindent();
           return;
         }
       }

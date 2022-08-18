@@ -1,4 +1,4 @@
-import {BaseEditor, Editor, Operation, Selection, Path} from 'slate';
+import {BaseEditor, Editor, Operation, Path} from 'slate';
 
 import {CondictEditor} from '../types';
 
@@ -40,14 +40,14 @@ export const withHistory = <E extends BaseEditor>(
     if (undos.length > 0) {
       const state = undos[undos.length - 1];
 
+      Manipulating.set(e, true);
       Editor.withoutNormalizing(e as unknown as CondictEditor, () => {
-        Manipulating.set(e, true);
         for (let i = state.operations.length - 1; i >= 0; i--) {
           const op = Operation.inverse(state.operations[i]);
           e.apply(op);
         }
-        Manipulating.set(e, false);
       });
+      Manipulating.set(e, false);
 
       history.undos.pop();
       history.redos.push(state);
@@ -61,14 +61,14 @@ export const withHistory = <E extends BaseEditor>(
     if (history.redos.length > 0) {
       const state = redos[redos.length - 1];
 
+      Manipulating.set(e, true);
       Editor.withoutNormalizing(e as unknown as CondictEditor, () => {
-        Manipulating.set(e, true);
         for (let i = 0; i < state.operations.length; i++) {
           const op = state.operations[i];
           e.apply(op);
         }
-        Manipulating.set(e, false);
       });
+      Manipulating.set(e, false);
 
       history.redos.pop();
       history.undos.push(state);
@@ -117,7 +117,7 @@ const getCurrentState = (e: HistoryEditor, op: Operation): HistoryState => {
     let state = IsolatedState.get(e);
 
     if (!state) {
-      state = createState(e.selection, IsolatedStateTime);
+      state = createState(IsolatedStateTime);
       IsolatedState.set(e, state);
       undos.push(state);
     }
@@ -136,7 +136,7 @@ const getCurrentState = (e: HistoryEditor, op: Operation): HistoryState => {
     }
 
     if (!state) {
-      state = createState(e.selection, now);
+      state = createState(now);
       undos.push(state);
     }
 
@@ -144,7 +144,7 @@ const getCurrentState = (e: HistoryEditor, op: Operation): HistoryState => {
   }
 };
 
-const createState = (selection: Selection, now: number): HistoryState => ({
+const createState = (now: number): HistoryState => ({
   operations: [],
   lastOperationTime: now,
 });

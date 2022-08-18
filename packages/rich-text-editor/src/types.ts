@@ -98,36 +98,39 @@ export interface CustomText {
 }
 
 export interface CondictEditor extends ReactEditor, HistoryEditor {
-  /** The selection that the editor had before losing focus. */
-  blurSelection: Range | null;
-
   formatBlock(
     format: BlockType,
     options?: {
       at?: Location;
     }
   ): void;
+
   indent(
     options?: {
       at?: Location;
     }
   ): void;
+
   unindent(
     options?: {
       at?: Location;
     }
   ): void;
+
   wrapLink(
     target: LinkTarget,
     options?: {
       at?: Location;
     }
   ): void;
+
   removeLink(
     options?: {
       at?: Location;
     }
   ): void;
+
+  focusWithSelection(selection: Range): void;
 }
 
 declare module 'slate' {

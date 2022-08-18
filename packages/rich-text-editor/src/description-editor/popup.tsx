@@ -7,7 +7,6 @@ import * as S from './styles';
 export type Props = {
   placement: PlacementRect;
   trapFocus?: boolean;
-  restoreFocus?: boolean;
   onPointerDownOutside?: (target: Element) => void;
 } & Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -41,7 +40,6 @@ const Popup = React.forwardRef((
     placement,
     style,
     trapFocus = false,
-    restoreFocus = false,
     onPointerDownOutside,
     children,
     ...otherProps
@@ -66,7 +64,7 @@ const Popup = React.forwardRef((
   return (
     <FocusTrap
       active={trapFocus}
-      return={restoreFocus}
+      return={false}
       onPointerDownOutside={onPointerDownOutside}
     >
       <S.Popup

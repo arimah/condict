@@ -5,7 +5,6 @@ import {
   useMemo,
   useCallback,
   useRef,
-  useEffect,
 } from 'react';
 import {Transforms, Editor, Descendant, Range} from 'slate';
 import {Slate, ReactEditor} from 'slate-react';
@@ -91,29 +90,12 @@ const DescriptionEditor = (props: Props): JSX.Element => {
   const [editor] = useState(() => createEditor(false));
 
   const [dialogProps, setDialogProps] = useState<DialogProps | null>(null);
-  // If not false, open a dialog on the next render.
-  const [
-    shouldOpenDialog,
-    setShouldOpenDialog,
-  ] = useState<DialogType | false>(false);
 
   const editorRef = useRef<HTMLDivElement>(null);
 
   const tryOpenDialog = useCallback(<T extends DialogType>(
-    type: T,
     getProps: GetDialogProps<T>
-  ) => setShouldOpenDialog(shouldOpen => {
-    if (!editor.selection && editor.blurSelection) {
-      // We tried last render and it did nothing, so no point trying again.
-      if (shouldOpen) {
-        return false;
-      }
-
-      ReactEditor.focus(editor);
-      // Try to open the dialog again after the next render.
-      return type;
-    }
-
+  ) => {
     const {selection} = editor;
     const domSelection = window.getSelection();
     if (selection && domSelection && editorRef.current) {
@@ -123,13 +105,11 @@ const DescriptionEditor = (props: Props): JSX.Element => {
         editorRef.current.getBoundingClientRect()
       ));
     }
-
-    // Either no valid selection or dialog is open - don't try again.
-    return false;
-  }), []);
+    // Either no valid selection or dialog is open - can't open.
+  }, []);
 
   const openLinkDialog = useCallback(() => {
-    tryOpenDialog('link', (selection, domSelection, editorRect) => {
+    tryOpenDialog((selection, domSelection, editorRect) => {
       const link = firstMatchingNode(editor, {at: selection, match: isLink});
 
       let rect: DOMRect;
@@ -155,7 +135,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
   }, [tryOpenDialog]);
 
   const openIpaDialog = useCallback(() => {
-    tryOpenDialog('ipa', (selection, domSelection, editorRect) => {
+    tryOpenDialog((selection, domSelection, editorRect) => {
       const nativeRange = domSelection.getRangeAt(0);
       const rect = nativeRange.getBoundingClientRect();
 
@@ -201,33 +181,23 @@ const DescriptionEditor = (props: Props): JSX.Element => {
         editor,
         openLinkDialog,
         openIpaDialog,
-        focusPopup: () => {
-          popupRef.current?.focus();
-        },
+        focusPopup: () => popupRef.current?.focus(),
       });
     }
   }, [keyboardMap]);
 
   const handleCloseDialog = useCallback(() => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    editor.blurSelection = dialogProps!.selection;
+    const selection = dialogProps!.selection;
+
     setDialogProps(null);
     // COMPAT: Condict's FocusTrap sets focus in a way Slate doesn't like, which
-    // for some reason causes the blurSelection not to be applied on focus. But
-    // calling this function here somehow fixes that.
-    ReactEditor.focus(editor);
+    // for some reason causes the new selection not to be applied on focus, so
+    // we've turned off automatic focus restoration, and need to do this here.
+    setTimeout(() => {
+      editor.focusWithSelection(selection);
+    }, 5);
   }, [dialogProps]);
-
-  useEffect(() => {
-    switch (shouldOpenDialog) {
-      case 'link':
-        openLinkDialog();
-        break;
-      case 'ipa':
-        openIpaDialog();
-        break;
-    }
-  }, [shouldOpenDialog]);
 
   return (
     <Slate editor={editor} value={value} onChange={onChange as SlateChangeFn}>
@@ -261,9 +231,15 @@ const DescriptionEditor = (props: Props): JSX.Element => {
             onFindLinkTarget={onFindLinkTarget}
             onSubmit={target => {
               const at = dialogProps.selection;
-              editor.blurSelection = at;
+              const selectionRef = Editor.rangeRef(editor, at, {
+                affinity: 'forward',
+              });
               editor.wrapLink(target, {at});
               setDialogProps(null);
+              setTimeout(() => {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                editor.focusWithSelection(selectionRef.unref()!);
+              });
             }}
             onCancel={handleCloseDialog}
           />}

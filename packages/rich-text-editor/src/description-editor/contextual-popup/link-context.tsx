@@ -1,4 +1,4 @@
-import {Editor, Range, Point} from 'slate';
+import {Editor, Range, Point, Transforms} from 'slate';
 import {ReactEditor, useSlateStatic} from 'slate-react';
 import EditIcon from 'mdi-react/PencilIcon';
 import RemoveLinkIcon from 'mdi-react/LinkOffIcon';
@@ -44,7 +44,13 @@ const LinkContext = (props: Props): JSX.Element => {
           label={messages.removeLink()}
           title={messages.removeLink()}
           tabIndex={tabIndex}
-          onClick={() => editor.removeLink()}
+          onClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const selectionRef = Editor.rangeRef(editor, editor.selection!);
+            editor.removeLink();
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            Transforms.setSelection(editor, selectionRef.unref()!);
+          }}
         >
           <RemoveLinkIcon/>
         </S.Action>

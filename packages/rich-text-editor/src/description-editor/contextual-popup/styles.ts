@@ -5,7 +5,7 @@ import {Button} from '@condict/ui';
 import PopupBase from '../popup';
 
 export const Popup = styled(PopupBase)`
-  max-width: 376px;
+  max-width: 480px;
 
   animation-name: enter;
   animation-duration: 100ms;

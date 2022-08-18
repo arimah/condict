@@ -33,8 +33,6 @@ const withCondict = (
   // Let's get correct typings for Condict-specific functionality.
   const editor = baseEditor as CondictEditor;
 
-  editor.blurSelection = editor.selection;
-
   const {normalizeNode} = editor;
   if (singleLine) {
     editor.normalizeNode = entry => {
@@ -96,16 +94,6 @@ const withCondict = (
       };
     }
     apply(operation);
-
-    // If there is a blurSelection, make sure it's kept up to date after each
-    // operation. Otherwise problems can occur if the node tree is manipulated
-    // on an unfocused editor, when e.g. the toolbar tries to access paths that
-    // no longer resolve.
-    if (operation.type !== 'set_selection' && editor.blurSelection) {
-      editor.blurSelection = Range.transform(editor.blurSelection, operation, {
-        affinity: 'inward',
-      });
-    }
   };
 
   editor.formatBlock = (format, options) => {
@@ -201,6 +189,15 @@ const withCondict = (
       split: range !== null && !Range.isCollapsed(range),
       match: isLink,
     });
+  };
+
+  editor.focusWithSelection = selection => {
+    ReactEditor.focus(editor);
+    // We must set the selection *after* Slate has had a chance to react
+    // to the focus and selectionchange events.
+    setTimeout(() => {
+      Transforms.setSelection(editor, selection);
+    }, 5);
   };
 
   return editor;
