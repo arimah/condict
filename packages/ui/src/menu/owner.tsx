@@ -261,6 +261,10 @@ const MenuOwner = React.forwardRef((
       }
     };
 
+    const mouseWheel = (e: WheelEvent) => {
+      e.preventDefault();
+    };
+
     const click = () => {
       intent.cancel();
       dispatch({
@@ -275,12 +279,14 @@ const MenuOwner = React.forwardRef((
 
     document.addEventListener('mousemove', mouseMove);
     document.addEventListener('mousedown', mouseDown);
+    document.addEventListener('wheel', mouseWheel, {passive: false});
     document.addEventListener('click', click);
     window.addEventListener('blur', windowBlur);
     disableFocusManager();
     return () => {
       document.removeEventListener('mousemove', mouseMove);
       document.removeEventListener('mousedown', mouseDown);
+      document.removeEventListener('wheel', mouseWheel);
       document.removeEventListener('click', click);
       window.removeEventListener('blur', windowBlur);
       enableFocusManager();
