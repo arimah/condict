@@ -1,5 +1,3 @@
-import {ReactChild} from 'react';
-
 import * as S from './styles';
 
 export type Props = {
@@ -20,7 +18,7 @@ export interface SnippetPart {
 const HighlightedSnippet = (props: Props): JSX.Element => {
   const {snippet} = props;
 
-  const children: ReactChild[] = [];
+  const children: (JSX.Element | string)[] = [];
   if (snippet.partialStart) {
     children.push(<S.Ellipsis key='dots-start'>...</S.Ellipsis>);
   }

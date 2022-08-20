@@ -1,4 +1,4 @@
-import React, {ReactChild, Ref} from 'react';
+import React, {Ref} from 'react';
 import {Localized} from '@fluent/react';
 
 import {HighlightedSnippet, ResourceIcon, intersperse} from '../../ui';
@@ -71,7 +71,7 @@ const LemmaContent = ({result}: ContentProps<LemmaSearchResult>): JSX.Element =>
     <S.ResultBody>
       {intersperse(
         '; ',
-        (result.partOfSpeechNames as ReactChild[])
+        (result.partOfSpeechNames as (JSX.Element | string)[])
           .concat(result.derivedFrom.map((dd, i) =>
             <Localized
               key={`derived-${i}`}

@@ -1,3 +1,5 @@
+import {ComponentType, CSSProperties} from 'react';
+
 import {
   BlockKind,
   LanguageId,
@@ -6,7 +8,14 @@ import {
   PartOfSpeechId,
 } from '../../graphql';
 
-export type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+export type BlockElementTag =
+  | keyof JSX.IntrinsicElements
+  | CustomBlockElement;
+
+export type CustomBlockElement = ComponentType<{
+  className?: string;
+  style?: CSSProperties;
+}>;
 
 export interface BlockFields {
   readonly kind: BlockKind;

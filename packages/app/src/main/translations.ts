@@ -83,7 +83,7 @@ const initTranslations = (): Translations => {
   let onLocaleUpdated: LocaleUpdatedCallback | null = null;
   let onAvailableLocalesChanged: AvailableLocalesChangedCallback | null = null;
 
-  // Chokidar globs must use \ instead of /, so we need to normalize on Windows.
+  // Chokidar globs must use / instead of \, so we need to normalize on Windows.
   const watcher = watch(`${translationsDir.replace(/\\/g, '/')}/*.ftl`, {
     ignoreInitial: true,
     awaitWriteFinish: {
@@ -97,7 +97,7 @@ const initTranslations = (): Translations => {
       availableLocales.sort();
       onAvailableLocalesChanged?.(availableLocales);
     } else {
-      // The locale might have been loded, then deleted, then readded. In this
+      // The locale might have been loaded, then deleted, then readded. In this
       // case we emit it as a change to the locale rather than an addition.
       loaded.delete(locale); // Invalide cached contents
       onLocaleUpdated?.(locale);

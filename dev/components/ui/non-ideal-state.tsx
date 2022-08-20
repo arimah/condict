@@ -13,13 +13,13 @@ import Demo, {useDemoState} from '../demo';
 
 type State = {
   minimal: boolean;
-  headingLevel: 2 | 3 | 4 | 5 | 6;
+  headingLevel: HeadingLevel;
   image: boolean;
   description: boolean;
   action: boolean;
 };
 
-type HeadingLevel = 2 | 3 | 4 | 5 | 6;
+type HeadingLevel = 2 | 3 | 4;
 
 const InitialState: State = {
   minimal: false,
@@ -35,8 +35,6 @@ const HeadingLevels = [
   {value: '2', name: '2'},
   {value: '3', name: '3'},
   {value: '4', name: '4'},
-  {value: '5', name: '5'},
-  {value: '6', name: '6'},
 ];
 
 const Main = (): JSX.Element => {

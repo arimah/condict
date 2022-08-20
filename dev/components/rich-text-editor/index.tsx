@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {Checkbox, useUniqueId} from '@condict/ui';
+import {Switch, useUniqueId} from '@condict/ui';
 import {
   DescriptionEditor,
   TableCaptionEditor,
@@ -31,7 +31,7 @@ const Main = (): JSX.Element => {
       <h3 id={`${id}-description`}>Description editor</h3>
 
       <p>
-        <Checkbox
+        <Switch
           label='Toolbar always visible'
           checked={descriptionToolbar}
           onChange={e => setDescriptionToolbar(e.target.checked)}
@@ -50,7 +50,7 @@ const Main = (): JSX.Element => {
       <h3 id={`${id}-caption`}>Table caption editor</h3>
 
       <p>
-        <Checkbox
+        <Switch
           label='Toolbar always visible'
           checked={captionToolbar}
           onChange={e => setCaptionToolbar(e.target.checked)}

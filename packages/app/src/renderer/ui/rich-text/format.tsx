@@ -1,19 +1,10 @@
-import React, {ReactChild, ReactNode} from 'react';
+import React, {ReactNode} from 'react';
 
-import {
-  Page,
-  LanguagePage,
-  LemmaPage,
-  DefinitionPage,
-  PartOfSpeechPage,
-} from '../../page';
 import {BlockKind} from '../../graphql';
 
-import Link from '../link';
-import BrokenLink from '../broken-link';
-
+import InternalLink from './internal-link';
 import {
-  HeadingType,
+  BlockElementTag,
   BlockFields,
   InlineFields,
   LinkFields,
@@ -64,6 +55,18 @@ import {
  *    indentation is 1 - 1 = 0.
  */
 
+export interface FormatBlocksOptions {
+  tags?: {
+    p?: BlockElementTag;
+    h1?: BlockElementTag;
+    h2?: BlockElementTag;
+    ol?: BlockElementTag;
+    ul?: BlockElementTag;
+    li?: BlockElementTag;
+  };
+  stripLinks?: boolean;
+}
+
 type NestedBlock =
   | SimpleBlock
   | ListBlock;
@@ -89,16 +92,20 @@ const Indent = 32; // pixels
 
 export const formatBlocks = (
   blocks: readonly BlockFields[],
-  h1: HeadingType,
-  h2: HeadingType,
-  stripLinks: boolean
+  options: FormatBlocksOptions = {}
 ): JSX.Element[] => {
-  const blockTags: Record<BlockKind, string> = {
-    PARAGRAPH: 'p',
-    HEADING_1: h1,
-    HEADING_2: h2,
-    OLIST_ITEM: 'ol',
-    ULIST_ITEM: 'ul',
+  const {tags = {}, stripLinks = false} = options;
+
+  const blockTags: Record<BlockKind | 'li', BlockElementTag> = {
+    PARAGRAPH: tags.p ?? 'p',
+    HEADING_1: tags.h1 ?? 'h2',
+    HEADING_2: tags.h2 ?? 'h3',
+    // Note: `OLIST_ITEM` and `ULIST_ITEM` are actually used for the list,
+    // while list items use `li`. This way we don't have to translate back
+    // and forth.
+    OLIST_ITEM: tags.ol ?? 'ol',
+    ULIST_ITEM: tags.ul ?? 'ul',
+    li: tags.li ?? 'li',
   };
 
   const tree = nestBlocks(blocks);
@@ -190,7 +197,7 @@ const nestBlocks = (blocks: readonly BlockFields[]): NestedBlock[] => {
 const formatBlock = (
   key: number,
   block: NestedBlock,
-  tags: Record<BlockKind, any>,
+  tags: Record<BlockKind | 'li', BlockElementTag>,
   stripLinks: boolean,
   isFirst: boolean,
   isLast: boolean
@@ -238,14 +245,15 @@ const formatBlock = (
 const formatListItem = (
   key: number,
   item: ListItem,
-  tags: Record<BlockKind, any>,
+  tags: Record<BlockKind | 'li', BlockElementTag>,
   stripLinks: boolean,
   isFirst: boolean,
   isLast: boolean
 ): JSX.Element => {
   const childCount = item.children.length;
+  const Tag = tags.li;
   return (
-    <li key={key} className={getBlockClass(isFirst, isLast)}>
+    <Tag key={key} className={getBlockClass(isFirst, isLast)}>
       {formatInlines(item.inlines, stripLinks)}
       {childCount > 0 ? (
         item.children.map((child, i) =>
@@ -259,7 +267,7 @@ const formatListItem = (
           )
         )
       ) : null}
-    </li>
+    </Tag>
   );
 };
 
@@ -293,57 +301,18 @@ const formatLink = (link: LinkFields, key: number): JSX.Element => {
   const content = link.inlines.map(formatText);
 
   if (link.internalLinkTarget) {
-    let page: Page | null;
-    switch (link.internalLinkTarget.__typename) {
-      case 'LanguageLinkTarget': {
-        const {language} = link.internalLinkTarget;
-        page = language && LanguagePage(language.id, language.name);
-        break;
-      }
-      case 'LemmaLinkTarget': {
-        const {lemma} = link.internalLinkTarget;
-        page = lemma && LemmaPage(
-          lemma.id,
-          lemma.term,
-          LanguagePage(lemma.language.id, lemma.language.name)
-        );
-        break;
-      }
-      case 'DefinitionLinkTarget': {
-        const {definition} = link.internalLinkTarget;
-        page = definition && DefinitionPage(
-          definition.id,
-          definition.term,
-          LanguagePage(definition.language.id, definition.language.name)
-        );
-        break;
-      }
-      case 'PartOfSpeechLinkTarget': {
-        const {partOfSpeech} = link.internalLinkTarget;
-        page = partOfSpeech && PartOfSpeechPage(
-          partOfSpeech.id,
-          partOfSpeech.name,
-          LanguagePage(partOfSpeech.language.id, partOfSpeech.language.name)
-        );
-        break;
-      }
-    }
-
-    if (!page) {
-      return (
-        <BrokenLink key={key} href={link.linkTarget}>
-          {content}
-        </BrokenLink>
-      );
-    }
-    return <Link key={key} to={page}>{content}</Link>;
+    return (
+      <InternalLink key={key} target={link.internalLinkTarget}>
+        {content}
+      </InternalLink>
+    );
   } else {
     return <a key={key} href={link.linkTarget}>{content}</a>;
   }
 };
 
 const formatText = (text: FormattedText, key: number): ReactNode => {
-  let node: ReactChild = text.text;
+  let node: JSX.Element | string = text.text;
 
   if (text.bold) {
     node = <b>{node}</b>;

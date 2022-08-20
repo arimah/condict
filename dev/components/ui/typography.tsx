@@ -22,10 +22,6 @@ const Main = (): JSX.Element =>
       <h3>Heading <em>level</em> 3</h3>
       <p>Short paragraph between headings.</p>
       <h4>Heading <strong>level</strong> 4</h4>
-      <p>Short paragraph between headings.</p>
-      <h5>Heading level 5</h5>
-      <p>Short paragraph between headings.</p>
-      <h6>Heading level 6</h6>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,

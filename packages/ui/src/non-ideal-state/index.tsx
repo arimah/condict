@@ -4,7 +4,7 @@ import {useUniqueId} from '../unique-id';
 
 import * as S from './styles';
 
-export type HeadingLevel = 2 | 3 | 4 | 5 | 6;
+export type HeadingLevel = 2 | 3 | 4;
 
 export type Props = {
   className?: string;
@@ -15,15 +15,13 @@ export type Props = {
   action?: ReactNode;
 } & S.Props;
 
-type HeadingTag = 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+type HeadingTag = 'h2' | 'h3' | 'h4';
 
 const getHeadingTag = (level: HeadingLevel): HeadingTag => {
   switch (level) {
     case 2: return 'h2';
     case 3: return 'h3';
     case 4: return 'h4';
-    case 5: return 'h5';
-    case 6: return 'h6';
   }
 };
 

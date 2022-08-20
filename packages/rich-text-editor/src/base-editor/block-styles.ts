@@ -74,16 +74,17 @@ export const EditorStyles = css`
   line-height: 20px;
 
   ${Heading1} {
-    margin-block: 16px 8px;
+    margin-block: 22px 8px;
     font-size: 20px;
     line-height: 22px;
+    font-weight: 600;
   }
 
   ${Heading2} {
-    margin-block: 12px 4px;
+    margin-block: 18px 8px;
+    font-size: 16px;
+    line-height: 18px;
     font-weight: 600;
-    font-size: 18px;
-    line-height: 20px;
   }
 
     /* Reduce spacing around headings at the beginning and end. */
@@ -96,6 +97,12 @@ export const EditorStyles = css`
     ${Heading1}:last-child,
     ${Heading2}:last-child {
       margin-bottom: 8px;
+    }
+
+    ${Heading1}, ${Heading2} {
+      strong, b {
+        font-weight: 800;
+      }
     }
 
   /* Extra space at the beginning, to mimic a "real" list. */

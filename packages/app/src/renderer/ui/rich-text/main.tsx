@@ -1,13 +1,18 @@
 import React from 'react';
 
 import {formatBlocks, formatInlines} from './format';
-import {HeadingType, BlockFields, InlineFields, FormattedText} from './types';
+import {
+  BlockElementTag,
+  BlockFields,
+  InlineFields,
+  FormattedText,
+} from './types';
 import * as S from './styles';
 
 export type RichContentProps = {
   value: readonly BlockFields[];
-  heading1?: HeadingType;
-  heading2?: HeadingType;
+  heading1?: BlockElementTag;
+  heading2?: BlockElementTag;
   stripLinks?: boolean;
   maxLines?: number;
   selectable?: boolean;
@@ -19,9 +24,9 @@ export const RichContent = React.memo((
 ): JSX.Element => {
   const {
     value,
-    heading1 = 'h2',
-    heading2 = 'h3',
-    stripLinks = false,
+    heading1,
+    heading2,
+    stripLinks,
     maxLines = 0,
     selectable = false,
   } = props;
@@ -29,9 +34,13 @@ export const RichContent = React.memo((
   const blocks = formatBlocks(
     // +1 so we are guaranteed "..." overflow if there are overflowing blocks.
     maxLines > 0 ? value.slice(0, maxLines + 1) : value,
-    heading1,
-    heading2,
-    stripLinks
+    {
+      tags: {
+        h1: heading1,
+        h2: heading2,
+      },
+      stripLinks,
+    }
   );
 
   return (

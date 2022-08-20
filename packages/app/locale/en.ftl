@@ -20,7 +20,7 @@ sidebar-tab-close-button-unsaved-tooltip =
   {sidebar-tab-close-button-tooltip}
   This tab has unsaved changes.
 
-sidebar-home-tab-title = Condict
+sidebar-home-tab-title = Home
 
 # Variables:
 #   name: The name of the language.
@@ -1026,6 +1026,35 @@ inflection-table-delete-error = An error occurred when deleting the inflection t
 inflection-table-save-error = An error occurred when saving the inflection table. {-check-form-data}
 
 inflection-table-not-found-error = Inflection table not found. This inflection table has been deleted.
+
+## Internal link tooltips
+
+# Variables:
+#   name: The name of the language.
+link-language-tooltip =
+  {$name}
+  Language
+
+# Variables:
+#   term: The lemma term.
+#   language: The name of the language that the lemma belongs to.
+link-lemma-tooltip =
+  {$term}
+  Headword in {$language}
+
+# Variables:
+#   term: The term that the definition belongs to.
+#   language: The name of the language that the definition belongs to.
+link-definition-tooltip =
+  {$term}
+  Definition in {$language}
+
+# Variables:
+#   name: The name of the part of speech.
+#   language: The name of the language that the part of speech belongs to.
+link-part-of-speech-tooltip =
+  {$name}
+  Part of speech in {$language}
 
 ## Generic messages
 

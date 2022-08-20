@@ -34,43 +34,27 @@ export const GlobalStyles = createGlobalStyle`
 
   h3 {
     margin-block: 22px 8px;
-    font-size: 22px;
-    line-height: 24px;
-    font-weight: bold;
-  }
-
-  h4 {
-    margin-block: 16px 8px;
     font-size: 20px;
     line-height: 22px;
     font-weight: 600;
   }
 
-  h5 {
-    margin-block: 14px 8px;
-    font-size: 18px;
-    line-height: 20px;
-    font-weight: 600;
-  }
-
-  h6 {
-    margin-block: 14px 8px;
+  h4 {
+    margin-block: 18px 8px;
     font-size: 16px;
     line-height: 18px;
     font-weight: 600;
   }
 
   h1,
-  h2,
-  h3 {
+  h2 {
     strong, b {
       font-weight: 900;
     }
   }
 
-  h4,
-  h5,
-  h6 {
+  h3,
+  h4 {
     strong, b {
       font-weight: 800;
     }
