@@ -192,8 +192,7 @@ const mergeCommonFields = (
           });
           break;
         // If it's a regular field, find the corresponding the field on the
-        // implementing type. This ensures we can support custom directives
-        // such as @restrict.
+        // implementing type.
         case 'field': {
           const actualField = fields.type.getFields()[field.field.name];
           result.set(name, {

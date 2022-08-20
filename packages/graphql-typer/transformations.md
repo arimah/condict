@@ -48,14 +48,12 @@ enum E { A, B, C }
 TS type:
 
 ```typescript
-const enum E {
-  A = 'A',
-  B = 'B',
-  C = 'C',
-}
+type E =
+  | 'A'
+  | 'B'
+  | 'C'
+;
 ```
-
-Since interoperability with JS is not necessary, a const enum is acceptable and avoids the (minor) performance penalties of using a non-const enum.
 
 ### Interface types
 
@@ -99,11 +97,13 @@ TS type:
 type T = {
   x: number | null;
   y: string;
-  z: string | null;
+  z: WithArgs<{
+    a?: boolean | null;
+  }, string | null>;
 };
 ```
 
-Each field is mapped to a corresponding TS field with a matching type. Arguments on fields are omitted.
+Each field is mapped to a corresponding TS field with a matching type. Arguments on fields are represented by the `WithArgs` type. Field argument types can be extracted using `FieldArgs`.
 
 ### Input types
 
@@ -172,59 +172,39 @@ Undefined is permitted in request position because `JSON.stringify` turns undefi
 
 ### Enum values
 
-An enum is generated from the GraphQL schema (as described under [Enum types](#enum-types)), which is referenced where it is used.
-
-Additionally, the custom directive `@restrict` is used to instruct the GraphQL typer that only a subset of the enum values are possible. This directive is implemented only for fields in object types. The purpose is to allow enum-typed fields to be used as discriminants in TypeScript, without having to select `__typename` as well. Example:
+An enum is generated from the GraphQL schema (as described under [Enum types](#enum-types)), which is referenced where it is used. Example:
 
 ```graphql
-enum InlineKind { BOLD, ITALIC, LINK }
-interface Inline {
+enum InlineKind { BOLD, ITALIC, UNDERLINE }
+type Inline {
   kind: InlineKind!
   text: String!
-}
-type StyleInline implements Inline {
-  kind: InlineKind! @restrict(not: ["LINK"])
-  text: String!
-}
-type LinkInline implements Inline {
-  kind: InlineKind! @restrict(only: ["LINK"])
-  text: String!
-  url: String!
 }
 extend type Query {
   inlines: [Inline!]!
 }
 
 query {
-  inlines {
-    ... on StyleInline { kind, text }
-    ... on LinkInline { kind, text, url }
-  }
+  inlines { kind, text }
 }
 ```
 
 This leads to the following result type:
 
 ```typescript
-const enum InlineKind {
-  BOLD = 'BOLD',
-  ITALIC = 'ITALIC',
-  LINK = 'LINK',
-}
+type InlineKind =
+  | 'BOLD'
+  | 'ITALIC'
+  | 'LINK'
+;
 
 type Result = {
-  inlines: ({
-    kind: InlineKind.BOLD | InlineKind.ITALIC;
+  inlines: {
+    kind: InlineKind;
     text: string;
-  } | {
-    kind: InlineKind.LINK;
-    text: string;
-    url: string;
-  })[];
+  }[];
 };
 ```
-
-The `@restrict` directive is _only_ used by the GraphQL typer. Neither the server nor the client verifies that only the permitted enum values are present.
 
 ### Union values
 

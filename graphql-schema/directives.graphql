@@ -48,29 +48,3 @@ an appropriate TypeScript representation.
 Without this directive or `@id`, a custom scalar will be typed as `unknown`.
 """
 directive @marshal(as: MarshalType!) on SCALAR
-
-"""
-When placed on a object type field of an enum type, informs the GraphQL type
-generator that the server can only respond with a subset of the enum type's
-values. This allows the enum field to be used as the discriminant in TS when
-the `__typename` field is not selected.
-
-There are two ways to use this directive:
-
-1. The `only` parameter accepts a list of permitted enum values, as string
-   containing the names of the enum values.
-2. The `not` parameter accepts a list of _disallowed_ enum values. This is of
-   course equivalent to listing every enum value except the ones in the list,
-   and is provided for convenience.
-
-You must specify exactly one of these parameters.
-
-Without this directive, a field of an enum type is permitted to contain any
-value of the enum. This directive is only applicable to fields inside object
-types. It is ignored on interface types and input types, where all values are
-presumed to be permitted.
-
-This directive is only used by the GraphQL type generator and is ignored by
-the server and the client alike.
-"""
-directive @restrict(only: [String!], not: [String!]) on FIELD_DEFINITION

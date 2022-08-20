@@ -17,7 +17,6 @@ import {
 } from 'graphql';
 
 import formatLoc from '../../format-loc';
-import {getPermittedEnumValues} from '../../graphql';
 
 import {getBuiltin as getBuiltinScalar} from '../builtin-scalars';
 import {TextBuilder} from '../utils';
@@ -135,17 +134,7 @@ export const writeSelectedFieldType = (
           const builtin = getBuiltinScalar(type, 'clientRequest');
           result.append(builtin ?? params.useType(type));
         } else if (isEnumType(type)) {
-          const permitted = getPermittedEnumValues(field.field);
-          if (permitted) {
-            result.append(
-              permitted.values
-                .map(v => `'${v.name}'`)
-                .join(' | ')
-            );
-          } else {
-            const typeName = params.useType(type);
-            result.append(typeName);
-          }
+          result.append(params.useType(type));
         } else  {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           params.writeSelection(result, type, field.subSelections!);

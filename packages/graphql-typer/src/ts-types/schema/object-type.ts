@@ -5,25 +5,9 @@ import {
   isNonNullType,
 } from 'graphql';
 
-import {getPermittedEnumValues} from '../../graphql';
-
 import {TextBuilder, formatDescription} from '../utils';
 
 import {TypeWriter} from './types';
-
-const writeFieldType = (
-  field: GraphQLField<any, any>,
-  writeType: TypeWriter
-): string => {
-  const permitted = getPermittedEnumValues(field);
-  if (permitted) {
-    const {type, values, allowNull} = permitted;
-    const formattedValues =
-      values.map(v => `${type.name}.${v.name}`).join(' | ');
-    return allowNull ? `${formattedValues} | null` : formattedValues;
-  }
-  return writeType(field.type);
-};
 
 const defineArgTypes = (
   t: TextBuilder,
@@ -57,9 +41,9 @@ const defineField = (
   if (field.args.length > 0) {
     t.append('WithArgs<');
     defineArgTypes(t, field.args, writeType);
-    t.append(`, ${writeFieldType(field, writeType)}>`);
+    t.append(`, ${writeType(field.type)}>`);
   } else {
-    t.append(writeFieldType(field, writeType));
+    t.append(writeType(field.type));
   }
   t.appendLine(';');
 };
