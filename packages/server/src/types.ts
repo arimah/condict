@@ -47,10 +47,21 @@ export interface LoggerOptions {
   readonly files: LogFile[];
 }
 
+/** Contains configuration for the HTTP server. */
+export interface HttpOptions {
+  /**
+   * The port number that the HTTP server will listen on. This value must be
+   * between 1 and 65535, inclusive.
+   */
+  readonly port: number;
+}
+
 /** Combines server configuration and log configuration in one type. */
-export interface ServerConfigWithLogger extends ServerConfig {
+export interface StandaloneConfig extends ServerConfig {
   /** Logger configuration. */
   readonly log: LoggerOptions;
+  /** HTTP server configuration. */
+  readonly http: HttpOptions;
 }
 
 /**

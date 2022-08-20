@@ -17,7 +17,7 @@ This file does not document the GraphQL queries and mutations that Condict expos
 * [`CondictHttpServer`](#condicthttpserver)
 * [`createLogger()`](#createlogger)
 * [`executeLocalOperation()`](#executelocaloperation)
-* [`loadConfigFile`](#loadconfigfile)
+* [`loadConfigFile()`](#loadconfigfile)
 
 ---
 
@@ -111,7 +111,7 @@ See [the examples above](#examples) for sample uses of this class.
 
 > `constructor(logger: Logger, config: ServerConfig)`
 
-Creates a new `CondictServer` with the specified logger and server configuration. Note that even though [`loadConfigFile`](#loadconfigfile) can read logger configuration, the constructor does not make use of it and requires an existing logger to be passed in.
+Creates a new `CondictServer` with the specified logger and server configuration. Note that even though [`loadConfigFile()`](#loadconfigfile) can read logger configuration, the constructor does not make use of it and requires an existing logger to be passed in.
 
 The logger can be any object that implements the `Logger` interface. At minimum, it requires methods named `error`, `warn`, `info`, `verbose` and `debug`.
 
@@ -219,7 +219,7 @@ The `CondictHttpServer` class is a standalone HTTP server with minimal configura
 
 Full documentation on the underlying server is available on the [Apollo server][apollo-server] website. To summarise:
 
-* Condict's HTTP server listens on the default port, 4000. This is currently not configurable.
+* Condict's HTTP server listens on its configured port (default: 4000).
 * The route `GET /` returns a [GraphQL][] playground, where you can execute operations and explore the schema.
 * The route `POST /` accepts [GraphQL][] operations in accordance with the spec.
 * The path `/graphql` is an alias for `/`.
@@ -237,7 +237,7 @@ Creates a new `CondictHttpServer` from an underlying [Condict server](#condictse
 
 > `start(): Promise<ServerInfo>`
 
-Starts the HTTP server. The underlying [Condict server](#condictserver-1) is started if it is not running already, and the [Apollo server][apollo-server] begins listening for incoming connections. The returned promise resolves with server info, such as the server's URL. If the HTTP server could not be started (including if port 4000 is occupied), the promise is rejected.
+Starts the HTTP server. The underlying [Condict server](#condictserver-1) is started if it is not running already, and the [Apollo server][apollo-server] begins listening for incoming connections. The returned promise resolves with server info, such as the server's URL. If the HTTP server could not be started (including if the port is occupied), the promise is rejected.
 
 #### `CondictHttpServer.prototype.stop()`
 
@@ -273,11 +273,11 @@ The returned promise resolves with the result of the execution, which is an obje
 
 ### `loadConfigFile()`
 
-> `loadConfigFile(fileName: string): ServerConfigWithLogger`
+> `loadConfigFile(fileName: string): StandaloneConfig`
 
 Loads a server configuration from a JSON file. This function reads the file synchronously, so will block until the file has been parsed and processed. The JSON file contents are described under [Configuration](#configuration).
 
-If the log file is invalid, the function throws an error.
+If the config file is invalid, the function throws an error.
 
 ## CLI
 
@@ -288,6 +288,7 @@ The command-line interface for Condict exposes commands for starting a standalon
 * [`condict-server start`](#condict-server-start)
 * [`condict-server add-user`](#condict-server-add-user)
 * [`condict-server edit-user`](#condict-server-edit-user)
+* [`condict-server log-out-user`](#condict-server-log-out-user)
 * [`condict-server delete-user`](#condict-server-delete-user)
 
 Running `condict-server` without a command name is equivalent to `condict-server start`.
@@ -369,6 +370,8 @@ Configuration files are JSON files with the following structure:
   - `files`: An array of objects that specify log files to write to:
     + `path`: The path to the log file.
     + `level`: The highest log level that will be written to the file. If omitted or null, defaults to `'info'`.
+* `http`: An optional object:
+  - `port`: The port that the HTTP server will listen on. This must be a number between 1 and 65535, inclusive. If omitted or null, defaults to `4000`.
 
 The recognised log levels, from lowest to highest, are:
 
@@ -387,7 +390,7 @@ Users are identified by a name and a password. No other information is stored fo
 There are three [GraphQL][] mutations that can be executed without authentication:
 
 * The `logIn` mutation is used for authentication. If successful, it returns a session ID. The default [Condict HTTP server](#condicthttpserver) accepts the the session ID through the custom request header `X-Condict-Session-Id`. Custom servers can accept the session ID in any way they wish, and pass it into [`getContextValue()`](#condictserverprototypegetcontextvalue).
-* The `resumeSession` mutation verifies the current session ID, returning the logged-in username if successful, or an error if the session is invalid.
+* The `resumeSession` mutation verifies the current session ID, returning session data if successful, or an error if the session is invalid.
 * The `logOut` mutation terminates the current session. Subsequent mutations that use the same session ID are rejected.
 
 [graphql]: https://graphql.org/

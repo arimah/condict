@@ -9,5 +9,8 @@
       {"path": "error.log", "level": "error"},
       {"path": "debug.log", "level": "debug"}
     ]
+  },
+  "http": {
+    "port": 4000
   }
 }

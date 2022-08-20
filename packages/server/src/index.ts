@@ -26,7 +26,7 @@ export {
   default as loadConfigFile,
   validateLoggerOptions,
   validateConfig,
-  validateConfigWithLogger,
+  validateStandaloneConfig,
 } from './config';
 export {
   Logger,
@@ -34,7 +34,7 @@ export {
   LogFile,
   LogLevel,
   ServerConfig,
-  ServerConfigWithLogger,
+  StandaloneConfig,
 } from './types';
 export {
   Connection,

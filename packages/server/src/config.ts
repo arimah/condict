@@ -2,8 +2,9 @@ import fs from 'fs';
 
 import {
   ServerConfig,
-  ServerConfigWithLogger,
+  StandaloneConfig,
   LoggerOptions,
+  HttpOptions,
   LogFile,
   LogLevel,
   isLogLevel,
@@ -13,6 +14,8 @@ import {validateOptions as validateDatabaseOptions} from './database';
 // This entire file is about taking unsafe `any` values and turning them into
 // safe objects.
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+const DefaultHttpPort = 4000;
 
 const isObject = (value: any): value is { [key: string]: any } =>
   value != null && typeof value === 'object' && !Array.isArray(value);
@@ -81,6 +84,28 @@ export const validateLoggerOptions = (config: any): LoggerOptions => {
   return {stdout, files: validFiles};
 };
 
+export const validateHttpOptions = (config: any): HttpOptions => {
+  if (config == null) {
+    return {port: DefaultHttpPort};
+  }
+  if (!isObject(config)) {
+    throw new Error('HTTP config must be an object, null or undefined.');
+  }
+
+  const port = config.port;
+  if (port != null) {
+    if (typeof port !== 'number' || !(1 <= port && port <= 65535)) {
+      throw new Error(
+        `Invalid HTTP port number: ${
+          port
+        } (expected a number between 1 and 65535)`
+      );
+    }
+  }
+
+  return {port: port ?? DefaultHttpPort};
+};
+
 /**
  * Validates an object with server configuration.
  * @param config The configuration value.
@@ -103,15 +128,16 @@ export const validateConfig = (config: any): ServerConfig => {
  * @throws {Error} The config value is not an object, or contains an invalid
  *         configuration.
  */
-export const validateConfigWithLogger = (
+export const validateStandaloneConfig = (
   config: any
-): ServerConfigWithLogger => {
+): StandaloneConfig => {
   if (!isObject(config)) {
     throw new Error('Config must be an object.');
   }
   const basicConfig = validateConfig(config);
   const log = validateLoggerOptions(config.log);
-  return {...basicConfig, log};
+  const http = validateHttpOptions(config.http);
+  return {...basicConfig, log, http};
 };
 
 /**
@@ -122,12 +148,12 @@ export const validateConfigWithLogger = (
  * @throws The file could not be opened, or the file contains an invalid
  *         configuration.
  */
-const loadConfigFile = (fileName: string): ServerConfigWithLogger => {
+const loadConfigFile = (fileName: string): StandaloneConfig => {
   const configText = fs.readFileSync(fileName, {
     encoding: 'utf-8',
   });
   const config = JSON.parse(configText);
-  return validateConfigWithLogger(config);
+  return validateStandaloneConfig(config);
 };
 
 export default loadConfigFile;

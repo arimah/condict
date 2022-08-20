@@ -12,7 +12,7 @@ import {Server as WebSocketServer} from 'ws';
 import CondictServer from './server';
 import {Context} from './graphql';
 import {DictionaryEventBatch} from './event';
-import {Logger} from './types';
+import {HttpOptions, Logger} from './types';
 
 /** Contains information about a running HTTP server. */
 export interface ServerInfo {
@@ -35,6 +35,7 @@ const genRequestId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 8);
 export default class CondictHttpServer {
   private readonly server: CondictServer;
   private readonly logger: Logger;
+  private readonly port: number;
   private readonly apolloServer: ApolloServer;
   private apolloServerStarted = false;
   private webSocketServer: WebSocketServer | null = null;
@@ -44,9 +45,10 @@ export default class CondictHttpServer {
    * Creates a new Condict HTTP server.
    * @param server The Condict server to wrap.
    */
-  public constructor(server: CondictServer) {
+  public constructor(server: CondictServer, config: HttpOptions) {
     this.server = server;
     this.logger = server.getLogger();
+    this.port = config.port;
 
     this.apolloServer = new ApolloServer({
       schema: server.getSchema(),
@@ -98,7 +100,9 @@ export default class CondictHttpServer {
 
     await server.start();
 
-    const {url, server: httpServer} = await this.apolloServer.listen();
+    const {url, server: httpServer} = await this.apolloServer.listen({
+      port: this.port,
+    });
     this.apolloServerStarted = true;
 
     this.createWebSocketServer(httpServer);

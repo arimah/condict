@@ -4,8 +4,7 @@ import {
   CondictServer,
   CondictHttpServer,
   Logger,
-  ServerConfig,
-  ServerConfigWithLogger,
+  StandaloneConfig,
   createLogger,
   loadConfigFile,
   getTableSchema,
@@ -54,9 +53,9 @@ const printSchema = (tableName: string | null) => {
   }
 };
 
-const start = async (logger: Logger, config: ServerConfig) => {
+const start = async (logger: Logger, config: StandaloneConfig) => {
   const server = new CondictServer(logger, config);
-  const httpServer = new CondictHttpServer(server);
+  const httpServer = new CondictHttpServer(server, config.http);
 
   let shuttingDown = false;
   const gracefulShutdown = (signal: NodeJS.Signals) => {
@@ -84,7 +83,7 @@ const main = async () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const configFile: string = args.config ?? 'config.json';
-  let config: ServerConfigWithLogger;
+  let config: StandaloneConfig;
   try {
     config = loadConfigFile(configFile);
   } catch (e) {

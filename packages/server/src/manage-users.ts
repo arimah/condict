@@ -202,6 +202,7 @@ export const deleteUser = async (
         const user = await server.getUserByName(userNameOrId);
         if (!user) {
           logger.warn(`User does not exist: ${userNameOrId}`);
+          process.exitCode = 2;
           return;
         }
         userId = user.id;
@@ -212,6 +213,7 @@ export const deleteUser = async (
         logger.info(`User deleted: ${userNameOrId}`);
       } else {
         logger.warn(`User not found: ${userNameOrId}`);
+        process.exitCode = 2;
       }
     });
   } catch (e: any) {
