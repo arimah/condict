@@ -1,14 +1,8 @@
 import styled from 'styled-components';
 
-import {intentVar} from '../theme';
-import Intent from '../intent';
 import MarkerLocation, {
   markerLocationToFlexDirection,
 } from '../marker-location';
-
-export type IntentProps = {
-  intent: Intent;
-};
 
 export type DisabledProps = {
   disabled?: boolean;
@@ -29,7 +23,7 @@ export const RadioContainer = styled.span`
   background-color: ${p => p.theme.defaultBg};
 `;
 
-export const RadioDot = styled.span<IntentProps>`
+export const RadioDot = styled.span`
   display: block;
   box-sizing: border-box;
   position: absolute;
@@ -38,7 +32,7 @@ export const RadioDot = styled.span<IntentProps>`
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  background-color: ${intentVar('boldBg')};
+  background-color: ${p => p.theme.accent.boldBg};
   transform: translate(-50%, -50%);
   opacity: 0;
 `;
@@ -47,7 +41,7 @@ export const RadioDot = styled.span<IntentProps>`
 // screen readers to locate it, and it also means you can't hover over it
 // to have it announced.
 
-export const Input = styled.input.attrs({type: 'radio'})<IntentProps>`
+export const Input = styled.input.attrs({type: 'radio'})`
   appearance: none;
   position: absolute;
   top: 0;
@@ -56,7 +50,7 @@ export const Input = styled.input.attrs({type: 'radio'})<IntentProps>`
   height: 100%;
 
   &:checked + ${RadioContainer} {
-    border-color: ${intentVar('boldBg')};
+    border-color: ${p => p.theme.accent.boldBg};
 
     > ${RadioDot} {
       opacity: 1;
@@ -90,7 +84,7 @@ export const Input = styled.input.attrs({type: 'radio'})<IntentProps>`
   }
 `;
 
-export type LabelProps = IntentProps & {
+export type LabelProps = {
   disabled?: boolean;
   marker: MarkerLocation;
 };
@@ -111,8 +105,8 @@ export const Label = styled.label<LabelProps>`
     }
 
     > :checked + ${RadioContainer} {
-      border-color: ${intentVar('boldHoverBg')};
-      background-color: ${intentVar('hoverBg')};
+      border-color: ${p => p.theme.accent.boldHoverBg};
+      background-color: ${p => p.theme.accent.hoverBg};
     }
   }
 
@@ -122,8 +116,8 @@ export const Label = styled.label<LabelProps>`
     }
 
     > :checked + ${RadioContainer} {
-      border-color: ${intentVar('boldActiveBg')};
-      background-color: ${intentVar('bg')};
+      border-color: ${p => p.theme.accent.boldActiveBg};
+      background-color: ${p => p.theme.accent.bg};
     }
   }
 `;

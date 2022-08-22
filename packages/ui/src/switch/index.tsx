@@ -12,7 +12,7 @@ export type Props = {
     'className'
   >;
   marker?: MarkerLocation;
-} & Partial<S.IntentProps> & Omit<
+} & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'aria-label' | 'aria-pressed' | 'role' | 'type'
 >;
@@ -20,7 +20,6 @@ export type Props = {
 export const Switch = (props: Props): JSX.Element => {
   const {
     className,
-    intent = 'accent',
     checked,
     label,
     disabled,
@@ -38,14 +37,12 @@ export const Switch = (props: Props): JSX.Element => {
   return (
     <S.Label
       {...labelProps}
-      intent={intent}
       marker={marker}
       className={className}
       disabled={disabled}
     >
       <S.Input
         {...inputProps}
-        intent={intent}
         disabled={disabled}
         checked={checked}
         role='button'
@@ -55,7 +52,7 @@ export const Switch = (props: Props): JSX.Element => {
       <S.Switch>
         <S.Dot/>
       </S.Switch>
-      {renderedContent}
+      <S.Content>{renderedContent}</S.Content>
     </S.Label>
   );
 };

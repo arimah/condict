@@ -1,14 +1,8 @@
 import styled from 'styled-components';
 
-import {intentVar} from '../theme';
-import Intent from '../intent';
 import MarkerLocation, {
   markerLocationToFlexDirection,
 } from '../marker-location';
-
-export type IntentProps = {
-  intent: Intent;
-};
 
 export type DisabledProps = {
   disabled?: boolean;
@@ -39,7 +33,7 @@ export const Dot = styled.span`
   transition: inset-inline-start ${p => p.theme.timing.short}ms ease-in-out;
 `;
 
-export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
+export const Input = styled.input.attrs({type: 'checkbox'})`
   appearance: none;
   position: absolute;
   top: 0;
@@ -48,8 +42,8 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
   height: 100%;
 
   &:checked + ${Switch} {
-    border-color: ${intentVar('boldBg')};
-    background-color: ${intentVar('boldBg')};
+    border-color: ${p => p.theme.accent.boldBg};
+    background-color: ${p => p.theme.accent.boldBg};
 
     > ${Dot} {
       inset-inline-start: 18px;
@@ -95,7 +89,7 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
   }
 `;
 
-export type LabelProps = IntentProps & {
+export type LabelProps = {
   disabled?: boolean;
   marker: MarkerLocation;
 };
@@ -116,8 +110,8 @@ export const Label = styled.label<LabelProps>`
     }
 
     > :checked + ${Switch} {
-      border-color: ${intentVar('boldHoverBg')};
-      background-color: ${intentVar('boldHoverBg')};
+      border-color: ${p => p.theme.accent.boldHoverBg};
+      background-color: ${p => p.theme.accent.boldHoverBg};
     }
   }
 
@@ -131,8 +125,8 @@ export const Label = styled.label<LabelProps>`
     }
 
     > :checked + ${Switch} {
-      border-color: ${intentVar('boldActiveBg')};
-      background-color: ${intentVar('boldActiveBg')};
+      border-color: ${p => p.theme.accent.boldActiveBg};
+      background-color: ${p => p.theme.accent.boldActiveBg};
 
       > ${Dot} {
         inset-inline-start: 16px;

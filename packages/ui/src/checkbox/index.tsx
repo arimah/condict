@@ -21,7 +21,7 @@ export type Props = {
   marker?: MarkerLocation;
   inputRef?: Ref<HTMLInputElement>;
   children?: ReactNode;
-} & Partial<S.IntentProps> & Omit<
+} & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'aria-label' | 'type'
 >;
@@ -29,7 +29,6 @@ export type Props = {
 export const Checkbox = (props: Props): JSX.Element => {
   const {
     className,
-    intent = 'accent',
     indeterminate = false,
     label,
     disabled,
@@ -57,12 +56,10 @@ export const Checkbox = (props: Props): JSX.Element => {
       {...labelProps}
       className={className}
       disabled={disabled}
-      intent={intent}
       marker={marker}
     >
       <S.Input
         {...inputProps}
-        intent={intent}
         disabled={disabled}
         aria-label={ariaLabel}
         ref={combineRefs(setIndeterminate, inputRef)}

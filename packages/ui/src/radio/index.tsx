@@ -22,7 +22,7 @@ export type Props = {
   marker?: MarkerLocation;
   inputRef?: Ref<HTMLInputElement>;
   children?: ReactNode;
-} & Partial<S.IntentProps> & Omit<
+} & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'aria-label' | 'type'
 >;
@@ -43,7 +43,6 @@ export const RadioGroupContext = React.createContext<ContextValue>({
 export const Radio = (props: Props): JSX.Element => {
   const {
     className,
-    intent = 'accent',
     label,
     disabled,
     name = '',
@@ -63,21 +62,19 @@ export const Radio = (props: Props): JSX.Element => {
   return (
     <S.Label
       {...labelProps}
-      intent={intent}
       marker={marker}
       className={className}
       disabled={disabled}
     >
       <S.Input
         {...inputProps}
-        intent={intent}
         name={actualName}
         disabled={disabled}
         aria-label={ariaLabel}
         ref={inputRef}
       />
       <S.RadioContainer>
-        <S.RadioDot intent={intent}/>
+        <S.RadioDot/>
       </S.RadioContainer>
       <S.Content>{renderedContent}</S.Content>
     </S.Label>

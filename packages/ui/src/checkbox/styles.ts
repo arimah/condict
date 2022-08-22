@@ -1,14 +1,8 @@
 import styled from 'styled-components';
 
-import {intentVar} from '../theme';
-import Intent from '../intent';
 import MarkerLocation, {
   markerLocationToFlexDirection,
 } from '../marker-location';
-
-export type IntentProps = {
-  intent: Intent;
-};
 
 export type DisabledProps = {
   disabled?: boolean;
@@ -59,7 +53,7 @@ export const CheckMark = styled.span`
 // screen readers to locate it, and it also means you can't hover over it
 // to have it announced.
 
-export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
+export const Input = styled.input.attrs({type: 'checkbox'})`
   appearance: none;
   position: absolute;
   top: 0;
@@ -70,8 +64,8 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
   &:checked,
   &:indeterminate {
     + ${CheckmarkContainer} {
-      border-color: ${intentVar('boldBg')};
-      background-color: ${intentVar('boldBg')};
+      border-color: ${p => p.theme.accent.boldBg};
+      background-color: ${p => p.theme.accent.boldBg};
     }
   }
 
@@ -111,7 +105,7 @@ export const Input = styled.input.attrs({type: 'checkbox'})<IntentProps>`
   }
 `;
 
-export type LabelProps = IntentProps & {
+export type LabelProps = {
   disabled?: boolean;
   marker: MarkerLocation;
 };
@@ -133,8 +127,8 @@ export const Label = styled.label<LabelProps>`
 
     > :checked + ${CheckmarkContainer},
     > :indeterminate + ${CheckmarkContainer} {
-      border-color: ${intentVar('boldHoverBg')};
-      background-color: ${intentVar('boldHoverBg')};
+      border-color: ${p => p.theme.accent.boldHoverBg};
+      background-color: ${p => p.theme.accent.boldHoverBg};
     }
   }
 
@@ -145,8 +139,8 @@ export const Label = styled.label<LabelProps>`
 
     > :checked + ${CheckmarkContainer},
     > :indeterminate + ${CheckmarkContainer} {
-      border-color: ${intentVar('boldActiveBg')};
-      background-color: ${intentVar('boldActiveBg')};
+      border-color: ${p => p.theme.accent.boldActiveBg};
+      background-color: ${p => p.theme.accent.boldActiveBg};
     }
   }
 `;
