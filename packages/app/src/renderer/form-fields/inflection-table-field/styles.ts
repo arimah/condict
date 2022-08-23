@@ -72,7 +72,7 @@ export const InflectedFormList = styled.ul`
     display: flex;
     margin-block: 8px 12px;
     flex-direction: row;
-    gap: 8px;
+    gap: 4px;
     align-items: flex-end;
   }
 `;

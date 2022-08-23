@@ -1,0 +1,89 @@
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('NotoSans-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('NotoSans-Italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('NotoSans-Medium.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url('NotoSans-MediumItalic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('NotoSans-SemiBold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url('NotoSans-SemiBoldItalic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('NotoSans-Bold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url('NotoSans-BoldItalic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('NotoSans-ExtraBold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  italic;
+  font-weight: 800;
+  font-display: swap;
+  src: url('NotoSans-ExtraBoldItalic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('NotoSans-Black.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style:  italic;
+  font-weight: 900;
+  font-display: swap;
+  src: url('NotoSans-BlackItalic.woff2') format('woff2');
+}

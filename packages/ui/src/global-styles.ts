@@ -9,13 +9,7 @@ export const GlobalStyles = createGlobalStyle`
   body {
     font-size: 14px;
     line-height: 16px;
-    font-family: 'Inter', sans-serif;
-    font-feature-settings:
-      'cv07', /* alternative ß */
-      'cv08', /* upper-case i with serifs */
-      'tnum', /* tabular numerals */
-      'calt' off, /* contextual alternatives */
-      'liga' off; /* standard ligatures */
+    font-family: 'Noto Sans', sans-serif;
   }
 
   h1 {
