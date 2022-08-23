@@ -1,15 +1,15 @@
 import {MarkerLocation} from '@condict/ui';
 
-interface IntentOption {
+interface MarkerLocationOption {
   readonly value: MarkerLocation;
   readonly name: string;
 }
 
-const IntentOptions: readonly IntentOption[] = [
+const MarkerLocationOptions: readonly MarkerLocationOption[] = [
   {value: 'before', name: 'before'},
   {value: 'after', name: 'after'},
   {value: 'above', name: 'above'},
   {value: 'below', name: 'below'},
 ];
 
-export default IntentOptions;
+export default MarkerLocationOptions;
