@@ -111,7 +111,6 @@ const Content: SectionComponent = React.forwardRef((_props, ref) => {
       <ColorOptions
         name={`${id}-danger-color`}
         value={appearance.dangerColor}
-        intent='danger'
         onChange={color => handleChangeColor('dangerColor', color)}
       />
       <p id={`${id}-danger-color-desc`}>

@@ -1,7 +1,6 @@
 import {Localized} from '@fluent/react';
 
 import {
-  Intent,
   ShadeGroup,
   Red,
   Yellow,
@@ -18,7 +17,6 @@ import * as S from './styles';
 export type Props = {
   name: string;
   value: ColorName;
-  intent?: Intent,
   onChange: (value: ColorName) => void;
 };
 
@@ -41,7 +39,7 @@ const Shades: Record<ColorName, ShadeGroup> = {
 };
 
 const ColorOptions = (props: Props): JSX.Element => {
-  const {name, value, intent, onChange} = props;
+  const {name, value, onChange} = props;
   return (
     <S.Main>
       {AllColors.map(key =>
@@ -50,8 +48,6 @@ const ColorOptions = (props: Props): JSX.Element => {
           name={name}
           value={key}
           checked={key === value}
-          intent={intent}
-          marker='below'
           onChange={e => onChange(e.target.value as ColorName)}
         >
           <S.Swatch

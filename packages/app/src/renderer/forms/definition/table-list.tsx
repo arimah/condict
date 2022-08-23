@@ -35,10 +35,7 @@ export type Props = {
 const EmptyCustomForms = new Map<InflectedFormId, string>();
 
 const TableList = React.memo((props: Props): JSX.Element => {
-  const {
-    partsOfSpeech,
-    onCreateInflectionTable,
-  } = props;
+  const {partsOfSpeech, onCreateInflectionTable} = props;
 
   const {l10n} = useLocalization();
 

@@ -96,7 +96,6 @@ Radio buttons do _not_ forward refs to any underlying element. Use the `inputRef
 | `className` | string | `undefined` | One or more class names that are forwarded to the radio button _label_. |
 | `checked` | boolean | `undefined` | Determines whether the radio button is checked. |
 | `disabled` | boolean | `false` | If true, the radio button is disabled. |
-| `intent` | one of `'general'`, `'accent'`, `'danger'` | `'accent'` | Determines what intent styling to give the radio button. Unchecked radio buttons look identical regardless of intent. |
 | `marker` | one of `'before'`, `'after'`, `'above'`, `'below'` | `'before'` | Sets the location of the radio button marker (the checkable circle) relative to the label. |
 | `label` | string | `undefined` | A string value that contains the radio button's text. If used together with children, this value defines the radio button's accessible label. |
 | `name` | string | `''` | The name of the radio button, which is used if the radio button is submitted as part of a form. The radio button name also determines what group it belongs to. |

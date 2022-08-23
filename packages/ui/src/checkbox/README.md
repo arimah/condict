@@ -22,12 +22,10 @@ import {Checkbox} from '@condict/ui';
   Enable laughing time
 </Checkbox>
 
-// A checkbox for a dangerous action, with a name that can be sent
-// along with a form.
+// A checkbox with a name that can be sent along with a form.
 <Checkbox
   label='Delete all children'
   name='deleteChildren'
-  intent='danger'
   checked={...}
   onChange={...}
 />
@@ -41,7 +39,6 @@ import {Checkbox} from '@condict/ui';
 | `checked` | boolean | `undefined` | Determines whether the checkbox is checked. |
 | `indeterminate` | boolean | `false` | If true, the checkbox is put in an indeterminate, i.e. half-checked, state. If set to true, the value of `checked` is ignored, but should probably be set to `true`. |
 | `disabled` | boolean | `false` | If true, the checkbox is disabled. |
-| `intent` | one of `'general'`, `'accent'`, `'danger'` | `'accent'` | Determines what intent styling to give the checkbox. Unchecked checkboxes look identical regardless of intent. |
 | `marker` | one of `'before'`, `'after'`, `'above'`, `'below'` | `'before'` | Sets the location of the checkbox marker (the checkable box itself) relative to the label. |
 | `label` | string | `undefined` | A string value that contains the checkbox's text. If used together with children, this value defines the checkbox's accessible label. |
 | `name` | string | `undefined` | The name of the checkbox, which is used if the checkbox is submitted as part of a form. |

@@ -1,4 +1,4 @@
-import AppearanceSection from './appeareance-section';
+import AppearanceSection from './appearance-section';
 import LanguageSection from './language-section';
 import UpdatesSection from './updates-section';
 import StorageSection from './storage-section';
