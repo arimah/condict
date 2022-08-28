@@ -5,16 +5,16 @@ export const Panel = styled.div`
   margin-bottom: 8px;
 
   padding: 14px;
-  border: 2px solid ${p => p.theme.general.border};
+  border: 2px solid var(--border);
 
   border-radius: 7px;
 
-  &:focus,
-  &.force-focus {
+  &:is(:focus, .force-focus) {
     outline: none;
     padding: 14px;
-    border: 2px solid ${p => p.theme.focus.color};
-    box-shadow: ${p => p.theme.focus.shadow};
+    border-color: var(--focus-border);
+    border-style: var(--focus-border-style);
+    box-shadow: var(--focus-shadow);
   }
 
   > :first-child {

@@ -84,7 +84,7 @@ const Main = (): JSX.Element => {
             ? 'Let\u2019s get started \u2013 the first step is to add a language.'
             : undefined
         }
-        action={action ? <Button bold intent='accent' label='Add a language'/> : undefined}
+        action={action ? <Button intent='accent' label='Add a language'/> : undefined}
       />
     </Demo>
   );

@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 import {Button, TextInput} from '@condict/ui';
 
@@ -23,13 +23,14 @@ export const CellInputWrapper = styled.label<CellInputWrapperProps>`
   align-items: center;
   cursor: text;
 
-  border: 2px solid ${p => p.theme.general.border};
-  background-color: ${p => p.theme.defaultBg};
+  border: 2px solid var(--input-border);
+  background-color: var(--input-bg);
 
-  ${p => p.focus && css`
+  ${p => p.focus && `
     outline: none;
-    border-color: ${p => p.theme.focus.color};
-    box-shadow: ${p => p.theme.focus.shadow};
+    border-color: var(--focus-border);
+    border-style: var(--focus-border-style);
+    box-shadow: var(--focus-shadow);
   `}
 `;
 
@@ -47,28 +48,21 @@ export const CellIcons = styled.span`
   }
 `;
 
-export const CellInput = styled(TextInput).attrs({
-  minimal: true,
-  borderRadius: '0',
-})`
-  && {
-    display: block;
-    flex: 1 1 auto;
-    padding-block: 6px;
-    /* padding-inline-end is 0 to leave some room for the cursor and a bit of
-     * extra padding that is sometimes added.
-     */
-    padding-inline: 6px 0;
-    width: 50%;
-    height: 100%;
-  }
+export const CellInput = styled(TextInput)`
+  display: block;
+  flex: 1 1 auto;
+  padding-block: 6px;
+  /* padding-inline-end is 0 to leave some room for the cursor and a bit of
+   * extra padding that is sometimes added.
+   */
+  padding-inline: 6px 0;
+  width: 50%;
+  height: 100%;
+  border-style: none;
+  border-radius: 0;
 
-  &&:focus {
-    padding-block: 6px;
-    padding-inline: 6px 0;
-    border: none;
-    box-shadow: none;
-  }
+  --focus-border-style: none;
+  --focus-shadow: none;
 `;
 
 
@@ -80,7 +74,7 @@ export const CellSettingsGroup = styled.div`
 
 export const CellSettingsSeparator = styled.div`
   margin-block: 15px;
-  border-top: 2px solid ${p => p.theme.general.border};
+  border-top: 2px solid var(--border-control);
 `;
 
 export const DisplayNameLabel = styled.label`
@@ -95,7 +89,7 @@ export const DisplayNameInput = styled(TextInput)`
 
 export const DeriveDisplayNameButton = styled(Button).attrs({
   slim: true,
-  bold: true,
+  intent: 'bold',
 })`
   display: block;
   width: 256px;

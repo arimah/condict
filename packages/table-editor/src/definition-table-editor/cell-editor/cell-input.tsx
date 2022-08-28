@@ -28,7 +28,6 @@ const CellInput = React.forwardRef((
       value={data.customForm !== null ? data.customForm : defaultForm}
       aria-label={messages.cellValueLabel()}
       aria-describedby={ariaDescribedBy}
-      borderRadius='0'
       inflected={data.customForm === null}
       onChange={onChange}
       ref={ref}

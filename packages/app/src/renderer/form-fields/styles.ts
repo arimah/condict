@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 import {
   Button,
@@ -32,7 +32,7 @@ export const Label = styled.label`
 
 export const ErrorMessage = styled.p`
   margin-block: 4px 0;
-  color: ${p => p.theme.danger.defaultFg};
+  color: var(--fg-danger);
 `;
 
 export type TextInputProps = {
@@ -40,12 +40,14 @@ export type TextInputProps = {
 };
 
 export const TextInput = styled(TextInputBase)<TextInputProps>`
-  ${p => p.$invalid && css`&:not(:focus):not(.force-focus) {
-    border-color: ${p => p.theme.danger.boldBg};
-  }`}
+  ${p => p.$invalid && `
+    &:not(:focus):not(.force-focus) {
+      border-color: var(--border-danger);
+    }
+  `}
 
   &:invalid:not(:focus):not(.force-focus) {
-    border-color: ${p => p.theme.danger.boldBg};
+    border-color: var(--border-danger);
   }
 `;
 
@@ -68,12 +70,14 @@ export const Select = styled(SelectBase)<SelectProps>`
   flex: 0 1 auto;
 
   > select {
-    ${p => p.$invalid && css`&:not(:focus):not(.force-focus) {
-      border-color: ${p => p.theme.danger.boldBg};
-    }`}
+    ${p => p.$invalid && `
+      &:not(:focus):not(.force-focus) {
+        border-color: var(--border-danger);
+      }
+    `}
 
     &:invalid:not(:focus):not(.force-focus) {
-      border-color: ${p => p.theme.danger.boldBg};
+      border-color: var(--border-danger);
     }
   }
 `;
@@ -87,15 +91,12 @@ export const TableCaptionEditor = styled(TableCaptionEditorBase)`
 `;
 
 export const TableBorder = styled.div`
-  border: 2px solid ${p => p.theme.general.border};
+  border: 2px solid var(--input-border);
   border-radius: 5px;
 `;
 
 export const TableToolbar = styled(Toolbar)`
-  border-radius: 3px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom: 2px solid ${p => p.theme.general.border};
+  border-radius: 3px 3px 0 0;
 `;
 
 export const TableContainer = styled.div`
@@ -131,13 +132,12 @@ export const FormButtons = styled.div<FormButtonsProps>`
   position: sticky;
   bottom: -1px;
   z-index: 5;
-  background-color: ${p => p.theme.defaultBg};
-  box-shadow: ${p => p.stuck && `0 -8px 4px -6px ${p.theme.shadow.color}`};
+  background-color: var(--bg);
+  box-shadow: ${p => p.stuck && `0 -8px 4px -6px var(--shadow-color)`};
   transition: box-shadow ${p => p.theme.timing.short}ms linear;
 `;
 
 export const SubmitButton = styled(Button).attrs({
-  bold: true,
   intent: 'accent',
   type: 'submit',
 })`
@@ -147,7 +147,6 @@ export const SubmitButton = styled(Button).attrs({
 `;
 
 export const DeleteButton = styled(ConfirmButton).attrs({
-  bold: true,
   intent: 'danger',
 })`
   flex: none;
@@ -165,5 +164,5 @@ export const SubmitError = styled.span.attrs({
   role: 'alert',
 })`
   flex: 1 1 auto;
-  color: ${p => p.theme.danger.defaultFg};
+  color: var(--fg-danger);
 `;

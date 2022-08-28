@@ -135,7 +135,6 @@ const SearchDialog = (props: Props): JSX.Element => {
             </S.SearchLanguage>
             <Button
               slim
-              borderless
               onClick={() => {
                 inputRef.current?.focus();
                 setLanguage(undefined);
@@ -163,7 +162,7 @@ const SearchDialog = (props: Props): JSX.Element => {
             />
           </S.SearchScopes>
           <S.AdvancedSearch>
-            <Button slim borderless onClick={handleAdvancedSearch}>
+            <Button slim onClick={handleAdvancedSearch}>
               <Localized id='search-box-advanced-link'/>
             </Button>
           </S.AdvancedSearch>

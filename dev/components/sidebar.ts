@@ -23,7 +23,7 @@ export const Nav = styled.nav`
   }
 
   a.current {
-    color: ${p => p.theme.defaultFg};
+    color: var(--fg);
   }
 `;
 

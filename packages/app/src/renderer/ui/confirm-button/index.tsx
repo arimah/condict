@@ -37,7 +37,6 @@ const ConfirmButton = (props: Props): JSX.Element => {
   const {
     holdTime = 2000,
     className,
-    bold,
     intent,
     onConfirm,
     children,
@@ -165,7 +164,6 @@ const ConfirmButton = (props: Props): JSX.Element => {
     <S.Main className={className}>
       <S.Button
         {...otherProps}
-        bold={bold}
         intent={intent}
         aria-describedby={id}
         onKeyDown={handleKeyDown}
@@ -176,7 +174,7 @@ const ConfirmButton = (props: Props): JSX.Element => {
         onBlur={cancelHold}
       >
         <S.Content>{children}</S.Content>
-        <S.Progress bold={bold} intent={intent} ref={progressRef}/>
+        <S.Progress ref={progressRef}/>
       </S.Button>
       <S.Helper id={id} $visible={helper !== null}>
         <S.HelperContent>

@@ -6,15 +6,15 @@ export const Main = styled(Link)`
   display: inline-block;
   padding-block: 6px;
   padding-inline: 10px 16px;
-  border: 2px solid ${p => p.theme.general.bg};
+  border: 2px solid var(--border);
   border-radius: 16px;
-  background-color: ${p => p.theme.defaultBg};
+  background-color: var(--bg);
 
-  &:focus,
-  &:focus-visible {
+  &:is(:focus, :focus-visible) {
     border-radius: 16px;
-    border-color: ${p => p.theme.focus.color};
-    box-shadow: ${p => p.theme.focus.shadow};
+    border-color: var(--focus-border);
+    border-style: var(--focus-border-style);
+    box-shadow: var(--focus-shadow);
   }
 
   > .mdi-icon {

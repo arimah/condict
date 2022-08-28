@@ -14,7 +14,7 @@ const Demo = (): JSX.Element => {
         <Button
           slim
           label='Activate focus trap'
-          intent='accent'
+          intent='bold'
           onClick={() => setActive(true)}
         />
       </p>

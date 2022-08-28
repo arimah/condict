@@ -12,10 +12,10 @@ export const Popup = styled.div.attrs({
   position: absolute;
   z-index: 10;
   border-radius: 7px;
-  border: 2px solid ${p => p.theme.general.border};
-  background-color: ${p => p.theme.general.bg};
-  color: ${p => p.theme.general.fg};
-  box-shadow: ${p => p.theme.shadow.elevation2};
+  border: 2px solid var(--border-control);
+  background-color: var(--bg-control);
+  color: var(--fg-control);
+  box-shadow: var(--shadow-elevation-2);
 
   &:focus {
     outline: none;

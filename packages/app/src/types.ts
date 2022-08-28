@@ -42,8 +42,10 @@ export type ThemeName = 'light' | 'dark';
 
 export type ColorName =
   | 'red'
+  | 'orange'
   | 'yellow'
   | 'green'
+  | 'teal'
   | 'blue'
   | 'purple'
   | 'gray';

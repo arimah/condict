@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 export type CellDataProps = {
   inflected?: boolean;
@@ -9,10 +9,10 @@ export type CellDataProps = {
 export const CellData = styled.div<CellDataProps>`
   flex: 1 0 auto;
   padding: 6px;
-  ${p => p.inflected && `font-style: italic;`}
-  ${p => p.custom && css<CellDataProps>`
-    color: ${p => p.theme.accent[p.disabled ? 'disabledFg' : 'defaultFg']};
-  `}
+  font-style: ${p => p.inflected && 'italic'};
+  color: ${p => p.custom && `var(${
+    p.disabled ? '--table-custom-form-fg-disabled' : '--table-custom-form-fg'
+  })`};
 `;
 
 export type DeletedFormProps = {
@@ -24,7 +24,8 @@ export const DeletedForm = styled.span<DeletedFormProps>`
   width: 16px;
   height: 2px;
   vertical-align: middle;
-  background-color: ${p => p.theme.general[
-    p.disabled ? 'disabledBorder' : 'border'
-  ]};
+  background-color: var(${p => p.disabled
+    ? '--table-deleted-form-fg-disabled'
+    : '--table-deleted-form-fg'
+  });
 `;

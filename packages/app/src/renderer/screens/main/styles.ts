@@ -36,6 +36,6 @@ export const Sidebar = styled.nav`
   max-width: ${SidebarMaxWidth};
   height: 100vh;
 
-  background-color: ${p => p.theme.sidebar.bg};
-  color: ${p => p.theme.sidebar.fg};
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-fg);
 `;

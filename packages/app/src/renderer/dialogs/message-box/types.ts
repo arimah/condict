@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
 
-import {Intent} from '@condict/ui';
+import {ButtonIntent} from '@condict/ui';
 
 export interface MessageBoxParams<R> {
   /** The translation key that contains the message box's title. */
@@ -21,12 +21,7 @@ export interface MessageBoxButton<R> {
   /**
    * The intent styling to give the button. If omitted, defaults to 'general'.
    */
-  readonly intent?: Intent;
-  /**
-   * Whether to make the button bolder (more prominent). If omitted, defaults
-   * to false.
-   */
-  readonly bold?: boolean;
+  readonly intent?: ButtonIntent;
   /**
    * The button disposition. The primary button (if present) is the initial
    * focus; the cancel button (if present) is activated upon pressing Escape.

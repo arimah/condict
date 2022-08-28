@@ -106,7 +106,7 @@ const Main = (): JSX.Element => {
       />
 
       <p>
-        <Button bold intent='accent' onClick={copyLayout}>
+        <Button intent='accent' onClick={copyLayout}>
           &darr; Copy layout to definition table
         </Button>
       </p>

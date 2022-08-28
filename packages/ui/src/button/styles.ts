@@ -1,20 +1,11 @@
-import styled, {StyledProps, css} from 'styled-components';
-
-import {UIColors, intentVar} from '../theme';
-import Intent from '../intent';
+import styled, {css} from 'styled-components';
 
 export type Props = {
   slim: boolean;
-  bold: boolean;
-  intent: Intent;
-  borderless: boolean;
+  intent: ButtonIntent;
 };
 
-const buttonColor = (regular: keyof UIColors, bold: keyof UIColors) =>
-  (props: StyledProps<Props>) => {
-    const colors = props.theme[props.intent];
-    return colors[props.bold ? bold : regular];
-  };
+export type ButtonIntent = 'accent' | 'bold' | 'danger' | 'general';
 
 export const ButtonStyle = css<Props>`
   display: inline-block;
@@ -27,38 +18,47 @@ export const ButtonStyle = css<Props>`
   border-radius: ${p => p.slim ? '3px' : '7px'};
   position: relative;
 
-  color: ${buttonColor('fg', 'boldFg')};
-  border-color: ${buttonColor('bg', 'boldBg')};
-  background-color: ${buttonColor('bg', 'boldBg')};
+  color: var(--button-fg);
+  border-color: var(--button-border);
+  background-color: var(--button-bg);
+
+  ${p => p.intent !== 'general' && `
+    --button-fg: var(--button-${p.intent}-fg);
+    --button-fg-disabled: var(--button-${p.intent}-fg-disabled);
+
+    --button-bg: var(--button-${p.intent}-bg);
+    --button-bg-hover: var(--button-${p.intent}-bg-hover);
+    --button-bg-pressed: var(--button-${p.intent}-bg-pressed);
+    --button-bg-disabled: var(--button-${p.intent}-bg-disabled);
+
+    --button-border: var(--button-${p.intent}-border);
+    --button-border-hover: var(--button-${p.intent}-border-hover);
+    --button-border-pressed: var(--button-${p.intent}-border-pressed);
+    --button-border-disabled: var(--button-${p.intent}-border-disabled);
+  `}
 
   &:hover {
-    background-color: ${buttonColor('hoverBg', 'boldHoverBg')};
-    ${p => p.borderless && css<Props>`
-      border-color: ${buttonColor('hoverBg', 'boldHoverBg')};
-    `}
+    background-color: var(--button-bg-hover);
+    border-color: var(--button-border-hover);
   }
 
   &:active,
   &.force-active {
-    background-color: ${buttonColor('activeBg', 'boldActiveBg')};
-    ${p => p.borderless && css<Props>`
-      border-color: ${buttonColor('activeBg', 'boldActiveBg')};
-    `}
+    background-color: var(--button-bg-pressed);
+    border-color: var(--button-border-pressed);
   }
 
   &:disabled {
-    color: ${buttonColor('disabledFg', 'boldDisabledFg')};
-    border-color: ${buttonColor('disabledBg', 'boldDisabledBg')};
-    background-color: ${buttonColor('disabledBg', 'boldDisabledBg')};
+    color: var(--button-fg-disabled);
+    border-color: var(--button-border-disabled);
+    background-color: var(--button-bg-disabled);
   }
 
-  &:focus,
-  &.force-focus {
+  &:is(:focus, .force-focus) {
     outline: none;
-    border: 2px solid ${p => p.theme.focus.color};
-    box-shadow:
-      inset 0 0 0 1px ${p => p.theme.defaultBg},
-      ${p => p.theme.focus.shadow};
+    border-color: var(--focus-border);
+    border-style: var(--focus-border-style);
+    box-shadow: inset 0 0 0 1px var(--bg), var(--focus-shadow);
   }
 
   > .mdi-icon {
@@ -93,7 +93,7 @@ export const Link = styled.a<Props>`
   &:hover,
   &:active,
   &:visited {
-    color: ${p => p.bold ? intentVar('boldFg') : intentVar('fg')};
+    color: var(--button-fg);
     text-decoration: none;
   }
 

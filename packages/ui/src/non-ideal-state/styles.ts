@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 export type Props = {
   minimal?: boolean;
@@ -13,21 +13,22 @@ export const Main = styled.div.attrs({
   margin: 16px auto;
   width: 260px;
   border-radius: 7px;
-  background: ${p => p.theme.defaultBg};
-  color: ${p => p.theme.defaultFg};
+  background: var(--bg);
+  color: var(--fg);
 
-  ${p => p.minimal ? css`
+  ${p => p.minimal ? `
     padding: 16px 24px;
-  ` : css`
+  ` : `
     padding: 14px 22px;
-    border: 2px solid ${p => p.theme.general.border};
-    box-shadow: ${p => p.theme.shadow.elevation1};
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow-elevation-1);
   `}
 
   &:focus {
     outline: none;
-    border-color: ${p => p.theme.focus.color};
-    box-shadow: ${p => p.theme.focus.shadow};
+    border-color: var(--focus-border);
+    border-style: var(--focus-border-style);
+    box-shadow: var(--focus-shadow);
   }
 `;
 

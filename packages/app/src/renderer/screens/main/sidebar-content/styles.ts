@@ -16,48 +16,25 @@ const FlexButton = styled(ButtonBase)`
   }
 `;
 
+// These buttons are never disabled, so no need to style them for that
+
 export const SearchButton = styled(FlexButton)`
-  border-color: ${p => p.theme.defaultBg};
-  background-color: ${p => p.theme.defaultBg};
-  color: ${p => p.theme.defaultFg};
-
-  &:hover {
-    border-color: ${p => p.theme.defaultHoverBg};
-    background-color: ${p => p.theme.defaultHoverBg};
-  }
-
-  &:active {
-    border-color: ${p => p.theme.defaultActiveBg};
-    background-color: ${p => p.theme.defaultActiveBg};
-  }
-
-  &:focus {
-    border-color: ${p => p.theme.focus.color};
-    box-shadow:
-      inset 0 0 0 1px ${p => p.theme.sidebar.bg},
-      ${p => p.theme.focus.shadow};
-  }
+  --button-fg: var(--button-naked-fg);
+  --button-bg: var(--button-naked-bg);
+  --button-bg-hover: var(--button-naked-bg-hover);
+  --button-bg-pressed: var(--button-naked-bg-pressed);
+  --button-border: var(--button-naked-border);
+  --button-border-hover: var(--button-naked-border-hover);
+  --button-border-pressed: var(--button-naked-border-pressed);
 `;
 
 export const Button = styled(FlexButton)`
-  border-color: ${p => p.theme.sidebar.bg};
-  background-color: ${p => p.theme.sidebar.bg};
-  color: ${p => p.theme.sidebar.fg};
-
-  &:hover {
-    border-color: ${p => p.theme.sidebar.hoverBg};
-    background-color: ${p => p.theme.sidebar.hoverBg};
-  }
-
-  &:active {
-    border-color: ${p => p.theme.sidebar.activeBg};
-    background-color: ${p => p.theme.sidebar.activeBg};
-  }
-
-  &:focus {
-    border-color: ${p => p.theme.focus.color};
-    box-shadow:
-      inset 0 0 0 1px ${p => p.theme.sidebar.bg},
-      ${p => p.theme.focus.shadow};
-  }
+  --bg: var(--sidebar-bg);
+  --button-fg: var(--sidebar-fg);
+  --button-bg: var(--sidebar-bg);
+  --button-bg-hover: var(--sidebar-bg-hover);
+  --button-bg-pressed: var(--sidebar-bg-pressed);
+  --button-border: var(--button-bg);
+  --button-border-hover: var(--button-bg-hover);
+  --button-border-pressed: var(--button-bg-pressed);
 `;

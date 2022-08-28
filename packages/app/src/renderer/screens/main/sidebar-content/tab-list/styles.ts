@@ -15,13 +15,13 @@ export const TabList = styled.div.attrs({
 
   &::-webkit-scrollbar {
     width: 10px;
-    background-color: ${p => p.theme.sidebar.bg};
+    background-color: var(--sidebar-bg);
   }
 
   &::-webkit-scrollbar-thumb {
-    border: 2px solid ${p => p.theme.sidebar.bg};
+    border: 2px solid var(--sidebar-bg);
     border-radius: 5px;
-    background-color: ${p => p.theme.sidebar.activeBg};
+    background-color: var(--sidebar-bg-pressed);
   }
 `;
 
@@ -71,14 +71,14 @@ export const Tab = styled.div.attrs({
   ${p => p.isChild && `margin-inline-start: 16px;`}
 
   ${p => p.isCurrent ? css`
-    background-color: ${p => p.theme.defaultBg};
-    color: ${p => p.theme.defaultFg};
+    background-color: var(--bg);
+    color: var(--fg);
   ` : css`
-    background-color: ${p => p.theme.sidebar.bg};
-    color: ${p => p.theme.sidebar.fg};
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-fg);
 
     &:hover {
-      background-color: ${p => p.theme.sidebar.hoverBg};
+      background-color: var(--sidebar-bg-hover);
     }
   `}
 
@@ -98,7 +98,7 @@ export const Tab = styled.div.attrs({
     position: absolute;
     inset-block: 1px;
     inset-inline: 1px 0;
-    border: 3px solid ${p => p.theme.focus.color};
+    border: 3px var(--focus-border-style) var(--focus-border);
     border-start-start-radius: 6px;
     border-end-start-radius: 6px;
     pointer-events: none;
@@ -116,10 +116,7 @@ export const Tab = styled.div.attrs({
     margin-block: -4px;
     margin-inline: -4px 8px;
     flex: none;
-    color: ${p => p.isCurrent && p.isCrashed
-      ? p.theme.danger.defaultFg
-      : undefined
-    };
+    color: ${p => p.isCurrent && p.isCrashed && 'var(--fg-danger)'};
   }
 `;
 
@@ -173,10 +170,11 @@ export const CloseButton = styled.div.attrs({
   }
 
   &&:hover:active {
-    background-color: ${p => p.isCurrentTab
-      ? p.theme.defaultActiveBg
-      // bg instead of activeBg since the tab is hoverBg
-      : p.theme.sidebar.bg
-    };
+    background-color: var(${p => p.isCurrentTab
+      ? '--bg-pressed'
+      // We use bg instead of bg-pressed since the tab has bg-hover,
+      // and bg-pressed has too much contrast.
+      : '--sidebar-bg'
+    });
   }
 `;

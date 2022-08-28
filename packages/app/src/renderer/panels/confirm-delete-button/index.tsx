@@ -46,7 +46,7 @@ const ConfirmDeleteButton = (props: Props): JSX.Element => {
 
   return (
     <S.Main>
-      <Button intent='danger' onClick={openPopup}>
+      <Button onClick={openPopup}>
         <Localized id='generic-delete-button'/>
       </Button>
       {popupOpen &&

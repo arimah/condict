@@ -10,16 +10,16 @@ export type ScopeProps = {
 const getBorderColor = (props: StyledProps<ScopeProps>) => {
   if (props.kind === 'scope') {
     if (props.active === false) {
-      return props.theme.general.disabledBorder;
+      return 'var(--border)';
     }
   } else if (props.kind === 'trap') {
     if (props.active === true) {
-      return props.theme.accent.border;
+      return 'var(--border-accent)';
     } else if (props.active === 'paused') {
-      return props.theme.accent.disabledBorder;
+      return 'var(--border)';
     }
   }
-  return props.theme.general.border;
+  return 'var(--border-control)';
 };
 
 export const Scope = styled(Panel)<ScopeProps>`

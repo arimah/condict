@@ -5,5 +5,5 @@ export const Ellipsis = styled.span`
 `;
 
 export const Highlight = styled.b`
-  color: ${p => p.theme.accent.defaultFg};
+  color: var(--fg-accent);
 `;

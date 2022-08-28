@@ -28,7 +28,7 @@ export const Details = styled.div<DetailsProps>`
   max-height: 200px;
   overflow: auto;
   white-space: pre-wrap;
-  border: 2px solid ${p => p.theme.general.border};
+  border: 2px solid var(--border);
   border-radius: 3px;
   user-select: text;
 `;

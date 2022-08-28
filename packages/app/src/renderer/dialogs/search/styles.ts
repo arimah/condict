@@ -25,9 +25,9 @@ export const Main = styled.div.attrs({
   padding: 24px;
   max-height: 100%;
   border-radius: 15px;
-  background-color: ${p => p.theme.general.bg};
-  box-shadow:
-    0 2px 7px rgba(0, 0, 0, ${p => p.theme.mode === 'dark' ? '0.8' : '0.6'});
+  background-color: var(--bg-control);
+  color: var(--fg-control);
+  box-shadow: var(--dialog-shadow);
   pointer-events: all;
 
   &:focus {
@@ -40,13 +40,14 @@ export const InputWrapper = styled.label`
   display: flex;
   flex-direction: row;
   border-radius: 7px;
-  border: 2px solid ${p => p.theme.defaultBg};
-  background-color: ${p => p.theme.defaultBg};
+  border: 2px solid var(--input-minimal-border);
+  background-color: var(--input-bg);
   cursor: text;
 
   &:focus-within {
-    border-color: ${p => p.theme.focus.color};
-    box-shadow: ${p => p.theme.focus.shadow};
+    border-color: var(--focus-border);
+    border-style: var(--focus-border-style);
+    box-shadow: var(--focus-shadow);
   }
 
   > .mdi-icon {
@@ -60,23 +61,19 @@ export const InputWrapper = styled.label`
 
 export const Input = styled(TextInput).attrs({
   type: 'search',
-  minimal: true,
 })`
   flex: 1 1 auto;
   align-self: stretch;
   padding-block: 4px;
   padding-inline: 8px 4px;
-  border: none;
   border-radius: 0;
+  border-style: none;
   border-start-end-radius: 5px;
   border-end-end-radius: 5px;
 
-  &:focus {
-    padding-block: 4px;
-    padding-inline: 8px 4px;
-    border: none;
-    box-shadow: none;
-  }
+  --input-border: transparent;
+  --focus-border-style: none;
+  --focus-shadow: none;
 
   &::-webkit-search-cancel-button,
   &::-webkit-search-decoration {
@@ -143,12 +140,12 @@ export const ResultList = styled.ul`
   &::-webkit-scrollbar {
     width: 8px;
     border-radius: 4px;
-    background-color: ${p => p.theme.general.bg};
+    background-color: var(--bg-control);
   }
 
   &::-webkit-scrollbar-thumb {
     border-radius: 4px;
-    background-color: ${p => p.theme.general.activeBg};
+    background-color: var(--bg-control-pressed);
   }
 `;
 
@@ -163,10 +160,10 @@ export const Result = styled.li<ResultProps>`
   margin: 0;
   padding: 8px;
   border-radius: 3px;
-  background-color: ${p => p.$selected && p.theme.general.hoverBg};
+  background-color: ${p => p.$selected && 'var(--bg-control-hover)'};
 
   &:active {
-    background-color: ${p => p.theme.general.activeBg};
+    background-color: var(--bg-control-pressed);
   }
 
   > .mdi-icon {
@@ -216,7 +213,7 @@ export const ResultBody = styled.div`
   margin-top: 2px;
   padding-top: 4px;
   white-space: pre-wrap;
-  border-top: 1px solid ${p => p.theme.general.border};
+  border-top: 1px solid var(--border-control);
 `;
 
 export const ResultText = styled.div`

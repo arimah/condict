@@ -1,46 +1,42 @@
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 export type Props = {
   minimal: boolean;
-  borderRadius?: string;
 };
 
 export const Input = styled.input<Props>`
+  padding: 2px;
   box-sizing: border-box;
   font: inherit;
-  border-radius: ${p => p.borderRadius ?? '3px'};
-  border-color: ${p => p.theme.general.border};
-  background-color: ${p => p.theme.defaultBg};
-  color: ${p => p.theme.defaultFg};
+  border: 2px solid var(--input-border);
+  border-radius: 3px;
+  background-color: var(--input-bg);
+  color: var(--input-fg);
 
-  ${p => p.minimal ? css`
-    padding: 4px;
-    border-style: none;
-  ` : css`
-    padding: 2px;
-    border-width: 2px;
-    border-style: solid;
+  ${p => p.minimal && `
+    --input-border: var(--input-minimal-border);
+    --input-border-disabled: var(--input-minimal-border-disabled);
   `}
 
-  &:focus,
-  &.force-focus {
+  &:is(:focus, .force-focus) {
     outline: none;
-    padding: ${p => p.minimal && '2px'};
-    border: 2px solid ${p => p.theme.focus.color};
-    box-shadow: ${p => p.theme.focus.shadow};
+    border-color: var(--focus-border);
+    border-style: var(--focus-border-style);
+    box-shadow: var(--focus-shadow);
   }
 
   &:disabled {
-    border-color: ${p => p.theme.general.disabledBorder};
-    color: ${p => p.theme.general.disabledFg};
+    border-color: var(--input-border-disabled);
+    background-color: var(--input-bg-disabled);
+    color: var(--input-fg-disabled);
   }
 
   &::placeholder {
-    color: ${p => p.theme.defaultFg};
+    color: var(--input-fg);
     opacity: 0.65;
   }
 
   &:disabled::placeholder {
-    color: ${p => p.theme.general.disabledFg};
+    color: var(--input-fg-disabled);
   }
 `;

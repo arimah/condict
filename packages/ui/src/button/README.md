@@ -11,24 +11,24 @@ Buttons forward their ref to the underlying element, which is a `<button>`.
 ### Examples
 
 ```jsx
-import {Button} from '@condict/ui';
+import {Button, LinkButton} from '@condict/ui';
 
 // A simple button with a label.
 <Button label='Show me what you got' onClick={...}/>
 
 // A link button with rendered children.
-<Button href={aboutUri} target='_blank'>
+<LinkButton href={aboutUri} target='_blank'>
   <InfoIcon/> About the competition
-</Button>
+</LinkButton>
 
-// A slim, secondary button that mixes rendered content and label.
+// A slim, bold button that mixes rendered content and label.
 // The label is exposed to assistive technologies, like screen readers.
-<Button slim intent='secondary' label='Undo' onClick={...}>
+<Button slim intent='bold' label='Undo' onClick={...}>
   <UndoIcon/>
 </Button>
 
-// A minimal button that performs a dangerous action
-<Button minimal intent='danger' onClick={...}>
+// A button that performs a dangerous action
+<Button intent='danger' onClick={...}>
   Delete the whole thing
 </Button>
 
@@ -43,10 +43,8 @@ import {Button} from '@condict/ui';
 | --- | --- | --- | --- |
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
 | `disabled` | boolean | `false` | If true, the button is disabled. This prop has no effect on link buttons. If the button has a [command][], the command can also disable the button. |
-| `minimal` | boolean | `false` | If true, applies minimal styling to the button. Basically, it removes the background. |
-| `intent` | one of `'general'`, `'accent'`, `'danger'` | `'general'` | Determines what intent styling to give the button. |
+| `intent` | one of `'general'`, `'accent'`, `'bold'`, `'danger'` | `'general'` | Determines what intent styling to give the button. |
 | `slim` | boolean | `false` | If true, reduce the button's padding, to make it fit better alongside text inputs, selects, and similar. |
-| `borderless` | boolean | `false` | If true, the entire button lights up when hovered and pressed. By default, the border stays the same. Borderless styling is used when the button is placed on a background with the same colour as the button. |
 | `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
 | `type` | one of `'button'`, `'submit'` | `'button'` | Determines the button's type. Submit buttons are used in forms. This prop has no effect on link buttons. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `disabled` and `onClick` props. |
@@ -67,10 +65,8 @@ Link buttons forward their ref to the underlying element, which is an `<a>`.
 | --- | --- | --- | --- |
 | `href` | string | _none; required_ | The URL that the link button points to. |
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
-| `minimal` | boolean | `false` | If true, applies minimal styling to the button. Basically, it removes the background. |
-| `intent` | one of `'general'`, `'accent'`, `'danger'` | `'general'` | Determines what intent styling to give the button. |
+| `intent` | one of `'general'`, `'accent'`, `'bold'`, `'danger'` | `'general'` | Determines what intent styling to give the button. |
 | `slim` | boolean | `false` | If true, reduce the button's padding, to make it fit better alongside text inputs, selects, and similar. |
-| `borderless` | boolean | `false` | If true, the entire button lights up when hovered and pressed. By default, the border stays the same. Borderless styling is used when the button is placed on a background with the same colour as the button. |
 | `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `onClick` prop. |
 | `onClick` | function | no-op | Attaches the `click` event handler to the button. If the button has a [command][], this prop is ignored. |

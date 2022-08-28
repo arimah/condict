@@ -38,7 +38,7 @@ const LanguageList = (props: Props): JSX.Element => {
           title={<Localized id='home-no-languages-heading'/>}
           description={<Localized id='home-no-languages-description'/>}
           action={
-            <Button bold intent='accent' onClick={onAddLanguage}>
+            <Button intent='accent' onClick={onAddLanguage}>
               <AddIcon/>
               <span>
                 <Localized id='home-add-language-button'/>

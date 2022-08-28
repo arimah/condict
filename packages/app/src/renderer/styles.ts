@@ -9,8 +9,8 @@ export const AppStyles = createGlobalStyle`
   }
 
   body {
-    background-color: ${p => p.theme.defaultBg};
-    color: ${p => p.theme.defaultFg};
+    background-color: var(--bg);
+    color: var(--fg);
     /* Pretend we're a real app. */
     user-select: none;
   }
@@ -26,9 +26,7 @@ export const AppStyles = createGlobalStyle`
   }
 
   a:focus-visible {
-    box-shadow:
-      0 0 0 1px ${p => p.theme.defaultBg},
-      0 0 0 4px ${p => p.theme.focus.color};
+    box-shadow: 0 0 0 1px var(--bg), 0 0 0 4px var(--focus-border);
     border-radius: 1px;
   }
 `;

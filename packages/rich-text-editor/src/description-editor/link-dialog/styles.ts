@@ -13,7 +13,7 @@ export const Spinner = styled(SpinnerBase).attrs({
 
 export const Error = styled.div`
   margin: 8px;
-  color: ${p => p.theme.danger.fg};
+  color: var(--fg-danger);
 `;
 
 export type SearchResultProps = {
@@ -27,12 +27,10 @@ export const SearchResult = styled.li.attrs({
   padding: 8px;
   user-select: none;
 
-  ${p => p.selected && `
-    background-color: ${p.theme.general.hoverBg};
-  `}
+  background-color: ${p => p.selected && 'var(--bg-control-hover)'};
 
   &:active {
-    background-color: ${p => p.theme.general.activeBg};
+    background-color: var(--bg-control-pressed);
   }
 `;
 
@@ -63,7 +61,7 @@ export const SearchResultMatch = styled.div`
   margin-top: 2px;
   padding-top: 2px;
   line-height: 20px;
-  border-top: 1px solid ${p => p.theme.general.border};
+  border-top: 1px solid var(--border-control);
 
   /* Tighter spacing around paragraphs for better coherence */
   > p {

@@ -1,17 +1,19 @@
 import styled from 'styled-components';
 
-import Colors from '../colors';
-
 export type DisabledProps = {
   disabled: boolean;
 };
 
 export const InflectionStem = styled.span<DisabledProps>`
-  color: ${p => p.theme.accent[p.disabled ? 'disabledFg' : 'defaultFg']};
+  color: var(${p => p.disabled
+    ? '--table-stem-fg-disabled'
+    : '--table-stem-fg'
+  });
 `;
 
 export const EscapedBrace = styled.span<DisabledProps>`
-  color: ${p => Colors[p.theme.mode][
-    p.disabled ? 'disabledBraceFg' : 'braceFg'
-  ]};
+  color: var(${p => p.disabled
+    ? '--table-escape-fg-disabled'
+    : '--table-escape-fg'
+  });
 `;

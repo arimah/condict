@@ -14,17 +14,14 @@ export const SearchButton = styled(Button)`
   flex: 1 1 auto;
   text-align: start;
   border-radius: 7px;
-  border-color: ${p => p.theme.general.border};
-  background-color: ${p => p.theme.defaultBg};
-  color: ${p => p.theme.defaultFg};
 
-  &:hover {
-    background-color: ${p => p.theme.defaultHoverBg};
-  }
-
-  &:active {
-    background-color: ${p => p.theme.defaultActiveBg};
-  }
+  --button-fg: var(--fg);
+  --button-bg: var(--bg);
+  --button-bg-hover: var(--bg-hover);
+  --button-bg-pressed: var(--bg-pressed);
+  --button-border: var(--border);
+  --button-border-hover: var(--button-border);
+  --button-border-pressed: var(--button-border);
 `;
 
 export const NoLemmas = styled(NonIdealState)`

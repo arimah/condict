@@ -2,21 +2,33 @@ import {ReactNode, useMemo} from 'react';
 import {ThemeProvider} from 'styled-components';
 
 import {
-  ShadeGroup,
+  Theme,
+  ThemeVariables,
+  Shade,
   Red,
+  Orange,
   Yellow,
   Green,
+  Teal,
   Blue,
   Purple,
   Gray,
-  lightTheme,
-  darkTheme,
+  DefaultTiming,
+  lightThemeVars,
+  darkThemeVars,
 } from '@condict/ui';
+import {
+  lightThemeVars as lightThemeTableVars,
+  darkThemeVars as darkThemeTableVars,
+} from '@condict/table-editor';
 
 import {ThemeName, ColorName, AppearanceConfig} from '../../types';
 
-import {SidebarColors} from '../ui';
-import {AppTheme, SidebarColors as SidebarColorGroup} from '../types';
+import {
+  SidebarColors,
+  lightThemeVars as lightThemeAppVars,
+  darkThemeVars as darkThemeAppVars,
+} from '../theme';
 
 export type Props = {
   appearance: AppearanceConfig;
@@ -25,35 +37,35 @@ export type Props = {
 };
 
 type ThemeBuilder = (
-  accent: ShadeGroup,
-  danger: ShadeGroup,
-  sidebar: SidebarColorGroup
-) => AppTheme;
+  accent: Shade,
+  danger: Shade,
+  sidebar: ColorName
+) => ThemeVariables;
 
-const Colors: Record<ColorName, ShadeGroup> = {
+const Colors: Record<ColorName, Shade> = {
   red: Red,
+  orange: Orange,
   yellow: Yellow,
   green: Green,
+  teal: Teal,
   blue: Blue,
   purple: Purple,
   gray: Gray,
 };
 
 const ThemeBuilders: Record<ThemeName, ThemeBuilder> = {
-  light: (accent, danger, sidebar) => {
-    const uiTheme = lightTheme(accent, danger);
-    return {
-      ...uiTheme,
-      sidebar,
-    };
-  },
-  dark: (accent, danger, sidebar) => {
-    const uiTheme = darkTheme(accent, danger);
-    return {
-      ...uiTheme,
-      sidebar,
-    };
-  },
+  light: (accent, danger, sidebar) => ({
+    ...lightThemeVars(accent, danger),
+    ...lightThemeTableVars(accent),
+    ...lightThemeAppVars(accent),
+    ...SidebarColors[sidebar],
+  }),
+  dark: (accent, danger, sidebar) => ({
+    ...darkThemeVars(accent, danger),
+    ...darkThemeTableVars(accent),
+    ...darkThemeAppVars(accent),
+    ...SidebarColors[sidebar],
+  }),
 };
 
 const AppThemeProvider = (props: Props): JSX.Element => {
@@ -67,37 +79,33 @@ const AppThemeProvider = (props: Props): JSX.Element => {
     motion,
   } = appearance;
 
-  const theme = useMemo(() => {
+  const theme = useMemo<Theme>(() => {
     const themeName = themePreference === 'system'
       ? systemTheme
       : themePreference;
-    let theme = ThemeBuilders[themeName](
+    const vars = ThemeBuilders[themeName](
       Colors[accentColor],
       Colors[dangerColor],
-      SidebarColors[sidebarColor]
+      sidebarColor
     );
 
+    let timing = DefaultTiming;
     if (motion === 'none') {
-      theme = {
-        ...theme,
-        timing: {
-          motion,
-          short: 0,
-          long: 0,
-        },
+      timing = {
+        ...DefaultTiming,
+        motion,
+        short: 0,
+        long: 0,
       };
     } else if (motion === 'reduced') {
-      theme = {
-        ...theme,
-        timing: {
-          motion,
-          short: 0,
-          long: theme.timing.long,
-        },
+      timing = {
+        ...DefaultTiming,
+        motion,
+        short: 0,
       };
     }
 
-    return theme;
+    return {vars, timing};
   }, [
     themePreference,
     systemTheme,

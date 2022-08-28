@@ -17,15 +17,16 @@ export type ToolbarProps = {
 
 export const Toolbar = styled(ToolbarBase)<ToolbarProps>`
   padding: 2px;
-  border: 2px solid ${p => p.theme.general.border};
   border-radius: 3px 3px 0 0;
 
   ${p => p.alwaysVisible ? `
-    margin-bottom: 8px;
+    margin-bottom: -2px;
     position: sticky;
     top: 0;
     z-index: 1;
-  ` : css<ToolbarProps>`
+    border: 2px solid var(--input-border);
+    border-bottom: none;
+  ` : `
     margin-bottom: -3px;
     padding-bottom: 5px;
     position: absolute;
@@ -34,12 +35,11 @@ export const Toolbar = styled(ToolbarBase)<ToolbarProps>`
     right: 0;
     overflow: hidden;
     max-height: 10px;
-    border-bottom-width: 0;
     pointer-events: none;
     transform: translate(0, 100%) translate(0, 1px);
 
     transition-property: max-height, transform, opacity, box-shadow;
-    transition-duration: ${p => p.theme.timing.short}ms;
+    transition-duration: ${p.theme.timing.short}ms;
     transition-timing-function: ease-in-out;
   `}
 `;
@@ -64,20 +64,20 @@ export type EditableProps = {
 export const Editable = styled(BaseEditable)<EditableProps>`
   padding: ${p => p.$singleLine ? '0 2px' : '0 6px'};
   position: relative;
-  border: 2px solid ${p => p.theme.general.border};
-  border-radius: 3px;
-  background-color: ${p => p.theme.defaultBg};
-  color: ${p => p.theme.defaultFg};
+  border: 2px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-fg);
 
   ${p => p.$toolbarAlwaysVisible ? `
-    margin-top: -10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  ` : css`
+    border-radius: 0 0 3px 3px;
+  ` : `
+    border-radius: 3px;
+
     &:focus {
       outline: none;
-      border-color: ${p => p.theme.focus.color};
-      box-shadow: ${p => p.theme.focus.shadow};
+      border-color: var(--focus-border);
+      border-style: var(--focus-border-style);
+      box-shadow: var(--focus-shadow);
     }
   `}
 
@@ -95,11 +95,8 @@ export const Editable = styled(BaseEditable)<EditableProps>`
     vertical-align: -3px;
   }
 
-  ${Link}:link,
-  ${Link}:visited,
-  ${Link}:hover,
-  ${Link}:active {
-    color: ${p => p.theme.link.link};
+  ${Link}:is(:link, :visited, :hover, :active) {
+    color: var(--link-fg);
   }
 `;
 
@@ -109,13 +106,11 @@ export const EditorContainer = styled.div<EditorContainerProps>`
   position: relative;
 
   ${p => !p.toolbarAlwaysVisible && css`
-    &:focus-within {
-      > ${Toolbar} {
-        max-height: 150%;
-        transform: translate(0, 0);
-        pointer-events: auto;
-        box-shadow: ${p => p.theme.shadow.elevation1};
-      }
+    &:focus-within > ${Toolbar} {
+      max-height: 150%;
+      transform: translate(0, 0);
+      pointer-events: auto;
+      box-shadow: var(--shadow-elevation-1);
     }
   `}
 `;

@@ -44,7 +44,6 @@ export {
   default as RuntimeError,
   Props as RuntimeErrorProps,
 } from './runtime-error';
-export {default as SidebarColors} from './sidebar-colors';
 export {default as Tag, Props as TagProps} from './tag';
 export {
   default as TransitionList,

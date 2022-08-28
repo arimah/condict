@@ -4,7 +4,6 @@ import {MessageBoxButton} from './types';
 const Yes: MessageBoxButton<true> = {
   value: true,
   labelKey: 'message-box-yes',
-  bold: true,
   intent: 'accent',
   disposition: 'primary',
 };
@@ -22,7 +21,6 @@ export const YesNo: readonly MessageBoxButton<boolean>[] = selectPlatform({
 const OK: MessageBoxButton<true> = {
   value: true,
   labelKey: 'message-box-ok',
-  bold: true,
   intent: 'accent',
   disposition: 'primary',
 };

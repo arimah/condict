@@ -4,7 +4,7 @@ import FetchIcon from 'mdi-react/SyncIcon';
 import DownloadIcon from 'mdi-react/DownloadIcon';
 import UpdateIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
 
-import {useUniqueId} from '@condict/ui';
+import {ButtonIntent, useUniqueId} from '@condict/ui';
 
 import {UpdateStatus} from '../../../../types';
 
@@ -40,6 +40,15 @@ const L10nStatusMessages = {
   downloadedNeedsRestart: 'settings-updates-downloaded',
 } as const;
 
+const StatusIntents: Record<UpdateStatus, ButtonIntent> = {
+  unknown: 'general',
+  checking: 'general',
+  isLatest: 'general',
+  updateAvailable: 'bold',
+  downloading: 'bold',
+  downloadedNeedsRestart: 'accent',
+};
+
 const Status = (): JSX.Element => {
   const [status, setStatus] = useState<UpdateStatus>('unknown');
   const [downloadProgress, setDownloadProgress] = useState(0);
@@ -74,11 +83,7 @@ const Status = (): JSX.Element => {
   return (
     <S.Main>
       <S.MainButton
-        bold={
-          status === 'updateAvailable' ||
-          status === 'downloading' ||
-          status === 'downloadedNeedsRestart'
-        }
+        intent={StatusIntents[status]}
         aria-live='polite'
         aria-relevant='text'
         aria-busy={status === 'checking' || status === 'downloading'}

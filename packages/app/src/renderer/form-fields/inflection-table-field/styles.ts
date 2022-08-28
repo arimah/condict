@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {CardGrid, NakedButton, Link} from '../../ui';
 
 export const SubmitError = styled.p`
-  color: ${p => p.theme.danger.defaultFg};
+  color: var(--fg-danger);
 `;
 
 export const TableCardList = styled(CardGrid).attrs({
@@ -17,7 +17,7 @@ export const TableCard = styled.div`
   flex-direction: row;
   gap: 2px;
   border-radius: 7px;
-  box-shadow: ${p => p.theme.shadow.elevation1};
+  box-shadow: var(--shadow-elevation-1);
 `;
 
 export const TableButton = styled(NakedButton)`
@@ -32,8 +32,8 @@ export const TableLink = styled(Link)`
   flex: none;
   padding: 2px 14px;
 
-  border: 2px solid ${p => p.theme.defaultBg};
-  background-color: ${p => p.theme.defaultBg};
+  border: 2px solid var(--bg);
+  background-color: var(--bg);
 
   && {
     border-start-start-radius: 0;
@@ -43,19 +43,19 @@ export const TableLink = styled(Link)`
   }
 
   &:hover {
-    border-color: ${p => p.theme.defaultHoverBg};
-    background-color: ${p => p.theme.defaultHoverBg};
+    border-color: var(--bg-hover);
+    background-color: var(--bg-hover);
   }
 
   &:active {
-    border-color: ${p => p.theme.defaultActiveBg};
-    background-color: ${p => p.theme.defaultActiveBg};
+    border-color: var(--bg-pressed);
+    background-color: var(--bg-pressed);
   }
 
-  &:focus,
-  &:focus-visible {
-    border-color: ${p => p.theme.focus.color};
-    box-shadow: ${p => p.theme.focus.shadow};
+  &:is(:focus, :focus-visible) {
+    border-color: var(--focus-border);
+    border-style: var(--focus-border-style);
+    box-shadow: var(--focus-shadow);
   }
 
   > .mdi-icon {
@@ -112,7 +112,10 @@ export const InflectedFormAction = styled(NakedButton)<InflectedFormActionProps>
   flex: none;
   margin-block: -3px;
   padding: 1px;
-  color: ${p => p.hasCustomName && p.theme.accent.defaultFg};
+
+  ${p => p.hasCustomName && `
+    --button-fg: var(--fg-accent);
+  `}
 
   &:focus {
     padding: 1px;

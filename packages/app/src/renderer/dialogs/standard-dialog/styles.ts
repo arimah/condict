@@ -12,9 +12,9 @@ export const Main = styled.div.attrs({
   padding: 20px;
   position: relative;
   top: ${p => p.visible ? '0' : '-24px'};
-  background-color: ${p => p.theme.defaultBg};
+  background-color: var(--bg);
   border-radius: 15px;
-  box-shadow: 0 2px 7px rgba(0, 0, 0, ${p => p.theme.mode === 'dark' ? '0.8' : '0.6'});
+  box-shadow: var(--dialog-shadow);
   opacity: ${p => p.visible ? '1' : '0'};
 
   transition-property: top, opacity;

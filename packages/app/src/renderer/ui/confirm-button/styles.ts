@@ -1,6 +1,6 @@
 import styled, {css} from 'styled-components';
 
-import {Button as ButtonBase, Intent} from '@condict/ui';
+import {Button as ButtonBase} from '@condict/ui';
 
 export const Main = styled.span`
   display: inline-flex;
@@ -13,20 +13,8 @@ export const Button = styled(ButtonBase)`
   z-index: 0;
   overflow: hidden;
 
-  background-color: ${p =>
-    p.theme[p.intent ?? 'general'][p.bold ? 'boldBg' : 'bg']
-  };
-
-  &:hover {
-    background-color: ${p =>
-      p.theme[p.intent ?? 'general'][p.bold ? 'boldHoverBg' : 'hoverBg']
-    };
-  }
-
   &:active {
-    background-color: ${p =>
-      p.theme[p.intent ?? 'general'][p.bold ? 'boldBg' : 'bg']
-    };
+    background-color: var(--button-bg);
   }
 `;
 
@@ -35,20 +23,13 @@ export const Content = styled.span`
   z-index: 1;
 `;
 
-export type ProgressProps = {
-  intent?: Intent;
-  bold?: boolean;
-};
-
-export const Progress = styled.span<ProgressProps>`
+export const Progress = styled.span`
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   z-index: 0;
-  background-color: ${p =>
-    p.theme[p.intent ?? 'general'][p.bold ? 'boldActiveBg' : 'activeBg']
-  };
+  background-color: var(--button-bg-pressed);
 `;
 
 export type HelperProps = {
@@ -89,9 +70,9 @@ export const HelperContent = styled.span`
   padding: 8px 12px;
 
   border-radius: 5px;
-  background-color: ${p => p.theme.general.boldBg};
-  color: ${p => p.theme.general.boldFg};
-  box-shadow: ${p => p.theme.shadow.elevation3};
+  background-color: var(--bg-bold);
+  color: var(--fg-bold);
+  box-shadow: var(--shadow-elevation-3);
 
   &::after {
     content: '';
@@ -100,7 +81,7 @@ export const HelperContent = styled.span`
     left: 50%;
     width: 11px;
     height: 11px;
-    background-color: ${p => p.theme.general.boldBg};
+    background-color: var(--bg-bold);
     transform: translate(-50%, -50%) rotate(45deg);
   }
 `;

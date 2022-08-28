@@ -73,7 +73,7 @@ const PartOfSpeechList = (props: Props): JSX.Element => {
           <Localized id='language-no-parts-of-speech-description'/>
         </BodyText>
         <p>
-          <Button bold onClick={onAddPartOfSpeech}>
+          <Button intent='bold' onClick={onAddPartOfSpeech}>
             <AddIcon/>
             <span>
               <Localized id='language-add-part-of-speech-button'/>

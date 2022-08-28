@@ -181,7 +181,7 @@ const Table = React.memo((props: Props): JSX.Element => {
           {canUpgrade &&
             <Button
               slim
-              bold={status === 'needsUpgrade'}
+              intent={status === 'needsUpgrade' ? 'bold' : 'general'}
               onClick={handleUpgrade}
             >
               <Localized id='definition-upgrade-layout-button'/>

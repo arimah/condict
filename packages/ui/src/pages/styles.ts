@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 import {Button} from '../button';
 
@@ -9,11 +9,7 @@ export type DisabledProps = {
 export const Main = styled.nav<DisabledProps>`
   margin-top: 16px;
   margin-bottom: 16px;
-
-  color: ${p => p.disabled
-    ? p.theme.general.disabledFg
-    : p.theme.defaultFg
-  };
+  color: var(${p => p.disabled ? '--fg-disabled' : '--fg'});
 `;
 
 // This list and its items are necessary for assisitive technologies to read
@@ -47,14 +43,12 @@ export const Page = styled(Button)<PageProps>`
   padding: 6px 2px;
   min-width: 32px;
 
-  ${p => p.isLoading && css`
+  ${p => p.isLoading && `
     && {
       color: transparent;
     }
   `}
 `;
-
-Page.defaultProps = {};
 
 // This element is focusable only for screen reader accessibility.
 export const Ellipsis = styled.span.attrs({
@@ -78,6 +72,8 @@ export const Loading = styled.div<DisabledProps>`
   left: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
-
-  color: ${p => p.theme.general[p.disabled ? 'boldDisabledFg' : 'boldFg']};
+  color: var(${p => p.disabled
+    ? '--button-bold-fg-disabled'
+    : '--button-bold-fg'
+  });
 `;

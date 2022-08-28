@@ -1,17 +1,21 @@
-export {default as LightTheme, lightTheme} from './light';
-export {default as DarkTheme, darkTheme} from './dark';
-export {Red, Yellow, Green, Blue, Purple, Gray, FocusHue} from './shades';
-export {intentVar} from './shared';
+export {lightThemeVars} from './light';
+export {darkThemeVars} from './dark';
+export {
+  Red,
+  Orange,
+  Yellow,
+  Green,
+  Teal,
+  Blue,
+  Purple,
+  Gray,
+} from './shades';
+export {DefaultTiming} from './shared';
 export {
   Theme,
-  ThemeMode,
-  UIColors,
-  LinkColors,
-  FocusTheme,
-  ShadowTheme,
+  ThemeVariables,
   TimingTheme,
-  IntentProps,
   MotionPreference,
-  ShadeGroup,
-  ColorRange,
+  Shade,
+  Palette,
 } from './types';

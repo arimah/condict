@@ -28,7 +28,7 @@ export const Overlay = styled.div<OverlayProps>`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: ${p => p.theme.defaultBg};
+  background-color: var(--bg);
   opacity: ${p => p.active ? '0.6' : '0'};
   transition: opacity ${p => 2 * p.theme.timing.long}ms linear;
   pointer-events: ${p => p.active ? 'auto' : 'none'};
@@ -68,8 +68,8 @@ export const SidePanel = styled.div.attrs({
   min-width: 584px;
   max-width: 1650px;
   height: 100%;
-  background-color: ${p => p.theme.defaultBg};
-  box-shadow: 0 0 6px 3px ${p => p.theme.shadow.color};
+  background-color: var(--bg);
+  box-shadow: 0 0 6px 3px var(--shadow-color);
 
   transition:
     inset-inline-start

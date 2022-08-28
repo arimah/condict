@@ -4,9 +4,18 @@ import MarkerLocation, {
   markerLocationToFlexDirection,
 } from '../marker-location';
 
-export type DisabledProps = {
-  disabled?: boolean;
-};
+export const RadioDot = styled.span`
+  display: none;
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: currentColor;
+  transform: translate(-50%, -50%);
+`;
 
 export const RadioContainer = styled.span`
   flex: none;
@@ -18,23 +27,50 @@ export const RadioContainer = styled.span`
   height: 16px;
   position: relative;
 
-  border: 2px solid ${p => p.theme.general.border};
+  border: 2px solid var(--radio-border);
   border-radius: 9px;
-  background-color: ${p => p.theme.defaultBg};
-`;
+  background-color: var(--radio-bg);
+  color: var(--radio-fg);
 
-export const RadioDot = styled.span`
-  display: block;
-  box-sizing: border-box;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  border-radius: 4px;
-  background-color: ${p => p.theme.accent.boldBg};
-  transform: translate(-50%, -50%);
-  opacity: 0;
+  *:hover > & {
+    border-color: var(--radio-border-hover);
+    background-color: var(--radio-bg-hover);
+  }
+
+  *:active > & {
+    border-color: var(--radio-border-pressed);
+    background-color: var(--radio-bg-pressed);
+  }
+
+  input:disabled + & {
+    border-color: var(--radio-border-disabled);
+    background-color: var(--radio-bg-disabled);
+    color: var(--radio-fg-disabled);
+  }
+
+  input:checked + & {
+    border-color: var(--radio-border-checked);
+    background-color: var(--radio-bg-checked);
+
+    > ${RadioDot} {
+      display: block;
+    }
+  }
+
+  *:hover > input:checked + & {
+    border-color: var(--radio-border-checked-hover);
+    background-color: var(--radio-bg-checked-hover);
+  }
+
+  *:active > input:checked + & {
+    border-color: var(--radio-border-checked-pressed);
+    background-color: var(--radio-bg-checked-pressed);
+  }
+
+  input:disabled:checked + & {
+    border-color: var(--radio-border-checked-disabled);
+    background-color: var(--radio-bg-checked-disabled);
+  }
 `;
 
 // Don't give the input a 0x0 size, as doing so will make it impossible for
@@ -49,38 +85,20 @@ export const Input = styled.input.attrs({type: 'radio'})`
   width: 100%;
   height: 100%;
 
-  &:checked + ${RadioContainer} {
-    border-color: ${p => p.theme.accent.boldBg};
-
-    > ${RadioDot} {
-      opacity: 1;
-    }
-  }
-
-  &&&:disabled + ${RadioContainer} {
-    border-color: ${p => p.theme.general.disabledBorder};
-    background-color: ${p => p.theme.defaultBg};
-
-    > ${RadioDot} {
-      background-color: ${p => p.theme.general.disabledBorder};
-    }
-  }
-
   &:focus {
     outline: none;
   }
 
-  &:focus + ${RadioContainer}::after,
-  &.force-focus + ${RadioContainer}::after {
+  &:is(:focus, .force-focus) + ${RadioContainer}::after {
     content: '';
     position: absolute;
     top: -5px;
     left: -5px;
     width: 18px;
     height: 18px;
-    border: 2px solid ${p => p.theme.focus.color};
+    border: 2px var(--focus-border-style) var(--focus-border);
     border-radius: 11px;
-    box-shadow: ${p => p.theme.focus.shadow};
+    box-shadow: var(--focus-shadow);
   }
 `;
 
@@ -97,29 +115,7 @@ export const Label = styled.label<LabelProps>`
   gap: 4px 8px;
   position: relative;
   vertical-align: top;
-  color: ${p => p.disabled ? p.theme.general.disabledFg : p.theme.defaultFg};
-
-  &:hover {
-    > ${RadioContainer} {
-      background-color: ${p => p.theme.defaultHoverBg};
-    }
-
-    > :checked + ${RadioContainer} {
-      border-color: ${p => p.theme.accent.boldHoverBg};
-      background-color: ${p => p.theme.accent.hoverBg};
-    }
-  }
-
-  &:active {
-    > ${RadioContainer} {
-      background-color: ${p => p.theme.defaultActiveBg};
-    }
-
-    > :checked + ${RadioContainer} {
-      border-color: ${p => p.theme.accent.boldActiveBg};
-      background-color: ${p => p.theme.accent.bg};
-    }
-  }
+  color: var(${p => p.disabled ? '--fg-disabled' : '--fg'});
 `;
 
 export const Content = styled.span``;

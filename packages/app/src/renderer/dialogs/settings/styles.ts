@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 import {BodyText} from '@condict/ui';
 
@@ -29,7 +29,7 @@ export const Sidebar = styled.nav`
   width: 260px;
   grid-row: 1 / span 2;
   grid-column: 1;
-  background-color: ${p => p.theme.general.bg};
+  background-color: var(--bg-alt);
 
   > ${Title} {
     padding-inline-start: 20px;
@@ -57,11 +57,11 @@ export const Tab = styled.div.attrs({
   position: relative;
 
   &:hover {
-    background-color: ${p => p.theme.general.hoverBg};
+    background-color: var(--bg-hover);
   }
 
   &:active {
-    background-color: ${p => p.theme.general.activeBg};
+    background-color: var(--bg-pressed);
   }
 
   &:focus {
@@ -72,18 +72,18 @@ export const Tab = styled.div.attrs({
       position: absolute;
       inset-block: 1px;
       inset-inline: 8px;
-      border: 3px solid ${p => p.theme.focus.color};
+      border: 3px var(--focus-border-style) var(--focus-border);
       border-radius: 4px;
     }
   }
 
-  ${p => p.isCurrent && css`
+  ${p => p.isCurrent && `
     &::before {
       content: '';
       position: absolute;
       inset-block: 2px;
       inset-inline-start: 2px;
-      border-left: 4px solid ${p => p.theme.accent.boldBg};
+      border-left: 4px solid var(--border-accent);
     }
   `}
 

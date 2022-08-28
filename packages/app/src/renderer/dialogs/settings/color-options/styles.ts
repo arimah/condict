@@ -1,6 +1,4 @@
-import styled, {css} from 'styled-components';
-
-import {Radio, ShadeGroup} from '@condict/ui';
+import styled from 'styled-components';
 
 export const Main = styled.div`
   display: flex;
@@ -11,44 +9,66 @@ export const Main = styled.div`
   gap: 14px;
 `;
 
-export const Option = styled(Radio).attrs({
-  marker: 'below',
-})`
+export const Option = styled.label`
   flex: none;
-  display: flex;
+  margin: -6px;
+  padding: 4px;
+  position: relative;
+  text-align: center;
+  border-radius: 7px;
+  border: 2px solid transparent;
+  background-color: var(--bg);
+  color: var(--fg);
 
-  > ${Radio.Content} {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
+  &:hover {
+    --bg: var(--bg-hover);
+  }
+
+  &:active {
+    --bg: var(--bg-pressed);
+  }
+
+  &:focus-within {
+    outline: none;
+    border-color: var(--focus-border);
+    border-style: var(--focus-border-style);
+    box-shadow: var(--focus-shadow);
+  }
+
+  > input {
+    appearance: none;
+    position: absolute;
+    inset: 0;
+
+    &:focus {
+      outline: none;
+    }
   }
 `;
 
-export type SwatchProps = {
-  shade: ShadeGroup;
-  $selected: boolean;
-};
-
-export const Swatch = styled.span<SwatchProps>`
-  display: inline-block;
+export const Swatch = styled.span`
+  display: block;
   box-sizing: border-box;
   position: relative;
   width: 60px;
   height: 36px;
   border-radius: 18px;
-  background-color: ${p => p.shade.bold[p.theme.mode === 'dark' ? 4 : 5]};
+  border: 2px solid var(--bg);
 
-  ${p => p.$selected ? css`
+  input:checked + & {
+    border-color: transparent;
+
     &::after {
       content: '';
       position: absolute;
-      inset: 2px;
-      border: 2px solid ${p => p.theme.defaultBg};
+      inset: 0;
+      border: 2px solid var(--bg);
       border-radius: 16px;
     }
-  ` : css`
-    border: 2px solid ${p => p.theme.defaultBg};
-  `}
+  }
+`;
 
+export const ColorName = styled.span`
+  display: block;
+  margin-top: 4px;
 `;

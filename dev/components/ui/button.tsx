@@ -7,32 +7,39 @@ import DeathStarIcon from 'mdi-react/DeathStarVariantIcon';
 import PuzzleIcon from 'mdi-react/PuzzleIcon';
 import PaletteIcon from 'mdi-react/PaletteIcon';
 
-import {Button, LinkButton, Select, Checkbox, Intent} from '@condict/ui';
+import {Button, LinkButton, ButtonIntent, Select, Checkbox} from '@condict/ui';
 
 import Demo, {List, Row, useDemoState} from '../demo';
-import Intents from '../intent-options';
 
 type State = {
-  intent: Intent;
+  intent: ButtonIntent;
   disabled: boolean;
-  bold: boolean;
   slim: boolean;
-  borderless: boolean;
 };
+
+interface IntentOption {
+  readonly value: ButtonIntent;
+  readonly name: string;
+}
 
 const InitialState: State = {
   intent: 'general',
   disabled: false,
-  bold: false,
   slim: false,
-  borderless: false,
 };
+
+const Intents: readonly IntentOption[] = [
+  {value: 'general', name: 'general'},
+  {value: 'accent', name: 'accent'},
+  {value: 'bold', name: 'bold'},
+  {value: 'danger', name: 'danger'},
+];
 
 const StorageKey = 'condict/ui/button';
 
 const Main = (): JSX.Element => {
   const {state, set, reset} = useDemoState(StorageKey, InitialState);
-  const {intent, disabled, bold, slim, borderless} = state;
+  const {intent, disabled, slim} = state;
   return (
     <Demo
       name='Button'
@@ -41,7 +48,7 @@ const Main = (): JSX.Element => {
           Intent: <Select
             value={intent}
             options={Intents}
-            onChange={e => set('intent', e.target.value as Intent)}
+            onChange={e => set('intent', e.target.value as ButtonIntent)}
           />
         </label>,
         <Checkbox
@@ -50,99 +57,47 @@ const Main = (): JSX.Element => {
           onChange={e => set('disabled', e.target.checked)}
         />,
         <Checkbox
-          checked={bold}
-          label='Bold'
-          onChange={e => set('bold', e.target.checked)}
-        />,
-        <Checkbox
           checked={slim}
           label='Slim'
           onChange={e => set('slim', e.target.checked)}
-        />,
-        <Checkbox
-          checked={borderless}
-          label='Borderless'
-          onChange={e => set('borderless', e.target.checked)}
         />,
       ]}
       onReset={reset}
     >
       <List>
         <Row>
-          <Button
-            intent={intent}
-            disabled={disabled}
-            bold={bold}
-            slim={slim}
-            borderless={borderless}
-            label='Regular button'
-          />
+          <Button intent={intent} disabled={disabled} slim={slim}>
+            Regular button
+          </Button>
         </Row>
         <Row>
-          <Button
-            intent={intent}
-            disabled={disabled}
-            bold={bold}
-            borderless={borderless}
-          >
+          <Button intent={intent} disabled={disabled}>
             <HandHeartIcon/>
             <span>Icon before</span>
           </Button>
-          <Button
-            intent={intent}
-            disabled={disabled}
-            bold={bold}
-            borderless={borderless}
-          >
+          <Button intent={intent} disabled={disabled}>
             <span>Icon after</span>
             <RobotLoveIcon/>
           </Button>
-          <Button
-            intent={intent}
-            disabled={disabled}
-            bold={bold}
-            borderless={borderless}
-            label='Icon only'
-          >
+          <Button intent={intent} disabled={disabled} label='Icon only'>
             <CakeIcon/>
           </Button>
         </Row>
         <Row>
-          <LinkButton
-            intent={intent}
-            bold={bold}
-            slim={slim}
-            borderless={borderless}
-            label='Link button'
-            href='#'
-          />
+          <LinkButton intent={intent} slim={slim} href='#'>
+            Link button
+          </LinkButton>
         </Row>
         <Row>
-          <LinkButton
-            intent={intent}
-            bold={bold}
-            borderless={borderless}
-            href='#'
-          >
+          <LinkButton intent={intent} href='#'>
             <DeathStarIcon/>
             <span>Icon before</span>
           </LinkButton>
-          <LinkButton
-            intent={intent}
-            bold={bold}
-            borderless={borderless}
-            href='#'
-          >
+          <LinkButton intent={intent} href='#'>
             <span>Icon after</span>
             <PuzzleIcon/>
           </LinkButton>
-          <LinkButton
-            intent={intent}
-            bold={bold}
-            borderless={borderless}
-            href='#'
-            label='Icon only'
-          >
+          <LinkButton intent={intent} href='#' label='Icon only'>
             <PaletteIcon/>
           </LinkButton>
         </Row>

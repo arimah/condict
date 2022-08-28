@@ -44,6 +44,7 @@ const Demo = (props: Props): JSX.Element => {
               <Button
                 label='Reset'
                 slim
+                intent='bold'
                 onClick={onReset}
               />
             </S.Control>

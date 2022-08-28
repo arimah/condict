@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 export const Toolbar = styled.div.attrs({
   role: 'toolbar',
@@ -8,8 +8,8 @@ export const Toolbar = styled.div.attrs({
   padding: 2px;
   flex-wrap: wrap;
   border-radius: 5px;
-  background-color: ${p => p.theme.general.bg};
-  color: ${p => p.theme.general.fg};
+  background-color: var(--toolbar-bg);
+  color: var(--toolbar-fg);
 `;
 
 export const Group = styled.div.attrs({
@@ -39,54 +39,43 @@ export const Button = styled.button.attrs({
   text-align: center;
   border: none;
   border-radius: 4px;
-  background-color: ${p => p.theme.general.bg};
-  color: ${p => p.theme.general.fg};
+  background-color: var(--toolbar-item-bg);
+  color: var(--toolbar-item-fg);
 
   &:not(:first-child) {
     margin-inline-start: 2px;
   }
 
-  &:focus,
-  &.force-focus {
+  &:hover {
+    background-color: var(--toolbar-item-bg-hover);
+  }
+
+  &:is(:active, .menu-open) {
+    background-color: var(--toolbar-item-bg-pressed);;
+  }
+
+  &:is(:focus, .force-focus) {
     outline: none;
     padding: 4px 6px;
-    border: 2px solid ${p => p.theme.focus.color};
-    box-shadow: ${p => p.theme.focus.shadow};
+    border: 2px var(--focus-border-style) var(--focus-border);
+    box-shadow: var(--focus-shadow);
   }
 
-  &:hover {
-    background-color: ${p => p.theme.general.hoverBg};
-  }
-
-  &:active,
-  &.menu-open {
-    background-color: ${p => p.theme.general.activeBg};
-  }
-
-  ${p => p.checked && css`
+  ${p => p.checked && `
     && {
-      background-color: ${p => p.theme.accent.bg};
-      box-shadow:
-        inset 0 1px 2px rgba(0, 0, 0, ${p => p.theme.mode === 'dark'
-          ? '0.75'
-          : '0.4'
-        });
+      background-color: var(--toolbar-item-bg-selected);
+      color: var(--toolbar-item-fg-selected);
+      box-shadow: var(--toolbar-item-shadow-selected);
     }
 
-    &&:focus,
-    &&.force-focus {
-      box-shadow:
-        ${p => p.theme.focus.shadow},
-        inset 0 1px 2px rgba(0, 0, 0, ${p => p.theme.mode === 'dark'
-          ? '0.75'
-          : '0.4'
-        });
+    &&:is(:focus, .force-focus) {
+      box-shadow: var(--focus-shadow), var(--toolbar-item-shadow-selected);
     }
   `}
 
   &:disabled {
-    background-color: ${p => p.theme.general.bg};
-    color: ${p => p.theme.general.disabledFg};
+    background-color: var(--toolbar-item-bg-disabled);
+    color: var(--toolbar-item-fg-disabled);
   }
 
   > .mdi-icon {

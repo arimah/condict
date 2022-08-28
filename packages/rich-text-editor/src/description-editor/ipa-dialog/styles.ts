@@ -49,11 +49,11 @@ export const Character = styled.span.attrs({
   line-height: 20px;
   cursor: default;
 
-  background-color: ${p => p.theme.general[p.selected ? 'hoverBg' : 'bg']};
+  background-color: ${p => p.selected && 'var(--bg-control-hover)'};
   font-weight: ${p => p.isBase && 'bold'};
 
   &:active {
-    background-color: ${p => p.theme.general.activeBg};
+    background-color: var(--bg-control-pressed);
   }
 `;
 
@@ -69,14 +69,17 @@ export const Result = styled.div.attrs({
   align-items: center;
   cursor: default;
 
-  background-color: ${p => p.theme.general[p.selected ? 'hoverBg' : 'bg']};
+  background-color: var(${p => p.selected
+    ? '--bg-control-hover'
+    : '--bg-control'
+  });
 
   &:not(:last-child) {
     margin-bottom: 2px;
   }
 
   &:active {
-    background-color: ${p => p.theme.general.activeBg};
+    background-color: var(--bg-control-pressed);
   }
 `;
 

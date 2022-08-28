@@ -15,16 +15,23 @@ import {
   Select,
   GlobalStyles,
   Theme,
-  ShadeGroup,
+  Shade,
   Red,
+  Orange,
   Yellow,
   Green,
+  Teal,
   Blue,
   Purple,
   Gray,
-  lightTheme,
-  darkTheme,
+  DefaultTiming,
+  lightThemeVars,
+  darkThemeVars,
 } from '@condict/ui';
+import {
+  lightThemeVars as lightThemeTableVars,
+  darkThemeVars as darkThemeTableVars,
+} from '@condict/table-editor';
 
 import * as S from './styles';
 
@@ -40,9 +47,20 @@ interface Appearance {
 
 type ThemeName = 'light' | 'dark';
 
-type ShadeName = 'red' | 'yellow' | 'green' | 'blue' | 'purple' | 'gray';
+type ShadeName =
+  | 'red'
+  | 'orange'
+  | 'yellow'
+  | 'green'
+  | 'teal'
+  | 'blue'
+  | 'purple'
+  | 'gray';
 
-type ThemeGenerator = typeof lightTheme;
+interface ThemeGenerator {
+  readonly ui: typeof lightThemeVars;
+  readonly table: typeof lightThemeTableVars;
+}
 
 interface ShadeOption {
   readonly value: ShadeName;
@@ -50,14 +68,22 @@ interface ShadeOption {
 }
 
 const ThemeGenerators: Record<ThemeName, ThemeGenerator> = {
-  light: lightTheme,
-  dark: darkTheme,
+  light: {
+    ui: lightThemeVars,
+    table: lightThemeTableVars,
+  },
+  dark: {
+    ui: darkThemeVars,
+    table: darkThemeTableVars,
+  },
 };
 
-const Shades: Record<ShadeName, ShadeGroup> = {
+const Shades: Record<ShadeName, Shade> = {
   red: Red,
+  orange: Orange,
   yellow: Yellow,
   green: Green,
+  teal: Teal,
   blue: Blue,
   purple: Purple,
   gray: Gray,
@@ -65,8 +91,10 @@ const Shades: Record<ShadeName, ShadeGroup> = {
 
 const ShadeOptions: readonly ShadeOption[] = [
   {value: 'red', name: 'Red'},
+  {value: 'orange', name: 'Orange'},
   {value: 'yellow', name: 'Yellow'},
   {value: 'green', name: 'Green'},
+  {value: 'teal', name: 'Teal'},
   {value: 'blue', name: 'Blue'},
   {value: 'purple', name: 'Purple'},
   {value: 'gray', name: 'Gray'},
@@ -160,7 +188,13 @@ const Container = (props: Props): JSX.Element | null => {
     const themeGen = ThemeGenerators[appearance.theme];
     const accent = Shades[appearance.accent];
     const danger = Shades[appearance.danger];
-    return themeGen(accent, danger);
+    return {
+      vars: {
+        ...themeGen.ui(accent, danger),
+        ...themeGen.table(accent),
+      },
+      timing: DefaultTiming,
+    };
   }, [appearance]);
 
   if (appearance === null || theme === null) {
@@ -176,7 +210,6 @@ const Container = (props: Props): JSX.Element | null => {
           <S.HeaderSwitch>
             <Switch
               label='Dark theme'
-              intent='general'
               checked={appearance.theme === 'dark'}
               onChange={handleChangeTheme}
             />

@@ -1,77 +1,73 @@
-import {ShadeGroup, ColorRange} from './types';
+import {Shade} from './types';
 
-const makeShade = (bold: ColorRange, pale: ColorRange): ShadeGroup => ({
-  bold,
-  pale,
-  light: {
-    defaultFg: bold[6],
-    fg: '#000000',
-    bg: bold[1],
-    hoverBg: bold[0],
-    activeBg: bold[2],
-    disabledFg: pale[4],
-    disabledBg: pale[0],
-    boldFg: '#ffffff',
-    boldBg: bold[5],
-    boldHoverBg: bold[4],
-    boldActiveBg: bold[6],
-    boldDisabledFg: pale[0],
-    boldDisabledBg: pale[2],
-    border: bold[2],
-    disabledBorder: pale[1],
+export const Gray: Shade = {
+  palette: ['#f0f2f5', '#e4e8ec', '#d0d6dc', '#b6bfc8', '#9da8b4', '#808f9d', '#647382', '#4e5965', '#3c454e', '#31383f'],
+  swatch: '#808f9d',
+  disabled: {
+    lightButtonBg: '#808f9d',
+    darkButtonBg: '#647382',
   },
-  dark: {
-    defaultFg: bold[1],
-    fg: '#ffffff',
-    bg: bold[6],
-    hoverBg: bold[5],
-    activeBg: bold[7],
-    disabledFg: pale[2],
-    disabledBg: pale[7],
-    boldFg: '#000000',
-    boldBg: bold[2],
-    boldHoverBg: bold[1],
-    boldActiveBg: bold[3],
-    boldDisabledFg: pale[7],
-    boldDisabledBg: pale[5],
-    border: bold[4],
-    disabledBorder: pale[6],
+};
+
+export const Red: Shade = {
+  palette: ['#fceeee', '#f9dcdc', '#f5c7c7', '#f0adad', '#ea9090', '#e16b6b', '#d74747', '#ba2c2c', '#972626', '#751f1f'],
+  swatch: '#e16b6b',
+  disabled: {
+    lightButtonBg: '#cb8686',
+    darkButtonBg: '#723737',
   },
-});
+};
 
-export const Red = makeShade(
-  ['#fdf2f3', '#f9d7da', '#f5b8bd', '#ed828b', '#e64c59', '#cd1d2c', '#8a141e', '#590d13'],
-  ['#faf5f5', '#eedddf', '#e0c2c5', '#c9979b', '#ae6167', '#8a474d', '#5b2f32', '#3d1f22']
-);
+export const Orange: Shade = {
+  palette: ['#fbf1e9', '#f7e0cf', '#f1ccb1', '#ebb58e', '#e19660', '#d57734', '#ab5d26', '#884b20', '#6a3c1b', '#4d2c14'],
+  swatch: '#d57734',
+  disabled: {
+    lightButtonBg: '#c29270',
+    darkButtonBg: '#5d412d',
+  },
+};
 
+export const Yellow: Shade = {
+  palette: ['#f9f3dc', '#f3e6ba', '#ead58a', '#e1c356', '#ceaa27', '#af9023', '#8e761f', '#705d1a', '#564815', '#403611'],
+  swatch: '#af9023',
+  disabled: {
+    lightButtonBg: '#b7a257',
+    darkButtonBg: '#534928',
+  },
+};
 
-export const Yellow = makeShade(
-  ['#f9f0d8', '#f2e1b0', '#e6c465', '#cea022', '#af881d', '#886a16', '#58440e', '#42330b'],
-  ['#f5f2eb', '#e3dcc9', '#cdc09d', '#b19d68', '#917e4b', '#6c5e37', '#4a4026', '#2f2918']
-);
+export const Green: Shade = {
+  palette: ['#e8f9dc', '#d1f3ba', '#afea86', '#8de052', '#68c526', '#5ba923', '#49861d', '#3b6b19', '#2e5214', '#233c10'],
+  swatch: '#5ba923',
+  disabled: {
+    lightButtonBg: '#7fb757',
+    darkButtonBg: '#3a5328',
+  },
+};
 
+export const Teal: Shade = {
+  palette: ['#e1fafa', '#c2f4f4', '#8aeaea', '#52e0e0', '#26c5c5', '#23a9a9', '#1d8686', '#186767', '#145252', '#124444'],
+  swatch: '#23a9a9',
+  disabled: {
+    lightButtonBg: '#57b7b7',
+    darkButtonBg: '#285353',
+  },
+};
 
-export const Green = makeShade(
-  ['#e6fae7', '#b3efb8', '#74e27d', '#35d442', '#25ad30', '#1d8725', '#145d1a', '#0c3b10'],
-  ['#ecf4ec', '#cce1cd', '#a2c8a5', '#6eaa73', '#538d58', '#406d44', '#2d4d30', '#203722']
-);
+export const Blue: Shade = {
+  palette: ['#f2f6fd', '#e1e9fa', '#cfdcf7', '#b5caf2', '#98b4eb', '#789be3', '#5c86db', '#396bd0', '#2952a3', '#234485'],
+  swatch: '#789be3',
+  disabled: {
+    lightButtonBg: '#94a8d1',
+    darkButtonBg: '#3c517c',
+  },
+};
 
-
-export const Blue = makeShade(
-  ['#edf3fd', '#d1e2fa', '#a8c8f5', '#6ca3ef', '#2c7ae8', '#155dc1', '#0f4085', '#0a2a57'],
-  ['#f2f4f8', '#d8dfe9', '#bbc7d8', '#91a4c0', '#6782a8', '#4c6485', '#324257', '#232e3e']
-);
-
-
-export const Purple = makeShade(
-  ['#fbf2fd', '#f4d7f9', '#e7abf2', '#da7bea', '#cb46e2', '#ad1fc7', '#771589', '#4d0e58'],
-  ['#f7f2f8', '#e9dbeb', '#d6bddb', '#ba8fc1', '#a46bae', '#844e8d', '#5f3866', '#3d2442']
-);
-
-export const Gray = makeShade(
-  ['#f0f2f4', '#d6d9e1', '#acb4c3', '#808ca3', '#606d85', '#4b5468', '#363c4a', '#292e38'],
-  ['#f1f2f3', '#d8dadf', '#b1b5be', '#878e9b', '#6b7280', '#515761', '#3a3e45', '#2a2d32']
-);
-
-/** Greenish blue. */
-export const FocusHue = 200;
+export const Purple: Shade = {
+  palette: ['#fbf2fd', '#f6e1fa', '#f1cff7', '#e9b5f2', '#de94eb', '#d06fe2', '#c24bd8', '#a52cba', '#7f248f', '#641e71'],
+  swatch: '#d06fe2',
+  disabled: {
+    lightButtonBg: '#c186cb',
+    darkButtonBg: '#66356e',
+  },
+};

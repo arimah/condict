@@ -45,7 +45,6 @@ const MyOptions = [
 | `options` | Array&lt;{name: string, value: string}&gt; | `null` | Provides options to the dropdown. Each option is an object with `name` and `value`, both strings. This cannot be combined with `children`. |
 | `minimal` | boolean | `false` | If true, applies minimal styling to the dropdown. |
 | `disabled` | boolean | `false` | If true, the dropdown is disabled. |
-| `borderRadius` | string | `undefined` | If specified, sets the border radius of the dropdown. Note that this is a CSS string, not a number. If omitted, uses the default styling. |
 | `onChange` | function | no-op | Attaches the `change` event handler to the dropdown, which is triggered whenever the user changes the value. |
 | `children` | node | `null` | Provides options to the dropdown. Any React renderable is permitted, as long as it renders valid `<option>` and/or `<optgroup>` elements. This cannot be combined with `options`. |
 

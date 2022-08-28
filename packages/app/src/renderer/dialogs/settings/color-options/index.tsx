@@ -1,10 +1,12 @@
-import {Localized} from '@fluent/react';
+import React from 'react';
 
 import {
-  ShadeGroup,
+  Shade,
   Red,
+  Orange,
   Yellow,
   Green,
+  Teal,
   Blue,
   Purple,
   Gray,
@@ -12,6 +14,7 @@ import {
 
 import {ColorName} from '../../../../types';
 
+import ColorOption from './option';
 import * as S from './styles';
 
 export type Props = {
@@ -22,45 +25,44 @@ export type Props = {
 
 const AllColors: readonly ColorName[] = [
   'red',
+  'orange',
   'yellow',
   'green',
+  'teal',
   'blue',
   'purple',
   'gray',
 ];
 
-const Shades: Record<ColorName, ShadeGroup> = {
+const Shades: Record<ColorName, Shade> = {
   red: Red,
+  orange: Orange,
   yellow: Yellow,
   green: Green,
+  teal: Teal,
   blue: Blue,
   purple: Purple,
   gray: Gray,
 };
 
-const ColorOptions = (props: Props): JSX.Element => {
-  const {name, value, onChange} = props;
+const ColorOptions = React.memo((props: Props): JSX.Element => {
+  const {name: radioName, value, onChange} = props;
   return (
     <S.Main>
-      {AllColors.map(key =>
-        <S.Option
-          key={key}
-          name={name}
-          value={key}
-          checked={key === value}
-          onChange={e => onChange(e.target.value as ColorName)}
-        >
-          <S.Swatch
-            shade={Shades[key]}
-            $selected={key === value}
-          />
-          <span>
-            <Localized id={`settings-color-name-${key}`}/>
-          </span>
-        </S.Option>
+      {AllColors.map(colorName =>
+        <ColorOption
+          key={colorName}
+          name={radioName}
+          value={colorName}
+          shade={Shades[colorName]}
+          selected={colorName === value}
+          onChange={onChange}
+        />
       )}
     </S.Main>
   );
-};
+});
+
+ColorOptions.displayName = 'ColorOptions';
 
 export default ColorOptions;

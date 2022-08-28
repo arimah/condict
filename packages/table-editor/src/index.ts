@@ -16,6 +16,7 @@ export {
   Layout,
   SelectionShape,
 } from './value';
+export * from './theme';
 
 // Sigh.
 Immer.enableMapSet();

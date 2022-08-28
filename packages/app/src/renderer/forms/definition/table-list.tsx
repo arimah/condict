@@ -47,7 +47,6 @@ const TableList = React.memo((props: Props): JSX.Element => {
     form,
     'inflectionTables'
   );
-  // const tables = field.value;
 
   const addTable = useCallback((table: DefinitionTableFormData) => {
     field.update(tables => {

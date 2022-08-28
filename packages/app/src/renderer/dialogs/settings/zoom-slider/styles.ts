@@ -8,8 +8,17 @@ export const SliderThumb = styled.div`
   bottom: 0;
   width: 10px;
   height: 24px;
-  background-color: ${p => p.theme.accent.boldBg};
+  background-color: var(--slider-thumb-bg);
   border-radius: 4px;
+
+  *:hover > & {
+    background-color: var(--slider-thumb-bg-hover);
+  }
+
+  *:focus > & {
+    background-color: var(--focus-border);
+    box-shadow: var(--focus-shadow);
+  }
 `;
 
 export const Main = styled.div.attrs({
@@ -22,17 +31,8 @@ export const Main = styled.div.attrs({
   position: relative;
   max-width: 720px;
 
-  &:hover > ${SliderThumb} {
-    background-color: ${p => p.theme.accent.boldHoverBg};
-  }
-
   &:focus {
     outline: none;
-
-    > ${SliderThumb} {
-      box-shadow: ${p => p.theme.focus.shadow};
-      background-color: ${p => p.theme.focus.color};
-    }
   }
 `;
 
@@ -44,14 +44,14 @@ export const SliderTrack = styled.div`
   position: relative;
   overflow: hidden;
   border-radius: 4px;
-  background-color: ${p => p.theme.general.bg};
+  background-color: var(--slider-track-bg);
 `;
 
 export const SliderTrackFill = styled.div`
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
-  background-color: ${p => p.theme.accent.boldBg};
+  background-color: var(--slider-track-fill-bg);
 `;
 
 export const SliderTick = styled.div`
@@ -60,7 +60,7 @@ export const SliderTick = styled.div`
   top: 20px;
   bottom: 0px;
   width: 2px;
-  background-color: ${p => p.theme.general.activeBg};
+  background-color: var(--slider-tick-bg);
 `;
 
 export type SliderTickLabelProps = {
@@ -78,5 +78,8 @@ export const SliderTickLabel = styled.span<SliderTickLabelProps>`
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  color: ${p => p.$selected && p.theme.accent.defaultFg};
+  color: var(${p => p.$selected
+    ? '--slider-tick-fg-selected'
+    : '--slider-tick-fg'
+  });
 `;

@@ -1,4 +1,4 @@
-import React, {ReactNode, useContext} from 'react';
+import {ReactNode, useContext} from 'react';
 
 import {SROnly} from '../a11y-utils';
 import {Spinner} from '../spinner';
@@ -39,8 +39,7 @@ const Page = (props: Props): JSX.Element => {
         label={label ?? messages.pageNumber(page + 1, totalPages)}
         aria-current={isCurrent ? 'page' : undefined}
         aria-busy={isCurrent ? loading : undefined}
-        bold={isCurrent}
-        intent={isCurrent ? 'accent' : 'general'}
+        intent={isCurrent ? 'bold' : 'general'}
         isLoading={isCurrent && loading}
         disabled={disabled}
         onClick={() => onChange(page)}

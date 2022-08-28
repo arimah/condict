@@ -5,7 +5,7 @@ import {TextInput} from '@condict/ui';
 export const EditorContainer = styled.div`
   padding: 24px;
   border-radius: 8px;
-  background-color: ${p => p.theme.defaultBg};
+  background-color: var(--bg);
 `;
 
 export const ToolbarWrapper = styled.div`

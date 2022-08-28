@@ -20,7 +20,7 @@ export const LoadingScreen = styled.main<LoadingScreenProps>`
 `;
 
 export const LoadingSpinner = styled(Spinner)`
-  color: ${p => p.theme.accent.defaultFg};
+  color: var(--fg-accent);
 `;
 
 export const LoadingText = styled.div`

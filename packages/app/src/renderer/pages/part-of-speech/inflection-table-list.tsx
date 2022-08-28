@@ -56,7 +56,7 @@ const InflectionTableList = (props: Props): JSX.Element => {
             </LinkCard>
           )}
           <FullRow>
-            <Button bold onClick={onAddTable}>
+            <Button intent='bold' onClick={onAddTable}>
               <AddIcon/>
               <span>
                 <Localized id='part-of-speech-add-table-button'/>
@@ -69,7 +69,7 @@ const InflectionTableList = (props: Props): JSX.Element => {
           <Localized id='part-of-speech-no-tables-description'/>
         </BodyText>
         <p>
-          <Button bold intent='accent' onClick={onAddTable}>
+          <Button intent='accent' onClick={onAddTable}>
             <AddIcon/>
             <span>
               <Localized id='part-of-speech-add-table-button'/>

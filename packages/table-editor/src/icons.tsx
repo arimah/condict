@@ -17,7 +17,7 @@ export const DoNotDeriveLemmaIcon = React.forwardRef((
     ref={ref}
   >
     <title>{title}</title>
-    <circle cx='4.5' cy='4.5' r='4' fill='#E53935'/>
+    <circle cx='4.5' cy='4.5' r='4' fill='#e16b6b'/>
   </svg>
 );
 
@@ -35,7 +35,7 @@ export const CustomDisplayNameIcon = React.forwardRef((
     <title>{title}</title>
     <path
       d='M0,90 L0,85 L8,59 L63,4 C67,0 73,0 77,4 L86,13 C90,17 90,23 86,27 L31,82 L5,90 z'
-      fill='#9C27B0'
+      fill='#c24bd8'
     />
   </svg>
 );

@@ -15,7 +15,7 @@ const Demo = (): JSX.Element => {
         <Button
           slim
           label='Activate outer trap'
-          intent='accent'
+          intent='bold'
           onClick={() => setOuter(true)}
         />
       </p>

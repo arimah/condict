@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 
 import {DeleteIcon} from './icons';
 
@@ -13,31 +13,28 @@ export const Main = styled.span<Props>`
   box-sizing: border-box;
   flex-direction: row;
   flex-wrap: wrap;
-  cursor: ${p => !p.disabled && 'text'};
   border-radius: 3px;
-  border-color: ${p => p.theme.general.border};
-  background-color: ${p => p.theme.defaultBg};
-  color: ${p => p.theme.defaultFg};
+  border: 2px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-fg);
+  cursor: ${p => !p.disabled && 'text'};
 
-  ${p => p.minimal ? css`
-    padding: 2px;
-    border-style: none;
-  ` : css`
-    padding: 0;
-    border-width: 2px;
-    border-style: solid;
+  ${p => p.minimal && `
+    --input-border: var(--input-minimal-border);
+    --input-border-disabled: var(--input-minimal-border);
   `}
 
-  ${p => p.inputFocused && css<Props>`
+  ${p => p.inputFocused && `
     outline: none;
-    padding: ${p => p.minimal && '0'};
-    border: 2px solid ${p => p.theme.focus.color};
-    box-shadow: ${p => p.theme.focus.shadow};
+    border-color var(--focus-border);
+    border-style: var(--focus-border-style);
+    box-shadow: var(--focus-shadow);
   `}
 
-  ${p => p.disabled && css`
-    border-color: ${p => p.theme.general.disabledBorder};
-    color: ${p => p.theme.general.disabledFg};
+  ${p => p.disabled && `
+    border-color: var(--input-border-disabled);
+    background-color: var(--input-bg-disabled);
+    color: var(--input-fg-disabled);
   `}
 `;
 
@@ -54,38 +51,36 @@ export const Tag = styled.button.attrs({
   max-width: calc(100% - 4px);
   font: inherit;
   text-align: start;
-  background-color: ${p => p.theme.general.bg};
-  border: 2px solid ${p => p.theme.general.bg};
+  background-color: var(--button-bg);
+  border: 2px solid var(--button-border);
   border-radius: 13px;
-  color: ${p => p.theme.general.fg};
+  color: var(--button-fg);
   cursor: default;
 
-  ${p => p.disabled && css`
-    &&& {
-      padding-inline: 16px;
-      background-color: ${p => p.theme.general.disabledBg};
-      border-color: ${p => p.theme.general.disabledBg};
-      color: ${p => p.theme.general.disabledFg};
-    }
-  `}
-
   &:hover {
-    background-color: ${p => p.theme.danger.boldBg};
-    border-color: ${p => p.theme.danger.boldBg};
-    color: ${p => p.theme.danger.boldFg};
+    background-color: var(--button-bg-hover);
+    border-color: var(--button-border-hover);
+    color: var(--button-fg-hover);
   }
 
   &:active {
-    background-color: ${p => p.theme.danger.boldActiveBg};
-    border-color: ${p => p.theme.danger.boldActiveBg};
-    color: ${p => p.theme.danger.boldFg};
+    background-color: var(--button-bg-pressed);
+    border-color: var(--button-border-pressed);
+    color: var(--button-fg-pressed);
   }
 
-  &:focus,
-  &.force-focus {
+  &:disabled {
+    padding-inline: 16px;
+    background-color: var(--button-bg-disabled);
+    border-color: var(--button-border-disabled);
+    color: var(--button-fg-disabled);
+  }
+
+  &:is(:focus, .force-focus) {
     outline: none;
-    border-color: ${p => p.theme.focus.color};
-    box-shadow: ${p => p.theme.focus.shadow};
+    border-color: var(--focus-border);
+    border-style: var(--focus-border-style);
+    box-shadow: var(--focus-shadow);
   }
 `;
 
@@ -97,9 +92,8 @@ export const DeleteMarker = styled(DeleteIcon)`
   pointer-events: none;
   opacity: 0.25;
 
-  ${Tag}:hover &,
-  ${Tag}:active & {
-    opacity: 1;
+  ${Tag}:is(:hover, :active) & {
+    opacity: 0.8;
   }
 `;
 
@@ -113,14 +107,15 @@ export const Input = styled.input.attrs({
   min-width: 72px;
   border: none;
   border-radius: 0;
-  background-color: ${p => p.theme.defaultBg};
-  color: ${p => p.theme.defaultFg};
+  background-color: var(--input-bg);
+  color: var(--input-fg);
 
   &:focus {
     outline: none;
   }
 
   &:disabled {
-    color: ${p => p.theme.general.disabledFg};
+    background-color: var(--input-bg-disabled);
+    color: var(--input-fg-disabled);
   }
 `;

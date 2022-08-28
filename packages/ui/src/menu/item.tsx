@@ -67,6 +67,9 @@ const Item = (props: Props): JSX.Element => {
     stack.currentItem && stack.currentItem.parent === item.parent
       ? item === stack.currentItem
       : stack.openMenus.some(m => m.menu === item.submenu);
+  // The submenu is open if there's any open menu whose parent item is
+  // the current item.
+  const submenuOpen = stack.openMenus.some(m => m.menu.parentItem === item);
 
   return <>
     <S.Item
@@ -77,6 +80,7 @@ const Item = (props: Props): JSX.Element => {
       aria-disabled={effectiveDisabled}
       aria-owns={children ? `${id}-menu` : undefined}
       aria-haspopup={children ? 'menu' : undefined}
+      aria-expanded={children ? submenuOpen : undefined}
       aria-keyshortcuts={
         effectiveShortcut
           ? Shortcut.formatAria(effectiveShortcut)

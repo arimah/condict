@@ -1,19 +1,14 @@
 import styled, {createGlobalStyle} from 'styled-components';
 
-import {Gray} from '@condict/ui';
-
 export const AppStyles = createGlobalStyle`
   body {
-    background-color: ${p => p.theme.mode === 'dark'
-      ? Gray.pale[7]
-      : Gray.pale[0]
-    };
-    color: ${p => p.theme.defaultFg};
+    background-color: var(--bg-alt);
+    color: var(--fg);
   }
 
   a.current {
     font-weight: bold;
-    color: ${p => p.theme.defaultFg};
+    color: var(--fg);
   }
 `;
 
@@ -59,7 +54,7 @@ export const NavSeparator = styled.span`
   margin-inline: 16px;
   width: 7px;
   height: 7px;
-  vertical-align: 1px;
+  vertical-align: 2px;
   border-radius: 50%;
-  background-color: ${p => p.theme.defaultFg};
+  background-color: var(--fg);
 `;

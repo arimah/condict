@@ -112,24 +112,16 @@ export const Secondary = styled.span`
 `;
 
 export const NakedButton = styled(Button)`
-  border-color: ${p => p.theme.defaultBg};
-  background-color: ${p => p.theme.defaultBg};
-  color: ${p => p.theme.defaultFg};
-
-  &:hover {
-    border-color: ${p => p.theme.defaultHoverBg};
-    background-color: ${p => p.theme.defaultHoverBg};
-  }
-
-  &:active {
-    border-color: ${p => p.theme.defaultActiveBg};
-    background-color: ${p => p.theme.defaultActiveBg};
-  }
-
-  &:focus,
-  &.force-focus {
-    border-color: ${p => p.theme.focus.color};
-  }
+  --button-fg: var(--button-naked-fg);
+  --button-fg-disabled: var(--button-naked-fg-disabled);
+  --button-bg: var(--button-naked-bg);
+  --button-bg-hover: var(--button-naked-bg-hover);
+  --button-bg-pressed: var(--button-naked-bg-pressed);
+  --button-bg-disabled: var(--button-naked-bg-disabled);
+  --button-border: var(--button-naked-border);
+  --button-border-hover: var(--button-naked-border-hover);
+  --button-border-pressed: var(--button-naked-border-pressed);
+  --button-border-disabled: var(--button-naked-border-disabled);
 `;
 
 export const Table = styled.table`
@@ -140,18 +132,18 @@ export const Table = styled.table`
     padding: 6px;
     text-align: start;
     white-space: pre;
-    border: 2px solid ${p => p.theme.general.border};
+    border: 2px solid var(--table-border);
   }
 
   td {
-    background-color: ${p => p.theme.defaultBg};
-    color: ${p => p.theme.defaultFg};
+    background-color: var(--table-bg);
+    color: var(--table-fg);
   }
 
   th {
     font-weight: bold;
-    background-color: ${p => p.theme.general.bg};
-    color: ${p => p.theme.general.fg};
+    background-color: var(--table-header-bg);
+    color: var(--table-header-fg);
   }
 
   caption {
@@ -170,5 +162,5 @@ export const DeletedForm = styled.span`
   width: 16px;
   height: 2px;
   vertical-align: middle;
-  background-color: ${p => p.theme.general.border};
+  background-color: var(--table-deleted-form-fg);
 `;

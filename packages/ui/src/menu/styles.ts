@@ -1,7 +1,5 @@
 import styled, {css, keyframes} from 'styled-components';
 
-import {Gray} from '../theme';
-
 export type MenuProps = {
   open: boolean;
   submenu: boolean;
@@ -19,8 +17,8 @@ export const Menu = styled.div.attrs({
   top: 0;
   left: 0;
   border-radius: 4px;
-  background-color: ${p => p.theme.general.bg};
-  color: ${p => p.theme.general.fg};
+  background-color: var(--menu-bg);
+  color: var(--menu-fg);
   opacity: 0;
   box-shadow: 3px 2px 4px 1px rgba(0, 0, 0, 0.45);
   user-select: none;
@@ -29,7 +27,7 @@ export const Menu = styled.div.attrs({
     outline: none;
   }
 
-  ${p => p.submenu && css`
+  ${p => p.submenu && `
     margin-top: -4px;
     margin-bottom: -4px;
   `}
@@ -46,21 +44,11 @@ export const Item = styled.div<ItemProps>`
   position: relative;
   white-space: nowrap;
   cursor: default;
-  background-color: ${p => p.theme.general.bg};
-
-  ${p => p.current && css`
-    background-color: ${p => p.theme.general.hoverBg};
-  `}
-
-  ${p => p.disabled ? css`
-    color: ${p => p.theme.general.disabledFg};
-  ` : css`
-    color: ${p => p.theme.general.fg};
-
-    &:active {
-      background-color: ${p => p.theme.general.activeBg};
-    }
-  `}
+  background-color: var(${p => p.current
+    ? '--menu-bg-selected'
+    : '--menu-bg'
+  });
+  color: var(${p => p.disabled ? '--menu-fg-disabled' : '--menu-fg'});
 `;
 
 export const ItemIcon = styled.span`
@@ -116,38 +104,38 @@ export const ItemCheck = styled.span<ItemCheckProps>`
 
   ${p => p.radio ? css<ItemCheckProps>`
     border-radius: 8px;
-    border-color: ${p => p.checked
-      ? p.theme.accent.boldBg
-      : p.theme.general.border
-    };
-    background-color: ${p => p.theme.defaultBg};
+    border-color: var(${p => p.checked
+      ? '--radio-border-checked'
+      : '--radio-border'
+    });
+    background-color: var(--radio-bg);
 
-    ${p => p.checked && css`
+    ${p => p.checked && `
       &::after {
         width: 8px;
         height: 8px;
         border-radius: 4px;
-        background-color: ${p => p.theme.accent.boldBg};
+        background-color: var(--radio-fg);
         transform: translate(-50%, -50%);
       }
     `}
   ` : css<ItemCheckProps>`
     border-radius: 3px;
-    border-color: ${p => p.checked
-      ? p.theme.accent.boldBg
-      : p.theme.general.border
-    };
-    background-color: ${p => p.checked
-      ? p.theme.accent.boldBg
-      : p.theme.defaultBg
-    };
+    border-color: var(${p => p.checked
+      ? '--checkbox-border-checked'
+      : '--checkbox-border'
+    });
+    background-color: var(${p => p.checked
+      ? '--checkbox-bg-checked'
+      : '--checkbox-bg'
+    });
 
-    ${p => p.checked && css`
+    ${p => p.checked && `
       &::after {
         width: 10px;
         height: 6px;
-        border-left: 2px solid ${p => p.theme.defaultBg};
-        border-bottom: 2px solid ${p => p.theme.defaultBg};
+        border-left: 2px solid var(--checkbox-fg);
+        border-bottom: 2px solid var(--checkbox-fg);
         transform: translate(-50%, -75%) rotate(-45deg);
       }
     `}
@@ -168,10 +156,7 @@ export const Separator = styled.div.attrs({
 })`
   margin-top: 5px;
   margin-bottom: 5px;
-  border-top: 2px solid ${p => p.theme.mode === 'dark'
-    ? Gray.bold[5]
-    : Gray.bold[2]
-  };
+  border-top: 2px solid var(--menu-separator);
 `;
 
 export const PhantomFadeTime = 200;

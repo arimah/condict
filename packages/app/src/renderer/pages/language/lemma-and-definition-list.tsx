@@ -48,7 +48,7 @@ const LemmaAndDefinitionList = (props: Props): JSX.Element => {
           headingLevel={2}
           description={<Localized id='language-no-words-description'/>}
           action={
-            <Button bold intent='accent' onClick={onAddDefinition}>
+            <Button intent='accent' onClick={onAddDefinition}>
               <PencilIcon/>
               <span>
                 <Localized id='language-define-word-button'/>
@@ -87,7 +87,7 @@ const LemmaAndDefinitionList = (props: Props): JSX.Element => {
       </LinkCard>
 
       <p>
-        <Button bold onClick={onAddDefinition}>
+        <Button intent='bold' onClick={onAddDefinition}>
           <PencilIcon/>
           <span>
             <Localized id='language-define-word-button'/>

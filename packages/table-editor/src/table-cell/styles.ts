@@ -1,7 +1,6 @@
 import styled, {css} from 'styled-components';
 
 import {Table} from '../table-editor/styles';
-import Colors from '../colors';
 
 export type CellProps = {
   header: boolean;
@@ -18,24 +17,33 @@ export const Cell = styled.td<CellProps>`
 
   border: 2px solid transparent;
 
-  ${p => p.header ? css<CellProps>`
+  ${p => p.header ? `
     font-weight: bold;
-    background-color: ${p => p.theme.general[p.disabled ? 'disabledBg' : 'bg']};
-    color: ${p => p.theme.general[p.disabled ? 'disabledFg' : 'fg']};
-  ` : css<CellProps>`
+    background-color: var(${p.disabled
+      ? '--table-header-bg-disabled'
+      : '--table-header-bg'
+    });
+    color: var(${p.disabled
+      ? '--table-header-fg-disabled'
+      : '--table-header-fg'
+    });
+  ` : `
     font-weight: normal;
-    background-color: ${p => p.theme.defaultBg};
-    color: ${p => p.disabled ? p.theme.general.disabledFg : p.theme.defaultFg};
+    background-color: var(${p.disabled
+      ? '--table-bg-disabled'
+      : '--table-bg'
+    });
+    color: var(${p.disabled ? '--table-fg-disabled' : '--table-fg'});
   `}
 
-  ${Table}:focus &,
-  ${Table}.force-focus & {
-    ${p => p.selected && css<CellProps>`
-      background-color: ${p => Colors[p.theme.mode][
-        p.header ? 'selectedHeaderBg' : 'selectedBg'
-      ]};
-    `}
-  }
+  ${p => p.selected && css`
+    ${Table}:is(:focus, .force-focus) & {
+      background-color: var(${p.header
+        ? '--table-header-bg-selected'
+        : '--table-bg-selected'
+      });
+    }
+  `}
 `;
 
 export const CellDataWrapper = styled.div`
@@ -58,18 +66,18 @@ export const CellBorder = styled.div<CellBorderProps>`
   left: -2px;
   pointer-events: none;
 
-  border: 2px solid ${p => p.theme.general[
-    p.disabled ? 'disabledBorder' : 'border'
-  ]};
+  border: 2px solid var(${p => p.disabled
+    ? '--table-border-disabled'
+    : '--table-border'
+  });
 
-  ${Table}:focus &,
-  ${Table}.force-focus & {
+  ${Table}:is(:focus, .force-focus) & {
     border-color: ${p =>
-      p.focused ? p.theme.focus.color :
-      p.selected ? Colors[p.theme.mode].selectedBorder :
+      p.focused ? 'var(--focus-border)' :
+      p.selected ? 'var(--table-border-selected)' :
       undefined
     };
-    box-shadow: ${p => p.focused && p.theme.focus.shadow};
+    box-shadow: ${p => p.focused && 'var(--focus-shadow)'};
     z-index: ${p =>
       p.focused ? '2' :
       p.selected ? '1' :

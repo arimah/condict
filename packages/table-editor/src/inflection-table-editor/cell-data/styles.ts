@@ -9,10 +9,10 @@ export const CellIcons = styled.div<CellIconsProps>`
   display: block;
   margin-inline: 5px;
 
-  ${p => p.disabled ? `
+  ${p => p.disabled && `
     opacity: 0.6;
     filter: grayscale(0.6);
-  ` : ''}
+  `}
 
   > svg {
     display: block;

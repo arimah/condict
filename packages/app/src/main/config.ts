@@ -191,8 +191,10 @@ const validateColor = (
 ): ColorName => {
   switch (value) {
     case 'red':
+    case 'orange':
     case 'yellow':
     case 'green':
+    case 'teal':
     case 'blue':
     case 'purple':
     case 'gray':

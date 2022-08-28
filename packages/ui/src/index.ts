@@ -6,7 +6,13 @@ export {
   getContentAndLabel,
   useAnnouncements,
 } from './a11y-utils';
-export {Button, ButtonProps, LinkButton, LinkButtonProps} from './button';
+export {
+  Button,
+  ButtonProps,
+  LinkButton,
+  LinkButtonProps,
+  ButtonIntent,
+} from './button';
 export {Checkbox, Props as CheckboxProps} from './checkbox';
 export {ConlangFlag, Props as ConlangFlagProps} from './conlang-flag';
 export {
@@ -73,31 +79,24 @@ export {
 
 export {
   Theme,
-  ThemeMode,
-  UIColors,
-  LinkColors,
-  FocusTheme,
-  ShadowTheme,
+  ThemeVariables,
   TimingTheme,
-  IntentProps,
   MotionPreference,
-  ShadeGroup,
-  ColorRange,
-  LightTheme,
-  DarkTheme,
+  Shade,
+  Palette,
   Red,
+  Orange,
   Yellow,
   Green,
+  Teal,
   Blue,
   Purple,
   Gray,
-  FocusHue,
-  lightTheme,
-  darkTheme,
-  intentVar,
+  DefaultTiming,
+  lightThemeVars,
+  darkThemeVars,
 } from './theme';
 
-export {default as Intent} from './intent';
 export {default as MarkerLocation} from './marker-location';
 export {default as Placement, RelativeParent, placeElement} from './placement';
 export {

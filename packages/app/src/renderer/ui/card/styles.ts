@@ -10,17 +10,17 @@ const BaseStyles = css`
   display: flex;
   flex-direction: row;
   padding: 6px;
-  border: 2px solid ${p => p.theme.defaultBg};
+  border: 2px solid var(--bg);
   border-radius: 7px;
-  background-color: ${p => p.theme.defaultBg};
-  box-shadow: ${p => p.theme.shadow.elevation1};
+  background-color: var(--bg);
+  box-shadow: var(--shadow-elevation-1);
 
   > .mdi-icon {
     flex: none;
     align-self: center;
     margin-block: -8px;
     padding-inline: 8px;
-    color: ${p => p.theme.defaultFg};
+    color: var(--fg);
   }
 
   > div {
@@ -43,23 +43,19 @@ export const LinkCard = styled(Link)`
   ${BaseStyles}
   transition: box-shadow ${p => 1.25 * p.theme.timing.short}ms ease-in-out;
 
-  &:focus,
-  &:focus-visible {
-    border-color: ${p => p.theme.focus.color};
+  &:is(:focus, :focus-visible) {
+    border-color: var(--focus-border);
+    border-style: var(--focus-border-style);
     border-radius: 7px;
-    box-shadow:
-      ${p => p.theme.shadow.elevation1},
-      ${p => p.theme.focus.shadow};
+    box-shadow: var(--shadow-elevation-1), var(--focus-shadow);
   }
 
   &:hover {
-    box-shadow: ${p => p.theme.shadow.elevation3};
+    box-shadow: var(--shadow-elevation-3);
   }
 
   &:hover:focus {
-    box-shadow:
-      ${p => p.theme.shadow.elevation3},
-      ${p => p.theme.focus.shadow};
+    box-shadow: var(--shadow-elevation-3), var(--focus-shadow);
   }
 `;
 
@@ -99,7 +95,7 @@ export const Title = styled.div`
 
 export const Content = styled.div`
   margin-top: 8px;
-  color: ${p => p.theme.defaultFg};
+  color: var(--fg);
 
   > :first-child {
     margin-top: 0;

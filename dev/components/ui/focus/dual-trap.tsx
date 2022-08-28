@@ -22,7 +22,7 @@ const Demo = (): JSX.Element => {
         <Button
           slim
           label='Activate both focus traps'
-          intent='accent'
+          intent='bold'
           onClick={() => setActive(true)}
         />
       </p>
@@ -65,7 +65,7 @@ const Demo = (): JSX.Element => {
         <Button
           slim
           label='Activate both traps (#2)'
-          intent='accent'
+          intent='bold'
           onClick={() => setActive(true)}
         />
       </p>

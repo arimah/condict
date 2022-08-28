@@ -8,11 +8,11 @@ export const Main = styled.div`
 
   font-weight: normal;
 
-  border: 2px solid ${p => p.theme.general.border};
+  border: 2px solid var(--border-control);
   border-radius: 3px;
-  background-color: ${p => p.theme.general.bg};
-  color: ${p => p.theme.general.fg};
-  box-shadow: ${p => p.theme.shadow.elevation2};
+  background-color: var(--bg-control);
+  color: var(--fg-control);
+  box-shadow: var(--shadow-elevation-2);
   will-change: top, left;
 `;
 
@@ -31,9 +31,9 @@ export const Arrow = styled.div`
   height: 12px;
   top: ${ArrowAbove};
 
-  border: 2px solid ${p => p.theme.general.bg};
-  border-top-color: ${p => p.theme.general.border};
-  border-left-color: ${p => p.theme.general.border};
-  background-color: ${p => p.theme.general.bg};
+  border: 2px solid var(--bg-control);
+  border-top-color: var(--border-control);
+  border-left-color: var(--border-control);
+  background-color: var(--bg-control);
   transform: ${ArrowUp};
 `;

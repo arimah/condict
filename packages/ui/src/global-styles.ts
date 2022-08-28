@@ -6,6 +6,14 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0;
   }
 
+  html {
+    ${p => Object.entries(p.theme.vars).map(([name, value]) =>
+      value != null
+        ? `--${name}: ${value};`
+        : null
+    )}
+  }
+
   body {
     font-size: 14px;
     line-height: 16px;
@@ -68,22 +76,22 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   a:link {
-    color: ${p => p.theme.link.link};
+    color: var(--link-fg);
     text-decoration: none;
   }
 
   a:visited {
-    color: ${p => p.theme.link.visited};
+    color: var(--link-fg-visited);
     text-decoration: none;
   }
 
   a:hover {
-    color: ${p => p.theme.link.hover};
+    color: var(--link-fg-hover);
     text-decoration: none;
   }
 
   a:active {
-    color: ${p => p.theme.link.active};
+    color: var(--link-fg-pressed);
     text-decoration: none;
   }
 

@@ -70,7 +70,7 @@ const RuntimeError = (props: Props): JSX.Element => {
       </p>
 
       <p>
-        <Button bold intent='accent' onClick={onReload}>
+        <Button intent='accent' onClick={onReload}>
           <Localized
             id={
               isGlobalError
@@ -80,7 +80,7 @@ const RuntimeError = (props: Props): JSX.Element => {
           />
         </Button>
         {' '}
-        <LinkButton href={ReportErrorUrl} bold intent='accent'>
+        <LinkButton href={ReportErrorUrl} intent='accent'>
           <Localized id='error-report-error-button'/>
         </LinkButton>
       </p>

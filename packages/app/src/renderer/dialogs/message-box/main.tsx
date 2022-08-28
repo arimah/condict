@@ -54,7 +54,6 @@ function MessageBox<R>(props: Props<R>): JSX.Element {
             key={i}
             label={l10n.getString(button.labelKey)}
             intent={button.intent}
-            bold={button.bold}
             onClick={() => onResolve(button.value)}
             ref={button.disposition === 'primary' ? primaryRef : undefined}
           >

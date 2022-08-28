@@ -35,9 +35,9 @@ export const Popup = styled.div.attrs({
   z-index: 10;
 
   border-radius: 7px;
-  border: 2px solid ${p => p.theme.general.border};
-  background-color: ${p => p.theme.defaultBg};
-  box-shadow: ${p => p.theme.shadow.elevation3};
+  border: 2px solid var(--border);
+  background-color: var(--bg);
+  box-shadow: var(--shadow-elevation-3);
   opacity: ${p => p.$visible ? '1' : '0'};
 
   transition-property: opacity, top;
@@ -54,11 +54,10 @@ export const Popup = styled.div.attrs({
 `;
 
 export const ErrorMessage = styled(BodyText)`
-  color: ${p => p.theme.danger.defaultFg};
+  color: var(--fg-danger);
 `;
 
 export const ConfirmButton = styled(ConfirmButtonBase).attrs({
-  bold: true,
   intent: 'danger',
 })`
   align-self: flex-start;

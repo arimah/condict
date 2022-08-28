@@ -4,9 +4,29 @@ import MarkerLocation, {
   markerLocationToFlexDirection,
 } from '../marker-location';
 
-export type DisabledProps = {
-  disabled?: boolean;
-};
+export const IndeterminateMark = styled.span`
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 2px;
+  background-color: currentColor;
+  transform: translate(-50%, -50%);
+`;
+
+export const CheckMark = styled.span`
+  display: none;
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translate(-50%, -75%) rotate(-45deg);
+`;
 
 export const CheckmarkContainer = styled.span`
   flex: none;
@@ -18,35 +38,51 @@ export const CheckmarkContainer = styled.span`
   height: 16px;
   position: relative;
 
-  border: 2px solid ${p => p.theme.general.border};
+  border: 2px solid var(--checkbox-border);
   border-radius: 3px;
-  background-color: ${p => p.theme.defaultBg};
-`;
+  background-color: var(--checkbox-bg);
+  color: var(--checkbox-fg);
 
-export const IndeterminateMark = styled.span`
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 10px;
-  height: 2px;
-  background-color: ${p => p.theme.defaultBg};
-  transform: translate(-50%, -50%);
-  opacity: 0;
-`;
+  *:hover > & {
+    border-color: var(--checkbox-border-hover);
+    background-color: var(--checkbox-bg-hover);
+  }
 
-export const CheckMark = styled.span`
-  display: block;
-  box-sizing: border-box;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 10px;
-  height: 6px;
-  border-left: 2px solid ${p => p.theme.defaultBg};
-  border-bottom: 2px solid ${p => p.theme.defaultBg};
-  transform: translate(-50%, -75%) rotate(-45deg);
-  opacity: 0;
+  *:active > & {
+    border-color: var(--checkbox-border-pressed);
+    background-color: var(--checkbox-bg-pressed);
+  }
+
+  input:disabled + & {
+    border-color: var(--checkbox-border-disabled);
+    background-color: var(--checkbox-bg-disabled);
+    color: var(--checkbox-fg-disabled);
+  }
+
+  input:is(:checked, :indeterminate) + & {
+    border-color: var(--checkbox-border-checked);
+    background-color: var(--checkbox-bg-checked);
+  }
+
+  input:checked + & > ${CheckMark},
+  input:indeterminate + & > ${IndeterminateMark} {
+    display: block;
+  }
+
+  *:hover > input:is(:checked, :indeterminate) + & {
+    border-color: var(--checkbox-border-checked-hover);
+    background-color: var(--checkbox-bg-checked-hover);
+  }
+
+  *:active > input:is(:checked, :indeterminate) + & {
+    border-color: var(--checkbox-border-checked-pressed);
+    background-color: var(--checkbox-bg-checked-pressed);
+  }
+
+  input:disabled:is(:checked, :indeterminate) + & {
+    border-color: var(--checkbox-border-checked-disabled);
+    background-color: var(--checkbox-bg-checked-disabled);
+  }
 `;
 
 // Don't give the input a 0x0 size, as doing so will make it impossible for
@@ -61,47 +97,20 @@ export const Input = styled.input.attrs({type: 'checkbox'})`
   width: 100%;
   height: 100%;
 
-  &:checked,
-  &:indeterminate {
-    + ${CheckmarkContainer} {
-      border-color: ${p => p.theme.accent.boldBg};
-      background-color: ${p => p.theme.accent.boldBg};
-    }
-  }
-
-  &&:disabled {
-    + ${CheckmarkContainer} {
-      border-color: ${p => p.theme.general.disabledBorder};
-      background-color: ${p => p.theme.defaultBg};
-    }
-
-    &:checked + ${CheckmarkContainer},
-    &:indeterminate + ${CheckmarkContainer} {
-      border-color: ${p => p.theme.general.disabledBorder};
-      background-color: ${p => p.theme.general.disabledBorder};
-    }
-  }
-
-  &:checked + ${CheckmarkContainer} > ${CheckMark},
-  &:indeterminate + ${CheckmarkContainer} > ${IndeterminateMark} {
-    opacity: 1;
-  }
-
   &:focus {
     outline: none;
   }
 
-  &:focus + ${CheckmarkContainer}::after,
-  &.force-focus + ${CheckmarkContainer}::after {
+  &:is(:focus, .force-focus) + ${CheckmarkContainer}::after {
     content: '';
     position: absolute;
     top: -5px;
     left: -5px;
     width: 18px;
     height: 18px;
-    border: 2px solid ${p => p.theme.focus.color};
+    border: 2px var(--focus-border-style) var(--focus-border);
     border-radius: 5px;
-    box-shadow: ${p => p.theme.focus.shadow};
+    box-shadow: var(--focus-shadow);
   }
 `;
 
@@ -118,31 +127,7 @@ export const Label = styled.label<LabelProps>`
   gap: 4px 8px;
   position: relative;
   vertical-align: top;
-  color: ${p => p.disabled ? p.theme.general.disabledFg : p.theme.defaultFg};
-
-  &:hover {
-    > ${CheckmarkContainer} {
-      background-color: ${p => p.theme.defaultHoverBg};
-    }
-
-    > :checked + ${CheckmarkContainer},
-    > :indeterminate + ${CheckmarkContainer} {
-      border-color: ${p => p.theme.accent.boldHoverBg};
-      background-color: ${p => p.theme.accent.boldHoverBg};
-    }
-  }
-
-  &:active {
-    > ${CheckmarkContainer} {
-      background-color: ${p => p.theme.defaultActiveBg};
-    }
-
-    > :checked + ${CheckmarkContainer},
-    > :indeterminate + ${CheckmarkContainer} {
-      border-color: ${p => p.theme.accent.boldActiveBg};
-      background-color: ${p => p.theme.accent.boldActiveBg};
-    }
-  }
+  color: var(${p => p.disabled ? '--fg-disabled' : '--fg'});
 `;
 
 export const Content = styled.span``;

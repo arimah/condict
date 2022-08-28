@@ -28,8 +28,8 @@ export const SearchWrapper = styled.div.attrs({
   flex-direction: row;
 
   border-radius: 3px;
-  border: 2px solid ${p => p.theme.defaultBg};
-  background-color: ${p => p.theme.defaultBg};
+  border: 2px solid var(--input-minimal-border);
+  background-color: var(--input-bg);
 `;
 
 export const SearchInput = styled(TextInput).attrs({
@@ -39,6 +39,7 @@ export const SearchInput = styled(TextInput).attrs({
   flex: 1 1 auto;
   padding: 4px;
   min-width: 100px;
+  border-style: none;
   border-radius: 0;
   border-start-start-radius: 3px;
   border-end-start-radius: 3px;

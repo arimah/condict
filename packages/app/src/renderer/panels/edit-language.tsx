@@ -92,7 +92,7 @@ const EditLanguagePanel = (props: Props) => {
           <Localized id='language-edit-title'/>
         </h1>
         {data.state === 'data' && data.result.data?.language &&
-          <HeaderAction intent='danger' onClick={onDelete}>
+          <HeaderAction onClick={onDelete}>
             <Localized id='generic-delete-button'/>
           </HeaderAction>}
       </MainHeader>

@@ -12,7 +12,7 @@ export const TableList = styled.ul`
   padding-bottom: 8px;
   padding-inline-start: 16px;
   list-style-type: none;
-  border-inline-start: 2px solid ${p => p.theme.general.border};
+  border-inline-start: 2px solid var(--border);
 `;
 
 export type TableItemProps = {
@@ -23,12 +23,12 @@ export type TableItemProps = {
 export const TableItem = styled.li<TableItemProps>`
   margin-block: 8px ${TableItemGap}px;
   padding-inline: 16px;
+  padding-bottom: 16px;
   position: relative;
   top: 0;
-  border: 2px solid ${p => p.theme.general.border};
   border-radius: 3px;
-  background-color: ${p => p.theme.defaultBg};
-  box-shadow: ${p => p.held && p.theme.shadow.elevation2};
+  background-color: var(--bg-alt);
+  box-shadow: ${p => p.held && 'var(--shadow-elevation-2)'};
 
   transition:
     ${p => p.moving
@@ -40,13 +40,17 @@ export const TableItem = styled.li<TableItemProps>`
   &:last-child {
     margin-bottom: 8px;
   }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
 `;
 
 export const TableToolbar = styled(Toolbar)`
   margin-inline: -16px;
   padding-inline-start: 0;
-  border-bottom: 2px solid ${p => p.theme.general.border};
-  border-radius: 1px 0 0 1px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 `;
 
 export const DragHandle = styled.div`
@@ -77,7 +81,7 @@ export const TableStatus = styled.div<TableStatusProps>`
   align-items: center;
   gap: 8px;
   margin-block: 16px;
-  color: ${p => p.error &&  p.theme.danger.defaultFg};
+  color: ${p => p.error && 'var(--fg-danger)'};
 
   > .mdi-icon,
   > button {
@@ -105,7 +109,7 @@ export const StemsList = styled.div`
   grid-template-columns: auto 1fr auto;
   align-items: center;
   row-gap: 8px;
-  border-inline-start: 2px solid ${p => p.theme.general.border};
+  border-inline-start: 2px solid var(--border);
 
   &:empty {
     padding-bottom: 0;
@@ -128,7 +132,7 @@ export type StemValueProps = {
 export const StemValue = styled(TextInput)<StemValueProps>`
   margin-inline-end: 4px;
   font-style: ${p => p.usesTerm && 'italic'};
-  color: ${p => !p.usesTerm && p.theme.accent.defaultFg};
+  color: ${p => !p.usesTerm && 'var(--fg-accent)'};
 `;
 
 export const StemStatus = styled.span`
@@ -143,7 +147,7 @@ export const StemAction = styled(NakedButton)<StemActionProps>`
   display: block;
   margin-block: -3px;
   padding: 1px;
-  color: ${p => !p.usesTerm && p.theme.accent.defaultFg};
+  color: ${p => !p.usesTerm && 'var(--fg-accent)'};
 
   &:focus {
     padding: 1px;
@@ -167,8 +171,8 @@ export const ListTools = styled.div`
     left: 6px;
     width: 14px;
     height: calc(50% + 1px);
-    border-inline-start: 2px solid ${p => p.theme.general.border};
-    border-bottom: 2px solid ${p => p.theme.general.border};
+    border-inline-start: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
     border-end-start-radius: 5px;
   }
 `;
