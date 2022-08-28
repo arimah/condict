@@ -2,7 +2,7 @@ import {Localized} from '@fluent/react';
 import LinkArrow from 'mdi-react/ChevronRightIcon';
 import AddIcon from 'mdi-react/PlusIcon';
 
-import {Button, ConlangFlag, NonIdealState} from '@condict/ui';
+import {Button} from '@condict/ui';
 
 import {
   CardList,
@@ -29,26 +29,7 @@ type Language = Languages extends (infer T)[] ? T : never;
 const LanguageList = (props: Props): JSX.Element => {
   const {'aria-labelledby': ariaLabelledby, languages, onAddLanguage} = props;
 
-  if (languages.length === 0) {
-    return (
-      <CardList as='section' aria-labelledby={ariaLabelledby}>
-        <NonIdealState
-          minimal
-          image={<ConlangFlag width={188} height={116}/>}
-          title={<Localized id='home-no-languages-heading'/>}
-          description={<Localized id='home-no-languages-description'/>}
-          action={
-            <Button intent='accent' onClick={onAddLanguage}>
-              <AddIcon/>
-              <span>
-                <Localized id='home-add-language-button'/>
-              </span>
-            </Button>
-          }
-        />
-      </CardList>
-    );
-  }
+  // This component is only rendered when there's at least one language.
 
   return (
     <CardList as='section' aria-labelledby={ariaLabelledby}>

@@ -1,9 +1,10 @@
 import {useCallback} from 'react';
 import {Localized} from '@fluent/react';
+import AddIcon from 'mdi-react/PlusIcon';
 
-import {useUniqueId} from '@condict/ui';
+import {Button, ConlangFlag, NonIdealState, useUniqueId} from '@condict/ui';
 
-import {DataViewer, FlowContent, Tag, TagList} from '../../ui';
+import {DataViewer, FlowContent, CardList, Tag, TagList} from '../../ui';
 import {useNavigateTo, useOpenPanel} from '../../navigation';
 import {LanguagePage} from '../../page';
 import {EventPredicate, useData} from '../../data';
@@ -42,48 +43,70 @@ const HomePage = (props: PageProps): JSX.Element => {
       result={data}
       render={({languages, tags, recentChanges}) =>
         <FlowContent>
-          <h1 id={`${id}-languages-title`}>
-            <Localized id='home-languages-title'/>
-          </h1>
-          <LanguageList
-            aria-labelledby={`${id}-languages-title`}
-            languages={languages}
-            onAddLanguage={handleAddLanguage}
-          />
+          {languages.length === 0 ? (
+            // If there are no languages, show *only* a prompt to create the
+            // first one. Everything else is disclosed later; the user can't
+            // really do anything until they've created a language anyway.
+            <CardList>
+              <NonIdealState
+                minimal
+                image={<ConlangFlag width={188} height={116}/>}
+                title={<Localized id='home-no-languages-heading'/>}
+                description={<Localized id='home-no-languages-description'/>}
+                action={
+                  <Button intent='accent' onClick={handleAddLanguage}>
+                    <AddIcon/>
+                    <span>
+                      <Localized id='home-add-language-button'/>
+                    </span>
+                  </Button>
+                }
+              />
+            </CardList>
+          ) : <>
+            <h1 id={`${id}-languages-title`}>
+              <Localized id='home-languages-title'/>
+            </h1>
+            <LanguageList
+              aria-labelledby={`${id}-languages-title`}
+              languages={languages}
+              onAddLanguage={handleAddLanguage}
+            />
 
-          <h1 id={`${id}-tags-title`}>
-            <Localized id='home-tags-title'/>
-          </h1>
-          <section aria-labelledby={`${id}-tags-title`}>
-            {tags.nodes.length > 0 ? (
-              <TagList>
-                {tags.nodes.map(tag =>
-                  <li key={tag.id}>
-                    <Tag id={tag.id} name={tag.name}/>
-                  </li>
+            <h1 id={`${id}-tags-title`}>
+              <Localized id='home-tags-title'/>
+            </h1>
+            <section aria-labelledby={`${id}-tags-title`}>
+              {tags.nodes.length > 0 ? (
+                <TagList>
+                  {tags.nodes.map(tag =>
+                    <li key={tag.id}>
+                      <Tag id={tag.id} name={tag.name}/>
+                    </li>
+                  )}
+                </TagList>
+              ) : (
+                <p>
+                  <Localized id='home-no-tags-description'/>
+                </p>
+              )}
+            </section>
+
+            <h1 id={`${id}-recent-title`}>
+              <Localized id='home-recent-changes-title'/>
+            </h1>
+            {recentChanges != null && recentChanges.nodes.length > 0 ? (
+              <S.RecentChangesList aria-labelledby={`${id}-recent-title`}>
+                {recentChanges?.nodes.map((item, index) =>
+                  <RecentChangeCard key={index} item={item}/>
                 )}
-              </TagList>
+              </S.RecentChangesList>
             ) : (
               <p>
-                <Localized id='home-no-tags-description'/>
+                <Localized id='home-no-recent-changes-description'/>
               </p>
             )}
-          </section>
-
-          <h1 id={`${id}-recent-title`}>
-            <Localized id='home-recent-changes-title'/>
-          </h1>
-          {recentChanges != null && recentChanges.nodes.length > 0 ? (
-            <S.RecentChangesList aria-labelledby={`${id}-recent-title`}>
-              {recentChanges?.nodes.map((item, index) =>
-                <RecentChangeCard key={index} item={item}/>
-              )}
-            </S.RecentChangesList>
-          ) : (
-            <p>
-              <Localized id='home-no-recent-changes-description'/>
-            </p>
-          )}
+          </>}
         </FlowContent>
       }
     />
