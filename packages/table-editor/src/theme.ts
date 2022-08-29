@@ -44,12 +44,12 @@ export const darkThemeVars = (accent: Shade): ThemeVariables => ({
   'table-deleted-form-fg': Gray.palette[7],
   'table-deleted-form-fg-disabled': Gray.palette[8],
   'table-bg': 'var(--bg)',
-  'table-bg-selected': '#0a364c', // TODO
+  'table-bg-selected': '#0a364c',
   'table-bg-disabled': 'var(--table-bg)',
   'table-header-bg': Gray.palette[8],
-  'table-header-bg-selected': '#105375', // TODO
+  'table-header-bg-selected': '#105375',
   'table-header-bg-disabled': Gray.palette[9],
   'table-border': Gray.palette[7],
-  'table-border-selected': '#1474a3', // TODO
+  'table-border-selected': '#1474a3',
   'table-border-disabled': Gray.palette[8],
 });

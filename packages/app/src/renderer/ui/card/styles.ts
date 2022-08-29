@@ -10,17 +10,17 @@ const BaseStyles = css`
   display: flex;
   flex-direction: row;
   padding: 6px;
-  border: 2px solid var(--bg);
+  border: 2px solid var(--card-border);
   border-radius: 7px;
-  background-color: var(--bg);
-  box-shadow: var(--shadow-elevation-1);
+  background-color: var(--card-bg);
+  box-shadow: var(--card-shadow);
 
   > .mdi-icon {
     flex: none;
     align-self: center;
     margin-block: -8px;
     padding-inline: 8px;
-    color: var(--fg);
+    color: var(--card-fg);
   }
 
   > div {
@@ -37,25 +37,33 @@ export const Card = styled.div.attrs({
   role: 'group',
 })`
   ${BaseStyles}
+  color: var(--card-fg);
 `;
 
 export const LinkCard = styled(Link)`
   ${BaseStyles}
   transition: box-shadow ${p => 1.25 * p.theme.timing.short}ms ease-in-out;
 
+  &:hover {
+    background-color: var(--card-bg-hover);
+    border-color: var(--card-border-hover);
+    box-shadow: var(--card-shadow-hover);
+  }
+
+  &:active {
+    background-color: var(--card-bg-pressed);
+    border-color: var(--card-border-pressed);
+  }
+
   &:is(:focus, :focus-visible) {
     border-color: var(--focus-border);
     border-style: var(--focus-border-style);
     border-radius: 7px;
-    box-shadow: var(--shadow-elevation-1), var(--focus-shadow);
-  }
-
-  &:hover {
-    box-shadow: var(--shadow-elevation-3);
+    box-shadow: var(--card-shadow), var(--focus-shadow);
   }
 
   &:hover:focus {
-    box-shadow: var(--shadow-elevation-3), var(--focus-shadow);
+    box-shadow: var(--card-shadow-hover), var(--focus-shadow);
   }
 `;
 
@@ -95,7 +103,7 @@ export const Title = styled.div`
 
 export const Content = styled.div`
   margin-top: 8px;
-  color: var(--fg);
+  color: var(--card-fg);
 
   > :first-child {
     margin-top: 0;

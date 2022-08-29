@@ -10,7 +10,7 @@ export const lightThemeVars = (
   'fg-danger': danger.palette[7],
   'fg-disabled': Gray.palette[6],
   'bg': '#ffffff',
-  'bg-hover': '#f9fafb',
+  'bg-hover': '#f6f7f9',
   'bg-pressed': Gray.palette[1],
   'bg-alt': Gray.palette[0],
   'border': Gray.palette[1],
@@ -49,7 +49,7 @@ export const lightThemeVars = (
   'button-border-disabled': 'var(--button-bg-disabled)',
 
   'button-accent-fg': '#ffffff',
-  'button-accent-fg-disabled': '#ffffffcc', // TODO
+  'button-accent-fg-disabled': '#ffffffcc',
   'button-accent-bg': accent.palette[7],
   'button-accent-bg-hover': accent.palette[6],
   'button-accent-bg-pressed': accent.palette[8],

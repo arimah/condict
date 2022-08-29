@@ -22,6 +22,16 @@ export const lightThemeVars = (accent: Shade): ThemeVariables => ({
   'slider-thumb-bg': accent.palette[6],
   'slider-thumb-bg-hover': accent.palette[5],
 
+  'card-fg': 'var(--fg)',
+  'card-bg': 'var(--bg)',
+  'card-bg-hover': 'var(--card-bg)',
+  'card-bg-pressed': 'var(--card-bg)',
+  'card-border': 'var(--card-bg)',
+  'card-border-hover': 'var(--card-border)',
+  'card-border-pressed': 'var(--card-border)',
+  'card-shadow': 'var(--shadow-elevation-1)',
+  'card-shadow-hover': 'var(--shadow-elevation-3)',
+
   'dialog-shadow': '0 2px 7px rgba(0 0 0 / 0.6)',
 });
 
@@ -44,6 +54,16 @@ export const darkThemeVars = (accent: Shade): ThemeVariables => ({
   'slider-track-fill-bg': accent.palette[6],
   'slider-thumb-bg': accent.palette[6],
   'slider-thumb-bg-hover': accent.palette[5],
+
+  'card-fg': 'var(--fg)',
+  'card-bg': 'var(--bg)',
+  'card-bg-hover': 'var(--card-bg)',
+  'card-bg-pressed': 'var(--card-bg)',
+  'card-border': 'var(--card-bg)',
+  'card-border-hover': 'var(--card-border)',
+  'card-border-pressed': 'var(--card-border)',
+  'card-shadow': 'var(--shadow-elevation-1)',
+  'card-shadow-hover': 'var(--shadow-elevation-3)',
 
   'dialog-shadow': '0 2px 7px rgba(0 0 0 / 0.8)',
 });
