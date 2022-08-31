@@ -1,4 +1,4 @@
-import {useCallback, useEffect} from 'react';
+import {useCallback} from 'react';
 import {Localized} from '@fluent/react';
 
 import {BodyText, useUniqueId} from '@condict/ui';
@@ -9,7 +9,7 @@ import {
   PartOfSpeechPage,
   SearchPage,
 } from '../../page';
-import {useNavigateTo, useOpenPanel, useUpdateTab} from '../../navigation';
+import {useNavigateTo, useOpenPanel} from '../../navigation';
 import {
   DataViewer,
   FlowContent,
@@ -25,14 +25,13 @@ import {
   hasRichContent,
 } from '../../ui';
 import {LanguageId} from '../../graphql';
-import {EventPredicate, useData} from '../../data';
-import {useRefocusOnData} from '../../hooks';
 import {
   editLanguagePanel,
   addDefinitionPanel,
   addPartOfSpeechPanel,
 } from '../../panels';
 
+import usePageData from '../page-data';
 import {PageProps} from '../types';
 
 import LanguageQuery from './query';
@@ -47,19 +46,21 @@ export type Props = {
 const LanguagePage = (props: Props): JSX.Element => {
   const {id, pageRef} = props;
 
-  const shouldReloadPage = useCallback<EventPredicate>(
-    event =>
+  const data = usePageData(LanguageQuery, {
+    args: {id},
+    isEmpty: data => data.language === null,
+    pageTitle: data => data.language?.name,
+    reloadOn: event => (
       event.type === 'language' && event.id === id ||
       (
         event.type === 'definition' ||
         event.type === 'definitionTag' ||
         event.type === 'partOfSpeech' ||
         event.type === 'inflectionTable'
-      ) && event.languageId === id,
-    [id]
-  );
-
-  const data = useData(LanguageQuery, {id}, shouldReloadPage);
+      ) && event.languageId === id
+    ),
+    pageRef,
+  });
 
   const navigateTo = useNavigateTo();
   const openPanel = useOpenPanel();
@@ -93,20 +94,7 @@ const LanguagePage = (props: Props): JSX.Element => {
     });
   }, [id]);
 
-  const updateTab = useUpdateTab();
-  const title = data.state === 'data' && data.result.data?.language?.name;
-  useEffect(() => {
-    if (title) {
-      updateTab({title});
-    }
-  }, [title]);
-
   const htmlId = useUniqueId();
-
-  useRefocusOnData(data, {
-    isEmpty: data => data.language === null,
-    ownedElem: pageRef,
-  });
 
   return (
     <FlowContent>

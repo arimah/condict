@@ -1,13 +1,12 @@
-import {useCallback, useEffect} from 'react';
+import {useCallback} from 'react';
 import {Localized} from '@fluent/react';
 
 import {SROnly, useUniqueId} from '@condict/ui';
 
 import {InflectionTableId, LanguageId} from '../../graphql';
 
-import {useOpenPanel, useUpdateTab} from '../../navigation';
+import {useOpenPanel} from '../../navigation';
 import {LanguagePage, PartOfSpeechPage} from '../../page';
-import {PageProps} from '../types';
 import {
   DataViewer,
   FlowContent,
@@ -19,9 +18,10 @@ import {
   Selectable,
   Link,
 } from '../../ui';
-import {EventPredicate, useData} from '../../data';
-import {useRefocusOnData} from '../../hooks';
 import {editInflectionTablePanel} from '../../panels';
+
+import usePageData from '../page-data';
+import {PageProps} from '../types';
 
 import TableLayout from './table-layout';
 import InflectionTableQuery from './query';
@@ -35,38 +35,25 @@ export type Props = {
 const InflectionTablePage = (props: Props): JSX.Element => {
   const {id, languageId, pageRef} = props;
 
-  const shouldReloadPage = useCallback<EventPredicate>(
-    event =>
+  const data = usePageData(InflectionTableQuery, {
+    args: {id},
+    isEmpty: data => data.inflectionTable === null,
+    pageTitle: data => data.inflectionTable?.name,
+    reloadOn: event => (
       event.type === 'inflectionTable' && event.id === id ||
       event.type === 'partOfSpeech' && event.languageId === languageId ||
       event.type === 'definition' && event.languageId === languageId ||
-      event.type === 'language' && event.id === languageId,
-    [id, languageId]
-  );
-
-  const data = useData(InflectionTableQuery, {id}, shouldReloadPage);
+      event.type === 'language' && event.id === languageId
+    ),
+    pageRef,
+  });
 
   const openPanel = useOpenPanel();
   const handleEdit = useCallback(() => {
     void openPanel(editInflectionTablePanel(id));
   }, [id]);
 
-  const updateTab = useUpdateTab();
-  const title =
-    data.state === 'data' &&
-    data.result.data?.inflectionTable?.name;
-  useEffect(() => {
-    if (title) {
-      updateTab({title});
-    }
-  }, [title]);
-
   const htmlId = useUniqueId();
-
-  useRefocusOnData(data, {
-    isEmpty: data => data.inflectionTable === null,
-    ownedElem: pageRef,
-  });
 
   return (
     <FlowContent>

@@ -1,10 +1,10 @@
-import {useCallback, useEffect} from 'react';
+import {useCallback} from 'react';
 import {Localized} from '@fluent/react';
 
 import {useUniqueId} from '@condict/ui';
 
 import {LanguagePage, LemmaPage, SearchPage} from '../../page';
-import {useOpenPanel, useUpdateTab} from '../../navigation';
+import {useOpenPanel} from '../../navigation';
 import {
   DataViewer,
   FlowContent,
@@ -20,10 +20,9 @@ import {
   Link,
 } from '../../ui';
 import {DefinitionId, LanguageId} from '../../graphql';
-import {EventPredicate, useData} from '../../data';
-import {useRefocusOnData} from '../../hooks';
 import {editDefinitionPanel} from '../../panels';
 
+import usePageData from '../page-data';
 import {PageProps} from '../types';
 
 import DefinitionQuery from './query';
@@ -37,38 +36,27 @@ export type Props = {
 const DefinitionPage = (props: Props): JSX.Element => {
   const {id, languageId, pageRef} = props;
 
-  const shouldReloadPage = useCallback<EventPredicate>(
-    event =>
+  const data = usePageData(DefinitionQuery, {
+    args: {id},
+    isEmpty: data => data.definition === null,
+    pageTitle: data => data.definition?.term,
+    reloadOn: event => (
       event.type === 'definition' && event.id === id ||
       event.type === 'language' && event.id === languageId ||
       (
         event.type === 'partOfSpeech' ||
         event.type === 'inflectionTable'
-      ) && event.languageId === languageId,
-    [id]
-  );
-
-  const data = useData(DefinitionQuery, {id}, shouldReloadPage);
+      ) && event.languageId === languageId
+    ),
+    pageRef,
+  });
 
   const openPanel = useOpenPanel();
   const handleEdit = useCallback(() => {
     void openPanel(editDefinitionPanel(id));
   }, [id]);
 
-  const updateTab = useUpdateTab();
-  const title = data.state === 'data' && data.result.data?.definition?.term;
-  useEffect(() => {
-    if (title) {
-      updateTab({title});
-    }
-  }, [title]);
-
   const htmlId = useUniqueId();
-
-  useRefocusOnData(data, {
-    isEmpty: data => data.definition === null,
-    ownedElem: pageRef,
-  });
 
   return (
     <FlowContent>

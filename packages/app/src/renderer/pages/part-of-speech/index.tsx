@@ -1,9 +1,9 @@
-import {useCallback, useEffect} from 'react';
+import {useCallback} from 'react';
 import {Localized} from '@fluent/react';
 
 import {useUniqueId} from '@condict/ui';
 
-import {useNavigateTo, useOpenPanel, useUpdateTab} from '../../navigation';
+import {useNavigateTo, useOpenPanel} from '../../navigation';
 import {
   LanguagePage,
   PartOfSpeechPage as PartOfSpeechTarget,
@@ -21,10 +21,9 @@ import {
   Link,
 } from '../../ui';
 import {PartOfSpeechId, LanguageId} from '../../graphql';
-import {EventPredicate, useData} from '../../data';
-import {useRefocusOnData} from '../../hooks';
 import {editPartOfSpeechPanel, addInflectionTablePanel} from '../../panels';
 
+import usePageData from '../page-data';
 import {PageProps} from '../types';
 
 import InflectionTableList from './inflection-table-list';
@@ -39,16 +38,18 @@ export type Props = {
 const PartOfSpeechPage = (props: Props): JSX.Element => {
   const {id, languageId, pageRef} = props;
 
-  const shouldReloadPage = useCallback<EventPredicate>(
-    event =>
+  const data = usePageData(PartOfSpeechQuery, {
+    args: {id},
+    isEmpty: data => data.partOfSpeech === null,
+    pageTitle: data => data.partOfSpeech?.name,
+    reloadOn: event => (
       event.type === 'partOfSpeech' && event.id === id ||
       event.type === 'inflectionTable' && event.partOfSpeechId === id ||
       event.type === 'definition' && event.languageId === languageId ||
-      event.type === 'language' && event.id === languageId,
-    [id, languageId]
-  );
-
-  const data = useData(PartOfSpeechQuery, {id}, shouldReloadPage);
+      event.type === 'language' && event.id === languageId
+    ),
+    pageRef,
+  });
 
   const openPanel = useOpenPanel();
   const handleEditPartOfSpeech = useCallback(() => {
@@ -72,20 +73,7 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
     });
   }, [id]);
 
-  const updateTab = useUpdateTab();
-  const title = data.state === 'data' && data.result.data?.partOfSpeech?.name;
-  useEffect(() => {
-    if (title) {
-      updateTab({title});
-    }
-  }, [title]);
-
   const htmlId = useUniqueId();
-
-  useRefocusOnData(data, {
-    isEmpty: data => data.partOfSpeech === null,
-    ownedElem: pageRef,
-  });
 
   return (
     <FlowContent>

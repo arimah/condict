@@ -7,10 +7,10 @@ import {Button, ConlangFlag, NonIdealState, useUniqueId} from '@condict/ui';
 import {DataViewer, FlowContent, CardList, Tag, TagList} from '../../ui';
 import {useNavigateTo, useOpenPanel} from '../../navigation';
 import {LanguagePage} from '../../page';
-import {EventPredicate, useData} from '../../data';
-import {useRefocusOnData} from '../../hooks';
+import {EventPredicate} from '../../data';
 import {addLanguagePanel} from '../../panels';
 
+import usePageData from '../page-data';
 import {PageProps} from '../types';
 
 import HomeQuery from './query';
@@ -19,7 +19,11 @@ import RecentChangeCard from './recent-change-card';
 import * as S from './styles';
 
 const HomePage = (props: PageProps): JSX.Element => {
-  const data = useData(HomeQuery, {tagsPage: 0}, shouldReload);
+  const data = usePageData(HomeQuery, {
+    args: {tagsPage: 0},
+    reloadOn: shouldReload,
+    pageRef: props.pageRef,
+  });
 
   const navigateTo = useNavigateTo();
   const openPanel = useOpenPanel();
@@ -35,8 +39,6 @@ const HomePage = (props: PageProps): JSX.Element => {
   }, [openPanel]);
 
   const id = useUniqueId();
-
-  useRefocusOnData(data, {ownedElem: props.pageRef});
 
   return (
     <DataViewer
