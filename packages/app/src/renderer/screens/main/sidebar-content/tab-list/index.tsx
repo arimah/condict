@@ -1,7 +1,6 @@
 import {
   MouseEvent,
   KeyboardEvent,
-  useState,
   useMemo,
   useCallback,
   useRef,
@@ -55,7 +54,7 @@ const TabList = (props: Props): JSX.Element => {
   const nav = useNavigation();
   const dir = useWritingDirection();
 
-  const [hasFocus, setHasFocus] = useState(false);
+  const listRef = useRef<HTMLDivElement>(null);
   const currentTabRef = useRef<HTMLDivElement>(null);
 
   const keyboardMap = useMemo(() => getKeyboardMap(dir), [dir]);
@@ -81,17 +80,13 @@ const TabList = (props: Props): JSX.Element => {
   useEffect(() => {
     // If the current tab changes while focus is inside the tab list,
     // move focus to the new active tab.
-    if (hasFocus) {
+    if (listRef.current?.contains(document.activeElement)) {
       currentTabRef.current?.focus();
     }
-  }, [hasFocus, nav.currentTabIndex]);
+  }, [nav.currentTabIndex]);
 
   return (
-    <S.TabList
-      onFocus={() => setHasFocus(true)}
-      onBlur={() => setHasFocus(false)}
-      onKeyDown={handleKeyDown}
-    >
+    <S.TabList onKeyDown={handleKeyDown} ref={listRef}>
       {nav.tabs.map((tab, i) =>
         <Tab
           key={tab.id}
