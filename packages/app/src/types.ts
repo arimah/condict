@@ -155,3 +155,35 @@ export interface UpdateProgress {
   /** The current download progress as a percentage between 0 and 100. */
   readonly downloadProgress: number;
 }
+
+export interface SavedSession {
+  readonly tabs: readonly SavedTab[];
+  /** The ID of the currently focused tab. */
+  readonly currentTab: string | null;
+}
+
+export interface SavedTab {
+  /**
+   * A generic unique ID for the tab. Referred to by `currentTab` on the
+   * session object.
+   */
+  readonly id: string;
+  /**
+   * The page that the tab contains. This value is validated entirely by the
+   * renderer.
+   */
+  readonly page: unknown;
+  /** The title of the tab. */
+  readonly title: string;
+  /** The previous tab in the tab's history. */
+  readonly previous: SavedPreviousTab | null;
+}
+
+export interface SavedPreviousTab {
+  /** The page that the tab contains. */
+  readonly page: unknown;
+  /** The title of the tab. */
+  readonly title: string;
+  /** The previous tab in the tab's history. */
+  readonly previous: SavedPreviousTab | null;
+}

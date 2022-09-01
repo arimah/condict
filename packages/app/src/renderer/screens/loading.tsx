@@ -1,11 +1,11 @@
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {Localized} from '@fluent/react';
 
 import {useDelayedMountEffect} from '../hooks';
 
 import * as S from './styles';
 
-const LoadingScreen = (): JSX.Element => {
+const LoadingScreen = React.memo((): JSX.Element => {
   // Show the loading text after a short delay. Usually it takes far less than
   // a second to start the server.
   const [visible, setVisible] = useState(false);
@@ -18,6 +18,8 @@ const LoadingScreen = (): JSX.Element => {
       </S.LoadingText>
     </S.LoadingScreen>
   );
-};
+});
+
+LoadingScreen.displayName = 'LoadingScreen';
 
 export default LoadingScreen;

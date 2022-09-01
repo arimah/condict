@@ -1,17 +1,21 @@
 import {
   ReactNode,
+  Dispatch,
   useReducer,
   useMemo,
   useCallback,
   useRef,
-  Dispatch,
+  useEffect,
 } from 'react';
 import produce, {Draft} from 'immer';
 import {useLocalization} from '@fluent/react';
 import {customAlphabet} from 'nanoid';
 
+import {SavedSession, SavedTab, SavedPreviousTab} from '../../types';
+
 import {Page, HomePage} from '../page';
 import {OpenDialogFn, useOpenDialog} from '../dialog-stack';
+import ipc from '../ipc';
 
 import {
   NavigationContext,
@@ -29,12 +33,14 @@ import {
   Panel,
   PanelParams,
   PanelProps,
+  PreviousTab,
   UpdateFreeTabFn,
   OpenPanelFn,
   OpenFirstPanelFn,
 } from './types';
 
 export type Props = {
+  lastSession: SavedSession | null;
   children: ReactNode;
 };
 
@@ -102,12 +108,12 @@ interface CloseRange {
 const genId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 8);
 
 const NavigationProvider = (props: Props): JSX.Element => {
-  const {children} = props;
+  const {lastSession, children} = props;
 
   const {l10n} = useLocalization();
   const openDialog = useOpenDialog();
 
-  const [state, dispatch] = useReducer(reduce, null, getInitialState);
+  const [state, dispatch] = useReducer(reduce, lastSession, getInitialState);
 
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -358,6 +364,15 @@ const NavigationProvider = (props: Props): JSX.Element => {
     };
   }, []);
 
+  useEffect(() => {
+    void ipc.invoke('update-session', {
+      tabs: state.tabs
+        .filter(t => t.page.type !== 'home')
+        .map(exportTab),
+      currentTab: state.tabs[state.currentTabIndex].id,
+    });
+  }, [state]);
+
   return (
     <NavigationContext.Provider value={value}>
       <NavigateToContext.Provider value={functions.navigateTo}>
@@ -373,10 +388,68 @@ const NavigationProvider = (props: Props): JSX.Element => {
 
 export default NavigationProvider;
 
-const getInitialState = (): State => ({
-  tabs: [Tab.fromPage('home', HomePage)],
-  currentTabIndex: 0,
-  prevTabId: null,
+const getInitialState = (lastSession: SavedSession | null): State => {
+  // The home page is never saved with the session
+  const tabs = [Tab.fromPage('home', HomePage)];
+  let currentTabIndex = 0;
+
+  if (lastSession) {
+    for (const savedTab of lastSession.tabs) {
+      const tab = restoreTab(savedTab);
+      if (tab) {
+        tabs.push(tab);
+
+        if (savedTab.id === lastSession.currentTab) {
+          currentTabIndex = tabs.length - 1;
+        }
+      }
+    }
+  }
+
+  return {
+    tabs,
+    currentTabIndex,
+    prevTabId: null,
+  };
+};
+
+const restoreTab = (savedTab: SavedTab): Tab | null => {
+  // TODO: Validate saved pages somehow
+  const page = savedTab.page as Page;
+  if (page.type === 'home') {
+    // Only one home page!
+    return null;
+  }
+
+  return {
+    id: genId(),
+    page,
+    title: savedTab.title,
+    dirty: false,
+    state: 'loading',
+    previous: savedTab.previous && restorePreviousTab(savedTab.previous),
+    panels: [],
+  };
+};
+
+const restorePreviousTab = (savedTab: SavedPreviousTab): PreviousTab => ({
+  page: savedTab.page as Page,
+  title: savedTab.title,
+  state: 'loading',
+  previous: savedTab.previous && restorePreviousTab(savedTab.previous),
+});
+
+const exportTab = (tab: Tab): SavedTab => ({
+  id: tab.id,
+  page: tab.page,
+  title: tab.title,
+  previous: tab.previous && exportPreviousTab(tab.previous),
+});
+
+const exportPreviousTab = (tab: PreviousTab): SavedPreviousTab => ({
+  page: tab.page,
+  title: tab.title,
+  previous: tab.previous && exportPreviousTab(tab.previous),
 });
 
 const reduce = produce<State, [Message]>((state, message) => {

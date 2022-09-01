@@ -1,4 +1,4 @@
-import {KeyboardEvent, useCallback, useRef} from 'react';
+import React, {KeyboardEvent, useCallback, useRef} from 'react';
 
 import {CommandProvider, CommandGroup, useCommandGroup} from '@condict/ui';
 
@@ -10,7 +10,7 @@ import SidebarContent from './sidebar-content';
 import TabPanelList from './tab-panel-list';
 import * as S from './styles';
 
-const MainScreen = (): JSX.Element => {
+const MainScreen = React.memo((): JSX.Element => {
   const navigateTo = useNavigateTo();
   const navCommands = useNavigationCommands();
 
@@ -75,6 +75,8 @@ const MainScreen = (): JSX.Element => {
       </CommandProvider>
     </CommandProvider>
   );
-};
+});
+
+MainScreen.displayName = 'MainScreen';
 
 export default MainScreen;

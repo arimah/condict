@@ -15,6 +15,7 @@ import {
   Locale,
   UpdateStatus,
   UpdateProgress,
+  SavedSession,
 } from './types';
 
 /** IPC messages sent from the main process to a browser window. */
@@ -113,6 +114,9 @@ export type RendererChannels = {
    */
   'reset-update-status': IpcRendererMessage<void, void>;
 
+  /** Updates the current session. */
+  'update-session': IpcRendererMessage<SavedSession, void>;
+
   /** Requests to show a file open dialog. */
   'show-open-dialog': IpcRendererMessage<
     OpenDialogOptions,
@@ -137,6 +141,8 @@ export type RendererChannels = {
     defaultLocale: Locale;
     /** The user's selected locale. */
     currentLocale: Locale;
+    /** The previous session, if there is one. */
+    lastSession: SavedSession | null;
   }>;
 };
 

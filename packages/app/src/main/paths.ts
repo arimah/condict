@@ -12,6 +12,11 @@ export const UserDataPath =
 export const ConfigFile = path.join(UserDataPath, 'config.json');
 
 /**
+ * The absolute path to the file that stores the current session (open tabs).
+ */
+export const SessionFile = path.join(UserDataPath, 'session.json');
+
+/**
  * The absolute path to the file that stores the window state (the position
  * and size of the main window).
  */

@@ -24,16 +24,13 @@ import {
 import DefaultConfig from './default-config';
 import {ConfigFile} from './paths';
 import persistDebounced from './persist-debounced';
+import {PlainObject, isPlainObject} from './json-utils';
 import ipc from './ipc';
 
 export interface ConfigInstance {
   readonly current: AppConfig;
   readonly logger: Logger;
 }
-
-type PlainObject = {
-  [key: string]: unknown;
-};
 
 const initConfig = (availableLocales: readonly string[]): ConfigInstance => {
   let errors: string[] = [];
@@ -107,9 +104,6 @@ const loadConfig = (
 
   return validateConfig(config, availableLocales, errors);
 };
-
-const isPlainObject = (value: any): value is PlainObject =>
-  value != null && typeof value === 'object' && !Array.isArray(value);
 
 const validateConfig = (
   value: unknown,

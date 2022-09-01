@@ -6,6 +6,7 @@ import initConfig from './config';
 import initServer from './server';
 import initTranslations, {DefaultLocale} from './translations';
 import initUpdater from './updater';
+import initSession from './session';
 import initMainWindow from './main-window';
 import ipc from './ipc';
 
@@ -22,6 +23,8 @@ const main = (): void => {
   );
 
   const updater = initUpdater();
+
+  const session = initSession(logger);
 
   const mainWindow = initMainWindow(() => config.current);
 
@@ -93,6 +96,7 @@ const main = (): void => {
         locale: cfg.locale,
         source: currentBundle,
       },
+      lastSession: session.current,
     };
   });
 };

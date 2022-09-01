@@ -7,10 +7,9 @@ dist/
 # The compiled app should definitely not be committed
 bin/
 
-# Main app configuration
+# Configuration etc.
 config.json
-
-# Main window size and location
+session.json
 window.json
 
 *.log

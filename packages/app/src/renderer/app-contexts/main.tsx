@@ -2,7 +2,7 @@ import {ReactNode} from 'react';
 
 import {GlobalStyles as UIStyles} from '@condict/ui';
 
-import {AppConfig, ThemeName, Locale} from '../../types';
+import {AppConfig, ThemeName, Locale, SavedSession} from '../../types';
 
 // Dialog, navigation and data contexts are defined elsewhere
 // due to their complexity.
@@ -25,6 +25,7 @@ export type Props = {
   currentLocale: Locale;
   defaultLocale: Locale;
   availableLocales: readonly string[];
+  lastSession: SavedSession | null;
   onUpdateConfig: (recipe: ConfigRecipe) => void;
   children: ReactNode;
 };
@@ -37,6 +38,7 @@ const AppContexts = (props: Props): JSX.Element => {
     currentLocale,
     defaultLocale,
     availableLocales,
+    lastSession,
     onUpdateConfig,
     children,
   } = props;
@@ -62,7 +64,7 @@ const AppContexts = (props: Props): JSX.Element => {
               }
             >
               <DialogStackProvider>
-                <NavigationProvider>
+                <NavigationProvider lastSession={lastSession}>
                   {children}
                 </NavigationProvider>
               </DialogStackProvider>

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {webFrame} from 'electron';
 import produce, {enableMapSet} from 'immer';
 
-import {AppConfig, ThemeName, Locale} from '../types';
+import {AppConfig, ThemeName, Locale, SavedSession} from '../types';
 
 import ipc from './ipc';
 import AppContexts from './app-contexts';
@@ -16,6 +16,7 @@ type Props = {
   initialLocale: Locale;
   initialDefaultLocale: Locale;
   initialAvailableLocales: readonly string[];
+  lastSession: SavedSession | null;
 };
 
 const App = (props: Props): JSX.Element => {
@@ -25,6 +26,7 @@ const App = (props: Props): JSX.Element => {
     initialDefaultLocale,
     initialLocale,
     initialAvailableLocales,
+    lastSession,
   } = props;
 
   const [loading, setLoading] = useState(true);
@@ -48,6 +50,23 @@ const App = (props: Props): JSX.Element => {
   useEffect(() => {
     ipc.on('system-theme-change', (_e, systemTheme) => {
       setSystemTheme(systemTheme);
+    });
+
+    const defaultLocaleName = defaultLocale.locale;
+    ipc.on('locale-updated', (_, localeName) => {
+      void ipc.invoke('get-locale', localeName).then(locale => {
+        if (defaultLocaleName === locale.locale) {
+          setDefaultLocale(locale);
+        }
+
+        if (localeConfigRef.current === locale.locale) {
+          setCurrentLocale(locale);
+        }
+      });
+    });
+
+    ipc.on('available-locales-changed', (_, locales) => {
+      setAvailableLocales(locales);
     });
 
     void ipc.invoke('window-ready').then(() => {
@@ -77,26 +96,6 @@ const App = (props: Props): JSX.Element => {
     }
   }, [config.locale]);
 
-  useEffect(() => {
-    const defaultLocaleName = defaultLocale.locale;
-
-    ipc.on('locale-updated', (_, localeName) => {
-      void ipc.invoke('get-locale', localeName).then(locale => {
-        if (defaultLocaleName === locale.locale) {
-          setDefaultLocale(locale);
-        }
-
-        if (localeConfigRef.current === locale.locale) {
-          setCurrentLocale(locale);
-        }
-      });
-    });
-
-    ipc.on('available-locales-changed', (_, locales) => {
-      setAvailableLocales(locales);
-    });
-  }, []);
-
   return (
     <AppContexts
       config={config}
@@ -105,6 +104,7 @@ const App = (props: Props): JSX.Element => {
       currentLocale={currentLocale}
       defaultLocale={defaultLocale}
       availableLocales={availableLocales}
+      lastSession={lastSession}
       onUpdateConfig={updateConfig}
     >
       {loading ? <LoadingScreen/> : <MainScreen/>}
@@ -123,6 +123,7 @@ void ipc.invoke('get-initial-state').then(state => {
       initialLocale={state.currentLocale}
       initialDefaultLocale={state.defaultLocale}
       initialAvailableLocales={state.availableLocales}
+      lastSession={state.lastSession}
     />,
     document.getElementById('root')
   );
