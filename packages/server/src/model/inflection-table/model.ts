@@ -9,6 +9,7 @@ import {
   InflectedFormId,
   PageParams,
   validatePageParams,
+  LayoutVersionFilter,
 } from '../../graphql';
 
 import paginate from '../paginate';
@@ -18,11 +19,17 @@ import {
   InflectionTableRow,
   InflectionTableLayoutRow,
   InflectedFormRow,
+  DefinitionUsingInflectionTableRow,
 } from './types';
 
 const InflectionTable = {
   byIdKey: 'InflectionTable.byId',
   allByPartOfSpeechKey: 'InflectionTable.allByPartOfSpeechKey',
+  defaultPagination: {
+    page: 0,
+    perPage: 50,
+  },
+  maxPerPage: 200,
 
   byId(
     db: DataReader,
@@ -83,6 +90,48 @@ const InflectionTable = {
           order by part_of_speech_id, name
         `,
       row => row.part_of_speech_id
+    );
+  },
+
+  usersOfTable(
+    db: DataReader,
+    tableId: InflectionTableId,
+    page: PageParams | undefined | null,
+    layout: LayoutVersionFilter,
+    info?: GraphQLResolveInfo
+  ): ItemConnection<DefinitionUsingInflectionTableRow> {
+    const joinCondition = layout !== 'ALL_LAYOUTS'
+      ? db.raw`and itv.is_current = ${layout === 'CURRENT_LAYOUT'}`
+      : db.raw``;
+    return paginate(
+      validatePageParams(page ?? this.defaultPagination, this.maxPerPage),
+      () => {
+        const {total} = db.getRequired<{total: number}>`
+          select count(distinct dit.definition_id) as total
+          from definition_inflection_tables dit
+          inner join inflection_table_versions itv on
+            itv.id = dit.inflection_table_version_id
+            ${joinCondition}
+          where dit.inflection_table_id = ${tableId}
+        `;
+        return total;
+      },
+      (limit, offset) => db.all<DefinitionUsingInflectionTableRow>`
+        select
+          dit.definition_id,
+          sum(itv.is_current = 0) > 0 as has_old_layouts
+        from definition_inflection_tables dit
+        inner join definitions d on d.id = dit.definition_id
+        inner join lemmas l on l.id = d.lemma_id
+        inner join inflection_table_versions itv on
+          itv.id = dit.inflection_table_version_id
+          ${joinCondition}
+        where dit.inflection_table_id = ${tableId}
+        group by d.id
+        order by l.term, d.id
+        limit ${limit} offset ${offset}
+      `,
+      info
     );
   },
 } as const;

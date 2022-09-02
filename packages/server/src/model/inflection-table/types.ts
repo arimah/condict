@@ -3,6 +3,7 @@ import {
   InflectionTableLayoutId,
   InflectedFormId,
   PartOfSpeechId,
+  DefinitionId,
 } from '../../graphql';
 
 export type InflectionTableRow = {
@@ -38,6 +39,12 @@ export type InflectedFormRow = {
   custom_display_name: number;
   inflection_pattern: string;
   display_name: string;
+};
+
+export type DefinitionUsingInflectionTableRow = {
+  definition_id: DefinitionId;
+  /** Boolean */
+  has_old_layouts: number;
 };
 
 export type InflectionTableRowJson = {

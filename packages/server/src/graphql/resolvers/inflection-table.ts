@@ -8,6 +8,7 @@ import {
   InflectionTableRow,
   InflectionTableLayoutRow,
   InflectedFormRow,
+  DefinitionUsingInflectionTableRow,
   InflectionTableCellJson,
   MutContext,
 } from '../../model';
@@ -19,6 +20,7 @@ import {
   InflectionTableHeaderCell as InflectionTableHeaderCellType,
   InflectionTableDataCell as InflectionTableDataCellType,
   InflectedForm as InflectedFormType,
+  DefinitionUsingInflectionTable as DefinitionUsingInflectionTableType,
   Query as QueryType,
 } from '../types';
 import {mutator} from '../helpers';
@@ -36,8 +38,14 @@ const InflectionTable: ResolversFor<InflectionTableType, InflectionTableRow> = {
 
   isInUse: (p, _args, {db}) => Definition.anyUsesInflectionTable(db, p.id),
 
-  usedByDefinitions: (p, {page}, {db}, info) =>
-    Definition.allByInflectionTable(db, p.id, page, info),
+  usedByDefinitions: (p, {page, layout}, {db}, info) =>
+    InflectionTableModel.usersOfTable(
+      db,
+      p.id,
+      page,
+      layout ?? 'ALL_LAYOUTS',
+      info
+    ),
 
   timeCreated: p => p.time_created,
 
@@ -117,6 +125,16 @@ const InflectedForm: ResolversFor<InflectedFormType, InflectedFormRow> = {
     InflectionTableLayoutModel.byId(db, p.inflection_table_version_id),
 };
 
+const DefinitionUsingInflectionTable: ResolversFor<
+  DefinitionUsingInflectionTableType,
+  DefinitionUsingInflectionTableRow
+> = {
+  definition: (p, _args, {db}) =>
+    Definition.byIdRequired(db, p.definition_id),
+
+  hasOldLayouts: p => p.has_old_layouts === 1,
+};
+
 const Query: ResolversFor<QueryType, null> = {
   inflectionTable: (_root, {id}, {db}) =>
     InflectionTableModel.byId(db, id),
@@ -151,6 +169,7 @@ export default {
   InflectionTableHeaderCell,
   InflectionTableDataCell,
   InflectedForm,
+  DefinitionUsingInflectionTable,
   Query,
   Mutation,
 };

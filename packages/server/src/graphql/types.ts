@@ -210,7 +210,7 @@ export type Definition = {
  * Contains paginated results from one of the following fields:
  * 
  * * `Language.recentDefinitions`
- * * `InflectionTable.usedByDefinitions`
+ * * `InflectionTableLayout.usedByDefinitions`
  * * `PartOfSpeech.usedByDefinitions`
  */
 export type DefinitionConnection = {
@@ -326,6 +326,35 @@ export type DefinitionStem = {
    * The definition that the stem is attached to.
    */
   definition: Definition;
+};
+
+export type DefinitionUsingInflectionTable = {
+  /**
+   * The definition that uses the inflection table.
+   */
+  definition: Definition;
+  /**
+   * Indicates whether the definition uses an older version of the table. Note that
+   * definitions can have multiple instances of the same inflection table, and they
+   * do not all need to be the same version (tables are upgraded separately). This
+   * field indicates whether *any* of the definition's tables use an older layout
+   * version.
+   */
+  hasOldLayouts: boolean;
+};
+
+/**
+ * Contains paginated results from the `InflectionTable.usedByDefinitions` field.
+ */
+export type DefinitionUsingInflectionTableConnection = {
+  /**
+   * Pagination metadata for this batch.
+   */
+  page: PageInfo;
+  /**
+   * The entries in this batch.
+   */
+  nodes: DefinitionUsingInflectionTable[];
 };
 
 /**
@@ -835,7 +864,8 @@ export type InflectionTable = {
    */
   usedByDefinitions: WithArgs<{
     page?: PageParams | null;
-  }, DefinitionConnection>;
+    layout?: LayoutVersionFilter | null;
+  }, DefinitionUsingInflectionTableConnection>;
   /**
    * The time that the inflection table was created.
    */
@@ -1250,6 +1280,35 @@ export type LanguageStats = {
    */
   tagCount: number;
 };
+
+/**
+ * Determines which table layout versions to consider when looking up definitions
+ * that use a particular inflection table.
+ */
+export type LayoutVersionFilter =
+  /**
+   * Include definitions that use *any* version of the table.
+   */
+  | 'ALL_LAYOUTS'
+  /**
+   * Include only definitions that contain at least one instance of the *current*
+   * version of the table.
+   * 
+   * Note: Definitions can have multiple instances of the same table, and they do
+   * not all need to be the same version (tables are upgraded separately). Hence,
+   * even with this filter, definitions may be included that use an older layout.
+   */
+  | 'CURRENT_LAYOUT'
+  /**
+   * Include only definitions that contain at least one instance of an old layout.
+   * 
+   * Note: Definitions can have multiple instances of the same table, and they do
+   * not all need to be the same version (tables are upgraded separately). Hence,
+   * even with this filter, definitions may be included that use the current
+   * layout.
+   */
+  | 'OLD_LAYOUTS'
+;
 
 /**
  * A _lemma_ is a word listed in a dictionary. A lemma contains one or more

@@ -71,7 +71,10 @@ type InflectionTable implements RecentItem {
   Since the table may be used by many definitions, this field is always
   paginated. If provided, `page.perPage` cannot exceed 200.
   """
-  usedByDefinitions(page: PageParams): DefinitionConnection!
+  usedByDefinitions(
+    page: PageParams
+    layout: LayoutVersionFilter = ALL_LAYOUTS
+  ): DefinitionUsingInflectionTableConnection!
 
   "The time that the inflection table was created."
   timeCreated: UtcInstant!
@@ -83,6 +86,35 @@ type InflectionTable implements RecentItem {
   timeUpdated: UtcInstant!
 }
 
+"""
+Determines which table layout versions to consider when looking up definitions
+that use a particular inflection table.
+"""
+enum LayoutVersionFilter {
+  "Include definitions that use *any* version of the table."
+  ALL_LAYOUTS
+
+  """
+  Include only definitions that contain at least one instance of the *current*
+  version of the table.
+
+  Note: Definitions can have multiple instances of the same table, and they do
+  not all need to be the same version (tables are upgraded separately). Hence,
+  even with this filter, definitions may be included that use an older layout.
+  """
+  CURRENT_LAYOUT
+
+  """
+  Include only definitions that contain at least one instance of an old layout.
+
+  Note: Definitions can have multiple instances of the same table, and they do
+  not all need to be the same version (tables are upgraded separately). Hence,
+  even with this filter, definitions may be included that use the current
+  layout.
+  """
+  OLD_LAYOUTS
+}
+
 "Contains paginated results from the `InflectionTable.oldLayouts` field."
 type InflectionTableLayoutConnection {
   "Pagination metadata for this batch."
@@ -90,6 +122,29 @@ type InflectionTableLayoutConnection {
 
   "The inflection table layouts in this batch."
   nodes: [InflectionTableLayout!]!
+}
+
+"Contains paginated results from the `InflectionTable.usedByDefinitions` field."
+type DefinitionUsingInflectionTableConnection {
+  "Pagination metadata for this batch."
+  page: PageInfo!
+
+  "The entries in this batch."
+  nodes: [DefinitionUsingInflectionTable!]!
+}
+
+type DefinitionUsingInflectionTable {
+  "The definition that uses the inflection table."
+  definition: Definition!
+
+  """
+  Indicates whether the definition uses an older version of the table. Note that
+  definitions can have multiple instances of the same inflection table, and they
+  do not all need to be the same version (tables are upgraded separately). This
+  field indicates whether *any* of the definition's tables use an older layout
+  version.
+  """
+  hasOldLayouts: Boolean!
 }
 
 "Represents an inflection table layout ID."
