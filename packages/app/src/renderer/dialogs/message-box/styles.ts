@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import {Button as ButtonBase} from '@condict/ui';
+import {Button as ButtonBase, BodyText} from '@condict/ui';
 
 import StandardDialog from '../standard-dialog';
 
@@ -16,7 +16,7 @@ export const Title = styled.h2`
   line-height: 24px;
 `;
 
-export const Message = styled.div`
+export const Message = styled(BodyText)`
   margin-top: 16px;
   margin-bottom: 16px;
   max-height: 75vh;

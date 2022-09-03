@@ -4,7 +4,7 @@ export const Main = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-block: 8px;
+  margin-block: 8px 12px;
   padding-inline-start: 8px;
   gap: 14px;
 `;

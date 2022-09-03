@@ -26,7 +26,7 @@ export const TableItem = styled.li<TableItemProps>`
   padding-bottom: 16px;
   position: relative;
   top: 0;
-  border-radius: 3px;
+  border-radius: 5px;
   background-color: var(--bg-alt);
   box-shadow: ${p => p.held && 'var(--shadow-elevation-2)'};
 
