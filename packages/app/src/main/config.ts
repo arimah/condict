@@ -19,17 +19,21 @@ import {
   UpdatePolicy,
   ServerConfig,
   LoginConfig,
+  UserTheme,
 } from '../types';
 
 import DefaultConfig from './default-config';
 import {ConfigFile} from './paths';
 import persistDebounced from './persist-debounced';
+import initUserTheme, {UpdatedCallback} from './user-theme';
 import {PlainObject, isPlainObject} from './json-utils';
 import ipc from './ipc';
 
 export interface ConfigInstance {
   readonly current: AppConfig;
   readonly logger: Logger;
+  loadUserTheme(): Promise<UserTheme | null>;
+  onUserThemeUpdated: UpdatedCallback | null;
 }
 
 const initConfig = (availableLocales: readonly string[]): ConfigInstance => {
@@ -43,6 +47,8 @@ const initConfig = (availableLocales: readonly string[]): ConfigInstance => {
     }`);
     errors = [];
   }
+
+  const userTheme = initUserTheme(logger, config.appearance.userThemeFile);
 
   nativeTheme.themeSource = config.appearance.theme;
 
@@ -67,7 +73,18 @@ const initConfig = (availableLocales: readonly string[]): ConfigInstance => {
     get current(): AppConfig {
       return config;
     },
+
     logger,
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    loadUserTheme: userTheme.load,
+
+    get onUserThemeUpdated(): UpdatedCallback | null {
+      return userTheme.onUpdated;
+    },
+    set onUserThemeUpdated(value: UpdatedCallback | null) {
+      userTheme.onUpdated = value;
+    },
   };
 };
 
@@ -139,6 +156,7 @@ const validateAppearanceConfig = (
   const sidebarColor = validateColor(value.sidebarColor, 'sidebarColor', errors);
   const zoomLevel = validateZoomLevel(value.zoomLevel, errors);
   const motion = validateMotionPreference(value.motion, errors);
+  const userThemeFile = validateUserThemeFile(value.userThemeFile, errors);
 
   return {
     theme,
@@ -147,6 +165,7 @@ const validateAppearanceConfig = (
     sidebarColor,
     zoomLevel,
     motion,
+    userThemeFile,
   };
 };
 
@@ -224,6 +243,24 @@ const validateMotionPreference = (
       errors.push(`appearance.motion: invalid value: ${value}`);
       return DefaultConfig.appearance.motion;
   }
+};
+
+const validateUserThemeFile = (
+  value: unknown,
+  errors: string[]
+): string | null => {
+  if (value == null) {
+    return null;
+  }
+  if (typeof value !== 'string') {
+    errors.push(`appearance.userThemeFile: invalid value: ${value}`);
+    return null;
+  }
+
+  // If a file is specified, we will keep the path even if it doesn't exist or
+  // contains syntax errors. These things are checked for when we try to load
+  // the user theme file.
+  return value;
 };
 
 const validateUpdatePolicy = (

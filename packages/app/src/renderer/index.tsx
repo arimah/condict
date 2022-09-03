@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {webFrame} from 'electron';
 import produce, {enableMapSet} from 'immer';
 
-import {AppConfig, ThemeName, Locale, SavedSession} from '../types';
+import {AppConfig, ThemeName, UserTheme, Locale, SavedSession} from '../types';
 
 import ipc from './ipc';
 import AppContexts from './app-contexts';
@@ -13,6 +13,7 @@ import {ConfigRecipe} from './types';
 type Props = {
   initialConfig: AppConfig;
   initialSystemTheme: ThemeName;
+  initialUserTheme: UserTheme | null;
   initialLocale: Locale;
   initialDefaultLocale: Locale;
   initialAvailableLocales: readonly string[];
@@ -23,6 +24,7 @@ const App = (props: Props): JSX.Element => {
   const {
     initialConfig,
     initialSystemTheme,
+    initialUserTheme,
     initialDefaultLocale,
     initialLocale,
     initialAvailableLocales,
@@ -33,6 +35,7 @@ const App = (props: Props): JSX.Element => {
 
   const [config, setConfig] = useState(initialConfig);
   const [systemTheme, setSystemTheme] = useState(initialSystemTheme);
+  const [userTheme, setUserTheme] = useState(initialUserTheme);
   const [defaultLocale, setDefaultLocale] = useState(initialDefaultLocale);
   const [currentLocale, setCurrentLocale] = useState(initialLocale);
   const [availableLocales, setAvailableLocales] = useState(
@@ -50,6 +53,12 @@ const App = (props: Props): JSX.Element => {
   useEffect(() => {
     ipc.on('system-theme-change', (_e, systemTheme) => {
       setSystemTheme(systemTheme);
+    });
+
+    ipc.on('user-theme-change', (_e) => {
+      void ipc.invoke('get-user-theme').then(userTheme => {
+        setUserTheme(userTheme);
+      });
     });
 
     const defaultLocaleName = defaultLocale.locale;
@@ -101,6 +110,7 @@ const App = (props: Props): JSX.Element => {
       config={config}
       initialConfig={initialConfig}
       systemTheme={systemTheme}
+      userTheme={userTheme}
       currentLocale={currentLocale}
       defaultLocale={defaultLocale}
       availableLocales={availableLocales}
@@ -120,6 +130,7 @@ void ipc.invoke('get-initial-state').then(state => {
     <App
       initialConfig={state.config}
       initialSystemTheme={state.systemTheme}
+      initialUserTheme={state.userTheme}
       initialLocale={state.currentLocale}
       initialDefaultLocale={state.defaultLocale}
       initialAvailableLocales={state.availableLocales}

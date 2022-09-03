@@ -50,6 +50,10 @@ const main = (): void => {
     mainWindow.send('dictionary-event-batch', batch);
   };
 
+  config.onUserThemeUpdated = () => {
+    mainWindow.send('user-theme-change');
+  };
+
   translations.onLocaleUpdated = locale => {
     mainWindow.send('locale-updated', locale);
   };
@@ -83,6 +87,7 @@ const main = (): void => {
 
     const defaultBundle = await translations.loadBundle(DefaultLocale);
     const currentBundle = await translations.loadBundle(cfg.locale);
+    const currentUserTheme = await config.loadUserTheme();
 
     return {
       config: cfg,
@@ -97,6 +102,7 @@ const main = (): void => {
         source: currentBundle,
       },
       lastSession: session.current,
+      userTheme: currentUserTheme,
     };
   });
 };

@@ -2,7 +2,13 @@ import {ReactNode} from 'react';
 
 import {GlobalStyles as UIStyles} from '@condict/ui';
 
-import {AppConfig, ThemeName, Locale, SavedSession} from '../../types';
+import {
+  AppConfig,
+  ThemeName,
+  UserTheme,
+  Locale,
+  SavedSession,
+} from '../../types';
 
 // Dialog, navigation and data contexts are defined elsewhere
 // due to their complexity.
@@ -22,6 +28,7 @@ export type Props = {
   config: AppConfig;
   initialConfig: AppConfig;
   systemTheme: ThemeName;
+  userTheme: UserTheme | null;
   currentLocale: Locale;
   defaultLocale: Locale;
   availableLocales: readonly string[];
@@ -35,6 +42,7 @@ const AppContexts = (props: Props): JSX.Element => {
     config,
     initialConfig,
     systemTheme,
+    userTheme,
     currentLocale,
     defaultLocale,
     availableLocales,
@@ -56,6 +64,7 @@ const AppContexts = (props: Props): JSX.Element => {
         <AppThemeProvider
           appearance={config.appearance}
           systemTheme={systemTheme}
+          userTheme={userTheme}
         >
           <DataProvider>
             <ErrorBoundary

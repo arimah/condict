@@ -22,7 +22,7 @@ import {
   darkThemeVars as darkThemeTableVars,
 } from '@condict/table-editor';
 
-import {ThemeName, ColorName, AppearanceConfig} from '../../types';
+import {ThemeName, UserTheme, ColorName, AppearanceConfig} from '../../types';
 
 import {
   SidebarColors,
@@ -33,6 +33,7 @@ import {
 export type Props = {
   appearance: AppearanceConfig;
   systemTheme: ThemeName;
+  userTheme: UserTheme | null;
   children: ReactNode;
 };
 
@@ -69,7 +70,7 @@ const ThemeBuilders: Record<ThemeName, ThemeBuilder> = {
 };
 
 const AppThemeProvider = (props: Props): JSX.Element => {
-  const {appearance, systemTheme, children} = props;
+  const {appearance, systemTheme, userTheme, children} = props;
 
   const {
     theme: themePreference,
@@ -79,16 +80,36 @@ const AppThemeProvider = (props: Props): JSX.Element => {
     motion,
   } = appearance;
 
-  const theme = useMemo<Theme>(() => {
-    const themeName = themePreference === 'system'
-      ? systemTheme
-      : themePreference;
+  const themeVars = useMemo<ThemeVariables>(() => {
+    let themeName: ThemeName;
+    if (userTheme) {
+      themeName = userTheme.extends;
+    } else {
+      themeName = themePreference === 'system'
+        ? systemTheme
+        : themePreference;
+    }
+
     const vars = ThemeBuilders[themeName](
       Colors[accentColor],
       Colors[dangerColor],
       sidebarColor
     );
 
+    if (userTheme) {
+      return {...vars, ...userTheme.vars};
+    }
+    return vars;
+  }, [
+    themePreference,
+    systemTheme,
+    userTheme,
+    accentColor,
+    dangerColor,
+    sidebarColor,
+  ]);
+
+  const theme = useMemo<Theme>(() => {
     let timing = DefaultTiming;
     if (motion === 'none') {
       timing = {
@@ -105,15 +126,8 @@ const AppThemeProvider = (props: Props): JSX.Element => {
       };
     }
 
-    return {vars, timing};
-  }, [
-    themePreference,
-    systemTheme,
-    accentColor,
-    dangerColor,
-    sidebarColor,
-    motion,
-  ]);
+    return {vars: themeVars, timing};
+  }, [themeVars, motion]);
 
   return (
     <ThemeProvider theme={theme}>

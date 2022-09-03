@@ -13,6 +13,7 @@ const DefaultConfig: AppConfig = {
     sidebarColor: 'purple',
     zoomLevel: 100,
     motion: 'full',
+    userThemeFile: null,
   },
   locale: DefaultLocale,
   // Default to the least intrusive update policy. The user will be prompted

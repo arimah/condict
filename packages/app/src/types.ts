@@ -4,7 +4,7 @@ import type {
   ServerConfig as BaseServerConfig,
   LoggerOptions,
 } from '@condict/server';
-import type {MotionPreference} from '@condict/ui';
+import type {MotionPreference, ThemeVariables} from '@condict/ui';
 
 export interface AppConfig {
   /** Condict UI appearance configuration. */
@@ -34,6 +34,8 @@ export interface AppearanceConfig {
   readonly zoomLevel: number;
   /** The motion preference, which controls animations in the app. */
   readonly motion: MotionPreference;
+  /** The path to the user theme file, or null if no user theme is loaded. */
+  readonly userThemeFile: string | null;
 }
 
 export type ThemePreference = ThemeName | 'system';
@@ -84,6 +86,21 @@ export interface LoginConfig {
   readonly username: string | null;
   /** The session token. */
   readonly sessionToken: string | null;
+}
+
+/**
+ * Contains metadata about a user theme, as well as the custom theme variables
+ * for styling the UI.
+ */
+export interface UserTheme {
+  /** The theme name. */
+  readonly name: string;
+  /** The theme's author. */
+  readonly author: string | null;
+  /** The theme that this user theme extends. */
+  readonly extends: 'light' | 'dark';
+  /** Theme variables exposed by this theme. */
+  readonly vars: ThemeVariables;
 }
 
 /**

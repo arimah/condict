@@ -12,6 +12,7 @@ import {
   OperationResult,
   AppConfig,
   ThemeName,
+  UserTheme,
   Locale,
   UpdateStatus,
   UpdateProgress,
@@ -29,7 +30,16 @@ export type MainChannels = {
   /** Informs the renderer that the system theme has changed. */
   'system-theme-change': ThemeName;
 
-  /** Informs the renderer that a locale source file has changed. */
+  /**
+   * Informs the renderer that the user theme has changed. The renderer must
+   * request the updated user theme by invoking `get-user-theme`.
+   */
+  'user-theme-change': void;
+
+  /**
+   * Informs the renderer that a locale source file has changed. The renderer
+   * must request the updated locale by invoking `get-locale`.
+   */
   'locale-updated': string;
 
   /** Informs the renderer that the set of available locales has changed. */
@@ -70,6 +80,9 @@ export type RendererChannels = {
 
   /** Sets the current app configuration. */
   'set-config': IpcRendererMessage<AppConfig, void>;
+
+  /** Get the current user theme. */
+  'get-user-theme': IpcRendererMessage<void, UserTheme | null>;
 
   /**
    * Gets the source text of the specified translation bundle. This may involve
@@ -143,6 +156,8 @@ export type RendererChannels = {
     currentLocale: Locale;
     /** The previous session, if there is one. */
     lastSession: SavedSession | null;
+    /** The current user theme, or null if none is loaded. */
+    userTheme: UserTheme | null;
   }>;
 };
 

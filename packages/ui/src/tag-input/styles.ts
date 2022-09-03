@@ -60,13 +60,11 @@ export const Tag = styled.button.attrs({
   &:hover {
     background-color: var(--button-bg-hover);
     border-color: var(--button-border-hover);
-    color: var(--button-fg-hover);
   }
 
   &:active {
     background-color: var(--button-bg-pressed);
     border-color: var(--button-border-pressed);
-    color: var(--button-fg-pressed);
   }
 
   &:disabled {
