@@ -113,7 +113,8 @@ const DefinitionMut = {
         action: 'create',
         id: definitionId,
         lemmaId,
-        languageId,
+        partOfSpeechId: partOfSpeech.id,
+        languageId: language.id,
       });
       if (tagIds.length > 0) {
         events.emit({
@@ -121,7 +122,7 @@ const DefinitionMut = {
           action: 'update',
           definitionId,
           lemmaId,
-          languageId,
+          languageId: language.id,
           nextTagIds: tagIds,
           prevTagIds: [],
         });
@@ -237,6 +238,10 @@ const DefinitionMut = {
         id: definition.id,
         lemmaId: newFields.get('lemma_id') ?? definition.lemma_id,
         prevLemmaId: definition.lemma_id,
+        partOfSpeechId:
+          newFields.get('part_of_speech_id') ??
+          definition.part_of_speech_id,
+        prevPartOfSpeechId: definition.part_of_speech_id,
         languageId: definition.language_id,
       });
       logger.verbose(`Definition updated: ${definition.id}`);
@@ -322,6 +327,7 @@ const DefinitionMut = {
         action: 'delete',
         id: definition.id,
         lemmaId: definition.lemma_id,
+        partOfSpeechId: definition.part_of_speech_id,
         languageId: definition.language_id,
       });
       if (prevTagIds.length > 0) {

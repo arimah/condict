@@ -62,19 +62,36 @@ const parseEvent = (value: unknown, index: number): DictionaryEvent => {
     case 'definition': {
       const id = parseId(value.id, `${path}.id`);
       const lemmaId = parseId(value.lemmaId, `${path}.lemmaId`);
+      const partOfSpeechId = parseId(
+        value.partOfSpeechId,
+        `${path}.partOfSpeechId`
+      );
       const languageId = parseId(value.languageId, `${path}.languageId`);
       if (action === 'update') {
         const prevLemmaId = parseId(value.prevLemmaId, `${path}.prevLemmaId`);
+        const prevPartOfSpeechId = parseId(
+          value.prevPartOfSpeechId,
+          `${path}.prevPartOfSpeechId`
+        );
         return {
           type: 'definition',
           action,
           id,
           lemmaId,
           prevLemmaId,
+          partOfSpeechId,
+          prevPartOfSpeechId,
           languageId,
         };
       }
-      return {type: 'definition', action, id, lemmaId, languageId};
+      return {
+        type: 'definition',
+        action,
+        id,
+        lemmaId,
+        partOfSpeechId,
+        languageId,
+      };
     }
     case 'partOfSpeech': {
       const id = parseId(value.id, `${path}.id`);

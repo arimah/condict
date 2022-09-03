@@ -45,7 +45,10 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
     reloadOn: event => (
       event.type === 'partOfSpeech' && event.id === id ||
       event.type === 'inflectionTable' && event.partOfSpeechId === id ||
-      event.type === 'definition' && event.languageId === languageId ||
+      event.type === 'definition' && (
+        event.partOfSpeechId === id ||
+        event.action === 'update' && event.prevPartOfSpeechId === id
+      ) ||
       event.type === 'language' && event.id === languageId
     ),
     pageRef,

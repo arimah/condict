@@ -38,7 +38,7 @@ export interface DictionaryEventBatch {
  * encapuslate additions (action == 'create'), updates (action == 'update') and
  * deletions (actions == 'delete'). Dictionary events are fairly high-level, and
  * cannot be used for fine-grained updates. They contain information about what
- * was done and to what resource, but do not contain e.g. changed fields. Events
+ * was done and to what resource, but do not contain all changed fields. Events
  * should be used to determine whether the client needs to re-fetch data, not to
  * patch already fetched data.
  *
@@ -111,6 +111,8 @@ export interface CreateOrDeleteDefinitionEvent extends
   readonly id: number;
   /** The ID of the lemma that the definition belongs/belonged to. */
   readonly lemmaId: number;
+  /** The ID of the part of speech that the definition belongs/belonged to. */
+  readonly partOfSpeechId: number;
   /** The ID of the language that the definition belongs/belonged to. */
   readonly languageId: number;
 }
@@ -120,7 +122,7 @@ export interface UpdateDefinitionEvent extends
 {
   /** The ID of the definition. */
   readonly id: number;
-  /** The ID of the lemma that the definition belongs/belonged to. */
+  /** The ID of the lemma that the definition belongs to. */
   readonly lemmaId: number;
   /**
    * The ID of the lemma that the definition previously belonged to. If this
@@ -128,7 +130,15 @@ export interface UpdateDefinitionEvent extends
    * lemma.
    */
   readonly prevLemmaId: number;
-  /** The ID of the language that the definition belongs/belonged to. */
+  /** The ID of the part of speech that the definition belongs to. */
+  readonly partOfSpeechId: number;
+  /**
+   * The ID of the part of speech that the definition previously belonged to.
+   * If this value is the same as `partOfSpeechId`, then the definition has not
+   * moved to a new part of speech.
+   */
+  readonly prevPartOfSpeechId: number;
+  /** The ID of the language that the definition belongs to. */
   readonly languageId: number;
 }
 
