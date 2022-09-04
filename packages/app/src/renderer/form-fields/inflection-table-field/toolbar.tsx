@@ -171,7 +171,6 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
 
       <Toolbar.MenuButton
         label={l10n.getString('table-editor-tools-menu')}
-        placement='BELOW_RIGHT'
         menu={
           <Menu>
             <Menu.Item

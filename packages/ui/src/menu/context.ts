@@ -7,20 +7,23 @@ import React, {
 } from 'react';
 
 import {Shortcut} from '../shortcut';
-import Placement, {RelativeParent} from '../placement';
 import {Descendants} from '../descendants';
+import {WritingDirection} from '../writing-direction';
+import useLazyRef from '../lazy-ref';
 
 import {
   RegisteredMenu,
   RegisteredItem,
   MenuStack,
   OpenMenu,
+  MenuParent,
   CheckType,
 } from './types';
-import useLazyRef from '../lazy-ref';
 
 export interface OwnerContextValue {
   readonly stack: MenuStack;
+
+  readonly dir: WritingDirection;
 
   register(menu: RegisteredMenu): () => void;
 
@@ -28,8 +31,7 @@ export interface OwnerContextValue {
 
   open(
     menu: RegisteredMenu,
-    parent: RelativeParent,
-    placement?: Placement,
+    parent: MenuParent,
     fromKeyboard?: boolean
   ): void;
 
@@ -45,20 +47,17 @@ export type OwnerMessage =
   | {
     type: 'openRoot';
     menu: RegisteredMenu;
-    parent: RelativeParent;
-    placement: Placement;
+    parent: MenuParent;
     fromKeyboard: boolean;
   }
   | {
     type: 'openSubmenu',
     menu: RegisteredMenu;
-    placement: Placement;
     fromKeyboard: boolean;
   }
   | {
     type: 'activate';
     item?: RegisteredItem;
-    submenuPlacement: Placement;
     fromKeyboard: boolean;
   }
   | {type: 'closeDeepest'}

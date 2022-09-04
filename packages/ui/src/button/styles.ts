@@ -42,8 +42,7 @@ export const ButtonStyle = css<Props>`
     border-color: var(--button-border-hover);
   }
 
-  &:active,
-  &.force-active {
+  &:is(:active, .force-active) {
     background-color: var(--button-bg-pressed);
     border-color: var(--button-border-pressed);
   }

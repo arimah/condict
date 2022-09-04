@@ -13,14 +13,11 @@ import {
   ContextMenuTrigger,
   Button,
   Shortcut,
-  Placement,
-  Select,
 } from '@condict/ui';
 
 import Demo, {List, Row, useDemoState} from '../demo';
 
 type State = {
-  placement: Placement;
   keepOpen: boolean;
   // Checkable menu item states
   lineStyle: 'dotted' | 'dashed' | 'solid';
@@ -32,7 +29,6 @@ type State = {
 };
 
 const InitialState: State = {
-  placement: 'BELOW_LEFT',
   keepOpen: false,
   // Checkable menu item states
   lineStyle: 'dashed',
@@ -44,17 +40,6 @@ const InitialState: State = {
 };
 
 const StorageKey = 'condict/ui/menu';
-
-const Placements = [
-  {value: 'BELOW_LEFT', name: 'Below left'},
-  {value: 'BELOW_RIGHT', name: 'Below right'},
-  {value: 'ABOVE_LEFT', name: 'Above left'},
-  {value: 'ABOVE_RIGHT', name: 'Above right'},
-  {value: 'LEFT_TOP', name: 'Left top'},
-  {value: 'LEFT_BOTTOM', name: 'Left bottom'},
-  {value: 'RIGHT_TOP', name: 'Right top'},
-  {value: 'RIGHT_BOTTOM', name: 'Right bottom'},
-];
 
 const NewShortcut = Shortcut.parse('Primary+N n');
 const OpenShortcut = Shortcut.parse('Primary+O o');
@@ -158,23 +143,10 @@ const Main = (): JSX.Element => {
   const {state, set, reset} = useDemoState(StorageKey, InitialState);
 
   return (
-    <Demo
-      name='Menu'
-      controls={[
-        <label>
-          Placement: <Select
-            value={state.placement}
-            options={Placements}
-            onChange={e => set('placement', e.target.value as Placement)}
-          />
-        </label>,
-      ]}
-      onReset={reset}
-    >
+    <Demo name='Menu' onReset={reset}>
       <List>
         <Row>
           <MenuTrigger
-            placement={state.placement}
             openClass='force-active'
             menu={<DemoMenu state={state} set={set}/>}
           >
@@ -182,10 +154,7 @@ const Main = (): JSX.Element => {
           </MenuTrigger>
         </Row>
         <Row>
-          <ContextMenuTrigger
-            placement={state.placement}
-            menu={<DemoMenu state={state} set={set}/>}
-          >
+          <ContextMenuTrigger menu={<DemoMenu state={state} set={set}/>}>
             <Button label='I have a context menu'/>
           </ContextMenuTrigger>
         </Row>

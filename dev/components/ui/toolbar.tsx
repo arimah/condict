@@ -260,7 +260,6 @@ const Main = (): JSX.Element => {
         <Spacer/>
         <MenuButton
           label='More options'
-          placement='BELOW_RIGHT'
           menu={<MoreOptionsMenu state={state} set={set}/>}
         >
           <DotsVerticalIcon/>

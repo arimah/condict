@@ -1,14 +1,13 @@
 import React, {MouseEvent, Ref, useState, useRef, useCallback} from 'react';
 
 import combineRefs from '../combine-refs';
-import Placement, {RelativeParent} from '../placement';
 import {useUniqueId} from '../unique-id';
 
 import MenuOwner, {MenuOwnerHandle} from './owner';
+import {MenuParent} from './types';
 
 export type Props = {
   menu: JSX.Element;
-  placement?: Placement;
   openClass?: string;
   onToggle?: (open: boolean) => void;
   children: JSX.Element & {
@@ -16,14 +15,13 @@ export type Props = {
   };
 };
 
-export type ChildType = RelativeParent & {
+export type ChildType = MenuParent & {
   focus: () => void;
 };
 
 const ContextMenuTrigger = (props: Props): JSX.Element => {
   const {
     menu,
-    placement,
     openClass,
     onToggle,
     children,
@@ -51,13 +49,12 @@ const ContextMenuTrigger = (props: Props): JSX.Element => {
       ownerRef.current.open({
         name: null,
         parent,
-        placement,
         fromKeyboard: e.button === 0,
       });
       setOpen(true);
       onToggle?.(true);
     }
-  }, [placement, onToggle]);
+  }, [onToggle]);
   const handleClose = useCallback(() => {
     childRef.current?.focus();
     setOpen(false);

@@ -168,7 +168,7 @@ export const ListTools = styled.div`
     box-sizing: border-box;
     position: absolute;
     top: 0;
-    left: 6px;
+    inset-inline-start: 6px;
     width: 14px;
     height: calc(50% + 1px);
     border-inline-start: 2px solid var(--border);

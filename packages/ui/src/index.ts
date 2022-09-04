@@ -37,6 +37,7 @@ export {
   MenuOwnerHandle,
   MenuTrigger,
   ContextMenuTrigger,
+  MenuParent,
 } from './menu';
 export {NonIdealState, Props as NonIdealStateProps} from './non-ideal-state';
 export {
@@ -98,7 +99,6 @@ export {
 } from './theme';
 
 export {default as MarkerLocation} from './marker-location';
-export {default as Placement, RelativeParent, placeElement} from './placement';
 export {
   WritingDirection,
   WritingDirectionProvider,

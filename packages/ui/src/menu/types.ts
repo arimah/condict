@@ -1,7 +1,6 @@
 import {ReactNode} from 'react';
 
 import {Descendants} from '../descendants';
-import Placement, {RelativeParent} from '../placement';
 import {Shortcut} from '../shortcut';
 
 export interface RegisteredMenu {
@@ -41,9 +40,18 @@ export interface MenuStack {
 export interface OpenMenu {
   readonly menu: RegisteredMenu;
   readonly depth: number;
-  readonly parent: RelativeParent;
-  readonly placement: Placement;
+  readonly parent: MenuParent;
   readonly focusFirstOnOpen: boolean;
+}
+
+export type MenuParent =
+  | Element
+  | DOMRectReadOnly
+  | Point;
+
+export interface Point {
+  readonly x: number;
+  readonly y: number;
 }
 
 export interface PhantomProps {

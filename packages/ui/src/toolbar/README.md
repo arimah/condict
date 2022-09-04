@@ -17,7 +17,7 @@ The [`<Toolbar>`](#toolbar-1) component implements a generic toolbar. It defines
 ## Examples
 
 ```jsx
-import {Toolbar, Menu, Placement} from '@condict/ui';
+import {Toolbar, Menu} from '@condict/ui';
 
 // A simple toolbar with a few actions.
 <Toolbar>
@@ -65,7 +65,7 @@ import {Toolbar, Menu, Placement} from '@condict/ui';
   </Toolbar.Button>
 </Toolbar>
 
-// A toolbar with a right-aligned menu button.
+// A toolbar with a menu button.
 <Toolbar>
   <Toolbar.Group name='Edit'>
     ...
@@ -74,7 +74,7 @@ import {Toolbar, Menu, Placement} from '@condict/ui';
   <Toolbar.MenuButton
     label='More options'
     menu={
-      <Menu placement={Placement.BELOW_RIGHT}>
+      <Menu>
         ...
       </Menu>
     }

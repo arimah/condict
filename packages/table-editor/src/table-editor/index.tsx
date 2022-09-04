@@ -13,7 +13,7 @@ import {
   CommandProvider,
   MenuOwner,
   MenuOwnerHandle,
-  RelativeParent,
+  MenuParent,
   genUniqueId,
 } from '@condict/ui';
 
@@ -242,20 +242,18 @@ class TableEditor<D, M extends Messages> extends Component<Props<D, M>, State<D>
     const showContextMenu = hasContextMenu(table) || !!contextMenuExtra;
     const {contextMenuRef} = this;
     if (showContextMenu && contextMenuRef.current) {
-      let parent: RelativeParent;
-      if (e.button === 0) {
+      let parent: MenuParent;
+      if (e.button === -1) {
         const {selection} = table;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        parent = document.getElementById(
-          `${this.tableId}-${selection.focus}`
-        )!;
+        parent = document.getElementById(`${this.tableId}-${selection.focus}`)!;
       } else {
         parent = {x: e.clientX, y: e.clientY};
       }
       contextMenuRef.current.open({
         name: null,
         parent,
-        fromKeyboard: e.button === 0,
+        fromKeyboard: e.button === -1,
       });
       this.setState({contextMenuOpen: true});
     }

@@ -18,7 +18,7 @@ Working with menus can be a bit fiddly. Read the documentation carefully to ensu
 ## Examples
 
 ```jsx
-import {Menu, MenuTrigger, Placement, Button, Shortcut} from '@condict/ui';
+import {Menu, MenuTrigger, Button, Shortcut} from '@condict/ui';
 
 // A single-level menu attached to a button.
 const SettingsShortcut = Shortcut.parse(...);
@@ -51,7 +51,7 @@ const SettingsShortcut = Shortcut.parse(...);
 </MenuTrigger>
 
 // A menu with submenus.
-// Menu items use commands to implement their functionality.
+// The menu items use commands to implement their functionality.
 <Menu>
   <Menu.Item icon={<CutIcon/>} label='Cut' command='cut'/>
   <Menu.Item icon={<CopyIcon/>} label='Copy' command='copy'/>
@@ -121,32 +121,14 @@ A handle to a [`<Menu>`](#menu), obtained by taking a ref to the menu. It is use
 
 ### `MenuHandle.open`
 
-> `open(options: {parent: RelativeParent; placement?: Placement; fromKeyboard?: boolean})`
+> `open(options: {parent: MenuParent; fromKeyboard?: boolean})`
 
 Opens the menu. If the menu's [owner](#menuowner) already has an open menu, nothing happens. The following options are available:
 
 * `parent` (required): The element, `DOMRect` or point that the menu is placed relative to. This value _must_ contain a visible HTML element, a `DOMRect` or a point (as an object with an `x` and `y` property); otherwise, the menu will not be positioned correctly. If the parent is a `DOMRect` or a point, it will be treated as screen coordinates.
-* `placement` (optional): The [placement](#placement) of the menu, relative to its parent. Default:  depends on the writing direction; `'BELOW_LEFT'` in LTR mode, `'BELOW_RIGHT'` in RTL mode.
 * `fromKeyboard` (optional): True if the menu was opened from keyboard interaction. Default: false.
 
 There is no corresponding `close` method. Menus can only be closed by user interaction, or by unmounting the menu owner. To be notified when the menu closes, attach an `onClose` prop.
-
-### Placement
-
-The `Placement` type (from `@condict/ui`) is an enumeration of the following values:
-
-* `'ABOVE_LEFT'`: menu is above the parent, horizontally aligned with the parent's left edge.
-* `'ABOVE_RIGHT'`: menu is above the parent, horizontally aligned with the parent's right edge.
-* `'BELOW_LEFT'`: menu is below the parent, horizontally aligned with the parent's left edge.
-* `'BELOW_RIGHT'`: menu is below the parent, horizontally aligned with the parent's right edge.
-* `'LEFT_TOP'`: menu is to the left of the parent, vertically aligned with the parent's top edge.
-* `'LEFT_BOTTOM'`: menu is to the left of the parent, vertically aligned with the parent's bottom edge.
-* `'RIGHT_TOP'`: menu is to the right of the parent, vertically aligned with the parent's top edge.
-* `'RIGHT_BOTTOM'`: menu is to the right of the parent, vertically aligned with the parent's bottom edge.
-
-The following picture illustrates the available placements:
-
-![Placements](./placement.png)
 
 ## `<Menu.Item>`
 
@@ -234,13 +216,12 @@ A handle to a [`<MenuOwner>`](#menuowner), obtained by taking a ref to the menu 
 
 ### `MenuOwnerHandle.open`
 
-> `open(options: {name?: string | null; parent: RelativeParent; placement?: Placement; fromKeyboard?: boolean})`
+> `open(options: {name?: string | null; parent: MenuParent; fromKeyboard?: boolean})`
 
 This imperative method opens the given [`Menu`](#menu). If the owner already has an open menu, it will be closed. The following options are available:
 
 * `name` (optional): The name of the menu to open, corresponding to the menu's `name` prop. If omitted, the first registered menu is opened.
 * `parent` (required): The element, `DOMRect` or point that the menu is placed relative to. This value _must_ contain a visible HTML element, a `DOMRect` or a point (as an object with an `x` and `y` property); otherwise, the menu will not be positioned correctly. If the parent is a `DOMRect` or a point, it will be treated as screen coordinates.
-* `placement` (optional): The [placement](#placement) of the menu, relative to its parent. Default: depends on the writing direction; `'BELOW_LEFT'` in LTR mode, `'BELOW_RIGHT'` in RTL mode.
 * `fromKeyboard` (optional): True if the menu was opened from keyboard interaction. Default: false.
 
 There is no corresponding `close` method. Menus can only be closed by user interaction, or by unmounting the menu owner. To be notified when the root menu closes, attach an `onCloseRoot` prop.

@@ -8,13 +8,13 @@ import {
 } from 'react';
 import ReactDOM from 'react-dom';
 
-import Placement, {RelativeParent, placeElement} from '../placement';
 import {compareNodes, Descendants} from '../descendants';
 import useLazyRef from '../lazy-ref';
 
 import {MenuContext, OwnerContext} from './context';
 import getContainer from './container';
-import {MenuStack, OpenMenu, RegisteredItem, RegisteredMenu} from './types';
+import placeMenu from './placement';
+import {MenuStack, OpenMenu, MenuParent, RegisteredItem, RegisteredMenu} from './types';
 import * as S from './styles';
 
 export type Props = {
@@ -31,8 +31,7 @@ export type Props = {
 export interface MenuHandle {
   open(
     options: {
-      parent: RelativeParent;
-      placement?: Placement;
+      parent: MenuParent;
       fromKeyboard?: boolean;
     }
   ): void;
@@ -71,8 +70,8 @@ const OwnedMenu = (props: Props): JSX.Element => {
   useImperativeHandle(privateRef, () => menu, [menu]);
 
   useImperativeHandle(publicRef, () => ({
-    open({parent, placement, fromKeyboard}) {
-      owner.open(menu, parent, placement, fromKeyboard);
+    open({parent, fromKeyboard}) {
+      owner.open(menu, parent, fromKeyboard);
     },
   }), [owner]);
 
@@ -99,7 +98,7 @@ const OwnedMenu = (props: Props): JSX.Element => {
       if (isOpen) {
         if (elemRef.current) {
           elemRef.current.style.opacity = '1';
-          placeElement(elemRef.current, openMenu.parent, openMenu.placement);
+          placeMenu(openMenu, owner.dir);
         }
         if (openMenu.focusFirstOnOpen) {
           const item = Descendants.first(menu.items);
@@ -140,7 +139,6 @@ const OwnedMenu = (props: Props): JSX.Element => {
       open={isOpen}
       aria-label={label}
       aria-activedescendant={focusedItem?.id}
-      submenu={parentItem !== null}
       style={{zIndex: 100 + (openMenu?.depth ?? 0)}}
       onKeyDown={owner.onMenuKeyDown}
       onKeyPress={owner.onMenuKeyPress}

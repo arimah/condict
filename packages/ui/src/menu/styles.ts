@@ -1,8 +1,9 @@
 import styled, {css, keyframes} from 'styled-components';
 
+export const MenuPaddingBlock = 4;
+
 export type MenuProps = {
   open: boolean;
-  submenu: boolean;
 };
 
 export const Menu = styled.div.attrs({
@@ -11,9 +12,8 @@ export const Menu = styled.div.attrs({
   tabIndex: -1,
 })<MenuProps>`
   display: ${p => p.open ? 'block' : 'none'};
-  padding-top: 4px;
-  padding-bottom: 4px;
-  position: absolute;
+  padding-block: ${MenuPaddingBlock}px;
+  position: fixed;
   top: 0;
   left: 0;
   border-radius: 4px;
@@ -26,11 +26,6 @@ export const Menu = styled.div.attrs({
   &:focus {
     outline: none;
   }
-
-  ${p => p.submenu && `
-    margin-top: -4px;
-    margin-bottom: -4px;
-  `}
 `;
 
 export type ItemProps = {

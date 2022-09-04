@@ -7,3 +7,4 @@ export {
 } from './owner';
 export {default as MenuTrigger} from './trigger';
 export {default as ContextMenuTrigger} from './context-trigger';
+export {MenuParent} from './types';

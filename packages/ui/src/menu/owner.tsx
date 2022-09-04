@@ -10,16 +10,15 @@ import React, {
   useEffect,
 } from 'react';
 
-import Placement, {RelativeParent} from '../placement';
 import {Descendants} from '../descendants';
-import {WritingDirection, useWritingDirection} from '../writing-direction';
+import {useWritingDirection} from '../writing-direction';
 import {disableFocusManager, enableFocusManager} from '../focus';
 import {Shortcut, ShortcutMap} from '../shortcut';
 import useLazyRef from '../lazy-ref';
 
 import {OwnerContext, OwnerContextValue, OwnerMessage} from './context';
 import PhantomItem from './phantom-item';
-import {RegisteredMenu, MenuStack} from './types';
+import {RegisteredMenu, MenuStack, MenuParent} from './types';
 
 export type Props = {
   onCloseRoot?: () => void;
@@ -30,8 +29,7 @@ export interface MenuOwnerHandle {
   open(
     options: {
       name?: string | null;
-      parent: RelativeParent;
-      placement?: Placement;
+      parent: MenuParent;
       fromKeyboard?: boolean;
     }
   ): void;
@@ -68,6 +66,7 @@ const MenuOwner = React.forwardRef((
 
   const ownerContext = useMemo<OwnerContextValue>(() => ({
     stack,
+    dir,
     dispatch,
     register(menu) {
       knownMenus.current.push(menu);
@@ -78,19 +77,18 @@ const MenuOwner = React.forwardRef((
         }
       };
     },
-    open(menu, parent, placement, fromKeyboard = false) {
+    open(menu, parent, fromKeyboard = false) {
       dispatch({
         type: 'openRoot',
         menu,
         parent,
-        placement: placement ?? defaultPlacement(dir),
         fromKeyboard,
       });
     },
   }), [dir, stack]);
 
   useImperativeHandle(ref, () => ({
-    open({name, parent, placement, fromKeyboard = false}) {
+    open({name, parent, fromKeyboard = false}) {
       const menu = name != null
         ? knownMenus.current.find(m => m.name === name)
         : knownMenus.current[0];
@@ -99,7 +97,6 @@ const MenuOwner = React.forwardRef((
           type: 'openRoot',
           menu,
           parent,
-          placement: placement ?? defaultPlacement(dir),
           fromKeyboard,
         });
       }
@@ -121,13 +118,9 @@ const MenuOwner = React.forwardRef((
     };
   }).current;
 
-  const refs = useRef({
-    submenuPlacement: getSubmenuPlacement(dir),
-    onCloseRoot,
-  }).current;
-  refs.submenuPlacement = getSubmenuPlacement(dir);
-  refs.onCloseRoot = onCloseRoot;
-  const keyboardMap = useMemo(() => getKeyboardMap(refs), []);
+  const onCloseRootRef = useRef(onCloseRoot);
+  onCloseRootRef.current = onCloseRoot;
+  const keyboardMap = useMemo(getKeyboardMap, []);
 
   ownerContext.onMenuKeyDown = useCallback((e: KeyboardEvent) => {
     // Do not allow key events to escape past the menu system.
@@ -172,7 +165,6 @@ const MenuOwner = React.forwardRef((
       dispatch({
         type: 'activate',
         item: matches[0],
-        submenuPlacement: refs.submenuPlacement,
         fromKeyboard: true,
       });
       intent.cancel();
@@ -224,7 +216,6 @@ const MenuOwner = React.forwardRef((
           hasAvailableSubmenu ? {
             type: 'openSubmenu',
             menu: hoveredItem.submenu,
-            placement: refs.submenuPlacement,
             fromKeyboard: false,
           } : {type: 'closeUpTo', menu: hoveredMenu}
         );
@@ -269,7 +260,6 @@ const MenuOwner = React.forwardRef((
       intent.cancel();
       dispatch({
         type: 'activate',
-        submenuPlacement: refs.submenuPlacement,
         fromKeyboard: false,
       });
     };
@@ -291,7 +281,7 @@ const MenuOwner = React.forwardRef((
       window.removeEventListener('blur', windowBlur);
       enableFocusManager();
 
-      refs.onCloseRoot?.();
+      onCloseRootRef.current?.();
     };
   }, [anyMenuOpen]);
 
@@ -306,12 +296,6 @@ const MenuOwner = React.forwardRef((
 MenuOwner.displayName = 'MenuOwner';
 
 export default MenuOwner;
-
-const defaultPlacement = (dir: WritingDirection): Placement =>
-  dir === 'ltr' ? 'BELOW_LEFT' : 'BELOW_RIGHT';
-
-const getSubmenuPlacement = (dir: WritingDirection): Placement =>
-  dir === 'ltr' ? 'RIGHT_TOP' : 'LEFT_TOP';
 
 const reduce = (stack: MenuStack, msg: OwnerMessage): MenuStack => {
   switch (msg.type) {
@@ -341,7 +325,7 @@ const reduce = (stack: MenuStack, msg: OwnerMessage): MenuStack => {
       };
     }
     case 'openRoot': {
-      const {menu, parent, placement, fromKeyboard} = msg;
+      const {menu, parent, fromKeyboard} = msg;
       return {
         ...stack,
         openMenus: [
@@ -349,7 +333,6 @@ const reduce = (stack: MenuStack, msg: OwnerMessage): MenuStack => {
             menu,
             depth: 0,
             parent,
-            placement,
             focusFirstOnOpen: fromKeyboard,
           },
         ],
@@ -357,7 +340,7 @@ const reduce = (stack: MenuStack, msg: OwnerMessage): MenuStack => {
       };
     }
     case 'openSubmenu': {
-      const {menu, placement, fromKeyboard} = msg;
+      const {menu, fromKeyboard} = msg;
       // Find the *parent menu* of the submenu we need to open, so we can close
       // everything up to it, then open the submenu under it.
 
@@ -374,7 +357,6 @@ const reduce = (stack: MenuStack, msg: OwnerMessage): MenuStack => {
             menu,
             depth: parentDepth + 1,
             parent: parentItem.elem,
-            placement,
             focusFirstOnOpen: fromKeyboard,
           },
         ],
@@ -385,7 +367,7 @@ const reduce = (stack: MenuStack, msg: OwnerMessage): MenuStack => {
       };
     }
     case 'activate': {
-      const {item = stack.currentItem, submenuPlacement, fromKeyboard} = msg;
+      const {item = stack.currentItem, fromKeyboard} = msg;
       if (!item || item.disabled) {
         return stack;
       }
@@ -394,7 +376,6 @@ const reduce = (stack: MenuStack, msg: OwnerMessage): MenuStack => {
         return reduce(stack, {
           type: 'openSubmenu',
           menu: item.submenu,
-          placement: submenuPlacement,
           fromKeyboard,
         });
       } else {
@@ -443,7 +424,9 @@ const reduce = (stack: MenuStack, msg: OwnerMessage): MenuStack => {
   }
 };
 
-const getKeyboardMap = (refs: {submenuPlacement: Placement}) =>
+const getKeyboardMap = () =>
+  // TODO: Should the keyboard map be relative to writing direction?
+  // In particular, left and right arrows.
   new ShortcutMap<KeyCommand>(
     [
       {
@@ -467,7 +450,6 @@ const getKeyboardMap = (refs: {submenuPlacement: Placement}) =>
             return {
               type: 'openSubmenu',
               menu: currentItem.submenu,
-              placement: refs.submenuPlacement,
               fromKeyboard: true,
             };
           }
@@ -483,11 +465,7 @@ const getKeyboardMap = (refs: {submenuPlacement: Placement}) =>
       },
       {
         key: Shortcut.parse('Enter'),
-        exec: () => ({
-          type: 'activate',
-          submenuPlacement: refs.submenuPlacement,
-          fromKeyboard: true,
-        }),
+        exec: () => ({type: 'activate', fromKeyboard: true}),
       },
       {
         key: Shortcut.parse(['Tab', 'Shift+Tab']),
