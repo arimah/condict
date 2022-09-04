@@ -11,7 +11,7 @@ import React, {
 } from 'react';
 
 import {Descendants} from '../descendants';
-import {useWritingDirection} from '../writing-direction';
+import {WritingDirection, useWritingDirection} from '../writing-direction';
 import {disableFocusManager, enableFocusManager} from '../focus';
 import {Shortcut, ShortcutMap} from '../shortcut';
 import useLazyRef from '../lazy-ref';
@@ -118,9 +118,7 @@ const MenuOwner = React.forwardRef((
     };
   }).current;
 
-  const onCloseRootRef = useRef(onCloseRoot);
-  onCloseRootRef.current = onCloseRoot;
-  const keyboardMap = useMemo(getKeyboardMap, []);
+  const keyboardMap = useMemo(() => getKeyboardMap(dir), [dir]);
 
   ownerContext.onMenuKeyDown = useCallback((e: KeyboardEvent) => {
     // Do not allow key events to escape past the menu system.
@@ -182,6 +180,9 @@ const MenuOwner = React.forwardRef((
       intent.cancel();
     }
   }, []);
+
+  const onCloseRootRef = useRef(onCloseRoot);
+  onCloseRootRef.current = onCloseRoot;
 
   const anyMenuOpen = stack.openMenus.length > 0;
   useEffect(() => {
@@ -424,9 +425,7 @@ const reduce = (stack: MenuStack, msg: OwnerMessage): MenuStack => {
   }
 };
 
-const getKeyboardMap = () =>
-  // TODO: Should the keyboard map be relative to writing direction?
-  // In particular, left and right arrows.
+const getKeyboardMap = (dir: WritingDirection) =>
   new ShortcutMap<KeyCommand>(
     [
       {
@@ -443,7 +442,7 @@ const getKeyboardMap = () =>
         exec: () => ({type: 'focusNext'}),
       },
       {
-        key: Shortcut.parse('ArrowRight'),
+        key: Shortcut.parse(dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight'),
         exec(stack) {
           const {currentItem} = stack;
           if (currentItem && currentItem.submenu && !currentItem.disabled) {
@@ -457,9 +456,9 @@ const getKeyboardMap = () =>
         },
       },
       {
-        key: Shortcut.parse('ArrowLeft'),
+        key: Shortcut.parse(dir === 'rtl' ? 'ArrowRight' : 'ArrowLeft'),
         exec: stack =>
-          // Pressing the left arrow key causes the deepest submenu to close,
+          // Pressing this arrow key causes the deepest submenu to close,
           // effectively moving you up one level.
           stack.openMenus.length > 1 ? {type: 'closeDeepest'} : null,
       },
