@@ -61,7 +61,9 @@ const createBundle = (locale: Locale): FluentBundle => {
 
   const resource = new FluentResource(source);
 
-  const bundle = new FluentBundle(localeName);
+  const bundle = new FluentBundle(localeName, {
+    useIsolating: false,
+  });
   const errors = bundle.addResource(resource);
   if (errors.length > 0) {
     console.error(
