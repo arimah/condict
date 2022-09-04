@@ -1,11 +1,13 @@
-import {CommandSpecMap, Shortcut} from '@condict/ui';
+import {CommandSpecMap, Shortcut, WritingDirection} from '@condict/ui';
 
 import {Table} from '../value';
 import {move, selectAll} from '../operations';
 
 import {TableCommandFn} from './types';
 
-const commands: CommandSpecMap<TableCommandFn> = {
+const getCommands = (
+  dir: WritingDirection
+): CommandSpecMap<TableCommandFn> => ({
   selectEntireTable: {
     shortcut: Shortcut.parse('Primary+A a'),
     action: selectAll,
@@ -32,22 +34,32 @@ const commands: CommandSpecMap<TableCommandFn> = {
   },
 
   selectLeft: {
-    shortcut: Shortcut.parse('Shift+ArrowLeft'),
+    shortcut: Shortcut.parse(
+      dir === 'rtl' ? 'Shift+ArrowRight' : 'Shift+ArrowLeft'
+    ),
     action: <D>(table: Table<D>): Table<D> => move(table, 'stay', 'prev', true),
   },
 
   selectToFirstColumn: {
-    shortcut: Shortcut.parse(['Primary+Shift+ArrowLeft', 'Shift+Home']),
+    shortcut: Shortcut.parse([
+      dir === 'rtl' ? 'Primary+Shift+ArrowRight' : 'Primary+Shift+ArrowLeft',
+      'Shift+Home',
+    ]),
     action: <D>(table: Table<D>): Table<D> => move(table, 'stay', 'first', true),
   },
 
   selectRight: {
-    shortcut: Shortcut.parse('Shift+ArrowRight'),
+    shortcut: Shortcut.parse(
+      dir === 'rtl' ? 'Shift+ArrowLeft' : 'Shift+ArrowRight'
+    ),
     action: <D>(table: Table<D>): Table<D> => move(table, 'stay', 'next', true),
   },
 
   selectToLastColumn: {
-    shortcut: Shortcut.parse(['Primary+Shift+ArrowRight', 'Shift+End']),
+    shortcut: Shortcut.parse([
+      dir === 'rtl' ? 'Primary+Shift+ArrowLeft' : 'Primary+Shift+ArrowRight',
+      'Shift+End',
+    ]),
     action: <D>(table: Table<D>): Table<D> => move(table, 'stay', 'last', true),
   },
 
@@ -60,6 +72,6 @@ const commands: CommandSpecMap<TableCommandFn> = {
     shortcut: Shortcut.parse('Primary+Shift+End'),
     action: <D>(table: Table<D>): Table<D> => move(table, 'last', 'last', true),
   },
-};
+});
 
-export default commands;
+export default getCommands;

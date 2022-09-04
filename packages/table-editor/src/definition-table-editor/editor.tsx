@@ -1,10 +1,15 @@
 import {ReactNode, useMemo} from 'react';
 
-import {CommandSpecMap, CommandGroup} from '@condict/ui';
+import {
+  CommandSpecMap,
+  CommandGroup,
+  WritingDirection,
+  useWritingDirection,
+} from '@condict/ui';
 
 import TableEditor from '../table-editor';
 import EditorContext from '../context';
-import {NavigationCommands} from '../commands';
+import {getNavigationCommands} from '../commands';
 import useTableCommands from '../table-commands';
 import {EditorContextValue} from '../types';
 
@@ -39,10 +44,12 @@ export type Props = {
   onBlur?: () => void;
 };
 
-const AllCommands: CommandSpecMap<DefinitionTableCommandFn> = {
-  ...NavigationCommands,
+const getAllCommands = (
+  dir: WritingDirection
+): CommandSpecMap<DefinitionTableCommandFn> => ({
+  ...getNavigationCommands(dir),
   ...DefinitionTableCommands,
-};
+});
 
 const Context: EditorContextValue<DefinitionTableData, Messages> = {
   CellEditor,
@@ -64,7 +71,10 @@ const DefinitionTableEditor = (props: Props): JSX.Element => {
     ...otherProps
   } = props;
 
-  const commands = useTableCommands({value, onChange, commands: AllCommands});
+  const dir = useWritingDirection();
+
+  const commands = useMemo(() => getAllCommands(dir), [dir]);
+  const commandGroup = useTableCommands({value, onChange, commands});
   const stemsContext = useMemo(() => ({term, stems}), [term, stems]);
 
   return (
@@ -74,7 +84,7 @@ const DefinitionTableEditor = (props: Props): JSX.Element => {
           {...otherProps}
           table={value}
           messages={messages}
-          commands={commands}
+          commands={commandGroup}
           onChange={onChange}
         />
       </EditorContext.Provider>
@@ -95,6 +105,6 @@ export const useDefinitionTableCommands = (
 ): CommandGroup => {
   return useTableCommands({
     ...options,
-    commands: AllCommands,
+    commands: DefinitionTableCommands,
   });
 };

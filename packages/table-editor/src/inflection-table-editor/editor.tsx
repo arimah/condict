@@ -1,12 +1,17 @@
-import {ReactNode} from 'react';
+import {ReactNode, useMemo} from 'react';
 
-import {CommandSpecMap, CommandGroup} from '@condict/ui';
+import {
+  CommandSpecMap,
+  CommandGroup,
+  WritingDirection,
+  useWritingDirection,
+} from '@condict/ui';
 
 import TableEditor from '../table-editor';
 import EditorContext from '../context';
 import {
-  MultiselectCommands,
-  NavigationCommands,
+  getMultiselectCommands,
+  getNavigationCommands,
   StructureCommands,
 } from '../commands';
 import useTableCommands from '../table-commands';
@@ -40,12 +45,14 @@ export type Props = {
   onBlur?: () => void;
 };
 
-const AllCommands: CommandSpecMap<InflectionTableCommandFn> = {
-  ...NavigationCommands,
-  ...MultiselectCommands,
+const getAllCommands = (
+  dir: WritingDirection
+): CommandSpecMap<InflectionTableCommandFn> => ({
+  ...getNavigationCommands(dir),
+  ...getMultiselectCommands(dir),
   ...StructureCommands,
   ...InflectionTableCommands,
-};
+});
 
 const ExposedCommands: CommandSpecMap<InflectionTableCommandFn> = {
   ...StructureCommands,
@@ -70,7 +77,10 @@ const InflectionTableEditor = (props: Props): JSX.Element => {
     ...otherProps
   } = props;
 
-  const commands = useTableCommands({value, onChange, commands: AllCommands});
+  const dir = useWritingDirection();
+
+  const commands = useMemo(() => getAllCommands(dir), [dir]);
+  const commandGroup = useTableCommands({value, onChange, commands});
 
   return (
     <EditorContext.Provider value={Context}>
@@ -78,7 +88,7 @@ const InflectionTableEditor = (props: Props): JSX.Element => {
         {...otherProps}
         table={value}
         messages={messages}
-        commands={commands}
+        commands={commandGroup}
         onChange={onChange}
       />
     </EditorContext.Provider>
