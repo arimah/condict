@@ -135,7 +135,7 @@ const DefinitionPage = (props: Props): JSX.Element => {
                   {def.tags.map(tag =>
                     <li key={tag.id}>
                       <Tag
-                        linkTo={SearchPage('', {tag: tag.id, language: lang.id})}
+                        linkTo={SearchPage({tag: tag.id, language: lang.id})}
                         name={tag.name}
                       />
                     </li>

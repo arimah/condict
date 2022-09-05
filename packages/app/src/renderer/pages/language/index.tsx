@@ -170,7 +170,7 @@ const LanguagePage = (props: Props): JSX.Element => {
                   {language.tags.nodes.map(tag =>
                     <li key={tag.id}>
                       <Tag
-                        linkTo={SearchPage('', {tag: tag.id, language: id})}
+                        linkTo={SearchPage({tag: tag.id, language: id})}
                         name={tag.name}
                       />
                     </li>

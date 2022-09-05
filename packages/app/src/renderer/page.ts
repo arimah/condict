@@ -219,10 +219,11 @@ export interface SearchPage {
   readonly tag?: TagId;
 }
 
-export const SearchPage = (
+export const SearchPage = ({
   query = '',
-  {language, tag}: Omit<SearchPage, 'type' | 'query'> = {}
-): SearchPage => ({
+  language,
+  tag,
+}: Partial<Omit<SearchPage, 'type'>>): SearchPage => ({
   type: 'search',
   query,
   language,

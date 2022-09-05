@@ -94,7 +94,7 @@ const SearchDialog = (props: Props): JSX.Element => {
   }, [currentResult, onResolve]);
 
   const handleAdvancedSearch = useCallback(() => {
-    onResolve(SearchPage(query, {language: language?.id}));
+    onResolve(SearchPage({query, language: language?.id}));
   }, [query, language, onResolve]);
 
   const handleClickResult = useCallback((result: SearchResult) => {
