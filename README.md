@@ -1,16 +1,26 @@
-# Condict
+<div align="center">
+  <p>
+    <img src="https://raw.githubusercontent.com/arimah/condict/master/docs/logo-full.png" alt="Condict symbol and logo">
+    <br>
+    dictionary application for conlangers
+  </p>
 
-Condict is a dictionary application primarily designed for [constructed languages][conlang]. Or at least, that's what this is intended to become. For the time being, it's very much a work-in-progress, with a barely functioning frontend.
+  <h1>Condict</h1>
+</div>
 
-Special care has been taken to ensure Condict adheres as closely as possible to current best accessibility practices, to make the software usable by the widest possible audience.
+**Condict is a _work-in-progress_ dictionary application** for [constructed languages][conlang] that runs on your desktop. If you've ever found yourself struggling to keep track of a dozen spreadsheets and random documents with conlang words, then Condict may be for you. Some of Condict's guiding principles:
 
-The name _Condict_ is a [portmanteau][] of "conlang dictionary", while _conlang_ is itself a portmanteau of "constructed language". It's a metaportmanteau, if you will.
+* **Fully offline:** Condict runs on your computer and saves your dictionary locally. There is no web service to connect to. Your data is yours, forever. (However, you can deploy a standalone Condict server on your own web server. More to come in the future.)
+* **Free and open source:** Condict costs nothing and hides nothing. All code is open source and free to use as you see fit. Modify it to your heart's content. No ads, no microtransactions, no DLC.
+* **No tracking, no telemetry:** Condict will never track your activities or usage. What you do with your dictionary, how often and in what way is *entirely* up to you.
+* **Built for accessibility:** Do you prefer to keep your hands on the keyboard? Do you require dark mode and muted colours? Do you use a screen reader? With customisable appearance, keyboard shortcuts and more, Condict aims to accommodate all users. _You will even be able to translate the app to your own conlang._ (Screen reader compatibility is currently imperfect and will be improved over time.)
+* **Performant:** Yes, Condict is an Electron app. With a bit of careful programming, it still feels fairly snappy even on slowish devices.
 
-## Development status
+[conlang]: https://en.wikipedia.org/wiki/Constructed_language
 
-**Development is slow.** This is one of several projects I engage in outside my full-time job. As a result, I am unable to devote significant time to Condict most days. This project is also still fairly immature as far as tooling and structure are concerned, and much remains to be improved. Ideas and thoughts are welcome.
+## Dictionary feature summary
 
-In lieu of a proper timeline or to-do list, here are some of the features that are planned for Condict:
+Here are some of the things you can (or will be able to) do with your dictionary:
 
 * [x] **Multiple languages** with interlinking – useful for world building!
 * [x] **Inflection rules,** in the form of inflection tables, which you can associate with a part of speech, and attach to any word you add to the dictionary.
@@ -20,11 +30,26 @@ In lieu of a proper timeline or to-do list, here are some of the features that a
 * [x] **Search and filtering options,** naturally.
 * [ ] **Sample texts,** with [interlinear glosses][interlinear], which get automatically linked to and shown under the words used therein.
 * [x] **Tags,** mainly for thematic grouping, such as _food_, _colours_, _emotions_.
-* And more in the future!
+* And more!
 
-[conlang]: https://en.wikipedia.org/wiki/Constructed_language
 [interlinear]: https://en.wikipedia.org/wiki/Interlinear_gloss
+
+## Logo and name
+
+<img align="right" src="https://raw.githubusercontent.com/arimah/condict/master/docs/logo-symbol.png" alt="Condict symbol, a deconstructed letter C">
+
+The Condict symbol is intended to convey the concept of construction: from many parts, a C is formed – a letter, the foundation of writing and an expression of language. Alternatively, one could conceive of it as the deconstruction of language into its constituent components. Each part of the character might also stand in for the bricks comprising the Tower of Babel, the translation of which myth is a long-standing practice among conlangers. The colour purple was chosen for its associations with creativity and magic.
+
+The wordmark is written in the typeface [Noto Sans][noto], a project whose lofty aim is to support every writing system.
+
+The name _Condict_ is a [portmanteau][] of "conlang dictionary", while _conlang_ is itself a portmanteau of "constructed language". It's a metaportmanteau, if you will.
+
+[noto]: https://fonts.google.com/noto
 [portmanteau]: https://en.wikipedia.org/wiki/Portmanteau
+
+## Development status
+
+**Development is slow.** This is one of several projects I engage in outside my full-time job. As a result, I am unable to devote significant time to Condict most days. This project is also still fairly immature as far as tooling and structure are concerned, and much remains to be improved. Ideas and thoughts are welcome.
 
 ## Contributing
 

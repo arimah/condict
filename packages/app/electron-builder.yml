@@ -20,5 +20,6 @@ extraResources:
     to: sqlite3_collation.node
 directories:
   output: bin
+  buildResources: assets
 mac:
   category: public.app-category.utilities
