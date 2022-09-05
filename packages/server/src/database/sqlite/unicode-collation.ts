@@ -16,10 +16,9 @@ interface NativeBindings {
   /**
    * Registers a collation to be added to the database when the extension is
    * loaded by SQLite.
-   * @param name The collation name to register.
    * @param fn The collation function. See the CollatorFn type for details.
    */
-  registerCollator(name: string, fn: CollatorFn): void;
+  registerCollator(fn: CollatorFn): void;
 
   /**
    * Destroys the most recently registered collation function, if it has not
@@ -73,7 +72,7 @@ const getUnicodeCollator = (): CollatorFn => {
 };
 
 const registerUnicodeCollation = (db: Database): void => {
-  api.registerCollator('unicode', getUnicodeCollator());
+  api.registerCollator(getUnicodeCollator());
 
   db.loadExtension(apiPath);
 

@@ -11,22 +11,17 @@
 #include "../deps/sqlite3ext.h"
 SQLITE_EXTENSION_INIT1
 
+// The collation name is hardcoded as we in practice only register a single
+// collation, and it's always the exact same.
+#define COLLATION_NAME "unicode"
+
 namespace condict {
   class Collator {
   public:
-    inline Collator(
-      v8::Isolate* isolate_,
-      const char *const name_,
-      v8::Local<v8::Function> fn_
-    ) :
+    inline Collator(v8::Isolate* isolate_, v8::Local<v8::Function> fn_) :
       isolate(isolate_),
-      name(name_),
       fn(isolate_, fn_)
     {}
-
-    inline const char* Name() const {
-      return this->name.c_str();
-    }
 
     static int xCompare(
       void* context,
@@ -39,7 +34,6 @@ namespace condict {
     static void xDestroy(void* self);
 
   private:
-    const std::string name;
     v8::Isolate *const isolate;
     const v8::Persistent<v8::Function, v8::CopyablePersistentTraits<v8::Function>> fn;
   };
@@ -56,6 +50,20 @@ namespace condict {
 
     v8::HandleScope scope(isolate);
 
+    // SQLite collations must be infallible. If an exception occurs, the best
+    // we can do is either terminate the process entirely, or return a possibly
+    // incorrect fallback value. Neither is a particularly good solution. The
+    // latter would almost certainly result in corrupt database, whereas the
+    // former can result in data loss if a transaction is aborted.
+    //
+    // This is why you can't define custom collation functions in better-sqlite3:
+    // there is just no good way to recover from even the smallest error. But
+    // Intl.Collator.compare isn't *supposed* to be able to fail, so it feels
+    // relatively safe to rely on it.
+    //
+    // A single lost transaction seems like a less bad fate than a corrupted
+    // database.
+
     v8::Local<v8::Value> args[2];
     args[0] = v8::String::NewFromUtf8(
       isolate,
@@ -70,20 +78,6 @@ namespace condict {
       bLen
     ).ToLocalChecked();
 
-    // SQLite collations must be infallible. If an exception occurs, the best
-    // we can do is either terminate the process entirely, or return a possibly
-    // incorrect fallback value. Neither is a particularly good solution. The
-    // latter would almost certainly result in  corrupt database, whereas the
-    // former can result in data loss if a transaction is aborted.
-    //
-    // This is why you can't define custom collation functions in better-sqlite3:
-    // there is just no good way to recover from even the smallest error. But
-    // Intl.Collator.compare isn't *supposed* to be able to fail, so it feels
-    // relatively safe to rely on it.
-    //
-    // A single lost transaction seems like a less bad fate than a corrupted
-    // database.
-
     v8::Local<v8::Function> fn = v8::Local<v8::Function>::New(isolate, self->fn);
     v8::MaybeLocal<v8::Value> maybeResult = fn->Call(
       isolate->GetCurrentContext(),
@@ -93,8 +87,7 @@ namespace condict {
     );
     // ToLocalChecked() allows V8 to crash the process if an error occurred.
     int ordering = maybeResult.ToLocalChecked()
-      ->ToInt32(isolate->GetCurrentContext()).ToLocalChecked()
-      ->Value();
+      ->Int32Value(isolate->GetCurrentContext()).FromJust();
     return ordering;
   }
 
@@ -117,17 +110,12 @@ namespace condict {
   void RegisterCollator(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Isolate* isolate = args.GetIsolate();
 
-    if (!args[0]->IsString()) {
-      return ThrowTypeError(isolate, "Expected name to be a string");
-    }
-    v8::Local<v8::String> nameString = args[0].As<v8::String>();
-    if (!args[1]->IsFunction()) {
+    if (!args[0]->IsFunction()) {
       return ThrowTypeError(isolate, "Expected collator to be a function");
     }
-    v8::Local<v8::Function> fn = args[1].As<v8::Function>();
+    v8::Local<v8::Function> fn = args[0].As<v8::Function>();
 
-    v8::String::Utf8Value name(isolate, nameString);
-    registeredCollator = std::make_unique<Collator>(isolate, *name, fn);
+    registeredCollator = std::make_unique<Collator>(isolate, fn);
   }
 
   void ClearPendingCollator(const v8::FunctionCallbackInfo<v8::Value>& args) {
@@ -158,7 +146,7 @@ extern "C" CONDICT_EXPORT int sqlite3_extension_init(
   if (collator) {
     result = sqlite3_create_collation_v2(
       db,
-      collator->Name(),
+      COLLATION_NAME,
       SQLITE_UTF8,
       collator,
       Collator::xCompare,
