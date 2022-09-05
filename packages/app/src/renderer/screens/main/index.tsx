@@ -1,6 +1,11 @@
-import React, {KeyboardEvent, useCallback, useRef} from 'react';
+import React, {KeyboardEvent, useCallback, useMemo, useRef} from 'react';
 
-import {CommandProvider, CommandGroup, useCommandGroup} from '@condict/ui';
+import {
+  CommandProvider,
+  CommandGroup,
+  CommandSpecMap,
+  useCommandGroup,
+} from '@condict/ui';
 
 import {useNavigationCommands, useNavigateTo} from '../../navigation';
 import {useOpenDialog} from '../../dialog-stack';
@@ -15,26 +20,27 @@ const MainScreen = React.memo((): JSX.Element => {
   const navCommands = useNavigationCommands();
 
   const openDialog = useOpenDialog();
-  const appCommands = useCommandGroup<() => void>({
-    commands: {
-      'global:search': {
-        action: () => {
-          openDialog(searchDialog).then(
-            page => {
-              if (page) {
-                navigateTo(page, {openInNewTab: true});
-              }
-            },
-            () => {/* ignore */}
-          );
-        },
-      },
-      'global:settings': {
-        action: () => {
-          openDialog(settingsDialog).catch(() => { /* ignore */ });
-        },
+  const appCommandMap = useMemo<CommandSpecMap<() => void>>(() => ({
+    'global:search': {
+      action: () => {
+        openDialog(searchDialog).then(
+          page => {
+            if (page) {
+              navigateTo(page, {openInNewTab: true});
+            }
+          },
+          () => {/* ignore */}
+        );
       },
     },
+    'global:settings': {
+      action: () => {
+        openDialog(settingsDialog).catch(() => { /* ignore */ });
+      },
+    },
+  }), [openDialog]);
+  const appCommands = useCommandGroup({
+    commands: appCommandMap,
     exec: cmd => cmd(),
   });
 
