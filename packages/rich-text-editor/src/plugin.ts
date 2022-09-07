@@ -76,19 +76,15 @@ const withCondict = (
   editor.isInline = element => element.type === 'link' || isInline(element);
 
   editor.apply = operation => {
-    if (
-      operation.type === 'set_selection' &&
-      operation.newProperties !== null &&
-      !Range.isRange(operation.newProperties)
-    ) {
+    if (operation.type === 'set_selection') {
       // Fill in partial set_selection operations with properties from the
       // current selection. Incomplete set_selection operations can sometimes
       // mess up the editor history.
-      operation.properties = {
+      operation.properties = operation.properties && {
         ...editor.selection,
         ...operation.properties,
       };
-      operation.newProperties = {
+      operation.newProperties = operation.newProperties && {
         ...editor.selection,
         ...operation.newProperties,
       };
