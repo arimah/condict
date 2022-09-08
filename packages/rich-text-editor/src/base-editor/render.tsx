@@ -1,4 +1,4 @@
-import React, {ComponentType} from 'react';
+import {ComponentType} from 'react';
 import {RenderElementProps, RenderLeafProps} from 'slate-react';
 
 import * as B from './block-styles';

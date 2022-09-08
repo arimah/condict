@@ -59,7 +59,7 @@ const getPlacement = (
 
 const preventMouseFocus = (e: MouseEvent) => e.preventDefault();
 
-const ContextualPopup = React.forwardRef((
+const ContextualPopup = React.memo(React.forwardRef((
   props: Props,
   ref: Ref<ContextualPopupHandle>
 ): JSX.Element | null => {
@@ -156,7 +156,7 @@ const ContextualPopup = React.forwardRef((
         />}
     </S.Popup>
   );
-});
+}));
 
 ContextualPopup.displayName = 'ContextualPopup';
 

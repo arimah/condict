@@ -1,26 +1,19 @@
 import {
   KeyboardEvent,
-  FocusEvent,
   useState,
   useMemo,
   useCallback,
   useRef,
+  FocusEvent,
 } from 'react';
 import {Transforms, Editor, Descendant, Range} from 'slate';
 import {Slate, ReactEditor} from 'slate-react';
 
 import {ShortcutMap} from '@condict/ui';
 
-import BaseEditor from '../base-editor';
+import {BaseEditable, EditorContainer, EditorToolbar} from '../base-editor';
 import DefaultShortcuts, {AllShortcuts} from '../shortcuts';
 import createEditor from '../plugin';
-import {
-  HeadingsGroup,
-  InlineFormatGroup,
-  LinkGroup,
-  BlockFormatGroup,
-  HelpersGroup,
-} from '../toolbar';
 import {
   getInlineCommands,
   getBlockCommands,
@@ -31,26 +24,25 @@ import {isLink, firstMatchingNode} from '../node-utils';
 import {BlockElement, LinkTarget} from '../types';
 
 import DefaultMessages from './messages';
-import ContextualPopup, {ContextualPopupHandle} from './contextual-popup';
+import ToolbarItems from './toolbar-items';
 import {PlacementRect} from './popup';
+import ContextualPopup, {ContextualPopupHandle} from './contextual-popup';
 import LinkDialog, {SearchResult} from './link-dialog';
 import IpaDialog from './ipa-dialog';
 import {Messages} from './types';
 
 export type Props = {
+  value: BlockElement[];
   'aria-label'?: string;
   'aria-labelledby'?: string;
   'aria-describedby'?: string;
   className?: string;
-  value: BlockElement[];
   toolbarAlwaysVisible?: boolean;
   readOnly?: boolean;
   shortcuts?: AllShortcuts;
   messages?: Messages;
   onChange: (value: BlockElement[]) => void;
   onFindLinkTarget: (query: string) => Promise<readonly SearchResult[]>;
-  onFocus?: (e: FocusEvent) => void;
-  onBlur?: (e: FocusEvent) => void;
 };
 
 type SlateChangeFn = (value: Descendant[]) => void;
@@ -82,9 +74,14 @@ const DescriptionEditor = (props: Props): JSX.Element => {
     value,
     shortcuts = DefaultShortcuts,
     messages = DefaultMessages,
+    className,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    readOnly = false,
+    toolbarAlwaysVisible = true,
     onChange,
     onFindLinkTarget,
-    ...otherProps
   } = props;
 
   const [editor] = useState(() => createEditor(false));
@@ -155,7 +152,11 @@ const DescriptionEditor = (props: Props): JSX.Element => {
 
   const popupRef = useRef<ContextualPopupHandle>(null);
 
-  const handleFocusChanged = useCallback((nextFocus: Element | null) => {
+  const handleFocusChange = useCallback((e: FocusEvent) => {
+    const nextFocus = e.type === 'focus' || e.type === 'focusin'
+      ? e.target
+      // e.relatedTarget contains the element that gained focus
+      : e.relatedTarget;
     const editorElem = ReactEditor.toDOMNode(editor, editor);
     const focusInEditorOrPopup =
       editorElem.contains(nextFocus) ||
@@ -201,28 +202,33 @@ const DescriptionEditor = (props: Props): JSX.Element => {
 
   return (
     <Slate editor={editor} value={value} onChange={onChange as SlateChangeFn}>
-      <BaseEditor
-        {...otherProps}
+      <EditorContainer
         singleLine={false}
-        toolbarItems={<>
-          <HeadingsGroup shortcuts={shortcuts} messages={messages}/>
-          <InlineFormatGroup shortcuts={shortcuts} messages={messages}/>
-          <LinkGroup
-            shortcuts={shortcuts}
-            messages={messages}
-            onSetLink={openLinkDialog}
-          />
-          <BlockFormatGroup shortcuts={shortcuts} messages={messages}/>
-          <HelpersGroup
-            shortcuts={shortcuts}
-            messages={messages}
-            onOpenIpaDialog={openIpaDialog}
-          />
-        </>}
-        onKeyDown={handleKeyDown}
-        onFocusChanged={handleFocusChanged}
+        className={className}
+        toolbarAlwaysVisible={toolbarAlwaysVisible}
+        onFocus={handleFocusChange}
+        onBlur={handleFocusChange}
         ref={editorRef}
       >
+        <EditorToolbar alwaysVisible={toolbarAlwaysVisible}>
+          <ToolbarItems
+            shortcuts={shortcuts}
+            messages={messages}
+            onOpenLinkDialog={openLinkDialog}
+            onOpenIpaDialog={openIpaDialog}
+          />
+        </EditorToolbar>
+
+        <BaseEditable
+          singleLine={false}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledby}
+          aria-describedby={ariaDescribedby}
+          readOnly={readOnly}
+          toolbarAlwaysVisible={toolbarAlwaysVisible}
+          onKeyDown={handleKeyDown}
+        />
+
         {dialogProps && dialogProps.type === 'link' &&
           <LinkDialog
             initialValue={dialogProps.initialValue}
@@ -266,7 +272,7 @@ const DescriptionEditor = (props: Props): JSX.Element => {
             onOpenIpaDialog={openIpaDialog}
             ref={popupRef}
           />}
-      </BaseEditor>
+      </EditorContainer>
     </Slate>
   );
 };

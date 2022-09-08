@@ -1,4 +1,4 @@
-import {KeyboardEvent, FocusEvent, useState, useMemo, useCallback} from 'react';
+import {KeyboardEvent, useState, useMemo, useCallback} from 'react';
 import {Descendant} from 'slate';
 import {Slate} from 'slate-react';
 
@@ -6,7 +6,7 @@ import {ShortcutMap} from '@condict/ui';
 
 import DefaultShortcuts, {InlineShortcuts} from '../shortcuts';
 
-import BaseEditor from '../base-editor';
+import {BaseEditable, EditorContainer, EditorToolbar} from '../base-editor';
 import createEditor from '../plugin';
 import {getInlineCommands, getSingleLineCommands} from '../keymap';
 import {DefaultInlineMessages} from '../messages';
@@ -26,8 +26,6 @@ export type Props = {
   shortcuts?: InlineShortcuts;
   messages?: Messages;
   onChange: (value: BlockElement[]) => void;
-  onFocus?: (e: FocusEvent) => void;
-  onBlur?: (e: FocusEvent) => void;
 };
 
 type SlateChangeFn = (value: Descendant[]) => void;
@@ -37,8 +35,13 @@ const TableCaptionEditor = (props: Props): JSX.Element => {
     value,
     shortcuts = DefaultShortcuts,
     messages = DefaultInlineMessages,
+    className,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    readOnly = false,
+    toolbarAlwaysVisible = false,
     onChange,
-    ...otherProps
   } = props;
 
   const [editor] = useState(() => createEditor(true));
@@ -60,14 +63,25 @@ const TableCaptionEditor = (props: Props): JSX.Element => {
 
   return (
     <Slate editor={editor} value={value} onChange={onChange as SlateChangeFn}>
-      <BaseEditor
-        {...otherProps}
-        singleLine={true}
-        toolbarItems={
+      <EditorContainer
+        singleLine
+        className={className}
+        toolbarAlwaysVisible={toolbarAlwaysVisible}
+      >
+        <EditorToolbar alwaysVisible={toolbarAlwaysVisible}>
           <InlineFormatGroup shortcuts={shortcuts} messages={messages}/>
-        }
-        onKeyDown={handleKeyDown}
-      />
+        </EditorToolbar>
+
+        <BaseEditable
+          singleLine
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledby}
+          aria-describedby={ariaDescribedby}
+          readOnly={readOnly}
+          toolbarAlwaysVisible={toolbarAlwaysVisible}
+          onKeyDown={handleKeyDown}
+        />
+      </EditorContainer>
     </Slate>
   );
 };
