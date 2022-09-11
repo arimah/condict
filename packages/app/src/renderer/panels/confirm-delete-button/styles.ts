@@ -30,7 +30,7 @@ export const Popup = styled.div.attrs({
 
   position: absolute;
   top: ${p => p.$visible ? 'calc(100% + 2px)' : 'calc(100% - 6px)'};
-  right: 0;
+  inset-inline-end: 0;
   width: 304px;
   z-index: 10;
 
