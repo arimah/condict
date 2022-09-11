@@ -16,7 +16,7 @@ const Stay: MessageBoxButton<'stay'> = {
   labelKey: 'confirm-close-cancel-button',
   disposition: 'cancel',
 };
-8
+
 const ConfirmCloseDialog = messageBox({
   titleKey: 'confirm-close-title',
   message: <Localized id='confirm-close-message'/>,

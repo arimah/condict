@@ -21,6 +21,7 @@ export {
   DefinitionTableHeaderCell,
   CustomForm,
 } from './definition-table';
+export {default as Divider, Props as DividerProps} from './divider';
 export {
   default as ErrorBoundary,
   Props as ErrorBoundaryProps,
@@ -44,7 +45,7 @@ export {
   default as RuntimeError,
   Props as RuntimeErrorProps,
 } from './runtime-error';
-export {default as Tag, Props as TagProps} from './tag';
+export {default as Tag, Props as TagProps, TagList, TagListProps} from './tag';
 export {
   default as TransitionList,
   Props as TransitionListProps,

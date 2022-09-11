@@ -94,19 +94,6 @@ export const FullRow = styled.div`
   grid-column: 1 / -1;
 `;
 
-export const TagList = styled.ul`
-  display: flex;
-  padding: 0;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 8px;
-  list-style-type: none;
-
-  > li {
-    margin: 0;
-  }
-`;
-
 export const Secondary = styled.span`
   opacity: 0.7;
 `;
@@ -163,4 +150,9 @@ export const DeletedForm = styled.span`
   height: 2px;
   vertical-align: middle;
   background-color: var(--table-deleted-form-fg);
+`;
+
+export const PartOfSpeechName = styled.p`
+  margin-block: 24px 12px;
+  font-weight: bold;
 `;

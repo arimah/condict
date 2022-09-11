@@ -21,6 +21,7 @@ export const MainContent = styled.main`
   width: calc(${MainContentWidth});
   height: 100vh;
   position: relative;
+  overflow: hidden;
 `;
 
 export const Sidebar = styled.nav`

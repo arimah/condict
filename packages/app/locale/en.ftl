@@ -632,19 +632,19 @@ home-recent-changes-title = Recent changes
 
 home-no-recent-changes-description = Recent changes will show up here when you add something to the dictionary or edit an existing item.
 
-home-recent-language-description = Language.
+home-recent-language-description = Language
 
 # Variables:
 #   language: The name of the language that the definition is in.
 # Elements:
 #   <lang-link>: Link to the language that the definition is in. Wraps around $language.
-home-recent-definition-description = Definition in <lang-link>{$language}</lang-link>.
+home-recent-definition-description = Definition in <lang-link>{$language}</lang-link>
 
 # Variables:
 #   language: The name of the language that the part of speech is in.
 # Elements:
 #   <lang-link>: Link to the language that the part of speech is in. Wraps around $language.
-home-recent-part-of-speech-description = Part of speech in <lang-link>{$language}</lang-link>.
+home-recent-part-of-speech-description = Part of speech in <lang-link>{$language}</lang-link>
 
 # Variables:
 #   partOfSpeech: The name of the part of speech that the inflection table belongs to.
@@ -653,7 +653,7 @@ home-recent-part-of-speech-description = Part of speech in <lang-link>{$language
 #   <pos-link>: Link to the part of speech that the inflection table belongs to. Wraps around $partOfSpeech.
 #   <lang-link>: Link to the language that the definition is in. Wraps around $language.
 home-recent-inflection-table-description =
-    Inflection table of <pos-link>{$partOfSpeech}</pos-link> in <lang-link>{$language}</lang-link>.
+    Inflection table of <pos-link>{$partOfSpeech}</pos-link> in <lang-link>{$language}</lang-link>
 
 home-recent-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 

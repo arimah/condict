@@ -12,7 +12,7 @@ export const lightThemeVars = (accent: Shade): ThemeVariables => ({
   'button-naked-border': 'var(--button-naked-bg)',
   'button-naked-border-hover': 'var(--button-naked-bg-hover)',
   'button-naked-border-pressed': 'var(--button-naked-bg-pressed)',
-  'button-naked-border-disabled': 'var(--button-naked-bg-disaled)',
+  'button-naked-border-disabled': 'var(--button-naked-bg-disabled)',
 
   'slider-tick-fg': 'var(--fg)',
   'slider-tick-fg-selected': 'var(--fg-accent)',
@@ -45,7 +45,7 @@ export const darkThemeVars = (accent: Shade): ThemeVariables => ({
   'button-naked-border': 'var(--button-naked-bg)',
   'button-naked-border-hover': 'var(--button-naked-bg-hover)',
   'button-naked-border-pressed': 'var(--button-naked-bg-pressed)',
-  'button-naked-border-disabled': 'var(--button-naked-bg-disaled)',
+  'button-naked-border-disabled': 'var(--button-naked-bg-disabled)',
 
   'slider-tick-fg': 'var(--fg)',
   'slider-tick-fg-selected': 'var(--fg-accent)',

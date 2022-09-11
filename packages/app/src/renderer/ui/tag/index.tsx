@@ -24,20 +24,55 @@ type LinkTargetProps = {
 
 const Tag = React.memo((props: Props): JSX.Element => {
   const {id, linkTo, name, ...otherProps} = props;
-  let target: Page;
-  if (linkTo) {
-    target = linkTo;
-  } else {
-    target = TagPage(id, name);
-  }
+  const target = linkTo ?? TagPage(id, name);
   return (
-    <S.Main to={target} {...otherProps}>
+    <S.Tag to={target} {...otherProps}>
       <TagIcon/>
       {name}
-    </S.Main>
+    </S.Tag>
   );
 });
 
 Tag.displayName = 'Tag';
 
 export default Tag;
+
+export interface TagData {
+  readonly id: TagId;
+  readonly name: string;
+}
+
+export type TagListProps<T extends TagData> = {
+  tags: readonly T[];
+  target?: (tag: T) => Page;
+};
+
+export interface TagListComponent {
+  <T extends TagData>(
+    props: TagListProps<T>
+  ): JSX.Element;
+
+  displayName?: string;
+}
+
+export const TagList = React.memo((
+  props: TagListProps<TagData>
+): JSX.Element => {
+  const {tags, target = defaultTarget} = props;
+  return (
+    <S.TagList>
+      {tags.map(tag =>
+        <li key={tag.id}>
+          <Tag
+            linkTo={target(tag)}
+            name={tag.name}
+          />
+        </li>
+      )}
+    </S.TagList>
+  );
+}) as TagListComponent;
+
+TagList.displayName = 'TagList';
+
+const defaultTarget = (tag: TagData) => TagPage(tag.id, tag.name);

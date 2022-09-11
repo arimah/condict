@@ -21,7 +21,6 @@ import {
   Selectable,
   RichContent,
   TagList,
-  Tag,
   hasRichContent,
 } from '../../ui';
 import {LanguageId} from '../../graphql';
@@ -166,16 +165,10 @@ const LanguagePage = (props: Props): JSX.Element => {
             </h2>
             <section aria-labelledby={`${htmlId}-tags-title`}>
               {language.tags.nodes.length > 0 ? (
-                <TagList>
-                  {language.tags.nodes.map(tag =>
-                    <li key={tag.id}>
-                      <Tag
-                        linkTo={SearchPage({tag: tag.id, language: id})}
-                        name={tag.name}
-                      />
-                    </li>
-                  )}
-                </TagList>
+                <TagList
+                  tags={language.tags.nodes}
+                  target={t => SearchPage({tag: t.id, language: id})}
+                />
               ) : (
                 <BodyText as='p'>
                   <Localized id='language-no-tags-description'/>

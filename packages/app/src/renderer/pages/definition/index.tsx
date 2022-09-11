@@ -1,7 +1,7 @@
 import {useCallback} from 'react';
 import {Localized} from '@fluent/react';
 
-import {useUniqueId} from '@condict/ui';
+import {SROnly, useUniqueId} from '@condict/ui';
 
 import {LanguagePage, LemmaPage, SearchPage} from '../../page';
 import {useOpenPanel} from '../../navigation';
@@ -16,8 +16,9 @@ import {
   Selectable,
   RichContent,
   TagList,
-  Tag,
   Link,
+  Divider,
+  PartOfSpeechName,
 } from '../../ui';
 import {DefinitionId, LanguageId} from '../../graphql';
 import {editDefinitionPanel} from '../../panels';
@@ -105,43 +106,40 @@ const DefinitionPage = (props: Props): JSX.Element => {
               </ResourceMeta>
             </Subheader>
 
-            <section>
-              <h2>
+            <Selectable>
+              <PartOfSpeechName>
                 {def.partOfSpeech.name}
-              </h2>
+              </PartOfSpeechName>
               <RichContent
                 value={def.description}
                 heading1='h3'
                 heading2='h4'
-                selectable
               />
-            </section>
+            </Selectable>
 
-            {def.inflectionTables.length > 0 &&
+            {def.inflectionTables.length > 0 && <>
+              <Divider/>
               <Inflection
                 id={`${htmlId}-tables`}
                 term={def.term}
                 stems={def.stems}
                 tables={def.inflectionTables}
                 parent={langPage}
-              />}
+              />
+            </>}
 
-            {def.tags.length > 0 &&
+            {def.tags.length > 0 && <>
+              <Divider/>
               <section aria-labelledby={`${htmlId}-tags`}>
-                <h2 id={`${htmlId}-tags`}>
+                <SROnly as='h2' id={`${htmlId}-tags`}>
                   <Localized id='definition-tags-heading'/>
-                </h2>
-                <TagList>
-                  {def.tags.map(tag =>
-                    <li key={tag.id}>
-                      <Tag
-                        linkTo={SearchPage({tag: tag.id, language: lang.id})}
-                        name={tag.name}
-                      />
-                    </li>
-                  )}
-                </TagList>
-              </section>}
+                </SROnly>
+                <TagList
+                  tags={def.tags}
+                  target={t => SearchPage({tag: t.id, language: lang.id})}
+                />
+              </section>
+            </>}
           </>;
         }}
       />

@@ -1,6 +1,8 @@
 import {Fragment, useMemo} from 'react';
 import {Localized} from '@fluent/react';
 
+import {SROnly} from '@condict/ui';
+
 import {InflectionTablePage, LanguagePage} from '../../page';
 import {DefinitionTable, Link} from '../../ui';
 import {OperationResult} from '../../graphql';
@@ -33,9 +35,9 @@ const Inflection = (props: Props): JSX.Element => {
 
   return (
     <section aria-labelledby={id}>
-      <h2 id={id}>
+      <SROnly as='h2' id={id}>
         <Localized id='definition-inflection-heading'/>
-      </h2>
+      </SROnly>
       {tables.map(table =>
         <Fragment key={table.id}>
           <S.TableContainer>

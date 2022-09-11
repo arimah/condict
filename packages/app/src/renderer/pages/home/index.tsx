@@ -4,7 +4,7 @@ import AddIcon from 'mdi-react/PlusIcon';
 
 import {Button, ConlangFlag, NonIdealState, useUniqueId} from '@condict/ui';
 
-import {DataViewer, FlowContent, CardList, Tag, TagList} from '../../ui';
+import {DataViewer, FlowContent, CardList, TagList} from '../../ui';
 import {useNavigateTo, useOpenPanel} from '../../navigation';
 import {LanguagePage} from '../../page';
 import {EventPredicate} from '../../data';
@@ -80,13 +80,7 @@ const HomePage = (props: PageProps): JSX.Element => {
             </h1>
             <section aria-labelledby={`${id}-tags-title`}>
               {tags.nodes.length > 0 ? (
-                <TagList>
-                  {tags.nodes.map(tag =>
-                    <li key={tag.id}>
-                      <Tag id={tag.id} name={tag.name}/>
-                    </li>
-                  )}
-                </TagList>
+                <TagList tags={tags.nodes}/>
               ) : (
                 <p>
                   <Localized id='home-no-tags-description'/>
