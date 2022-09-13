@@ -102,6 +102,23 @@ export const Tab = {
   },
 
   /**
+   * Determines whether the specified page is allowed to replace the current
+   * page in the specified tab.
+   * @param tab The tab to test.
+   * @param page The page to replace the tab's current page with.
+   * @return True if the tab's current page can be replaced with the specified
+   *         page; false if navigation must occur normally.
+   */
+  canReplace(tab: Tab, page: Page): boolean {
+    if (Page.isLanguageChild(tab.page) && Page.isLanguageChild(page)) {
+      // If both pages are inside a language, we can replace if both are
+      // in the *same* language.
+      return tab.page.language.id === page.language.id;
+    }
+    return false;
+  },
+
+  /**
    * Gets the full (computed) title of a tab. This is the `title` of the tab
    * plus any additional text as determined by the page type.
    * @param tab The tab to get a title for.
@@ -243,7 +260,8 @@ export interface NavigateOptions {
    *   * Some pages do not allow in-page navigation, and all links clicked in
    *     them open in new tabs.
    *
-   * In the above cases, this setting has no effect.
+   * In the above cases, this setting has no effect. If `replace` is true, then
+   * this setting also has no effect.
    */
   openInNewTab?: boolean;
   /**
@@ -251,6 +269,19 @@ export interface NavigateOptions {
    * will not focus it.
    */
   openInBackground?: boolean;
+  /**
+   * If true, requests that the page replace the current page. Not all page
+   * types can be replaced, in which case this option is ignored.
+   *
+   * If the current page has any open panels, they are immediately closed.
+   *
+   * The tab's previous page history is unaffected; only the current page is
+   * replaced.
+   *
+   * This option should only be used when resources move to different IDs.
+   * For example, if a definition is moved to another lemma.
+   */
+  replace?: boolean;
 }
 
 export interface NavigationContextValue {

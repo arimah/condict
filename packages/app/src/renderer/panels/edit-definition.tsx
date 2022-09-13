@@ -14,7 +14,7 @@ import {DefinitionTable} from '@condict/table-editor';
 import {DataViewer, FlowContent, MainHeader} from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {DefinitionData, DefinitionForm} from '../forms';
-import {DefinitionId, PartOfSpeechId} from '../graphql';
+import {DefinitionId, LanguageId, LemmaId, PartOfSpeechId} from '../graphql';
 import {useData, useExecute} from '../data';
 import {useRefocusOnData} from '../hooks';
 
@@ -28,9 +28,21 @@ import {
   DeleteDefinitionMut,
 } from './query';
 
+export interface EditedDefinition {
+  id: DefinitionId;
+  term: string;
+  lemma: {
+    id: LemmaId;
+  };
+  language: {
+    id: LanguageId;
+    name: string;
+  };
+}
+
 type Props = {
   id: DefinitionId;
-} & PanelProps<void>;
+} & PanelProps<EditedDefinition | null>;
 
 const EditDefinitionPanel = (props: Props): JSX.Element => {
   const {id, updatePanel, titleId, panelRef, entering, onResolve} = props;
@@ -71,7 +83,8 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
     }
 
     // If there were no errors, we should have an updated definition.
-    onResolve();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    onResolve(res.data!.editDefinition);
   }, [id, onResolve]);
 
   const onDelete = useCallback(async () => {
@@ -171,7 +184,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
             confirmLabel={<Localized id='definition-delete-button'/>}
             deleteError={<Localized id='definition-delete-error'/>}
             onExecuteDelete={onDelete}
-            onAfterDelete={onResolve}
+            onAfterDelete={() => onResolve(null)}
           />}
       </MainHeader>
       <DataViewer
@@ -187,7 +200,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
               }
               firstFieldRef={firstFieldRef}
               onSubmit={onSubmit}
-              onCancel={onResolve}
+              onCancel={() => onResolve(null)}
               onDirtyChange={dirty => updatePanel({dirty})}
               onCreatePartOfSpeech={createPartOfSpeech}
               onCreateInflectionTable={createInflectionTable}
@@ -197,7 +210,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
               <Localized id='definition-not-found-error'/>
             </p>
             <p>
-              <Button onClick={() => onResolve()}>
+              <Button onClick={() => onResolve(null)}>
                 <Localized id='generic-form-cancel'/>
               </Button>
             </p>
@@ -208,7 +221,9 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
   );
 };
 
-export const editDefinitionPanel = (id: DefinitionId): PanelParams<void> => ({
+export const editDefinitionPanel = (
+  id: DefinitionId
+): PanelParams<EditedDefinition | null> => ({
   // eslint-disable-next-line react/display-name
   render: props => <EditDefinitionPanel id={id} {...props}/>,
 });

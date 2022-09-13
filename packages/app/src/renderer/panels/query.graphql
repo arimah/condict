@@ -223,6 +223,16 @@ query EditDefinitionQuery($id: DefinitionId!) {
 mutation EditDefinitionMut($id: DefinitionId!, $data: EditDefinitionInput!) {
   editDefinition(id: $id, data: $data) {
     id
+    term
+
+    lemma {
+      id
+    }
+
+    language {
+      id
+      name
+    }
   }
 }
 

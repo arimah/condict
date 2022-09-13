@@ -259,10 +259,12 @@ const DefinitionMut = {
   ): string {
     if (term != null && term !== definition.term) {
       const validTerm = validateTerm(term);
-      const newLemmaId = LemmaMut.ensureExists(
+      const newLemmaId = LemmaMut.rename(
         context,
+        definition.lemma_id,
         definition.language_id,
-        validTerm
+        validTerm,
+        definition.id
       );
       newFields.set('lemma_id', newLemmaId);
       return validTerm;

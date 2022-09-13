@@ -1,10 +1,8 @@
-import {useCallback} from 'react';
 import {Localized} from '@fluent/react';
 
 import {SROnly, useUniqueId} from '@condict/ui';
 
 import {LanguagePage, SearchPage} from '../../page';
-import {useOpenPanel} from '../../navigation';
 import {
   DataViewer,
   FlowContent,
@@ -15,8 +13,7 @@ import {
   Link,
   Divider,
 } from '../../ui';
-import {LemmaId, DefinitionId, LanguageId} from '../../graphql';
-import {editDefinitionPanel} from '../../panels';
+import {LemmaId, LanguageId} from '../../graphql';
 
 import usePageData from '../page-data';
 import {PageProps} from '../types';
@@ -51,11 +48,6 @@ const LemmaPage = (props: Props): JSX.Element => {
     ),
     pageRef,
   });
-
-  const openPanel = useOpenPanel();
-  const handleEdit = useCallback((id: DefinitionId) => {
-    void openPanel(editDefinitionPanel(id));
-  }, []);
 
   const htmlId = useUniqueId();
 
@@ -92,8 +84,7 @@ const LemmaPage = (props: Props): JSX.Element => {
             <DefinitionList
               term={lemma.term}
               langPage={langPage}
-              definitions={lemma.definitions}
-              onEdit={handleEdit}
+              lemma={lemma}
             />
 
             {lemma.derivedDefinitions.length > 0 && <>

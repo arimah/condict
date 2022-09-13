@@ -35,6 +35,10 @@ const DerivedDefinitionMut = {
       })
       .filter(Boolean);
 
+    if (validDerivedDefinitions.keyCount === 0) {
+      return;
+    }
+
     const termToLemmaId = LemmaMut.ensureAllExist(
       context,
       languageId,

@@ -47,6 +47,14 @@ const SearchIndexMut = {
     `;
   },
 
+  updateLemma(db: DataWriter, id: LemmaId, term: string): void {
+    db.exec`
+      update lemmas_fts
+      set term = ${term}
+      where rowid = ${id}
+    `;
+  },
+
   deleteLemmas(db: DataWriter, ids: readonly LemmaId[]): void {
     db.exec`
       delete from lemmas_fts

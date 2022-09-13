@@ -53,7 +53,13 @@ type State = {
 type Message =
   | {type: 'select'; index: number | 'prev' | 'next'; keepPrev?: boolean}
   | {type: 'open'; tabs: Tab[]; insertIndex: number; background: boolean}
-  | {type: 'navigate'; index: number; page: Page; title: string}
+  | {
+    type: 'navigate';
+    index: number;
+    page: Page;
+    title: string;
+    replace: boolean;
+  }
   | {
     type: 'update';
     index: number;
@@ -124,6 +130,7 @@ const NavigationProvider = (props: Props): JSX.Element => {
       {
         openInNewTab = false,
         openInBackground = false,
+        replace = false,
       }: NavigateOptions = {}
     ): void => {
       const state = stateRef.current;
@@ -145,15 +152,21 @@ const NavigationProvider = (props: Props): JSX.Element => {
       // Let's see if we should navigate inside the current tab.
       const currentTab = state.tabs[state.currentTabIndex];
       const shouldNavigateWithinCurrent =
-        !openInNewTab &&
-        Tab.canNavigateWithin(currentTab, page) &&
-        !PageConditions.alwaysOpenInNewTab(page);
+        !PageConditions.alwaysOpenInNewTab(page) && (
+          replace
+            ? Tab.canReplace(currentTab, page)
+            : (
+              Tab.canNavigateWithin(currentTab, page) &&
+              !openInNewTab
+            )
+        );
       if (shouldNavigateWithinCurrent) {
         const message: Message = {
           type: 'navigate',
           index: state.currentTabIndex,
           page,
           title: Page.getInitialTitle(page),
+          replace,
         };
 
         if (Tab.isDirty(currentTab)) {
@@ -494,14 +507,16 @@ const reduce = produce<State, [Message]>((state, message) => {
       break;
     }
     case 'navigate': {
-      const {index, page, title} = message;
+      const {index, page, title, replace} = message;
       const tab = state.tabs[index];
-      tab.previous = {
-        page: tab.page,
-        title: tab.title,
-        state: tab.state,
-        previous: tab.previous,
-      };
+      if (!replace) {
+        tab.previous = {
+          page: tab.page,
+          title: tab.title,
+          state: tab.state,
+          previous: tab.previous,
+        };
+      }
       tab.page = page;
       tab.title = title;
       tab.state = title === '' ? 'loading' : 'idle';

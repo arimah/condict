@@ -1,4 +1,4 @@
-import {LemmaId, LanguageId} from '../../graphql';
+import {LemmaId, LanguageId, DefinitionId} from '../../graphql';
 import {DataWriter} from '../../database';
 
 import {SearchIndexMut} from '../search-index';
@@ -8,22 +8,12 @@ import {Lemma} from './model';
 import {ValidTerm} from './validators';
 
 const LemmaMut = {
-  ensureExists(
+  insert(
     context: WriteContext,
     languageId: LanguageId,
     term: ValidTerm
   ): LemmaId {
     const {db, events, logger} = context;
-    const result = db.get<{id: LemmaId}>`
-      select id
-      from lemmas
-      where language_id = ${languageId}
-        and term = ${term}
-    `;
-    if (result) {
-      logger.debug('Found existing lemma');
-      return result.id;
-    }
 
     const {insertId} = db.exec<LemmaId>`
       insert into lemmas (language_id, term)
@@ -36,6 +26,26 @@ const LemmaMut = {
     events.emit({type: 'lemma', action: 'create', id: insertId, languageId});
     logger.debug('Created lemma for new term');
     return insertId;
+  },
+
+  ensureExists(
+    context: WriteContext,
+    languageId: LanguageId,
+    term: ValidTerm
+  ): LemmaId {
+    const {db, logger} = context;
+    const result = db.get<{id: LemmaId}>`
+      select id
+      from lemmas
+      where language_id = ${languageId}
+        and term = ${term}
+    `;
+    if (result) {
+      logger.debug('Found existing lemma');
+      return result.id;
+    }
+
+    return LemmaMut.insert(context, languageId, term);
   },
 
   ensureAllExist(
@@ -97,6 +107,80 @@ const LemmaMut = {
     );
 
     return termToId;
+  },
+
+  rename(
+    context: WriteContext,
+    id: LemmaId,
+    languageId: LanguageId,
+    newTerm: ValidTerm,
+    fromDefinitionId: DefinitionId
+  ): LemmaId {
+    // When a definition term is edited, we retain the existing lemma ID
+    // whenever possible, so that links in the dictionary don't break. We
+    // can do this if:
+    //
+    //   1. there is no lemma for the new term (if there is, we must use
+    //      the existing ID); and
+    //   2. the lemma is otherwise empty - that is, there are no other
+    //      definitions and no derived definitions with the same term.
+    //
+    // If both conditions are met, we can rename the lemma instead of creating
+    // a new one.
+    //
+    // Note: It is entirely possible that derived lemmas come from the
+    // definition that's being edited, and may also change to the new term
+    // once we reinflect the definition. Since we don't know that yet, we
+    // ignore that possibility and refuse to rename if there are any
+    // derived definitions at all.
+
+    type Row = {
+      existing_id: LemmaId | null;
+      is_otherwise_empty: number; /* boolean */
+    };
+
+    const {db, events, logger} = context;
+    const result = db.getRequired<Row>`
+      select
+        (
+          select id
+          from lemmas l
+          where l.term = ${newTerm}
+            and l.language_id = ${languageId}
+        ) as existing_id,
+        (
+          select count(distinct d.id) + count(distinct dd.rowid) = 0
+          from lemmas l
+          left join definitions d on
+            d.lemma_id = l.id and
+            d.id != ${fromDefinitionId}
+          left join derived_definitions dd on dd.lemma_id = l.id
+          where l.id = ${id}
+        ) as is_otherwise_empty
+    `;
+    if (result.existing_id !== null) {
+      // There is already a lemma for the new term.
+      logger.debug('Cannot rename lemma: Found existing lemma');
+      return result.existing_id;
+    }
+    if (!result.is_otherwise_empty) {
+      // The lemma has at least one other definition or derived definition;
+      // we must insert a new lemma.
+      logger.debug('Cannot rename lemma: Has other definitions');
+      return LemmaMut.insert(context, languageId, newTerm);
+    }
+
+    db.exec`
+      update lemmas
+      set term = ${newTerm}
+      where id = ${id}
+    `;
+
+    SearchIndexMut.updateLemma(db, id, newTerm);
+
+    events.emit({type: 'lemma', action: 'update', id, languageId});
+    logger.debug('Renamed lemma');
+    return id;
   },
 
   deleteEmpty(context: WriteContext, languageId: LanguageId): void {

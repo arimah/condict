@@ -594,12 +594,20 @@ export const EditDefinitionQuery = "query EditDefinitionQuery($id:DefinitionId!)
   } | null;
 }>;
 
-export const EditDefinitionMut = "mutation EditDefinitionMut($id:DefinitionId!,$data:EditDefinitionInput!){editDefinition(id:$id,data:$data){id}}" as Mutation<{
+export const EditDefinitionMut = "mutation EditDefinitionMut($id:DefinitionId!,$data:EditDefinitionInput!){editDefinition(id:$id,data:$data){id,term,lemma{id}language{id,name}}}" as Mutation<{
   id: DefinitionId;
   data: EditDefinitionInput;
 }, {
   editDefinition: {
     id: DefinitionId;
+    term: string;
+    lemma: {
+      id: LemmaId;
+    };
+    language: {
+      id: LanguageId;
+      name: string;
+    };
   } | null;
 }>;
 

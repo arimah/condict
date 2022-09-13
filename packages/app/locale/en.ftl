@@ -808,6 +808,8 @@ lemma-tags-heading = Tags
 #   <def-link>: Link to the original definition that the derived form comes from. Wraps around $sourceTerm.
 lemma-derived-from = <form-link>{$formName}</form-link> of <def-link>{$sourceTerm}</def-link>
 
+lemma-not-found-error = Headword not found. This headword has been deleted.
+
 ## Definition messages
 
 # Variables:

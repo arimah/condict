@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import {DocumentNode} from 'graphql';
-import {gql} from 'apollo-server';
+import {DocumentNode, parse} from 'graphql';
 
 import {getGraphqlSchemaDir} from '../paths';
 
@@ -24,5 +23,5 @@ export const getTypeDefs = (): DocumentNode[] => {
         {encoding: 'utf-8'}
       )
     )
-    .map(schema => gql(schema));
+    .map(schema => parse(schema));
 };
