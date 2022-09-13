@@ -1,0 +1,48 @@
+query($id: LemmaId!) {
+  lemma(id: $id) {
+    id
+    term
+
+    language {
+      id
+      name
+    }
+
+    definitions {
+      id
+
+      partOfSpeech {
+        id
+        name
+      }
+
+      description {
+        ...RichTextBlockFragment
+      }
+    }
+
+    derivedDefinitions {
+      derivedFrom {
+        id
+        term
+      }
+
+      inflectedForm {
+        id
+        displayName
+
+        inflectionTableLayout {
+          inflectionTable {
+            id
+            name
+          }
+        }
+      }
+    }
+
+    tags {
+      id
+      name
+    }
+  }
+}

@@ -4,6 +4,7 @@ import {Page} from '../page';
 
 import HomePage from './home';
 import LanguagePage from './language';
+import LemmaPage from './lemma';
 import DefinitionPage from './definition';
 import PartOfSpeechPage from './part-of-speech';
 import InflectionTablePage from './inflection-table';
@@ -20,6 +21,14 @@ const PageContent = React.memo(({page, ...commonProps}: Props): JSX.Element => {
       return <HomePage {...commonProps}/>;
     case 'language':
       return <LanguagePage {...commonProps} id={page.id}/>;
+    case 'lemma':
+      return (
+        <LemmaPage
+          {...commonProps}
+          id={page.id}
+          languageId={page.language.id}
+        />
+      );
     case 'definition':
       return (
         <DefinitionPage

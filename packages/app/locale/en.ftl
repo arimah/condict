@@ -780,6 +780,34 @@ language-define-word-title = Define a word
 
 language-add-part-of-speech-title = Add part of speech
 
+## Lemma (headword) messages
+
+# Variables:
+#   language: The name of the language that the headword belongs to.
+#
+# Elements:
+#   <lang-link>: Link to the language that the lemma belongs to. Wraps around $language.
+lemma-subheading = Headword in language <lang-link>{$language}</lang-link>
+
+# Variables:
+#   n: The definition number (1-based).
+lemma-definition-n = Definition {$n}
+
+lemma-definition-link = View full definition – inflection and more
+
+lemma-derived-heading = Inflected forms
+
+lemma-tags-heading = Tags
+
+# Variables:
+#   formName: The name of the inflected form.
+#   sourceTerm: The term that the derived form comes from.
+#
+# Elements:
+#   <form-link>: Link to the inflected form. Wraps around $form.
+#   <def-link>: Link to the original definition that the derived form comes from. Wraps around $sourceTerm.
+lemma-derived-from = <form-link>{$formName}</form-link> of <def-link>{$sourceTerm}</def-link>
+
 ## Definition messages
 
 # Variables:
