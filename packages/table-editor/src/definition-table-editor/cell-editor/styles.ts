@@ -32,7 +32,7 @@ export const RevertButton = styled(Button).attrs({
   slim: true,
   intent: 'bold',
 })`
-  display: block;
+  display: flex;
   width: 184px;
 `;
 

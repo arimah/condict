@@ -3,6 +3,7 @@ import React from 'react';
 import HandHeartIcon from 'mdi-react/HandHeartIcon';
 import RobotLoveIcon from 'mdi-react/RobotIcon';
 import CakeIcon from 'mdi-react/CakeVariantIcon';
+import BaguetteIcon from 'mdi-react/BaguetteIcon';
 import DeathStarIcon from 'mdi-react/DeathStarVariantIcon';
 import PuzzleIcon from 'mdi-react/PuzzleIcon';
 import PaletteIcon from 'mdi-react/PaletteIcon';
@@ -81,6 +82,12 @@ const Main = (): JSX.Element => {
           </Button>
           <Button intent={intent} disabled={disabled} label='Icon only'>
             <CakeIcon/>
+          </Button>
+        </Row>
+        <Row>
+          <Button intent={intent} disabled={disabled}>
+            <BaguetteIcon/>
+            <span>A button with a label so long that it does not fit within its container and will wrap, in order to showcase behaviour around icon positioning</span>
           </Button>
         </Row>
         <Row>

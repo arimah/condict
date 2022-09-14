@@ -12,7 +12,7 @@ export const Search = styled.section`
 
 export const SearchButton = styled(Button)`
   flex: 1 1 auto;
-  text-align: start;
+  justify-content: flex-start;
   border-radius: 7px;
 
   --button-fg: var(--fg);

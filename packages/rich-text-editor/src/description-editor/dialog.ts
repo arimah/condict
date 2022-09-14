@@ -53,10 +53,8 @@ export const SearchInput = styled(TextInput).attrs({
 
 export const SubmitButton = styled(Button).attrs({
   intent: 'accent',
-  bold: true,
   slim: true,
 })`
   padding: 1px 12px;
   flex: none;
-  border-radius: 3px;
 `;

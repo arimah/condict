@@ -8,7 +8,7 @@ export const Popup = styled(PopupBase)`
   max-width: 480px;
 
   animation-name: enter;
-  animation-duration: 100ms;
+  animation-duration: ${p => p.theme.timing.short}ms;
   animation-iteration-count: 1;
   animation-timing-function: linear;
 
@@ -25,7 +25,6 @@ export const Columns = styled.div`
 
 export const PrimaryLabel = styled.span`
   flex: 1 1 auto;
-  padding: 8px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -33,8 +32,8 @@ export const PrimaryLabel = styled.span`
 
 export const SecondaryLabel = styled.span`
   flex: none;
-  padding-block: 8px;
-  padding-inline: 0 8px;
+  padding-block: 0;
+  padding-inline: 8px 0;
   white-space: nowrap;
   opacity: 0.7;
 `;
@@ -45,28 +44,14 @@ export const Actions = styled.span`
   padding-inline: 0 2px;
 `;
 
-export const Action = styled(Button).attrs({
-  borderless: true,
-})`
+export const Action = styled(Button)`
+  display: flex;
   padding: 4px 8px;
   border-radius: 5px;
-`;
-
-export const PrimaryAction = styled(Action)`
-  display: flex;
-  margin: 2px;
-  padding: 4px;
-  flex: 1 1 auto;
-  flex-direction: row;
-  overflow: hidden;
-  align-items: center;
-  text-align: start;
 
   > .mdi-icon {
-    flex: none;
-
     &:first-child {
-      margin-inline-start: -2px;
+      margin-inline-start: -4px;
     }
 
     &:not(:first-child) {
@@ -74,20 +59,19 @@ export const PrimaryAction = styled(Action)`
     }
 
     &:last-child {
-      margin-inline-end: -2px;
+      margin-inline-end: -4px;
     }
 
     &:not(:last-child) {
       margin-inline-end: 6px;
     }
   }
+`;
 
-  > ${PrimaryLabel} {
-    padding: 0;
-  }
-
-  > ${SecondaryLabel} {
-    padding-block: 0;
-    padding-inline: 8px 0;
-  }
+export const PrimaryAction = styled(Action)`
+  margin: 2px;
+  flex: 1 1 auto;
+  flex-direction: row;
+  overflow: hidden;
+  justify-content: flex-start;
 `;

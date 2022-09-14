@@ -39,8 +39,8 @@ export type PageProps = {
 };
 
 export const Page = styled(Button)<PageProps>`
-  display: block;
-  padding: 6px 2px;
+  display: flex;
+  padding-inline: 2px;
   min-width: 32px;
 
   ${p => p.isLoading && `

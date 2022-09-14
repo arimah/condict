@@ -91,7 +91,7 @@ export const DeriveDisplayNameButton = styled(Button).attrs({
   slim: true,
   intent: 'bold',
 })`
-  display: block;
+  display: flex;
   width: 256px;
 `;
 

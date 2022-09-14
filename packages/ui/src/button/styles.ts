@@ -8,15 +8,17 @@ export type Props = {
 export type ButtonIntent = 'accent' | 'bold' | 'danger' | 'general';
 
 export const ButtonStyle = css<Props>`
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
   padding: ${p => p.slim ? '2px 10px' : '6px 14px'};
   font: inherit;
   font-weight: normal;
-  text-align: center;
+  vertical-align: middle;
   border: 2px solid;
   border-radius: ${p => p.slim ? '3px' : '7px'};
-  position: relative;
 
   color: var(--button-fg);
   border-color: var(--button-border);
@@ -61,8 +63,8 @@ export const ButtonStyle = css<Props>`
   }
 
   > .mdi-icon {
+    flex: none;
     margin-block: -4px;
-    vertical-align: -3px;
   }
 
   > .mdi-icon:first-child {

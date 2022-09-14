@@ -4,7 +4,7 @@ import FetchIcon from 'mdi-react/SyncIcon';
 import DownloadIcon from 'mdi-react/DownloadIcon';
 import UpdateIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
 
-import {ButtonIntent, useUniqueId} from '@condict/ui';
+import {Button, ButtonIntent, useUniqueId} from '@condict/ui';
 
 import {UpdateStatus} from '../../../../types';
 
@@ -82,7 +82,7 @@ const Status = (): JSX.Element => {
 
   return (
     <S.Main>
-      <S.MainButton
+      <Button
         intent={StatusIntents[status]}
         aria-live='polite'
         aria-relevant='text'
@@ -94,7 +94,7 @@ const Status = (): JSX.Element => {
         <span>
           <Localized id={L10nButtonLabels[status]}/>
         </span>
-      </S.MainButton>
+      </Button>
       {status !== 'unknown' &&
         <span id={`${id}-status`}>
           <Localized id={L10nStatusMessages[status]}/>

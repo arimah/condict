@@ -2,23 +2,20 @@ import styled from 'styled-components';
 
 import {Button as ButtonBase} from '@condict/ui';
 
-const FlexButton = styled(ButtonBase)`
+const SidebarButton = styled(ButtonBase)`
   flex: none;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  text-align: start;
+  justify-content: flex-start;
 
   /* slightly more space before the icon */
   > .mdi-icon:first-child {
-    flex: none;
     margin-inline-start: -4px;
   }
 `;
 
 // These buttons are never disabled, so no need to style them for that
 
-export const SearchButton = styled(FlexButton)`
+export const SearchButton = styled(SidebarButton)`
   --button-fg: var(--button-naked-fg);
   --button-bg: var(--button-naked-bg);
   --button-bg-hover: var(--button-naked-bg-hover);
@@ -28,7 +25,7 @@ export const SearchButton = styled(FlexButton)`
   --button-border-pressed: var(--button-naked-border-pressed);
 `;
 
-export const Button = styled(FlexButton)`
+export const Button = styled(SidebarButton)`
   --bg: var(--sidebar-bg);
   --button-fg: var(--sidebar-fg);
   --button-bg: var(--sidebar-bg);
