@@ -5,7 +5,7 @@ export const Gray: Shade = {
   swatch: '#808f9d',
   disabled: {
     lightButtonBg: '#808f9d',
-    darkButtonBg: '#647382',
+    darkButtonBg: '#3c454e',
   },
 };
 

@@ -49,7 +49,7 @@ export const darkThemeVars = (
   'button-border-disabled': 'var(--button-bg-disabled)',
 
   'button-accent-fg': '#ffffff',
-  'button-accent-fg-disabled': '#ffffffcc',
+  'button-accent-fg-disabled': '#ffffffaa',
   'button-accent-bg': accent.palette[7],
   'button-accent-bg-hover': accent.palette[6],
   'button-accent-bg-pressed': accent.palette[8],
@@ -71,7 +71,7 @@ export const darkThemeVars = (
   'button-bold-border-disabled': 'var(--button-bold-bg-disabled)',
 
   'button-danger-fg': '#ffffff',
-  'button-danger-fg-disabled': '#ffffffcc',
+  'button-danger-fg-disabled': '#ffffffaa',
   'button-danger-bg': danger.palette[7],
   'button-danger-bg-hover': danger.palette[6],
   'button-danger-bg-pressed': danger.palette[8],
