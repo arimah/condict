@@ -1,4 +1,4 @@
-import produce from 'immer';
+import produce, {nothing} from 'immer';
 
 export const splitPath = (path: string): string[] =>
   path ? path.split('.') : [];
@@ -20,6 +20,10 @@ export const set = (
   // Note: we can't use update() here, as `value` may be undefined and we have
   // no way of assigning undefined to the field.
   produce(data, draft => {
+    if (path.length === 0) {
+      return value === undefined ? nothing : value;
+    }
+
     let target = draft;
     for (let i = 0; i < path.length - 1; i++) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -36,6 +40,10 @@ export const update = (
   updater: (value: unknown) => unknown | void
 ): unknown =>
   produce(data, draft => {
+    if (path.length === 0) {
+      return updater(draft);
+    }
+
     let target = draft;
     for (let i = 0; i < path.length - 1; i++) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
