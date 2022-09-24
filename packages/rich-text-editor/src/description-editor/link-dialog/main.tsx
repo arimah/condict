@@ -77,17 +77,20 @@ const LinkDialog = (props: Props): JSX.Element => {
 
   const [state, dispatch] = useReducer(reduce, props, initState);
 
+  const currentResult = state.index >= 0
+    ? state.results[state.index]
+    : null;
   const submit = useCallback(() => {
-    if (state.index === -1) {
-      dispatch({type: 'showError'});
+    if (currentResult) {
+      onSubmit(currentResult.target);
     } else {
-      onSubmit(state.results[state.index].target);
+      dispatch({type: 'showError'});
     }
-  }, [onSubmit, state]);
+  }, [onSubmit, currentResult]);
 
   const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     dispatch({type: 'input', value: e.target.value});
-  }, [onFindLinkTarget]);
+  }, []);
 
   const handleInputKeyDown = useCallback((e: KeyboardEvent) => {
     if (Shortcut.matches(SubmitKey, e)) {
@@ -214,7 +217,6 @@ const LinkDialog = (props: Props): JSX.Element => {
             index={index}
             result={result}
             selected={index === state.index}
-            aria-selected={index === state.index}
             onMouseEnter={handleHoverResult}
             onClick={onSubmit}
             ref={index === state.index ? currentResultRef : undefined}
