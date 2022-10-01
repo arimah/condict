@@ -1,6 +1,12 @@
 import {createGlobalStyle} from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
+  @font-face {
+    font-family: 'AppleSymbols';
+    src: local('SF Pro'), local('SFPro'), local('SFPro-Regular');
+    unicode-range: U+2325, U+21E7, U+2318, U+2303;
+  }
+
   * {
     margin: 0;
     padding: 0;
@@ -17,7 +23,7 @@ export const GlobalStyles = createGlobalStyle`
   body {
     font-size: 14px;
     line-height: 16px;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: 'AppleSymbols', 'Noto Sans', sans-serif;
   }
 
   h1 {
