@@ -4,6 +4,9 @@
 * [`Shortcut` functions](#shortcut-functions)
 * [`ShortcutMap`](#shortcutmap)
 * [`Shortcuts`](#shortcuts)
+* [`<ShortcutFormatProvider>`](#shortcutformatprovider)
+* [`<ShortcutName>`](#shortcutname)
+* [`useShortcutFormatter()`](#useshortcutformatter)
 
 ---
 
@@ -32,7 +35,7 @@ The `Shortcut` type does not support key sequences, such as "Ctrl+K followed by 
 ## Examples
 
 ```jsx
-import {Shortcut, ShortcutMap} from '@condict/ui';
+import {Shortcut, ShortcutMap, Shortcuts, ShortcutName} from '@condict/ui';
 
 const NavigationCommands = new ShortcutMap(
   [
@@ -94,6 +97,12 @@ const MyComponent = () =>
   >
     ...
   </div>;
+
+// Display a formatted shortcut:
+const MyTooltip = () =>
+  <Tooltip>
+    Undo (<ShortcutName of={Shortcuts.undo}/>)
+  </Tooltip>
 ```
 
 ## `Shortcut` functions
@@ -103,7 +112,6 @@ const MyComponent = () =>
 * [`Shortcut.testModifiers()`](#shortcuttestmodifiers)
 * [`Shortcut.forEach()`](#shortcutforeach)
 * [`Shortcut.equals()`](#shortcutequals)
-* [`Shortcut.format()`](#shortcutformat)
 * [`Shortcut.formatAria()`](#shortcutformataria)
 
 ### `Shortcut.parse`
@@ -158,21 +166,6 @@ Determines whether two shortcuts are equal. The two shortcuts are equivalent if:
 * Both are shortcut groups of the same length where all shortcuts are equal;
 * Both are single shortcuts with the same keys and modifiers.
 
-### `Shortcut.format`
-
-> `Shortcut.format(shortcut: Shortcut): string`
-
-Formats the shortcut into a user-friendly string. The exact format varies depending on platform. Some examples:
-
-| Shortcut | Linux | Windows | macOS |
-| --- | --- | --- | --- |
-| Primary+T | `'Ctrl+T'` | `'Ctrl+T'` | `'⌘T'` |
-| Primary+Shift+F | `'Ctrl+Shift+F'` | `'Ctrl+Shift+F'` | `'⇧⌘F'` |
-| Alt+9 | `'Alt+9'` | `'Alt+9'` | `'⌥9'` |
-| Secondary+Shift+P | `'Win+Shift+P'` | `'Super+Shift+P'` | `'^⇧P'` |
-
-If the shortcut responds to multiple keys, only the first is included in the output.
-
 ### `Shortcut.formatAria`
 
 > `Shortcut.formatAria(shortcut: Shortcut): string`
@@ -202,7 +195,7 @@ Constructs a new `ShortcutMap<T>` with the specified values. The `getShortcut` f
 
 Finds a value whose shortcut can handle the keyboard event. If there is no matching value, returns null. The keyboard event can be a synthetic React event or a native keyboard event.
 
-### `Shortcuts`
+## `Shortcuts`
 
 An object that defines various common shortcuts. The following shortcuts are defined:
 
@@ -216,5 +209,45 @@ An object that defines various common shortcuts. The following shortcuts are def
 | `selectAll` | <kbd>Ctrl</kbd>+<kbd>A</kbd> | <kbd>Ctrl</kbd>+<kbd>A</kbd> | <kbd>⌘ Command</kbd>+<kbd>A</kbd> |
 
 These keyboard shortcuts are largely standardised, and should not be used for other meanings.
+
+## `<ShortcutFormatProvider>`
+
+This component is used to localize shortcut names that are displayed to the user.
+
+Modifier keys are not named the same in all parts of the world. The <kbd>Ctrl</kbd> key is known in German as <kbd>Strg</kbd> (Steuerung); <kbd>Shift</kbd> is known in French as <kbd>Maj</kbd> (Majuscule). Non-modifier keys also have highly variable names: the <kbd>Backspace</kbd> key may be called _Rücktaste_, _Retour arrière_, _Retroceso_, 백스페이스, or any number of variations; arrow keys must be named; and so on. This component is used to provide shortcut localization.
+
+**Note:** On macOS, the modifier keys are hardcoded. They always use the standard modifier symbols – ⌥ ⇧ ⌘ ⌃.
+
+**Also note:** For `aria-keyshortcuts`, use [`Shortcut.formatAria()`](#shortcutformataria). The ARIA shortcut format is not locale-dependent.
+
+### Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `modifiers` | `ModifierNames` | _none; required_ | An object containing names for the modifier keys. |
+| `translateKey` | function | _none; required_ | A function that receives a [key name value][key] and translates it to an appropriate name for the current locale. For example, `'ArrowUp'` may be translated to _Up_. The space character is sent as `'Space'`, not `' '`, for easier integration into localization systems. If a key does not need to be translated, the key name should be returned unchanged. |
+| `children` | node | `undefined` | The provider's children. |
+
+Other props are ignored.
+
+## `<ShortcutName>`
+
+This component renders a formatted shortcut name. If the given shortcut is a shortcut group (containing multiple shortcuts with potentially different modifiers), only the first is rendered. If the shortcut responds to multiple keys, the first is rendered. The shortcut is formatted using the nearest [shortcut format](#shortcutformatprovider).
+
+The rendered element is always a fragment containing text only. It is not possible to style the shortcut name; place it inside a styled element instead.
+
+### Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `of` | [`Shortcut`](#shortcut) | _none; required_ | The shortcut to display. |
+
+Other props are ignored.
+
+## `useShortcutFormatter()`
+
+> `useShortcutFormatter(): (shortcut: Shortcut) => string`
+
+Acquires a shortcut formatter function from the nearest [shortcut format](#shortcutformatprovider). The function accepts a shortcut and returns a formatted shortcut string.
 
 [key]: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values

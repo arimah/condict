@@ -76,6 +76,12 @@ export {
   ShortcutGroup,
   ShortcutMap,
   Shortcuts,
+  ShortcutFormatProvider,
+  ShortcutFormatProviderProps,
+  ShortcutName,
+  ShortcutNameProps,
+  ModifierNames,
+  useShortcutFormatter,
 } from './shortcut';
 
 export {

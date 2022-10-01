@@ -6,7 +6,7 @@ import {getContentAndLabel} from '../a11y-utils';
 import combineRefs from '../combine-refs';
 
 import {useManagedFocus} from './focus-manager';
-import formatTooltip from './format-tooltip';
+import useTooltip from './tooltip';
 import * as S from './styles';
 
 export type Props = {
@@ -47,6 +47,8 @@ const Button = React.forwardRef((
 
   const effectiveShortcut = command ? command.shortcut : shortcut;
 
+  const title = useTooltip(label, effectiveShortcut);
+
   return (
     <S.Button
       {...otherProps}
@@ -59,7 +61,7 @@ const Button = React.forwardRef((
           : undefined
       }
       tabIndex={isCurrent ? 0 : -1}
-      title={formatTooltip(label, effectiveShortcut)}
+      title={title}
       disabled={command ? command.disabled || disabled : disabled}
       onClick={command ? command.exec : onClick}
       ref={combineRefs(ref, ownRef)}

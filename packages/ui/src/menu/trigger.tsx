@@ -1,4 +1,4 @@
-import React, {Ref, useState, useRef, useCallback} from 'react';
+import React, {MouseEvent, Ref, useState, useRef, useCallback} from 'react';
 
 import combineRefs from '../combine-refs';
 import {useUniqueId} from '../unique-id';

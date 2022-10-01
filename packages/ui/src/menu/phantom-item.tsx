@@ -1,7 +1,7 @@
 import React, {ReactNode, useContext} from 'react';
 import ReactDOM from 'react-dom';
 
-import {Shortcut} from '../shortcut';
+import {ShortcutName} from '../shortcut';
 
 import getContainer from './container';
 import {OwnerContext} from './context';
@@ -47,7 +47,7 @@ const PhantomItem = React.memo((props: PhantomProps): JSX.Element => {
         <S.ItemLabel>{label}</S.ItemLabel>
         {shortcut &&
           <S.ItemShortcut>
-            {Shortcut.format(shortcut)}
+            <ShortcutName of={shortcut}/>
           </S.ItemShortcut>
         }
         {Checks[checkType]}

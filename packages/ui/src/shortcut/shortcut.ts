@@ -179,13 +179,6 @@ export const Shortcut = {
     }
   },
 
-  format(shortcut: Shortcut): string {
-    if (shortcut.shortcuts) {
-      return Shortcut.format(shortcut.shortcuts[0]);
-    }
-    return `${formatModifiers(shortcut)}${translateKeyName(shortcut.keys[0])}`;
-  },
-
   formatAria(shortcut: Shortcut): string {
     if (shortcut.shortcuts) {
       // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -225,56 +218,21 @@ const singleEquals = (a: SingleShortcut, b: SingleShortcut): boolean =>
   a.keys.length === b.keys.length &&
   a.keys.every((key, i) => b.keys[i] === key);
 
-const joinMods = (
-  a: false | string,
-  b: false | string,
-  c: false | string,
-  d: false | string
-) =>
-  `${a || ''}${b || ''}${c || ''}${d || ''}`;
-
 type ModifierFormatter = (shortcut: SingleShortcut) => string;
-
-const formatModifiers: ModifierFormatter = selectPlatform({
-  macos: ({primary, secondary, shift, alt}) =>
-    // macOS order: Ctrl+Opt+Shift+Cmd+(key)
-    // U+2325 = ⌥ Option Key
-    // U+21E7 = ⇧ Upwards White Arrow, aka shift
-    // U+2318 = ⌘ Place Of Interest Sign, aka Cmd
-    // U+2023 = ⌃ Up Arrowhead, aka Ctrl
-    joinMods(secondary && '\u2303', alt && '\u2325', shift && '\u21E7', primary && '\u2318'),
-  windows: ({primary, secondary, shift, alt}) =>
-    // Windows order: Win+Ctrl+Alt+Shift+(key)
-    joinMods(secondary && 'Win+', primary && 'Ctrl+', alt && 'Alt+', shift && 'Shift+'),
-  other: ({primary, secondary, shift, alt}) =>
-    // Linux order: Super+Ctrl+Alt+Shift+(key)
-    joinMods(secondary && 'Super+', primary && 'Ctrl+', alt && 'Alt+', shift && 'Shift+'),
-});
 
 const formatAriaModifiers: ModifierFormatter = selectPlatform({
   macos: ({primary, secondary, shift, alt}) =>
     // Primary = Meta
     // Secondary = Control
-    joinMods(primary && 'Meta+', secondary && 'Control+', alt && 'Alt+', shift && 'Shift+'),
+    (primary ? 'Meta+' : '') +
+    (secondary ? 'Control+' : '') +
+    (alt ? 'Alt+' : '') +
+    (shift ? 'Shift+' : ''),
   default: ({primary, secondary, shift, alt}) =>
     // Primary = Control
     // Secondary = Meta
-    joinMods(primary && 'Control+', secondary && 'Meta+', alt && 'Alt+', shift && 'Shift+'),
+    (primary ? 'Control+' : '') +
+    (secondary ? 'Meta+' : '') +
+    (alt ? 'Alt+' : '') +
+    (shift ? 'Shift+' : ''),
 });
-
-// Translates a small number of special keys into a more palatable name.
-// Some of these choices may be questionable.
-const translateKeyName = (name: string) => {
-  switch (name) {
-    case ' ': return 'Space';
-    case 'ArrowDown': return 'Down';
-    case 'ArrowLeft': return 'Left';
-    case 'ArrowRight': return 'Right';
-    case 'ArrowUp': return 'Up';
-    case 'Backspace': return 'Back';
-    case 'Delete': return 'Del';
-    case 'Escape': return 'Esc';
-    case 'Insert': return 'Ins';
-    default: return name;
-  }
-};

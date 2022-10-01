@@ -5,7 +5,6 @@ import {getContentAndLabel} from '../a11y-utils';
 import combineRefs from '../combine-refs';
 
 import {useManagedFocus} from './focus-manager';
-import formatTooltip from './format-tooltip';
 import * as S from './styles';
 
 export type Props = {
@@ -38,7 +37,7 @@ const MenuButton = React.forwardRef((
         {...otherProps}
         aria-label={ariaLabel}
         tabIndex={isCurrent ? 0 : -1}
-        title={formatTooltip(label, null)}
+        title={label || undefined}
         ref={combineRefs(ref, ownRef)}
       >
         {renderedContent}

@@ -18,7 +18,7 @@ import {
   ItemElement,
   useManagedFocus,
 } from './focus-manager';
-import formatTooltip from './format-tooltip';
+import useTooltip from './tooltip';
 import Group, {Props as GroupBaseProps} from './group';
 import * as S from './styles';
 
@@ -147,6 +147,8 @@ const RadioButton = React.forwardRef((
 
   const effectiveShortcut = command ? command.shortcut : shortcut;
 
+  const title = useTooltip(label, effectiveShortcut);
+
   return (
     <S.Button
       {...otherProps}
@@ -160,7 +162,7 @@ const RadioButton = React.forwardRef((
           : undefined
       }
       tabIndex={isCurrent ? 0 : -1}
-      title={formatTooltip(label, effectiveShortcut)}
+      title={title}
       disabled={command ? command.disabled || disabled : disabled}
       onClick={command ? command.exec : onClick}
       ref={combineRefs(ref, ownRef)}

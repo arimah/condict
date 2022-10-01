@@ -3,7 +3,7 @@ import ChevronRightIcon from 'mdi-react/ChevronRightIcon';
 
 import {useUniqueId} from '../unique-id';
 import {useCommand} from '../command';
-import {Shortcut} from '../shortcut';
+import {Shortcut, ShortcutName} from '../shortcut';
 
 import OwnedMenu from './owned-menu';
 import {OwnerContext, useMenuItem} from './context';
@@ -92,7 +92,7 @@ const Item = (props: Props): JSX.Element => {
       <S.ItemLabel>{label}</S.ItemLabel>
       {effectiveShortcut &&
         <S.ItemShortcut>
-          {Shortcut.format(effectiveShortcut)}
+          <ShortcutName of={effectiveShortcut}/>
         </S.ItemShortcut>
       }
       <S.ItemSubmenu>
