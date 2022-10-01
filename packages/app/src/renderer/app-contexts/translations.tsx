@@ -2,7 +2,12 @@ import React, {ReactNode, useMemo, useContext, useEffect} from 'react';
 import {FluentBundle, FluentResource} from '@fluent/bundle';
 import {LocalizationProvider, ReactLocalization} from '@fluent/react';
 
-import {WritingDirection, WritingDirectionProvider} from '@condict/ui';
+import {
+  WritingDirection,
+  WritingDirectionProvider,
+  ShortcutFormatProvider,
+  ShortcutFormatProviderProps,
+} from '@condict/ui';
 
 import {Locale} from '../../types';
 
@@ -12,6 +17,8 @@ export type Props = {
   availableLocales: readonly string[];
   children: ReactNode;
 };
+
+type ShortcutFormatProps = Omit<ShortcutFormatProviderProps, 'children'>;
 
 const AvailableLocalesContext = React.createContext<readonly string[]>([]);
 
@@ -43,11 +50,24 @@ const TranslationProvider = (props: Props): JSX.Element => {
     html.setAttribute('dir', dir);
   }, [currentLocale, dir]);
 
+  const shortcutFormat = useMemo<ShortcutFormatProps>(() => ({
+    modifiers: {
+      control: localization.getString('key-modifier-control'),
+      shift: localization.getString('key-modifier-shift'),
+      alt: localization.getString('key-modifier-alt'),
+      windows: localization.getString('key-modifier-windows'),
+      super: localization.getString('key-modifier-super'),
+    },
+    translateKey: key => localization.getString('key-name', {key}),
+  }), [localization]);
+
   return (
     <LocalizationProvider l10n={localization}>
       <AvailableLocalesContext.Provider value={availableLocales}>
         <WritingDirectionProvider value={dir}>
-          {children}
+          <ShortcutFormatProvider {...shortcutFormat}>
+            {children}
+          </ShortcutFormatProvider>
         </WritingDirectionProvider>
       </AvailableLocalesContext.Provider>
     </LocalizationProvider>

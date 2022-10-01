@@ -22,7 +22,7 @@ export const TableCard = styled.div`
 
 export const TableButton = styled(NakedButton)`
   flex: 1 1 auto;
-  text-align: start;
+  justify-content: start;
   border-start-end-radius: 0;
   border-end-end-radius: 0;
   cursor: pointer;

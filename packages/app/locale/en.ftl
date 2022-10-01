@@ -1151,3 +1151,51 @@ error-reload-app-button = Reload Condict
 error-reload-tab-button = Reload tab
 
 error-report-error-button = Report error
+
+## Shortcuts and key names
+
+# The Ctrl/Control modifier key. Windows and Linux; macOS uses symbols for modifiers.
+key-modifier-control = Ctrl
+
+# The Shift modifier key. Windows and Linux; macOS uses symbols for modifiers.
+key-modifier-shift = Shift
+
+# The Alt modifier key. Windows and Linux; macOS uses symbols for modifiers.
+key-modifier-alt = Alt
+
+# The Windows key, which opens the Start menu, among other things. Windows only.
+#
+# Linux equivalent: key-modifier-super
+#
+# macOS uses symbols for modifiers.
+key-modifier-windows = Win
+
+# The Super key, which performs various OS-level tasks. Linux only.
+#
+# Windows equivalent: key-modifier-windows
+#
+# macOS uses symbols for modifiers.
+key-modifier-super = Super
+
+# Translates the name of a keyboard key to a localized form. The key name is either a "raw" key value, that is a letter or several typed by the user such as "v", "3", "!", or a special key name. This message should be used only to translate special key names.
+#
+# Full list of key names: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
+#
+# Notes:
+#
+# * Modifier key names do not need to be translated. They cannot be bound to shortcuts in Condict. Ignore them.
+# * Ignore notes about historical browser behaviour. Only modern Chromium matters.
+# * Only translate keys that actually need to be translated. If the target language calls it "Home", you don't need to write `[Home] Home`.
+# * The spacebar key is given as "Space", not " ". Therefore, match against `[Space]`, not `[ ]`.
+# * The default case must be `*[default] {$key}`. The value `{$key}` ensures we never accidentally mess up a legitimate key.
+#
+# Variables:
+#   key: The key name to translate.
+key-name =
+  {$key ->
+    [ArrowUp] Up
+    [ArrowDown] Down
+    [ArrowLeft] Left
+    [ArrowRight] Right
+   *[default] {$key}
+  }
