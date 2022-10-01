@@ -31,13 +31,17 @@ const MenuTrigger = (props: Props): JSX.Element => {
   const [isOpen, setOpen] = useState(false);
   const ownerRef = useRef<MenuOwnerHandle>(null);
   const childRef = useRef<ChildType>(null);
-  const openMenu = useCallback(() => {
+  const openMenu = useCallback((e: MouseEvent) => {
     if (ownerRef.current && childRef.current) {
-      // TODO: See if we can distinguish between mouse and keyboard clicks
-      // in this event.
       ownerRef.current.open({
         name: null,
         parent: childRef.current,
+        // `detail` is set to "the number of clicks" - if you double-click an
+        // element, it becomes 2; triple-click, it becomes 3; and so on. By some
+        // unfathomable quirk of browsers (particularly Chromium, which is all
+        // we really care about for an Electron app), a keyboard click is not
+        // counted, and `detail` becomes zero.
+        fromKeyboard: e.detail === 0,
       });
       setOpen(true);
       onToggle?.(true);
