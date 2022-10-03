@@ -11,7 +11,7 @@ const PageConditions = {
    * @return True if the page is a singleton.
    */
   isSingleton(page: Page): page is SingletonPage {
-    return page.type === 'language';
+    return page.type === 'home' || page.type === 'language';
   },
 
   /**
