@@ -6,7 +6,7 @@ import {
   tableCaptionToGraphQLInput,
 } from '@condict/rich-text-editor';
 
-import {DataViewer, FlowContent, MainHeader, BlockFields} from '../ui';
+import {FlowContent, MainHeader, BlockFields, renderData} from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {DefinitionData, DefinitionForm} from '../forms';
 import {DefinitionId, LanguageId, PartOfSpeechId} from '../graphql';
@@ -121,24 +121,21 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
           <Localized id='language-define-word-title'/>
         </h1>
       </MainHeader>
-      <DataViewer
-        result={data}
-        render={() =>
-          <DefinitionForm
-            languageId={languageId}
-            initialPartsOfSpeech={initialPartsOfSpeech}
-            submitError={
-              submitError && <Localized id='inflection-table-save-error'/>
-            }
-            firstFieldRef={firstFieldRef}
-            onSubmit={onSubmit}
-            onCancel={() => onResolve(null)}
-            onDirtyChange={dirty => updatePanel({dirty})}
-            onCreatePartOfSpeech={createPartOfSpeech}
-            onCreateInflectionTable={createInflectionTable}
-          />
-        }
-      />
+      {renderData(data, () =>
+        <DefinitionForm
+          languageId={languageId}
+          initialPartsOfSpeech={initialPartsOfSpeech}
+          submitError={
+            submitError && <Localized id='inflection-table-save-error'/>
+          }
+          firstFieldRef={firstFieldRef}
+          onSubmit={onSubmit}
+          onCancel={() => onResolve(null)}
+          onDirtyChange={dirty => updatePanel({dirty})}
+          onCreatePartOfSpeech={createPartOfSpeech}
+          onCreateInflectionTable={createInflectionTable}
+        />
+      )}
     </FlowContent>
   );
 };

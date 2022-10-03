@@ -6,7 +6,6 @@ import {SROnly, useUniqueId} from '@condict/ui';
 import {LanguagePage, LemmaPage, SearchPage} from '../../page';
 import {useOpenPanel} from '../../navigation';
 import {
-  DataViewer,
   FlowContent,
   MainHeader,
   HeaderAction,
@@ -19,6 +18,7 @@ import {
   Link,
   Divider,
   PartOfSpeechName,
+  renderData,
 } from '../../ui';
 import {DefinitionId, LanguageId} from '../../graphql';
 import {editDefinitionPanel} from '../../panels';
@@ -61,88 +61,85 @@ const DefinitionPage = (props: Props): JSX.Element => {
 
   return (
     <FlowContent>
-      <DataViewer
-        result={data}
-        render={({definition: def}) => {
-          if (!def) {
-            return (
-              <p>
-                <Localized id='definition-not-found-error'/>
-              </p>
-            );
-          }
+      {renderData(data, ({definition: def}) => {
+        if (!def) {
+          return (
+            <p>
+              <Localized id='definition-not-found-error'/>
+            </p>
+          );
+        }
 
-          const lang = def.language;
-          const langPage = LanguagePage(lang.id, lang.name);
-          const lemmaPage = LemmaPage(def.lemma.id, def.term, langPage);
-          return <>
-            <MainHeader>
-              <Selectable as='h1'>{def.term}</Selectable>
-              <HeaderAction onClick={handleEdit}>
-                <Localized id='generic-edit-button'/>
-              </HeaderAction>
-            </MainHeader>
-            <Subheader>
-              <Localized
-                id='definition-subheading'
-                vars={{
-                  term: def.term,
-                  language: lang.name,
-                  defCount: def.lemma.definitions.length,
-                }}
-                elems={{
-                  'lemma-link': <Link to={lemmaPage}/>,
-                  'lang-link': <Link to={langPage}/>,
-                }}
-              >
-                <span></span>
-              </Localized>
-              <ResourceMeta>
-                <ResourceTime
-                  of={def}
-                  createdLabelId='definition-added-on'
-                  updatedLabelId='definition-edited-on'
-                />
-              </ResourceMeta>
-            </Subheader>
-
-            <Selectable>
-              <PartOfSpeechName>
-                {def.partOfSpeech.name}
-              </PartOfSpeechName>
-              <RichContent
-                value={def.description}
-                heading1='h3'
-                heading2='h4'
+        const lang = def.language;
+        const langPage = LanguagePage(lang.id, lang.name);
+        const lemmaPage = LemmaPage(def.lemma.id, def.term, langPage);
+        return <>
+          <MainHeader>
+            <Selectable as='h1'>{def.term}</Selectable>
+            <HeaderAction onClick={handleEdit}>
+              <Localized id='generic-edit-button'/>
+            </HeaderAction>
+          </MainHeader>
+          <Subheader>
+            <Localized
+              id='definition-subheading'
+              vars={{
+                term: def.term,
+                language: lang.name,
+                defCount: def.lemma.definitions.length,
+              }}
+              elems={{
+                'lemma-link': <Link to={lemmaPage}/>,
+                'lang-link': <Link to={langPage}/>,
+              }}
+            >
+              <span></span>
+            </Localized>
+            <ResourceMeta>
+              <ResourceTime
+                of={def}
+                createdLabelId='definition-added-on'
+                updatedLabelId='definition-edited-on'
               />
-            </Selectable>
+            </ResourceMeta>
+          </Subheader>
 
-            {def.inflectionTables.length > 0 && <>
-              <Divider/>
-              <Inflection
-                id={`${htmlId}-tables`}
-                term={def.term}
-                stems={def.stems}
-                tables={def.inflectionTables}
-                parent={langPage}
+          <Selectable>
+            <PartOfSpeechName>
+              {def.partOfSpeech.name}
+            </PartOfSpeechName>
+            <RichContent
+              value={def.description}
+              heading1='h3'
+              heading2='h4'
+            />
+          </Selectable>
+
+          {def.inflectionTables.length > 0 && <>
+            <Divider/>
+            <Inflection
+              id={`${htmlId}-tables`}
+              term={def.term}
+              stems={def.stems}
+              tables={def.inflectionTables}
+              parent={langPage}
+            />
+          </>}
+
+          {def.tags.length > 0 && <>
+            <Divider/>
+            <section aria-labelledby={`${htmlId}-tags`}>
+              <SROnly as='h2' id={`${htmlId}-tags`}>
+                <Localized id='definition-tags-heading'/>
+              </SROnly>
+              <TagList
+                tags={def.tags}
+                target={t => SearchPage({tag: t.id, language: lang.id})}
               />
-            </>}
-
-            {def.tags.length > 0 && <>
-              <Divider/>
-              <section aria-labelledby={`${htmlId}-tags`}>
-                <SROnly as='h2' id={`${htmlId}-tags`}>
-                  <Localized id='definition-tags-heading'/>
-                </SROnly>
-                <TagList
-                  tags={def.tags}
-                  target={t => SearchPage({tag: t.id, language: lang.id})}
-                />
-              </section>
-            </>}
-          </>;
-        }}
-      />
+            </section>
+          </>}
+        </>;
+      })}
     </FlowContent>
   );
 };

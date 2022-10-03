@@ -10,12 +10,12 @@ import {PanelParams, PanelProps} from '../../navigation';
 import {LanguageId, PartOfSpeechId, InflectionTableId} from '../../graphql';
 import {InflectionTablePage, LanguagePage} from '../../page';
 import {
-  DataViewer,
   FlowContent,
   MainHeader,
   HeaderAction,
   InflectionTableIcon,
   Loading,
+  renderData,
 } from '../../ui';
 
 import {AllTableLayoutsQuery, TableLayoutQuery} from './query';
@@ -130,50 +130,47 @@ const ImportLayoutPanel = (props: Props): JSX.Element => {
             <Localized id='table-editor-import-error'/>
           </S.SubmitError>}
       </div>
-      <DataViewer
-        result={data}
-        render={() => {
-          const {samePos, otherPos} = groups;
-          return <>
-            <h2 id={`${htmlId}-same-title`}>
-              <Localized id='table-editor-import-same-pos-heading'/>
-            </h2>
-            {samePos ? (
-              <TableList
-                aria-labelledby={`${htmlId}-same-title`}
-                tables={samePos.tables}
-                onPick={handlePickTable}
-              />
+      {renderData(data, () => {
+        const {samePos, otherPos} = groups;
+        return <>
+          <h2 id={`${htmlId}-same-title`}>
+            <Localized id='table-editor-import-same-pos-heading'/>
+          </h2>
+          {samePos ? (
+            <TableList
+              aria-labelledby={`${htmlId}-same-title`}
+              tables={samePos.tables}
+              onPick={handlePickTable}
+            />
+          ) : (
+            <p>
+              <Localized id='table-editor-import-same-pos-empty'/>
+            </p>
+          )}
+
+          <h2 id={`${htmlId}-other-title`}>
+            <Localized id='table-editor-import-other-pos-heading'/>
+          </h2>
+          <section aria-labelledby={`${htmlId}-other-title`}>
+            {otherPos.length > 0 ? otherPos.map(pos =>
+              <Fragment key={pos.id}>
+                <h3 id={`${htmlId}-${pos.id}-title`}>
+                  {pos.name}
+                </h3>
+                <TableList
+                  aria-labelledby={`${htmlId}-${pos.id}-title`}
+                  tables={pos.tables}
+                  onPick={handlePickTable}
+                />
+              </Fragment>
             ) : (
               <p>
-                <Localized id='table-editor-import-same-pos-empty'/>
+                <Localized id='table-editor-import-other-pos-empty'/>
               </p>
             )}
-
-            <h2 id={`${htmlId}-other-title`}>
-              <Localized id='table-editor-import-other-pos-heading'/>
-            </h2>
-            <section aria-labelledby={`${htmlId}-other-title`}>
-              {otherPos.length > 0 ? otherPos.map(pos =>
-                <Fragment key={pos.id}>
-                  <h3 id={`${htmlId}-${pos.id}-title`}>
-                    {pos.name}
-                  </h3>
-                  <TableList
-                    aria-labelledby={`${htmlId}-${pos.id}-title`}
-                    tables={pos.tables}
-                    onPick={handlePickTable}
-                  />
-                </Fragment>
-              ) : (
-                <p>
-                  <Localized id='table-editor-import-other-pos-empty'/>
-                </p>
-              )}
-            </section>
-          </>;
-        }}
-      />
+          </section>
+        </>;
+      })}
     </FlowContent>
   );
 };

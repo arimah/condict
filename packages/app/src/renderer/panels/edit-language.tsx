@@ -7,7 +7,7 @@ import {
   descriptionToGraphQLInput,
 } from '@condict/rich-text-editor';
 
-import {DataViewer, FlowContent, MainHeader, HeaderAction} from '../ui';
+import {FlowContent, MainHeader, HeaderAction, renderData} from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {LanguageData, LanguageForm} from '../forms';
 import {LanguageId} from '../graphql';
@@ -96,34 +96,31 @@ const EditLanguagePanel = (props: Props) => {
             <Localized id='generic-delete-button'/>
           </HeaderAction>}
       </MainHeader>
-      <DataViewer
-        result={data}
-        render={({language}) =>
-          language ? (
-            <LanguageForm
-              initialData={{
-                id: language.id,
-                name: language.name,
-                description,
-              }}
-              submitError={submitError && <Localized id='language-save-error'/>}
-              firstFieldRef={firstFieldRef}
-              onSubmit={onSubmit}
-              onCancel={onResolve}
-              onDirtyChange={dirty => updatePanel({dirty})}
-            />
-          ) : <>
-            <p>
-              <Localized id='language-not-found-error'/>
-            </p>
-            <p>
-              <Button onClick={() => onResolve()}>
-                <Localized id='generic-form-cancel'/>
-              </Button>
-            </p>
-          </>
-        }
-      />
+      {renderData(data, ({language}) =>
+        language ? (
+          <LanguageForm
+            initialData={{
+              id: language.id,
+              name: language.name,
+              description,
+            }}
+            submitError={submitError && <Localized id='language-save-error'/>}
+            firstFieldRef={firstFieldRef}
+            onSubmit={onSubmit}
+            onCancel={onResolve}
+            onDirtyChange={dirty => updatePanel({dirty})}
+          />
+        ) : <>
+          <p>
+            <Localized id='language-not-found-error'/>
+          </p>
+          <p>
+            <Button onClick={() => onResolve()}>
+              <Localized id='generic-form-cancel'/>
+            </Button>
+          </p>
+        </>
+      )}
     </FlowContent>
   );
 };

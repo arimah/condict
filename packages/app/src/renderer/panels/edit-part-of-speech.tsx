@@ -3,7 +3,7 @@ import {Localized} from '@fluent/react';
 
 import {Button} from '@condict/ui';
 
-import {DataViewer, FlowContent, MainHeader} from '../ui';
+import {FlowContent, MainHeader, renderData} from '../ui';
 import {PanelParams, PanelProps} from '../navigation';
 import {PartOfSpeechData, PartOfSpeechForm} from '../forms';
 import {PartOfSpeechId} from '../graphql';
@@ -95,34 +95,31 @@ const EditPartOfSpeechPanel = (props: Props) => {
             onAfterDelete={onResolve}
           />}
       </MainHeader>
-      <DataViewer
-        result={data}
-        render={({partOfSpeech}) =>
-          partOfSpeech ? (
-            <PartOfSpeechForm
-              initialData={{
-                id: partOfSpeech.id,
-                name: partOfSpeech.name,
-              }}
-              languageId={partOfSpeech.language.id}
-              submitError={submitError && <Localized id='part-of-speech-save-error'/>}
-              firstFieldRef={firstFieldRef}
-              onSubmit={onSubmit}
-              onCancel={onResolve}
-              onDirtyChange={dirty => updatePanel({dirty})}
-            />
-          ) : <>
-            <p>
-              <Localized id='part-of-speech-not-found-error'/>
-            </p>
-            <p>
-              <Button onClick={() => onResolve()}>
-                <Localized id='generic-form-cancel'/>
-              </Button>
-            </p>
-          </>
-        }
-      />
+      {renderData(data, ({partOfSpeech}) =>
+        partOfSpeech ? (
+          <PartOfSpeechForm
+            initialData={{
+              id: partOfSpeech.id,
+              name: partOfSpeech.name,
+            }}
+            languageId={partOfSpeech.language.id}
+            submitError={submitError && <Localized id='part-of-speech-save-error'/>}
+            firstFieldRef={firstFieldRef}
+            onSubmit={onSubmit}
+            onCancel={onResolve}
+            onDirtyChange={dirty => updatePanel({dirty})}
+          />
+        ) : <>
+          <p>
+            <Localized id='part-of-speech-not-found-error'/>
+          </p>
+          <p>
+            <Button onClick={() => onResolve()}>
+              <Localized id='generic-form-cancel'/>
+            </Button>
+          </p>
+        </>
+      )}
     </FlowContent>
   );
 };

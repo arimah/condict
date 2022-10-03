@@ -14,15 +14,14 @@ import LemmaQuery from './query';
 import * as S from './styles';
 
 export type Props = {
-  term: string;
-  langPage: LanguagePage;
   lemma: Lemma;
+  langPage: LanguagePage;
 };
 
 type Lemma = NonNullable<OperationResult<typeof LemmaQuery>['lemma']>;
 
 const DefinitionList = (props: Props): JSX.Element => {
-  const {term, langPage, lemma} = props;
+  const {langPage, lemma} = props;
 
   const navigateTo = useNavigateTo();
 
@@ -46,7 +45,7 @@ const DefinitionList = (props: Props): JSX.Element => {
     });
   }, [lemma, langPage]);
 
-  const {definitions} = lemma;
+  const {term, definitions} = lemma;
 
   const htmlId = useUniqueId();
 

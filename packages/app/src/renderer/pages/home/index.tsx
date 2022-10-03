@@ -4,7 +4,7 @@ import AddIcon from 'mdi-react/PlusIcon';
 
 import {Button, ConlangFlag, NonIdealState, useUniqueId} from '@condict/ui';
 
-import {DataViewer, FlowContent, CardList, TagList} from '../../ui';
+import {FlowContent, CardList, TagList, renderData} from '../../ui';
 import {useNavigateTo, useOpenPanel} from '../../navigation';
 import {LanguagePage} from '../../page';
 import {EventPredicate} from '../../data';
@@ -40,73 +40,68 @@ const HomePage = (props: PageProps): JSX.Element => {
 
   const id = useUniqueId();
 
-  return (
-    <DataViewer
-      result={data}
-      render={({languages, tags, recentChanges}) =>
-        <FlowContent>
-          {languages.length === 0 ? (
-            // If there are no languages, show *only* a prompt to create the
-            // first one. Everything else is disclosed later; the user can't
-            // really do anything until they've created a language anyway.
-            <CardList>
-              <NonIdealState
-                minimal
-                image={<ConlangFlag width={188} height={116}/>}
-                title={<Localized id='home-no-languages-heading'/>}
-                description={<Localized id='home-no-languages-description'/>}
-                action={
-                  <Button intent='accent' onClick={handleAddLanguage}>
-                    <AddIcon/>
-                    <span>
-                      <Localized id='home-add-language-button'/>
-                    </span>
-                  </Button>
-                }
-              />
-            </CardList>
-          ) : <>
-            <h1 id={`${id}-languages-title`}>
-              <Localized id='home-languages-title'/>
-            </h1>
-            <LanguageList
-              aria-labelledby={`${id}-languages-title`}
-              languages={languages}
-              onAddLanguage={handleAddLanguage}
-            />
+  return renderData(data, ({languages, tags, recentChanges}) =>
+    <FlowContent>
+      {languages.length === 0 ? (
+        // If there are no languages, show *only* a prompt to create the
+        // first one. Everything else is disclosed later; the user can't
+        // really do anything until they've created a language anyway.
+        <CardList>
+          <NonIdealState
+            minimal
+            image={<ConlangFlag width={188} height={116}/>}
+            title={<Localized id='home-no-languages-heading'/>}
+            description={<Localized id='home-no-languages-description'/>}
+            action={
+              <Button intent='accent' onClick={handleAddLanguage}>
+                <AddIcon/>
+                <span>
+                  <Localized id='home-add-language-button'/>
+                </span>
+              </Button>
+            }
+          />
+        </CardList>
+      ) : <>
+        <h1 id={`${id}-languages-title`}>
+          <Localized id='home-languages-title'/>
+        </h1>
+        <LanguageList
+          aria-labelledby={`${id}-languages-title`}
+          languages={languages}
+          onAddLanguage={handleAddLanguage}
+        />
 
-            <h1 id={`${id}-tags-title`}>
-              <Localized id='home-tags-title'/>
-            </h1>
-            <section aria-labelledby={`${id}-tags-title`}>
-              {tags.nodes.length > 0 ? (
-                <TagList tags={tags.nodes}/>
-              ) : (
-                <p>
-                  <Localized id='home-no-tags-description'/>
-                </p>
-              )}
-            </section>
+        <h1 id={`${id}-tags-title`}>
+          <Localized id='home-tags-title'/>
+        </h1>
+        <section aria-labelledby={`${id}-tags-title`}>
+          {tags.nodes.length > 0 ? (
+            <TagList tags={tags.nodes}/>
+          ) : (
+            <p>
+              <Localized id='home-no-tags-description'/>
+            </p>
+          )}
+        </section>
 
-            <h1 id={`${id}-recent-title`}>
-              <Localized id='home-recent-changes-title'/>
-            </h1>
-            {recentChanges != null && recentChanges.nodes.length > 0 ? (
-              <S.RecentChangesList aria-labelledby={`${id}-recent-title`}>
-                {recentChanges?.nodes.map((item, index) =>
-                  <RecentChangeCard key={index} item={item}/>
-                )}
-              </S.RecentChangesList>
-            ) : (
-              <p>
-                <Localized id='home-no-recent-changes-description'/>
-              </p>
+        <h1 id={`${id}-recent-title`}>
+          <Localized id='home-recent-changes-title'/>
+        </h1>
+        {recentChanges != null && recentChanges.nodes.length > 0 ? (
+          <S.RecentChangesList aria-labelledby={`${id}-recent-title`}>
+            {recentChanges?.nodes.map((item, index) =>
+              <RecentChangeCard key={index} item={item}/>
             )}
-          </>}
-        </FlowContent>
-      }
-    />
-  );
+          </S.RecentChangesList>
+        ) : (
+          <p>
+            <Localized id='home-no-recent-changes-description'/>
+          </p>
+        )}
+      </>}
+    </FlowContent>
+  ) as JSX.Element;
 };
 
 export default HomePage;

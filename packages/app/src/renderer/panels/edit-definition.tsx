@@ -11,7 +11,7 @@ import {
 } from '@condict/rich-text-editor';
 import {DefinitionTable} from '@condict/table-editor';
 
-import {DataViewer, FlowContent, MainHeader} from '../ui';
+import {FlowContent, MainHeader, renderData} from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {DefinitionData, DefinitionForm} from '../forms';
 import {DefinitionId, LanguageId, LemmaId, PartOfSpeechId} from '../graphql';
@@ -187,36 +187,33 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
             onAfterDelete={() => onResolve(null)}
           />}
       </MainHeader>
-      <DataViewer
-        result={data}
-        render={({definition: def}) =>
-          def ? (
-            <DefinitionForm
-              initialData={initialData}
-              languageId={def.language.id}
-              initialPartsOfSpeech={def.language.partsOfSpeech}
-              submitError={
-                submitError && <Localized id='definition-save-error'/>
-              }
-              firstFieldRef={firstFieldRef}
-              onSubmit={onSubmit}
-              onCancel={() => onResolve(null)}
-              onDirtyChange={dirty => updatePanel({dirty})}
-              onCreatePartOfSpeech={createPartOfSpeech}
-              onCreateInflectionTable={createInflectionTable}
-            />
-          ) : <>
-            <p>
-              <Localized id='definition-not-found-error'/>
-            </p>
-            <p>
-              <Button onClick={() => onResolve(null)}>
-                <Localized id='generic-form-cancel'/>
-              </Button>
-            </p>
-          </>
-        }
-      />
+      {renderData(data, ({definition: def}) =>
+        def ? (
+          <DefinitionForm
+            initialData={initialData}
+            languageId={def.language.id}
+            initialPartsOfSpeech={def.language.partsOfSpeech}
+            submitError={
+              submitError && <Localized id='definition-save-error'/>
+            }
+            firstFieldRef={firstFieldRef}
+            onSubmit={onSubmit}
+            onCancel={() => onResolve(null)}
+            onDirtyChange={dirty => updatePanel({dirty})}
+            onCreatePartOfSpeech={createPartOfSpeech}
+            onCreateInflectionTable={createInflectionTable}
+          />
+        ) : <>
+          <p>
+            <Localized id='definition-not-found-error'/>
+          </p>
+          <p>
+            <Button onClick={() => onResolve(null)}>
+              <Localized id='generic-form-cancel'/>
+            </Button>
+          </p>
+        </>
+      )}
     </FlowContent>
   );
 };

@@ -6,7 +6,6 @@ export {
   default as ConfirmButton,
   Props as ConfirmButtonProps,
 } from './confirm-button';
-export {default as DataViewer, Props as DataViewerProps} from './data-viewer';
 export {
   default as DefinitionCard,
   Props as DefinitionCardProps,
@@ -35,6 +34,7 @@ export {
 export {default as Link, Props as LinkProps} from './link';
 export {default as Loading, Props as LoadingProps} from './loading';
 export {default as PageIcon, Props as PageIconProps} from './page-icon';
+export {Options as RenderDataOptions, renderData} from './render-data';
 export * from './resource-icons';
 export {
   default as ResourceTime,

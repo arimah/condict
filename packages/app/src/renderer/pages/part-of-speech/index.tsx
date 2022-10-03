@@ -10,7 +10,6 @@ import {
   InflectionTablePage,
 } from '../../page';
 import {
-  DataViewer,
   FlowContent,
   MainHeader,
   HeaderAction,
@@ -19,6 +18,7 @@ import {
   ResourceTime,
   Selectable,
   Link,
+  renderData,
 } from '../../ui';
 import {PartOfSpeechId, LanguageId} from '../../graphql';
 import {editPartOfSpeechPanel, addInflectionTablePanel} from '../../panels';
@@ -80,66 +80,63 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
 
   return (
     <FlowContent>
-      <DataViewer
-        result={data}
-        render={({partOfSpeech: pos}) => {
-          if (!pos) {
-            return (
-              <p>
-                <Localized id='part-of-speech-not-found-error'/>
-              </p>
-            );
-          }
+      {renderData(data, ({partOfSpeech: pos}) => {
+        if (!pos) {
+          return (
+            <p>
+              <Localized id='part-of-speech-not-found-error'/>
+            </p>
+          );
+        }
 
-          const lang = pos.language;
-          const langPage = LanguagePage(lang.id, lang.name);
-          const usedBy = pos.usedByDefinitions;
-          return <>
-            <MainHeader>
-              <Selectable as='h1'>{pos.name}</Selectable>
-              <HeaderAction onClick={handleEditPartOfSpeech}>
-                <Localized id='generic-edit-button'/>
-              </HeaderAction>
-            </MainHeader>
-            <Subheader>
-              <Localized
-                id='part-of-speech-subheading'
-                vars={{language: lang.name}}
-                elems={{'lang-link': <Link to={langPage}/>}}
-              >
-                <span></span>
-              </Localized>
-              <ResourceMeta>
-                <ResourceTime
-                  of={pos}
-                  createdLabelId='part-of-speech-added-on'
-                  updatedLabelId='part-of-speech-edited-on'
-                />
-              </ResourceMeta>
-            </Subheader>
+        const lang = pos.language;
+        const langPage = LanguagePage(lang.id, lang.name);
+        const usedBy = pos.usedByDefinitions;
+        return <>
+          <MainHeader>
+            <Selectable as='h1'>{pos.name}</Selectable>
+            <HeaderAction onClick={handleEditPartOfSpeech}>
+              <Localized id='generic-edit-button'/>
+            </HeaderAction>
+          </MainHeader>
+          <Subheader>
+            <Localized
+              id='part-of-speech-subheading'
+              vars={{language: lang.name}}
+              elems={{'lang-link': <Link to={langPage}/>}}
+            >
+              <span></span>
+            </Localized>
+            <ResourceMeta>
+              <ResourceTime
+                of={pos}
+                createdLabelId='part-of-speech-added-on'
+                updatedLabelId='part-of-speech-edited-on'
+              />
+            </ResourceMeta>
+          </Subheader>
 
-            <h2 id={`${htmlId}-tables-heading`}>
-              <Localized id='part-of-speech-tables-heading'/>
-            </h2>
-            <InflectionTableList
-              aria-labelledby={`${htmlId}-tables-heading`}
-              language={langPage}
-              tables={pos.inflectionTables}
-              onAddTable={handleAddTable}
-            />
+          <h2 id={`${htmlId}-tables-heading`}>
+            <Localized id='part-of-speech-tables-heading'/>
+          </h2>
+          <InflectionTableList
+            aria-labelledby={`${htmlId}-tables-heading`}
+            language={langPage}
+            tables={pos.inflectionTables}
+            onAddTable={handleAddTable}
+          />
 
-            <h2 id={`${htmlId}-defs-heading`}>
-              <Localized id='part-of-speech-definitions-heading'/>
-            </h2>
-            <DefinitionList
-              aria-labelledby={`${htmlId}-defs-heading`}
-              definitions={usedBy.nodes}
-              totalCount={usedBy.page.totalCount}
-              parent={PartOfSpeechTarget(id, pos.name, langPage)}
-            />
-          </>;
-        }}
-      />
+          <h2 id={`${htmlId}-defs-heading`}>
+            <Localized id='part-of-speech-definitions-heading'/>
+          </h2>
+          <DefinitionList
+            aria-labelledby={`${htmlId}-defs-heading`}
+            definitions={usedBy.nodes}
+            totalCount={usedBy.page.totalCount}
+            parent={PartOfSpeechTarget(id, pos.name, langPage)}
+          />
+        </>;
+      })}
     </FlowContent>
   );
 };

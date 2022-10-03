@@ -4,7 +4,7 @@ import {Localized} from '@fluent/react';
 import {Button} from '@condict/ui';
 import {InflectionTable} from '@condict/table-editor';
 
-import {DataViewer, FlowContent, MainHeader} from '../ui';
+import {FlowContent, MainHeader, renderData} from '../ui';
 import {PanelParams, PanelProps} from '../navigation';
 import {InflectionTableData, InflectionTableForm} from '../forms';
 import {InflectionTableId, InflectionTableRowInput} from '../graphql';
@@ -110,39 +110,36 @@ const EditInflectionTablePanel = (props: Props) => {
             onAfterDelete={onResolve}
           />}
       </MainHeader>
-      <DataViewer
-        result={data}
-        render={({inflectionTable: table}) =>
-          table ? (
-            <InflectionTableForm
-              initialData={{
-                id: table.id,
-                name: table.name,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                layout: layout!,
-              }}
-              languageId={table.partOfSpeech.language.id}
-              partOfSpeechId={table.partOfSpeech.id}
-              submitError={
-                submitError && <Localized id='inflection-table-save-error'/>
-              }
-              firstFieldRef={firstFieldRef}
-              onSubmit={onSubmit}
-              onCancel={onResolve}
-              onDirtyChange={dirty => updatePanel({dirty})}
-            />
-          ) : <>
-            <p>
-              <Localized id='inflection-table-not-found-error'/>
-            </p>
-            <p>
-              <Button onClick={() => onResolve()}>
-                <Localized id='generic-form-cancel'/>
-              </Button>
-            </p>
-          </>
-        }
-      />
+      {renderData(data, ({inflectionTable: table}) =>
+        table ? (
+          <InflectionTableForm
+            initialData={{
+              id: table.id,
+              name: table.name,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              layout: layout!,
+            }}
+            languageId={table.partOfSpeech.language.id}
+            partOfSpeechId={table.partOfSpeech.id}
+            submitError={
+              submitError && <Localized id='inflection-table-save-error'/>
+            }
+            firstFieldRef={firstFieldRef}
+            onSubmit={onSubmit}
+            onCancel={onResolve}
+            onDirtyChange={dirty => updatePanel({dirty})}
+          />
+        ) : <>
+          <p>
+            <Localized id='inflection-table-not-found-error'/>
+          </p>
+          <p>
+            <Button onClick={() => onResolve()}>
+              <Localized id='generic-form-cancel'/>
+            </Button>
+          </p>
+        </>
+      )}
     </FlowContent>
   );
 };

@@ -4,7 +4,6 @@ import {SROnly, useUniqueId} from '@condict/ui';
 
 import {LanguagePage, SearchPage} from '../../page';
 import {
-  DataViewer,
   FlowContent,
   MainHeader,
   Subheader,
@@ -12,6 +11,7 @@ import {
   TagList,
   Link,
   Divider,
+  renderData,
 } from '../../ui';
 import {LemmaId, LanguageId} from '../../graphql';
 
@@ -53,63 +53,56 @@ const LemmaPage = (props: Props): JSX.Element => {
 
   return (
     <FlowContent>
-      <DataViewer
-        result={data}
-        render={({lemma}) => {
-          if (!lemma) {
-            return (
-              <p>
-                <Localized id='lemma-not-found-error'/>
-              </p>
-            );
-          }
+      {renderData(data, ({lemma}) => {
+        if (!lemma) {
+          return (
+            <p>
+              <Localized id='lemma-not-found-error'/>
+            </p>
+          );
+        }
 
-          const lang = lemma.language;
-          const langPage = LanguagePage(lang.id, lang.name);
-          const defCount = lemma.definitions.length;
-          return <>
-            <MainHeader>
-              <Selectable as='h1'>{lemma.term}</Selectable>
-            </MainHeader>
-            <Subheader>
-              <Localized
-                id='lemma-subheading'
-                vars={{language: lang.name}}
-                elems={{'lang-link': <Link to={langPage}/>}}
-              >
-                <span></span>
-              </Localized>
-            </Subheader>
+        const lang = lemma.language;
+        const langPage = LanguagePage(lang.id, lang.name);
+        const defCount = lemma.definitions.length;
+        return <>
+          <MainHeader>
+            <Selectable as='h1'>{lemma.term}</Selectable>
+          </MainHeader>
+          <Subheader>
+            <Localized
+              id='lemma-subheading'
+              vars={{language: lang.name}}
+              elems={{'lang-link': <Link to={langPage}/>}}
+            >
+              <span></span>
+            </Localized>
+          </Subheader>
 
-            <DefinitionList
-              term={lemma.term}
+          <DefinitionList lemma={lemma} langPage={langPage}/>
+
+          {lemma.derivedDefinitions.length > 0 && <>
+            {defCount > 0 && <Divider/>}
+            <DerivedDefinitionList
+              definitions={lemma.derivedDefinitions}
               langPage={langPage}
-              lemma={lemma}
             />
+          </>}
 
-            {lemma.derivedDefinitions.length > 0 && <>
-              {defCount > 0 && <Divider/>}
-              <DerivedDefinitionList
-                definitions={lemma.derivedDefinitions}
-                langPage={langPage}
+          {lemma.tags.length > 0 && <>
+            <Divider/>
+            <section aria-labelledby={`${htmlId}-tags`}>
+              <SROnly as='h2' id={`${htmlId}-tags`}>
+                <Localized id='lemma-tags-heading'/>
+              </SROnly>
+              <TagList
+                tags={lemma.tags}
+                target={t => SearchPage({tag: t.id, language: lang.id})}
               />
-            </>}
-
-            {lemma.tags.length > 0 && <>
-              <Divider/>
-              <section aria-labelledby={`${htmlId}-tags`}>
-                <SROnly as='h2' id={`${htmlId}-tags`}>
-                  <Localized id='lemma-tags-heading'/>
-                </SROnly>
-                <TagList
-                  tags={lemma.tags}
-                  target={t => SearchPage({tag: t.id, language: lang.id})}
-                />
-              </section>
-            </>}
-          </>;
-        }}
-      />
+            </section>
+          </>}
+        </>;
+      })}
     </FlowContent>
   );
 };

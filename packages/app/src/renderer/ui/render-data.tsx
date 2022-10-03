@@ -8,48 +8,44 @@ import {Query, OperationResult} from '../graphql';
 
 import Loading from './loading';
 
-export type Props<Q extends Query<any, any>> = {
-  result: QueryResult<Q>;
-  allowErrors?: boolean;
+export interface Options<Q extends Query<any, any>> {
+  render: (data: OperationResult<Q>) => ReactNode;
   renderLoading?: () => ReactNode;
   renderErrors?: (errors: readonly ExecuteError[]) => ReactNode;
   renderNoData?: () => ReactNode;
-  render: (
-    data: OperationResult<Q>,
-    errors: readonly ExecuteError[] | null
-  ) => ReactNode;
-};
+}
 
-function DataViewer<Q extends Query<any, any>>(props: Props<Q>): JSX.Element {
+export type RenderDataFn<Q extends Query<any, any>> =
+  (data: OperationResult<Q>) => ReactNode;
+
+export function renderData<Q extends Query<any, any>>(
+  result: QueryResult<Q>,
+  renderOrOptions: Options<Q> | RenderDataFn<Q>
+): ReactNode {
   const {
-    result,
-    allowErrors = false,
+    render,
     renderLoading = renderLoadingDefault,
     renderErrors = renderErrorsDefault,
     renderNoData = renderNoDataDefault,
-    render,
-  } = props;
-
+  }: Options<Q> =
+    typeof renderOrOptions === 'function'
+      ? {render: renderOrOptions}
+      : renderOrOptions;
   if (result.state === 'loading') {
-    return <>{renderLoading()}</>;
+    return renderLoading();
   }
 
   const {data, errors} = result.result;
-  if (!allowErrors && errors && errors.length > 0) {
+  if (errors && errors.length > 0) {
     // Errors are always more severe than missing data, so take precedence.
     // Often an error causes missing data, too.
     return <>{renderErrors(errors)}</>;
   }
-
-  // data being null is always an error, even if allowErrors is true.
   if (data == null) {
-    return <>{renderNoData()}</>;
+    return renderNoData();
   }
-
-  return <>{render(data, errors ?? null)}</>;
+  return render(data);
 }
-
-export default DataViewer;
 
 const renderLoadingDefault = () => <Loading delay={150}/>;
 

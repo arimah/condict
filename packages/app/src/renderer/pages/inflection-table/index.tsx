@@ -8,7 +8,6 @@ import {InflectionTableId, LanguageId} from '../../graphql';
 import {useOpenPanel} from '../../navigation';
 import {LanguagePage, PartOfSpeechPage} from '../../page';
 import {
-  DataViewer,
   FlowContent,
   MainHeader,
   HeaderAction,
@@ -17,6 +16,7 @@ import {
   ResourceTime,
   Selectable,
   Link,
+  renderData,
 } from '../../ui';
 import {editInflectionTablePanel} from '../../panels';
 
@@ -57,57 +57,54 @@ const InflectionTablePage = (props: Props): JSX.Element => {
 
   return (
     <FlowContent>
-      <DataViewer
-        result={data}
-        render={({inflectionTable: table}) => {
-          if (!table) {
-            return (
-              <p>
-                <Localized id='inflection-table-not-found-error'/>
-              </p>
-            );
-          }
+      {renderData(data, ({inflectionTable: table}) => {
+        if (!table) {
+          return (
+            <p>
+              <Localized id='inflection-table-not-found-error'/>
+            </p>
+          );
+        }
 
-          const pos = table.partOfSpeech;
-          const lang = pos.language;
-          const langPage = LanguagePage(lang.id, lang.name);
-          const posPage = PartOfSpeechPage(pos.id, pos.name, langPage);
-          return <>
-            <MainHeader>
-              <Selectable as='h1'>{table.name}</Selectable>
-              <HeaderAction onClick={handleEdit}>
-                <Localized id='generic-edit-button'/>
-              </HeaderAction>
-            </MainHeader>
-            <Subheader>
-              <Localized
-                id='inflection-table-subheading'
-                vars={{partOfSpeech: pos.name, language: lang.name}}
-                elems={{
-                  'pos-link': <Link to={posPage}/>,
-                  'lang-link': <Link to={langPage}/>,
-                }}
-              >
-                <span></span>
-              </Localized>
-              <ResourceMeta>
-                <ResourceTime
-                  of={table}
-                  createdLabelId='inflection-table-added-on'
-                  updatedLabelId='inflection-table-edited-on'
-                />
-              </ResourceMeta>
-            </Subheader>
+        const pos = table.partOfSpeech;
+        const lang = pos.language;
+        const langPage = LanguagePage(lang.id, lang.name);
+        const posPage = PartOfSpeechPage(pos.id, pos.name, langPage);
+        return <>
+          <MainHeader>
+            <Selectable as='h1'>{table.name}</Selectable>
+            <HeaderAction onClick={handleEdit}>
+              <Localized id='generic-edit-button'/>
+            </HeaderAction>
+          </MainHeader>
+          <Subheader>
+            <Localized
+              id='inflection-table-subheading'
+              vars={{partOfSpeech: pos.name, language: lang.name}}
+              elems={{
+                'pos-link': <Link to={posPage}/>,
+                'lang-link': <Link to={langPage}/>,
+              }}
+            >
+              <span></span>
+            </Localized>
+            <ResourceMeta>
+              <ResourceTime
+                of={table}
+                createdLabelId='inflection-table-added-on'
+                updatedLabelId='inflection-table-edited-on'
+              />
+            </ResourceMeta>
+          </Subheader>
 
-            <SROnly as='h2' id={`${htmlId}-layout-title`}>
-              <Localized id='inflection-table-layout-heading'/>
-            </SROnly>
-            <S.TableContainer aria-labelledby={`${htmlId}-layout-title`}>
-              <TableLayout layout={table.layout}/>
-            </S.TableContainer>
-          </>;
-        }}
-      />
+          <SROnly as='h2' id={`${htmlId}-layout-title`}>
+            <Localized id='inflection-table-layout-heading'/>
+          </SROnly>
+          <S.TableContainer aria-labelledby={`${htmlId}-layout-title`}>
+            <TableLayout layout={table.layout}/>
+          </S.TableContainer>
+        </>;
+      })}
     </FlowContent>
   );
 };
