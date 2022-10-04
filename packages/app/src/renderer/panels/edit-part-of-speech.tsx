@@ -3,7 +3,7 @@ import {Localized} from '@fluent/react';
 
 import {Button} from '@condict/ui';
 
-import {FlowContent, MainHeader, renderData} from '../ui';
+import {FlowContent, MainHeader} from '../ui';
 import {PanelParams, PanelProps} from '../navigation';
 import {PartOfSpeechData, PartOfSpeechForm} from '../forms';
 import {PartOfSpeechId} from '../graphql';
@@ -11,6 +11,7 @@ import {useData, useExecute} from '../data';
 import {useRefocusOnData} from '../hooks';
 
 import ConfirmDeleteButton from './confirm-delete-button';
+import renderFormData from './render-form-data';
 import {
   EditPartOfSpeechQuery,
   EditPartOfSpeechMut,
@@ -95,7 +96,7 @@ const EditPartOfSpeechPanel = (props: Props) => {
             onAfterDelete={onResolve}
           />}
       </MainHeader>
-      {renderData(data, ({partOfSpeech}) =>
+      {renderFormData(data, onResolve, ({partOfSpeech}) =>
         partOfSpeech ? (
           <PartOfSpeechForm
             initialData={{

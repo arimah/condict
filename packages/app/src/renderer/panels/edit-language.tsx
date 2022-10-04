@@ -7,7 +7,7 @@ import {
   descriptionToGraphQLInput,
 } from '@condict/rich-text-editor';
 
-import {FlowContent, MainHeader, HeaderAction, renderData} from '../ui';
+import {FlowContent, MainHeader, HeaderAction} from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {LanguageData, LanguageForm} from '../forms';
 import {LanguageId} from '../graphql';
@@ -15,6 +15,7 @@ import {useData, useExecute} from '../data';
 import {useRefocusOnData} from '../hooks';
 
 import {deleteLanguagePanel} from './delete-language';
+import renderFormData from './render-form-data';
 import {EditLanguageQuery, EditLanguageMut} from './query';
 
 type Props = {
@@ -96,7 +97,7 @@ const EditLanguagePanel = (props: Props) => {
             <Localized id='generic-delete-button'/>
           </HeaderAction>}
       </MainHeader>
-      {renderData(data, ({language}) =>
+      {renderFormData(data, onResolve, ({language}) =>
         language ? (
           <LanguageForm
             initialData={{

@@ -4,7 +4,7 @@ import {Localized} from '@fluent/react';
 import {Button} from '@condict/ui';
 import {InflectionTable} from '@condict/table-editor';
 
-import {FlowContent, MainHeader, renderData} from '../ui';
+import {FlowContent, MainHeader} from '../ui';
 import {PanelParams, PanelProps} from '../navigation';
 import {InflectionTableData, InflectionTableForm} from '../forms';
 import {InflectionTableId, InflectionTableRowInput} from '../graphql';
@@ -12,6 +12,7 @@ import {useData, useExecute} from '../data';
 import {useRefocusOnData} from '../hooks';
 
 import ConfirmDeleteButton from './confirm-delete-button';
+import renderFormData from './render-form-data';
 import {
   EditInflectionTableQuery,
   EditInflectionTableMut,
@@ -110,7 +111,7 @@ const EditInflectionTablePanel = (props: Props) => {
             onAfterDelete={onResolve}
           />}
       </MainHeader>
-      {renderData(data, ({inflectionTable: table}) =>
+      {renderFormData(data, onResolve, ({inflectionTable: table}) =>
         table ? (
           <InflectionTableForm
             initialData={{

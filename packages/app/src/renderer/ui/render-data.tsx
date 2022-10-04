@@ -7,6 +7,7 @@ import {QueryResult} from '../data';
 import {Query, OperationResult} from '../graphql';
 
 import Loading from './loading';
+import DataError from './data-error';
 
 export interface Options<Q extends Query<any, any>> {
   render: (data: OperationResult<Q>) => ReactNode;
@@ -50,21 +51,6 @@ export function renderData<Q extends Query<any, any>>(
 const renderLoadingDefault = () => <Loading delay={150}/>;
 
 const renderErrorsDefault = (errors: readonly ExecuteError[]) =>
-  // TODO: Improved error display thing
-  <>
-    <p>
-      <Localized
-        id='fetch-error'
-        vars={{errorCount: errors.length}}
-      />
-    </p>
-    <ul>
-      {errors.map((err, i) =>
-        <li key={i}>
-          {err.message}
-        </li>
-      )}
-    </ul>
-  </>;
+  <DataError errors={errors}/>;
 
 const renderNoDataDefault = () => <p><Localized id='fetch-no-data'/></p>;

@@ -11,7 +11,7 @@ import {
 } from '@condict/rich-text-editor';
 import {DefinitionTable} from '@condict/table-editor';
 
-import {FlowContent, MainHeader, renderData} from '../ui';
+import {FlowContent, MainHeader} from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {DefinitionData, DefinitionForm} from '../forms';
 import {DefinitionId, LanguageId, LemmaId, PartOfSpeechId} from '../graphql';
@@ -21,6 +21,7 @@ import {useRefocusOnData} from '../hooks';
 import ConfirmDeleteButton from './confirm-delete-button';
 import {addPartOfSpeechPanel} from './add-part-of-speech';
 import {addInflectionTablePanel} from './add-inflection-table';
+import renderFormData from './render-form-data';
 import {formatCustomForms, formatStems, hasTableCaption} from './utils';
 import {
   EditDefinitionQuery,
@@ -163,6 +164,8 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
     preventScroll: entering,
   });
 
+  const onClose = () => onResolve(null);
+
   const def = data.state === 'data' && data.result.data?.definition;
   return (
     <FlowContent>
@@ -184,10 +187,10 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
             confirmLabel={<Localized id='definition-delete-button'/>}
             deleteError={<Localized id='definition-delete-error'/>}
             onExecuteDelete={onDelete}
-            onAfterDelete={() => onResolve(null)}
+            onAfterDelete={onClose}
           />}
       </MainHeader>
-      {renderData(data, ({definition: def}) =>
+      {renderFormData(data, onClose, ({definition: def}) =>
         def ? (
           <DefinitionForm
             initialData={initialData}
@@ -198,7 +201,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
             }
             firstFieldRef={firstFieldRef}
             onSubmit={onSubmit}
-            onCancel={() => onResolve(null)}
+            onCancel={onClose}
             onDirtyChange={dirty => updatePanel({dirty})}
             onCreatePartOfSpeech={createPartOfSpeech}
             onCreateInflectionTable={createInflectionTable}
@@ -208,7 +211,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
             <Localized id='definition-not-found-error'/>
           </p>
           <p>
-            <Button onClick={() => onResolve(null)}>
+            <Button onClick={onClose}>
               <Localized id='generic-form-cancel'/>
             </Button>
           </p>
