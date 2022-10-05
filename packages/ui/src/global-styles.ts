@@ -21,36 +21,36 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-size: 14px;
-    line-height: 16px;
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-md);
     font-family: 'AppleSymbols', 'Noto Sans', sans-serif;
   }
 
   h1 {
     margin-block: 8px 24px;
-    font-size: 28px;
-    line-height: 32px;
+    font-size: var(--font-size-huge);
+    line-height: var(--line-height-huge);
     font-weight: bold;
   }
 
   h2 {
     margin-block: 28px 8px;
-    font-size: 24px;
-    line-height: 26px;
+    font-size: var(--font-size-xxxl);
+    line-height: var(--line-height-xxxl);
     font-weight: bold;
   }
 
   h3 {
     margin-block: 22px 8px;
-    font-size: 20px;
-    line-height: 22px;
+    font-size: var(--font-size-xxl);
+    line-height: var(--line-height-xxl);
     font-weight: 600;
   }
 
   h4 {
     margin-block: 18px 8px;
-    font-size: 16px;
-    line-height: 18px;
+    font-size: var(--font-size-lg);
+    line-height: var(--font-size-lg);
     font-weight: 600;
   }
 

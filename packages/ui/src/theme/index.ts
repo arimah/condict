@@ -10,6 +10,7 @@ export {
   Purple,
   Gray,
 } from './shades';
+export {FontSizeOption, LineHeightOption, fontSizeVars} from './font-size';
 export {DefaultTiming} from './shared';
 export {
   Theme,

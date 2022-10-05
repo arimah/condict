@@ -57,11 +57,13 @@ export type TabProps = {
 export const Tab = styled.div.attrs({
   role: 'tab',
 })<TabProps>`
+  box-sizing: border-box;
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-block: 8px;
+  padding-block: 7px;
   padding-inline: 16px 4px;
+  min-height: 32px;
   position: relative;
   white-space: nowrap;
   overflow: hidden;

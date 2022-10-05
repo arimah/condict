@@ -25,7 +25,7 @@ export const CellIcons = styled.div<CellIconsProps>`
 
 export const CellData = styled.div`
   flex: 1 0 auto;
-  padding-block: 6px;
+  padding-block: 4px;
   padding-inline: 6px 0;
 
   &:last-child {

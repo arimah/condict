@@ -16,6 +16,7 @@ import {
   DefaultTiming,
   lightThemeVars,
   darkThemeVars,
+  fontSizeVars,
 } from '@condict/ui';
 import {
   lightThemeVars as lightThemeTableVars,
@@ -77,6 +78,8 @@ const AppThemeProvider = (props: Props): JSX.Element => {
     accentColor,
     dangerColor,
     sidebarColor,
+    fontSize,
+    lineHeight,
     motion,
   } = appearance;
 
@@ -90,14 +93,14 @@ const AppThemeProvider = (props: Props): JSX.Element => {
         : themePreference;
     }
 
-    const vars = ThemeBuilders[themeName](
+    let vars = ThemeBuilders[themeName](
       Colors[accentColor],
       Colors[dangerColor],
       sidebarColor
     );
 
     if (userTheme) {
-      return {...vars, ...userTheme.vars};
+      vars = {...vars, ...userTheme.vars};
     }
     return vars;
   }, [
@@ -108,6 +111,10 @@ const AppThemeProvider = (props: Props): JSX.Element => {
     dangerColor,
     sidebarColor,
   ]);
+
+  const fontVars = useMemo<ThemeVariables>(() => {
+    return fontSizeVars(fontSize, lineHeight);
+  }, [fontSize, lineHeight]);
 
   const theme = useMemo<Theme>(() => {
     let timing = DefaultTiming;
@@ -126,8 +133,8 @@ const AppThemeProvider = (props: Props): JSX.Element => {
       };
     }
 
-    return {vars: themeVars, timing};
-  }, [themeVars, motion]);
+    return {vars: {...themeVars, ...fontVars}, timing};
+  }, [themeVars, fontVars, motion]);
 
   return (
     <ThemeProvider theme={theme}>

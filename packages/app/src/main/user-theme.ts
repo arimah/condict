@@ -31,7 +31,7 @@ export interface UserThemeInstance {
 export type UpdatedCallback = () => void;
 
 type MutableThemeVariables = {
-  -readonly [K in keyof ThemeVariables]: ThemeVariables[K];
+  [K in keyof ThemeVariables]: ThemeVariables[K];
 };
 
 const initUserTheme = (

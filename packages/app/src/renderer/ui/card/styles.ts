@@ -77,27 +77,14 @@ export const Title = styled.div`
   overflow: hidden;
 
   font-weight: normal;
-  font-size: 18px;
-  line-height: 20px;
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
   text-overflow: ellipsis;
   white-space: nowrap;
 
   > :is(h2, h3, h4) {
     display: inline;
     font: inherit;
-  }
-
-  .mdi-icon {
-    margin-block: -1px;
-    vertical-align: -5px;
-
-    :not(:first-child) {
-      margin-inline-start: 8px;
-    }
-
-    :not(:last-child) {
-      margin-inline-end: 8px;
-    }
   }
 `;
 

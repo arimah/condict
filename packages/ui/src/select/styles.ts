@@ -11,7 +11,7 @@ export const Wrapper = styled.span`
 
 export const Select = styled.select<Props>`
   appearance: none;
-  padding-block: 2px;
+  padding-block: 1px;
   padding-inline: 6px 22px;
   width: 100%;
   font: inherit;

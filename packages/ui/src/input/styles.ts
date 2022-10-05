@@ -5,8 +5,9 @@ export type Props = {
 };
 
 export const Input = styled.input<Props>`
-  padding: 2px;
   box-sizing: border-box;
+  padding: 1px 2px;
+  min-height: 24px;
   font: inherit;
   border: 2px solid var(--input-border);
   border-radius: 3px;

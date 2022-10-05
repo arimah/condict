@@ -12,8 +12,8 @@ export const LoadingScreen = styled.main<LoadingScreenProps>`
   align-items: center;
   align-self: center;
   justify-self: center;
-  font-size: 24px;
-  line-height: 36px;
+  font-size: var(--font-size-xxxl);
+  line-height: var(--line-height-xxxl);
   opacity: ${p => p.visible ? '1' : '0'};
 
   transition: opacity ${p => 2 * p.theme.timing.long}ms ease-out;

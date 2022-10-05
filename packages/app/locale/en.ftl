@@ -194,9 +194,15 @@ settings-color-name-purple = Purple
 
 settings-color-name-gray = Gray
 
+settings-font-size-label = Font size
+
+settings-font-size-description = For larger sizes, use the zoom level option.
+
+settings-line-height-label = Line spacing
+
 settings-zoom-level-label = Zoom level
 
-settings-zoom-level-description = Changes the scale of the user interface.
+settings-zoom-level-description = Changes the scale of the entire user interface.
 
 settings-motion-label = Reduced motion
 

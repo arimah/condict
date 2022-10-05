@@ -51,8 +51,8 @@ export type EditorContainerProps = {
 
 const SingleLineStyles = `
   p {
-    margin-top: 2px;
-    margin-bottom: 2px;
+    margin-top: 4px;
+    margin-bottom: 4px;
   }
 `;
 
@@ -62,7 +62,7 @@ export type EditableProps = {
 };
 
 export const Editable = styled(BaseEditable)<EditableProps>`
-  padding: ${p => p.$singleLine ? '0 2px' : '0 6px'};
+  padding: ${p => p.$singleLine ? '0 4px' : '0 6px'};
   position: relative;
   border: 2px solid var(--input-border);
   background-color: var(--input-bg);
@@ -83,17 +83,19 @@ export const Editable = styled(BaseEditable)<EditableProps>`
 
   ${p => p.$singleLine ? SingleLineStyles : BlockStyles}
 
-  ${Superscript} {
-    font-size: 12px;
-    line-height: 13px;
-    vertical-align: 4px;
+  ${Superscript},
+  ${Subscript} {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
   }
 
-  ${Subscript} {
-    font-size: 12px;
-    line-height: 13px;
-    vertical-align: -3px;
-  }
+    ${Superscript} {
+      vertical-align: 4px;
+    }
+
+    ${Subscript} {
+      vertical-align: -3px;
+    }
 
   ${Link}:is(:link, :visited, :hover, :active) {
     color: var(--link-fg);

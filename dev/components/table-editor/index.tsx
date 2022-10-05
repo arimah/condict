@@ -1,5 +1,6 @@
 import React, {useState, useCallback, useRef} from 'react';
 import {Draft} from 'immer';
+import ArrowDownIcon from 'mdi-react/ArrowDownIcon';
 
 import {Button} from '@condict/ui';
 import {
@@ -107,7 +108,8 @@ const Main = (): JSX.Element => {
 
       <p>
         <Button intent='accent' onClick={copyLayout}>
-          &darr; Copy layout to definition table
+          <ArrowDownIcon/>
+          <span>Copy layout to definition table</span>
         </Button>
       </p>
 

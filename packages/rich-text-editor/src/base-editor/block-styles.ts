@@ -71,19 +71,20 @@ export const EditorStyles = css`
     }
   `)}
 
-  line-height: 20px;
+  font-size: var(--font-size-mb);
+  line-height: var(--line-height-mb);
 
   ${Heading1} {
     margin-block: 22px 8px;
-    font-size: 20px;
-    line-height: 22px;
+    font-size: var(--font-size-xxl);
+    line-height: var(--line-height-xxl);
     font-weight: 600;
   }
 
   ${Heading2} {
     margin-block: 18px 8px;
-    font-size: 16px;
-    line-height: 18px;
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-lg);
     font-weight: 600;
   }
 

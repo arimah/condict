@@ -5,7 +5,7 @@ import {Button, TextInput} from '@condict/ui';
 import CellPopupBase from '../../cell-popup';
 
 export const CellPopup = styled(CellPopupBase)`
-  max-width: 292px;
+  max-width: 360px;
   white-space: nowrap;
 `;
 
@@ -78,21 +78,31 @@ export const CellSettingsSeparator = styled.div`
 `;
 
 export const DisplayNameLabel = styled.label`
-  display: block;
+  display: flex;
+  flex-direction: column;
   margin-bottom: 8px;
-`;
+  /*
+   * Set the width explicitly here to normalize the popup size; otherwise it
+   * changes with the presence of DeriveDisplayNameButton.
+   */
+  width: 328px;
 
-export const DisplayNameInput = styled(TextInput)`
-  display: block;
-  width: 256px;
+  > span {
+    flex: none;
+    align-self: flex-start;
+  }
+
+  > input {
+    flex: none;
+  }
 `;
 
 export const DeriveDisplayNameButton = styled(Button).attrs({
-  slim: true,
-  intent: 'bold',
+  slim: true as const,
+  intent: 'bold' as const,
 })`
   display: flex;
-  width: 256px;
+  width: 100%;
 `;
 
 DeriveDisplayNameButton.defaultProps = undefined;

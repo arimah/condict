@@ -29,7 +29,7 @@ export const Header = styled.header`
 `;
 
 export const HeaderSwitch = styled.div`
-  flex: 0 0 200px;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -45,7 +45,8 @@ export const HeaderSwitch = styled.div`
 
 export const MainNav = styled.nav`
   margin: 16px;
-  font-size: 18px;
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
   text-align: center;
 `;
 

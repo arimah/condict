@@ -64,7 +64,7 @@ export const Input = styled(TextInput).attrs({
 })`
   flex: 1 1 auto;
   align-self: stretch;
-  padding-block: 4px;
+  padding-block: 3px;
   padding-inline: 8px 4px;
   border-radius: 0;
   border-style: none;
@@ -186,8 +186,8 @@ export const ResultName = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  font-size: 18px;
-  line-height: 20px;
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
 `;
 
 export const ResultLanguage = styled.span`
@@ -227,6 +227,6 @@ export const ResultText = styled.div`
 export const NoResultNotice = styled.p`
   margin-bottom: 16px;
   text-align: center;
-  font-size: 18px;
-  line-height: 20px;
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
 `;

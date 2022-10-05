@@ -33,7 +33,12 @@ export const Button = styled.button.attrs({
   type: 'button',
 })<ButtonProps>`
   flex: none;
-  padding: 6px 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 8px;
+  min-height: 28px;
   font: inherit;
   font-weight: normal;
   text-align: center;
@@ -56,7 +61,7 @@ export const Button = styled.button.attrs({
 
   &:is(:focus, .force-focus) {
     outline: none;
-    padding: 4px 6px;
+    padding: 3px 6px;
     border: 2px var(--focus-border-style) var(--focus-border);
     box-shadow: var(--focus-shadow);
   }
@@ -79,8 +84,8 @@ export const Button = styled.button.attrs({
   }
 
   > .mdi-icon {
+    flex: none;
     margin-block: -4px;
-    vertical-align: -3px;
 
     &:first-child {
       margin-inline-start: -4px;
@@ -97,5 +102,5 @@ export const Spacer = styled.div`
 
 export const SelectLabel = styled.label`
   flex: none;
-  padding-block: 2px;
+  align-self: center;
 `;

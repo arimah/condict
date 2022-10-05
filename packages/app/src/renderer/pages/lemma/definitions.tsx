@@ -36,11 +36,10 @@ const DefinitionList = (props: Props): JSX.Element => {
         const wasOnlyDefinition =
           !lemma.definitions.some(d => d.id !== defId) &&
           lemma.derivedDefinitions.length === 0;
-
-        navigateTo(
-          LemmaPage(def.lemma.id, def.term, langPage),
-          wasOnlyDefinition ? {replace: true} : {openInNewTab: true}
-        );
+        navigateTo(LemmaPage(def.lemma.id, def.term, langPage), {
+          replace: wasOnlyDefinition,
+          openInNewTab: !wasOnlyDefinition,
+        });
       }
     });
   }, [lemma, langPage]);

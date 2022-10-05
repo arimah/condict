@@ -89,6 +89,8 @@ export {
   ThemeVariables,
   TimingTheme,
   MotionPreference,
+  FontSizeOption,
+  LineHeightOption,
   Shade,
   Palette,
   Red,
@@ -102,6 +104,7 @@ export {
   DefaultTiming,
   lightThemeVars,
   darkThemeVars,
+  fontSizeVars,
 } from './theme';
 
 export {default as MarkerLocation} from './marker-location';

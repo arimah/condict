@@ -27,6 +27,7 @@ import {
   DefaultTiming,
   lightThemeVars,
   darkThemeVars,
+  fontSizeVars,
 } from '@condict/ui';
 import {
   lightThemeVars as lightThemeTableVars,
@@ -192,6 +193,7 @@ const Container = (props: Props): JSX.Element | null => {
       vars: {
         ...themeGen.ui(accent, danger),
         ...themeGen.table(accent),
+        ...fontSizeVars('14', '1.5'),
       },
       timing: DefaultTiming,
     };

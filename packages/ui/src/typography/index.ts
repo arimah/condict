@@ -5,21 +5,24 @@ export type BodyTextProps = {
 };
 
 export const BodyText = styled.div<BodyTextProps>`
-  line-height: 20px;
+  font-size: var(--font-size-mb);
+  line-height: var(--line-height-mb);
 
   /* Headings have their own line-height that is good enough. */
 
-  sup {
-    font-size: 12px;
-    line-height: 13px;
-    vertical-align: 4px;
+  sup,
+  sub {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
   }
 
-  sub {
-    font-size: 12px;
-    line-height: 13px;
-    vertical-align: -3px;
-  }
+    sup {
+      vertical-align: 4px;
+    }
+
+    sub {
+      vertical-align: -3px;
+    }
 
   ${p => p.underlineLinks && `
     a:link,

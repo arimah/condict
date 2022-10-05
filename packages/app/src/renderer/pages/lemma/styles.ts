@@ -9,12 +9,14 @@ export const DefinitionTools = styled.div`
 `;
 
 export const DefinitionLink = styled(Link)`
+  box-sizing: border-box;
   display: inline-flex;
   flex-direction: row;
   align-items: center;
   margin-top: 8px;
-  padding-block: 6px;
+  padding-block: 5px;
   padding-inline: 14px 6px;
+  min-height: 32px;
   border: 2px solid var(--border);
   border-radius: 7px;
 

@@ -45,8 +45,8 @@ export const Character = styled.span.attrs({
   min-width: 32px;
   text-indent: 0;
   text-align: center;
-  font-size: 20px;
-  line-height: 20px;
+  font-size: var(--font-size-xxl);
+  line-height: var(--line-height-xxl);
   cursor: default;
 
   background-color: ${p => p.selected && 'var(--bg-control-hover)'};
@@ -86,8 +86,8 @@ export const Result = styled.div.attrs({
 export const TargetIpa = styled.div`
   flex: 1 1 auto;
   padding: 4px 8px;
-  font-size: 20px;
-  line-height: 20px;
+  font-size: var(--font-size-xxl);
+  line-height: var(--line-height-xxl);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -107,8 +107,8 @@ export const SearchResultChar = styled.span`
   padding: 4px;
   min-width: 32px;
   text-align: center;
-  font-size: 20px;
-  line-height: 20px;
+  font-size: var(--font-size-xxl);
+  line-height: var(--line-height-xxl);
 `;
 
 export const SearchResultName = styled.span`

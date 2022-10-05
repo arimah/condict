@@ -40,8 +40,8 @@ export const Image = styled.div`
 export const Title = styled.h2`
   margin-top: 8px;
   margin-bottom: 8px;
-  font-size: 20px;
-  line-height: 24px;
+  font-size: var(--font-size-xxl);
+  line-height: var(--line-height-xxl);
   font-weight: bold;
   text-align: center;
 `;
@@ -49,7 +49,8 @@ export const Title = styled.h2`
 export const Description = styled.p`
   margin-top: 8px;
   margin-bottom: 8px;
-  line-height: 20px;
+  font-size: var(--font-size-mb);
+  line-height: var(--line-height-mb);
 `;
 
 export const Action = styled.div`

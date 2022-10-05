@@ -46,7 +46,8 @@ export const Actions = styled.span`
 
 export const Action = styled(Button)`
   display: flex;
-  padding: 4px 8px;
+  padding: 3px 8px;
+  min-height: max(28px, var(--line-height-md) + 10px);
   border-radius: 5px;
 
   > .mdi-icon {

@@ -157,6 +157,18 @@ export const OptionDescription = styled(BodyText)`
   opacity: 0.7;
 `;
 
+export const TextSizeOptions = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+  max-width: 760px;
+
+  > * {
+    flex: 1 1 50%;
+  }
+`;
+
 export const IntroText = styled(BodyText).attrs({
   as: 'p' as const,
 })`

@@ -86,8 +86,8 @@ export const CardGrid = styled.div`
  */
 export const CardTitleContext = styled.span`
   margin-inline-start: 16px;
-  font-size: 15px;
-  line-height: 16px;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
 `;
 
 export const FullRow = styled.div`

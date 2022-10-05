@@ -11,6 +11,8 @@ const DefaultConfig: AppConfig = {
     accentColor: 'purple',
     dangerColor: 'red',
     sidebarColor: 'purple',
+    fontSize: '14',
+    lineHeight: '1.5',
     zoomLevel: 100,
     motion: 'full',
     userThemeFile: null,

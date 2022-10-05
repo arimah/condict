@@ -13,12 +13,15 @@ export const ButtonStyle = css<Props>`
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  padding: ${p => p.slim ? '2px 10px' : '6px 14px'};
+  padding: ${p => p.slim ? '1px 10px' : '5px 14px'};
+  min-height: ${p => p.slim ? '24px' : 'max(32px, var(--line-height-md) + 14px)'};
   font: inherit;
   font-weight: normal;
-  vertical-align: middle;
   border: 2px solid;
   border-radius: ${p => p.slim ? '3px' : '7px'};
+
+  /* fix button baseline when first element is an icon */
+  vertical-align: middle;
 
   color: var(--button-fg);
   border-color: var(--button-border);

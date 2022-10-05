@@ -71,8 +71,8 @@ export const SliderTickLabel = styled.span<SliderTickLabelProps>`
   position: absolute;
   margin-bottom: 2px;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 12px;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
   /* use proportional digits here */
   font-feature-settings: 'tnum' off;
   bottom: 100%;

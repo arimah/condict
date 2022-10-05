@@ -9,7 +9,11 @@ import {
   validateLoggerOptions,
   createLogger,
 } from '@condict/server';
-import type {MotionPreference} from '@condict/ui';
+import type {
+  FontSizeOption,
+  LineHeightOption,
+  MotionPreference,
+} from '@condict/ui';
 
 import {
   AppConfig,
@@ -154,6 +158,8 @@ const validateAppearanceConfig = (
   const accentColor = validateColor(value.accentColor, 'accentColor', errors);
   const dangerColor = validateColor(value.dangerColor, 'dangerColor', errors);
   const sidebarColor = validateColor(value.sidebarColor, 'sidebarColor', errors);
+  const fontSize = validateFontSize(value.fontSize, errors);
+  const lineHeight = validateLineHeight(value.lineHeight, errors);
   const zoomLevel = validateZoomLevel(value.zoomLevel, errors);
   const motion = validateMotionPreference(value.motion, errors);
   const userThemeFile = validateUserThemeFile(value.userThemeFile, errors);
@@ -163,6 +169,8 @@ const validateAppearanceConfig = (
     accentColor,
     dangerColor,
     sidebarColor,
+    fontSize,
+    lineHeight,
     zoomLevel,
     motion,
     userThemeFile,
@@ -215,6 +223,38 @@ const validateColor = (
     default:
       errors.push(`appearance.${key}: invalid value: ${value}`);
       return DefaultConfig.appearance[key];
+  }
+};
+
+const validateFontSize = (
+  value: unknown,
+  errors: string[]
+): FontSizeOption => {
+  switch (value) {
+    case '13':
+    case '14':
+    case '16':
+    case '18':
+      return value;
+    default:
+      errors.push(`appearance.fontSize: invalid value: ${value}`);
+      return '14';
+  }
+};
+
+const validateLineHeight = (
+  value: unknown,
+  errors: string[]
+): LineHeightOption => {
+  switch (value) {
+    case '1.25':
+    case '1.5':
+    case '1.75':
+    case '2':
+      return value;
+    default:
+      errors.push(`appearance.fontSize: invalid value: ${value}`);
+      return '1.5';
   }
 };
 

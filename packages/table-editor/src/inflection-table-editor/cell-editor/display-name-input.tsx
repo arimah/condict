@@ -1,6 +1,6 @@
 import React, {Ref, ChangeEventHandler, MouseEventHandler} from 'react';
 
-import {useUniqueId} from '@condict/ui';
+import {TextInput, useUniqueId} from '@condict/ui';
 
 import {Messages} from '../types';
 
@@ -25,8 +25,8 @@ const DisplayNameInput = React.forwardRef((
   return (
     <S.CellSettingsGroup>
       <S.DisplayNameLabel>
-        {messages.formNameLabel()}
-        <S.DisplayNameInput
+        <span>{messages.formNameLabel()}</span>
+        <TextInput
           minimal
           value={value}
           aria-describedby={hasCustomName ? undefined : descId}

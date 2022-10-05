@@ -60,7 +60,8 @@ export const SearchResultType = styled.span`
 export const SearchResultMatch = styled.div`
   margin-top: 2px;
   padding-top: 2px;
-  line-height: 20px;
+  font-size: var(--font-size-mb);
+  line-height: var(--line-height-mb);
   border-top: 1px solid var(--border-control);
 
   /* Tighter spacing around paragraphs for better coherence */

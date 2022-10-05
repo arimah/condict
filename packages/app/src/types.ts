@@ -4,7 +4,12 @@ import type {
   ServerConfig as BaseServerConfig,
   LoggerOptions,
 } from '@condict/server';
-import type {MotionPreference, ThemeVariables} from '@condict/ui';
+import type {
+  MotionPreference,
+  FontSizeOption,
+  LineHeightOption,
+  ThemeVariables,
+} from '@condict/ui';
 
 export interface AppConfig {
   /** Condict UI appearance configuration. */
@@ -30,6 +35,16 @@ export interface AppearanceConfig {
   readonly dangerColor: ColorName;
   /** The sidebar color. */
   readonly sidebarColor: ColorName;
+  /**
+   * The font size. Note: this is a string value, as the font size cannot
+   * be set to an arbitrary value.
+   */
+  readonly fontSize: FontSizeOption;
+  /**
+   * The text line height. Note: this is a string value, as the line height
+   * cannot be set to an arbitrary value.
+   */
+  readonly lineHeight: LineHeightOption;
   /** The zoom level, as an integer percentage (100% = 100). */
   readonly zoomLevel: number;
   /** The motion preference, which controls animations in the app. */

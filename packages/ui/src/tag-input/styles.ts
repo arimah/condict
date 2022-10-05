@@ -45,15 +45,16 @@ export const Tag = styled.button.attrs({
   box-sizing: border-box;
   flex: none;
   margin: 2px;
-  padding-block: 2px;
-  padding-inline: 8px 24px;
+  padding-block: 1px;
+  padding-inline: 10px 26px;
   position: relative;
   max-width: calc(100% - 4px);
+  min-height: 24px;
   font: inherit;
   text-align: start;
   background-color: var(--button-bg);
   border: 2px solid var(--button-border);
-  border-radius: 13px;
+  border-radius: 18px;
   color: var(--button-fg);
   cursor: default;
 
@@ -68,7 +69,7 @@ export const Tag = styled.button.attrs({
   }
 
   &:disabled {
-    padding-inline: 16px;
+    padding-inline: 18px;
     background-color: var(--button-bg-disabled);
     border-color: var(--button-border-disabled);
     color: var(--button-fg-disabled);
@@ -100,9 +101,10 @@ export const Input = styled.input.attrs({
 })`
   box-sizing: border-box;
   flex: 1 1 auto;
-  padding: 6px 4px;
-  font: inherit;
+  padding: 5px 4px;
   min-width: 72px;
+  min-height: 28px;
+  font: inherit;
   border: none;
   border-radius: 0;
   background-color: var(--input-bg);

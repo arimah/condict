@@ -12,8 +12,8 @@ export const Main = styled(StandardDialog)`
 export const Title = styled.h2`
   margin-top: 0;
   margin-bottom: 16px;
-  font-size: 21px;
-  line-height: 24px;
+  font-size: var(--font-size-xxl);
+  line-height: var(--line-height-xxl);
 `;
 
 export const Message = styled(BodyText)`

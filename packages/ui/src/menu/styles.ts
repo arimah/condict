@@ -36,6 +36,8 @@ export type ItemProps = {
 export const Item = styled.div<ItemProps>`
   display: flex;
   flex-direction: row;
+  align-items: center;
+  min-height: 24px;
   position: relative;
   white-space: nowrap;
   cursor: default;
@@ -47,7 +49,6 @@ export const Item = styled.div<ItemProps>`
 `;
 
 export const ItemIcon = styled.span`
-  display: block;
   flex: none;
   padding-inline-start: 8px;
   width: 24px;
@@ -58,20 +59,17 @@ export const ItemIcon = styled.span`
 `;
 
 export const ItemLabel = styled.span`
-  display: block;
   flex: 1 1 auto;
-  padding: 4px 8px;
+  padding: 3px 8px;
 `;
 
 export const ItemShortcut = styled.span`
-  display: block;
   flex: none;
-  padding-block: 4px;
+  padding-block: 3px;
   padding-inline: 16px 0;
 `;
 
 export const ItemSubmenu = styled.span`
-  display: block;
   flex: none;
   padding-inline: 4px;
   width: 24px;
