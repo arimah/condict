@@ -66,154 +66,38 @@ const ZoomLevels: readonly SliderStop<number>[] = [
 ];
 
 const Content: SectionComponent = React.forwardRef((_props, ref) => {
-  const id = useUniqueId();
-
   const {config, updateConfig} = useConfig();
-
-  const {appearance} = config;
-
-  const handleChangeTheme = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const nextTheme = e.target.value as ThemePreference;
-    updateConfig(config => {
-      config.appearance.theme = nextTheme;
-    });
-  }, [updateConfig]);
-
-  const handleChangeColor = useCallback((
-    kind: 'accentColor' | 'dangerColor' | 'sidebarColor',
-    nextColor: ColorName
-  ) => {
-    updateConfig(config => {
-      config.appearance[kind] = nextColor;
-    });
-  }, [updateConfig]);
-
-  const handleSetZoomLevel = useCallback((value: number) => {
-    updateConfig(config => {
-      config.appearance.zoomLevel = value;
-    });
-  }, [updateConfig]);
-
-  const handleChangeMotion = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const nextMotion = e.target.value as MotionPreference;
-    updateConfig(config => {
-      config.appearance.motion = nextMotion;
-    });
-  }, [updateConfig]);
 
   useImperativeHandle(ref, () => ({
     canLeave: true,
   }), []);
 
+  const {appearance} = config;
+
   return <>
-    <S.OptionGroup aria-labelledby={`${id}-theme-label`}>
-      <S.OptionGroupName id={`${id}-theme-label`}>
-        <Localized id='settings-theme-label'/>
-      </S.OptionGroupName>
-      <S.OptionList>
-        {ThemeOptions.map(key =>
-          <Radio
-            key={key}
-            name={`${id}-theme`}
-            value={key}
-            checked={key === appearance.theme}
-            onChange={handleChangeTheme}
-          >
-            <Localized id={`settings-theme-${key}`}/>
-          </Radio>
-        )}
-      </S.OptionList>
-    </S.OptionGroup>
-
-    <S.OptionGroup aria-labelledby={`${id}-accent-color-label`}>
-      <S.OptionGroupName id={`${id}-accent-color-label`}>
-        <Localized id='settings-accent-color-label'/>
-      </S.OptionGroupName>
-      <ColorOptions
-        name={`${id}-accent-color`}
-        value={appearance.accentColor}
-        onChange={color => handleChangeColor('accentColor', color)}
-      />
-    </S.OptionGroup>
-
-    <S.OptionGroup
-      aria-labelledby={`${id}-danger-color-label`}
-      aria-describedby={`${id}-danger-color-desc`}
-    >
-      <S.OptionGroupName id={`${id}-danger-color-label`}>
-        <Localized id='settings-danger-color-label'/>
-      </S.OptionGroupName>
-      <ColorOptions
-        name={`${id}-danger-color`}
-        value={appearance.dangerColor}
-        onChange={color => handleChangeColor('dangerColor', color)}
-      />
-      <p id={`${id}-danger-color-desc`}>
-        <Localized id='settings-danger-color-description'/>
-      </p>
-    </S.OptionGroup>
-
-    <S.OptionGroup aria-labelledby={`${id}-sidebar-color-label`}>
-      <S.OptionGroupName id={`${id}-sidebar-color-label`}>
-        <Localized id='settings-sidebar-color-label'/>
-      </S.OptionGroupName>
-      <ColorOptions
-        name={`${id}-sidebar-color`}
-        value={appearance.sidebarColor}
-        onChange={color => handleChangeColor('sidebarColor', color)}
-      />
-    </S.OptionGroup>
-
-    <TextSizeOptions
+    <ThemeSettings
+      theme={appearance.theme}
+      update={updateConfig}
+    />
+    <ColorSettings
+      accentColor={appearance.accentColor}
+      dangerColor={appearance.dangerColor}
+      sidebarColor={appearance.sidebarColor}
+      update={updateConfig}
+    />
+    <TextSizeSettings
       fontSize={appearance.fontSize}
       lineHeight={appearance.lineHeight}
-      updateConfig={updateConfig}
+      update={updateConfig}
     />
-
-    <S.OptionGroup aria-labelledby={`${id}-zoom-label`}>
-      <S.OptionGroupName id={`${id}-zoom-label`}>
-        <Localized id='settings-zoom-level-label'/>
-      </S.OptionGroupName>
-      <Slider
-        stops={ZoomLevels}
-        value={appearance.zoomLevel}
-        aria-labelledby={`${id}-zoom-label`}
-        aria-describedby={`${id}-zoom-desc`}
-        onChange={handleSetZoomLevel}
-      />
-      <p id={`${id}-zoom-desc`}>
-        <Localized id='settings-zoom-level-description'/>
-      </p>
-    </S.OptionGroup>
-
-    <S.OptionGroup aria-labelledby={`${id}-motion-label`}>
-      <S.OptionGroupName id={`${id}-motion-label`}>
-        <Localized id='settings-motion-label'/>
-      </S.OptionGroupName>
-      <S.OptionList>
-        {MotionOptions.map(key =>
-          <Fragment key={key}>
-            <Radio
-              name={`${id}-motion`}
-              value={key}
-              checked={key === appearance.motion}
-              aria-describedby={
-                key !== 'full'
-                  ? `${id}-motion-${key}-desc`
-                  : undefined
-              }
-              onChange={handleChangeMotion}
-            >
-              <Localized id={`settings-motion-${key}`}/>
-            </Radio>
-            {key !== 'full' &&
-              <S.OptionDescription id={`${id}-motion-${key}-desc`}>
-                <Localized id={`settings-motion-${key}-description`}/>
-              </S.OptionDescription>}
-          </Fragment>
-        )}
-      </S.OptionList>
-    </S.OptionGroup>
+    <ZoomLevelSettings
+      zoomLevel={appearance.zoomLevel}
+      update={updateConfig}
+    />
+    <MotionSettings
+      motion={appearance.motion}
+      update={updateConfig}
+    />
   </>;
 });
 
@@ -227,14 +111,120 @@ const AppearanceSection: Section = {
 
 export default AppearanceSection;
 
-interface TextSizeOptionsProps {
-  fontSize: FontSizeOption;
-  lineHeight: LineHeightOption;
-  updateConfig: (recipe: ConfigRecipe) => void;
+interface ThemeSettingsProps {
+  theme: ThemePreference;
+  update: (recipe: ConfigRecipe) => void;
 }
 
-const TextSizeOptions = memo((props: TextSizeOptionsProps): JSX.Element => {
-  const {fontSize, lineHeight, updateConfig} = props;
+const ThemeSettings = memo((props: ThemeSettingsProps): JSX.Element => {
+  const {theme, update: updateConfig} = props;
+
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const nextTheme = e.target.value as ThemePreference;
+    updateConfig(config => {
+      config.appearance.theme = nextTheme;
+    });
+  }, [updateConfig]);
+
+  const id = useUniqueId();
+
+  return (
+    <S.OptionGroup aria-labelledby={`${id}-theme-label`}>
+      <S.OptionGroupName id={`${id}-theme-label`}>
+        <Localized id='settings-theme-label'/>
+      </S.OptionGroupName>
+      <S.OptionList>
+        {ThemeOptions.map(key =>
+          <Radio
+            key={key}
+            name={`${id}-theme`}
+            value={key}
+            checked={key === theme}
+            onChange={handleChange}
+          >
+            <Localized id={`settings-theme-${key}`}/>
+          </Radio>
+        )}
+      </S.OptionList>
+    </S.OptionGroup>
+  );
+});
+
+ThemeSettings.displayName = 'ThemeSettings';
+
+interface ColorSettingsProps {
+  accentColor: ColorName;
+  dangerColor: ColorName;
+  sidebarColor: ColorName;
+  update: (recipe: ConfigRecipe) => void;
+}
+
+const ColorSettings = memo((props: ColorSettingsProps): JSX.Element => {
+  const {accentColor, dangerColor, sidebarColor, update: updateConfig} = props;
+
+  const handleChange = useCallback((
+    kind: 'accentColor' | 'dangerColor' | 'sidebarColor',
+    nextColor: ColorName
+  ) => {
+    updateConfig(config => {
+      config.appearance[kind] = nextColor;
+    });
+  }, [updateConfig]);
+
+  const id = useUniqueId();
+
+  return <>
+    <S.OptionGroup aria-labelledby={`${id}-accent-color-label`}>
+      <S.OptionGroupName id={`${id}-accent-color-label`}>
+        <Localized id='settings-accent-color-label'/>
+      </S.OptionGroupName>
+      <ColorOptions
+        name={`${id}-accent-color`}
+        value={accentColor}
+        onChange={color => handleChange('accentColor', color)}
+      />
+    </S.OptionGroup>
+
+    <S.OptionGroup
+      aria-labelledby={`${id}-danger-color-label`}
+      aria-describedby={`${id}-danger-color-desc`}
+    >
+      <S.OptionGroupName id={`${id}-danger-color-label`}>
+        <Localized id='settings-danger-color-label'/>
+      </S.OptionGroupName>
+      <ColorOptions
+        name={`${id}-danger-color`}
+        value={dangerColor}
+        onChange={color => handleChange('dangerColor', color)}
+      />
+      <p id={`${id}-danger-color-desc`}>
+        <Localized id='settings-danger-color-description'/>
+      </p>
+    </S.OptionGroup>
+
+    <S.OptionGroup aria-labelledby={`${id}-sidebar-color-label`}>
+      <S.OptionGroupName id={`${id}-sidebar-color-label`}>
+        <Localized id='settings-sidebar-color-label'/>
+      </S.OptionGroupName>
+      <ColorOptions
+        name={`${id}-sidebar-color`}
+        value={sidebarColor}
+        onChange={color => handleChange('sidebarColor', color)}
+      />
+    </S.OptionGroup>
+  </>;
+});
+
+ColorSettings.displayName = 'ColorSettings';
+
+interface TextSizeSettingsProps {
+  fontSize: FontSizeOption;
+  lineHeight: LineHeightOption;
+  update: (recipe: ConfigRecipe) => void;
+}
+
+const TextSizeSettings = memo((props: TextSizeSettingsProps): JSX.Element => {
+  const {fontSize, lineHeight, update: updateConfig} = props;
 
   const handleSetFontSize = useCallback((value: FontSizeOption) => {
     updateConfig(config => {
@@ -283,4 +273,92 @@ const TextSizeOptions = memo((props: TextSizeOptionsProps): JSX.Element => {
   );
 });
 
-TextSizeOptions.displayName = 'TextSizeOptions';
+TextSizeSettings.displayName = 'TextSizeSettings';
+
+interface ZoomLevelSettingsProps {
+  zoomLevel: number;
+  update: (recipe: ConfigRecipe) => void;
+}
+
+const ZoomLevelSettings = memo((props: ZoomLevelSettingsProps): JSX.Element => {
+  const {zoomLevel, update: updateConfig} = props;
+
+  const handleChange = useCallback((value: number) => {
+    updateConfig(config => {
+      config.appearance.zoomLevel = value;
+    });
+  }, [updateConfig]);
+
+  const id = useUniqueId();
+
+  return (
+    <S.OptionGroup aria-labelledby={`${id}-zoom-label`}>
+      <S.OptionGroupName id={`${id}-zoom-label`}>
+        <Localized id='settings-zoom-level-label'/>
+      </S.OptionGroupName>
+      <Slider
+        stops={ZoomLevels}
+        value={zoomLevel}
+        aria-labelledby={`${id}-zoom-label`}
+        aria-describedby={`${id}-zoom-desc`}
+        onChange={handleChange}
+      />
+      <p id={`${id}-zoom-desc`}>
+        <Localized id='settings-zoom-level-description'/>
+      </p>
+    </S.OptionGroup>
+  );
+});
+
+ZoomLevelSettings.displayName = 'ZoomLevelSettings';
+
+interface MotionSettingsProps {
+  motion: MotionPreference;
+  update: (recipe: ConfigRecipe) => void;
+}
+
+const MotionSettings = memo((props: MotionSettingsProps): JSX.Element => {
+  const {motion, update: updateConfig} = props;
+
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const nextMotion = e.target.value as MotionPreference;
+    updateConfig(config => {
+      config.appearance.motion = nextMotion;
+    });
+  }, [updateConfig]);
+
+  const id = useUniqueId();
+
+  return (
+    <S.OptionGroup aria-labelledby={`${id}-motion-label`}>
+      <S.OptionGroupName id={`${id}-motion-label`}>
+        <Localized id='settings-motion-label'/>
+      </S.OptionGroupName>
+      <S.OptionList>
+        {MotionOptions.map(key =>
+          <Fragment key={key}>
+            <Radio
+              name={`${id}-motion`}
+              value={key}
+              checked={key === motion}
+              aria-describedby={
+                key !== 'full'
+                  ? `${id}-motion-${key}-desc`
+                  : undefined
+              }
+              onChange={handleChange}
+            >
+              <Localized id={`settings-motion-${key}`}/>
+            </Radio>
+            {key !== 'full' &&
+              <S.OptionDescription id={`${id}-motion-${key}-desc`}>
+                <Localized id={`settings-motion-${key}-description`}/>
+              </S.OptionDescription>}
+          </Fragment>
+        )}
+      </S.OptionList>
+    </S.OptionGroup>
+  );
+});
+
+MotionSettings.displayName = 'MotionSettings';

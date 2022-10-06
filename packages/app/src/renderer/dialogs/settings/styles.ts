@@ -137,6 +137,10 @@ export const OptionGroup = styled.div.attrs({
   &:not(:last-child) {
     margin-bottom: 24px;
   }
+
+  > p:last-child {
+    margin-bottom: 0;
+  }
 `;
 
 export const OptionGroupName = styled.p`
@@ -164,8 +168,13 @@ export const TextSizeOptions = styled.div`
   align-items: flex-start;
   max-width: 760px;
 
-  > * {
+  &:not(:last-child) {
+    margin-bottom: 24px;
+  }
+
+  > ${OptionGroup} {
     flex: 1 1 50%;
+    margin-bottom: 0;
   }
 `;
 
