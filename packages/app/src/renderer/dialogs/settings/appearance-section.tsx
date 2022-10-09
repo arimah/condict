@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useImperativeHandle,
 } from 'react';
-import {Localized} from '@fluent/react';
+import {Localized, useLocalization} from '@fluent/react';
 import AppearanceIcon from 'mdi-react/PaletteIcon';
 
 import {
@@ -226,11 +226,24 @@ interface TextSizeSettingsProps {
 const TextSizeSettings = memo((props: TextSizeSettingsProps): JSX.Element => {
   const {fontSize, lineHeight, update: updateConfig} = props;
 
+  const {l10n} = useLocalization();
+
+  const renderFontSize = useCallback((value: FontSizeOption): string => {
+    return l10n.getString('settings-font-size-value', {value: Number(value)});
+  }, [l10n]);
+
   const handleSetFontSize = useCallback((value: FontSizeOption) => {
     updateConfig(config => {
       config.appearance.fontSize = value;
     });
   }, [updateConfig]);
+
+  const renderLineHeight = useCallback((
+    _value: LineHeightOption,
+    index: number
+  ): string => {
+    return l10n.getString('settings-line-height-value', {value: index});
+  }, [l10n]);
 
   const handleSetLineHeight = useCallback((value: LineHeightOption) => {
     updateConfig(config => {
@@ -249,6 +262,7 @@ const TextSizeSettings = memo((props: TextSizeSettingsProps): JSX.Element => {
         <Slider
           stops={FontSizes}
           value={fontSize}
+          renderValue={renderFontSize}
           aria-labelledby={`${id}-font-size-label`}
           aria-describedby={`${id}-font-size-desc`}
           onChange={handleSetFontSize}
@@ -265,6 +279,7 @@ const TextSizeSettings = memo((props: TextSizeSettingsProps): JSX.Element => {
         <Slider
           stops={LineHeights}
           value={lineHeight}
+          renderValue={renderLineHeight}
           aria-labelledby={`${id}-line-height-label`}
           onChange={handleSetLineHeight}
         />
@@ -283,6 +298,12 @@ interface ZoomLevelSettingsProps {
 const ZoomLevelSettings = memo((props: ZoomLevelSettingsProps): JSX.Element => {
   const {zoomLevel, update: updateConfig} = props;
 
+  const {l10n} = useLocalization();
+
+  const renderZoomLevel = useCallback((value: number): string => {
+    return l10n.getString('settings-zoom-level-value', {value});
+  }, [l10n]);
+
   const handleChange = useCallback((value: number) => {
     updateConfig(config => {
       config.appearance.zoomLevel = value;
@@ -299,6 +320,7 @@ const ZoomLevelSettings = memo((props: ZoomLevelSettingsProps): JSX.Element => {
       <Slider
         stops={ZoomLevels}
         value={zoomLevel}
+        renderValue={renderZoomLevel}
         aria-labelledby={`${id}-zoom-label`}
         aria-describedby={`${id}-zoom-desc`}
         onChange={handleChange}

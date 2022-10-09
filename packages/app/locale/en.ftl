@@ -180,7 +180,7 @@ settings-sidebar-color-label = Sidebar color
 
 settings-color-name-red = Red
 
-settings-color-name-orange = Orange
+settings-color-name-orange = Narancssárga
 
 settings-color-name-yellow = Yellow
 
@@ -196,13 +196,37 @@ settings-color-name-gray = Gray
 
 settings-font-size-label = Font size
 
+# Formats a font size value.
+#
+# Variables:
+#   value: The font size, as an integer value.
+settings-font-size-value = {$value}
+
 settings-font-size-description = For larger sizes, use the zoom level option.
 
 settings-line-height-label = Line spacing
 
+# Formats a line spacing value.
+#
+# Variables:
+#   value: The line spacing, as an integer between 0 and 3. The integers correspond to the following values: [0] = 1.25, [1] = 1.5 (the default), [2] = 1.75, [3] = 2. These are technically line *height* values; more appropriate translations may be 0.25, 0.5, 0.75, 1; or ¼, ½, ¾, 1; or 1¼, 1½, 1¾, 2.
+settings-line-height-value =
+  {$value ->
+    [0] 1.25
+   *[1] 1.5
+    [2] 1.75
+    [3] 2
+  }
+
 settings-zoom-level-label = Zoom level
 
 settings-zoom-level-description = Changes the scale of the entire user interface.
+
+# Formats a zoom level value.
+#
+# Variables:
+#   value: The zoom level, as an integer percentage.
+settings-zoom-level-value = {$value}
 
 settings-motion-label = Reduced motion
 

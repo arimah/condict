@@ -49,6 +49,7 @@ export const Option = styled.label`
 export const Swatch = styled.span`
   display: block;
   box-sizing: border-box;
+  margin-inline: auto;
   position: relative;
   width: 60px;
   height: 36px;

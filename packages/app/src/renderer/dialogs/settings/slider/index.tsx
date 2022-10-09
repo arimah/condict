@@ -29,6 +29,7 @@ export type Props<T extends number | string> = {
   /** The slider's possible values. These *must* be ordered by `pos`. */
   stops: readonly SliderStop<T>[];
   value: T;
+  renderValue: (value: T, index: number) => string;
   'aria-labelledby'?: string;
   'aria-describedby'?: string;
   onChange: (value: T) => void;
@@ -80,7 +81,13 @@ const getKeyboardMap = (dir: WritingDirection) => new ShortcutMap<KeyCommand>(
 );
 
 const Slider = memo(<T extends string | number>(props: Props<T>): JSX.Element => {
-  const {stops, value, 'aria-labelledby': ariaLabelledBy, onChange} = props;
+  const {
+    stops,
+    value,
+    renderValue,
+    'aria-labelledby': ariaLabelledBy,
+    onChange,
+  } = props;
 
   const dir = useWritingDirection();
 
@@ -157,7 +164,7 @@ const Slider = memo(<T extends string | number>(props: Props<T>): JSX.Element =>
       onMouseDown={handleMouseDown}
       ref={ref}
     >
-      {stops.map(stop =>
+      {stops.map((stop, index) =>
         <S.SliderTick
           key={stop.pos}
           style={{
@@ -165,7 +172,7 @@ const Slider = memo(<T extends string | number>(props: Props<T>): JSX.Element =>
           }}
         >
           <S.SliderTickLabel $selected={stop.value === currentStop.value}>
-            {String(stop.value)}
+            {renderValue(stop.value, index)}
           </S.SliderTickLabel>
         </S.SliderTick>
       )}

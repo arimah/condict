@@ -51,9 +51,9 @@ export const darkThemeVars = (accent: Shade): ThemeVariables => ({
   'slider-tick-fg-selected': 'var(--fg-accent)',
   'slider-tick-bg': Gray.palette[8],
   'slider-track-bg': Gray.palette[7],
-  'slider-track-fill-bg': accent.palette[6],
-  'slider-thumb-bg': accent.palette[6],
-  'slider-thumb-bg-hover': accent.palette[5],
+  'slider-track-fill-bg': accent.palette[5],
+  'slider-thumb-bg': accent.palette[5],
+  'slider-thumb-bg-hover': accent.palette[4],
 
   'card-fg': 'var(--fg)',
   'card-bg': 'var(--bg)',
