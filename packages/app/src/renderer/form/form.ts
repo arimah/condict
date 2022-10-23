@@ -341,10 +341,10 @@ export const useForm = <D>(options: FormOptions<D>): Form<D> => {
             update: updater => internal.update(
               data => update(
                 data,
-                pathParts,
+                f.pathParts,
                 updater as (value: unknown) => unknown
               ) as D,
-              pathParts
+              f.pathParts
             ),
             get isValid(): boolean {
               return f.lastError === null;
