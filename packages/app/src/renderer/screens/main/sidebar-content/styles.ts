@@ -23,6 +23,10 @@ export const SearchButton = styled(SidebarButton)`
   --button-border: var(--button-naked-border);
   --button-border-hover: var(--button-naked-border-hover);
   --button-border-pressed: var(--button-naked-border-pressed);
+
+  &:is(:focus, .force-focus) {
+    box-shadow: inset 0 0 0 1px var(--sidebar-bg);
+  }
 `;
 
 export const Button = styled(SidebarButton)`

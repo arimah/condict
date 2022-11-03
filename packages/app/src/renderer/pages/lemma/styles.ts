@@ -24,8 +24,6 @@ export const DefinitionLink = styled(Link)`
     outline: none;
     border-radius: 7px;
     border-color: var(--focus-border);
-    border-style: var(--focus-border-style);
-    box-shadow: var(--focus-shadow);
   }
 
   > .mdi-icon {

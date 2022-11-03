@@ -31,8 +31,6 @@ export const Option = styled.label`
   &:focus-within {
     outline: none;
     border-color: var(--focus-border);
-    border-style: var(--focus-border-style);
-    box-shadow: var(--focus-shadow);
   }
 
   > input {

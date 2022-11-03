@@ -78,7 +78,6 @@ export const CellBorder = styled.div<CellBorderProps>`
       p.selected ? 'var(--table-border-selected)' :
       undefined
     };
-    box-shadow: ${p => p.focused && 'var(--focus-shadow)'};
     z-index: ${p =>
       p.focused ? '2' :
       p.selected ? '1' :

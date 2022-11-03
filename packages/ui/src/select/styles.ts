@@ -32,8 +32,6 @@ export const Select = styled.select<Props>`
   &:is(:focus, .force-focus) {
     outline: none;
     border-color: var(--focus-border);
-    border-style: var(--focus-border-style);
-    box-shadow: var(--focus-shadow);
   }
 
   &:disabled {

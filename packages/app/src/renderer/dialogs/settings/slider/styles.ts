@@ -17,7 +17,6 @@ export const SliderThumb = styled.div`
 
   *:focus > & {
     background-color: var(--focus-border);
-    box-shadow: var(--focus-shadow);
   }
 `;
 

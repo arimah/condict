@@ -29,8 +29,6 @@ export const CellInputWrapper = styled.label<CellInputWrapperProps>`
   ${p => p.focus && `
     outline: none;
     border-color: var(--focus-border);
-    border-style: var(--focus-border-style);
-    box-shadow: var(--focus-shadow);
   `}
 `;
 
@@ -60,9 +58,6 @@ export const CellInput = styled(TextInput)`
   height: 100%;
   border-style: none;
   border-radius: 0;
-
-  --focus-border-style: none;
-  --focus-shadow: none;
 `;
 
 

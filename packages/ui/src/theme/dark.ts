@@ -178,6 +178,4 @@ export const darkThemeVars = (
   'toolbar-item-shadow-selected': 'inset 0 1px 3px rgb(0 0 0 / 0.85)',
 
   'focus-border': 'hsl(200 95% 55%)',
-  'focus-border-style': 'solid',
-  'focus-shadow': '0 0 0 1px hsl(200 95% 55%)',
 });

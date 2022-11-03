@@ -13,8 +13,6 @@ export const Panel = styled.div`
     outline: none;
     padding: 14px;
     border-color: var(--focus-border);
-    border-style: var(--focus-border-style);
-    box-shadow: var(--focus-shadow);
   }
 
   > :first-child {

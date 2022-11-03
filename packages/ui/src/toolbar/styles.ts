@@ -62,8 +62,7 @@ export const Button = styled.button.attrs({
   &:is(:focus, .force-focus) {
     outline: none;
     padding: 3px 6px;
-    border: 2px var(--focus-border-style) var(--focus-border);
-    box-shadow: var(--focus-shadow);
+    border: 2px solid var(--focus-border);
   }
 
   ${p => p.checked && `
@@ -71,10 +70,6 @@ export const Button = styled.button.attrs({
       background-color: var(--toolbar-item-bg-selected);
       color: var(--toolbar-item-fg-selected);
       box-shadow: var(--toolbar-item-shadow-selected);
-    }
-
-    &&:is(:focus, .force-focus) {
-      box-shadow: var(--focus-shadow), var(--toolbar-item-shadow-selected);
     }
   `}
 

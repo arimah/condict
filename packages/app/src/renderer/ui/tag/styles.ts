@@ -17,8 +17,6 @@ export const Tag = styled(Link)`
   &:is(:focus, :focus-visible) {
     border-radius: 32px;
     border-color: var(--focus-border);
-    border-style: var(--focus-border-style);
-    box-shadow: var(--focus-shadow);
   }
 
   > .mdi-icon {

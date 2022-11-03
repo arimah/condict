@@ -108,9 +108,8 @@ export const Input = styled.input.attrs({type: 'checkbox'})`
     left: -5px;
     width: 18px;
     height: 18px;
-    border: 2px var(--focus-border-style) var(--focus-border);
+    border: 2px solid var(--focus-border);
     border-radius: 5px;
-    box-shadow: var(--focus-shadow);
   }
 `;
 

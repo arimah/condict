@@ -27,8 +27,6 @@ export const Main = styled.span<Props>`
   ${p => p.inputFocused && `
     outline: none;
     border-color var(--focus-border);
-    border-style: var(--focus-border-style);
-    box-shadow: var(--focus-shadow);
   `}
 
   ${p => p.disabled && `
@@ -78,8 +76,7 @@ export const Tag = styled.button.attrs({
   &:is(:focus, .force-focus) {
     outline: none;
     border-color: var(--focus-border);
-    border-style: var(--focus-border-style);
-    box-shadow: var(--focus-shadow);
+    box-shadow: inset 0 0 0 1px var(--input-bg);
   }
 `;
 

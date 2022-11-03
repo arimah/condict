@@ -96,9 +96,8 @@ export const Input = styled.input.attrs({type: 'radio'})`
     left: -5px;
     width: 18px;
     height: 18px;
-    border: 2px var(--focus-border-style) var(--focus-border);
+    border: 2px solid var(--focus-border);
     border-radius: 11px;
-    box-shadow: var(--focus-shadow);
   }
 `;
 

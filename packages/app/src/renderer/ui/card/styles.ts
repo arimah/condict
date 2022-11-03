@@ -44,6 +44,10 @@ export const LinkCard = styled(Link)`
   ${BaseStyles}
   transition: box-shadow ${p => 1.25 * p.theme.timing.short}ms ease-in-out;
 
+  && {
+    box-shadow: var(--card-shadow);
+  }
+
   &:hover {
     background-color: var(--card-bg-hover);
     border-color: var(--card-border-hover);
@@ -57,13 +61,7 @@ export const LinkCard = styled(Link)`
 
   &:is(:focus, :focus-visible) {
     border-color: var(--focus-border);
-    border-style: var(--focus-border-style);
     border-radius: 7px;
-    box-shadow: var(--card-shadow), var(--focus-shadow);
-  }
-
-  &:hover:focus {
-    box-shadow: var(--card-shadow-hover), var(--focus-shadow);
   }
 `;
 

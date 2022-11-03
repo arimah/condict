@@ -72,7 +72,7 @@ export const Tab = styled.div.attrs({
       position: absolute;
       inset-block: 1px;
       inset-inline: 8px;
-      border: 3px var(--focus-border-style) var(--focus-border);
+      border: 2px solid var(--focus-border);
       border-radius: 4px;
     }
   }

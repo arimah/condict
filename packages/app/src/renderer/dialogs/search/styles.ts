@@ -46,8 +46,6 @@ export const InputWrapper = styled.label`
 
   &:focus-within {
     border-color: var(--focus-border);
-    border-style: var(--focus-border-style);
-    box-shadow: var(--focus-shadow);
   }
 
   > .mdi-icon {
@@ -72,8 +70,6 @@ export const Input = styled(TextInput).attrs({
   border-end-end-radius: 5px;
 
   --input-border: transparent;
-  --focus-border-style: none;
-  --focus-shadow: none;
 
   &::-webkit-search-cancel-button,
   &::-webkit-search-decoration {

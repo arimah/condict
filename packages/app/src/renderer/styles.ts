@@ -26,7 +26,7 @@ export const AppStyles = createGlobalStyle`
   }
 
   a:focus-visible {
-    box-shadow: 0 0 0 1px var(--bg), 0 0 0 4px var(--focus-border);
+    box-shadow: 0 0 0 1px var(--bg), 0 0 0 3px var(--focus-border);
     border-radius: 1px;
   }
 `;

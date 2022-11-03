@@ -22,8 +22,6 @@ export const Input = styled.input<Props>`
   &:is(:focus, .force-focus) {
     outline: none;
     border-color: var(--focus-border);
-    border-style: var(--focus-border-style);
-    box-shadow: var(--focus-shadow);
   }
 
   &:disabled {
