@@ -180,7 +180,7 @@ settings-sidebar-color-label = Sidebar color
 
 settings-color-name-red = Red
 
-settings-color-name-orange = Narancssárga
+settings-color-name-orange = Orange
 
 settings-color-name-yellow = Yellow
 
