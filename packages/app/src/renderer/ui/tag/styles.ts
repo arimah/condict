@@ -14,6 +14,10 @@ export const Tag = styled(Link)`
   border-radius: 24px;
   background-color: var(--bg);
 
+  && {
+    box-shadow: none;
+  }
+
   &:is(:focus, :focus-visible) {
     border-radius: 32px;
     border-color: var(--focus-border);
