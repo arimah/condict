@@ -1,11 +1,7 @@
-import React, {ReactNode, KeyboardEvent, MouseEvent} from 'react';
+import React, {ReactNode, KeyboardEvent} from 'react';
 
 import {renderElement, renderLeaf} from './render';
 import * as S from './styles';
-
-const preventFocus = (e: MouseEvent) => {
-  e.preventDefault();
-};
 
 export const EditorContainer = S.EditorContainer;
 
@@ -50,7 +46,7 @@ export type EditorToolbarProps = {
 export const EditorToolbar = (props: EditorToolbarProps): JSX.Element => {
   const {alwaysVisible, children} = props;
   return (
-    <S.Toolbar alwaysVisible={alwaysVisible} onMouseDown={preventFocus}>
+    <S.Toolbar alwaysVisible={alwaysVisible}>
       {children}
     </S.Toolbar>
   );
