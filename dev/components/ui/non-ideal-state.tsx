@@ -46,9 +46,10 @@ const Main = (): JSX.Element => {
       controls={[
         <Checkbox
           checked={minimal}
-          label='Minimal'
           onChange={e => set('minimal', e.target.checked)}
-        />,
+        >
+          Minimal
+        </Checkbox>,
         <label>
           Heading level: <Select
             value={String(headingLevel)}
@@ -58,19 +59,22 @@ const Main = (): JSX.Element => {
         </label>,
         <Checkbox
           checked={image}
-          label='With image'
           onChange={e => set('image', e.target.checked)}
-        />,
+        >
+          With image
+        </Checkbox>,
         <Checkbox
           checked={description}
-          label='With description'
           onChange={e => set('description', e.target.checked)}
-        />,
+        >
+          With description
+        </Checkbox>,
         <Checkbox
           checked={action}
-          label='With action'
           onChange={e => set('action', e.target.checked)}
-        />,
+        >
+          With action
+        </Checkbox>,
       ]}
       onReset={reset}
     >
@@ -84,7 +88,11 @@ const Main = (): JSX.Element => {
             ? 'Let\u2019s get started \u2013 the first step is to add a language.'
             : undefined
         }
-        action={action ? <Button intent='accent' label='Add a language'/> : undefined}
+        action={
+          action
+            ? <Button intent='accent'>Add a language</Button>
+            : undefined
+        }
       />
     </Demo>
   );

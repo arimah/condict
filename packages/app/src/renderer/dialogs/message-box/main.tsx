@@ -1,5 +1,5 @@
 import {KeyboardEvent, useCallback, useRef, useEffect} from 'react';
-import {useLocalization} from '@fluent/react';
+import {Localized, useLocalization} from '@fluent/react';
 
 import {Shortcut} from '@condict/ui';
 
@@ -52,12 +52,11 @@ function MessageBox<R>(props: Props<R>): JSX.Element {
         {buttons.map((button, i) =>
           <S.Button
             key={i}
-            label={l10n.getString(button.labelKey)}
             intent={button.intent}
             onClick={() => onResolve(button.value)}
             ref={button.disposition === 'primary' ? primaryRef : undefined}
           >
-            {button.content}
+            <Localized id={button.labelKey}/>
           </S.Button>
         )}
       </S.Buttons>

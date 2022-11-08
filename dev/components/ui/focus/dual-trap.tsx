@@ -19,21 +19,16 @@ const Demo = (): JSX.Element => {
     <section>
       <h3>Dual <code>FocusTrap</code></h3>
       <p>
-        <Button
-          slim
-          label='Activate both focus traps'
-          intent='bold'
-          onClick={() => setActive(true)}
-        />
+        <Button slim intent='bold' onClick={() => setActive(true)}>
+          Activate both focus traps
+        </Button>
       </p>
       <FocusTrap active={active}>
         <S.Scope kind='trap' active={active}>
           <p>
-            <Button
-              slim
-              label='Deactivate both traps'
-              onClick={() => setActive(false)}
-            />
+            <Button slim onClick={() => setActive(false)}>
+              Deactivate both traps
+            </Button>
           </p>
           <p>
             <Checkbox
@@ -52,22 +47,18 @@ const Demo = (): JSX.Element => {
                 </Menu>
               }
             >
-              <Button
-                slim
-                label='Menu button in first trap'
-              />
+              <Button slim>
+                Menu button in first trap
+              </Button>
             </MenuTrigger>
           </p>
         </S.Scope>
       </FocusTrap>
 
       <p>
-        <Button
-          slim
-          label='Activate both traps (#2)'
-          intent='bold'
-          onClick={() => setActive(true)}
-        />
+        <Button slim intent='bold' onClick={() => setActive(true)}>
+          Activate both traps (#2)
+        </Button>
       </p>
 
       <FocusTrap active={active}>
@@ -76,10 +67,9 @@ const Demo = (): JSX.Element => {
             <TextInput defaultValue='This is a haiku (it is not)'/>
           </p>
           <p>
-            <Button
-              slim
-              label='Button in second trap'
-            />
+            <Button slim>
+              Button in second trap
+            </Button>
           </p>
         </S.Scope>
       </FocusTrap>

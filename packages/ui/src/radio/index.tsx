@@ -1,30 +1,23 @@
 import React, {
   InputHTMLAttributes,
-  LabelHTMLAttributes,
   Ref,
   ReactNode,
   useContext,
   useMemo,
 } from 'react';
 
-import {getContentAndLabel} from '../a11y-utils';
 import MarkerLocation from '../marker-location';
 import genUniqueId from '../unique-id';
 
 import * as S from './styles';
 
 export type Props = {
-  label?: string;
-  labelProps?: Omit<
-    LabelHTMLAttributes<HTMLLabelElement>,
-    'className'
-  >;
   marker?: MarkerLocation;
   inputRef?: Ref<HTMLInputElement>;
   children?: ReactNode;
 } & Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  'aria-label' | 'type'
+  'type'
 >;
 
 export type GroupProps = {
@@ -43,40 +36,30 @@ export const RadioGroupContext = React.createContext<ContextValue>({
 export const Radio = (props: Props): JSX.Element => {
   const {
     className,
-    label,
     disabled,
     name = '',
-    labelProps,
     marker = 'before',
     inputRef,
     children,
     // checked deliberately included here
     ...inputProps
   } = props;
-  const radioGroup = useContext(RadioGroupContext);
 
+  const radioGroup = useContext(RadioGroupContext);
   const actualName = `${radioGroup.namePrefix}${name}`;
 
-  const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
-
   return (
-    <S.Label
-      {...labelProps}
-      marker={marker}
-      className={className}
-      disabled={disabled}
-    >
+    <S.Label marker={marker} className={className} disabled={disabled}>
       <S.Input
         {...inputProps}
         name={actualName}
         disabled={disabled}
-        aria-label={ariaLabel}
         ref={inputRef}
       />
       <S.RadioContainer>
         <S.RadioDot/>
       </S.RadioContainer>
-      <S.Content>{renderedContent}</S.Content>
+      <S.Content>{children}</S.Content>
     </S.Label>
   );
 };

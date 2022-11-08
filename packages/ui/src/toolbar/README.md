@@ -21,21 +21,21 @@ import {Toolbar, Menu} from '@condict/ui';
 
 // A simple toolbar with a few actions.
 <Toolbar>
-  <Toolbar.Button label='Undo' onClick={...}>
+  <Toolbar.Button title='Undo' onClick={...}>
     <UndoIcon/>
   </Toolbar.Button>
-  <Toolbar.Button label='Redo' onClick={...}>
+  <Toolbar.Button title='Redo' onClick={...}>
     <RedoIcon/>
   </Toolbar.Button>
 
   <Toolbar.Group name='Edit'>
-    <Toolbar.Button label='Cut' onClick={...}>
+    <Toolbar.Button title='Cut' onClick={...}>
       <CutIcon/>
     </Toolbar.Button>
-    <Toolbar.Button label='Copy' onClick={...}>
+    <Toolbar.Button title='Copy' onClick={...}>
       <CopyIcon/>
     </Toolbar.Button>
-    <Toolbar.Button label='Paste' onClick={...}>
+    <Toolbar.Button title='Paste' onClick={...}>
       <PasteIcon/>
     </Toolbar.Button>
   </Toolbar.Group>
@@ -44,21 +44,21 @@ import {Toolbar, Menu} from '@condict/ui';
 // A toolbar with toggle buttons bound to commands.
 <Toolbar>
   <Toolbar.Button
-    label='Bold'
+    title='Bold'
     checked={...}
     command='toggleBold'
   >
     <BoldIcon/>
   </Toolbar.Button>
   <Toolbar.Button
-    label='Italic'
+    title='Italic'
     checked={...}
     command='toggleItalic'
   >
     <ItalicIcon/>
   </Toolbar.Button>
   <Toolbar.Button
-    label='Underline'
+    title='Underline'
     checked={...}
     command='toggleUnderline'
   >
@@ -72,7 +72,7 @@ import {Toolbar, Menu} from '@condict/ui';
   </Toolbar.Group>
   <Toolbar.Spacer/>
   <Toolbar.MenuButton
-    label='More options'
+    title='More options'
     menu={
       <Menu>
         ...
@@ -110,12 +110,12 @@ Toolbar buttons forward their ref to the underlying `<button>` element.
 | --- | --- | --- | --- |
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
 | `checked` | boolean | `undefined` | If present and not null or undefined, the button becomes a toggle button, and this prop determines whether the toggle button is pressed. |
-| `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
+| `title` | string | `''` | A string value that contains the button's text. If specified _and_ the button has no `aria-label`, then the `title` is also used as the button's accessible label. |
 | `shortcut` | [Shortcut][] | `null` | The shortcut associated with the button. This value is used for display and accessibility only; it does not attach any behaviour. If the button has a [command][], this prop is ignored. |
 | `disabled` | boolean | `false` | If true, the button is disabled. If the button has a [command][], the command can also disable the button. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `disabled`, `shortcut` and `onClick` props. |
 | `onClick` | function | no-op | Attaches the `click` event handler to the button. If the button has a [command][], this prop is ignored. |
-| `children` | node | `undefined` | The content of the button. If used together with `label`, this becomes the visible content of the button. |
+| `children` | node | `undefined` | The content of the button. |
 
 Other props are forwarded to the underlying element.
 
@@ -148,9 +148,9 @@ Menu buttons forward their ref to the underlying `<Toolbar.Button>`.
 | --- | --- | --- | --- |
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
 | `disabled` | boolean | `false` | If true, the button is disabled. |
-| `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
+| `title` | string | `''` | A string value that contains the button's text. If specified _and_ the button has no `aria-label`, then the `title` is also used as the button's accessible label. |
 | `menu` | element | _none; required_ | The menu that this button opens. Any React element (but not other renderable, such as string, array or fragment) whose ref resolves to a [`<Menu>`](../menu#menu). Note that you _can_ use a custom component here, as long the ref is forwarded to a `<Menu>`. |
-| `children` | node | `null` | The content of the button. If used together with `label`, this becomes the visible content of the button. |
+| `children` | node | `null` | The content of the button. |
 
 Other props are forwarded to the underlying `<Toolbar.Button>`, but note that the menu button sets the `onClick` prop. Menu buttons should not have a shortcut.
 
@@ -168,12 +168,12 @@ See [`<Toolbar.Button>`] for additional details.
 | --- | --- | --- | --- |
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
 | `checked` | boolean | `undefined` | Determines whether the radio button is pressed. |
-| `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
+| `title` | string | `''` | A string value that contains the button's text. If specified _and_ the button has no `aria-label`, then the `title` is also used as the button's accessible label. |
 | `shortcut` | [Shortcut][] | `null` | The shortcut associated with the button. This value is used for display and accessibility only; it does not attach any behaviour. If the button has a [command][], this prop is ignored. |
 | `disabled` | boolean | `false` | If true, the button is disabled. If the button has a [command][], the command can also disable the radio button. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `disabled`, `shortcut` and `onClick` props. |
 | `onClick` | function | no-op | Attaches the `click` event handler to the button. If the button has a [command][], this prop is ignored. |
-| `children` | node | `undefined` | The content of the button. If used together with `label`, this becomes the visible content of the button. |
+| `children` | node | `undefined` | The content of the button. |
 
 Other props are forwarded to the underlying element.
 

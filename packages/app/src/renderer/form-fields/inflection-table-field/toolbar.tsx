@@ -96,14 +96,14 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
         <Toolbar.Button
           command='undo'
           disabled={!canUndo}
-          label={l10n.getString('generic-undo-button')}
+          title={l10n.getString('generic-undo-button')}
         >
           <UndoIcon/>
         </Toolbar.Button>
         <Toolbar.Button
           command='redo'
           disabled={!canRedo}
-          label={l10n.getString('generic-redo-button')}
+          title={l10n.getString('generic-redo-button')}
         >
           <RedoIcon/>
         </Toolbar.Button>
@@ -111,19 +111,19 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
       <Toolbar.Group>
         <Toolbar.Button
           command='insertRowAbove'
-          label={l10n.getString('table-editor-insert-row-above-button')}
+          title={l10n.getString('table-editor-insert-row-above-button')}
         >
           <InsertRowAboveIcon/>
         </Toolbar.Button>
         <Toolbar.Button
           command='insertRowBelow'
-          label={l10n.getString('table-editor-insert-row-below-button')}
+          title={l10n.getString('table-editor-insert-row-below-button')}
         >
           <InsertRowBelowIcon/>
         </Toolbar.Button>
         <Toolbar.Button
           command='deleteSelectedRows'
-          label={l10n.getString('table-editor-delete-rows', {
+          title={l10n.getString('table-editor-delete-rows', {
             count: rowCount,
           })}
         >
@@ -133,19 +133,19 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
       <Toolbar.Group>
         <Toolbar.Button
           command='insertColumnBefore'
-          label={l10n.getString('table-editor-insert-column-before-button')}
+          title={l10n.getString('table-editor-insert-column-before-button')}
         >
           <InsertColumnBeforeIcon className='rtl-mirror'/>
         </Toolbar.Button>
         <Toolbar.Button
           command='insertColumnAfter'
-          label={l10n.getString('table-editor-insert-column-after-button')}
+          title={l10n.getString('table-editor-insert-column-after-button')}
         >
           <InsertColumnAfterIcon className='rtl-mirror'/>
         </Toolbar.Button>
         <Toolbar.Button
           command='deleteSelectedColumns'
-          label={l10n.getString('table-editor-delete-columns', {
+          title={l10n.getString('table-editor-delete-columns', {
             count: colCount,
           })}
         >
@@ -155,13 +155,13 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
       <Toolbar.Group>
         <Toolbar.Button
           command='mergeSelection'
-          label={l10n.getString('table-editor-merge-cells')}
+          title={l10n.getString('table-editor-merge-cells')}
         >
           <MergeIcon/>
         </Toolbar.Button>
         <Toolbar.Button
           command='separateSelection'
-          label={l10n.getString('table-editor-separate-cells')}
+          title={l10n.getString('table-editor-separate-cells')}
         >
           <SeparateIcon/>
         </Toolbar.Button>
@@ -170,7 +170,7 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
       <Toolbar.Spacer/>
 
       <Toolbar.MenuButton
-        label={l10n.getString('table-editor-tools-menu')}
+        title={l10n.getString('table-editor-tools-menu')}
         menu={
           <Menu>
             <Menu.Item

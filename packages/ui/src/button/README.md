@@ -14,16 +14,18 @@ Buttons forward their ref to the underlying element, which is a `<button>`.
 import {Button, LinkButton} from '@condict/ui';
 
 // A simple button with a label.
-<Button label='Show me what you got' onClick={...}/>
+<Button onClick={...}>
+  Show me what you got
+</Button>
 
-// A link button with rendered children.
+// A link button with more complex children.
 <LinkButton href={aboutUri} target='_blank'>
   <InfoIcon/> About the competition
 </LinkButton>
 
-// A slim, bold button that mixes rendered content and label.
+// A slim, bold button that mixes rendered content and ARIA label.
 // The label is exposed to assistive technologies, like screen readers.
-<Button slim intent='bold' label='Undo' onClick={...}>
+<Button slim intent='bold' aria-label='Undo' onClick={...}>
   <UndoIcon/>
 </Button>
 
@@ -34,7 +36,7 @@ import {Button, LinkButton} from '@condict/ui';
 
 // A submit button. Since it submits a form when clicked, it does
 // not require an onClick handler.
-<Button type='submit' label='Save'/>
+<Button type='submit'>Save</Button>
 ```
 
 ### Props
@@ -45,11 +47,10 @@ import {Button, LinkButton} from '@condict/ui';
 | `disabled` | boolean | `false` | If true, the button is disabled. This prop has no effect on link buttons. If the button has a [command][], the command can also disable the button. |
 | `intent` | one of `'general'`, `'accent'`, `'bold'`, `'danger'` | `'general'` | Determines what intent styling to give the button. |
 | `slim` | boolean | `false` | If true, reduce the button's padding, to make it fit better alongside text inputs, selects, and similar. |
-| `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
 | `type` | one of `'button'`, `'submit'` | `'button'` | Determines the button's type. Submit buttons are used in forms. This prop has no effect on link buttons. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `disabled` and `onClick` props. |
 | `onClick` | function | no-op | Attaches the `click` event handler to the button. If the button has a [command][], this prop is ignored. |
-| `children` | node | `null` | The content of the button. If used together with `label`, this becomes the visible content of the button. |
+| `children` | node | `null` | The content of the button. |
 
 All other props are forwarded to the underlying element, which is a [styled component][styled-components] containing a `<button>`.
 
@@ -67,10 +68,9 @@ Link buttons forward their ref to the underlying element, which is an `<a>`.
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
 | `intent` | one of `'general'`, `'accent'`, `'bold'`, `'danger'` | `'general'` | Determines what intent styling to give the button. |
 | `slim` | boolean | `false` | If true, reduce the button's padding, to make it fit better alongside text inputs, selects, and similar. |
-| `label` | string | `''` | A string value that contains the button's text. If used together with children, this value defines the button's accessible label. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `onClick` prop. |
 | `onClick` | function | no-op | Attaches the `click` event handler to the button. If the button has a [command][], this prop is ignored. |
-| `children` | node | `null` | The content of the button. If used together with `label`, this becomes the visible content of the button. |
+| `children` | node | `null` | The content of the button. |
 
 All other props are forwarded to the underlying element, which is a [styled component][styled-components] containing an `<a>`.
 

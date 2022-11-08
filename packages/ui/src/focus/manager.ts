@@ -13,19 +13,19 @@ import {FocusScopeProps, FocusScopeBehavior} from './types';
 // adjusting the focus near "gaps" in the tab order. Consider this (kinda
 // convoluted) document:
 //
-//   <Button label='A'/>
+//   <Button>A</Button>
 //   <FocusTrap>
-//     <Button label='B'/>
-//     <Button label='C'/>
-//     <Button label='D'/>
+//     <Button>B</Button>
+//     <Button>C</Button>
+//     <Button>D</Button>
 //     <FocusScope active={false}>
-//       <Button label='E'/>
+//       <Button>E</Button>
 //     </FocusScope>
-//     <Button label='F'/>
-//     <Button label='G'/>
+//     <Button>F</Button>
+//     <Button>G</Button>
 //   </FocusTrap>
-//   <Button label='H'/>
-//   <Button label='I'/>
+//   <Button>H</Button>
+//   <Button>I</Button>
 //
 // The browser's tab sequence in this document is:
 //

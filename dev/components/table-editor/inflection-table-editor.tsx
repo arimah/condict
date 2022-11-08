@@ -54,19 +54,19 @@ const Editor = (props: Props): JSX.Element | null => {
           <Toolbar>
             <Toolbar.Group name='Edit row'>
               <Toolbar.Button
-                label='Insert row above'
+                title='Insert row above'
                 command='insertRowAbove'
               >
                 <InsertRowAboveIcon/>
               </Toolbar.Button>
               <Toolbar.Button
-                label='Insert row below'
+                title='Insert row below'
                 command='insertRowBelow'
               >
                 <InsertRowBelowIcon/>
               </Toolbar.Button>
               <Toolbar.Button
-                label='Delete selected row(s)'
+                title='Delete selected row(s)'
                 command='deleteSelectedRows'
               >
                 <DeleteRowIcon/>
@@ -74,34 +74,35 @@ const Editor = (props: Props): JSX.Element | null => {
             </Toolbar.Group>
             <Toolbar.Group name='Edit column'>
               <Toolbar.Button
-                label='Insert column before'
+                title='Insert column before'
                 command='insertColumnBefore'
               >
                 <InsertColumnBeforeIcon className='rtl-mirror'/>
               </Toolbar.Button>
               <Toolbar.Button
-                label='Insert column after'
+                title='Insert column after'
                 command='insertColumnAfter'
               >
                 <InsertColumnAfterIcon className='rtl-mirror'/>
               </Toolbar.Button>
               <Toolbar.Button
-                label='Delete selected column(s)'
+                title='Delete selected column(s)'
                 command='deleteSelectedColumns'
               >
                 <DeleteColumnIcon/>
               </Toolbar.Button>
             </Toolbar.Group>
             <Toolbar.Group>
-              <Toolbar.Button label='Undo' command='undo'/>
-              <Toolbar.Button label='Redo' command='redo'/>
+              <Toolbar.Button command='undo'>Undo</Toolbar.Button>
+              <Toolbar.Button command='redo'>Redo</Toolbar.Button>
             </Toolbar.Group>
             <Toolbar.Group>
               <Toolbar.Button
-                label='Disabled'
                 checked={disabled}
                 onClick={() => setDisabled(d => !d)}
-              />
+              >
+                Disabled
+              </Toolbar.Button>
             </Toolbar.Group>
           </Toolbar>
         </CommandProvider>

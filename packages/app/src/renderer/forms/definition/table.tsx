@@ -222,14 +222,14 @@ const TableToolbar = React.memo((props: TableToolbarProps): JSX.Element => {
       </S.DragHandle>
       {!(isFirst && isLast) && <>
         <Toolbar.Button
-          label={l10n.getString('definition-table-move-up-button')}
+          title={l10n.getString('definition-table-move-up-button')}
           disabled={isFirst}
           onClick={() => onMove(index, index - 1)}
         >
           <MoveUpIcon/>
         </Toolbar.Button>
         <Toolbar.Button
-          label={l10n.getString('definition-table-move-down-button')}
+          title={l10n.getString('definition-table-move-down-button')}
           disabled={isLast}
           onClick={() => onMove(index, index + 1)}
         >
@@ -237,7 +237,7 @@ const TableToolbar = React.memo((props: TableToolbarProps): JSX.Element => {
         </Toolbar.Button>
       </>}
       <Toolbar.Button
-        label={l10n.getString('definition-table-remove-button')}
+        title={l10n.getString('definition-table-remove-button')}
         onClick={() => onRemove(index)}
       >
         <RemoveIcon/>

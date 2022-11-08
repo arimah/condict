@@ -43,7 +43,7 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
     <S.Columns>
       {text !== ipa ? <>
         <S.PrimaryAction
-          label={messages.convertToIpaLabel(ipa)}
+          aria-label={messages.convertToIpaLabel(ipa)}
           tabIndex={tabIndex}
           onClick={applyConversion}
         >
@@ -53,7 +53,7 @@ const PhoneticPopup = (props: Props): JSX.Element | null => {
         </S.PrimaryAction>
         <S.Actions>
           <S.Action
-            label={messages.insertIpa()}
+            aria-label={messages.insertIpa()}
             title={messages.insertIpa()}
             tabIndex={tabIndex}
             onClick={onInsertIpa}

@@ -52,14 +52,16 @@ const Main = (): JSX.Element => {
         </label>,
         <Checkbox
           checked={disabled}
-          label='Disabled'
           onChange={e => set('disabled', e.target.checked)}
-        />,
+        >
+          Disabled
+        </Checkbox>,
         <Checkbox
           checked={minimal}
-          label='Minimal'
           onChange={e => set('minimal', e.target.checked)}
-        />,
+        >
+          Minimal
+        </Checkbox>,
       ]}
       onReset={reset}
     >

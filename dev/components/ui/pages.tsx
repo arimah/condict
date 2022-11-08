@@ -35,15 +35,17 @@ const Main = (): JSX.Element => {
       name='Pages'
       controls={[
         <Checkbox
-          label='Disabled'
           checked={state.disabled}
           onChange={e => set('disabled', e.target.checked  )}
-        />,
+        >
+          Disabled
+        </Checkbox>,
         <Checkbox
-          label='Loading'
           checked={state.loading}
           onChange={e => set('loading', e.target.checked  )}
-        />,
+        >
+          Loading
+        </Checkbox>,
         <label>
           Total pages: <NumberInput
             value={state.totalPagesString}

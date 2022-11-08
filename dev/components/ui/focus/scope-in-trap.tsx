@@ -14,29 +14,23 @@ const Demo = (): JSX.Element => {
     <section>
       <h3><code>FocusScope</code> inside <code>FocusTrap</code></h3>
       <p>
-        <Button
-          slim
-          label='Reveal and activate trap'
-          intent='bold'
-          onClick={() => setTrapActive(true)}
-        />
+        <Button slim intent='bold' onClick={() => setTrapActive(true)}>
+          Reveal and activate trap
+        </Button>
       </p>
       {trapActive &&
         <FocusTrap>
           <S.Scope kind='trap' active>
             <p>
-              <Button
-                slim
-                label='Deactivate trap'
-                onClick={() => setTrapActive(false)}
-              />
+              <Button slim onClick={() => setTrapActive(false)}>
+                Deactivate trap
+              </Button>
             </p>
 
             {Sections.map(s =>
               <Fragment key={s}>
                 <p>
                   <Radio
-                    label={`Section ${s}`}
                     name='focus-in-trap-section'
                     checked={section === s}
                     onChange={e => {
@@ -44,14 +38,15 @@ const Demo = (): JSX.Element => {
                         setSection(s);
                       }
                     }}
-                  />
+                  >
+                    Section {s}
+                  </Radio>
                 </p>
                 <FocusScope active={section === s}>
                   <S.Scope kind='scope' active={section === s}>
-                    <Button
-                      slim
-                      label={`Do thing #${s}`}
-                    />
+                    <Button slim>
+                      Do thing #{s}
+                    </Button>
                   </S.Scope>
                 </FocusScope>
               </Fragment>

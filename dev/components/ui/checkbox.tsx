@@ -37,9 +37,10 @@ const Main = (): JSX.Element => {
         </label>,
         <Checkbox
           checked={disabled}
-          label='Disabled'
           onChange={e => set('disabled', e.target.checked)}
-        />,
+        >
+          Disabled
+        </Checkbox>,
       ]}
       onReset={reset}
     >
@@ -50,12 +51,13 @@ const Main = (): JSX.Element => {
             disabled={disabled}
             checked={checkedCount === checked.length}
             indeterminate={checkedCount > 0 && checkedCount !== checked.length}
-            label='All'
             onChange={() => set(
               'checked',
               checked.map(() => checkedCount !== checked.length)
             )}
-          />
+          >
+            All
+          </Checkbox>
         </Row>
         <Row>
           {checked.map((ch, i) => (
@@ -64,13 +66,14 @@ const Main = (): JSX.Element => {
               marker={marker}
               disabled={disabled}
               checked={ch}
-              label={`Option ${i + 1}`}
               onChange={() => {
                 const newChecked = checked.slice(0);
                 newChecked[i] = !ch;
                 set('checked', newChecked);
               }}
-            />
+            >
+              Option {i + 1}
+            </Checkbox>
           ))}
         </Row>
       </List>

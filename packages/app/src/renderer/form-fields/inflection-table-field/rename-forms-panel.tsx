@@ -224,7 +224,7 @@ const InflectedFormField = React.memo((
         </SROnly>
       </S.InflectedFormInput>
       <S.InflectedFormAction
-        label={l10n.getString('table-editor-name-source-label')}
+        aria-label={l10n.getString('table-editor-name-source-label')}
         /*
          * The button's SR label is 'Use automatic term', so we should announce
          * it as pressed when the form does *not* have a custom display name.

@@ -150,12 +150,12 @@ const Main = (): JSX.Element => {
             openClass='force-active'
             menu={<DemoMenu state={state} set={set}/>}
           >
-            <Button label='Open menu'/>
+            <Button>Open menu</Button>
           </MenuTrigger>
         </Row>
         <Row>
           <ContextMenuTrigger menu={<DemoMenu state={state} set={set}/>}>
-            <Button label='I have a context menu'/>
+            <Button>I have a context menu</Button>
           </ContextMenuTrigger>
         </Row>
       </List>

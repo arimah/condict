@@ -211,10 +211,11 @@ const Container = (props: Props): JSX.Element | null => {
 
           <S.HeaderSwitch>
             <Switch
-              label='Dark theme'
               checked={appearance.theme === 'dark'}
               onChange={handleChangeTheme}
-            />
+            >
+              Dark theme
+            </Switch>
             <label>
               {'Accent colour: '}
               <Select

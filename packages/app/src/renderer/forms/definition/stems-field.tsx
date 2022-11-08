@@ -111,7 +111,7 @@ const Stem = React.memo((props: StemProps): JSX.Element => {
         />
       </SROnly>
       <S.StemAction
-        label={l10n.getString('definition-stem-source-label')}
+        aria-label={l10n.getString('definition-stem-source-label')}
         aria-pressed={usesTerm}
         usesTerm={usesTerm}
         title={l10n.getString(

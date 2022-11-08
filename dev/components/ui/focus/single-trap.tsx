@@ -11,27 +11,21 @@ const Demo = (): JSX.Element => {
     <section>
       <h3>Single <code>FocusTrap</code></h3>
       <p>
-        <Button
-          slim
-          label='Activate focus trap'
-          intent='bold'
-          onClick={() => setActive(true)}
-        />
+        <Button slim intent='bold' onClick={() => setActive(true)}>
+          Activate focus trap
+        </Button>
       </p>
       <FocusTrap active={active}>
         <S.Scope kind='trap' active={active}>
           <p>
-            <Button
-              slim
-              label='Deactivate trap'
-              onClick={() => setActive(false)}
-            />
+            <Button slim onClick={() => setActive(false)}>
+              Deactivate trap
+            </Button>
           </p>
           <p>
-            <Button
-              slim
-              label='A generic button'
-            />
+            <Button slim>
+              A generic button
+            </Button>
           </p>
         </S.Scope>
       </FocusTrap>

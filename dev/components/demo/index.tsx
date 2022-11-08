@@ -41,12 +41,9 @@ const Demo = (props: Props): JSX.Element => {
               </S.Control>
             )}
             <S.Control>
-              <Button
-                label='Reset'
-                slim
-                intent='bold'
-                onClick={onReset}
-              />
+              <Button slim intent='bold' onClick={onReset}>
+                Reset
+              </Button>
             </S.Control>
           </S.Controls>
         ) : null}

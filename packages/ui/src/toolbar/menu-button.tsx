@@ -1,18 +1,16 @@
 import React, {Ref, ButtonHTMLAttributes, useRef} from 'react';
 
 import {MenuTrigger} from '../menu';
-import {getContentAndLabel} from '../a11y-utils';
 import combineRefs from '../combine-refs';
 
 import {useManagedFocus} from './focus-manager';
 import * as S from './styles';
 
 export type Props = {
-  label?: string;
   menu: JSX.Element;
 } & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  'aria-label' | 'tabIndex' | 'title' | 'type'
+  'tabIndex' | 'type'
 >;
 
 const MenuButton = React.forwardRef((
@@ -20,8 +18,9 @@ const MenuButton = React.forwardRef((
   ref: Ref<HTMLButtonElement>
 ) => {
   const {
-    label = '',
     menu,
+    'aria-label': ariaLabel,
+    title = null,
     children,
     ...otherProps
   } = props;
@@ -29,18 +28,16 @@ const MenuButton = React.forwardRef((
   const ownRef = useRef<HTMLButtonElement>(null);
   const isCurrent = useManagedFocus(ownRef);
 
-  const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
-
   return (
     <MenuTrigger menu={menu}>
       <S.Button
         {...otherProps}
-        aria-label={ariaLabel}
+        aria-label={ariaLabel ?? title ?? undefined}
         tabIndex={isCurrent ? 0 : -1}
-        title={label || undefined}
+        title={title || undefined}
         ref={combineRefs(ref, ownRef)}
       >
-        {renderedContent}
+        {children}
       </S.Button>
     </MenuTrigger>
   );

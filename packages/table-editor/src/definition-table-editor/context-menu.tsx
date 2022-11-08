@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {Menu} from '@condict/ui';
 
 import {Table} from '../value';

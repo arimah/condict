@@ -242,7 +242,9 @@ const IpaDialog = (props: Props): JSX.Element => {
           onKeyDown={handleInputKeyDown}
           ref={inputRef}
         />
-        <SubmitButton label={messages.ipaDialogInsert()} onClick={submit}/>
+        <SubmitButton onClick={submit}>
+          {messages.ipaDialogInsert()}
+        </SubmitButton>
       </SearchWrapper>
       <S.CharacterList id={`${id}-list`} onMouseDown={cancelMouseEvent}>
         {results ? (

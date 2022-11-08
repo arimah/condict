@@ -22,10 +22,9 @@ import {NonIdealState, Button} from '@condict/ui';
   title='There are no languages'
   description="Let's get started - the first step is to add a language."
   action={
-    <Button
-      label='Add a language'
-      onClick={...}
-    />
+    <Button onClick={...}>
+      Add a language
+    </Button>
   }
 />
 

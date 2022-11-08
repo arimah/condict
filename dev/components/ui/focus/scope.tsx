@@ -14,43 +14,42 @@ const Demo = (): JSX.Element => {
 
       <p>
         <Checkbox
-          label='First scope active'
           checked={scope1}
           onChange={e => setScope1(e.target.checked)}
-        />
+        >
+          First scope active
+        </Checkbox>
       </p>
       <FocusScope active={scope1}>
         <S.Scope kind='scope' active={scope1}>
           <p>
-            <Button slim label='I am clickable'/>
+            <Button slim>I am clickable</Button>
           </p>
           <p>
-            <Button slim label='Hello, focus!'/>
+            <Button slim>Hello, focus!</Button>
           </p>
         </S.Scope>
       </FocusScope>
 
       <p>
         <Checkbox
-          label='Second scope active'
           checked={scope2}
           onChange={e => setScope2(e.target.checked)}
-        />
+        >
+          Second scope active
+        </Checkbox>
       </p>
       <FocusScope active={scope2}>
         <S.Scope kind='scope' active={scope2}>
           <p>
-            <Button
-              slim
-              label='I am focusable and tabbable'
-            />
+            <Button slim>
+              I am focusable and tabbable
+            </Button>
           </p>
           <p>
-            <Button
-              slim
-              label='I am focusable but not tabbable'
-              tabIndex={-1}
-            />
+            <Button slim tabIndex={-1}>
+              I am focusable but not tabbable
+            </Button>
           </p>
           <p>
             <TextInput defaultValue='Type something here!'/>

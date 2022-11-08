@@ -32,10 +32,11 @@ const Main = (): JSX.Element => {
 
       <p>
         <Switch
-          label='Toolbar always visible'
           checked={descriptionToolbar}
           onChange={e => setDescriptionToolbar(e.target.checked)}
-        />
+        >
+          Toolbar always visible
+        </Switch>
       </p>
 
       <DescriptionEditor
@@ -51,10 +52,11 @@ const Main = (): JSX.Element => {
 
       <p>
         <Switch
-          label='Toolbar always visible'
           checked={captionToolbar}
           onChange={e => setCaptionToolbar(e.target.checked)}
-        />
+        >
+          Toolbar always visible
+        </Switch>
       </p>
 
       <TableCaptionEditor

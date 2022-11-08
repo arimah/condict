@@ -9,7 +9,6 @@ import React, {
 import {useCommand} from '../command';
 import {Shortcut, ShortcutMap} from '../shortcut';
 import {Descendants} from '../descendants';
-import {getContentAndLabel} from '../a11y-utils';
 import combineRefs from '../combine-refs';
 
 import {
@@ -110,17 +109,14 @@ RadioGroup.displayName = 'RadioGroup';
 
 export type Props = {
   checked?: boolean;
-  label?: string;
   shortcut?: Shortcut | null;
   command?: string | null;
 } & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   | 'aria-checked'
   | 'aria-keyshortcuts'
-  | 'aria-label'
   | 'role'
   | 'tabIndex'
-  | 'title'
   | 'type'
 >;
 
@@ -130,10 +126,11 @@ const RadioButton = React.forwardRef((
 ) => {
   const {
     checked = false,
-    label = '',
     shortcut,
     disabled,
     command: commandName,
+    'aria-label': ariaLabel,
+    title = null,
     onClick,
     children,
     ...otherProps
@@ -143,17 +140,14 @@ const RadioButton = React.forwardRef((
   const ownRef = useRef<HTMLButtonElement>(null);
   const isCurrent = useManagedFocus(ownRef);
 
-  const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
-
   const effectiveShortcut = command ? command.shortcut : shortcut;
-
-  const title = useTooltip(label, effectiveShortcut);
+  const effectiveTitle = useTooltip(title, effectiveShortcut);
 
   return (
     <S.Button
       {...otherProps}
       role='radio'
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? title ?? undefined}
       aria-checked={checked}
       checked={checked}
       aria-keyshortcuts={
@@ -162,12 +156,12 @@ const RadioButton = React.forwardRef((
           : undefined
       }
       tabIndex={isCurrent ? 0 : -1}
-      title={title}
+      title={effectiveTitle}
       disabled={command ? command.disabled || disabled : disabled}
       onClick={command ? command.exec : onClick}
       ref={combineRefs(ref, ownRef)}
     >
-      {renderedContent}
+      {children}
     </S.Button>
   );
 });

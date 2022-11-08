@@ -254,7 +254,7 @@ export default class TagInput extends Component<Props, State> {
             : ''}
         </SROnly>
         <Announcer controller={this.announcements} silent={!this.hasFocus}/>
-        {tags.map((tag) =>
+        {tags.map(tag =>
           <TagButton
             key={tag}
             tag={tag}

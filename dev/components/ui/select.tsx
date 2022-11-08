@@ -34,14 +34,16 @@ const Main = (): JSX.Element => {
       controls={[
         <Checkbox
           checked={state.disabled}
-          label='Disabled'
           onChange={e => set('disabled', e.target.checked)}
-        />,
+        >
+          Disabled
+        </Checkbox>,
         <Checkbox
           checked={state.minimal}
-          label='Minimal'
           onChange={e => set('minimal', e.target.checked)}
-        />,
+        >
+          Minimal
+        </Checkbox>,
       ]}
       onReset={reset}
     >

@@ -36,7 +36,7 @@ const Page = (props: Props): JSX.Element => {
   return (
     <S.Item>
       <S.Page
-        label={label ?? messages.pageNumber(page + 1, totalPages)}
+        aria-label={label ?? messages.pageNumber(page + 1, totalPages)}
         aria-current={isCurrent ? 'page' : undefined}
         aria-busy={isCurrent ? loading : undefined}
         intent={isCurrent ? 'bold' : 'general'}

@@ -30,7 +30,7 @@ const LinkContext = (props: Props): JSX.Element => {
   return (
     <S.Columns>
       <S.PrimaryAction
-        label={messages.editLinkLabel(target.name ?? target.url, target.type)}
+        aria-label={messages.editLinkLabel(target.name ?? target.url, target.type)}
         title={messages.editLink()}
         tabIndex={tabIndex}
         onClick={onEditLink}
@@ -45,7 +45,7 @@ const LinkContext = (props: Props): JSX.Element => {
       </S.PrimaryAction>
       <S.Actions>
         <S.Action
-          label={messages.removeLink()}
+          aria-label={messages.removeLink()}
           title={messages.removeLink()}
           tabIndex={tabIndex}
           onClick={() => {

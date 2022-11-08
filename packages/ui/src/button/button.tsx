@@ -1,22 +1,19 @@
 import React, {Ref, ButtonHTMLAttributes} from 'react';
 
-import {getContentAndLabel} from '../a11y-utils';
 import {useCommand} from '../command';
 
 import * as S from './styles';
 
 export type Props = {
-  label?: string;
   type?: 'button' | 'submit';
   command?: string | null;
 } & Partial<S.Props> & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  'type' | 'aria-label'
+  'type'
 >;
 
 const Button = React.forwardRef((props: Props, ref: Ref<HTMLButtonElement>) => {
   const {
-    label = '',
     type = 'button',
     command: commandName,
     slim = false,
@@ -29,12 +26,9 @@ const Button = React.forwardRef((props: Props, ref: Ref<HTMLButtonElement>) => {
 
   const command = useCommand(commandName);
 
-  const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
-
   return (
     <S.Button
       {...otherProps}
-      aria-label={ariaLabel}
       slim={slim}
       intent={intent}
       disabled={command !== null ? command.disabled || disabled : disabled}
@@ -42,7 +36,7 @@ const Button = React.forwardRef((props: Props, ref: Ref<HTMLButtonElement>) => {
       type={type}
       ref={ref}
     >
-      {renderedContent}
+      {children}
     </S.Button>
   );
 });

@@ -54,14 +54,16 @@ const Main = (): JSX.Element => {
         </label>,
         <Checkbox
           checked={disabled}
-          label='Disabled'
           onChange={e => set('disabled', e.target.checked)}
-        />,
+        >
+          Disabled
+        </Checkbox>,
         <Checkbox
           checked={slim}
-          label='Slim'
           onChange={e => set('slim', e.target.checked)}
-        />,
+        >
+          Slim
+        </Checkbox>,
       ]}
       onReset={reset}
     >
@@ -80,7 +82,7 @@ const Main = (): JSX.Element => {
             <span>Icon after</span>
             <RobotLoveIcon/>
           </Button>
-          <Button intent={intent} disabled={disabled} label='Icon only'>
+          <Button intent={intent} disabled={disabled} aria-label='Icon only'>
             <CakeIcon/>
           </Button>
         </Row>
@@ -104,7 +106,7 @@ const Main = (): JSX.Element => {
             <span>Icon after</span>
             <PuzzleIcon/>
           </LinkButton>
-          <LinkButton intent={intent} href='#' label='Icon only'>
+          <LinkButton intent={intent} href='#' aria-label='Icon only'>
             <PaletteIcon/>
           </LinkButton>
         </Row>

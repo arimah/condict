@@ -197,7 +197,9 @@ const LinkDialog = (props: Props): JSX.Element => {
           onKeyDown={handleInputKeyDown}
         />
         {state.loading && <S.Spinner/>}
-        <SubmitButton label={messages.linkDialogSave()} onClick={submit}/>
+        <SubmitButton onClick={submit}>
+          {messages.linkDialogSave()}
+        </SubmitButton>
       </SearchWrapper>
 
       {hasError &&

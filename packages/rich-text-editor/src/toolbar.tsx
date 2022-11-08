@@ -54,7 +54,7 @@ export const HeadingsGroup = (
   return (
     <Toolbar.Group name={messages.headingsGroup()}>
       <Toolbar.Button
-        label={messages.heading1()}
+        title={messages.heading1()}
         checked={isBlockActive(editor, 'heading1', options)}
         shortcut={shortcuts.heading1}
         onClick={() => editor.formatBlock('heading1', options)}
@@ -62,7 +62,7 @@ export const HeadingsGroup = (
         <H1Icon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label={messages.heading2()}
+        title={messages.heading2()}
         checked={isBlockActive(editor, 'heading2', options)}
         shortcut={shortcuts.heading2}
         onClick={() => editor.formatBlock('heading2', options)}
@@ -91,7 +91,7 @@ export const InlineFormatGroup = (
   return (
     <Toolbar.Group name={messages.formatGroup()}>
       <Toolbar.Button
-        label={messages.bold()}
+        title={messages.bold()}
         checked={marks.bold === true}
         shortcut={shortcuts.bold}
         onClick={() => toggleMark('bold')}
@@ -99,7 +99,7 @@ export const InlineFormatGroup = (
         <BoldIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label={messages.italic()}
+        title={messages.italic()}
         checked={marks.italic === true}
         shortcut={shortcuts.italic}
         onClick={() => toggleMark('italic')}
@@ -107,7 +107,7 @@ export const InlineFormatGroup = (
         <ItalicIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label={messages.underline()}
+        title={messages.underline()}
         checked={marks.underline === true}
         shortcut={shortcuts.underline}
         onClick={() => toggleMark('underline')}
@@ -115,7 +115,7 @@ export const InlineFormatGroup = (
         <UnderlineIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label={messages.strikethrough()}
+        title={messages.strikethrough()}
         checked={marks.strikethrough === true}
         shortcut={shortcuts.strikethrough}
         onClick={() => toggleMark('strikethrough')}
@@ -123,7 +123,7 @@ export const InlineFormatGroup = (
         <StrikethroughIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label={messages.subscript()}
+        title={messages.subscript()}
         checked={marks.subscript === true}
         shortcut={shortcuts.subscript}
         onClick={() => {
@@ -134,7 +134,7 @@ export const InlineFormatGroup = (
         <SubscriptIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label={messages.superscript()}
+        title={messages.superscript()}
         checked={marks.superscript === true}
         shortcut={shortcuts.superscript}
         onClick={() => {
@@ -161,7 +161,7 @@ export const LinkGroup = (
   return (
     <Toolbar.Group name={messages.linkGroup()}>
       <Toolbar.Button
-        label={messages.addEditLink()}
+        title={messages.addEditLink()}
         shortcut={shortcuts.addLink}
         checked={hasLink}
         disabled={at === undefined}
@@ -170,7 +170,7 @@ export const LinkGroup = (
         <LinkIcon/>
       </Toolbar.Button>
       <Toolbar.Button
-        label={messages.removeLink()}
+        title={messages.removeLink()}
         shortcut={shortcuts.removeLink}
         disabled={!hasLink}
         onClick={() => editor.removeLink(options)}
@@ -192,7 +192,7 @@ export const BlockFormatGroup = (
   return <>
     <Toolbar.Group name={messages.listStyleGroup()}>
       <Toolbar.Button
-        label={messages.bulletedList()}
+        title={messages.bulletedList()}
         checked={isBlockActive(editor, 'bulletListItem', options)}
         shortcut={shortcuts.bulletList}
         onClick={() => editor.formatBlock('bulletListItem', options)}
@@ -200,7 +200,7 @@ export const BlockFormatGroup = (
         <BulletedListIcon className='rtl-mirror'/>
       </Toolbar.Button>
       <Toolbar.Button
-        label={messages.numberedList()}
+        title={messages.numberedList()}
         checked={isBlockActive(editor, 'numberListItem', options)}
         shortcut={shortcuts.numberList}
         onClick={() => editor.formatBlock('numberListItem', options)}
@@ -211,7 +211,7 @@ export const BlockFormatGroup = (
 
     <Toolbar.Group>
       <Toolbar.Button
-        label={messages.indent()}
+        title={messages.indent()}
         shortcut={shortcuts.indent}
         disabled={!canIndent(editor, options)}
         onClick={() => editor.indent(options)}
@@ -219,7 +219,7 @@ export const BlockFormatGroup = (
         <IndentMoreIcon className='rtl-mirror'/>
       </Toolbar.Button>
       <Toolbar.Button
-        label={messages.unindent()}
+        title={messages.unindent()}
         shortcut={shortcuts.unindent}
         disabled={!canUnindent(editor, options)}
         onClick={() => editor.unindent(options)}
@@ -239,7 +239,7 @@ export const HelpersGroup = (
   const editor = useSlate();
   return (
     <Toolbar.Button
-      label={messages.insertIpa()}
+      title={messages.insertIpa()}
       disabled={editor.selection === null}
       shortcut={shortcuts.insertIpa}
       onClick={onOpenIpaDialog}

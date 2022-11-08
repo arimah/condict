@@ -67,15 +67,16 @@ const Editor = (props: Props): JSX.Element => {
       <S.ToolbarWrapper>
         <Toolbar>
           <Toolbar.Group>
-            <Toolbar.Button label='Undo' command='undo'/>
-            <Toolbar.Button label='Redo' command='redo'/>
+            <Toolbar.Button command='undo'>Undo</Toolbar.Button>
+            <Toolbar.Button command='redo'>Redo</Toolbar.Button>
           </Toolbar.Group>
           <Toolbar.Group>
             <Toolbar.Button
-              label='Disabled'
               checked={disabled}
               onClick={() => setDisabled(d => !d)}
-            />
+            >
+              Disabled
+            </Toolbar.Button>
           </Toolbar.Group>
         </Toolbar>
       </S.ToolbarWrapper>

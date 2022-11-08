@@ -104,33 +104,29 @@ const Main = (): JSX.Element => {
       controls={[
         <Checkbox
           checked={state.outerDisabled}
-          label='Outer disabled'
           onChange={() => set('outerDisabled', !outerDisabled)}
-        />,
+        >
+          Outer disabled
+        </Checkbox>,
         <Checkbox
           checked={state.innerDisabled}
-          label='Inner disabled'
           onChange={() => set('innerDisabled', !innerDisabled)}
-        />,
+        >
+          Inner disabled
+        </Checkbox>,
       ]}
       onReset={reset}
     >
       <S.Panel tabIndex={0} onKeyDown={handleOuterKeyDown}>
         <CommandProvider commands={outerCommands}>
           <div>
-            <Button
-              slim
-              label='Toggle italic'
-              intent='accent'
-              command='toggleItalic'
-            />
+            <Button slim intent='accent' command='toggleItalic'>
+              Toggle italic
+            </Button>
             {' '}
-            <Button
-              slim
-              label='Toggle bold'
-              intent='accent'
-              command='toggleBold'
-            />
+            <Button slim intent='accent' command='toggleBold'>
+              Toggle bold
+            </Button>
           </div>
           <ResultDisplay italic={italicOuter} bold={bold}>
             outer state: italic={String(italicOuter)}, bold={String(bold)}
@@ -138,19 +134,13 @@ const Main = (): JSX.Element => {
           <S.Panel tabIndex={0} onKeyDown={handleInnerKeyDown}>
             <CommandProvider commands={innerCommands}>
               <div>
-                <Button
-                  slim
-                  label='Toggle italic (inner)'
-                  intent='accent'
-                  command='toggleItalic'
-                />
+                <Button slim intent='accent' command='toggleItalic'>
+                  Toggle italic (inner)
+                </Button>
                 {' '}
-                <Button
-                  slim
-                  label='Toggle bold (outer)'
-                  intent='accent'
-                  command='toggleBold'
-                />
+                <Button slim intent='accent' command='toggleBold'>
+                  Toggle bold (outer)
+                </Button>
               </div>
               <ResultDisplay italic={italicInner}>
                 inner state: italic={String(italicInner)}

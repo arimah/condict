@@ -11,12 +11,9 @@ const Demo = (): JSX.Element => {
     <section>
       <h3><code>FocusTrap</code> with click outside detection</h3>
       <p>
-        <Button
-          slim
-          label='Activate focus trap'
-          intent='bold'
-          onClick={() => setActive(true)}
-        />
+        <Button slim intent='bold' onClick={() => setActive(true)}>
+          Activate focus trap
+        </Button>
       </p>
       <FocusTrap
         active={active}
@@ -24,11 +21,9 @@ const Demo = (): JSX.Element => {
       >
         <S.Scope kind='trap' active={active}>
           <p>
-            <Button
-              slim
-              label='Deactivate trap'
-              onClick={() => setActive(false)}
-            />
+            <Button slim onClick={() => setActive(false)}>
+              Deactivate trap
+            </Button>
           </p>
           <p>
             <TextInput defaultValue='You can safely click (and tab) here'/>
@@ -36,10 +31,9 @@ const Demo = (): JSX.Element => {
         </S.Scope>
       </FocusTrap>
       <p>
-        <Button
-          slim
-          label='A button after the trap'
-        />
+        <Button slim>
+          A button after the trap
+        </Button>
       </p>
     </section>
   );

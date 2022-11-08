@@ -16,8 +16,6 @@ export interface MessageBoxButton<R> {
   readonly value: R;
   /** The translation key that contains this button's plain-text label. */
   readonly labelKey: string;
-  /** The optional content of the button. This is *not* a translation key. */
-  readonly content?: ReactNode;
   /**
    * The intent styling to give the button. If omitted, defaults to 'general'.
    */

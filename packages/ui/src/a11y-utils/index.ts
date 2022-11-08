@@ -4,5 +4,4 @@ export {
   Announcements,
   useAnnouncements,
 } from './announcer';
-export {getContentAndLabel} from './get-content-and-label';
 export {SROnly} from './sr-only';

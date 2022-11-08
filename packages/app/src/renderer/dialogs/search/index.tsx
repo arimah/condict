@@ -122,6 +122,7 @@ const SearchDialog = (props: Props): JSX.Element => {
           />
           {loading && <S.Spinner/>}
         </S.InputWrapper>
+
         {language &&
           <S.SearchOptions>
             <S.SearchLanguage>
@@ -143,30 +144,35 @@ const SearchDialog = (props: Props): JSX.Element => {
               <Localized id='search-box-search-everywhere-button'/>
             </Button>
           </S.SearchOptions>}
+
         <S.SearchOptions>
           <S.SearchScopes aria-labelledby={`${id}-scopes-label`}>
             <span id={`${id}-scopes-label`}>
               <Localized id='search-box-scopes-label'/>
             </span>
             <Checkbox
-              label={l10n.getString('search-box-scope-lemmas')}
               name='SEARCH_LEMMAS'
               checked={scopes.includes('SEARCH_LEMMAS')}
               onChange={handleChangeScope}
-            />
+            >
+              <Localized id='search-box-scope-lemmas'/>
+            </Checkbox>
             <Checkbox
-              label={l10n.getString('search-box-scope-definitions')}
               name='SEARCH_DEFINITIONS'
               checked={scopes.includes('SEARCH_DEFINITIONS')}
               onChange={handleChangeScope}
-            />
+            >
+              <Localized id='search-box-scope-definitions'/>
+            </Checkbox>
           </S.SearchScopes>
+
           <S.AdvancedSearch>
             <Button slim onClick={handleAdvancedSearch}>
               <Localized id='search-box-advanced-link'/>
             </Button>
           </S.AdvancedSearch>
         </S.SearchOptions>
+
         <SearchResultList
           results={results}
           currentIndex={currentIndex}

@@ -16,19 +16,21 @@ import {Radio} from '@condict/ui';
 
 // Two radios with the same name; that is, in the same group.
 <Radio
-  label='Option 1'
   name='myOption'
   value='first'
   checked={...}
   onChange={...}
-/>
+>
+  Option 1
+</Radio>
 <Radio
-  label='Option 2'
   name='myOption'
   value='second'
   checked={...}
   onChange={...}
-/>
+>
+  Option 2
+</Radio>
 
 // An explicit radio group (with a random name prefix).
 // These radio buttons are independent of the above, despite having
@@ -60,22 +62,24 @@ groups.map((options, index) =>
     <p>
       {/* Effective name: items[${index}][foo] */}
       <Radio
-        label='Foo'
         name='[foo]'
         value='a'
         checked={...}
         onChange={...}
-      />
+      >
+        Foo
+      </Radio>
     </p>
     <p>
       {/* Effective name: items[${index}][bar] */}
       <Radio
-        label='Bar'
         name='[bar]'
         value='x'
         checked={...}
         onChange={...}
-      />
+      >
+        Bar
+      </Radio>
     </p>
   </Radio.Group>
 )
@@ -97,13 +101,11 @@ Radio buttons do _not_ forward refs to any underlying element. Use the `inputRef
 | `checked` | boolean | `undefined` | Determines whether the radio button is checked. |
 | `disabled` | boolean | `false` | If true, the radio button is disabled. |
 | `marker` | one of `'before'`, `'after'`, `'above'`, `'below'` | `'before'` | Sets the location of the radio button marker (the checkable circle) relative to the label. |
-| `label` | string | `undefined` | A string value that contains the radio button's text. If used together with children, this value defines the radio button's accessible label. |
 | `name` | string | `''` | The name of the radio button, which is used if the radio button is submitted as part of a form. The radio button name also determines what group it belongs to. |
 | `value` | string | `undefined` | The value of the radio button. The value of the group's currently selected radio button is used if the radio button is submitted as part of a form. |
-| `labelProps` | object | `undefined` | An object of additional properties to pass on to the `<label>`. |
 | `inputRef` | ref | `undefined` | Receives the underlying `<input>`. |
 | `onChange` | function | no-op | Attaches the `change` event handler to the radio button, which is triggered whenever the user checks the radio button. |
-| `children` | node | `undefined` | The content of the radio button label. If used together with `label`, this becomes the visible content of the radio button. |
+| `children` | node | `undefined` | The content of the radio button label. |
 
 All other props are forwarded to the underlying `<input>`, which is a [styled component][styled-components].
 

@@ -89,7 +89,7 @@ const SettingsDialog = (props: DialogProps<void>): JSX.Element => {
         </Fragment>
       )}
       <S.CloseButton
-        label={l10n.getString('settings-close-button')}
+        aria-label={l10n.getString('settings-close-button')}
         title={l10n.getString('settings-close-button')}
         onClick={handleCloseClick}
         onMouseDown={e => e.preventDefault()}

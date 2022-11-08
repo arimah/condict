@@ -116,7 +116,7 @@ const TabPanel = React.forwardRef((
             <S.BackButtonColumn>
               {tab.previous && (
                 <S.BackButton
-                  label={l10n.getString('tab-back-button')}
+                  aria-label={l10n.getString('tab-back-button')}
                   title={l10n.getString('tab-back-button-tooltip', {
                     previousPageTitle: tab.previous.title,
                   })}

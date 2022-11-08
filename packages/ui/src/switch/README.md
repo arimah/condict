@@ -21,10 +21,12 @@ Switches do _not_ forward refs to any underlying element. Use the `inputRef` pro
 import {Switch} from '@condict/ui';
 
 // A simple switch with a label.
-<Switch label='Dark mode' checked={...} onChange={...}/>
+<Switch checked={...} onChange={...}>
+  Dark mode
+</Switch>
 
-// A switch with rendered content.
-<Switch checked={...} onChange={...}
+// A switch with more complex content and a marker after the label.
+<Switch checked={...} marker='after' onChange={...}>
   <WirelessIcon/> WiFi
 </Switch>
 ```
@@ -37,11 +39,9 @@ import {Switch} from '@condict/ui';
 | `checked` | boolean | `false` | Determines whether the switch is checked. |
 | `disabled` | boolean | `false` | If true, the switch is disabled. |
 | `marker` | one of `'before'`, `'after'`, `'above'`, `'below'` | `'before'` | Sets the location of the switch marker (the sliding switch itself) relative to the label. |
-| `label` | string | `''` | A string value that contains the switch's text. If used together with children, this value defines the switch's accessible label. |
-| `labelProps` | object | `null` | An object of additional properties to pass on to the `<label>`. |
 | `inputRef` | ref | `undefined` | Receives the underlying `<input>`. |
 | `onChange` | function | no-op | Attaches the `change` event handler to the switch, which is triggered whenever the user changes the switch state. |
-| `children` | node | `null` | The content of the switch label. If used together with `label`, this becomes the visible content of the switch. |
+| `children` | node | `null` | The content of the switch label. |
 
 All other props are forwarded to the underlying `<input>`, which is a [styled component][styled-components].
 

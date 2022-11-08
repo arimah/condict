@@ -1,17 +1,15 @@
 import React, {Ref, MouseEventHandler, AnchorHTMLAttributes} from 'react';
 
-import {getContentAndLabel} from '../a11y-utils';
 import {useCommand} from '../command';
 
 import * as S from './styles';
 
 export type Props = {
-  label?: string;
   href: string;
   command?: string | null;
 } & Partial<S.Props> & Omit<
   AnchorHTMLAttributes<HTMLAnchorElement>,
-  'aria-label' | 'href' | 'role' | 'type'
+  'href' | 'role' | 'type'
 >;
 
 // Links do not have a 'disabled' prop, so if the link has a ccommand that
@@ -26,7 +24,6 @@ const LinkButton = React.forwardRef((
   ref: Ref<HTMLAnchorElement>
 ) => {
   const {
-    label,
     command: commandName,
     slim = false,
     intent = 'general',
@@ -37,13 +34,10 @@ const LinkButton = React.forwardRef((
 
   const command = useCommand(commandName);
 
-  const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
-
   return (
     <S.Link
       {...otherProps}
       role='button'
-      aria-label={ariaLabel}
       slim={slim}
       intent={intent}
       onClick={
@@ -53,7 +47,7 @@ const LinkButton = React.forwardRef((
       }
       ref={ref}
     >
-      {renderedContent}
+      {children}
     </S.Link>
   );
 });

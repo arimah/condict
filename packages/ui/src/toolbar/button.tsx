@@ -2,7 +2,6 @@ import React, {Ref, ButtonHTMLAttributes, useRef} from 'react';
 
 import {useCommand} from '../command';
 import {Shortcut} from '../shortcut';
-import {getContentAndLabel} from '../a11y-utils';
 import combineRefs from '../combine-refs';
 
 import {useManagedFocus} from './focus-manager';
@@ -10,17 +9,14 @@ import useTooltip from './tooltip';
 import * as S from './styles';
 
 export type Props = {
-  label?: string;
   checked?: boolean;
   shortcut?: Shortcut | null;
   command?: string | null;
 } & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  | 'aria-label'
   | 'aria-pressed'
   | 'aria-keyshortcuts'
   | 'tabIndex'
-  | 'title'
   | 'type'
 >;
 
@@ -30,10 +26,11 @@ const Button = React.forwardRef((
 ) => {
   const {
     checked,
-    label = '',
     shortcut,
     disabled,
     command: commandName,
+    'aria-label': ariaLabel,
+    title = null,
     onClick,
     children,
     ...otherProps
@@ -43,16 +40,13 @@ const Button = React.forwardRef((
   const ownRef = useRef<HTMLButtonElement>(null);
   const isCurrent = useManagedFocus(ownRef);
 
-  const [renderedContent, ariaLabel] = getContentAndLabel(children, label);
-
   const effectiveShortcut = command ? command.shortcut : shortcut;
-
-  const title = useTooltip(label, effectiveShortcut);
+  const effectiveTitle = useTooltip(title, effectiveShortcut);
 
   return (
     <S.Button
       {...otherProps}
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? title ?? undefined}
       aria-pressed={checked != null ? checked : undefined}
       checked={checked}
       aria-keyshortcuts={
@@ -61,12 +55,12 @@ const Button = React.forwardRef((
           : undefined
       }
       tabIndex={isCurrent ? 0 : -1}
-      title={title}
+      title={effectiveTitle}
       disabled={command ? command.disabled || disabled : disabled}
       onClick={command ? command.exec : onClick}
       ref={combineRefs(ref, ownRef)}
     >
-      {renderedContent}
+      {children}
     </S.Button>
   );
 });

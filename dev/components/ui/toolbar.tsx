@@ -171,12 +171,12 @@ const Main = (): JSX.Element => {
     <Demo name='Toolbar' alignX='stretch'>
       <Toolbar>
         <Group>
-          <Button label='Undo' shortcut={Shortcuts.undo}/>
-          <Button disabled label='Redo' shortcut={Shortcuts.redo}/>
+          <Button shortcut={Shortcuts.undo}>Undo</Button>
+          <Button disabled shortcut={Shortcuts.redo}>Redo</Button>
         </Group>
         <Group name='Text formatting'>
           <Button
-            label='Bold'
+            title='Bold'
             checked={bold}
             shortcut={BoldShortcut}
             onClick={() => set('bold', !bold)}
@@ -184,7 +184,7 @@ const Main = (): JSX.Element => {
             <BoldIcon/>
           </Button>
           <Button
-            label='Italic'
+            title='Italic'
             checked={italic}
             shortcut={ItalicShortcut}
             onClick={() => set('italic', !italic)}
@@ -192,7 +192,7 @@ const Main = (): JSX.Element => {
             <ItalicIcon/>
           </Button>
           <Button
-            label='Underline'
+            title='Underline'
             checked={underline}
             shortcut={UnderlineShortcut}
             onClick={() => set('underline', !underline)}
@@ -200,7 +200,7 @@ const Main = (): JSX.Element => {
             <UnderlineIcon/>
           </Button>
           <Button
-            label='Subscript'
+            title='Subscript'
             checked={subscript}
             onClick={() => {
               set('subscript', !subscript);
@@ -210,7 +210,7 @@ const Main = (): JSX.Element => {
             <SubscriptIcon/>
           </Button>
           <Button
-            label='Superscript'
+            title='Superscript'
             checked={superscript}
             onClick={() => {
               set('superscript', !superscript);
@@ -222,21 +222,21 @@ const Main = (): JSX.Element => {
         </Group>
         <RadioGroup name='Text alignment'>
           <RadioButton
-            label='Align left'
+            title='Align left'
             checked={align === 'left'}
             onClick={() => set('align', 'left')}
           >
             <AlignLeftIcon/>
           </RadioButton>
           <RadioButton
-            label='Center text'
+            title='Center text'
             checked={align === 'center'}
             onClick={() => set('align', 'center')}
           >
             <AlignCenterIcon/>
           </RadioButton>
           <RadioButton
-            label='Align right'
+            title='Align right'
             checked={align === 'right'}
             onClick={() => set('align', 'right')}
           >
@@ -250,16 +250,16 @@ const Main = (): JSX.Element => {
             options={BlockStyles}
             onChange={e => set('blockStyle', e.target.value)}
           />
-          <Button label='Increase indentation'>
+          <Button title='Increase indentation'>
             <IndentMoreIcon className='rtl-mirror'/>
           </Button>
-          <Button label='Decrease indentation'>
+          <Button title='Decrease indentation'>
             <IndentLessIcon className='rtl-mirror'/>
           </Button>
         </Group>
         <Spacer/>
         <MenuButton
-          label='More options'
+          title='More options'
           menu={<MoreOptionsMenu state={state} set={set}/>}
         >
           <DotsVerticalIcon/>

@@ -12,28 +12,21 @@ const Demo = (): JSX.Element => {
     <section>
       <h3>Nested <code>FocusTrap</code></h3>
       <p>
-        <Button
-          slim
-          label='Activate outer trap'
-          intent='bold'
-          onClick={() => setOuter(true)}
-        />
+        <Button slim intent='bold' onClick={() => setOuter(true)}>
+          Activate outer trap
+        </Button>
       </p>
       <FocusTrap active={outer && inner ? 'paused' : outer}>
         <S.Scope kind='trap' active={outer && inner ? 'paused' : outer}>
           <p>
-            <Button
-              slim
-              label='Deactivate outer trap'
-              onClick={() => setOuter(false)}
-            />
+            <Button slim onClick={() => setOuter(false)}>
+              Deactivate outer trap
+            </Button>
           </p>
           <p>
-            <Button
-              slim
-              label='Activate inner trap'
-              onClick={() => setInner(true)}
-            />
+            <Button slim onClick={() => setInner(true)}>
+              Activate inner trap
+            </Button>
           </p>
 
           <FocusTrap active={inner}>
@@ -42,20 +35,17 @@ const Demo = (): JSX.Element => {
                 <TextInput defaultValue='A place for greatness'/>
               </p>
               <p>
-                <Button
-                  slim
-                  label='Deactivate inner trap'
-                  onClick={() => setInner(false)}
-                />
+                <Button slim onClick={() => setInner(false)}>
+                  Deactivate inner trap
+                </Button>
               </p>
             </S.Scope>
           </FocusTrap>
 
           <p>
-            <Button
-              slim
-              label='A button after the inner trap'
-            />
+            <Button slim>
+              A button after the inner trap
+            </Button>
           </p>
         </S.Scope>
       </FocusTrap>

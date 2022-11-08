@@ -38,9 +38,10 @@ const Main = (): JSX.Element => {
         </label>,
         <Checkbox
           checked={disabled}
-          label='Disabled'
           onChange={e => set('disabled', e.target.checked)}
-        />,
+        >
+          Disabled
+        </Checkbox>,
       ]}
       onReset={reset}
     >
@@ -50,18 +51,20 @@ const Main = (): JSX.Element => {
             marker={marker}
             checked={checked1}
             disabled={disabled}
-            label='First option'
             onChange={e => set('checked1', e.target.checked)}
-          />
+          >
+            First option
+          </Switch>
         </Row>
         <Row>
           <Switch
             marker={marker}
             checked={checked2}
             disabled={disabled}
-            label='Second option'
             onChange={e => set('checked2', e.target.checked)}
-          />
+          >
+            Second option
+          </Switch>
         </Row>
       </List>
     </Demo>

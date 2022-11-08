@@ -38,14 +38,16 @@ const Main = (): JSX.Element => {
         </label>,
         <Checkbox
           checked={disabled}
-          label='Disabled'
           onChange={e => set('disabled', e.target.checked)}
-        />,
+        >
+          Disabled
+        </Checkbox>,
         <Button
           slim
-          label='Deselect all'
           onClick={() => set('current', null)}
-        />,
+        >
+          Deselect all
+        </Button>,
       ]}
       onReset={reset}
     >
@@ -58,9 +60,10 @@ const Main = (): JSX.Element => {
                 disabled={disabled}
                 marker={marker}
                 value={value}
-                label={`Option ${value}`}
                 onChange={() => set('current', value)}
-              />
+              >
+                Option {value}
+              </Radio>
             </Row>
           )}
         </Radio.Group>

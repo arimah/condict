@@ -3,7 +3,6 @@ export {
   AnnouncerProps,
   Announcements,
   SROnly,
-  getContentAndLabel,
   useAnnouncements,
 } from './a11y-utils';
 export {

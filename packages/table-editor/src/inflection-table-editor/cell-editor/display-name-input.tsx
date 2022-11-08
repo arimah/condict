@@ -35,10 +35,9 @@ const DisplayNameInput = React.forwardRef((
         />
       </S.DisplayNameLabel>
       {hasCustomName ? (
-        <S.DeriveDisplayNameButton
-          label={messages.useAutomaticNameButton()}
-          onClick={onDeriveName}
-        />
+        <S.DeriveDisplayNameButton onClick={onDeriveName}>
+          {messages.useAutomaticNameButton()}
+        </S.DeriveDisplayNameButton>
       ) : (
         <S.DisplayNameDesc id={descId}>
           {messages.automaticNameHelper()}
