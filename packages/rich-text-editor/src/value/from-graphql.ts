@@ -4,6 +4,7 @@ import {
   Children,
   LinkElement,
   LinkTarget,
+  LinkTargetType,
   InlineElement,
   CustomText,
 } from '../types';
@@ -65,7 +66,7 @@ const convertLinkInline = (link: Gql.LinkInline): LinkElement => {
     url: link.linkTarget,
     type: link.internalLinkTarget
       ? getInternalLinkTargetType(link.internalLinkTarget)
-      : 'web address',
+      : 'url',
     name:
       link.internalLinkTarget
         ? getInternalLinkTargetName(link.internalLinkTarget)
@@ -80,16 +81,16 @@ const convertLinkInline = (link: Gql.LinkInline): LinkElement => {
 
 const getInternalLinkTargetType = (
   target: Gql.InternalLinkTarget
-): string => {
+): LinkTargetType => {
   switch (target.__typename) {
     case 'LanguageLinkTarget':
       return 'language';
     case 'LemmaLinkTarget':
-      return 'headword';
+      return 'lemma';
     case 'DefinitionLinkTarget':
       return 'definition';
     case 'PartOfSpeechLinkTarget':
-      return 'part of speech';
+      return 'partOfSpeech';
   }
 };
 

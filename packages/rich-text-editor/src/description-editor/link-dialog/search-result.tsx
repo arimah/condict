@@ -1,6 +1,6 @@
 import React, {Ref} from 'react';
 
-import {LinkTarget} from '../../types';
+import {LinkTarget, LinkMessages} from '../../types';
 
 import {SearchResult} from './types';
 import * as S from './styles';
@@ -10,6 +10,7 @@ export type Props = {
   index: number;
   result: SearchResult;
   selected: boolean;
+  messages: LinkMessages;
   onMouseEnter: (index: number) => void;
   onClick: (target: LinkTarget) => void;
 };
@@ -18,7 +19,7 @@ const SearchResultItem = React.forwardRef((
   props: Props,
   ref: Ref<HTMLLIElement>
 ): JSX.Element => {
-  const {id, index, result, selected, onMouseEnter, onClick} = props;
+  const {id, index, result, selected, messages, onMouseEnter, onClick} = props;
 
   return (
     <S.SearchResult
@@ -30,8 +31,12 @@ const SearchResultItem = React.forwardRef((
       ref={ref}
     >
       <S.SearchResultHeader>
-        <S.SearchResultName>{result.name}</S.SearchResultName>
-        <S.SearchResultType>{result.target.type}</S.SearchResultType>
+        <S.SearchResultName>
+          {result.name}
+        </S.SearchResultName>
+        <S.SearchResultType>
+          {messages.linkTargetType(result.target.type)}
+        </S.SearchResultType>
       </S.SearchResultHeader>
       {result.snippet &&
         <S.SearchResultMatch>{result.snippet}</S.SearchResultMatch>}

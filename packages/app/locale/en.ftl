@@ -348,11 +348,33 @@ rich-text-remove-link = Remove link
 rich-text-contextual-tools-title = Contextual tools
 
 rich-text-edit-link = Edit link
+
 # Screen reader label of "Edit link" button in contextual tools popup.
 #
 # Variables:
 #   target: The link target. This is either hte name of a dictionary resource or a URL.
-rich-text-edit-link-label = Edit link: {$target} - {$targetType}
+#   targetType: The link target type. See the rich-text-link-type message for details; the value is the same as its $type variable.
+rich-text-edit-link-label =
+  Edit link: {$target} - {$targetType ->
+    [language] language
+    [lemma] headword
+    [definition] definition
+    [partOfSpeech] part of speech
+   *[url] web address
+  }
+
+# Translates a link target type to a human-readable representation.
+#
+# Variables:
+#   type: The link target type. One of the following values: `language`, `lemma`, `definition`, `partOfSpeech`, `url`
+rich-text-link-type =
+  {$type ->
+    [language] language
+    [lemma] headword
+    [definition] definition
+    [partOfSpeech] part of speech
+   *[url] web address
+  }
 
 # Keep this label brief, below about 25 graphemes. It's okay to abbreviate "convert" if necessary.
 rich-text-convert-to-ipa = Convert to IPA

@@ -26,4 +26,20 @@ export const DefaultLinkMessages: LinkMessages = {
   linkGroup: () => 'Link',
   addEditLink: () => 'Add/edit link',
   removeLink: () => 'Remove link',
+  linkTargetType: type => {
+    switch (type) {
+      case 'language':
+        return 'language';
+      case 'lemma':
+        return 'headword';
+      case 'definition':
+        return 'definition';
+      case 'partOfSpeech':
+        return 'part of speech';
+      case 'tag':
+        return 'tag';
+      case 'url':
+        return 'web address';
+    }
+  },
 };

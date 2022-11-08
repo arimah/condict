@@ -36,8 +36,12 @@ const LinkContext = (props: Props): JSX.Element => {
         onClick={onEditLink}
       >
         <EditIcon/>
-        <S.PrimaryLabel>{target.name ?? target.url}</S.PrimaryLabel>
-        <S.SecondaryLabel>{target.type}</S.SecondaryLabel>
+        <S.PrimaryLabel>
+          {target.name ?? target.url}
+        </S.PrimaryLabel>
+        <S.SecondaryLabel>
+          {messages.linkTargetType(target.type)}
+        </S.SecondaryLabel>
       </S.PrimaryAction>
       <S.Actions>
         <S.Action

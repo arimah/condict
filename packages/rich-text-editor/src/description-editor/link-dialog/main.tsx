@@ -217,6 +217,7 @@ const LinkDialog = (props: Props): JSX.Element => {
             index={index}
             result={result}
             selected={index === state.index}
+            messages={messages}
             onMouseEnter={handleHoverResult}
             onClick={onSubmit}
             ref={index === state.index ? currentResultRef : undefined}
@@ -362,7 +363,7 @@ const getWebResult = (value: string): SearchResult | null => {
   return {
     target: {
       url: urlText,
-      type: 'web address',
+      type: 'url',
     },
     name: urlText,
   };

@@ -1,11 +1,11 @@
 import React from 'react';
 
-import {SearchResult} from '@condict/rich-text-editor';
+import {SearchResult, LinkTargetType} from '@condict/rich-text-editor';
 
 interface DictionaryItem {
   readonly url: string;
   readonly name: string;
-  readonly type: string;
+  readonly type: LinkTargetType;
   readonly description?: string;
 }
 
@@ -56,32 +56,32 @@ const DictionaryItems: readonly DictionaryItem[] = [
   {
     url: 'condict://part-of-speech/1',
     name: 'Adjective',
-    type: 'part of speech',
+    type: 'partOfSpeech',
   },
   {
     url: 'condict://part-of-speech/2',
     name: 'Adverb',
-    type: 'part of speech',
+    type: 'partOfSpeech',
   },
   {
     url: 'condict://part-of-speech/3',
     name: 'Conjunction',
-    type: 'part of speech',
+    type: 'partOfSpeech',
   },
   {
     url: 'condict://part-of-speech/4',
     name: 'Noun',
-    type: 'part of speech',
+    type: 'partOfSpeech',
   },
   {
     url: 'condict://part-of-speech/5',
     name: 'Postposition',
-    type: 'part of speech',
+    type: 'partOfSpeech',
   },
   {
     url: 'condict://part-of-speech/6',
     name: 'Verb',
-    type: 'part of speech',
+    type: 'partOfSpeech',
   },
   {
     url: 'condict://language/1',

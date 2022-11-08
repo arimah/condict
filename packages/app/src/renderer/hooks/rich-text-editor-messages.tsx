@@ -37,6 +37,7 @@ export const useRichTextEditorMessages = (): RichTextMessages => {
         target,
         targetType,
       }),
+    linkTargetType: type => l10n.getString('rich-text-link-type', {type}),
     convertToIpa: () => l10n.getString('rich-text-convert-to-ipa'),
     convertToIpaLabel: (ipa: string) =>
       l10n.getString('rich-text-convert-to-ipa-label', {ipa}),

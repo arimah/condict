@@ -122,7 +122,7 @@ const convertSearchResult = (result: GqlSearchResult): SearchResult => {
             />
           </i>,
         target: {
-          type: 'headword',
+          type: 'lemma',
           url: `condict://lemma/${result.lemma.id}`,
           name: result.lemma.term,
         },
@@ -164,7 +164,7 @@ const convertSearchResult = (result: GqlSearchResult): SearchResult => {
             />
           </i>,
         target: {
-          type: 'part of speech',
+          type: 'partOfSpeech',
           url: `condict://part-of-speech/${result.partOfSpeech.id}`,
           name: result.partOfSpeech.name,
         },

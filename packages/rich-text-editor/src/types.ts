@@ -62,12 +62,22 @@ export type LinkTarget = {
    * to the URL.
    */
   readonly name?: string;
-  /**
-   * A descriptive name for the link type, such as 'defnition', 'lemma',
-   * or 'web address'.
-   */
-  readonly type: string;
+  /** The type of resource that the link target points to. */
+  readonly type: LinkTargetType;
 };
+
+export type LinkTargetType =
+  | InternalLinkTargetType
+  | ExternalLinkTargetType;
+
+export type InternalLinkTargetType =
+  | 'language'
+  | 'lemma'
+  | 'definition'
+  | 'partOfSpeech'
+  | 'tag';
+
+export type ExternalLinkTargetType = 'url';
 
 export type InlineElement = LinkElement;
 
@@ -186,4 +196,6 @@ export interface LinkMessages {
   addEditLink(): string;
   /** "Remove link", toolbar button tooltip. */
   removeLink(): string;
+  /** Translates a link target type to a human-readable name. */
+  linkTargetType(type: LinkTargetType): string;
 }

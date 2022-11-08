@@ -27,6 +27,7 @@ export {
   ListType,
   LinkElement,
   LinkTarget,
+  LinkTargetType,
   InlineElement,
   InlineType,
   CustomText,
