@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
+import ReactDOM from 'react-dom';
 
 import genUniqueId from '../unique-id';
 import {SROnly} from './sr-only';
@@ -61,14 +62,15 @@ const Announcer = React.memo((props: Props): JSX.Element => {
     };
   }, [controller]);
 
-  return (
+  return ReactDOM.createPortal(
     <SROnly aria-live={silent ? 'off' : 'polite'}>
       {messages.map(({key, text}) =>
         <span key={key} aria-atomic={true}>
           {text}
         </span>
       )}
-    </SROnly>
+    </SROnly>,
+    getPortalRoot()
   );
 });
 
@@ -76,9 +78,19 @@ Announcer.displayName = 'Announcer';
 
 export default Announcer;
 
+let portalRoot: HTMLDivElement | null = null;
+
+const getPortalRoot = (): HTMLDivElement => {
+  if (!portalRoot) {
+    portalRoot = document.createElement('div');
+    portalRoot.dataset['purpose'] = 'announcements';
+    document.body.appendChild(portalRoot);
+  }
+  return portalRoot;
+};
+
 /** The announcement controller. */
 export interface Announcements {
-  /** */
   readonly announce: (message: string) => void;
 }
 
