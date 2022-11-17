@@ -8,36 +8,38 @@ export type Props = {
   inputFocused: boolean;
 };
 
-export const Main = styled.span<Props>`
+export const Main = styled.span.attrs({
+  role: 'application',
+})<Props>`
   display: inline-flex;
   box-sizing: border-box;
   flex-direction: row;
   flex-wrap: wrap;
   border-radius: 3px;
-  border: 2px solid var(--input-border);
-  background-color: var(--input-bg);
-  color: var(--input-fg);
+  border: 2px solid var(${p =>
+    p.disabled ? '--input-border-disabled' :
+    p.inputFocused ? '--focus-border' :
+    '--input-border'
+  });
+  background-color: var(${p => p.disabled
+    ? '--input-bg-disabled'
+    : '--input-bg'
+  });
+  color: var(${p => p.disabled
+    ? '--input-fg-disabled'
+    : '--input-fg'
+  });
   cursor: ${p => !p.disabled && 'text'};
 
   ${p => p.minimal && `
     --input-border: var(--input-minimal-border);
     --input-border-disabled: var(--input-minimal-border);
   `}
-
-  ${p => p.inputFocused && `
-    outline: none;
-    border-color var(--focus-border);
-  `}
-
-  ${p => p.disabled && `
-    border-color: var(--input-border-disabled);
-    background-color: var(--input-bg-disabled);
-    color: var(--input-fg-disabled);
-  `}
 `;
 
 export const Tag = styled.button.attrs({
   type: 'button',
+  tabIndex: -1,
 })`
   display: inline-block;
   box-sizing: border-box;
@@ -95,6 +97,7 @@ export const DeleteMarker = styled(DeleteIcon)`
 
 export const Input = styled.input.attrs({
   type: 'text',
+  size: 1,
 })`
   box-sizing: border-box;
   flex: 1 1 auto;

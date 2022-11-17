@@ -4,7 +4,6 @@ This module exports reusable functions and React components for various accessib
 
 * [`Announcer`](#announcer)
 * [`Announcements`](#announcements)
-  - [`Announcements.create()`](#announcementscreate)
 * [`useAnnouncements()`](#useannouncements)
 * [`SROnly`](#sronly)
 
@@ -55,7 +54,7 @@ const MyThing = (...) => {
 
 ## Announcements
 
-The `Announcements` type is an opaque type that is used for sending announcements. It is created by the [`useAnnouncements()`](#useannouncements) hook, or by [`Announcements.create()`](#announcementscreate). Values of this type only manage messages to be announced; it does not in itself cause the screen reader to say anything. It must be attached to an [`<Announcer>`](#announcer).
+The `Announcements` type is an opaque type that is used for sending announcements. It is created by the [`useAnnouncements()`](#useannouncements) hook. Values of this type only manage messages to be announced; it does not in itself cause the screen reader to say anything. It must be attached to an [`<Announcer>`](#announcer).
 
 An `Announcements` controller cannot have more than one [`<Announcer>`](#announcer) associated with it.
 
@@ -64,12 +63,6 @@ The announcements controller exposes one method:
 > `announce(message: string): void`
 
 Sends a message to be announced. If there is no attached [`<Announcer>`](#announcer), or the announcer has been silenced, then the message is ignored and not output in any way.
-
-### `Announcements.create()`
-
-> `Announcements.create(): Announcements`
-
-This static method creates an announcements controller, for use in class-based components that cannot make use of [the `useAnnouncements()` hook](#useannouncements).
 
 ## `useAnnouncements()`
 

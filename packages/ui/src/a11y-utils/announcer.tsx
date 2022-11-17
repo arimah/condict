@@ -94,12 +94,9 @@ export interface Announcements {
   readonly announce: (message: string) => void;
 }
 
-export const Announcements = {
-  /**
-   * Creates an announcement controller, for use in class components.
-   * @return The announcement controller.
-   */
-  create(): Announcements {
+export const useAnnouncements = (): Announcements =>
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  useState(() => {
     const self: Announcements = {
       announce: message => {
         const listener = Listeners.get(self);
@@ -107,9 +104,4 @@ export const Announcements = {
       },
     };
     return self;
-  },
-};
-
-export const useAnnouncements = (): Announcements =>
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  useState(Announcements.create)[0];
+  })[0];
