@@ -136,7 +136,7 @@ const OwnedMenu = (props: Props): JSX.Element => {
   return ReactDOM.createPortal(
     <S.Menu
       id={id}
-      open={isOpen}
+      $open={isOpen}
       aria-label={label}
       aria-activedescendant={focusedItem?.id}
       style={{zIndex: 100 + (openMenu?.depth ?? 0)}}

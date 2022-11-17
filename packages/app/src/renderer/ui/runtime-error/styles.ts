@@ -17,12 +17,10 @@ export const DetailsWrapper = styled.div.attrs({
   }
 `;
 
-export type DetailsProps = {
-  expanded: boolean;
-};
-
-export const Details = styled.div<DetailsProps>`
-  display: ${p => p.expanded ? 'block' : 'none'};
+export const Details = styled.div<{
+  $expanded: boolean;
+}>`
+  display: ${p => p.$expanded ? 'block' : 'none'};
   margin-top: 4px;
   padding: 6px;
   max-height: 200px;

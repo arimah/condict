@@ -115,7 +115,7 @@ export const Pages = React.forwardRef((props: Props, ref: Ref<HTMLElement>) => {
     <S.Main
       className={className}
       aria-label={label}
-      disabled={disabled}
+      $disabled={disabled}
       ref={ref}
     >
       <S.List>

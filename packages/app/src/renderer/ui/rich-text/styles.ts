@@ -2,20 +2,18 @@ import styled from 'styled-components';
 
 import {BodyText} from '@condict/ui';
 
-export type ContainerProps = {
-  clamped: boolean;
-  selectable: boolean;
-};
-
-export const Container = styled(BodyText)<ContainerProps>`
+export const Container = styled(BodyText)<{
+  $clamped: boolean;
+  $selectable: boolean;
+}>`
   margin-block: 8px;
   white-space: pre-wrap;
-  ${p => p.clamped && `
+  ${p => p.$clamped && `
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
   `}
-  user-select: ${p => p.selectable && 'text'};
+  user-select: ${p => p.$selectable && 'text'};
 
   /* Margins cannot "bleed" outside a -webkit-box, so (consistently) delete them
    * from all first & last blocks. Not ideal, but better than barely-controllable

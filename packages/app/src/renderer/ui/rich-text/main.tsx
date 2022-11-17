@@ -45,8 +45,8 @@ export const RichContent = React.memo((
 
   return (
     <S.Container
-      clamped={maxLines > 0}
-      selectable={selectable}
+      $clamped={maxLines > 0}
+      $selectable={selectable}
       style={maxLines > 0 ? {WebkitLineClamp: maxLines} : undefined}
     >
       {blocks}

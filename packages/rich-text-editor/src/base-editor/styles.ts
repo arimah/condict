@@ -11,15 +11,13 @@ export const Superscript = 'sup';
 
 export const Subscript = 'sub';
 
-export type ToolbarProps = {
-  alwaysVisible: boolean;
-};
-
-export const Toolbar = styled(ToolbarBase)<ToolbarProps>`
+export const Toolbar = styled(ToolbarBase)<{
+  $alwaysVisible: boolean;
+}>`
   padding: 2px;
   border-radius: 3px 3px 0 0;
 
-  ${p => p.alwaysVisible ? `
+  ${p => p.$alwaysVisible ? `
     margin-bottom: -2px;
     position: sticky;
     top: 0;
@@ -44,11 +42,6 @@ export const Toolbar = styled(ToolbarBase)<ToolbarProps>`
   `}
 `;
 
-export type EditorContainerProps = {
-  toolbarAlwaysVisible: boolean;
-  singleLine: boolean;
-};
-
 const SingleLineStyles = `
   p {
     margin-top: 4px;
@@ -56,12 +49,10 @@ const SingleLineStyles = `
   }
 `;
 
-export type EditableProps = {
+export const Editable = styled(BaseEditable)<{
   $singleLine: boolean;
   $toolbarAlwaysVisible: boolean;
-};
-
-export const Editable = styled(BaseEditable)<EditableProps>`
+}>`
   padding: ${p => p.$singleLine ? '0 4px' : '0 6px'};
   position: relative;
   border: 2px solid var(--input-border);
@@ -100,12 +91,15 @@ export const Editable = styled(BaseEditable)<EditableProps>`
   }
 `;
 
-export const EditorContainer = styled.div<EditorContainerProps>`
+export const EditorContainer = styled.div<{
+  $toolbarAlwaysVisible: boolean;
+  $singleLine: boolean;
+}>`
   margin-top: 16px;
   margin-bottom: 16px;
   position: relative;
 
-  ${p => !p.toolbarAlwaysVisible && css`
+  ${p => !p.$toolbarAlwaysVisible && css`
     &:focus-within > ${Toolbar} {
       max-height: 150%;
       transform: translate(0, 0);

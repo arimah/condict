@@ -209,7 +209,7 @@ const LinkDialog = (props: Props): JSX.Element => {
 
       <S.SearchResultList
         id={`${id}-results`}
-        hasResults={state.results.length > 0}
+        $hasResults={state.results.length > 0}
         onMouseDown={cancelMouseEvent}
       >
         {state.results.map((result, index) =>

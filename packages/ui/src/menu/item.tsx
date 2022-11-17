@@ -74,8 +74,8 @@ const Item = (props: Props): JSX.Element => {
   return <>
     <S.Item
       id={id}
-      current={hasFocus}
-      disabled={effectiveDisabled}
+      $current={hasFocus}
+      $disabled={effectiveDisabled}
       role='menuitem'
       aria-disabled={effectiveDisabled}
       aria-owns={children ? `${id}-menu` : undefined}

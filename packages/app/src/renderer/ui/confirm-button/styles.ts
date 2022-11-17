@@ -32,15 +32,13 @@ export const Progress = styled.span`
   background-color: var(--button-bg-pressed);
 `;
 
-export type HelperProps = {
-  $visible: boolean;
-};
-
 export const Helper = styled.span.attrs({
   'aria-live': 'assertive',
   'aria-relevant': 'text',
   'aria-atomic': true,
-})<HelperProps>`
+})<{
+  $visible: boolean;
+}>`
   display: flex;
   position: absolute;
   left: 50%;

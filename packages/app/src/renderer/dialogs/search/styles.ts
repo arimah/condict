@@ -145,11 +145,9 @@ export const ResultList = styled.ul`
   }
 `;
 
-export type ResultProps = {
+export const Result = styled.li<{
   $selected: boolean;
-};
-
-export const Result = styled.li<ResultProps>`
+}>`
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto auto;

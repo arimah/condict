@@ -31,7 +31,7 @@ export const DeleteFormButtons = (props: Props): JSX.Element => {
   const mainRef = useFormButtonsStickiness(setStuck);
 
   return (
-    <S.FormButtons stuck={stuck} ref={mainRef}>
+    <S.FormButtons $stuck={stuck} ref={mainRef}>
       <S.DeleteButton aria-busy={isDeleting} onConfirm={onDelete}>
         {deleteLabel ?? <Localized id='generic-delete-button'/>}
       </S.DeleteButton>

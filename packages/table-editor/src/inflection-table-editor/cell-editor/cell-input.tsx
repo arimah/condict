@@ -1,8 +1,8 @@
 import React, {Ref, ChangeEventHandler, useState, useCallback} from 'react';
 
+import {DoNotDeriveLemmaIcon, CustomDisplayNameIcon} from '../../icons';
 import {CellWithData} from '../../types';
 
-import {DoNotDeriveLemmaIcon, CustomDisplayNameIcon} from '../../icons';
 import {InflectionTableData, Messages} from '../types';
 
 import * as S from './styles';
@@ -29,7 +29,7 @@ const CellInput = React.forwardRef((
     data.hasCustomDisplayName
   );
   return (
-    <S.CellInputWrapper focus={focused}>
+    <S.CellInputWrapper $focus={focused}>
       <S.CellInput
         value={data.text}
         aria-label={messages.cellValueLabel()}

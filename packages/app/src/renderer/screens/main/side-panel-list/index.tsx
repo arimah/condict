@@ -35,8 +35,8 @@ const SidePanelList = React.forwardRef((
     : '';
 
   return (
-    <S.Main $open={panels.length > 0} visible={visible}>
-      <S.Overlay active={panels.length > 0}/>
+    <S.Main $open={panels.length > 0} $visible={visible}>
+      <S.Overlay $active={panels.length > 0}/>
       <TransitionList list={panels} getKey={getPanelKey}>
         {(panel, phase, onPhaseEnd) =>
           <SidePanel

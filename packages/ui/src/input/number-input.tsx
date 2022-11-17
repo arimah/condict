@@ -4,8 +4,9 @@ import * as S from './styles';
 
 export type Props = {
   value?: string | number;
+  minimal?: boolean;
   children?: never;
-} & Partial<S.Props> & Omit<
+} & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'children' | 'value' | 'type'
 >;
@@ -25,7 +26,7 @@ export const NumberInput = React.forwardRef((
       {...otherProps}
       type='number'
       step={step}
-      minimal={minimal}
+      $minimal={minimal}
       ref={ref}
     />
   );

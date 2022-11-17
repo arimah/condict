@@ -19,7 +19,7 @@ const Demo = (): JSX.Element => {
         active={active}
         onPointerDownOutside={() => setActive(false)}
       >
-        <S.Scope kind='trap' active={active}>
+        <S.Scope $kind='trap' $active={active}>
           <p>
             <Button slim onClick={() => setActive(false)}>
               Deactivate trap

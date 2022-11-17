@@ -149,7 +149,7 @@ const RadioButton = React.forwardRef((
       role='radio'
       aria-label={ariaLabel ?? title ?? undefined}
       aria-checked={checked}
-      checked={checked}
+      $checked={checked}
       aria-keyshortcuts={
         effectiveShortcut
           ? Shortcut.formatAria(effectiveShortcut)

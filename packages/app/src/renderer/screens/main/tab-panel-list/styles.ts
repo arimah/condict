@@ -2,15 +2,13 @@ import styled from 'styled-components';
 
 import {FlowContent, NakedButton} from '../../../ui';
 
-export type TabPanelProps = {
-  isCurrent?: boolean;
-};
-
 export const TabPanel = styled.div.attrs({
   role: 'tabpanel',
   tabIndex: -1,
-})<TabPanelProps>`
-  display: ${p => p.isCurrent ? 'flex' : 'none'};
+})<{
+  $isCurrent?: boolean;
+}>`
+  display: ${p => p.$isCurrent ? 'flex' : 'none'};
   flex-direction: row;
   height: 100%;
   overflow: auto;

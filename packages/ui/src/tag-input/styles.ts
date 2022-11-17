@@ -2,36 +2,34 @@ import styled from 'styled-components';
 
 import {DeleteIcon} from './icons';
 
-export type Props = {
-  minimal?: boolean;
-  disabled?: boolean;
-  inputFocused: boolean;
-};
-
 export const Main = styled.span.attrs({
   role: 'application',
-})<Props>`
+})<{
+  $minimal?: boolean;
+  $disabled?: boolean;
+  $inputFocused: boolean;
+}>`
   display: inline-flex;
   box-sizing: border-box;
   flex-direction: row;
   flex-wrap: wrap;
   border-radius: 3px;
   border: 2px solid var(${p =>
-    p.disabled ? '--input-border-disabled' :
-    p.inputFocused ? '--focus-border' :
+    p.$disabled ? '--input-border-disabled' :
+    p.$inputFocused ? '--focus-border' :
     '--input-border'
   });
-  background-color: var(${p => p.disabled
+  background-color: var(${p => p.$disabled
     ? '--input-bg-disabled'
     : '--input-bg'
   });
-  color: var(${p => p.disabled
+  color: var(${p => p.$disabled
     ? '--input-fg-disabled'
     : '--input-fg'
   });
-  cursor: ${p => !p.disabled && 'text'};
+  cursor: ${p => !p.$disabled && 'text'};
 
-  ${p => p.minimal && `
+  ${p => p.$minimal && `
     --input-border: var(--input-minimal-border);
     --input-border-disabled: var(--input-minimal-border);
   `}

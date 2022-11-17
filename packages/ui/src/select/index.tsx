@@ -6,7 +6,8 @@ export type Props = {
   value?: string;
   defaultValue?: string;
   options?: readonly Option[];
-} & S.Props & Omit<
+  minimal?: boolean;
+} & Omit<
   SelectHTMLAttributes<HTMLSelectElement>,
   'value' | 'defaultValue'
 >;
@@ -33,7 +34,7 @@ export const Select = React.forwardRef((
     <S.Wrapper className={className}>
       <S.Select
         {...otherProps}
-        minimal={minimal}
+        $minimal={minimal}
         disabled={disabled}
         ref={ref}
       >

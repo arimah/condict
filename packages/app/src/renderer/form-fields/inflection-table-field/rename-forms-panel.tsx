@@ -230,7 +230,7 @@ const InflectedFormField = React.memo((
          * it as pressed when the form does *not* have a custom display name.
          */
         aria-pressed={!isCustom}
-        hasCustomName={isCustom}
+        $hasCustomName={isCustom}
         title={l10n.getString(
           isCustom
             ? 'table-editor-custom-name-tooltip'

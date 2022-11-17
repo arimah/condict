@@ -37,7 +37,7 @@ export const Checkbox = (props: Props): JSX.Element => {
   };
 
   return (
-    <S.Label className={className} disabled={disabled} marker={marker}>
+    <S.Label className={className} $marker={marker} $disabled={disabled}>
       <S.Input
         {...inputProps}
         disabled={disabled}

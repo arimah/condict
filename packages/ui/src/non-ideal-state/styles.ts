@@ -1,12 +1,10 @@
 import styled from 'styled-components';
 
-export type Props = {
-  minimal?: boolean;
-};
-
 export const Main = styled.div.attrs({
   role: 'group',
-})<Props>`
+})<{
+  $minimal?: boolean;
+}>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,7 +14,7 @@ export const Main = styled.div.attrs({
   background: var(--bg);
   color: var(--fg);
 
-  ${p => p.minimal ? `
+  ${p => p.$minimal ? `
     padding: 16px 24px;
   ` : `
     padding: 14px 22px;

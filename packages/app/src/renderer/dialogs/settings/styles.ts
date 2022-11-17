@@ -41,13 +41,11 @@ export const TabList = styled.div.attrs({
   'aria-orientation': 'vertical',
 })``;
 
-export type TabProps = {
-  isCurrent: boolean;
-};
-
 export const Tab = styled.div.attrs({
   role: 'tab',
-})<TabProps>`
+})<{
+  $isCurrent: boolean;
+}>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -77,7 +75,7 @@ export const Tab = styled.div.attrs({
     }
   }
 
-  ${p => p.isCurrent && `
+  ${p => p.$isCurrent && `
     &::before {
       content: '';
       position: absolute;
@@ -93,14 +91,12 @@ export const Tab = styled.div.attrs({
   }
 `;
 
-export type SectionProps = {
-  isCurrent: boolean;
-};
-
 export const Section = styled.main.attrs({
   role: 'tabpanel',
-})<SectionProps>`
-  display: ${p => p.isCurrent ? 'block' : 'none'};
+})<{
+  $isCurrent: boolean;
+}>`
+  display: ${p => p.$isCurrent ? 'block' : 'none'};
   padding: 8px 20px 16px;
   max-height: 100%;
   grid-row: 2;
@@ -109,8 +105,10 @@ export const Section = styled.main.attrs({
   overflow-y: auto;
 `;
 
-export const SectionTitle = styled.h2<SectionProps>`
-  display: ${p => p.isCurrent ? 'block' : 'none'};
+export const SectionTitle = styled.h2<{
+  $isCurrent: boolean;
+}>`
+  display: ${p => p.$isCurrent ? 'block' : 'none'};
   margin: 0;
   padding: 20px 20px 8px;
   grid-row: 1;

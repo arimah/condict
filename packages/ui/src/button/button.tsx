@@ -7,7 +7,9 @@ import * as S from './styles';
 export type Props = {
   type?: 'button' | 'submit';
   command?: string | null;
-} & Partial<S.Props> & Omit<
+  slim?: boolean;
+  intent?: S.ButtonIntent;
+} & Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'type'
 >;
@@ -29,8 +31,8 @@ const Button = React.forwardRef((props: Props, ref: Ref<HTMLButtonElement>) => {
   return (
     <S.Button
       {...otherProps}
-      slim={slim}
-      intent={intent}
+      $slim={slim}
+      $intent={intent}
       disabled={command !== null ? command.disabled || disabled : disabled}
       onClick={command !== null ? command.exec : onClick}
       type={type}

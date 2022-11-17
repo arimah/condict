@@ -11,7 +11,7 @@ const LoadingScreen = React.memo((): JSX.Element => {
   const [visible, setVisible] = useState(false);
   useDelayedMountEffect(500, () => setVisible(true));
   return (
-    <S.LoadingScreen visible={visible}>
+    <S.LoadingScreen $visible={visible}>
       <S.LoadingSpinner size={64}/>
       <S.LoadingText>
         <Localized id='generic-loading'/>

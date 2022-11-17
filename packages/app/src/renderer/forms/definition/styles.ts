@@ -15,12 +15,10 @@ export const TableList = styled.ul`
   border-inline-start: 2px solid var(--border);
 `;
 
-export type TableItemProps = {
-  moving?: boolean;
-  held?: boolean;
-};
-
-export const TableItem = styled.li<TableItemProps>`
+export const TableItem = styled.li<{
+  $moving?: boolean;
+  $held?: boolean;
+}>`
   margin-block: 8px ${TableItemGap}px;
   padding-inline: 16px;
   padding-bottom: 16px;
@@ -28,10 +26,10 @@ export const TableItem = styled.li<TableItemProps>`
   top: 0;
   border-radius: 5px;
   background-color: var(--bg-alt);
-  box-shadow: ${p => p.held && 'var(--shadow-elevation-2)'};
+  box-shadow: ${p => p.$held && 'var(--shadow-elevation-2)'};
 
   transition:
-    ${p => p.moving
+    ${p => p.$moving
       ? `top ${Math.max(1, p.theme.timing.long)}ms ease,`
       : ''
     }
@@ -71,17 +69,15 @@ export const DragHandle = styled.div`
   }
 `;
 
-export type TableStatusProps = {
-  error: boolean;
-};
-
-export const TableStatus = styled.div<TableStatusProps>`
+export const TableStatus = styled.div<{
+  $error: boolean;
+}>`
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 8px;
   margin-block: 16px;
-  color: ${p => p.error && 'var(--fg-danger)'};
+  color: ${p => p.$error && 'var(--fg-danger)'};
 
   > .mdi-icon,
   > button {
@@ -125,29 +121,25 @@ export const StemName = styled.label`
   font-weight: bold;
 `;
 
-export type StemValueProps = {
-  usesTerm: boolean;
-};
-
-export const StemValue = styled(TextInput)<StemValueProps>`
+export const StemValue = styled(TextInput)<{
+  $usesTerm: boolean;
+}>`
   margin-inline-end: 4px;
-  font-style: ${p => p.usesTerm && 'italic'};
-  color: ${p => !p.usesTerm && 'var(--fg-accent)'};
+  font-style: ${p => p.$usesTerm && 'italic'};
+  color: ${p => !p.$usesTerm && 'var(--fg-accent)'};
 `;
 
 export const StemStatus = styled.span`
   flex: none;
 `;
 
-export type StemActionProps = {
-  usesTerm: boolean;
-};
-
-export const StemAction = styled(NakedButton)<StemActionProps>`
+export const StemAction = styled(NakedButton)<{
+  $usesTerm: boolean;
+}>`
   display: block;
   margin-block: -3px;
   padding: 1px;
-  color: ${p => !p.usesTerm && 'var(--fg-accent)'};
+  color: ${p => !p.$usesTerm && 'var(--fg-accent)'};
 
   &:focus {
     padding: 1px;

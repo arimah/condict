@@ -1,29 +1,25 @@
-import styled, {StyledProps} from 'styled-components';
+import styled from 'styled-components';
 
 import {Panel} from '../styles';
 
-export type ScopeProps = {
-  kind?: 'scope' | 'trap';
-  active?: boolean | 'paused';
-};
-
-const getBorderColor = (props: StyledProps<ScopeProps>) => {
-  if (props.kind === 'scope') {
-    if (props.active === false) {
-      return 'var(--border)';
+export const Scope = styled(Panel)<{
+  $kind?: 'scope' | 'trap';
+  $active?: boolean | 'paused';
+}>`
+  border-color: ${p => {
+    if (p.$kind === 'scope') {
+      if (p.$active === false) {
+        return 'var(--border)';
+      }
+    } else if (p.$kind === 'trap') {
+      if (p.$active === true) {
+        return 'var(--border-accent)';
+      } else if (p.$active === 'paused') {
+        return 'var(--border)';
+      }
     }
-  } else if (props.kind === 'trap') {
-    if (props.active === true) {
-      return 'var(--border-accent)';
-    } else if (props.active === 'paused') {
-      return 'var(--border)';
-    }
-  }
-  return 'var(--border-control)';
-};
-
-export const Scope = styled(Panel)<ScopeProps>`
-  border-color: ${getBorderColor};
+    return 'var(--border-control)';
+  }};
 `;
 
 export const Container = styled.div`

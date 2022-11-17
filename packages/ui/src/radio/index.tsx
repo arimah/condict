@@ -49,7 +49,7 @@ export const Radio = (props: Props): JSX.Element => {
   const actualName = `${radioGroup.namePrefix}${name}`;
 
   return (
-    <S.Label marker={marker} className={className} disabled={disabled}>
+    <S.Label className={className} $marker={marker} $disabled={disabled}>
       <S.Input
         {...inputProps}
         name={actualName}

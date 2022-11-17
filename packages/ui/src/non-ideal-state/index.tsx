@@ -13,7 +13,8 @@ export type Props = {
   headingLevel?: HeadingLevel;
   description?: ReactNode;
   action?: ReactNode;
-} & S.Props;
+  minimal?: boolean;
+};
 
 type HeadingTag = 'h2' | 'h3' | 'h4';
 
@@ -44,7 +45,7 @@ export const NonIdealState = React.forwardRef((
   return (
     <S.Main
       className={className}
-      minimal={minimal}
+      $minimal={minimal}
       aria-labelledby={`${id}-title`}
       aria-describedby={description ? `${id}-desc` : undefined}
       // If the component has no actions, make the outer element focusable,

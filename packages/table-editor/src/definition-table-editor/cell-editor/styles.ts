@@ -4,16 +4,14 @@ import {Button, TextInput} from '@condict/ui';
 
 import CellPopupBase from '../../cell-popup';
 
-export type CellInputProps = {
-  inflected: boolean;
-};
-
-export const CellInput = styled(TextInput)<CellInputProps>`
+export const CellInput = styled(TextInput)<{
+  $inflected: boolean;
+}>`
   display: block;
   border-radius: 0;
   width: 100%;
   height: 100%;
-  ${p => p.inflected && `font-style: italic;`}
+  ${p => p.$inflected && `font-style: italic;`}
 
   && {
     padding-block: 6px;

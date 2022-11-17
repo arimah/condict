@@ -62,11 +62,9 @@ export const SliderTick = styled.div`
   background-color: var(--slider-tick-bg);
 `;
 
-export type SliderTickLabelProps = {
+export const SliderTickLabel = styled.span<{
   $selected: boolean;
-};
-
-export const SliderTickLabel = styled.span<SliderTickLabelProps>`
+}>`
   position: absolute;
   margin-bottom: 2px;
   font-weight: 500;

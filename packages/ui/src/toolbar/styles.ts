@@ -25,13 +25,11 @@ export const Group = styled.div.attrs({
   }
 `;
 
-export type ButtonProps = {
-  checked?: boolean;
-};
-
 export const Button = styled.button.attrs({
   type: 'button',
-})<ButtonProps>`
+})<{
+  $checked?: boolean;
+}>`
   flex: none;
   display: flex;
   flex-direction: row;
@@ -65,7 +63,7 @@ export const Button = styled.button.attrs({
     border: 2px solid var(--focus-border);
   }
 
-  ${p => p.checked && `
+  ${p => p.$checked && `
     && {
       background-color: var(--toolbar-item-bg-selected);
       color: var(--toolbar-item-fg-selected);

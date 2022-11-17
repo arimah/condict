@@ -64,9 +64,9 @@ const TableCaptionEditor = (props: Props): JSX.Element => {
   return (
     <Slate editor={editor} value={value} onChange={onChange as SlateChangeFn}>
       <EditorContainer
-        singleLine
         className={className}
-        toolbarAlwaysVisible={toolbarAlwaysVisible}
+        $singleLine
+        $toolbarAlwaysVisible={toolbarAlwaysVisible}
       >
         <EditorToolbar alwaysVisible={toolbarAlwaysVisible}>
           <InlineFormatGroup shortcuts={shortcuts} messages={messages}/>

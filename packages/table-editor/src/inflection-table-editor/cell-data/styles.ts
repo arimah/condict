@@ -1,15 +1,13 @@
 import styled from 'styled-components';
 
-export type CellIconsProps = {
-  disabled: boolean;
-};
-
 // NOTE: This styling must be synchronized with the one in ../cell-editor/styles
-export const CellIcons = styled.div<CellIconsProps>`
+export const CellIcons = styled.div<{
+  $disabled: boolean;
+}>`
   display: block;
   margin-inline: 5px;
 
-  ${p => p.disabled && `
+  ${p => p.$disabled && `
     opacity: 0.6;
     filter: grayscale(0.6);
   `}

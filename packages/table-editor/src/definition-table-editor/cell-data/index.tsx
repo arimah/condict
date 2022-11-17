@@ -17,13 +17,13 @@ const CellData = ({cell, data, disabled}: Props): JSX.Element => {
   }
   if (data.customForm !== null) {
     return (
-      <S.CellData custom disabled={disabled}>
-        {data.customForm || <S.DeletedForm disabled={disabled}/>}
+      <S.CellData $custom $disabled={disabled}>
+        {data.customForm || <S.DeletedForm $disabled={disabled}/>}
       </S.CellData>
     );
   }
   return (
-    <S.CellData inflected disabled={disabled}>
+    <S.CellData $inflected $disabled={disabled}>
       <InflectedForm pattern={data.text || ' '}/>
     </S.CellData>
   );

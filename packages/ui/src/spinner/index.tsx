@@ -23,9 +23,9 @@ export const Spinner = React.forwardRef((
       style={{width: size, height: size}}
       ref={ref}
     >
-      <S.Slice style={sliceStyle} number={0}/>
-      <S.Slice style={sliceStyle} number={1}/>
-      <S.Slice style={sliceStyle} number={2}/>
+      <S.Slice style={sliceStyle} $n={0}/>
+      <S.Slice style={sliceStyle} $n={1}/>
+      <S.Slice style={sliceStyle} $n={2}/>
     </S.Main>
   );
 });

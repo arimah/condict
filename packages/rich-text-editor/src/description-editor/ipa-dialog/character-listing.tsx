@@ -30,7 +30,7 @@ const CharacterListing = (props: Props): JSX.Element => {
       const hasBase = group.base !== null;
       const baseIndex = hasBase ? nextCharIndex++ : -1;
       return (
-        <S.Group key={groupIndex} hasBase={hasBase}>
+        <S.Group key={groupIndex} $hasBase={hasBase}>
           {group.base ? (
             <Character
               id={`${dialogId}-result-${baseIndex}`}
@@ -94,9 +94,9 @@ const Character = React.memo(React.forwardRef((
   return (
     <S.Character
       id={id}
-      isBase={isBase}
       title={char.name}
-      selected={selected}
+      $isBase={isBase}
+      $selected={selected}
       aria-selected={selected}
       onMouseEnter={() => onMouseEnter(index)}
       onClick={() => onClick(char.input)}

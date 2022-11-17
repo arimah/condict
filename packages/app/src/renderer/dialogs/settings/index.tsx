@@ -72,7 +72,7 @@ const SettingsDialog = (props: DialogProps<void>): JSX.Element => {
         <Fragment key={key}>
           <S.SectionTitle
             id={`${id}-${key}-title`}
-            isCurrent={i === currentIndex}
+            $isCurrent={i === currentIndex}
           >
             <Localized id={`settings-section-${key}`}/>
           </S.SectionTitle>
@@ -80,7 +80,7 @@ const SettingsDialog = (props: DialogProps<void>): JSX.Element => {
             id={`${id}-tabpanel-${key}`}
             aria-labelledby={`${id}-${key}-title`}
             aria-expanded={i === currentIndex}
-            isCurrent={i === currentIndex}
+            $isCurrent={i === currentIndex}
           >
             <Content
               ref={i === currentIndex ? currentSectionRef : undefined}

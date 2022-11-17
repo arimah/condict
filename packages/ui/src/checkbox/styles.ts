@@ -113,20 +113,18 @@ export const Input = styled.input.attrs({type: 'checkbox'})`
   }
 `;
 
-export type LabelProps = {
-  disabled?: boolean;
-  marker: MarkerLocation;
-};
-
-export const Label = styled.label<LabelProps>`
+export const Label = styled.label<{
+  $disabled?: boolean;
+  $marker: MarkerLocation;
+}>`
   display: inline-flex;
   box-sizing: border-box;
-  flex-direction: ${p => markerLocationToFlexDirection(p.marker)};
+  flex-direction: ${p => markerLocationToFlexDirection(p.$marker)};
   align-items: center;
   gap: 4px 8px;
   position: relative;
   vertical-align: top;
-  color: var(${p => p.disabled ? '--fg-disabled' : '--fg'});
+  color: var(${p => p.$disabled ? '--fg-disabled' : '--fg'});
 `;
 
 export const Content = styled.span``;

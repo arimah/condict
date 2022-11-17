@@ -20,7 +20,7 @@ const Demo = (): JSX.Element => {
       </p>
       {trapActive &&
         <FocusTrap>
-          <S.Scope kind='trap' active>
+          <S.Scope $kind='trap' $active>
             <p>
               <Button slim onClick={() => setTrapActive(false)}>
                 Deactivate trap
@@ -43,7 +43,7 @@ const Demo = (): JSX.Element => {
                   </Radio>
                 </p>
                 <FocusScope active={section === s}>
-                  <S.Scope kind='scope' active={section === s}>
+                  <S.Scope $kind='scope' $active={section === s}>
                     <Button slim>
                       Do thing #{s}
                     </Button>

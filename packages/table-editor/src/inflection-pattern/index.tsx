@@ -33,13 +33,13 @@ const InflectionPattern = React.memo((props: Props) => {
         return t.value;
       case 'brace':
         return (
-          <S.EscapedBrace key={key} disabled={disabled}>
+          <S.EscapedBrace key={key} $disabled={disabled}>
             {t.value}
           </S.EscapedBrace>
         );
       case 'placeholder':
         return (
-          <S.InflectionStem key={key} disabled={disabled}>
+          <S.InflectionStem key={key} $disabled={disabled}>
             {t.value}
           </S.InflectionStem>
         );

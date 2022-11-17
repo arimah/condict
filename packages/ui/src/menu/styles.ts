@@ -1,17 +1,15 @@
-import styled, {css, keyframes} from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 
 export const MenuPaddingBlock = 4;
-
-export type MenuProps = {
-  open: boolean;
-};
 
 export const Menu = styled.div.attrs({
   role: 'menu',
   // Needs to be focusable by JS.
   tabIndex: -1,
-})<MenuProps>`
-  display: ${p => p.open ? 'block' : 'none'};
+})<{
+  $open: boolean;
+}>`
+  display: ${p => p.$open ? 'block' : 'none'};
   padding-block: ${MenuPaddingBlock}px;
   position: fixed;
   top: 0;
@@ -28,12 +26,10 @@ export const Menu = styled.div.attrs({
   }
 `;
 
-export type ItemProps = {
-  current?: boolean;
-  disabled?: boolean;
-};
-
-export const Item = styled.div<ItemProps>`
+export const Item = styled.div<{
+  $current?: boolean;
+  $disabled?: boolean;
+}>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -41,11 +37,11 @@ export const Item = styled.div<ItemProps>`
   position: relative;
   white-space: nowrap;
   cursor: default;
-  background-color: var(${p => p.current
+  background-color: var(${p => p.$current
     ? '--menu-bg-selected'
     : '--menu-bg'
   });
-  color: var(${p => p.disabled ? '--menu-fg-disabled' : '--menu-fg'});
+  color: var(${p => p.$disabled ? '--menu-fg-disabled' : '--menu-fg'});
 `;
 
 export const ItemIcon = styled.span`
@@ -79,12 +75,10 @@ export const ItemSubmenu = styled.span`
   }
 `;
 
-export type ItemCheckProps = {
-  radio: boolean;
-  checked: boolean;
-};
-
-export const ItemCheck = styled.span<ItemCheckProps>`
+export const ItemCheck = styled.span<{
+  $radio: boolean;
+  $checked: boolean;
+}>`
   display: block;
   box-sizing: border-box;
   margin: 4px 8px;
@@ -95,15 +89,15 @@ export const ItemCheck = styled.span<ItemCheckProps>`
   border-style: solid;
   border-width: 2px;
 
-  ${p => p.radio ? css<ItemCheckProps>`
+  ${p => p.$radio ? `
     border-radius: 8px;
-    border-color: var(${p => p.checked
+    border-color: var(${p.$checked
       ? '--radio-border-checked'
       : '--radio-border'
     });
     background-color: var(--radio-bg);
 
-    ${p => p.checked && `
+    ${p.$checked && `
       &::after {
         width: 8px;
         height: 8px;
@@ -112,18 +106,18 @@ export const ItemCheck = styled.span<ItemCheckProps>`
         transform: translate(-50%, -50%);
       }
     `}
-  ` : css<ItemCheckProps>`
+  ` : `
     border-radius: 3px;
-    border-color: var(${p => p.checked
+    border-color: var(${p.$checked
       ? '--checkbox-border-checked'
       : '--checkbox-border'
     });
-    background-color: var(${p => p.checked
+    background-color: var(${p.$checked
       ? '--checkbox-bg-checked'
       : '--checkbox-bg'
     });
 
-    ${p => p.checked && `
+    ${p.$checked && `
       &::after {
         width: 10px;
         height: 6px;

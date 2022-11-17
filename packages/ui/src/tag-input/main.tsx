@@ -156,9 +156,8 @@ const TagInput = React.memo((props: Props): JSX.Element => {
   return (
     <S.Main
       className={className}
-      minimal={minimal}
-      disabled={disabled}
-      role='application'
+      $minimal={minimal}
+      $disabled={disabled}
       aria-roledescription={messages.componentName()}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledby}
@@ -167,7 +166,7 @@ const TagInput = React.memo((props: Props): JSX.Element => {
           ? `${ariaDescribedby} ${mainDescId}`
           : mainDescId
       }
-      inputFocused={inputFocused}
+      $inputFocused={inputFocused}
       onMouseUp={handleMainMouseUp}
       onKeyDown={handleKeyDown}
       onFocus={handleFocus}

@@ -7,8 +7,9 @@ export type Type = 'email' | 'password' | 'search' | 'tel' | 'text' | 'url';
 export type Props = {
   value?: string;
   type?: Type;
+  minimal?: boolean;
   children?: never;
-} & Partial<S.Props> & Omit<
+} & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'children' | 'value' | 'type'
 >;
@@ -27,7 +28,7 @@ export const TextInput = React.forwardRef((
     <S.Input
       {...otherProps}
       type={type}
-      minimal={minimal}
+      $minimal={minimal}
       ref={ref}
     />
   );

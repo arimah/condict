@@ -25,7 +25,7 @@ export const Switch = (props: Props): JSX.Element => {
   // for that role is spotty at best. In practice, a toggle button seems to
   // work better.
   return (
-    <S.Label marker={marker} className={className} disabled={disabled}>
+    <S.Label className={className} $marker={marker} $disabled={disabled}>
       <S.Input
         {...inputProps}
         disabled={disabled}

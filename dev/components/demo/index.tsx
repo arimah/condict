@@ -30,7 +30,7 @@ const Demo = (props: Props): JSX.Element => {
       <h2 id={headingId}>{name}</h2>
 
       <S.Outer>
-        <S.Main alignX={alignX} alignY={alignY}>
+        <S.Main $alignX={alignX} $alignY={alignY}>
           {children}
         </S.Main>
         {controls.length > 0 || onReset ? (

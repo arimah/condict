@@ -87,8 +87,8 @@ const SidePanel = React.forwardRef((
     <FocusScope active={state === 'current'}>
       <S.SidePanel
         aria-labelledby={titleId}
-        state={needToEnter ? 'hidden' : state}
-        entering={entering}
+        $state={needToEnter ? 'hidden' : state}
+        $entering={entering}
         onFocus={handleFocus}
         onTransitionEnd={handleTransitionEnd}
         ref={panelRef}
@@ -96,7 +96,7 @@ const SidePanel = React.forwardRef((
         <S.Content>
           {panel.render({titleId, panelRef, entering})}
         </S.Content>
-        <S.Overlay style={{zIndex: 1}} active={state === 'background'}/>
+        <S.Overlay style={{zIndex: 1}} $active={state === 'background'}/>
       </S.SidePanel>
     </FocusScope>
   );

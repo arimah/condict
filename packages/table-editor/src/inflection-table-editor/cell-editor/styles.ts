@@ -9,11 +9,9 @@ export const CellPopup = styled(CellPopupBase)`
   white-space: nowrap;
 `;
 
-export type CellInputWrapperProps = {
-  focus: boolean;
-};
-
-export const CellInputWrapper = styled.label<CellInputWrapperProps>`
+export const CellInputWrapper = styled.label<{
+  $focus: boolean;
+}>`
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
@@ -26,7 +24,7 @@ export const CellInputWrapper = styled.label<CellInputWrapperProps>`
   border: 2px solid var(--input-border);
   background-color: var(--input-bg);
 
-  ${p => p.focus && `
+  ${p => p.$focus && `
     outline: none;
     border-color: var(--focus-border);
   `}

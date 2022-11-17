@@ -9,10 +9,10 @@ import {CheckType, PhantomProps} from './types';
 import * as S from './styles';
 
 const Checks: Record<CheckType, ReactNode> = {
-  checkOn: <S.ItemCheck radio={false} checked={true}/>,
-  checkOff: <S.ItemCheck radio={false} checked={false}/>,
-  radioOn: <S.ItemCheck radio={true} checked={true}/>,
-  radioOff: <S.ItemCheck radio={true} checked={false}/>,
+  checkOn: <S.ItemCheck $radio={false} $checked={true}/>,
+  checkOff: <S.ItemCheck $radio={false} $checked={false}/>,
+  radioOn: <S.ItemCheck $radio={true} $checked={true}/>,
+  radioOff: <S.ItemCheck $radio={true} $checked={false}/>,
   none: <S.ItemSubmenu/>,
 };
 

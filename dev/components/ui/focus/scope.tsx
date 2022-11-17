@@ -21,7 +21,7 @@ const Demo = (): JSX.Element => {
         </Checkbox>
       </p>
       <FocusScope active={scope1}>
-        <S.Scope kind='scope' active={scope1}>
+        <S.Scope $kind='scope' $active={scope1}>
           <p>
             <Button slim>I am clickable</Button>
           </p>
@@ -40,7 +40,7 @@ const Demo = (): JSX.Element => {
         </Checkbox>
       </p>
       <FocusScope active={scope2}>
-        <S.Scope kind='scope' active={scope2}>
+        <S.Scope $kind='scope' $active={scope2}>
           <p>
             <Button slim>
               I am focusable and tabbable

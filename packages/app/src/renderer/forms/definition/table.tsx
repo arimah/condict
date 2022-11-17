@@ -144,8 +144,8 @@ const Table = React.memo((props: Props): JSX.Element => {
         top: moving.offset,
         zIndex: moving.primary ? 1 : 0,
       }}
-      moving={moving?.animate}
-      held={moving?.primary}
+      $moving={moving?.animate}
+      $held={moving?.primary}
       onTransitionEnd={handleTransitionEnd}
       ref={itemRef}
     >
@@ -173,7 +173,7 @@ const Table = React.memo((props: Props): JSX.Element => {
       />
 
       {status !== 'ok' &&
-        <S.TableStatus error={hasError}>
+        <S.TableStatus $error={hasError}>
           {StatusIcons[status]}
           <span>
             <Localized id={StatusMessages[status]}/>

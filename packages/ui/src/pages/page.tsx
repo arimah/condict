@@ -40,14 +40,14 @@ const Page = (props: Props): JSX.Element => {
         aria-current={isCurrent ? 'page' : undefined}
         aria-busy={isCurrent ? loading : undefined}
         intent={isCurrent ? 'bold' : 'general'}
-        isLoading={isCurrent && loading}
+        $isLoading={isCurrent && loading}
         disabled={disabled}
         onClick={() => onChange(page)}
       >
         {children ?? page + 1}
       </S.Page>
       {isCurrent && loading &&
-        <S.Loading disabled={disabled}>
+        <S.Loading $disabled={disabled}>
           <Spinner size={20}/>
         </S.Loading>
       }

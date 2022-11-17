@@ -25,7 +25,7 @@ export const FormButtons = React.memo((props: Props): JSX.Element => {
   const mainRef = useFormButtonsStickiness(setStuck);
 
   return (
-    <S.FormButtons stuck={stuck} ref={mainRef}>
+    <S.FormButtons $stuck={stuck} ref={mainRef}>
       <S.SubmitButton aria-busy={isSubmitting}>
         {submitLabel ?? <Localized id='generic-form-save'/>}
       </S.SubmitButton>

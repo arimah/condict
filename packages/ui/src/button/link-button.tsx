@@ -7,7 +7,9 @@ import * as S from './styles';
 export type Props = {
   href: string;
   command?: string | null;
-} & Partial<S.Props> & Omit<
+  slim?: boolean;
+  intent?: S.ButtonIntent;
+} & Omit<
   AnchorHTMLAttributes<HTMLAnchorElement>,
   'href' | 'role' | 'type'
 >;
@@ -38,8 +40,8 @@ const LinkButton = React.forwardRef((
     <S.Link
       {...otherProps}
       role='button'
-      slim={slim}
-      intent={intent}
+      $slim={slim}
+      $intent={intent}
       onClick={
         command !== null
           ? (command.disabled ? cancelClickEvent : command.exec)

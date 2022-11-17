@@ -104,7 +104,7 @@ const TabPanel = React.forwardRef((
           aria-labelledby={`tab-${id}-title`}
           aria-expanded={isCurrent}
           hidden={!isCurrent}
-          isCurrent={isCurrent}
+          $isCurrent={isCurrent}
           onFocus={handleFocus}
           ref={panelRef}
         >

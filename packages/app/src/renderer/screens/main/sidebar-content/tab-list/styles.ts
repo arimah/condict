@@ -48,15 +48,13 @@ const AngryShake = keyframes`
   100% { transform: translateX(0px); }
 `;
 
-export type TabProps = {
-  isCurrent?: boolean;
-  isChild?: boolean;
-  isCrashed?: boolean;
-};
-
 export const Tab = styled.div.attrs({
   role: 'tab',
-})<TabProps>`
+})<{
+  $isCurrent?: boolean;
+  $isChild?: boolean;
+  $isCrashed?: boolean;
+}>`
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
@@ -70,9 +68,9 @@ export const Tab = styled.div.attrs({
   border-start-start-radius: 7px;
   border-end-start-radius: 7px;
 
-  ${p => p.isChild && `margin-inline-start: 16px;`}
+  ${p => p.$isChild && `margin-inline-start: 16px;`}
 
-  ${p => p.isCurrent ? css`
+  ${p => p.$isCurrent ? css`
     background-color: var(--bg);
     color: var(--fg);
   ` : css`
@@ -84,7 +82,7 @@ export const Tab = styled.div.attrs({
     }
   `}
 
-  ${p => p.isCrashed && css`
+  ${p => p.$isCrashed && css`
     animation-name: ${AngryShake};
     animation-duration: 600ms;
     animation-timing-function: ease-in-out;
@@ -118,7 +116,7 @@ export const Tab = styled.div.attrs({
     margin-block: -4px;
     margin-inline: -4px 8px;
     flex: none;
-    color: ${p => p.isCurrent && p.isCrashed && 'var(--fg-danger)'};
+    color: ${p => p.$isCurrent && p.$isCrashed && 'var(--fg-danger)'};
   }
 `;
 
@@ -132,13 +130,11 @@ export const TabTitle = styled.span`
 // but in this case, I really do not want it to be focusable in any way, and it
 // seems to be impossible to accomplish with plain HTML/CSS.
 
-export type CloseButtonProps = {
-  isCurrentTab?: boolean;
-};
-
 export const CloseButton = styled.div.attrs({
   role: 'button',
-})<CloseButtonProps>`
+})<{
+  $isCurrentTab?: boolean;
+}>`
   margin-block: -4px;
   margin-inline-start: 4px;
   padding: 4px;
@@ -172,7 +168,7 @@ export const CloseButton = styled.div.attrs({
   }
 
   &&:hover:active {
-    background-color: var(${p => p.isCurrentTab
+    background-color: var(${p => p.$isCurrentTab
       ? '--bg-pressed'
       // We use bg instead of bg-pressed since the tab has bg-hover,
       // and bg-pressed has too much contrast.

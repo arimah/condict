@@ -8,10 +8,8 @@ export const Main = styled.div.attrs({
   align-items: center;
 `;
 
-export type ContentProps = {
-  small?: boolean;
-};
-
-export const Content = styled.span<ContentProps>`
-  margin-inline-start: ${p => p.small ? '8px' : '16px'};
+export const Content = styled.span<{
+  $small?: boolean;
+}>`
+  margin-inline-start: ${p => p.$small ? '8px' : '16px'};
 `;

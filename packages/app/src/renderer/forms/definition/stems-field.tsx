@@ -96,7 +96,7 @@ const Stem = React.memo((props: StemProps): JSX.Element => {
       id={`${id}-name`}
       value={value ?? term}
       readOnly={readOnly}
-      usesTerm={usesTerm}
+      $usesTerm={usesTerm}
       aria-describedby={`${id}-status`}
       onChange={e => onChange(name, e.target.value)}
     />
@@ -113,7 +113,7 @@ const Stem = React.memo((props: StemProps): JSX.Element => {
       <S.StemAction
         aria-label={l10n.getString('definition-stem-source-label')}
         aria-pressed={usesTerm}
-        usesTerm={usesTerm}
+        $usesTerm={usesTerm}
         title={l10n.getString(
           usesTerm
             ? 'definition-stem-same-as-term-tooltip'

@@ -63,7 +63,7 @@ const ImmediateLoading = (props: ImmediateLoadingProps): JSX.Element => {
   return (
     <S.Main className={className}>
       <Spinner size={small ? 20 : 24}/>
-      <S.Content small={small}>
+      <S.Content $small={small}>
         {children ?? <Localized id='generic-loading'/>}
       </S.Content>
     </S.Main>

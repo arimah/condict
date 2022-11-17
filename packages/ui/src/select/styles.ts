@@ -1,15 +1,13 @@
 import styled from 'styled-components';
 
-export type Props = {
-  minimal?: boolean;
-};
-
 export const Wrapper = styled.span`
   display: inline-flex;
   position: relative;
 `;
 
-export const Select = styled.select<Props>`
+export const Select = styled.select<{
+  $minimal: boolean;
+}>`
   appearance: none;
   padding-block: 1px;
   padding-inline: 6px 22px;
@@ -20,7 +18,7 @@ export const Select = styled.select<Props>`
   background-color: var(--select-bg);
   color: var(--select-fg);
 
-  ${p => p.minimal && `
+  ${p => p.$minimal && `
     --select-border: var(--select-minimal-border);
     --select-border-disabled: var(--select-minimal-border-disabled);
   `}

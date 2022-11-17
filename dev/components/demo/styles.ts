@@ -1,10 +1,5 @@
 import styled from 'styled-components';
 
-export type AlignProps = {
-  alignX: 'center' | 'stretch';
-  alignY: 'center' | 'stretch';
-};
-
 export const List = styled.div`
   margin: 16px;
 `;
@@ -47,7 +42,10 @@ const AlignYValues = {
 export const Main = styled.div.attrs({
   role: 'group',
   'aria-label': 'Interactive example',
-})<AlignProps>`
+})<{
+  $alignX: 'center' | 'stretch';
+  $alignY: 'center' | 'stretch';
+}>`
   display: flex;
   flex: 1 1 auto;
   padding: 24px;
@@ -55,9 +53,8 @@ export const Main = styled.div.attrs({
   border-radius: 8px;
   background-color: var(--bg);
 
-  ${p => AlignXValues[p.alignX]}
-
-  ${p => AlignYValues[p.alignY]}
+  ${p => AlignXValues[p.$alignX]}
+  ${p => AlignYValues[p.$alignY]}
 
   > ${List} {
     margin: 0;

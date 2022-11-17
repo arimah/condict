@@ -203,9 +203,9 @@ const DescriptionEditor = (props: Props): JSX.Element => {
   return (
     <Slate editor={editor} value={value} onChange={onChange as SlateChangeFn}>
       <EditorContainer
-        singleLine={false}
         className={className}
-        toolbarAlwaysVisible={toolbarAlwaysVisible}
+        $singleLine={false}
+        $toolbarAlwaysVisible={toolbarAlwaysVisible}
         onFocus={handleFocusChange}
         onBlur={handleFocusChange}
         ref={editorRef}

@@ -58,7 +58,7 @@ const StandardDialog = React.forwardRef((
     <S.Main
       {...otherProps}
       aria-label={title}
-      visible={!needToEnter && animationPhase !== 'leaving'}
+      $visible={!needToEnter && animationPhase !== 'leaving'}
       onTransitionEnd={handleTransitionEnd}
       ref={combineRefs(dialogRef, ref)}
     >

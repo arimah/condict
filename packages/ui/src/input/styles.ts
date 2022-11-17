@@ -1,10 +1,8 @@
 import styled from 'styled-components';
 
-export type Props = {
-  minimal: boolean;
-};
-
-export const Input = styled.input<Props>`
+export const Input = styled.input<{
+  $minimal: boolean;
+}>`
   box-sizing: border-box;
   padding: 1px 2px;
   min-height: 24px;
@@ -14,7 +12,7 @@ export const Input = styled.input<Props>`
   background-color: var(--input-bg);
   color: var(--input-fg);
 
-  ${p => p.minimal && `
+  ${p => p.$minimal && `
     --input-border: var(--input-minimal-border);
     --input-border-disabled: var(--input-minimal-border-disabled);
   `}

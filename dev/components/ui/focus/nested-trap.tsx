@@ -17,7 +17,7 @@ const Demo = (): JSX.Element => {
         </Button>
       </p>
       <FocusTrap active={outer && inner ? 'paused' : outer}>
-        <S.Scope kind='trap' active={outer && inner ? 'paused' : outer}>
+        <S.Scope $kind='trap' $active={outer && inner ? 'paused' : outer}>
           <p>
             <Button slim onClick={() => setOuter(false)}>
               Deactivate outer trap
@@ -30,7 +30,7 @@ const Demo = (): JSX.Element => {
           </p>
 
           <FocusTrap active={inner}>
-            <S.Scope kind='trap' active={inner}>
+            <S.Scope $kind='trap' $active={inner}>
               <p>
                 <TextInput defaultValue='A place for greatness'/>
               </p>

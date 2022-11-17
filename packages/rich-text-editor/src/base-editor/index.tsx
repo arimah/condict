@@ -46,7 +46,7 @@ export type EditorToolbarProps = {
 export const EditorToolbar = (props: EditorToolbarProps): JSX.Element => {
   const {alwaysVisible, children} = props;
   return (
-    <S.Toolbar alwaysVisible={alwaysVisible}>
+    <S.Toolbar $alwaysVisible={alwaysVisible}>
       {children}
     </S.Toolbar>
   );

@@ -58,8 +58,8 @@ const CheckItem = (props: Props): JSX.Element => {
   return (
     <S.Item
       id={id}
-      current={item === stack.currentItem}
-      disabled={effectiveDisabled}
+      $current={item === stack.currentItem}
+      $disabled={effectiveDisabled}
       role={radio ? 'menuitemradio' : 'menuitemcheckbox'}
       aria-checked={checked}
       aria-disabled={effectiveDisabled}
@@ -77,7 +77,7 @@ const CheckItem = (props: Props): JSX.Element => {
           <ShortcutName of={effectiveShortcut}/>
         </S.ItemShortcut>
       }
-      <S.ItemCheck checked={checked} radio={radio}/>
+      <S.ItemCheck $checked={checked} $radio={radio}/>
     </S.Item>
   );
 };

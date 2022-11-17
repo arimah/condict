@@ -57,9 +57,9 @@ const Tab = React.forwardRef((
     <S.Tab
       id={`tab-${id}`}
       tabIndex={isCurrent ? 0 : -1}
-      isCurrent={isCurrent}
-      isChild={NavTab.isChild(tab)}
-      isCrashed={isCrashed}
+      $isCurrent={isCurrent}
+      $isChild={NavTab.isChild(tab)}
+      $isCrashed={isCrashed}
       aria-labelledby={`tab-${id}-title`}
       aria-selected={isCurrent}
       aria-controls={`tabpanel-${id}`}
@@ -78,7 +78,7 @@ const Tab = React.forwardRef((
               ? 'sidebar-tab-close-button-unsaved-tooltip'
               : 'sidebar-tab-close-button-tooltip'
           )}
-          isCurrentTab={isCurrent}
+          $isCurrentTab={isCurrent}
           onMouseDown={handleCloseButtonMouseDown}
           onClick={handleCloseButtonClick}
         >

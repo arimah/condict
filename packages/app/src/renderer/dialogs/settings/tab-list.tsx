@@ -74,7 +74,7 @@ const TabList = (props: Props): JSX.Element => {
           id={`${dialogId}-tab-${key}`}
           aria-selected={i === currentIndex}
           aria-controls={`${dialogId}-tabpanel-${key}`}
-          isCurrent={i === currentIndex}
+          $isCurrent={i === currentIndex}
           tabIndex={i === currentIndex ? 0 : -1}
           onClick={() => handleTabClick(i)}
           onKeyDown={e => handleTabKeyDown(e, i)}

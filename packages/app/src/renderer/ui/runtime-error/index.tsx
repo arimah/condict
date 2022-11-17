@@ -57,7 +57,7 @@ const RuntimeError = (props: Props): JSX.Element => {
         <S.Details
           id={`${id}-details`}
           aria-label={l10n.getString('error-details-label')}
-          expanded={expandDetails}
+          $expanded={expandDetails}
         >
           {error.stack}
         </S.Details>

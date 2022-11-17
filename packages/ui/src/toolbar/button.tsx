@@ -48,7 +48,7 @@ const Button = React.forwardRef((
       {...otherProps}
       aria-label={ariaLabel ?? title ?? undefined}
       aria-pressed={checked != null ? checked : undefined}
-      checked={checked}
+      $checked={checked}
       aria-keyshortcuts={
         effectiveShortcut
           ? Shortcut.formatAria(effectiveShortcut)

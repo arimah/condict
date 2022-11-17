@@ -16,18 +16,16 @@ export const Error = styled.div`
   color: var(--fg-danger);
 `;
 
-export type SearchResultProps = {
-  selected: boolean;
-};
-
 export const SearchResult = styled.li.attrs({
   role: 'option',
-})<SearchResultProps>`
+})<{
+  $selected: boolean;
+}>`
   margin: 0;
   padding: 8px;
   user-select: none;
 
-  background-color: ${p => p.selected && 'var(--bg-control-hover)'};
+  background-color: ${p => p.$selected && 'var(--bg-control-hover)'};
 
   &:active {
     background-color: var(--bg-control-pressed);
@@ -78,14 +76,12 @@ export const SearchResultMatch = styled.div`
   }
 `;
 
-export type SearchResultListProps = {
-  hasResults: boolean;
-};
-
 export const SearchResultList = styled.ul.attrs({
   role: 'listbox',
-})<SearchResultListProps>`
-  display: ${p => p.hasResults ? 'block' : 'none'};
+})<{
+  $hasResults: boolean;
+}>`
+  display: ${p => p.$hasResults ? 'block' : 'none'};
   margin: 2px 0 0;
   padding: 0;
   list-style-type: none;

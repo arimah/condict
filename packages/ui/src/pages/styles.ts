@@ -2,14 +2,12 @@ import styled from 'styled-components';
 
 import {Button} from '../button';
 
-export type DisabledProps = {
-  disabled: boolean;
-};
-
-export const Main = styled.nav<DisabledProps>`
+export const Main = styled.nav<{
+  $disabled: boolean;
+}>`
   margin-top: 16px;
   margin-bottom: 16px;
-  color: var(${p => p.disabled ? '--fg-disabled' : '--fg'});
+  color: var(${p => p.$disabled ? '--fg-disabled' : '--fg'});
 `;
 
 // This list and its items are necessary for assisitive technologies to read
@@ -34,16 +32,14 @@ export const Item = styled.li`
   position: relative;
 `;
 
-export type PageProps = {
-  isLoading?: boolean;
-};
-
-export const Page = styled(Button)<PageProps>`
+export const Page = styled(Button)<{
+  $isLoading?: boolean;
+}>`
   display: flex;
   padding-inline: 2px;
   min-width: 32px;
 
-  ${p => p.isLoading && `
+  ${p => p.$isLoading && `
     && {
       color: transparent;
     }
@@ -66,13 +62,15 @@ export const Ellipsis = styled.span.attrs({
   }
 `;
 
-export const Loading = styled.div<DisabledProps>`
+export const Loading = styled.div<{
+  $disabled: boolean;
+}>`
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  color: var(${p => p.disabled
+  color: var(${p => p.$disabled
     ? '--button-bold-fg-disabled'
     : '--button-bold-fg'
   });

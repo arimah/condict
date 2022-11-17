@@ -2,11 +2,9 @@ import styled from 'styled-components';
 
 import {Spinner} from '@condict/ui';
 
-export type LoadingScreenProps = {
-  visible: boolean;
-};
-
-export const LoadingScreen = styled.main<LoadingScreenProps>`
+export const LoadingScreen = styled.main<{
+  $visible: boolean;
+}>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,7 +12,7 @@ export const LoadingScreen = styled.main<LoadingScreenProps>`
   justify-self: center;
   font-size: var(--font-size-xxxl);
   line-height: var(--line-height-xxxl);
-  opacity: ${p => p.visible ? '1' : '0'};
+  opacity: ${p => p.$visible ? '1' : '0'};
 
   transition: opacity ${p => 2 * p.theme.timing.long}ms ease-out;
 `;

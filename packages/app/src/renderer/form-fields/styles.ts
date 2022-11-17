@@ -35,11 +35,9 @@ export const ErrorMessage = styled.p`
   color: var(--fg-danger);
 `;
 
-export type TextInputProps = {
+export const TextInput = styled(TextInputBase)<{
   $invalid: boolean;
-};
-
-export const TextInput = styled(TextInputBase)<TextInputProps>`
+}>`
   ${p => p.$invalid && `
     &:not(:focus):not(.force-focus) {
       border-color: var(--border-danger);
@@ -62,11 +60,9 @@ export const SelectWrapper = styled.div`
   }
 `;
 
-export type SelectProps = {
+export const Select = styled(SelectBase)<{
   $invalid: boolean;
-};
-
-export const Select = styled(SelectBase)<SelectProps>`
+}>`
   flex: 0 1 auto;
 
   > select {
@@ -118,11 +114,9 @@ export const DefinitionTableEditor = styled(DefinitionTableEditorBase)`
   border: 4px solid transparent;
 `;
 
-export type FormButtonsProps = {
-  stuck: boolean;
-};
-
-export const FormButtons = styled.div<FormButtonsProps>`
+export const FormButtons = styled.div<{
+  $stuck: boolean;
+}>`
   display: flex;
   flex-direction: row;
   margin: -8px -16px -17px;
@@ -133,7 +127,7 @@ export const FormButtons = styled.div<FormButtonsProps>`
   bottom: -1px;
   z-index: 5;
   background-color: var(--bg);
-  box-shadow: ${p => p.stuck && `0 -8px 4px -6px var(--shadow-color)`};
+  box-shadow: ${p => p.$stuck && `0 -8px 4px -6px var(--shadow-color)`};
   transition: box-shadow ${p => p.theme.timing.short}ms linear;
 `;
 

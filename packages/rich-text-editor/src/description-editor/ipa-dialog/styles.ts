@@ -7,13 +7,11 @@ export const CharacterList = styled.div.attrs({
   overflow: auto;
 `;
 
-export type GroupProps = {
-  hasBase: boolean;
-};
-
-export const Group = styled.div<GroupProps>`
+export const Group = styled.div<{
+  $hasBase: boolean;
+}>`
   margin-inline-end: 8px;
-  ${p => p.hasBase ? `
+  ${p => p.$hasBase ? `
     margin-inline-start: 46px;
     text-indent: -42px;
   ` : `
@@ -21,7 +19,7 @@ export const Group = styled.div<GroupProps>`
   `}
 
   &:not(:first-child) {
-    margin-top: ${p => p.hasBase ? '4px' : '8px'};
+    margin-top: ${p => p.$hasBase ? '4px' : '8px'};
   }
 `;
 
@@ -30,14 +28,12 @@ export const GroupName = styled.div`
   font-weight: bold;
 `;
 
-export type CharacterProps = {
-  isBase: boolean;
-  selected: boolean;
-};
-
 export const Character = styled.span.attrs({
   role: 'option',
-})<CharacterProps>`
+})<{
+  $isBase: boolean;
+  $selected: boolean;
+}>`
   display: inline-block;
   margin-bottom: 2px;
   margin-inline-end: 2px;
@@ -49,27 +45,25 @@ export const Character = styled.span.attrs({
   line-height: var(--line-height-xxl);
   cursor: default;
 
-  background-color: ${p => p.selected && 'var(--bg-control-hover)'};
-  font-weight: ${p => p.isBase && 'bold'};
+  background-color: ${p => p.$selected && 'var(--bg-control-hover)'};
+  font-weight: ${p => p.$isBase && 'bold'};
 
   &:active {
     background-color: var(--bg-control-pressed);
   }
 `;
 
-export type ResultProps = {
-  selected: boolean;
-};
-
 export const Result = styled.div.attrs({
   role: 'option',
-})<ResultProps>`
+})<{
+  $selected: boolean;
+}>`
   display: flex;
   flex-direction: row;
   align-items: center;
   cursor: default;
 
-  background-color: var(${p => p.selected
+  background-color: var(${p => p.$selected
     ? '--bg-control-hover'
     : '--bg-control'
   });

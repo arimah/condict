@@ -24,7 +24,7 @@ const Demo = (): JSX.Element => {
         </Button>
       </p>
       <FocusTrap active={active}>
-        <S.Scope kind='trap' active={active}>
+        <S.Scope $kind='trap' $active={active}>
           <p>
             <Button slim onClick={() => setActive(false)}>
               Deactivate both traps
@@ -62,7 +62,7 @@ const Demo = (): JSX.Element => {
       </p>
 
       <FocusTrap active={active}>
-        <S.Scope kind='trap' active={active}>
+        <S.Scope $kind='trap' $active={active}>
           <p>
             <TextInput defaultValue='This is a haiku (it is not)'/>
           </p>

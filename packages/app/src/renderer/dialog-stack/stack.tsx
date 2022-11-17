@@ -99,8 +99,8 @@ const DialogItem = (props: DialogItemProps): JSX.Element => {
       onPointerDownOutside={dialog.onPointerDownOutside}
     >
       <S.Container
-        active={phase !== 'leaving'}
-        backdrop={backdrop}
+        $active={phase !== 'leaving'}
+        $backdrop={backdrop}
         onMouseDown={dialog.onPointerDownOutside && (e => {
           if (e.target === containerRef.current) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -57,9 +57,9 @@ const TableCell = React.memo(
       <S.Cell
         as={item.cell.header ? 'th' : 'td'}
         id={`${tableId}-${cellKey}`}
-        header={effectiveItem.cell.header}
-        selected={selected}
-        disabled={disabled}
+        $header={effectiveItem.cell.header}
+        $selected={selected}
+        $disabled={disabled}
         colSpan={item.cell.columnSpan}
         rowSpan={item.cell.rowSpan}
         data-cell-key={cellKey}
@@ -68,7 +68,7 @@ const TableCell = React.memo(
         aria-labelledby={`${cellKey}-content`}
         aria-describedby={`${tableId}-cellHint`}
         aria-owns={editing ? `${cellKey}-editor` : undefined}
-        ref={cellRef as Ref<HTMLTableDataCellElement>}
+        ref={cellRef as Ref<HTMLTableCellElement>}
       >
         <S.CellDataWrapper id={`${cellKey}-content`}>
           <CellData
@@ -80,9 +80,9 @@ const TableCell = React.memo(
           />
         </S.CellDataWrapper>
         <S.CellBorder
-          disabled={disabled}
-          selected={selected}
-          focused={focused}
+          $disabled={disabled}
+          $selected={selected}
+          $focused={focused}
         />
         {editing &&
           <CellEditor

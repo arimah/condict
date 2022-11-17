@@ -14,14 +14,12 @@ export const Main = styled.div`
   }
 `;
 
-export type PopupProps = {
-  $visible: boolean;
-};
-
 export const Popup = styled.div.attrs({
   role: 'dialog',
   tabIndex: -1,
-})<PopupProps>`
+})<{
+  $visible: boolean;
+}>`
   display: flex;
   flex-direction: column;
   align-items: stretch;

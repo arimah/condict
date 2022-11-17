@@ -101,17 +101,15 @@ export const InflectedFormInput = styled.div`
   }
 `;
 
-export type InflectedFormActionProps = {
-  hasCustomName: boolean;
-};
-
-export const InflectedFormAction = styled(NakedButton)<InflectedFormActionProps>`
+export const InflectedFormAction = styled(NakedButton)<{
+  $hasCustomName: boolean;
+}>`
   display: block;
   flex: none;
   margin-block: -3px;
   padding: 1px;
 
-  ${p => p.hasCustomName && `
+  ${p => p.$hasCustomName && `
     --button-fg: var(--fg-accent);
   `}
 

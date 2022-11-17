@@ -26,7 +26,7 @@ const CellData = (props: Props): JSX.Element => {
         />}
     </S.CellData>
     {needIcons &&
-      <S.CellIcons disabled={disabled} aria-hidden='true'>
+      <S.CellIcons $disabled={disabled} aria-hidden='true'>
         {!data.deriveLemma &&
           <DoNotDeriveLemmaIcon title={messages.noDeriveLemmaIconTitle()}/>}
         {data.hasCustomDisplayName &&
