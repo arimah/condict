@@ -6,6 +6,11 @@ dist/
 build/
 bin/
 
+# These test files are downloaded on demand and should not be committed
+# (they're quite sizable, around 20 MB in total)
+test-data/collation.txt
+test-data/nfd.txt
+
 # These files are copied on build
 graphql-schema
 

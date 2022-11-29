@@ -11,13 +11,13 @@ files:
   - "!**/*.gyp"
   - "!**/*.md"
   - "!**/*.js.map"
-  - "!node_modules/@condict/server/{.*,bin,build,deps,docs,src,src-cpp,test,*.json}"
+  - "!node_modules/@condict/server/{.*,bin,build,deps,docs,src,src-cpp,test,test-data,*.json}"
   - "node_modules/@condict/server/package.json"
   - "!node_modules/**/better-sqlite3/{deps,src}"
   - "!node_modules/**/bcrypt/{bin,build}"
 extraResources:
-  - from: node_modules/@condict/server/bin/sqlite3_collation.node
-    to: sqlite3_collation.node
+  - from: node_modules/@condict/server/bin/condict.sqlite3-ext
+    to: condict.sqlite3-ext
 directories:
   output: bin
   buildResources: assets

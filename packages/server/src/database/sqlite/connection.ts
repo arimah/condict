@@ -6,7 +6,7 @@ import reindentQuery from '../reindent-query';
 
 import Accessor from './accessor';
 import RwLock from './rwlock';
-import registerUnicodeCollation from './unicode-collation';
+import registerExtension from './extension';
 import formatQueryPlan from './query-plan';
 import {Options, DataAccessor, QueryPlanNode} from './types';
 
@@ -36,7 +36,7 @@ export default class Connection {
 
     const db = new Sqlite(options.file);
     db.pragma('journal_mode = WAL');
-    registerUnicodeCollation(db);
+    registerExtension(db);
     this.db = db;
 
     this.lock = new RwLock();

@@ -17,7 +17,7 @@
     "build:graphql": "condict-graphql-typer --schema-dir ../../graphql-schema --target=client --src=./src/renderer/ --defs=./src/renderer/graphql.ts",
     "build:native": "electron-rebuild -f -w bcrypt,better-sqlite3,fsevents,@condict/server",
     "build:dist": "electron-builder --config electron-builder.yml",
-    "bundle": "npm-run-all --silent --print-label build build:native build:dist",
+    "bundle": "npm-run-all --silent --print-label build build:dist",
     "watch": "npm-run-all --silent --parallel --print-label watch:main watch:graphql",
     "watch:main": "rollup -c --watch",
     "watch:graphql": "condict-graphql-typer --schema-dir ../../graphql-schema --target=client --src=./src/renderer/ --defs=./src/renderer/graphql.ts --watch"
