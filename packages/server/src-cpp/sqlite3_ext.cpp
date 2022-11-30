@@ -31,8 +31,7 @@ extern "C" CONDICT_EXPORT int sqlite3_extension_init(
 ) {
   SQLITE_EXTENSION_INIT2(pApi);
 
-  int result = SQLITE_OK;
-  result = sqlite3_create_collation_v2(
+  int result = sqlite3_create_collation_v2(
     db,
     "unicode",
     SQLITE_UTF8,
