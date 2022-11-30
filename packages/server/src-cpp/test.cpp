@@ -3,7 +3,7 @@
 #include "test/utf8.h"
 #include "test/nfd.h"
 #include "test/cea.h"
-// #include "test/collate.h"
+#include "test/collate.h"
 
 int main() {
   printf("Reading test data...\n");
