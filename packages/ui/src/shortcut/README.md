@@ -26,7 +26,7 @@ As a result, the `Shortcut` type has the following modifiers:
 | Name | Linux | Windows | macOS |
 | --- | --- | --- | --- |
 | `primary` | <kbd>Ctrl</kbd> | <kbd>Ctrl</kbd> | <kbd>⌘ Command</kbd> |
-| `secondary` | <kbd>Super</kbd> | <kbd>Windows</kbd> | <kbd>^ Ctrl</kbd> |
+| `ctrl`, `control` | <kbd>Ctrl</kbd> | <kbd>Ctrl</kbd> | <kbd>^ Ctrl</kbd> |
 | `shift` | <kbd>Shift</kbd> | <kbd>Shift</kbd> | <kbd>⇧ Shift</kbd> |
 | `alt` | <kbd>Alt</kbd> | <kbd>Alt</kbd> | <kbd>⌥ Option</kbd> |
 
@@ -123,7 +123,6 @@ Parses a string or array of strings into a `Shortcut`. A shortcut string contain
 The following modifiers are recognised:
 
 * `Primary+` (<kbd>Ctrl</kbd> on Linux and Windows, <kbd>⌘ Command</kbd> on macOS);
-* `Secondary+` (<kbd>^ Ctrl</kbd> on macOS, <kbd>Super</kbd> on Linux, <kbd>Windows</kbd> on Windows);
 * `Ctrl+` or `Control+` (<kbd>Ctrl</kbd>/<kbd>^ Ctrl</kbd> on every OS);
 * `Shift+`;
 * `Alt+` (<kbd>Alt</kbd> on Linux and Windows, <kbd>⌥ Option</kbd> on macOS).

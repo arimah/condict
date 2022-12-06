@@ -4,12 +4,12 @@ import {selectPlatform} from '@condict/platform';
 
 export default {
   prevTab: selectPlatform({
-    macos: Shortcut.parse(['Secondary+Shift+Tab', 'Primary+ArrowUp']),
+    macos: Shortcut.parse(['Ctrl+Shift+Tab', 'Primary+ArrowUp']),
     windows: Shortcut.parse(['Primary+Shift+Tab', 'Alt+ArrowUp']),
     other: Shortcut.parse(['Primary+PageUp', 'Primary+Shift+Tab', 'Alt+ArrowUp']),
   }),
   nextTab: selectPlatform({
-    macos: Shortcut.parse(['Secondary+Tab', 'Primary+ArrowDown']),
+    macos: Shortcut.parse(['Ctrl+Tab', 'Primary+ArrowDown']),
     windows: Shortcut.parse(['Primary+Tab', 'Alt+ArrowDown']),
     other: Shortcut.parse(['Primary+PageDown Tab', 'Alt+ArrowDown']),
   }),

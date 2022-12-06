@@ -77,7 +77,7 @@ const DefaultShortcuts: AllShortcuts = {
   focusPopup: isMacOS
     // Cmd+M is "minimize window" and Cmd+Down is "go to end of document",
     // according to Wikipedia's _Table of keyboard shortcuts_.
-    ? Shortcut.parse('Secondary+ArrowDown')
+    ? Shortcut.parse('Ctrl+ArrowDown')
     : Shortcut.parse('Primary+ArrowDown M m'),
 };
 

@@ -19,19 +19,17 @@ import {selectPlatform, isMacOS} from '@condict/platform';
 // and on Linux and Unix-likes possibly the Super key). In addition, macOS
 // sometimes uses Ctrl as a "secondary" modifier.
 //
-// This is why we have a `primary` modifier instead of `ctrl`, so that we can
-// select the most appropriate modifier for the system. The `secondary` modifier
-// exists almost exclusively to support macOS, but also to allow user-typed
-// shortcuts to use the Super/Windows key on Linux/Windows.
+// This is why we have a `primary` modifier: to select the most appropriate
+// "primary" modifier for the system. When Ctrl is desired everywhere, we use
+// `ctrl`.
 //
-// It *is* possible to combine the primary and secondary modifiers (some
-// shortcuts on macOS do that), but this is not portable behaviour and should
+// It *is* possible to combine `primary` and `ctrl` modifiers (some shortcuts
+// on macOS do that), but this is not portable behaviour and should absolutely
 // be customised per OS.
 //
 // When parsing keyboard shortcut specifications, `Primary+` is taken to mean
-// Cmd on macOS, and Ctrl elsewhere. `Secondary+` is Ctrl on macOS and the
-// Super/Windows key elsewhere. `Ctrl+` and `Control+` mean Ctrl on every OS,
-// and can be used to avoid platform-specific code.
+// Cmd on macOS, and Ctrl elsewhere. `Ctrl+` and `Control+` mean Ctrl on every
+// OS, and can be used to avoid platform-specific code.
 
 /**
  * A single shortcut. It may respond to multiple keys, but modifiers are the
@@ -42,7 +40,7 @@ export interface SingleShortcut {
   readonly keys: string[];
   /** True if the primary modifier must be pressed. */
   readonly primary: boolean;
-  /** True if the secondary modifier must be pressed. */
+  /** True if the secondary modifier must be pressed (macOS only). */
   readonly secondary: boolean;
   /** True if Shift must be pressed. */
   readonly shift: boolean;
@@ -64,7 +62,7 @@ export type Shortcut = SingleShortcut | ShortcutGroup;
 
 type AnyKeyboardEvent = KeyboardEvent | SyntheticKeyboardEvent;
 
-const ModifiersPattern = /(Primary|Secondary|Shift|Alt|Ctrl|Control)\s*\+\s*/gi;
+const ModifiersPattern = /(Primary|Shift|Alt|Ctrl|Control)\s*\+\s*/gi;
 
 // Allow 'Space' as a synonym for ' '; otherwise it doesn't work with
 // Shortcut.parse().
@@ -86,9 +84,6 @@ export const Shortcut = {
           switch (mod.toLowerCase()) {
             case 'primary':
               primary = true;
-              break;
-            case 'secondary':
-              secondary = true;
               break;
             case 'shift':
               shift = true;
@@ -201,7 +196,7 @@ const hasPrimary = selectPlatform({
 
 const hasSecondary = selectPlatform({
   macos: (e: AnyKeyboardEvent) => e.getModifierState('Control'),
-  default: (e: AnyKeyboardEvent) => e.getModifierState('OS'),
+  default: () => false,
 });
 
 const hasAlt = selectPlatform({
@@ -228,11 +223,10 @@ const formatAriaModifiers: ModifierFormatter = selectPlatform({
     (secondary ? 'Control+' : '') +
     (alt ? 'Alt+' : '') +
     (shift ? 'Shift+' : ''),
-  default: ({primary, secondary, shift, alt}) =>
+  default: ({primary, shift, alt}) =>
     // Primary = Control
-    // Secondary = Meta
+    // Secondary = absent
     (primary ? 'Control+' : '') +
-    (secondary ? 'Meta+' : '') +
     (alt ? 'Alt+' : '') +
     (shift ? 'Shift+' : ''),
 });
