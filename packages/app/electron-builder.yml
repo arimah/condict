@@ -13,7 +13,7 @@ files:
   - "!**/*.js.map"
   - "!node_modules/@condict/server/{.*,bin,build,deps,docs,src,src-cpp,test,test-data,*.json}"
   - "node_modules/@condict/server/package.json"
-  - "!node_modules/**/better-sqlite3/{deps,src}"
+  - "!node_modules/**/better-sqlite3/{build,deps,src}"
   - "!node_modules/**/bcrypt/{bin,build}"
 extraResources:
   - from: node_modules/@condict/server/bin/condict.sqlite3-ext

@@ -1,4 +1,4 @@
-class IpaChar {
+export default class IpaChar {
   constructor(name, input, display, group, terms) {
     this.name = name;
     this.input = input;
@@ -7,5 +7,3 @@ class IpaChar {
     this.terms = terms;
   }
 }
-
-module.exports = IpaChar;

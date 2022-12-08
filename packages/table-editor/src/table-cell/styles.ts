@@ -35,7 +35,7 @@ export const Cell = styled.td<{
   `}
 
   ${p => p.$selected && css`
-    ${Table}:is(:focus, .force-focus) & {
+    ${Table}:is(:focus, .force-focus) && {
       background-color: var(${p.$header
         ? '--table-header-bg-selected'
         : '--table-bg-selected'
@@ -68,7 +68,7 @@ export const CellBorder = styled.div<{
     : '--table-border'
   });
 
-  ${Table}:is(:focus, .force-focus) & {
+  ${Table}:is(:focus, .force-focus) && {
     border-color: ${p =>
       p.$focused ? 'var(--focus-border)' :
       p.$selected ? 'var(--table-border-selected)' :

@@ -1,11 +1,14 @@
 /* eslint-disable no-console */
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import url from 'url';
+import path from 'path';
 
-const readData = require('./read-data');
-const formatData = require('./format-data');
+import readData from './read-data.mjs';
+import formatData from './format-data.mjs';
 
-const OutputPath = path.join(__dirname, '../src/data.json');
+const dir = path.dirname(url.fileURLToPath(import.meta.url));
+const DataDir = path.join(dir, '../data');
+const OutputPath = path.join(dir, '../src/data.json');
 
 const mapToObject = map => {
   const object = {};
@@ -18,7 +21,7 @@ const mapToObject = map => {
 };
 
 const main = () => {
-  const chars = readData();
+  const chars = readData(DataDir);
 
   const {replacements, charData} = formatData(chars);
 

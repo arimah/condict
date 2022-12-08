@@ -25,7 +25,7 @@ const sortReplacements = replacements => {
   }
 };
 
-module.exports = charMap => {
+export default charMap => {
   const allReplacements = new Map();
   const charData = new Map();
 

@@ -1,4 +1,4 @@
-module.exports = chars => chars.map(char => ({
+export default chars => chars.map(char => ({
   input: char.input,
   display: char.display,
   name: char.name,

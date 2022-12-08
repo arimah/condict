@@ -1,7 +1,9 @@
-const childProcess = require('child_process');
+import {spawnSync} from 'child_process';
 
-const commandLineArgs = require('command-line-args');
-const {white, green, magenta} = require('chalk');
+import commandLineArgs from 'command-line-args';
+import chalk from 'chalk';
+
+const {white, green, magenta} = chalk;
 
 const CliOptions = [
   {name: 'watch', alias: 'w', type: Boolean},
@@ -44,7 +46,7 @@ const AllPackages = [
 const LogPrefix = `${white('condict')} ${green('info')} ${magenta('build')}`;
 
 const runCommand = (cmd, args) => {
-  const result = childProcess.spawnSync(cmd, args, {
+  const result = spawnSync(cmd, args, {
     shell: true,
     stdio: 'inherit',
   });

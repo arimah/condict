@@ -32,6 +32,7 @@ export const set = (
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     (target as any)[path[path.length - 1]] = value;
+    return;
   });
 
 export const update = (

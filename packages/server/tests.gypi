@@ -12,7 +12,7 @@
             'test-data/nfd.txt',
             'test-data/collation.txt',
           ],
-          'action': ['node', 'scripts/fetch-test-data.js'],
+          'action': ['node', 'scripts/fetch-test-data.mjs'],
         },
       ],
     },

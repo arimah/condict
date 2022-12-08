@@ -3,6 +3,7 @@ import path from 'path';
 
 import {watch} from 'chokidar';
 
+import {getAppRootDir} from './paths';
 import ipc from './ipc';
 
 export interface Translations {
@@ -42,7 +43,7 @@ const getLocaleName = (filePath: string): string => {
 };
 
 const initTranslations = (): Translations => {
-  const translationsDir = path.join(path.dirname(__dirname), 'locale');
+  const translationsDir = path.join(getAppRootDir(), 'locale');
 
   const availableLocales =
     fs.readdirSync(translationsDir, {withFileTypes: true})

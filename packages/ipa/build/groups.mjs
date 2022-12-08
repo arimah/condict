@@ -1,4 +1,4 @@
-module.exports = chars => {
+export default chars => {
   const groups = new Map();
 
   let charIndex = 0;

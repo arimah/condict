@@ -8,6 +8,7 @@ import replace from '@rollup/plugin-replace';
 import typescript from '@rollup/plugin-typescript';
 
 const localDepPattern = /^\.\.?\//;
+const mainEntryPattern = /^\.\/index\.[tj]sx?$/;
 
 export const getExternal = (pkg, allowDev = false) => {
   // Map from module ID to true (known external) or false (known non-external).
@@ -138,7 +139,7 @@ export const onwarn = (warning, warn) => {
   warn(warning);
 };
 
-export const configureTarget = (pkg, output, options = {}) => {
+export const configureTarget = (pkg, target, options = {}) => {
   const env = process.env.NODE_ENV || 'production';
   const {
     entry,
@@ -148,58 +149,65 @@ export const configureTarget = (pkg, output, options = {}) => {
     declarations = false,
   } = options;
 
-  // 'output' arrives without packagePath, so we need to prefix it.
-  const realOutput = `${packagePath}/${output}`;
-
   const input = entry
     ? `${packagePath}/${entry}`
     : fs.existsSync(`${packagePath}/src/index.tsx`)
       ? `${packagePath}/src/index.tsx`
       : `${packagePath}/src/index.ts`;
 
-  const outputName = path.basename(realOutput);
+  const firstTarget = Array.isArray(target) ? target[0] : target;
+  const targetPath = `${packagePath}/${firstTarget}`;
+  const outputDir = path.dirname(targetPath);
+  const outputName = path.basename(firstTarget);
 
   return {
     input,
-
-    output: [
-      {
-        format: 'cjs',
-        exports: 'named',
-        interop: 'auto',
-        generatedCode: 'es2015',
-        externalLiveBindings: false,
-        sourcemap: false,
-        ...declarations ? {
-          dir: path.dirname(realOutput),
-        } : {
-          file: realOutput,
-        },
-      },
-      {
-        format: 'es',
-        exports: 'auto',
-        interop: 'auto',
-        generatedCode: 'es2015',
-        externalLiveBindings: false,
-        sourcemap: false,
-        file: realOutput.replace(/\.js$/, '.esm.js'),
-      }
-    ],
-
+    output: getOutput(target, pkg, packagePath, declarations),
     external,
-
     plugins: getPlugins({
       env,
       browser,
-      declarationDir: declarations && path.dirname(realOutput),
+      declarationDir: declarations && outputDir,
       cacheDir: `${packagePath}/.buildcache/${outputName}`,
-      tsBuildInfoFile: `${path.dirname(output)}/.${outputName}.tsbuildinfo`,
+      tsBuildInfoFile: `${outputDir}/.${outputName}.tsbuildinfo`,
       packagePath,
     }),
-
     onwarn,
   };
+};
+
+const getOutput = (output, pkg, packagePath, declarations) => {
+  if (!Array.isArray(output)) {
+    output = [output];
+  }
+  return output.map((out, i) => {
+    // Target paths arrives without packagePath, so we need to prefix
+    const targetPath = `${packagePath}/${out}`;
+    return {
+      format: getOutputFormat(pkg, targetPath),
+      exports: 'auto',
+      interop: 'auto',
+      generatedCode: 'es2015',
+      externalLiveBindings: false,
+      sourcemap: false,
+      ...declarations && i === 0 ? {
+        dir: path.dirname(targetPath),
+      } : {
+        file: targetPath,
+      },
+    };
+  });
+};
+
+const getOutputFormat = (pkg, outputName) => {
+  if (outputName.endsWith('.mjs')) {
+    return 'es';
+  }
+  if (outputName.endsWith('.cjs')) {
+    return 'cjs';
+  }
+  // Otherwise, outputName ends with .js
+  return pkg.type === 'module' ? 'es' : 'cjs';
 };
 
 const configureDefault = (pkg, options = {}) => {
@@ -221,8 +229,13 @@ const configureDefault = (pkg, options = {}) => {
     };
   }
 
+  const output = [pkg.main];
+  if (pkg.module) {
+    output.push(pkg.module);
+  }
+
   let targets = [
-    configureTarget(pkg, pkg.main, {
+    configureTarget(pkg, output, {
       external,
       declarations: true,
       ...options,
@@ -231,13 +244,14 @@ const configureDefault = (pkg, options = {}) => {
 
   if (pkg.binEntries) {
     const binExternal = (id, binName) => {
-      if (isExternalDependency(id)) {
+      if (isExternalDependency(id) || mainEntryPattern.test(id)) {
         return true;
       }
       if (localDepPattern.test(id)) {
         // Allow the module to be imported. It will be resolved to an absolute
-        // path next, which we can check below. The only local module that is
-        // always external is '.', which doesn't match localDepPattern.
+        // path next, which we can check below. The exception is `./index.js`,
+        // which is the main entry point of the package: we treat this as an
+        // external module always.
         return false;
       }
       if (path.isAbsolute(id)) {
@@ -252,7 +266,7 @@ const configureDefault = (pkg, options = {}) => {
         loadedLocalModules.set(id, binName);
         return false;
       }
-      // Probably a built-in, like 'fs' or 'path', or the main entry point '.'.
+      // Probably a built-in, like 'fs' or 'path'.
       return true;
     };
 
@@ -264,9 +278,9 @@ const configureDefault = (pkg, options = {}) => {
           entry: input,
         });
 
-        // We only care about CJS for binaries
-        config.output = config.output[0];
-        config.output.banner = '#!/usr/bin/env node';
+        for (const output of config.output) {
+          output.banner = '#!/usr/bin/env node';
+        }
         return config;
       })
     );

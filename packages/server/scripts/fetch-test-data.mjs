@@ -1,8 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
+import fs from 'fs';
+import url from 'url';
+import path from 'path';
+import https from 'https';
 
-const TestDataDir = path.join(path.dirname(__dirname), 'test-data');
+const dir = path.dirname(url.fileURLToPath(import.meta.url));
+const TestDataDir = path.join(path.dirname(dir), 'test-data');
 
 const Files = [
   {

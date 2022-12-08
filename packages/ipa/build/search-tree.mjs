@@ -60,7 +60,7 @@ const treeToPlainObject = (tree, chars) => {
   return result;
 };
 
-module.exports = chars => {
+export default chars => {
   const tree = new SearchTree('');
 
   let charIndex = 0;

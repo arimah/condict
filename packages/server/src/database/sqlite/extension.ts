@@ -2,6 +2,8 @@ import path from 'path';
 
 import {Database} from 'better-sqlite3';
 
+import {getServerRootDir} from '../../paths';
+
 // Our SQLite extension is not a Node module that is loaded with `require()`,
 // but a standalone dynamic library. We can't use the `bindings` package to
 // locate it. Instead, the build process places it in a well-known directory.
@@ -11,19 +13,21 @@ import {Database} from 'better-sqlite3';
 
 const ExtensionName = 'condict.sqlite3-ext';
 
-let apiPath: string;
-if (__dirname.includes('app.asar')) {
-  // FIXME: This is a bit hacky.
-  // If the path to this file contains `app.asar`, we are (probably) running
-  // inside the main Condict app. This regex strips the `/asar.app/` part
-  // (`\` on Windows) and everything after it, and is likely quite fragile.
-  apiPath = __dirname.replace(/[/\\]app.asar[/\\].*$/, `/${ExtensionName}`);
-} else {
-  apiPath = path.resolve(__dirname, `../bin/${ExtensionName}`);
-}
-
 const registerExtension = (db: Database): void => {
-  db.loadExtension(apiPath);
+  const serverRoot = getServerRootDir();
+
+  let extensionDir: string;
+  if (serverRoot.includes('app.asar')) {
+    // FIXME: This is a bit hacky.
+    // If the path to this file contains `app.asar`, we are (probably) running
+    // inside the main Condict app. This regex strips the `/asar.app/` part
+    // (`\` on Windows) and everything after it, and is likely quite fragile.
+    extensionDir = serverRoot.replace(/[/\\]app.asar[/\\].*$/, '/');
+  } else {
+    extensionDir = path.resolve(serverRoot, 'bin');
+  }
+
+  db.loadExtension(path.join(extensionDir, ExtensionName));
 };
 
 export default registerExtension;

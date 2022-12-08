@@ -1,11 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const DataPath = path.join(__dirname, '../data');
-
-const readJson = file => {
+const readJson = (dataDir, file) => {
   try {
-    const text = fs.readFileSync(path.join(DataPath, file), {
+    const text = fs.readFileSync(path.join(dataDir, file), {
       encoding: 'utf-8',
     });
     return JSON.parse(text);
@@ -14,7 +12,7 @@ const readJson = file => {
   }
 };
 
-const normalizeChar = (xsampa, char) => {
+const normalizeChar = char => {
   // Shorthand for a base character with no ascender or descender.
   if (typeof char === 'string') {
     return {
@@ -49,12 +47,12 @@ const normalizeChar = (xsampa, char) => {
   return result;
 };
 
-module.exports = () => {
-  const data = readJson('characters.json');
+export default dataDir => {
+  const data = readJson(dataDir, 'characters.json');
 
   return new Map(
     Object.entries(data).map(([xsampa, char]) =>
-      [xsampa, normalizeChar(xsampa, char)]
+      [xsampa, normalizeChar(char)]
     )
   );
 };

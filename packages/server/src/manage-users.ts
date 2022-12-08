@@ -8,7 +8,7 @@ import {
   UserId,
   NewUserInput,
   EditUserInput,
-} from '.';
+} from './index.js';
 
 type Prompt = {
   query(prompt: string): Promise<string>;

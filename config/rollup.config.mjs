@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import configure from './rollup.base.js';
+import configure from './rollup.base.mjs';
 
 const AllPackages = [
   // Build tools

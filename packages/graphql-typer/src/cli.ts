@@ -5,7 +5,7 @@ import parseCliArgs, {OptionDefinition} from 'command-line-args';
 import {watch} from 'chokidar';
 import {GraphQLSchema} from 'graphql';
 
-import {buildGraphqlSchema, defineServerTypes, defineClientTypes} from '.';
+import {buildGraphqlSchema, defineServerTypes, defineClientTypes} from './index.js';
 import debounce from './debounce';
 
 const options: OptionDefinition[] = [

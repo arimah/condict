@@ -9,14 +9,14 @@
     "dist/"
   ],
   "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "node build",
+    "build": "node build/index.mjs",
     "test": "mocha"
   },
   "devDependencies": {
     "chalk": "^4.1.2",
-    "mocha": "^10.0.0"
+    "mocha": "^10.1.0"
   }
 }

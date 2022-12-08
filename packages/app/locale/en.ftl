@@ -352,7 +352,7 @@ rich-text-edit-link = Edit link
 # Screen reader label of "Edit link" button in contextual tools popup.
 #
 # Variables:
-#   target: The link target. This is either hte name of a dictionary resource or a URL.
+#   target: The link target. This is either the name of a dictionary resource or a URL.
 #   targetType: The link target type. See the rich-text-link-type message for details; the value is the same as its $type variable.
 rich-text-edit-link-label =
   Edit link: {$target} - {$targetType ->

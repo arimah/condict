@@ -7,7 +7,7 @@ import {
 } from 'apollo-server-core';
 import {GraphQLRequestContext} from 'apollo-server-plugin-base';
 import {customAlphabet} from 'nanoid';
-import {Server as WebSocketServer} from 'ws';
+import {WebSocketServer} from 'ws';
 
 import CondictServer from './server';
 import {Context} from './graphql';

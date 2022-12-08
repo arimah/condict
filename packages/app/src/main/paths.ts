@@ -1,3 +1,4 @@
+import url from 'url';
 import path from 'path';
 
 import {app} from 'electron';
@@ -21,3 +22,10 @@ export const SessionFile = path.join(UserDataPath, 'session.json');
  * and size of the main window).
  */
 export const WindowStateFile = path.join(UserDataPath, 'window.json');
+
+export const getAppRootDir = (): string =>
+  path.dirname(
+    path.dirname(
+      url.fileURLToPath(import.meta.url)
+    )
+  );

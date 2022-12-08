@@ -6,7 +6,7 @@ import {MainChannels} from '../ipc-channels';
 import {AppConfig, IpcMessageArg} from '../types';
 
 import ipc from './ipc';
-import {WindowStateFile} from './paths';
+import {getAppRootDir, WindowStateFile} from './paths';
 import {
   InitialWidth,
   InitialHeight,
@@ -85,7 +85,7 @@ const initMainWindow = (getConfig: () => AppConfig): MainWindowInstance => {
       send('context-menu', params);
     });
 
-    void win.loadFile(path.join(__dirname, '../static/index.html'));
+    void win.loadFile(path.join(getAppRootDir(), 'static/index.html'));
   };
 
   app.on('ready', createWindow);

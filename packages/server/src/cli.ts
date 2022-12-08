@@ -8,7 +8,7 @@ import {
   createLogger,
   loadConfigFile,
   getTableSchema,
-} from '.';
+} from './index.js';
 import {addUser, editUser, logOutUser, deleteUser} from './manage-users';
 
 type MaybeString = string | null | undefined;

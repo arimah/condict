@@ -1,13 +1,11 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const IpaChar = require('./ipa-char');
+import IpaChar from './ipa-char.mjs';
 
-const DataPath = path.join(__dirname, '../data');
-
-const readJson = file => {
+const readJson = (dataDir, file) => {
   try {
-    const text = fs.readFileSync(path.join(DataPath, file), {
+    const text = fs.readFileSync(path.join(dataDir, file), {
       encoding: 'utf-8',
     });
     return JSON.parse(text);
@@ -16,8 +14,8 @@ const readJson = file => {
   }
 };
 
-const readSynonyms = file => {
-  const synonyms = readJson(file);
+const readSynonyms = (dataDir, file) => {
+  const synonyms = readJson(dataDir, file);
 
   const synonymMap = new Map();
   for (const [term, termSynonyms] of Object.entries(synonyms)) {
@@ -84,8 +82,8 @@ const addSynonyms = (terms, allSynonyms) => {
   return newTerms;
 };
 
-const readChars = (file, synonyms, variables) => {
-  const chars = readJson(file);
+const readChars = (dataDir, file, synonyms, variables) => {
+  const chars = readJson(dataDir, file);
   return chars
     .map(normalizeChar(variables))
     .map(char => {
@@ -117,14 +115,14 @@ const readChars = (file, synonyms, variables) => {
     });
 };
 
-module.exports = () => {
-  const baseData = readJson('index.json');
+export default dataDir => {
+  const baseData = readJson(dataDir, 'index.json');
 
-  const synonyms = readSynonyms(baseData.synonyms);
+  const synonyms = readSynonyms(dataDir, baseData.synonyms);
   const variables = new Map(Object.entries(baseData.variables));
   const chars = [];
   baseData.characters.forEach(charFile => {
-    for (const char of readChars(charFile, synonyms, variables)) {
+    for (const char of readChars(dataDir, charFile, synonyms, variables)) {
       chars.push(char);
     }
   });

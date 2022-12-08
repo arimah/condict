@@ -19,6 +19,7 @@ export const AppStyles = createGlobalStyle`
     display: grid;
     justify-items: stretch;
     align-items: stretch;
+    overflow: hidden;
   }
 
   a:focus {

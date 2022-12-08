@@ -1,8 +1,12 @@
+import fs from 'fs';
+import url from 'url';
 import path from 'path';
 
-import {getExternal, getPlugins, onwarn} from '../../config/rollup.base.js';
+import {getExternal, getPlugins, onwarn} from '../../config/rollup.base.mjs';
 
-import pkg from './package.json';
+// How is this an improvement over __dirname?
+const dir = path.dirname(url.fileURLToPath(import.meta.url));
+const pkg = JSON.parse(fs.readFileSync(`${dir}/package.json`));
 
 const env = process.env.NODE_ENV || 'production';
 
@@ -44,7 +48,6 @@ export default [
       if (isExternalRenderer(id)) {
         return true;
       }
-
       if (path.isAbsolute(id) && normalizePath(id).startsWith(mainDir)) {
         throw new Error(`Renderer references main module ${id}`);
       }
@@ -79,11 +82,9 @@ export default [
       if (isExternalMain(id)) {
         return true;
       }
-
       if (path.isAbsolute(id) && normalizePath(id).startsWith(rendererDir)) {
         throw new Error(`Main references renderer module ${id}`);
       }
-
       return false;
     },
 
