@@ -88,7 +88,13 @@ const initMainWindow = (getConfig: () => AppConfig): MainWindowInstance => {
     void win.loadFile(path.join(getAppRootDir(), 'static/index.html'));
   };
 
-  app.on('ready', createWindow);
+  // The app may already be ready by the time this runs, and the 'ready'
+  // event won't fire
+  if (app.isReady()) {
+    createWindow();
+  } else {
+    app.on('ready', createWindow);
+  }
   app.on('activate', createWindow);
 
   app.on('second-instance', () => {
