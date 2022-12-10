@@ -5,16 +5,16 @@ files:
   - locale/**/*
   - static/**/*
   - package.json
-  - "!**/.buildcache"
-  - "!**/*.tsbuildinfo"
-  - "!**/*.sqlite"
-  - "!**/*.gyp"
-  - "!**/*.md"
-  - "!**/*.js.map"
-  - "!node_modules/@condict/server/{.*,bin,build,deps,docs,src,src-cpp,test,test-data,*.json}"
+  - "!**/.buildcache/**"
+  - "!**/.editorconfig"
+  - "!**/.eslintrc.cjs"
+  - "!**/*.{tsbuildinfo,sqlite,gyp,gypi,md,js.map,ts,mjs,sh}"
+  - "!**/node_modules/bcrypt/{bin,build,src}/**"
+  - "!**/node_modules/better-sqlite3/{build,deps,src}/**"
+  - "**/node_modules/better-sqlite3/build/**/better_sqlite3.node"
+  - "!node_modules/@condict/server/{.*,*.json}"
+  - "!node_modules/@condict/server/{bin,build,deps,docs,src,src-cpp,test,test-data}/**"
   - "node_modules/@condict/server/package.json"
-  - "!node_modules/**/better-sqlite3/{build,deps,src}"
-  - "!node_modules/**/bcrypt/{bin,build}"
 extraResources:
   - from: node_modules/@condict/server/bin/condict.sqlite3-ext
     to: condict.sqlite3-ext
