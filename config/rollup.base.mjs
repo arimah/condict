@@ -77,12 +77,12 @@ export const getPlugins = (options = {}) => {
 
     typescript({
       tsconfig: `${packagePath}/tsconfig.json`,
-      rootDir: `./src`,
+      rootDir: './src',
       noEmitOnError: false,
       outputToFilesystem: true,
       ...declarationDir ? {
         declaration: true,
-        declarationDir,
+        outDir: `${packagePath}/${declarationDir}`,
       } : null,
       ...cacheDir && tsBuildInfoFile ? {
         incremental: true,
@@ -157,7 +157,7 @@ export const configureTarget = (pkg, target, options = {}) => {
 
   const firstTarget = Array.isArray(target) ? target[0] : target;
   const targetPath = `${packagePath}/${firstTarget}`;
-  const outputDir = path.dirname(targetPath);
+  const outputDir = path.dirname(firstTarget);
   const outputName = path.basename(firstTarget);
 
   return {
@@ -169,34 +169,28 @@ export const configureTarget = (pkg, target, options = {}) => {
       browser,
       declarationDir: declarations && outputDir,
       cacheDir: `${packagePath}/.buildcache/${outputName}`,
-      tsBuildInfoFile: `${outputDir}/.${outputName}.tsbuildinfo`,
+      tsBuildInfoFile: `.buildcache/${outputName}.tsbuildinfo`,
       packagePath,
     }),
     onwarn,
   };
 };
 
-const getOutput = (output, pkg, packagePath, declarations) => {
-  if (!Array.isArray(output)) {
-    output = [output];
+const getOutput = (output, pkg, packagePath) => {
+  if (Array.isArray(output)) {
+    return output.map(out => getOutput(out, pkg, packagePath));
   }
-  return output.map((out, i) => {
-    // Target paths arrives without packagePath, so we need to prefix
-    const targetPath = `${packagePath}/${out}`;
-    return {
-      format: getOutputFormat(pkg, targetPath),
-      exports: 'auto',
-      interop: 'auto',
-      generatedCode: 'es2015',
-      externalLiveBindings: false,
-      sourcemap: false,
-      ...declarations && i === 0 ? {
-        dir: path.dirname(targetPath),
-      } : {
-        file: targetPath,
-      },
-    };
-  });
+  // Target paths arrives without packagePath, so we need to prefix
+  const targetPath = `${packagePath}/${output}`;
+  return {
+    format: getOutputFormat(pkg, targetPath),
+    exports: 'auto',
+    interop: 'auto',
+    generatedCode: 'es2015',
+    externalLiveBindings: false,
+    sourcemap: false,
+    file: targetPath,
+  };
 };
 
 const getOutputFormat = (pkg, outputName) => {
@@ -278,9 +272,7 @@ const configureDefault = (pkg, options = {}) => {
           entry: input,
         });
 
-        for (const output of config.output) {
-          output.banner = '#!/usr/bin/env node';
-        }
+        config.output.banner = '#!/usr/bin/env node';
         return config;
       })
     );

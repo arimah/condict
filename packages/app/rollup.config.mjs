@@ -60,7 +60,7 @@ export default [
       packagePath: '.',
       declarationDir: null,
       cacheDir: './.buildcache/renderer',
-      tsBuildInfoFile: './dist/.renderer.tsbuildinfo',
+      tsBuildInfoFile: './.buildcache/renderer.tsbuildinfo',
     }),
 
     onwarn,
@@ -94,7 +94,7 @@ export default [
       packagePath: '.',
       declarationDir: null,
       cacheDir: './.buildcache/main',
-      tsBuildInfoFile: './dist/.main.tsbuildinfo',
+      tsBuildInfoFile: './.buildcache/main.tsbuildinfo',
     }),
 
     onwarn,
