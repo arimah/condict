@@ -1,4 +1,4 @@
-import {UserInputError} from 'apollo-server';
+import {UserInputError} from '../errors';
 
 export type Validator<I, R> = {
   readonly do: <U>(

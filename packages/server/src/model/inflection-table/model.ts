@@ -1,4 +1,3 @@
-import {UserInputError} from 'apollo-server';
 import {GraphQLResolveInfo} from 'graphql';
 
 import {DataReader} from '../../database';
@@ -11,6 +10,7 @@ import {
   validatePageParams,
   LayoutVersionFilter,
 } from '../../graphql';
+import {UserInputError} from '../../errors';
 
 import paginate from '../paginate';
 import {ItemConnection} from '../types';

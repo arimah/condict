@@ -1,5 +1,3 @@
-import {UserInputError} from 'apollo-server';
-
 import {tokenizePattern, normalizeStem} from '@condict/inflect';
 
 import {
@@ -7,6 +5,7 @@ import {
   InflectionTableRowInput,
   InflectedFormInput,
 } from '../../graphql';
+import {UserInputError} from '../../errors';
 
 import {InflectionTableRowJson, InflectionTableCellJson} from './types';
 

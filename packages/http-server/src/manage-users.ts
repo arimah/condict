@@ -8,7 +8,7 @@ import {
   UserId,
   NewUserInput,
   EditUserInput,
-} from './index.js';
+} from '@condict/server';
 
 type Prompt = {
   query(prompt: string): Promise<string>;

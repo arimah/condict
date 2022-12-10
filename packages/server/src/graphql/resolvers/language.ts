@@ -1,5 +1,3 @@
-import {UserInputError} from 'apollo-server';
-
 import {
   Language as LanguageModel,
   LanguageStats as LanguageStatsModel,
@@ -14,6 +12,7 @@ import {
   LanguageStatsRow,
   MutContext,
 } from '../../model';
+import {UserInputError} from '../../errors';
 
 import {
   Language as LanguageType,

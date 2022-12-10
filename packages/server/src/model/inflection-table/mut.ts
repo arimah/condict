@@ -1,5 +1,3 @@
-import {UserInputError} from 'apollo-server';
-
 import {DataReader, DataWriter} from '../../database';
 import {
   InflectionTableId,
@@ -12,6 +10,7 @@ import {
   PartOfSpeechId,
   LanguageId,
 } from '../../graphql';
+import {UserInputError} from '../../errors';
 
 import {Definition} from '../definition';
 import {PartOfSpeech} from '../part-of-speech';

@@ -1,5 +1,4 @@
 import {ExecutionResult, GraphQLError, parse, validate, execute} from 'graphql';
-import {ApolloError} from 'apollo-server';
 
 import CondictServer, {LocalSession} from './server';
 
@@ -37,7 +36,7 @@ const executeLocalOperation = async (
       contextValue: context,
     });
   } catch (e) {
-    if (e instanceof GraphQLError || e instanceof ApolloError) {
+    if (e instanceof GraphQLError) {
       return {data: null, errors: [e]};
     } else {
       throw e;

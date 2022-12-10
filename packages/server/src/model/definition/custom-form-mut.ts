@@ -1,5 +1,3 @@
-import {UserInputError} from 'apollo-server';
-
 import {DataWriter} from '../../database';
 import {
   DefinitionInflectionTableId,
@@ -7,6 +5,7 @@ import {
   InflectionTableLayoutId,
   InflectedFormId,
 } from '../../graphql';
+import {UserInputError} from '../../errors';
 
 import {InflectedForm} from '../inflection-table';
 

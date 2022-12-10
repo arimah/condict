@@ -1,12 +1,15 @@
-import {UserInputError} from 'apollo-server';
-
 import {
   BlockElementInput,
   InlineElementInput,
   FormattedTextInput,
   TableCaptionInput,
 } from '../graphql';
+import {UserInputError} from '../errors';
 
+import {
+  isCondictLink,
+  parseCondictLink,
+} from './condict-link';
 import {
   CondictLink,
   BlockElementJson,
@@ -14,10 +17,6 @@ import {
   FormattedTextJson,
   TableCaptionJson,
 } from './types';
-import {
-  isCondictLink,
-  parseCondictLink,
-} from './condict-link';
 
 export type LinkRefCollector = (target: CondictLink) => void;
 

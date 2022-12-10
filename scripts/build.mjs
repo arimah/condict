@@ -36,6 +36,7 @@ const AllPackages = [
 
   // Server.
   {group: 'server', name: 'server'},
+  {group: 'server', name: 'http-server'},
 
   // UI packages.
   {group: 'ui', name: 'ui'},

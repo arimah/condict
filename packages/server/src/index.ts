@@ -5,7 +5,7 @@ export {
   DictionaryEventListener,
   User,
 } from './server';
-export {default as CondictHttpServer} from './http-server';
+export {Context as ExecutionContext} from './graphql';
 export {default as executeLocalOperation} from './execute-local';
 export {default as getTableSchema} from './table-schema';
 export {UserId, NewUserInput, EditUserInput} from './model';
@@ -22,19 +22,13 @@ export {
   InflectionTableEvent,
   TagEvent,
 } from './event';
-export {
-  default as loadConfigFile,
-  validateLoggerOptions,
-  validateConfig,
-  validateStandaloneConfig,
-} from './config';
+export {validateLoggerOptions, validateServerConfig} from './config';
 export {
   Logger,
   LoggerOptions,
   LogFile,
   LogLevel,
   ServerConfig,
-  StandaloneConfig,
 } from './types';
 export {
   Connection,

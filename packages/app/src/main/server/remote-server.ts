@@ -161,6 +161,7 @@ const getEventsUrl = (serverUrl: string): URL => {
   if (!baseUrl.pathname.endsWith('/')) {
     baseUrl.pathname += '/';
   }
+  baseUrl.protocol = baseUrl.protocol === 'https:' ? 'wss:' : 'ws:';
   return new URL('./events', baseUrl);
 };
 

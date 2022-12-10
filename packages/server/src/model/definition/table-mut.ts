@@ -1,5 +1,3 @@
-import {UserInputError} from 'apollo-server';
-
 import {DataWriter} from '../../database';
 import {
   DefinitionId,
@@ -12,6 +10,7 @@ import {
   EditDefinitionInflectionTableInput,
 } from '../../graphql';
 import {validateTableCaption} from '../../rich-text';
+import {UserInputError} from '../../errors';
 
 import {
   InflectionTable,

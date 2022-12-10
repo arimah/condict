@@ -1,6 +1,5 @@
-import {UserInputError} from 'apollo-server';
-
 import {Tag} from '../../model';
+import {UserInputError} from '../../errors';
 
 import {Query as QueryType} from '../types';
 

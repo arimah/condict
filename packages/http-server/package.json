@@ -1,0 +1,43 @@
+{
+  "name": "@condict/http-server",
+  "version": "0.1.0",
+  "description": "Standalone Condict HTTP server. Supports minimal configuration and a basic sandbox. Intended mainly for reverse proxying behind a 'regular' HTTP server.",
+  "repository": "github:arimah/condict",
+  "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "dist/"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "condict-server": "./dist/cli.js"
+  },
+  "binEntries": {
+    "condict-server": "src/cli.ts"
+  },
+  "scripts": {
+    "start": "node dist/cli.js"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.2.2",
+    "@condict/server": "^0.1.0",
+    "@graphql-tools/schema": "^9.0.10",
+    "@graphql-tools/utils": "^9.1.1",
+    "chalk": "^4.1.2",
+    "command-line-args": "^5.2.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "graphql": "^16.6.0",
+    "nanoid": "^3.3.4",
+    "winston": "^3.8.2",
+    "ws": "^8.11.0"
+  },
+  "devDependencies": {
+    "@types/command-line-args": "^5.2.0",
+    "@types/cors": "^2.8.13",
+    "@types/node": "^18.11.10",
+    "@types/ws": "^8.5.3"
+  }
+}

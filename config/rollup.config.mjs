@@ -23,6 +23,12 @@ const AllPackages = [
       browser: false,
     },
   },
+  {
+    name: 'http-server',
+    options: {
+      browser: false,
+    },
+  },
 
   // UI packages
   {name: 'ui'},

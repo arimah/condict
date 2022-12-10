@@ -1,7 +1,7 @@
-import {UserInputError} from 'apollo-server';
 import {hash} from 'bcrypt';
 
 import {DataReader} from '../../database';
+import {UserInputError} from '../../errors';
 
 import validator, {Valid, minLength, unique} from '../validator';
 

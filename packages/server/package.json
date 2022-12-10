@@ -1,7 +1,7 @@
 {
   "name": "@condict/server",
   "version": "0.1.0",
-  "description": "Condict backend/server. Exposes HTTP APIs for querying and manipulating the dictionary, and Node APIs for configuring, starting and stopping a server.",
+  "description": "Condict storage backend. Implements a GraphQL schema for querying and manipulating the dictionary, and integrates with a database for storage.",
   "repository": "github:arimah/condict",
   "author": "Alice Heurlin <alice.s.heurlin@gmail.com>",
   "license": "MIT",
@@ -12,14 +12,7 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "bin": {
-    "condict-server": "./dist/cli.js"
-  },
-  "binEntries": {
-    "condict-server": "src/cli.ts"
-  },
   "scripts": {
-    "start": "node dist/cli.js",
     "copyGraphql": "copyfiles --up 3 ../../graphql-schema/*.graphql ./graphql-schema",
     "build": "npm run -s build:graphqlTypes && npm run -s copyGraphql && npm run build:native-own",
     "build:graphqlTypes": "condict-graphql-typer --schema-dir ../../graphql-schema --target=server --output ./src/graphql/types.ts",
@@ -34,26 +27,19 @@
     "@condict/inflect": "^0.1.0",
     "@graphql-tools/schema": "^9.0.10",
     "@graphql-tools/utils": "^9.1.1",
-    "apollo-server": "^3.10.0",
-    "apollo-server-core": "^3.10.0",
-    "apollo-server-plugin-base": "^3.6.2",
     "bcrypt": "^5.1.0",
     "better-sqlite3": "^8.0.1",
     "chalk": "^4.1.2",
-    "command-line-args": "^5.2.1",
     "dataloader": "^2.1.0",
     "deepmerge": "^4.2.2",
     "graphql": "^16.6.0",
     "nanoid": "^3.3.4",
-    "winston": "^3.8.2",
-    "ws": "^8.11.0"
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@condict/graphql-typer": "^0.1.0",
     "@types/bcrypt": "^5.0.0",
-    "@types/command-line-args": "^5.2.0",
     "@types/node": "^18.11.10",
-    "@types/ws": "^8.5.3",
     "copyfiles": "^2.4.1",
     "mocha": "^10.1.0",
     "node-gyp": "^9.3.0",

@@ -1,7 +1,6 @@
-import {UserInputError} from 'apollo-server';
-
 import {DataReader} from '../../database';
 import {LanguageId, PartOfSpeechId} from '../../graphql';
+import {UserInputError} from '../../errors';
 
 import {PartOfSpeechRow, PartOfSpeechStatsRow} from './types';
 

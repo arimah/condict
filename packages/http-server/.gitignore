@@ -1,0 +1,18 @@
+# TODO: Evaluate whether it is correct to ignore this file
+package-lock.json
+
+# Source files are compiled before publish, and are not otherwise needed
+dist/
+build/
+bin/
+
+# These test files are downloaded on demand and should not be committed
+# (they're quite sizable, around 20 MB in total)
+test-data/collation.txt
+test-data/nfd.txt
+
+# These files are copied on build
+graphql-schema
+
+# Config files should obviously not be committed
+config*.json

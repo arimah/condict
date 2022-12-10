@@ -5,7 +5,7 @@ import {nativeTheme} from 'electron';
 import {
   Logger,
   LoggerOptions,
-  validateConfig as validateLocalServerConfig,
+  validateServerConfig as validateLocalServerConfig,
   validateLoggerOptions,
   createLogger,
 } from '@condict/server';
@@ -377,7 +377,7 @@ const validateRemoteServerConfig = (
     return DefaultConfig.server;
   }
 
-  if (/^https?:$/.test(parsedUrl.protocol)) {
+  if (!/^https?:$/.test(parsedUrl.protocol)) {
     errors.push(
       `server.url: invalid or illegal protocol: ${parsedUrl.protocol}`
     );

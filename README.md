@@ -74,16 +74,18 @@ Source files for the UI component test server are in [dev/](./dev).
 
 ### Testing/developing the server
 
-1. `npm run dev:server`
-2. In a different terminal, `cd packages/server`
-3. First time only: `cp config.json.example config.json`
-4. Please edit `config.json` file if you wish to customize logging and the database location.
-5. First time after using the app, rebuild native dependencies: `npm run build:native`
+1. First time or after using the app, rebuild native dependencies: `cd packages/server && npm run build:native && cd ../..`
+2. `npm run dev:server`
+3. In a different terminal: `cd packages/http-server`
+4. First time only: `cp config.json.example config.json`
+5. Please edit `config.json` file if you wish to customize logging and the database location.
 6. `npm start`
 
-If the server fails to start with errors around [better-sqlite3][] or [bcrypt][], you may also need to run `npm run build:native-deps`.
+If the server fails to start with errors around [better-sqlite3][] or [bcrypt][], you may need to run `npm run build:native-deps` in `packages/server`.
 
-When the server is running, a GraphQL playground will be accessible at `http://localhost:4000`. **The server does _not_ automatically reload on recompilation;** you must restart it manually.
+When the server is running, a GraphQL sandbox will be accessible at `http://localhost:4000`. If you have set a different port in the config, connect to that port instead of 4000. **The server does _not_ automatically reload on recompilation;** you must restart it manually.
+
+**Important:** The GraphQL sandbox is _not_ served locally. It's an embedded version of Apollo Sandbox. You must be connected to the internet to use it. If you do not wish to use it, you can query the server from any GraphQL client of your choice.
 
 ### Testing/developing the app
 
@@ -107,6 +109,7 @@ The eventual goal of Condict is to be distributable as a standalone Electron app
 
 * [app](./packages/app): The main Condict frontend (the Electron app).
 * [graphql-typer](./packages/graphql-typer): Generates TypeScript type definitions from a GraphQL schema.
+* [http-server](./packages/http-server): A standalone HTTP server that exposes Condict's GraphQL schema, designed for use *outside* the app.
 * [ipa](./packages/ipa): Utilities for searching and listing [IPA][] characters.
 * [platform](./packages/platform): Basic platform detection, with support for overrides.
 * [rich-text-editor](./packages/rich-text-editor): The rich text editor component for definition descriptions and inflection table captions.

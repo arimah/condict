@@ -2,13 +2,12 @@ import parseCliArgs, {OptionDefinition} from 'command-line-args';
 
 import {
   CondictServer,
-  CondictHttpServer,
   Logger,
-  StandaloneConfig,
   createLogger,
-  loadConfigFile,
   getTableSchema,
-} from './index.js';
+} from '@condict/server';
+
+import {CondictHttpServer, HttpServerConfig, loadConfigFile} from './index.js';
 import {addUser, editUser, logOutUser, deleteUser} from './manage-users';
 
 type MaybeString = string | null | undefined;
@@ -53,9 +52,9 @@ const printSchema = (tableName: string | null) => {
   }
 };
 
-const start = async (logger: Logger, config: StandaloneConfig) => {
+const start = async (logger: Logger, config: HttpServerConfig) => {
   const server = new CondictServer(logger, config);
-  const httpServer = new CondictHttpServer(server, config.http);
+  const httpServer = await CondictHttpServer.startNew(server, config.http);
 
   let shuttingDown = false;
   const gracefulShutdown = (signal: NodeJS.Signals) => {
@@ -74,7 +73,7 @@ const start = async (logger: Logger, config: StandaloneConfig) => {
   process.on('SIGINT', gracefulShutdown);
   process.on('SIGTERM', gracefulShutdown);
 
-  const {url} = await httpServer.start();
+  const url = `http://localhost:${config.http.port}`;
   logger.info(`Server listening on ${url}`);
 };
 
@@ -83,7 +82,7 @@ const main = async () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const configFile: string = args.config ?? 'config.json';
-  let config: StandaloneConfig;
+  let config: HttpServerConfig;
   try {
     config = loadConfigFile(configFile);
   } catch (e) {
