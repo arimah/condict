@@ -55,7 +55,7 @@ export const Helper = styled.span.attrs({
   pointer-events: none;
 
   ${p => p.$visible && css`
-    ${Button}:focus + & {
+    ${Button}:focus + && {
       bottom: calc(100% + 8px);
       opacity: 1;
     }
