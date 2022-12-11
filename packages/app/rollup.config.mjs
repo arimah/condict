@@ -30,6 +30,17 @@ const normalizePath = path.sep === '\\' ? path.normalize : p => p;
 const mainDir = normalizePath(path.resolve('./src/main')) + path.sep;
 const rendererDir = normalizePath(path.resolve('./src/renderer')) + path.sep;
 
+// Module path overrides for development only, when we absolutely positively
+// need to load a certain version of a package. In production, Rollup inlines
+// all modules referenced in the renderer, and path problems go away.
+const rendererModulePathOverridesForDev = [
+  {
+    // https://github.com/styled-components/styled-components/issues/3714#issuecomment-1345561441
+    name: 'styled-components',
+    newPath: 'styled-components/dist/styled-components.browser.cjs.js',
+  },
+];
+
 export default [
   {
     input: './src/renderer/index.tsx',
@@ -42,6 +53,22 @@ export default [
       interop: 'auto',
       generatedCode: 'es2015',
       externalLiveBindings: false,
+      ...env === 'development' ? {
+        intro: () => {
+          // This is a *really nasty*, hacky piece of code that I'm not proud of,
+          // but it does the trick.
+          let result = '';
+
+          for (const {name, newPath} of rendererModulePathOverridesForDev) {
+            // Force the replacement module to be loaded
+            result += `require(${JSON.stringify(newPath)});\n`;
+            // And then replace the original's path with the new path in require.cache
+            result += `require.cache[require.resolve(${JSON.stringify(name)})] = require.cache[require.resolve(${JSON.stringify(newPath)})];\n`;
+          }
+
+          return result;
+        },
+      } : null,
     },
 
     external: id => {
