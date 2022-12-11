@@ -6,6 +6,7 @@ export const AppStyles = createGlobalStyle`
   #root {
     width: 100%;
     height: 100%;
+    overflow: hidden;
   }
 
   body {
@@ -19,7 +20,6 @@ export const AppStyles = createGlobalStyle`
     display: grid;
     justify-items: stretch;
     align-items: stretch;
-    overflow: hidden;
   }
 
   a:focus {
