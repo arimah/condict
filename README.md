@@ -59,49 +59,9 @@ If you'd like to keep up to date with developments, feel free to watch this repo
 
 That said, **bug reports and bug fix PRs are welcome**, even at this stage.
 
-## Getting started
+## Developing
 
-Getting Condict up and running is a slightly involved process. Keep in mind **Condict is a work in progress, and many features are missing**, including documentation.
-
-First, run initial setup: `npm run setup`
-
-### Testing/developing UI components
-
-1. `npm run dev:ui`
-2. Navigate to `http://localhost:3000`.
-
-Source files for the UI component test server are in [dev/](./dev).
-
-### Testing/developing the server
-
-1. First time or after using the app, rebuild native dependencies: `cd packages/server && npm run build:native && cd ../..`
-2. `npm run dev:server`
-3. In a different terminal: `cd packages/http-server`
-4. First time only: `cp config.json.example config.json`
-5. Please edit `config.json` file if you wish to customize logging and the database location.
-6. `npm start`
-
-If the server fails to start with errors around [better-sqlite3][] or [bcrypt][], you may need to run `npm run build:native-deps` in `packages/server`.
-
-When the server is running, a GraphQL sandbox will be accessible at `http://localhost:4000`. If you have set a different port in the config, connect to that port instead of 4000. **The server does _not_ automatically reload on recompilation;** you must restart it manually.
-
-**Important:** The GraphQL sandbox is _not_ served locally. It's an embedded version of Apollo Sandbox. You must be connected to the internet to use it. If you do not wish to use it, you can query the server from any GraphQL client of your choice.
-
-### Testing/developing the app
-
-The app depends on the server. The server has dependencies on a few native modules, and contains its own native module too. While the server targets Node, the app is written for Electron. The practical effect of this: you must rebuild native modules for the app, and you cannot run the app and the server simultaneously in the same repository.
-
-1. `npm run dev:app`
-2. In a different terminal, `cd packages/app`
-3. First time or after using the server: `npm run build:native`
-4. `npm start`
-
-Now you should have a Condict window. Have fun!
-
-[lerna]: https://lerna.js.org/
-[styled-components]: https://styled-components.com/
-[better-sqlite3]: https://www.npmjs.com/package/better-sqlite3
-[bcrypt]: https://www.npmjs.com/package/bcrypt
+See instructions in [DEVELOPING.md](./DEVELOPING.md).
 
 ## Code structure
 
