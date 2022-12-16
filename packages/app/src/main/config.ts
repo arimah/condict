@@ -233,6 +233,7 @@ const validateFontSize = (
   switch (value) {
     case '13':
     case '14':
+    case '15':
     case '16':
     case '18':
       return value;

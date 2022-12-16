@@ -41,6 +41,7 @@ const MotionOptions: readonly MotionPreference[] = [
 const FontSizes: readonly SliderStop<FontSizeOption>[] = [
   {pos: 13, value: '13'},
   {pos: 14, value: '14'},
+  {pos: 15, value: '15'},
   {pos: 16, value: '16'},
   {pos: 18, value: '18'},
 ];

@@ -3,7 +3,7 @@ import {ThemeVariables} from './types';
 /**
  * The values represent the pixel size of the regular font size.
  */
-export type FontSizeOption = '13' | '14' | '16' | '18';
+export type FontSizeOption = '13' | '14' | '15' | '16' | '18';
 
 export type LineHeightOption = '1.25' | '1.5' | '1.75' | '2';
 
@@ -73,6 +73,17 @@ const FontSizes: Record<FontSizeOption, FontSizeGroup> = {
     xxl: ['20px', {'1.25': '22px', '1.5': '22px', '1.75': '24px', '2': '28px'}],
     xxxl: ['24px', {'1.25': '26px', '1.5': '26px', '1.75': '28px', '2': '30px'}],
     huge: ['28px', '32px'],
+  },
+  '15': {
+    xs: ['12px', '13px'],
+    sm: ['13px', '15px'],
+    md: ['15px', '20px'],
+    mb: ['15px', {'1.25': '20px', '1.5': '22px', '1.75': '26px', '2': '30px'}],
+    lg: ['17px', {'1.25': '20px', '1.5': '22px', '1.75': '26px', '2': '30px'}],
+    xl: ['20px', {'1.25': '22px', '1.5': '24px', '1.75': '26px', '2': '30px'}],
+    xxl: ['24px', {'1.25': '26px', '1.5': '26px', '1.75': '28px', '2': '30px'}],
+    xxxl: ['26px', {'1.25': '28px', '1.5': '28px', '1.75': '30px', '2': '32px'}],
+    huge: ['30px', '34px'],
   },
   '16': {
     xs: ['13px', '14px'],
