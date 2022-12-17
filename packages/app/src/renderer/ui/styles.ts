@@ -8,7 +8,7 @@ export const SidebarIdealWidth = '25vw';
 
 export const SidebarMinWidth = '264px';
 
-export const SidebarMaxWidth = '336px';
+export const SidebarMaxWidth = '24rem';
 
 /**
  * CSS expression, minus the `calc()`, that evaluates to the width of the main
@@ -51,7 +51,7 @@ export const ResourceMeta = styled.span`
 `;
 
 export const FlowContent = styled.div`
-  max-width: 800px;
+  max-width: 58rem;
 `;
 
 // NB: The 96px value MUST be synchronised with the left gutter and the various

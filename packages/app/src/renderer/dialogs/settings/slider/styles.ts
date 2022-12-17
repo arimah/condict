@@ -28,7 +28,7 @@ export const Main = styled.div.attrs({
   margin-inline: 20px;
   padding-block: 28px 8px;
   position: relative;
-  max-width: 720px;
+  max-width: min(51.5rem, 800px);
 
   &:focus {
     outline: none;

@@ -15,8 +15,8 @@ export const Main = styled(StandardDialog)`
 
   width: calc(100vw - 96px);
   height: calc(100vh - 96px);
-  max-width: 1200px;
-  max-height: 860px;
+  max-width: clamp(1050px, 86rem, 1320px);
+  max-height: clamp(810px, 61.5rem, 980px);
 `;
 
 export const Title = styled.h2`
@@ -26,7 +26,9 @@ export const Title = styled.h2`
 export const Sidebar = styled.nav`
   box-sizing: border-box;
   padding-block: 20px;
-  width: 260px;
+  width: 19rem;
+  min-width: 260px;
+  max-width: 310px;
   grid-row: 1 / span 2;
   grid-column: 1;
   background-color: var(--bg-alt);
@@ -164,7 +166,7 @@ export const TextSizeOptions = styled.div`
   flex-direction: row;
   gap: 24px;
   align-items: flex-start;
-  max-width: 760px;
+  max-width: calc(min(51.5rem, 800px) + 40px);
 
   &:not(:last-child) {
     margin-bottom: 24px;

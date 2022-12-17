@@ -11,7 +11,7 @@ export const Tag = styled(Link)`
   align-items: center;
   min-height: 32px;
   border: 2px solid var(--border);
-  border-radius: 24px;
+  border-radius: 32px;
   background-color: var(--bg);
 
   && {

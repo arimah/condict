@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const CharacterList = styled.div.attrs({
   role: 'listbox',
 })`
-  max-height: 260px;
+  max-height: min(19rem, 340px);
   overflow: auto;
 `;
 

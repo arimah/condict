@@ -24,6 +24,7 @@ export const DefinitionLink = styled(Link)`
     outline: none;
     border-radius: 7px;
     border-color: var(--focus-border);
+    box-shadow: none;
   }
 
   > .mdi-icon {

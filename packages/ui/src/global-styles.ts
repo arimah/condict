@@ -18,9 +18,7 @@ export const GlobalStyles = createGlobalStyle`
         ? `--${name}: ${value};`
         : null
     )}
-  }
 
-  body {
     font-size: var(--font-size-md);
     line-height: var(--line-height-md);
     font-family: 'AppleSymbols', 'Noto Sans', sans-serif;

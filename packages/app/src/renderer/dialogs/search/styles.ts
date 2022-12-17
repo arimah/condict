@@ -7,9 +7,9 @@ export const Wrapper = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  width: 680px;
+  width: max(49rem, 640px);
   max-width: 75vw;
-  height: 520px;
+  height: max(38rem, 500px);
   max-height: 75vh;
   pointer-events: none;
 `;

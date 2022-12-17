@@ -9,7 +9,7 @@ export const SubmitError = styled.p`
 export const TableCardList = styled(CardGrid).attrs({
   role: 'group',
 })`
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
 `;
 
 export const TableCard = styled.div`

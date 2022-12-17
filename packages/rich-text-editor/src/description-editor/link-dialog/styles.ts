@@ -85,6 +85,6 @@ export const SearchResultList = styled.ul.attrs({
   margin: 2px 0 0;
   padding: 0;
   list-style-type: none;
-  max-height: 200px;
+  max-height: min(15rem, 260px);
   overflow: auto;
 `;

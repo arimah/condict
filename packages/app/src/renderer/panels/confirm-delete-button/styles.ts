@@ -59,7 +59,7 @@ export const ConfirmButton = styled(ConfirmButtonBase).attrs({
   intent: 'danger',
 })`
   align-self: flex-start;
-  min-width: 176px;
+  min-width: 13rem;
 `;
 
 export const CloseButton = styled(Button)`
