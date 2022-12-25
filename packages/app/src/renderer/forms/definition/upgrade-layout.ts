@@ -34,7 +34,7 @@ const upgradeLayout = (
   const newCustomForms = new Map<InflectedFormId, string>();
 
   // Don't bother walking the table if there are no custom forms to begin with.
-  if (transferableForms === 0) {
+  if (transferableForms !== 0) {
     for (const row of nextLayout.rows) {
       for (const cell of row.cells) {
         const form = cell.inflectedForm;
