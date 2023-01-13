@@ -68,7 +68,7 @@ const TabPanel = React.forwardRef((
     // become invalid if the panel was updated while focus was outside it,
     // in which case we'll have a reference to a removed element.
     if (lastFocus.current && panel.contains(lastFocus.current)) {
-      lastFocus.current.focus();
+      lastFocus.current.focus({preventScroll: true});
       return;
     }
 
@@ -79,19 +79,19 @@ const TabPanel = React.forwardRef((
         includeRoot: false,
       });
       if (focusable.length > 0) {
-        (focusable[0] as HTMLElement).focus();
+        (focusable[0] as HTMLElement).focus({preventScroll: true});
         return;
       }
     }
 
     // Nothing focusable inside the main column, so let's try the back button.
     if (backButtonRef.current) {
-      backButtonRef.current.focus();
+      backButtonRef.current.focus({preventScroll: true});
       return;
     }
 
     // If all else fails, focus the panel itself.
-    panel.focus();
+    panel.focus({preventScroll: true});
   }, [hasSidePanels]);
 
   useImperativeHandle(ref, () => ({restoreFocus}), [restoreFocus]);
