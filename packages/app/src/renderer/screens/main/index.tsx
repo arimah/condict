@@ -1,4 +1,4 @@
-import React, {KeyboardEvent, useCallback, useMemo, useRef} from 'react';
+import React, {KeyboardEvent, useCallback, useRef} from 'react';
 
 import {
   CommandProvider,
@@ -15,33 +15,41 @@ import SidebarContent from './sidebar-content';
 import TabPanelList from './tab-panel-list';
 import * as S from './styles';
 
+type AppCommand = 'search' | 'settings';
+
+const AppCommandMap: CommandSpecMap<AppCommand> = {
+  'global:search': {
+    action: 'search',
+  },
+  'global:settings': {
+    action: 'settings',
+  },
+};
+
 const MainScreen = React.memo((): JSX.Element => {
   const navigateTo = useNavigateTo();
   const navCommands = useNavigationCommands();
 
   const openDialog = useOpenDialog();
-  const appCommandMap = useMemo<CommandSpecMap<() => void>>(() => ({
-    'global:search': {
-      action: () => {
-        openDialog(searchDialog).then(
-          page => {
-            if (page) {
-              navigateTo(page, {openInNewTab: true});
-            }
-          },
-          () => {/* ignore */}
-        );
-      },
-    },
-    'global:settings': {
-      action: () => {
-        openDialog(settingsDialog).catch(() => { /* ignore */ });
-      },
-    },
-  }), [openDialog]);
   const appCommands = useCommandGroup({
-    commands: appCommandMap,
-    exec: cmd => cmd(),
+    commands: AppCommandMap,
+    exec: action => {
+      switch (action) {
+        case 'search':
+          openDialog(searchDialog).then(
+            page => {
+              if (page) {
+                navigateTo(page, {openInNewTab: true});
+              }
+            },
+            () => { /* ignore */ }
+          );
+          break;
+        case 'settings':
+          openDialog(settingsDialog).catch(() => { /* ignore */ });
+          break;
+      }
+    },
   });
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
