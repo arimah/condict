@@ -1,8 +1,6 @@
 import {useCallback} from 'react';
 import {Localized} from '@fluent/react';
 
-import {useUniqueId} from '@condict/ui';
-
 import {useNavigateTo, useOpenPanel} from '../../navigation';
 import {
   LanguagePage,
@@ -76,8 +74,6 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
     });
   }, [id]);
 
-  const htmlId = useUniqueId();
-
   return (
     <FlowContent>
       {renderData(data, ({partOfSpeech: pos}) => {
@@ -116,23 +112,14 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
             </ResourceMeta>
           </Subheader>
 
-          <h2 id={`${htmlId}-tables-heading`}>
-            <Localized id='part-of-speech-tables-heading'/>
-          </h2>
           <InflectionTableList
-            aria-labelledby={`${htmlId}-tables-heading`}
             language={langPage}
             tables={pos.inflectionTables}
             onAddTable={handleAddTable}
           />
 
-          <h2 id={`${htmlId}-defs-heading`}>
-            <Localized id='part-of-speech-definitions-heading'/>
-          </h2>
           <DefinitionList
-            aria-labelledby={`${htmlId}-defs-heading`}
-            definitions={usedBy.nodes}
-            totalCount={usedBy.page.totalCount}
+            definitions={usedBy}
             parent={PartOfSpeechTarget(id, pos.name, langPage)}
           />
         </>;

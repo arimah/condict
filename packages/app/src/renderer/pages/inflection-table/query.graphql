@@ -32,5 +32,47 @@ query($id: InflectionTableId!) {
         }
       }
     }
+
+    oldLayouts {
+      page { totalCount }
+    }
+
+    usedBy: usedByDefinitions(layout: ALL_LAYOUTS) {
+      page {
+        totalCount
+        hasNext
+      }
+      nodes {
+        definition {
+          ...DefinitionSummaryFragment
+        }
+        hasOldLayouts
+      }
+    }
+
+    oldUsedBy: usedByDefinitions(layout: OLD_LAYOUTS) {
+      page {
+        totalCount
+        hasNext
+      }
+      nodes {
+        definition {
+          ...DefinitionSummaryFragment
+        }
+      }
+    }
   }
+}
+
+fragment DefinitionSummaryFragment on Definition {
+  id
+  term
+  partOfSpeech {
+    name
+  }
+  description {
+    ...RichTextBlockFragment
+  }
+  timeCreated
+  timeUpdated
 }

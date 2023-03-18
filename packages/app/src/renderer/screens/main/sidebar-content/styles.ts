@@ -16,6 +16,7 @@ const SidebarButton = styled(ButtonBase)`
 // These buttons are never disabled, so no need to style them for that
 
 export const SearchButton = styled(SidebarButton)`
+  --bg: var(--sidebar-bg);
   --button-fg: var(--button-naked-fg);
   --button-bg: var(--button-naked-bg);
   --button-bg-hover: var(--button-naked-bg-hover);
@@ -23,10 +24,6 @@ export const SearchButton = styled(SidebarButton)`
   --button-border: var(--button-naked-border);
   --button-border-hover: var(--button-naked-border-hover);
   --button-border-pressed: var(--button-naked-border-pressed);
-
-  &:is(:focus, .force-focus) {
-    box-shadow: inset 0 0 0 1px var(--sidebar-bg);
-  }
 `;
 
 export const Button = styled(SidebarButton)`

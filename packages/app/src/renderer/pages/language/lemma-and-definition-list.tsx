@@ -106,6 +106,7 @@ const LemmaAndDefinitionList = (props: Props): JSX.Element => {
               parent={parent}
               definition={def}
               wrapTitle={title => <h4>{title}</h4>}
+              time='latest'
             />
           )}
         </CardList>

@@ -6,7 +6,11 @@ import {SROnly, useUniqueId} from '@condict/ui';
 import {InflectionTableId, LanguageId} from '../../graphql';
 
 import {useOpenPanel} from '../../navigation';
-import {LanguagePage, PartOfSpeechPage} from '../../page';
+import {
+  LanguagePage,
+  PartOfSpeechPage,
+  InflectionTablePage as InflectionTableTarget,
+} from '../../page';
 import {
   FlowContent,
   MainHeader,
@@ -24,6 +28,7 @@ import usePageData from '../page-data';
 import {PageProps} from '../types';
 
 import TableLayout from './table-layout';
+import DefinitionList from './definition-list';
 import InflectionTableQuery from './query';
 import * as S from './styles';
 
@@ -103,6 +108,13 @@ const InflectionTablePage = (props: Props): JSX.Element => {
           <S.TableContainer aria-labelledby={`${htmlId}-layout-title`}>
             <TableLayout layout={table.layout}/>
           </S.TableContainer>
+
+          <DefinitionList
+            usedBy={table.usedBy}
+            oldUsedBy={table.oldUsedBy}
+            oldLayoutCount={table.oldLayouts.page.totalCount}
+            parent={InflectionTableTarget(id, table.name, langPage)}
+          />
         </>;
       })}
     </FlowContent>

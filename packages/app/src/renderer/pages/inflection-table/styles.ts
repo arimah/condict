@@ -10,3 +10,14 @@ export const TableContainer = styled(FullWidth).attrs({
   overflow-x: auto;
   user-select: text;
 `;
+
+export const OldVersionNotice = styled.p`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+
+  > svg {
+    flex: none;
+  }
+`;

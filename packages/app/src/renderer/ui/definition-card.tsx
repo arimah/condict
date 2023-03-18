@@ -14,6 +14,7 @@ export type Props = {
   parent: LanguagePage;
   time?: 'latest' | 'created' | 'updated' | null;
   wrapTitle?: (title: JSX.Element) => ReactNode;
+  children?: ReactNode;
 };
 
 export interface DefinitionCardData {
@@ -33,8 +34,9 @@ const DefinitionCard = React.memo((props: Props): JSX.Element => {
   const {
     parent,
     definition,
-    time = 'latest',
+    time = null,
     wrapTitle = defaultWrapTitle,
+    children,
   } = props;
   return (
     <LinkCard
@@ -68,6 +70,7 @@ const DefinitionCard = React.memo((props: Props): JSX.Element => {
             updatedLabelId='definition-edited-on'
           />
         </S.Secondary>}
+      {children}
     </LinkCard>
   );
 });

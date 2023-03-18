@@ -11,7 +11,6 @@ import PartOfSpeechQuery from './query';
 import * as S from './styles';
 
 export type Props = {
-  'aria-labelledby': string;
   language: LanguagePage;
   tables: InflectionTables;
   onAddTable: () => void;
@@ -22,14 +21,13 @@ type InflectionTables = NonNullable<
 >['inflectionTables'];
 
 const InflectionTableList = (props: Props): JSX.Element => {
-  const {
-    'aria-labelledby': ariaLabelledby,
-    language,
-    tables,
-    onAddTable,
-  } = props;
+  const {language, tables, onAddTable} = props;
   return (
-    <section aria-labelledby={ariaLabelledby}>
+    <section>
+      <h2>
+        <Localized id='part-of-speech-tables-heading'/>
+      </h2>
+
       {tables.length > 0 ? (
         <S.InflectionTableList>
           {tables.map(table =>

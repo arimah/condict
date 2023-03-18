@@ -13,7 +13,7 @@ import {
   LemmaId
 } from "../../graphql";
 
-export default "query($id:PartOfSpeechId!){partOfSpeech(id:$id){name,timeCreated,timeUpdated,language{id,name}inflectionTables{id,name,timeCreated,timeUpdated,usedByDefinitions{page{totalCount}}}usedByDefinitions(page:{page:0,perPage:5}){page{totalCount}nodes{id,term,description{...RichTextBlockFragment}timeCreated,timeUpdated}}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Query<{
+export default "query($id:PartOfSpeechId!){partOfSpeech(id:$id){name,timeCreated,timeUpdated,language{id,name}inflectionTables{id,name,timeCreated,timeUpdated,usedByDefinitions{page{totalCount}}}usedByDefinitions(page:{page:0,perPage:5}){page{totalCount,hasNext}nodes{id,term,description{...RichTextBlockFragment}timeCreated,timeUpdated}}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Query<{
   id: PartOfSpeechId;
 }, {
   partOfSpeech: {
@@ -38,6 +38,7 @@ export default "query($id:PartOfSpeechId!){partOfSpeech(id:$id){name,timeCreated
     usedByDefinitions: {
       page: {
         totalCount: number;
+        hasNext: boolean;
       };
       nodes: {
         id: DefinitionId;

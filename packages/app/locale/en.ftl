@@ -944,13 +944,13 @@ definition-table-caption-label = Caption (optional)
 
 definition-table-has-new-version-notice = A new version of this table is available.
 
-definition-table-needs-new-version-error = A new version of this table is available. The table must be upgraded before you save the definition.
+definition-table-needs-new-version-error = A new version of this table is available. The table must be updated before you save the definition.
 
 definition-table-wrong-part-of-speech-error = This table belongs to a different part of speech. It cannot be added to the definition.
 
 definition-table-deleted-error = This table has been deleted. It cannot be added to the definition.
 
-definition-upgrade-layout-button = Upgrade to latest layout
+definition-upgrade-layout-button = Update to latest layout
 
 definition-add-table-button = Add inflection table
 
@@ -1075,6 +1075,37 @@ part-of-speech-add-table-title = Add inflection table
 inflection-table-subheading = Inflection table in part of speech <pos-link>{$partOfSpeech}</pos-link>, in language <lang-link>{$language}</lang-link>
 
 inflection-table-layout-heading = Layout
+
+inflection-table-used-by-heading = Definitions with this inflection
+
+inflection-table-not-used-description = This table is not used by any definitions.
+
+# Variables:
+#   definitionCount: The total number of definitions that use the table.
+inflection-table-browse-definitions-title =
+  Browse {$definitionCount ->
+    [one] {$definitionCount} definition that uses
+   *[other] all {$definitionCount} definitions that use
+  } this table
+
+inflection-table-older-layouts-heading = Older layouts
+
+# Variables:
+#   definitionCount: The total number of definitions that use at least one older version of the table.
+#   layoutCount: The total number of older layouts that exist.
+inflection-table-older-layouts =
+  There {$definitionCount ->
+    [one] is {$definitionCount} definition that uses
+   *[other] are {$definitionCount} definitions that use
+  } {$layoutCount ->
+    [one] an older layout
+   *[other] a total of {$layoutCount} older layouts
+  } of this table. {$definitionCount ->
+    [one] This definition
+   *[other] These definitions
+  } should be updated to the latest table layout.
+
+inflection-table-definition-has-older-layout = This definition has an older version of the table
 
 inflection-table-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 

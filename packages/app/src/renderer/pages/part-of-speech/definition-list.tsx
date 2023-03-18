@@ -1,5 +1,8 @@
+import {ReactNode} from 'react';
 import {Localized} from '@fluent/react';
 import LinkArrow from 'mdi-react/ChevronRightIcon';
+
+import {BodyText} from '@condict/ui';
 
 import {PartOfSpeechPage} from '../../page';
 import {CardList, LinkCard, DefinitionCard} from '../../ui';
@@ -8,56 +11,61 @@ import {OperationResult} from '../../graphql';
 import PartOfSpeechQuery from './query';
 
 export type Props = {
-  'aria-labelledby': string;
   definitions: Definitions;
-  totalCount: number;
   parent: PartOfSpeechPage;
 };
 
 type Definitions = NonNullable<
   OperationResult<typeof PartOfSpeechQuery>['partOfSpeech']
->['usedByDefinitions']['nodes'];
+>['usedByDefinitions'];
 
 const DefinitionList = (props: Props): JSX.Element => {
   const {
-    'aria-labelledby': ariaLabelledby,
     definitions,
-    totalCount,
     parent,
   } = props;
 
+  const {totalCount, hasNext} = definitions.page;
+
   return (
-    <section aria-labelledby={ariaLabelledby}>
-      {definitions.length > 0 ? (
+    <section>
+      <h2>
+        <Localized id='part-of-speech-definitions-heading'/>
+      </h2>
+
+      {totalCount > 0 ? (
         <CardList>
-          {definitions.map(def =>
+          {definitions.nodes.map(def =>
             <DefinitionCard
               key={def.id}
               definition={def}
               parent={parent.language}
-              time={null}
-              wrapTitle={title => <h3>{title}</h3>}
+              wrapTitle={wrapTitle}
             />
           )}
-          <LinkCard
-            // TODO: Proper target for this link
-            to={parent}
-            title={
-              <Localized
-                id='part-of-speech-browse-definitions-title'
-                vars={{definitionCount: totalCount}}
-              />
-            }
-            iconAfter={<LinkArrow className='rtl-mirror'/>}
-          />
+          {hasNext && (
+            <LinkCard
+              // TODO: Proper target for this link
+              to={parent}
+              title={
+                <Localized
+                  id='part-of-speech-browse-definitions-title'
+                  vars={{definitionCount: totalCount}}
+                />
+              }
+              iconAfter={<LinkArrow className='rtl-mirror'/>}
+            />
+          )}
         </CardList>
       ) : (
-        <p>
+        <BodyText as='p'>
           <Localized id='part-of-speech-no-definitions-description'/>
-        </p>
+        </BodyText>
       )}
     </section>
   );
 };
 
 export default DefinitionList;
+
+const wrapTitle = (title: ReactNode) => <h3>{title}</h3>;
