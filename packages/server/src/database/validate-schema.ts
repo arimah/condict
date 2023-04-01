@@ -1,7 +1,7 @@
 import {ServerConfig, Logger} from '../types';
 
 import {Connection, DataReader, DataWriter} from './sqlite';
-import schema, {schemaVersion as serverSchemaVersion} from './schema';
+import schema, {SchemaVersion as ServerSchemaVersion} from './schema';
 
 const getSchemaVersion = (db: DataReader) => {
   type Row = { value: string };
@@ -50,7 +50,7 @@ const createSchema = (
   if (isNewSchema) {
     db.exec`
       insert into schema_info (name, value)
-      values ('schema_version', ${String(serverSchemaVersion)})
+      values ('schema_version', ${String(ServerSchemaVersion)})
     `;
   }
 };
@@ -78,7 +78,7 @@ const migrateSchema = (
   schemaVersion: number
 ) => {
   logger.info(
-    `Found schema version ${schemaVersion}; migrating to ${serverSchemaVersion}`
+    `Found schema version ${schemaVersion}; migrating to ${ServerSchemaVersion}`
   );
   // TODO: Support for migrations
   throw new Error('Migrations are not yet implemented');
@@ -94,15 +94,15 @@ const ensureSchemaIsValid = async (
     const schemaVersion = getSchemaVersion(db);
     if (schemaVersion === null) {
       await db.transact(db => createNewSchema(logger, db, config));
-    } else if (schemaVersion < serverSchemaVersion) {
+    } else if (schemaVersion < ServerSchemaVersion) {
       await db.transact(db => migrateSchema(logger, db, config, schemaVersion));
-    } else if (schemaVersion === serverSchemaVersion) {
+    } else if (schemaVersion === ServerSchemaVersion) {
       await db.transact(db => verifySchema(logger, db, config));
-    } else if (schemaVersion > serverSchemaVersion) {
+    } else if (schemaVersion > ServerSchemaVersion) {
       throw new Error(
         `Database schema version is too high! (database = ${
           schemaVersion
-        }, server = ${serverSchemaVersion})`
+        }, server = ${ServerSchemaVersion})`
       );
     }
   } finally {

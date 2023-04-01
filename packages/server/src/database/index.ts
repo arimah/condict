@@ -15,6 +15,6 @@ export {default as reindentQuery} from './reindent-query';
 export {
   TableSchema,
   default as schema,
-  schemaVersion,
+  SchemaVersion,
 } from './schema';
 export {default as ensureSchemaIsValid} from './validate-schema';

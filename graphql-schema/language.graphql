@@ -127,6 +127,12 @@ type Language implements RecentItem {
   "Finds an inflection table by name."
   inflectionTableByName(name: String!): InflectionTable
 
+  "The custom fields defined in this language."
+  fields: [Field!]!
+
+  "Finds a field by name."
+  fieldByName(name: String!): Field
+
   "The total number of lemmas in the dictionary."
   lemmaCount: Int!
 
