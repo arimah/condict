@@ -3,7 +3,7 @@ export interface TableSchema {
   readonly commands: readonly string[];
 }
 
-export const schemaVersion = 1;
+export const SchemaVersion = 1;
 
 // Shared full-text-search tokenize parameters. This is by no means the best
 // possible configuration for all languages, but should hopefully be Good Enough
@@ -125,6 +125,97 @@ const tables: readonly TableSchema[] = [
         name,
         tokenize = "${FtsTokenize}"
       )`,
+    ],
+  },
+
+  // Fields, arbitrary metadata that can be attached to definitions within
+  // a language.
+  {
+    name: 'fields',
+    commands: [`
+      create table fields (
+        id integer not null primary key,
+        -- The language that the field belongs to.
+        language_id integer not null,
+        -- The type of values this field permits. Valid values are as follows:
+        --
+        --   0: Boolean value.
+        --   1: Single-select list value (field_values contains values).
+        --   2: Multi-select list value (field_values contains values).
+        --   3: Unindexed plain-text value.
+        value_type integer not null,
+        -- If true, the field is only available on some parts of speech.
+        --
+        -- Note: If this is 1, it does *not* mean the field definitely has one
+        -- or more rows in 'field_parts_of_speech', as parts of speech can be
+        -- deleted. It *does* mean, when new parts of speech are added, that the
+        -- field will not be automatically selectable on those parts of speech.
+        -- In essence, this value allows us to distinguish between "filter that
+        -- happens to be empty" and "not filtered".
+        --
+        -- Note also: If this is 0, the field definitely does *not* have any
+        -- corresponding rows in 'field_parts_of_speech'.
+        has_pos_filter integer not null default 0,
+        -- The full name of the field.
+        name text not null collate unicode,
+        -- The abbreviated name of the field. If this contains the empty string,
+        -- then the field has no abbreviated name, and the full name is always
+        -- used.
+        name_abbr text not null collate unicode,
+
+        foreign key (language_id)
+          references languages
+          on delete cascade
+      )`,
+      `create unique index \`fields(language_id,name)\` on fields(language_id, name)`,
+    ],
+  },
+
+  // Restricts fields by part of speech. If a field has one or more entries
+  // here, then that field can only be added to the parts of speech associated
+  // with it.
+  {
+    name: 'field_parts_of_speech',
+    commands: [`
+      create table field_parts_of_speech (
+        -- The field ID that is restricted.
+        field_id integer not null,
+        -- The part of speech that the field can be added to.
+        part_of_speech_id integer not null,
+
+        primary key (field_id, part_of_speech_id),
+
+        foreign key (field_id)
+          references fields
+          on delete cascade,
+        foreign key (part_of_speech_id)
+          references parts_of_speech
+          on delete cascade
+      )`,
+      `create index \`field_parts_of_speech(part_of_speech_id)\` on field_parts_of_speech(part_of_speech_id)`,
+    ],
+  },
+
+  // Values associated with list-type fields.
+  {
+    name: 'field_values',
+    commands: [`
+      create table field_values (
+        id integer not null primary key,
+        -- The parent field.
+        field_id integer not null,
+        -- The full text of the field value.
+        value text not null collate unicode,
+        -- The abbreviated field value. If this contains the empty string, then
+        -- the field value has no abbreviated name, and the full name is always
+        -- used.
+        value_abbr text not null collate unicode,
+
+        foreign key (field_id)
+          references fields
+          on delete cascade
+      )`,
+      `create unique index \`field_values(field_id,value)\` on field_values(field_id, value)`,
     ],
   },
 
@@ -433,6 +524,91 @@ const tables: readonly TableSchema[] = [
           on delete restrict
       ) without rowid`,
       `create index \`definition_tags(tag_id)\` on definition_tags(tag_id)`,
+    ],
+  },
+
+  // Field values attached to individual definitions, for boolean fields where
+  // the field value is *true*. We do not store *false* values; the absence of
+  // a row here means the field is false. This implies that all boolean fields
+  // default to false and there is no distinction between missing and false.
+  {
+    name: 'definition_field_true_values',
+    commands: [`
+      create table definition_field_true_values (
+        -- The definition this field value is attached to.
+        definition_id integer not null,
+        -- The field that the row assigns a value to.
+        field_id integer not null,
+
+        primary key (definition_id, field_id),
+
+        foreign key (definition_id)
+          references definitions
+          on delete cascade,
+        foreign key (field_id)
+          references fields
+          on delete cascade
+      )`,
+      `create index \`definition_field_true_values(field_id)\` on definition_field_true_values(field_id)`,
+    ],
+  },
+
+  // Field values attached to individual definitions, for fields of a list type.
+  // Note that we cannot make the primary key (definition_id, field_id), as some
+  // list fields can have multiple selected values per definition.
+  {
+    name: 'definition_field_list_values',
+    commands: [`
+      create table definition_field_list_values (
+        -- The definition this field value is attached to.
+        definition_id integer not null,
+        -- The field value used by the definition.
+        field_value_id integer not null,
+        -- The field that the value belongs to, included here in order to
+        -- simplify and speed up various queries.
+        field_id integer not null,
+
+        primary key (definition_id, field_value_id),
+
+        foreign key (definition_id)
+          references definitions
+          on delete cascade,
+        foreign key (field_value_id)
+          references field_values
+          on delete cascade,
+        foreign key (field_id)
+          references fields
+          on delete cascade
+      )`,
+      `create index \`definition_field_list_values(field_value_id)\` on definition_field_list_values(field_value_id)`,
+      `create index \`definition_field_list_values(field_id)\` on definition_field_list_values(field_id)`,
+      `create index \`definition_field_list_values(definition_id,field_id)\` on definition_field_list_values(definition_id, field_id)`,
+    ],
+  },
+
+  // Field values attached to individual definitions, for fields of a text type.
+  // This table is *not* designed to be searched or filtered by field value.
+  {
+    name: 'definition_field_text_values',
+    commands: [`
+      create table definition_field_text_values (
+        -- The definition this field value is attached to.
+        definition_id integer not null,
+        -- The field that the row assigns a value to.
+        field_id integer not null,
+        -- The field value.
+        value text not null,
+
+        primary key (definition_id, field_id),
+
+        foreign key (definition_id)
+          references definitions
+          on delete cascade,
+        foreign key (field_id)
+          references fields
+          on delete cascade
+      )`,
+      `create index \`definition_field_text_values(field_id)\` on definition_field_text_values(field_id)`,
     ],
   },
 

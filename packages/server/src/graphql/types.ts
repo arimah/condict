@@ -466,6 +466,74 @@ export type EditDefinitionInput = {
 };
 
 /**
+ * Input type for editing an existing field. The ID is a separate argument.
+ */
+export type EditFieldInput = {
+  /**
+   * If set, updates the field's name.
+   */
+  name?: string | null;
+  /**
+   * If set, updates the abbreviated version of the field's name.
+   */
+  nameAbbr?: string | null;
+  /**
+   * If set, changes the field's value type.
+   * 
+   * Changing a field's value type is permitted under the following circumstances:
+   * 
+   * * If the current type is `FIELD_LIST_ONE` and the new type is `FIELD_LIST_MANY`,
+   *   or vice versa, in which case no updates are performed on definitions with
+   *   values for the field. When going from multi-select to single-select, note
+   *   that existing assigned values are *not* affected, but when editing a
+   *   definition with multiple values, extraneous values must be deselected.
+   * * In all other cases – when moving from boolean to non-boolean, list non-list,
+   *   text to non-text – the change is allowed only if there are no definitions
+   *   using the field. This is to prevent confusion and complexity arising from
+   *   having to decide what to do with existing values.
+   */
+  valueType?: FieldValueType | null;
+  /**
+   * If set, updates the field's values, for a list field. A list of field values
+   * is *required* if the field is changing to a list type; it cannot be null. If
+   * the field is not a list type, or is being changed to a non-list type, this
+   * value *must* be null.
+   * 
+   * When editing the values of a list field, *all* of the field's values must be
+   * present here. Omitted values will be deleted.
+   */
+  listValues?: FieldValueInput[] | null;
+  /**
+   * If set, updates the parts of speech that this field can be used in. To mark a
+   * field as usable in any part of speech, even ones that are added in the future,
+   * pass the empty list. It is not possible to create a field that cannot be used
+   * in any part of speech.
+   */
+  partOfSpeechIds?: PartOfSpeechId[] | null;
+};
+
+/**
+ * Input type for editing an existing field value through `editFieldValue`. The ID
+ * is a separate argument.
+ * 
+ * Other input types for field values are:
+ * 
+ * * `NewFieldValueInput`, used by `addFieldValue`
+ * * `FieldValueInput`, used in `NewFieldInput` and `EditFieldInput`
+ */
+export type EditFieldValueInput = {
+  /**
+   * If set, updates the field value text.
+   */
+  value?: string | null;
+  /**
+   * If set, updates the abbreviated version of the `value`. If this is the empty
+   * string, then the field value has no abbreviated form.
+   */
+  valueAbbr?: string | null;
+};
+
+/**
  * Input type for editing an existing inflection table. It is not possible to move
  * an inflection table to another language.
  */
@@ -520,6 +588,138 @@ export type FailedLogin = {
    */
   reason: LoginFailureReason;
 };
+
+/**
+ * A field contains some data about a definition. A field can contain anything
+ * the user wants. Noun class, verb class, gender, inflection type, telicity,
+ * pronunciation key, obsolete, and so on. The user has full control over the
+ * field's name and possible values.
+ * 
+ * Fields can also be restricted by part of speech, such that some fields are
+ * only visible on certain parts of speech. For example, it may only make sense
+ * for nouns to have a noun class.
+ * 
+ * In addition to custom fields encapsulated by this type, definitions have a
+ * few non-configurable built-in fields, including the description and the part
+ * of speech. These cannot be enumerated in the same way as custom fields.
+ */
+export type Field = {
+  /**
+   * The globally unique ID of the field.
+   */
+  id: FieldId;
+  /**
+   * The display name of the field.
+   */
+  name: string;
+  /**
+   * An abbreviated version of the field's `name`. If this is the empty string,
+   * then the field has no abbreviated name.
+   */
+  nameAbbr: string;
+  /**
+   * The type of the field's value, which determines what data can be stored in
+   * the field once attached to a definition.
+   */
+  valueType: FieldValueType;
+  /**
+   * The possible values the field can take, if the field is of a list type
+   * (`FIELD_LIST_ONE`, `FIELD_LIST_MANY`). For other field types, this value is
+   * always null.
+   */
+  listValues: FieldValue[] | null;
+  /**
+   * The parts of speech that the field can be added to. If this value is null,
+   * then the field can be added to definitions of any part of speech. Note that
+   * the empty list means the field cannot be added to any definition. The empty
+   * list can only result from previously selected parts of speech being deleted;
+   * it is not possible to explicitly set a field filter to the empty list.
+   * 
+   * Newly added parts of speech will *not* be automatically added to this list,
+   * even if the field selects all parts of speech. Fields are universal *only*
+   * if this value is null.
+   */
+  partsOfSpeech: PartOfSpeech[] | null;
+  /**
+   * The language that the field belongs to.
+   */
+  language: Language;
+};
+
+/**
+ * Represents a field ID.
+ */
+export type FieldId = IdOf<'Field'>;
+
+export type FieldValue = {
+  /**
+   * The globally unique ID of the field value.
+   */
+  id: FieldValueId;
+  /**
+   * The full field value text.
+   */
+  value: string;
+  /**
+   * An abbreviated version of the `value`. If this is the empty string, then the
+   * field value has no abbreviated form.
+   */
+  valueAbbr: string;
+  /**
+   * The field that the value belongs to.
+   */
+  field: Field;
+};
+
+export type FieldValueId = IdOf<'FieldValue'>;
+
+/**
+ * Input type for field values as edited through `addField` or `editField`.
+ * 
+ * Other input types for field values are:
+ * 
+ * * `NewFieldValueInput`, used by `addFieldValue`
+ * * `EditFieldValueInput`, used by `editFieldValue`
+ */
+export type FieldValueInput = {
+  /**
+   * The ID of the field value. When editing a field value, set to an existing ID
+   * to indicate an update of that value. If null, represents a newly added field
+   * value. When adding a new field, the ID is ignored.
+   */
+  id?: FieldValueId | null;
+  /**
+   * The full field value text.
+   */
+  value: string;
+  /**
+   * An abbreviated version of the `value`. If this is the empty string, then the
+   * field value has no abbreviated form.
+   */
+  valueAbbr: string;
+};
+
+/**
+ * The type of a field's value.
+ */
+export type FieldValueType =
+  /**
+   * The field contains a boolean value (on/off, true/false, yes/no).
+   */
+  | 'FIELD_BOOLEAN'
+  /**
+   * The field contains a single value selected from a list of values.
+   */
+  | 'FIELD_LIST_ONE'
+  /**
+   * The field contains zero or more values selected from a list of values.
+   */
+  | 'FIELD_LIST_MANY'
+  /**
+   * The field contains plain (unformatted) text.
+   */
+  | 'FIELD_PLAIN_TEXT'
+;
 
 /**
  * Formatted text content. These appear as children of block elements, either
@@ -1136,6 +1336,16 @@ export type Language = {
     name: string;
   }, InflectionTable | null>;
   /**
+   * The custom fields defined in this language.
+   */
+  fields: Field[];
+  /**
+   * Finds a field by name.
+   */
+  fieldByName: WithArgs<{
+    name: string;
+  }, Field | null>;
+  /**
    * The total number of lemmas in the dictionary.
    */
   lemmaCount: number;
@@ -1678,6 +1888,58 @@ export type Mutation = {
     id: DefinitionId;
   }, boolean | null>;
   /**
+   * Adds a field to the dictionary.
+   * 
+   * Requires authentication.
+   */
+  addField: WithArgs<{
+    data: NewFieldInput;
+  }, Field | null>;
+  /**
+   * Edits an existing field.
+   * 
+   * Requires authentication.
+   */
+  editField: WithArgs<{
+    id: FieldId;
+    data: EditFieldInput;
+  }, Field | null>;
+  /**
+   * Deletes a field. This will delete all values associated with the field, as
+   * well as delete it from every definition that uses it.
+   * 
+   * Requires authentication.
+   */
+  deleteField: WithArgs<{
+    id: FieldId;
+  }, boolean | null>;
+  /**
+   * Adds a value to a list-type field.
+   * 
+   * Requires authentication.
+   */
+  addFieldValue: WithArgs<{
+    data: NewFieldValueInput;
+  }, FieldValue | null>;
+  /**
+   * Edits an existing value of a list-type field.
+   * 
+   * Requires authentication.
+   */
+  editFieldValue: WithArgs<{
+    id: FieldValueId;
+    data: EditFieldValueInput;
+  }, FieldValue | null>;
+  /**
+   * Deletes a value from a field. This will also delete the value from every
+   * definition that uses it.
+   * 
+   * Requires authentication.
+   */
+  deleteFieldValue: WithArgs<{
+    id: FieldValueId;
+  }, boolean | null>;
+  /**
    * Adds an inflection table.
    * 
    * Requires authentication.
@@ -1828,6 +2090,66 @@ export type NewDefinitionInput = {
    * Tags associated with this definition.
    */
   tags: string[];
+};
+
+/**
+ * Input type for adding new fields.
+ */
+export type NewFieldInput = {
+  /**
+   * The language that the field will be added to.
+   */
+  languageId: LanguageId;
+  /**
+   * The name of the new field.
+   */
+  name: string;
+  /**
+   * An abbreviated version of the field's `name`. If this is the empty string,
+   * then the field has no abbreviated name.
+   */
+  nameAbbr: string;
+  /**
+   * The type of the field's value.
+   */
+  valueType: FieldValueType;
+  /**
+   * The field's values, for a list field. If the field is a list field, then this
+   * cannot be null; pass an empty list to create a field with no initial values.
+   * If the field is a non-list field, this value *must* be null.
+   */
+  listValues?: FieldValueInput[] | null;
+  /**
+   * The parts of speech that this field can be used in. To mark a field as usable
+   * in any part of speech, even ones that are added in the future, pass the empty
+   * list. It is not possible to create a field that cannot be used in any part of
+   * speech.
+   */
+  partOfSpeechIds: PartOfSpeechId[];
+};
+
+/**
+ * Input type for adding a new field value through `addFieldValue`.
+ * 
+ * Other input types for field values are:
+ * 
+ * * `FieldValueInput`, used in `NewFieldInput` and `EditFieldInput`
+ * * `EditFieldValueInput`, used by `editFieldValue`
+ */
+export type NewFieldValueInput = {
+  /**
+   * The field to add the value to.
+   */
+  fieldId: FieldId;
+  /**
+   * The full field value text.
+   */
+  value: string;
+  /**
+   * An abbreviated version of the `value`. If this is the empty string, then the
+   * field value has no abbreviated form.
+   */
+  valueAbbr: string;
 };
 
 /**
@@ -2042,6 +2364,12 @@ export type Query = {
   definitionInflectionTable: WithArgs<{
     id: DefinitionInflectionTableId;
   }, DefinitionInflectionTable | null>;
+  field: WithArgs<{
+    id: FieldId;
+  }, Field | null>;
+  fieldValue: WithArgs<{
+    id: FieldValueId;
+  }, FieldValue | null>;
   /**
    * Finds an inflection table by ID.
    */
