@@ -6,7 +6,7 @@ import {InflectionTable} from '@condict/table-editor';
 
 import {FormProvider, useForm} from '../../form';
 import {TextField, InflectionTableField, FormButtons} from '../../form-fields';
-import {InflectionTableId, LanguageId, PartOfSpeechId} from '../../graphql';
+import {InflectionTableId, LanguageId} from '../../graphql';
 import {useExecute} from '../../data';
 
 import {notEmpty, nameNotTaken} from '../validators';
@@ -16,7 +16,6 @@ import {CheckNameQuery} from './query';
 
 export type Props = {
   languageId: LanguageId;
-  partOfSpeechId: PartOfSpeechId;
   initialData?: InflectionTableData;
   submitError?: ReactNode;
   firstFieldRef?: RefObject<HTMLElement>;
@@ -58,7 +57,6 @@ const EmptyData: InflectionTableData = {
 export const InflectionTableForm = (props: Props): JSX.Element => {
   const {
     languageId,
-    partOfSpeechId,
     initialData = EmptyData,
     submitError,
     firstFieldRef,
@@ -87,8 +85,8 @@ export const InflectionTableForm = (props: Props): JSX.Element => {
             notEmpty,
             nameNotTaken(
               initialData.id,
-              name => execute(CheckNameQuery, {pos: partOfSpeechId, name}),
-              data => data.partOfSpeech?.inflectionTableByName?.id ?? null
+              name => execute(CheckNameQuery, {lang: languageId, name}),
+              data => data.language?.inflectionTableByName?.id ?? null
             ),
           ]}
           errorMessages={{
@@ -101,7 +99,6 @@ export const InflectionTableForm = (props: Props): JSX.Element => {
           name='layout'
           label={<Localized id='inflection-table-layout-label'/>}
           languageId={languageId}
-          partOfSpeechId={partOfSpeechId}
           inflectionTableId={initialData.id}
         />
         <FormButtons submitError={submitError} onCancel={onCancel}/>

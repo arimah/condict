@@ -14,7 +14,7 @@ import {
   InflectionTableId
 } from "../../graphql";
 
-export default "query($tagsPage:Int!){languages{id,name,description{...RichTextBlockFragment}statistics{lemmaCount,definitionCount,partOfSpeechCount,tagCount}}tags(page:{page:$tagsPage,perPage:100}){page{page,hasNext}nodes{id,name}}recentChanges(page:{page:0,perPage:8}){nodes{__typename,timeCreated,timeUpdated...on Language{languageId:id,name}...on Definition{definitionId:id,term,language{id,name}}...on PartOfSpeech{partOfSpeechId:id,name,language{id,name}}...on InflectionTable{inflectionTableId:id,name,partOfSpeech{id,name,language{id,name}}}}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Query<{
+export default "query($tagsPage:Int!){languages{id,name,description{...RichTextBlockFragment}statistics{lemmaCount,definitionCount,partOfSpeechCount,tagCount}}tags(page:{page:$tagsPage,perPage:100}){page{page,hasNext}nodes{id,name}}recentChanges(page:{page:0,perPage:8}){nodes{__typename,timeCreated,timeUpdated...on Language{languageId:id,name}...on Definition{definitionId:id,term,language{id,name}}...on PartOfSpeech{partOfSpeechId:id,name,language{id,name}}...on InflectionTable{inflectionTableId:id,name,language{id,name}}}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Query<{
   tagsPage: number;
 }, {
   languages: {
@@ -133,13 +133,9 @@ export default "query($tagsPage:Int!){languages{id,name,description{...RichTextB
       timeUpdated: UtcInstant;
       inflectionTableId: InflectionTableId;
       name: string;
-      partOfSpeech: {
-        id: PartOfSpeechId;
+      language: {
+        id: LanguageId;
         name: string;
-        language: {
-          id: LanguageId;
-          name: string;
-        };
       };
     })[];
   } | null;

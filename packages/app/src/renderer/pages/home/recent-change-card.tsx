@@ -80,19 +80,14 @@ const RecentChangeCard = ({item}: Props): JSX.Element => {
       name = item.name;
       iconType = 'inflectionTable';
 
-      const pos = item.partOfSpeech;
-      const lang = pos.language;
+      const lang = item.language;
       const langPage = LanguagePage(lang.id, lang.name);
-      const posPage = PartOfSpeechPage(pos.id, pos.name, langPage);
       page = InflectionTablePage(item.inflectionTableId, name, langPage);
       description =
         <Localized
           id='home-recent-inflection-table-description'
-          vars={{partOfSpeech: pos.name, language: lang.name}}
-          elems={{
-            'pos-link': <Link to={posPage}/>,
-            'lang-link': <Link to={langPage}/>,
-          }}
+          vars={{language: lang.name}}
+          elems={{'lang-link': <Link to={langPage}/>}}
         >
           <></>
         </Localized>;

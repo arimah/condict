@@ -8,7 +8,6 @@ import {InflectionTableId, LanguageId} from '../../graphql';
 import {useOpenPanel} from '../../navigation';
 import {
   LanguagePage,
-  PartOfSpeechPage,
   InflectionTablePage as InflectionTableTarget,
 } from '../../page';
 import {
@@ -71,10 +70,8 @@ const InflectionTablePage = (props: Props): JSX.Element => {
           );
         }
 
-        const pos = table.partOfSpeech;
-        const lang = pos.language;
+        const lang = table.language;
         const langPage = LanguagePage(lang.id, lang.name);
-        const posPage = PartOfSpeechPage(pos.id, pos.name, langPage);
         return <>
           <MainHeader>
             <Selectable as='h1'>{table.name}</Selectable>
@@ -85,11 +82,8 @@ const InflectionTablePage = (props: Props): JSX.Element => {
           <Subheader>
             <Localized
               id='inflection-table-subheading'
-              vars={{partOfSpeech: pos.name, language: lang.name}}
-              elems={{
-                'pos-link': <Link to={posPage}/>,
-                'lang-link': <Link to={langPage}/>,
-              }}
+              vars={{language: lang.name}}
+              elems={{'lang-link': <Link to={langPage}/>}}
             >
               <span></span>
             </Localized>

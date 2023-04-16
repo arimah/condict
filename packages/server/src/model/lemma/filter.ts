@@ -71,6 +71,7 @@ const EmptySql = new RawSql('', []);
 
 export const buildOwnDefinitionsSource = (
   db: DataReader,
+  alias: RawSql,
   joinType: 'left' | 'inner',
   filter: LemmaFilter
 ): RawSql => {
@@ -110,17 +111,17 @@ export const buildOwnDefinitionsSource = (
       ${filter.inflectsLike || filter.withTags
         ? db.raw`group by d.lemma_id`
         : EmptySql}
-    ) d on
-      d.lemma_id = l.id
       ${needsMatchingTagCount
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        ? db.raw`and d.tag_count = ${filter.withTags!.length}`
+        ? db.raw`having tag_count = ${filter.withTags!.length}`
         : EmptySql}
+    ) ${alias} on ${alias}.lemma_id = l.id
   `;
 };
 
 export const buildDerivedDefinitionsSource = (
   db: DataReader,
+  alias: RawSql,
   joinType: 'left' | 'inner',
   filter: LemmaFilter
 ): RawSql => {
@@ -150,6 +151,6 @@ export const buildDerivedDefinitionsSource = (
       ${filter.inPartsOfSpeech || filter.inflectsLike
         ? db.raw`group by dd.lemma_id`
         : EmptySql}
-    ) dd on dd.lemma_id = l.id
+    ) ${alias} on ${alias}.lemma_id = l.id
   `;
 };

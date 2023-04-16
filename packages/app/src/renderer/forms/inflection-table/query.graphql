@@ -1,5 +1,5 @@
-query CheckNameQuery($pos: PartOfSpeechId!, $name: String!) {
-  partOfSpeech(id: $pos) {
+query CheckNameQuery($lang: LanguageId!, $name: String!) {
+  language(id: $lang) {
     inflectionTableByName(name: $name) {
       id
     }

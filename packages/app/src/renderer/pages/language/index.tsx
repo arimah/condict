@@ -7,6 +7,7 @@ import {
   LanguagePage as LanguageTarget,
   DefinitionPage,
   PartOfSpeechPage,
+  InflectionTablePage,
   SearchPage,
 } from '../../page';
 import {useNavigateTo, useOpenPanel} from '../../navigation';
@@ -28,6 +29,7 @@ import {
   editLanguagePanel,
   addDefinitionPanel,
   addPartOfSpeechPanel,
+  addInflectionTablePanel,
 } from '../../panels';
 
 import usePageData from '../page-data';
@@ -37,6 +39,7 @@ import LanguageQuery from './query';
 import LanguageSearch from './language-search';
 import LemmaAndDefinitionList from './lemma-and-definition-list';
 import PartOfSpeechList from './part-of-speech-list';
+import InflectionTableList from './inflection-table-list';
 
 export type Props = {
   id: LanguageId;
@@ -86,6 +89,21 @@ const LanguagePage = (props: Props): JSX.Element => {
         const lang = pos.language;
         const langPage = LanguageTarget(lang.id, lang.name);
         navigateTo(PartOfSpeechPage(pos.id, pos.name, langPage), {
+          openInNewTab: true,
+          openInBackground: false,
+        });
+      }
+    });
+  }, [id]);
+
+  const handleAddTable = useCallback(() => {
+    void openPanel(addInflectionTablePanel({
+      languageId: id,
+    })).then(table => {
+      if (table) {
+        const lang = table.language;
+        const langPage = LanguageTarget(lang.id, lang.name);
+        navigateTo(InflectionTablePage(table.id, table.name, langPage), {
           openInNewTab: true,
           openInBackground: false,
         });
@@ -148,20 +166,22 @@ const LanguagePage = (props: Props): JSX.Element => {
             />
           </>}
 
-          <h2 id={`${htmlId}-pos-title`}>
-            <Localized id='language-parts-of-speech-heading'/>
-          </h2>
           <PartOfSpeechList
-            aria-labelledby={`${htmlId}-pos-title`}
             parent={langPage}
             partsOfSpeech={language.partsOfSpeech}
             onAddPartOfSpeech={handleAddPartOfSpeech}
           />
 
-          <h2 id={`${htmlId}-tags-title`}>
-            <Localized id='language-tags-heading'/>
-          </h2>
-          <section aria-labelledby={`${htmlId}-tags-title`}>
+          <InflectionTableList
+            parent={langPage}
+            tables={language.inflectionTables}
+            onAddTable={handleAddTable}
+          />
+
+          <section>
+            <h2>
+              <Localized id='language-tags-heading'/>
+            </h2>
             {language.tags.nodes.length > 0 ? (
               <TagList
                 tags={language.tags.nodes}

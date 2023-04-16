@@ -152,10 +152,6 @@ export interface PartOfSpeechEvent extends BaseEvent<'partOfSpeech'> {
 export interface InflectionTableEvent extends BaseEvent<'inflectionTable'> {
   /** The ID of the inflection table. */
   readonly id: number;
-  /**
-   * The ID of the part of speech that the inflection table belongs/belonged to.
-   */
-  readonly partOfSpeechId: number;
   /** The ID of the language that the inflection table belongs/belonged to. */
   readonly languageId: number;
 }

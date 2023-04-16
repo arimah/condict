@@ -2,16 +2,18 @@ fragment DefinitionFormPartsOfSpeechFragment on Language {
   partsOfSpeech {
     id
     name
+  }
+}
 
-    inflectionTables {
+fragment DefinitionFormInflectionTablesFragment on Language {
+  inflectionTables {
+    id
+    name
+
+    layout {
       id
-      name
-
-      layout {
-        id
-        stems
-        ...DefinitionTableFragment
-      }
+      stems
+      ...DefinitionTableFragment
     }
   }
 }

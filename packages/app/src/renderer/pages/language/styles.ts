@@ -31,3 +31,7 @@ export const NoLemmas = styled(NonIdealState)`
 export const PartOfSpeechList = styled(CardGrid)`
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 `;
+
+export const InflectionTableList = styled(CardGrid)`
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+`;

@@ -81,10 +81,8 @@ const PartOfSpeechStats = {
       (db, ids) => db.all<PartOfSpeechStatsRow>`
         select
           pos.id as id,
-          count(distinct it.id) as inflection_table_count,
           count(distinct d.id) as definition_count
         from parts_of_speech pos
-        left join inflection_tables it on it.part_of_speech_id = pos.id
         left join definitions d on d.part_of_speech_id = pos.id
         where pos.id in (${ids})
         group by pos.id

@@ -9,16 +9,9 @@ import {useNearestForm, useField, useFormValue, useFormState} from '../../form';
 import {Field, Label} from '../../form-fields';
 
 import useActiveStemNames from './active-stem-names';
-import {PartOfSpeechFields} from './types';
 import * as S from './styles';
 
-export type Props = {
-  partsOfSpeech: readonly PartOfSpeechFields[];
-};
-
-const StemsField = React.memo((props: Props): JSX.Element => {
-  const {partsOfSpeech} = props;
-
+const StemsField = React.memo((): JSX.Element => {
   const form = useNearestForm();
 
   const id = useUniqueId();
@@ -27,7 +20,7 @@ const StemsField = React.memo((props: Props): JSX.Element => {
   const field = useField<Map<string, string>>(form, 'stems');
 
   const term = useFormValue<string>(form, 'term');
-  const activeStems = useActiveStemNames(form, partsOfSpeech);
+  const activeStems = useActiveStemNames(form);
 
   const handleStemChange = (name: string, value: string | undefined) => {
     field.update(draft => {

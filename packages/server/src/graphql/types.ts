@@ -132,8 +132,6 @@ export type CustomInflectedFormInput = {
  * 
  * A definition's description contains free-form formatted text. Paragraphs, list
  * items, headings and other things.
- * 
- * A definition's inflection tables must belong to the definition's part of speech.
  */
 export type Definition = {
   /**
@@ -450,11 +448,6 @@ export type EditDefinitionInput = {
   term?: string | null;
   /**
    * If set, updates the part of speech.
-   * 
-   * If this field is set to a value other than the definition's current part of
-   * speech, and `inflectionTables` is _not_ set, then the definition's inflection
-   * tables will all be deleted. In other words, changing the part of speech will
-   * delete inflection tables unless you specify new ones.
    */
   partOfSpeechId?: PartOfSpeechId | null;
   /**
@@ -479,7 +472,7 @@ export type EditDefinitionInput = {
 
 /**
  * Input type for editing an existing inflection table. It is not possible to move
- * an inflection table to another part of speech.
+ * an inflection table to another language.
  */
 export type EditInflectionTableInput = {
   /**
@@ -791,28 +784,34 @@ export type InflectedFormInput = {
 };
 
 /**
- * An inflection table defines how to inflect words that belong to the table's part
- * of speech. The table is a true 2-dimensional table, not merely a list of forms.
- * As such, it can contain any number of rows and columns, and some cells may be
- * headers. Cells can span multiple rows and columns.
+ * An inflection table defines how to inflect definitions. The table is a true
+ * 2-dimensional table, not merely a list of forms. As such, it can contain any
+ * number of rows and columns, and some cells may be headers. Cells can span
+ * multiple rows and columns.
  * 
  * To access the contents of an inflection table, query the `layout` field. Through
  * it, you can read the table's rows and cells to construct the table, fetch the
  * inflected forms (see `InflectedForm`) that are contained in the table, as well
  * as query the definitions that use the table layout.
  * 
- * In addition to the current table layout, inflection tables record some historical
- * layouts. If the layout is altered while it is in use by one or more definitions,
- * the previous layout is kept, allowing existing definitions to keep using it. Old
- * layouts are available through the `oldLayouts` field.
+ * ## Historical layouts
  * 
- * Historical layouts are saved for two reasons:
+ * If you change the layout of a table that is used by one or more definitions, the
+ * previous layout may be kept. The precise conditions are not specified here, but
+ * the rule of thumb is this: if the new layout would cause derived forms to be
+ * added, edited or removed, the old layout is kept.
+ * 
+ * Historical layouts are saved in order to prevent potential dictionary-wide
+ * alterations:
  * 
  * 1. Inflected forms may be added to the dictionary (see `InflectedForm`), and
- *    recalculating new forms for every definition that uses a table is costly.
+ *    recalculating new forms for every definition that uses a table may be costly.
  * 2. It is exceedingly difficult for the user to predict the effect of altering
  *    an inflection table across the entire dictionary, especially if the table is
- *    used by many definitions.
+ *    used by many definitions. By forcing the user to update definitions manually,
+ *    we effectively make them check each one.
+ * 
+ * Old layouts are available through the `oldLayouts` field.
  */
 export type InflectionTable = {
   /**
@@ -842,9 +841,9 @@ export type InflectionTable = {
     page?: PageParams | null;
   }, InflectionTableLayoutConnection>;
   /**
-   * The part of speech that this inflection table belongs to.
+   * The language that this inflection table belongs to.
    */
-  partOfSpeech: PartOfSpeech;
+  language: Language;
   /**
    * Indicates whether any version of the inflection table is currently used by any
    * definitions.
@@ -1095,10 +1094,11 @@ export type InternalLinkTarget =
  * A language contains:
  * 
  * * Parts of speech (see `PartOfSpeech`), which words can be associated with.
- *   Each part of speech can contain any number of inflection tables (see
- *   `InflectionTable`).
+ * * Inflection tables (see `InflectionTable`), which specifies how definitions
+ *   inflect.
  * * Lemmas (see `Lemma`), which are basically the words of the dictionary. Each
- *   lemma can contain any number of definitions (see `Definition`).
+ *   lemma can contain any number of definitions (see `Definition`). Lemmas should
+ *   have been called _headwords_.
  * 
  * In addition, every language has a (unique) name, an optional description, and
  * various metadata.
@@ -1131,6 +1131,16 @@ export type Language = {
   partOfSpeechByName: WithArgs<{
     name: string;
   }, PartOfSpeech | null>;
+  /**
+   * The inflection tables that belong to this language.
+   */
+  inflectionTables: InflectionTable[];
+  /**
+   * Finds an inflection table by name.
+   */
+  inflectionTableByName: WithArgs<{
+    name: string;
+  }, InflectionTable | null>;
   /**
    * The total number of lemmas in the dictionary.
    */
@@ -1216,7 +1226,7 @@ export type Language = {
   /**
    * The time of the most recent update to the language. This time coers updates
    * performed on the language itself, but not on any of its subresources (such as
-   * parts of speech or definitions).
+   * parts of speech, inflection tables or definitions).
    */
   timeUpdated: UtcInstant;
   /**
@@ -1379,8 +1389,8 @@ export type LemmaFilter = {
    * For direct definitions (those in `Lemma.definitions`), the lemma matches if
    * at least one definition belongs to one of the specified parts of speech. For
    * derived definitions (in `Lemma.derivedDefinitions`), the lemma matches if
-   * the derived definition comes from an inflected form in one of the specified
-   * parts of speech.
+   * the derived definition comes from an original definition of the specified
+   * part of speech.
    * 
    * If this parameter is the empty list, no lemmas are returned.
    */
@@ -1831,9 +1841,9 @@ export type NewDefinitionInput = {
  */
 export type NewInflectionTableInput = {
   /**
-   * The part of speech that the inflection table will be added to.
+   * The language that the inflection table will be added to.
    */
-  partOfSpeechId: PartOfSpeechId;
+  languageId: LanguageId;
   /**
    * The name of the inflection table.
    */
@@ -1918,10 +1928,9 @@ export type PageParams = {
 };
 
 /**
- * A part of speech is associated with each word in the dictionary. In addition to
- * providing a way to group words, a part of speech can define any number of
- * inflection tables, which describe how to inflect words in that part of speech.
- * See `InflectionTable` for more.
+ * A part of speech is associated with each word in the dictionary. It is possible
+ * to search and filter definitions by part of speech, and every definition must
+ * belong to a part of speech.
  */
 export type PartOfSpeech = {
   /**
@@ -1932,16 +1941,6 @@ export type PartOfSpeech = {
    * The display name of the part of speech.
    */
   name: string;
-  /**
-   * The inflection tables defined in this part of speech.
-   */
-  inflectionTables: InflectionTable[];
-  /**
-   * Finds an inflection table by name.
-   */
-  inflectionTableByName: WithArgs<{
-    name: string;
-  }, InflectionTable | null>;
   /**
    * The language that the part of speech belongs to.
    */
@@ -1971,9 +1970,7 @@ export type PartOfSpeech = {
    */
   timeCreated: UtcInstant;
   /**
-   * The time of the most recent update to the part of speech. This time covers
-   * updates performed on the part of speech itself, but not to any of its
-   * inflection tables.
+   * The time of the most recent update to the part of speech.
    */
   timeUpdated: UtcInstant;
   /**
@@ -2020,10 +2017,6 @@ export type PartOfSpeechSearchResult = {
  * Contains statistics about a part of speech.
  */
 export type PartOfSpeechStats = {
-  /**
-   * The number of inflection tables in the part of speech.
-   */
-  inflectionTableCount: number;
   /**
    * The total number of definitions that use the part of speech.
    */

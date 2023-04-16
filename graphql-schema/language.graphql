@@ -16,8 +16,8 @@ input LemmaFilter {
   For direct definitions (those in `Lemma.definitions`), the lemma matches if
   at least one definition belongs to one of the specified parts of speech. For
   derived definitions (in `Lemma.derivedDefinitions`), the lemma matches if
-  the derived definition comes from an inflected form in one of the specified
-  parts of speech.
+  the derived definition comes from an original definition of the specified
+  part of speech.
 
   If this parameter is the empty list, no lemmas are returned.
   """
@@ -96,10 +96,11 @@ number of languages.
 A language contains:
 
 * Parts of speech (see `PartOfSpeech`), which words can be associated with.
-  Each part of speech can contain any number of inflection tables (see
-  `InflectionTable`).
+* Inflection tables (see `InflectionTable`), which specifies how definitions
+  inflect.
 * Lemmas (see `Lemma`), which are basically the words of the dictionary. Each
-  lemma can contain any number of definitions (see `Definition`).
+  lemma can contain any number of definitions (see `Definition`). Lemmas should
+  have been called _headwords_.
 
 In addition, every language has a (unique) name, an optional description, and
 various metadata.
@@ -125,6 +126,12 @@ type Language implements RecentItem {
 
   "Finds a part of speech by name."
   partOfSpeechByName(name: String!): PartOfSpeech
+
+  "The inflection tables that belong to this language."
+  inflectionTables: [InflectionTable!]!
+
+  "Finds an inflection table by name."
+  inflectionTableByName(name: String!): InflectionTable
 
   "The total number of lemmas in the dictionary."
   lemmaCount: Int!
@@ -210,7 +217,7 @@ type Language implements RecentItem {
   """
   The time of the most recent update to the language. This time coers updates
   performed on the language itself, but not on any of its subresources (such as
-  parts of speech or definitions).
+  parts of speech, inflection tables or definitions).
   """
   timeUpdated: UtcInstant!
 

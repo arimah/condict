@@ -18,11 +18,10 @@ const tables: readonly TableSchema[] = [
     commands: [`
       create table schema_info (
         -- The metadata key.
-        name text not null collate binary,
+        name text not null primary key collate binary,
         -- The metadata value.
-        value text not null collate binary,
-        primary key (name)
-      )`,
+        value text not null collate binary
+      ) without rowid`,
     ],
   },
 
@@ -128,8 +127,8 @@ const tables: readonly TableSchema[] = [
     commands: [`
       create table inflection_tables (
         id integer not null primary key,
-        -- The parent part of speech.
-        part_of_speech_id integer not null,
+        -- The parent language.
+        language_id integer not null,
         -- The date and time the inflection table was created, as the number of
         -- milliseconds since midnight 1 January, 1970, UTC.
         time_created integer not null,
@@ -139,11 +138,11 @@ const tables: readonly TableSchema[] = [
         -- The name of the inflection table, shown in admin UIs.
         name text not null collate unicode,
 
-        foreign key (part_of_speech_id)
-          references parts_of_speech
+        foreign key (language_id)
+          references languages
           on delete cascade
       )`,
-      `create unique index \`inflection_tables(part_of_speech_id,name)\` on inflection_tables(part_of_speech_id, name)`,
+      `create unique index \`inflection_tables(language_id,name)\` on inflection_tables(language_id, name)`,
       `create index \`inflection_tables(time_created)\` on inflection_tables(time_created)`,
       `create index \`inflection_tables(time_updated)\` on inflection_tables(time_updated)`,
     ],
@@ -425,7 +424,7 @@ const tables: readonly TableSchema[] = [
         foreign key (tag_id)
           references tags
           on delete restrict
-      )`,
+      ) without rowid`,
       `create index \`definition_tags(tag_id)\` on definition_tags(tag_id)`,
     ],
   },
@@ -460,7 +459,7 @@ const tables: readonly TableSchema[] = [
         foreign key (inflected_form_id)
           references inflected_forms
           on delete restrict
-      )`,
+      ) without rowid`,
       `create index \`derived_definitions(original_definition_id)\` on derived_definitions(original_definition_id)`,
       `create index \`derived_definitions(inflected_form_id)\` on derived_definitions(inflected_form_id)`,
     ],
@@ -474,10 +473,9 @@ const tables: readonly TableSchema[] = [
     name: 'tags',
     commands: [`
       create table tags (
-        id integer not null,
+        id integer not null primary key,
         -- The name of the tag.
-        name text not null collate unicode,
-        primary key (id)
+        name text not null collate unicode
       )`,
       `create unique index \`tags(name)\` on tags(name)`,
     ],

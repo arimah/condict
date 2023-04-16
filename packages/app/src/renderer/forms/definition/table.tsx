@@ -14,7 +14,6 @@ import {DefinitionTable} from '@condict/table-editor';
 
 import {useNearestForm, useField, useFormValue} from '../../form';
 import {TableCaptionField, DefinitionTableField} from '../../form-fields';
-import {PartOfSpeechId} from '../../graphql';
 
 import upgradeLayout from './upgrade-layout';
 import {
@@ -29,7 +28,6 @@ export type Props = {
   index: number;
   totalCount: number;
   allTableMap: InflectionTableMap;
-  partOfSpeechId: PartOfSpeechId | null;
   stems: Map<string, string>;
   moving?: MovingState;
   onMove: (from: number, to: number) => void;
@@ -42,7 +40,6 @@ type TableStatus =
   | 'ok'
   | 'hasUpgrade'
   | 'needsUpgrade'
-  | 'wrongPartOfSpeech'
   | 'deleted';
 
 const StatusIcons = {
@@ -65,7 +62,6 @@ const Table = React.memo((props: Props): JSX.Element => {
     index,
     totalCount,
     allTableMap,
-    partOfSpeechId,
     stems,
     moving,
     onMove,
@@ -104,9 +100,7 @@ const Table = React.memo((props: Props): JSX.Element => {
   let status: TableStatus;
   if (!tableInfo) {
     status = 'deleted';
-  } else if (tableInfo.parent !== partOfSpeechId) {
-    status = 'wrongPartOfSpeech';
-  } else if (tableInfo.table.layout.id !== value.layoutId) {
+  } else if (tableInfo.layout.id !== value.layoutId) {
     status = value.id === null ? 'needsUpgrade' : 'hasUpgrade';
   } else {
     status = 'ok';
@@ -118,7 +112,7 @@ const Table = React.memo((props: Props): JSX.Element => {
       return;
     }
 
-    const nextLayout = tableInfo.table.layout;
+    const nextLayout = tableInfo.layout;
     const nextTable = upgradeLayout(field.value.table, nextLayout);
     field.update(draft => {
       draft.table = nextTable as Draft<DefinitionTable>;
@@ -128,17 +122,14 @@ const Table = React.memo((props: Props): JSX.Element => {
     });
   }, [tableInfo, canUpgrade]);
 
-  const hasError =
-    status === 'deleted' ||
-    status === 'wrongPartOfSpeech' ||
-    status === 'needsUpgrade';
+  const hasError = status === 'deleted' || status === 'needsUpgrade';
 
   return (
     <S.TableItem
       aria-label={l10n.getString('definition-inflection-table-title', {
         index: index + 1,
         total: totalCount,
-        name: tableInfo?.table.name ?? '',
+        name: tableInfo?.name ?? '',
       })}
       style={moving && {
         top: moving.offset,
@@ -152,7 +143,7 @@ const Table = React.memo((props: Props): JSX.Element => {
       <TableToolbar
         index={index}
         isLast={index === totalCount - 1}
-        tableName={tableInfo?.table.name}
+        tableName={tableInfo?.name}
         onMove={onMove}
         onRemove={onRemove}
         onDragStart={onDragStart}

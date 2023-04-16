@@ -92,13 +92,9 @@ mutation AddInflectionTableMut($data: NewInflectionTableInput!) {
       stems
       ...InflectionTableFragment
     }
-    partOfSpeech {
+    language {
       id
       name
-      language {
-        id
-        name
-      }
     }
   }
 }
@@ -113,12 +109,8 @@ query EditInflectionTableQuery($id: InflectionTableId!) {
       ...InflectionTableFragment
     }
 
-    partOfSpeech {
+    language {
       id
-
-      language {
-        id
-      }
     }
 
     isInUse
@@ -148,6 +140,7 @@ mutation DeleteInflectionTableMut($id: InflectionTableId!) {
 query AddDefinitionQuery($lang: LanguageId!) {
   language(id: $lang) {
     ...DefinitionFormPartsOfSpeechFragment
+    ...DefinitionFormInflectionTablesFragment
   }
 }
 
@@ -216,6 +209,7 @@ query EditDefinitionQuery($id: DefinitionId!) {
     language {
       id
       ...DefinitionFormPartsOfSpeechFragment
+      ...DefinitionFormInflectionTablesFragment
     }
   }
 }

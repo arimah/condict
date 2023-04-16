@@ -5,23 +5,18 @@
 import {
   Query,
   LanguageId,
-  PartOfSpeechId,
   InflectionTableId
 } from "../../graphql";
 
-export const AllTableLayoutsQuery = "query AllTableLayoutsQuery($lang:LanguageId!){language(id:$lang){id,name,partsOfSpeech{id,name,inflectionTables{id,name}}}}" as Query<{
+export const AllTableLayoutsQuery = "query AllTableLayoutsQuery($lang:LanguageId!){language(id:$lang){id,name,inflectionTables{id,name}}}" as Query<{
   lang: LanguageId;
 }, {
   language: {
     id: LanguageId;
     name: string;
-    partsOfSpeech: {
-      id: PartOfSpeechId;
+    inflectionTables: {
+      id: InflectionTableId;
       name: string;
-      inflectionTables: {
-        id: InflectionTableId;
-        name: string;
-      }[];
     }[];
   } | null;
 }>;

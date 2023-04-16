@@ -9,7 +9,7 @@ import {
 
 import {useNearestForm, useField, useFormState} from '../../form';
 import {useTableEditorMessages} from '../../hooks';
-import {LanguageId, PartOfSpeechId, InflectionTableId} from '../../graphql';
+import {LanguageId, InflectionTableId} from '../../graphql';
 
 import {HistoryValue, useHistoryCommands} from '../history-value';
 import * as S from '../styles';
@@ -21,7 +21,6 @@ export type Props = {
   path?: string;
   label?: ReactNode;
   languageId: LanguageId;
-  partOfSpeechId: PartOfSpeechId;
   inflectionTableId: InflectionTableId | null;
   errorMessage?: ReactNode;
 } & Omit<
@@ -43,7 +42,6 @@ export const InflectionTableField = React.memo((props: Props): JSX.Element => {
     path,
     label,
     languageId,
-    partOfSpeechId,
     inflectionTableId,
     errorMessage,
     disabled,
@@ -114,7 +112,6 @@ export const InflectionTableField = React.memo((props: Props): JSX.Element => {
               canRedo={history.redo.length > 0}
               valueRef={history}
               languageId={languageId}
-              partOfSpeechId={partOfSpeechId}
               inflectionTableId={inflectionTableId}
               onChange={handleChange}
             />

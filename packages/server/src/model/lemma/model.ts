@@ -135,9 +135,12 @@ const Lemma = {
 
     const joinType = filter.kind === 'ALL_LEMMAS' ? 'left' : 'inner';
     const source = db.raw`
-      ${buildOwnDefinitionsSource(db, joinType, filter)}
-      ${buildDerivedDefinitionsSource(db, joinType, filter)}
+      ${buildOwnDefinitionsSource(db, db.raw`d`, joinType, filter)}
+      ${buildDerivedDefinitionsSource(db, db.raw`dd`, joinType, filter)}
     `;
+    const whereAnyMatch = filter.kind === 'ALL_LEMMAS'
+      ? db.raw`and (d.lemma_id is not null or dd.lemma_id is not null)`
+      : db.raw``;
     return paginate(
       validatePageParams(page ?? this.defaultPagination, this.maxPerPage),
       () => {
@@ -146,6 +149,7 @@ const Lemma = {
           from lemmas l
           ${source}
           where l.language_id = ${languageId}
+            ${whereAnyMatch}
         `;
         return total;
       },
@@ -154,6 +158,7 @@ const Lemma = {
         from lemmas l
         ${source}
         where l.language_id = ${languageId}
+          ${whereAnyMatch}
         order by l.term
         limit ${limit} offset ${offset}
       `,

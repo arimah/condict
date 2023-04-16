@@ -7,25 +7,25 @@ import {InflectionTablePage, LanguagePage} from '../../page';
 import {LinkCard, FullRow, Secondary, ResourceTime} from '../../ui';
 import {OperationResult} from '../../graphql';
 
-import PartOfSpeechQuery from './query';
+import LanguageQuery from './query';
 import * as S from './styles';
 
 export type Props = {
-  language: LanguagePage;
+  parent: LanguagePage;
   tables: InflectionTables;
   onAddTable: () => void;
 };
 
 type InflectionTables = NonNullable<
-  OperationResult<typeof PartOfSpeechQuery>['partOfSpeech']
+  OperationResult<typeof LanguageQuery>['language']
 >['inflectionTables'];
 
 const InflectionTableList = (props: Props): JSX.Element => {
-  const {language, tables, onAddTable} = props;
+  const {parent, tables, onAddTable} = props;
   return (
     <section>
       <h2>
-        <Localized id='part-of-speech-tables-heading'/>
+        <Localized id='language-tables-heading'/>
       </h2>
 
       {tables.length > 0 ? (
@@ -33,12 +33,12 @@ const InflectionTableList = (props: Props): JSX.Element => {
           {tables.map(table =>
             <LinkCard
               key={table.id}
-              to={InflectionTablePage(table.id, table.name, language)}
+              to={InflectionTablePage(table.id, table.name, parent)}
               title={table.name}
             >
               <p>
                 <Localized
-                  id='part-of-speech-table-used-by-definitions'
+                  id='language-table-used-by-definitions'
                   vars={{
                     definitionCount: table.usedByDefinitions.page.totalCount,
                   }}
@@ -54,23 +54,23 @@ const InflectionTableList = (props: Props): JSX.Element => {
             </LinkCard>
           )}
           <FullRow>
-            <Button intent='bold' onClick={onAddTable}>
+            <Button onClick={onAddTable}>
               <AddIcon/>
               <span>
-                <Localized id='part-of-speech-add-table-button'/>
+                <Localized id='language-add-table-button'/>
               </span>
             </Button>
           </FullRow>
         </S.InflectionTableList>
       ) : <>
         <BodyText as='p'>
-          <Localized id='part-of-speech-no-tables-description'/>
+          <Localized id='language-no-tables-description'/>
         </BodyText>
         <p>
-          <Button intent='accent' onClick={onAddTable}>
+          <Button intent='bold' onClick={onAddTable}>
             <AddIcon/>
             <span>
-              <Localized id='part-of-speech-add-table-button'/>
+              <Localized id='language-add-table-button'/>
             </span>
           </Button>
         </p>

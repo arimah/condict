@@ -11,7 +11,6 @@ import LanguageQuery from './query';
 import * as S from './styles';
 
 export type Props = {
-  'aria-labelledby': string;
   parent: LanguagePage;
   partsOfSpeech: PartsOfSpeech;
   onAddPartOfSpeech: () => void;
@@ -23,13 +22,16 @@ type PartsOfSpeech = NonNullable<
 
 const PartOfSpeechList = (props: Props): JSX.Element => {
   const {
-    'aria-labelledby': ariaLabelledby,
     parent,
     partsOfSpeech,
     onAddPartOfSpeech,
   } = props;
   return (
-    <section aria-labelledby={ariaLabelledby}>
+    <section>
+      <h2>
+        <Localized id='language-parts-of-speech-heading'/>
+      </h2>
+
       {partsOfSpeech.length > 0 ? (
         <S.PartOfSpeechList>
           {partsOfSpeech.map(pos =>
@@ -38,12 +40,6 @@ const PartOfSpeechList = (props: Props): JSX.Element => {
               to={PartOfSpeechPage(pos.id, pos.name, parent)}
               title={<h3>{pos.name}</h3>}
             >
-              <p>
-                <Localized
-                  id='language-part-of-speech-tables'
-                  vars={{tableCount: pos.statistics.inflectionTableCount}}
-                />
-              </p>
               <p>
                 <Localized
                   id='language-part-of-speech-used-by-definitions'

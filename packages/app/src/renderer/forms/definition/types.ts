@@ -53,7 +53,6 @@ export interface DefinitionTableFormData extends DefinitionTableData {
 export interface PartOfSpeechFields {
   readonly id: PartOfSpeechId;
   readonly name: string;
-  readonly inflectionTables: readonly InflectionTableFields[];
 }
 
 export interface InflectionTableFields {
@@ -68,12 +67,7 @@ export interface InflectionTableLayoutFields {
   readonly rows: DefinitionTableRowJson[];
 }
 
-export interface InflectionTableInfo {
-  readonly parent: PartOfSpeechId;
-  readonly table: InflectionTableFields;
-}
-
-export type InflectionTableMap = Map<InflectionTableId, InflectionTableInfo>;
+export type InflectionTableMap = Map<InflectionTableId, InflectionTableFields>;
 
 // Used when moving
 export interface MovingState {

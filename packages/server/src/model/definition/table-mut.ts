@@ -5,7 +5,7 @@ import {
   InflectionTableId,
   InflectionTableLayoutId,
   InflectedFormId,
-  PartOfSpeechId,
+  LanguageId,
   NewDefinitionInflectionTableInput,
   EditDefinitionInflectionTableInput,
 } from '../../graphql';
@@ -33,7 +33,7 @@ export type DefinitionData = {
   id: DefinitionId;
   term: string;
   stemMap: Map<string, string>;
-  partOfSpeechId: PartOfSpeechId;
+  languageId: LanguageId;
 };
 
 type ValidateInflectionTableResult = {
@@ -56,7 +56,7 @@ const DefinitionInflectionTableMut = {
     } = await this.validateInflectionTableId(
       db,
       inflectionTableId,
-      definition.partOfSpeechId
+      definition.languageId
     );
     const finalCaption = validateTableCaption(caption);
 
@@ -116,7 +116,7 @@ const DefinitionInflectionTableMut = {
     const {currentLayout} = await this.validateInflectionTableId(
       db,
       table.inflection_table_id,
-      definition.partOfSpeechId
+      definition.languageId
     );
 
     let tableLayout = await InflectionTableLayout.byIdRequired(
@@ -165,16 +165,16 @@ const DefinitionInflectionTableMut = {
   async validateInflectionTableId(
     db: DataWriter,
     inflectionTableId: InflectionTableId,
-    partOfSpeechId: PartOfSpeechId
+    languageId: LanguageId
   ): Promise<ValidateInflectionTableResult> {
     const inflectionTable = await InflectionTable.byIdRequired(
       db,
       inflectionTableId,
       'inflectionTableId'
     );
-    if (inflectionTable.part_of_speech_id !== partOfSpeechId) {
+    if (inflectionTable.language_id !== languageId) {
       throw new UserInputError(
-        `Inflection table ${inflectionTable.id} belongs to the wrong part of speech`,
+        `Inflection table ${inflectionTable.id} belongs to the wrong language`,
         {invalidArgs: ['inflectionTableId']}
       );
     }
