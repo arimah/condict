@@ -47,11 +47,7 @@ query($tagsPage: Int!) {
       ...on InflectionTable {
         inflectionTableId: id
         name
-        partOfSpeech {
-          id
-          name
-          language { id, name }
-        }
+        language { id, name }
       }
     }
   }

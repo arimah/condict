@@ -120,8 +120,7 @@ const EditInflectionTablePanel = (props: Props) => {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               layout: layout!,
             }}
-            languageId={table.partOfSpeech.language.id}
-            partOfSpeechId={table.partOfSpeech.id}
+            languageId={table.language.id}
             submitError={
               submitError && <Localized id='inflection-table-save-error'/>
             }

@@ -3,14 +3,9 @@ query AllTableLayoutsQuery($lang: LanguageId!) {
     id
     name
 
-    partsOfSpeech {
+    inflectionTables {
       id
       name
-
-      inflectionTables {
-        id
-        name
-      }
     }
   }
 }

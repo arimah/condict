@@ -10,10 +10,11 @@ import {
   DefinitionId,
   PartOfSpeechId,
   UtcInstant,
+  InflectionTableId,
   TagId
 } from "../../graphql";
 
-export default "query($id:LanguageId!){language(id:$id){name,description{...RichTextBlockFragment}lemmaCount,firstLemma{term}lastLemma{term}timeCreated,timeUpdated,recentDefinitions(page:{page:0,perPage:5}){nodes{id,term,partOfSpeech{name}description{...RichTextBlockFragment}timeCreated,timeUpdated}}partsOfSpeech{id,name,statistics{inflectionTableCount,definitionCount}timeCreated,timeUpdated}tags(page:{page:0,perPage:100}){page{page,hasNext}nodes{id,name}}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Query<{
+export default "query($id:LanguageId!){language(id:$id){name,description{...RichTextBlockFragment}lemmaCount,firstLemma{term}lastLemma{term}timeCreated,timeUpdated,recentDefinitions(page:{page:0,perPage:5}){nodes{id,term,timeCreated,timeUpdated,partOfSpeech{name}description{...RichTextBlockFragment}}}partsOfSpeech{id,name,timeCreated,timeUpdated,statistics{definitionCount}}inflectionTables{id,name,timeCreated,timeUpdated,usedByDefinitions{page{totalCount}}}tags(page:{page:0,perPage:100}){page{page,hasNext}nodes{id,name}}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Query<{
   id: LanguageId;
 }, {
   language: {
@@ -94,6 +95,8 @@ export default "query($id:LanguageId!){language(id:$id){name,description{...Rich
       nodes: {
         id: DefinitionId;
         term: string;
+        timeCreated: UtcInstant;
+        timeUpdated: UtcInstant;
         partOfSpeech: {
           name: string;
         };
@@ -160,19 +163,27 @@ export default "query($id:LanguageId!){language(id:$id){name,description{...Rich
             }[];
           })[];
         }[];
-        timeCreated: UtcInstant;
-        timeUpdated: UtcInstant;
       }[];
     };
     partsOfSpeech: {
       id: PartOfSpeechId;
       name: string;
-      statistics: {
-        inflectionTableCount: number;
-        definitionCount: number;
-      };
       timeCreated: UtcInstant;
       timeUpdated: UtcInstant;
+      statistics: {
+        definitionCount: number;
+      };
+    }[];
+    inflectionTables: {
+      id: InflectionTableId;
+      name: string;
+      timeCreated: UtcInstant;
+      timeUpdated: UtcInstant;
+      usedByDefinitions: {
+        page: {
+          totalCount: number;
+        };
+      };
     }[];
     tags: {
       page: {

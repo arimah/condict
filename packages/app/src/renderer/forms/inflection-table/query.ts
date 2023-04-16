@@ -4,15 +4,15 @@
 
 import {
   Query,
-  PartOfSpeechId,
+  LanguageId,
   InflectionTableId
 } from "../../graphql";
 
-export const CheckNameQuery = "query CheckNameQuery($pos:PartOfSpeechId!,$name:String!){partOfSpeech(id:$pos){inflectionTableByName(name:$name){id}}}" as Query<{
-  pos: PartOfSpeechId;
+export const CheckNameQuery = "query CheckNameQuery($lang:LanguageId!,$name:String!){language(id:$lang){inflectionTableByName(name:$name){id}}}" as Query<{
+  lang: LanguageId;
   name: string;
 }, {
-  partOfSpeech: {
+  language: {
     inflectionTableByName: {
       id: InflectionTableId;
     } | null;

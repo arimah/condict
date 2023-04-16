@@ -1,13 +1,12 @@
-import {Fragment, useState, useMemo, useCallback} from 'react';
+import {useState, useMemo, useCallback} from 'react';
 import {Localized, useLocalization} from '@fluent/react';
 import OpenLinkIcon from 'mdi-react/OpenInNewIcon';
 
-import {useUniqueId} from '@condict/ui';
 import {InflectionTable, InflectionTableJson} from '@condict/table-editor';
 
 import {EventPredicate, useData, useExecute} from '../../data';
 import {PanelParams, PanelProps} from '../../navigation';
-import {LanguageId, PartOfSpeechId, InflectionTableId} from '../../graphql';
+import {LanguageId, InflectionTableId} from '../../graphql';
 import {InflectionTablePage, LanguagePage} from '../../page';
 import {
   FlowContent,
@@ -23,22 +22,14 @@ import * as S from './styles';
 
 type Props = {
   languageId: LanguageId;
-  partOfSpeechId: PartOfSpeechId;
   inflectionTableId: InflectionTableId | null;
 } & PanelProps<InflectionTable | null>;
-
-interface TableGroup {
-  id: PartOfSpeechId;
-  name: string;
-  tables: InflectionTablePage[];
-}
 
 type SubmitState = 'loading' | 'error' | null;
 
 const ImportLayoutPanel = (props: Props): JSX.Element => {
   const {
     languageId,
-    partOfSpeechId,
     inflectionTableId,
     titleId,
     onResolve,
@@ -48,41 +39,19 @@ const ImportLayoutPanel = (props: Props): JSX.Element => {
 
   const data = useData(AllTableLayoutsQuery, {lang: languageId}, shouldReload);
 
-  const groups = useMemo(() => {
+  const tables = useMemo(() => {
     if (data.state === 'loading' || !data.result.data?.language) {
-      return {samePos: null, otherPos: []};
+      return [];
     }
 
     const {language} = data.result.data;
     const langPage = LanguagePage(language.id, language.name);
 
-    let samePos: TableGroup | null = null;
-    const otherPos: TableGroup[] = [];
-
-    for (const pos of language.partsOfSpeech) {
-      const tables: InflectionTablePage[] = [];
-
-      for (const table of pos.inflectionTables) {
-        if (table.id === inflectionTableId) {
-          // Disallow imports from the same table.
-          continue;
-        }
-        tables.push(InflectionTablePage(table.id, table.name, langPage));
-      }
-
-      if (tables.length === 0) {
-        continue;
-      }
-
-      const group: TableGroup = {id: pos.id, name: pos.name, tables};
-      if (pos.id === partOfSpeechId) {
-        samePos = group;
-      } else {
-        otherPos.push(group);
-      }
-    }
-
-    return {samePos, otherPos};
+    return (
+      language.inflectionTables
+        .filter(table => table.id !== inflectionTableId)
+        .map(table => InflectionTablePage(table.id, table.name, langPage))
+    );
   }, [data]);
 
   const execute = useExecute();
@@ -111,8 +80,6 @@ const ImportLayoutPanel = (props: Props): JSX.Element => {
     });
   }, [execute, onResolve]);
 
-  const htmlId = useUniqueId();
-
   return (
     <FlowContent>
       <MainHeader>
@@ -131,45 +98,14 @@ const ImportLayoutPanel = (props: Props): JSX.Element => {
           </S.SubmitError>}
       </div>
       {renderData(data, () => {
-        const {samePos, otherPos} = groups;
-        return <>
-          <h2 id={`${htmlId}-same-title`}>
-            <Localized id='table-editor-import-same-pos-heading'/>
-          </h2>
-          {samePos ? (
-            <TableList
-              aria-labelledby={`${htmlId}-same-title`}
-              tables={samePos.tables}
-              onPick={handlePickTable}
-            />
-          ) : (
+        if (tables.length === 0) {
+          return (
             <p>
-              <Localized id='table-editor-import-same-pos-empty'/>
+              <Localized id='table-editor-import-no-other-tables'/>
             </p>
-          )}
-
-          <h2 id={`${htmlId}-other-title`}>
-            <Localized id='table-editor-import-other-pos-heading'/>
-          </h2>
-          <section aria-labelledby={`${htmlId}-other-title`}>
-            {otherPos.length > 0 ? otherPos.map(pos =>
-              <Fragment key={pos.id}>
-                <h3 id={`${htmlId}-${pos.id}-title`}>
-                  {pos.name}
-                </h3>
-                <TableList
-                  aria-labelledby={`${htmlId}-${pos.id}-title`}
-                  tables={pos.tables}
-                  onPick={handlePickTable}
-                />
-              </Fragment>
-            ) : (
-              <p>
-                <Localized id='table-editor-import-other-pos-empty'/>
-              </p>
-            )}
-          </section>
-        </>;
+          );
+        }
+        return <TableList tables={tables} onPick={handlePickTable}/>;
       })}
     </FlowContent>
   );
@@ -182,7 +118,6 @@ const shouldReload: EventPredicate = event =>
 
 const importLayoutPanel = (ids: {
   languageId: LanguageId;
-  partOfSpeechId: PartOfSpeechId;
   inflectionTableId: InflectionTableId | null;
 }): PanelParams<InflectionTable | null> => ({
   // eslint-disable-next-line react/display-name
@@ -192,7 +127,6 @@ const importLayoutPanel = (ids: {
 export default importLayoutPanel;
 
 type TableListProps = {
-  'aria-labelledby': string;
   tables: InflectionTablePage[];
   onPick: (id: InflectionTableId) => void;
 };

@@ -1,4 +1,4 @@
-import {ReactNode, RefObject, useCallback} from 'react';
+import {ReactNode, RefObject, useMemo, useCallback} from 'react';
 import {Localized, useLocalization} from '@fluent/react';
 import shallowEqual from 'shallowequal';
 
@@ -26,12 +26,15 @@ import {
   DefinitionData,
   DefinitionFormState,
   PartOfSpeechFields,
+  InflectionTableFields,
 } from './types';
 import {useSyncFormDirtiness} from '../utils';
+import useInflectionTableOptions from './inflection-table-options';
 
 export type Props = {
   languageId: LanguageId;
   initialPartsOfSpeech: PartOfSpeechFields[];
+  initialInflectionTables: InflectionTableFields[];
   initialData?: DefinitionData;
   submitError?: ReactNode;
   firstFieldRef?: RefObject<HTMLElement>;
@@ -39,9 +42,7 @@ export type Props = {
   onCancel: () => void;
   onDirtyChange?: (dirty: boolean) => void;
   onCreatePartOfSpeech: () => Promise<NewPartOfSpeech | null>;
-  onCreateInflectionTable: (
-    partOfSpeechId: PartOfSpeechId
-  ) => Promise<NewInflectionTable | null>;
+  onCreateInflectionTable: () => Promise<NewInflectionTable | null>;
 };
 
 export {DefinitionData};
@@ -60,6 +61,7 @@ export const DefinitionForm = (props: Props): JSX.Element => {
   const {
     languageId,
     initialPartsOfSpeech,
+    initialInflectionTables,
     initialData,
     submitError,
     firstFieldRef,
@@ -90,7 +92,6 @@ export const DefinitionForm = (props: Props): JSX.Element => {
 
   const {
     partsOfSpeech,
-    partOfSpeechOptions,
     handleCreatePartOfSpeech,
   } = usePartOfSpeechOptions({
     form,
@@ -99,25 +100,21 @@ export const DefinitionForm = (props: Props): JSX.Element => {
     onCreatePartOfSpeech,
   });
 
+  const inflectionTables = useInflectionTableOptions({
+    languageId,
+    initialInflectionTables,
+  });
+
   const handleSubmit = useCallback((
     data: DefinitionFormState
   ): Promise<void> | void => {
-    const pos = partsOfSpeech.find(p => p.id === data.partOfSpeech);
-
-    const availableTables = new Set(pos?.inflectionTables.map(t => t.id));
-    const exportedStems = new Set(
-      pos?.inflectionTables.flatMap(t => t.layout.stems)
-    );
-
     const tables = data.inflectionTables;
+    const exportedStems = new Set(tables.flatMap(t => t.stems));
 
     const submittedData: DefinitionData = {
       ...data,
-      // Remove inflection tables that belong to a different part of speech
-      // and strip the `key`.
-      inflectionTables: tables
-        .filter(t => availableTables.has(t.tableId))
-        .map(({key: _key, ...table}) => table),
+      // Strip the `key` from the selected inflection tables.
+      inflectionTables: tables.map(({key: _key, ...table}) => table),
       // Remove stems that are not used by any of the inflection tables.
       stems: new Map(
         [...data.stems].filter(([name]) =>
@@ -128,7 +125,15 @@ export const DefinitionForm = (props: Props): JSX.Element => {
     return onSubmit(submittedData);
   }, [partsOfSpeech, onSubmit]);
 
-  const hasPartsOfSpeech = partOfSpeechOptions.length > 0 ? 'yes' : 'no';
+  const partOfSpeechOptions = useMemo<JSX.Element[]>(() => {
+    return partsOfSpeech.map(pos =>
+      <option key={pos.id} value={String(pos.id)}>
+        {pos.name}
+      </option>
+    );
+  }, [partsOfSpeech]);
+
+  const hasPartsOfSpeech = partsOfSpeech.length > 0 ? 'yes' : 'no';
 
   return (
     <FormProvider form={form}>
@@ -170,10 +175,10 @@ export const DefinitionForm = (props: Props): JSX.Element => {
           {partOfSpeechOptions}
         </SelectField>
         <TableList
-          partsOfSpeech={partsOfSpeech}
+          inflectionTables={inflectionTables}
           onCreateInflectionTable={onCreateInflectionTable}
         />
-        <StemsField partsOfSpeech={partsOfSpeech}/>
+        <StemsField/>
         <TagField
           name='tags'
           label={<Localized id='definition-tags-label'/>}

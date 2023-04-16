@@ -3,3 +3,9 @@ query AllPartsOfSpeechQuery($lang: LanguageId!) {
     ...DefinitionFormPartsOfSpeechFragment
   }
 }
+
+query AllInflectionTablesQuery($lang: LanguageId!) {
+  language(id: $lang) {
+    ...DefinitionFormInflectionTablesFragment
+  }
+}

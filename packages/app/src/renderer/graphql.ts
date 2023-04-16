@@ -80,14 +80,14 @@ export type LemmaId = IdOf<'Lemma'>;
 export type DefinitionId = IdOf<'Definition'>;
 
 /**
- * Represents a part of speech ID.
- */
-export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
-
-/**
  * Represents an inflection table ID.
  */
 export type InflectionTableId = IdOf<'InflectionTable'>;
+
+/**
+ * Represents a part of speech ID.
+ */
+export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
 
 /**
  * Represents an inflection table layout ID.
@@ -293,9 +293,9 @@ export type EditPartOfSpeechInput = {
  */
 export type NewInflectionTableInput = {
   /**
-   * The part of speech that the inflection table will be added to.
+   * The language that the inflection table will be added to.
    */
-  partOfSpeechId: PartOfSpeechId;
+  languageId: LanguageId;
   /**
    * The name of the inflection table.
    */
@@ -381,7 +381,7 @@ export type InflectedFormInput = {
 
 /**
  * Input type for editing an existing inflection table. It is not possible to move
- * an inflection table to another part of speech.
+ * an inflection table to another language.
  */
 export type EditInflectionTableInput = {
   /**
@@ -498,11 +498,6 @@ export type EditDefinitionInput = {
   term?: string | null | undefined;
   /**
    * If set, updates the part of speech.
-   * 
-   * If this field is set to a value other than the definition's current part of
-   * speech, and `inflectionTables` is _not_ set, then the definition's inflection
-   * tables will all be deleted. In other words, changing the part of speech will
-   * delete inflection tables unless you specify new ones.
    */
   partOfSpeechId?: PartOfSpeechId | null | undefined;
   /**

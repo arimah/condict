@@ -38,8 +38,8 @@ const LemmaAndDefinitionList = (props: Props): JSX.Element => {
 
   if (lemmaCount === 0) {
     return (
-      <section aria-labelledby={`${htmlId}-lemmas-title`}>
-        <SROnly as='h2' id={`${htmlId}-lemmas-title`}>
+      <section>
+        <SROnly as='h2'>
           <Localized id='language-words-in-language-heading'/>
         </SROnly>
 
@@ -61,8 +61,8 @@ const LemmaAndDefinitionList = (props: Props): JSX.Element => {
   }
 
   return (
-    <section aria-labelledby={`${htmlId}-lemmas-title`}>
-      <SROnly as='h2' id={`${htmlId}-lemmas-title`}>
+    <section>
+      <SROnly as='h2'>
         <Localized id='language-words-in-language-heading'/>
       </SROnly>
 

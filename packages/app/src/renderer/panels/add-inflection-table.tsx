@@ -12,7 +12,6 @@ import {
   InflectionTableLayoutId,
   InflectionTableRowInput,
   LanguageId,
-  PartOfSpeechId,
 } from '../graphql';
 
 import {AddInflectionTableMut} from './query';
@@ -25,23 +24,18 @@ export interface NewInflectionTable {
     stems: string[];
     rows: InflectionTableJson;
   };
-  partOfSpeech: {
-    id: PartOfSpeechId;
+  language: {
+    id: LanguageId;
     name: string;
-    language: {
-      id: LanguageId;
-      name: string;
-    };
   };
 }
 
 type Props = {
   languageId: LanguageId;
-  partOfSpeechId: PartOfSpeechId;
 } & PanelProps<NewInflectionTable | null>;
 
 const AddInflectionTablePanel = (props: Props) => {
-  const {languageId, partOfSpeechId, updatePanel, titleId, onResolve} = props;
+  const {languageId, updatePanel, titleId, onResolve} = props;
 
   const execute = useExecute();
 
@@ -52,7 +46,7 @@ const AddInflectionTablePanel = (props: Props) => {
 
     const res = await execute(AddInflectionTableMut, {
       data: {
-        partOfSpeechId,
+        languageId,
         name: formData.name,
         layout:
           InflectionTable.export(formData.layout) as
@@ -70,7 +64,7 @@ const AddInflectionTablePanel = (props: Props) => {
     // If there were no errors, we should have a part of speech.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     onResolve(res.data!.addInflectionTable);
-  }, [partOfSpeechId, onResolve]);
+  }, [onResolve]);
 
   return (
     <FlowContent>
@@ -79,7 +73,6 @@ const AddInflectionTablePanel = (props: Props) => {
       </h1>
       <InflectionTableForm
         languageId={languageId}
-        partOfSpeechId={partOfSpeechId}
         submitError={submitError && <Localized id='inflection-table-save-error'/>}
         onSubmit={onSubmit}
         onCancel={() => onResolve(null)}
@@ -91,7 +84,6 @@ const AddInflectionTablePanel = (props: Props) => {
 
 export const addInflectionTablePanel = (ids: {
   languageId: LanguageId;
-  partOfSpeechId: PartOfSpeechId;
 }): PanelParams<NewInflectionTable | null> => ({
   // eslint-disable-next-line react/display-name
   render: props => <AddInflectionTablePanel {...props} {...ids}/>,

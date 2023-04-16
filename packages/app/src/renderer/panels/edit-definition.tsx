@@ -14,7 +14,7 @@ import {DefinitionTable} from '@condict/table-editor';
 import {FlowContent, MainHeader} from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {DefinitionData, DefinitionForm} from '../forms';
-import {DefinitionId, LanguageId, LemmaId, PartOfSpeechId} from '../graphql';
+import {DefinitionId, LanguageId, LemmaId} from '../graphql';
 import {useData, useExecute} from '../data';
 import {useRefocusOnData} from '../hooks';
 
@@ -116,15 +116,12 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
     return openPanel(addPartOfSpeechPanel(languageId!));
   }, [languageId, openPanel]);
 
-  const createInflectionTable = useCallback((
-    partOfSpeechId: PartOfSpeechId
-  ) => {
+  const createInflectionTable = useCallback(() => {
     return openPanel(addInflectionTablePanel({
       // It should not be possible to trigger this panel before the language is
       // available.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       languageId: languageId!,
-      partOfSpeechId,
     }));
   }, [languageId, openPanel]);
 
@@ -196,6 +193,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
             initialData={initialData}
             languageId={def.language.id}
             initialPartsOfSpeech={def.language.partsOfSpeech}
+            initialInflectionTables={def.language.inflectionTables}
             submitError={
               submitError && <Localized id='definition-save-error'/>
             }

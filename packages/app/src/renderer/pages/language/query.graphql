@@ -17,6 +17,8 @@ query($id: LanguageId!) {
       nodes {
         id
         term
+        timeCreated
+        timeUpdated
 
         partOfSpeech {
           name
@@ -25,23 +27,31 @@ query($id: LanguageId!) {
         description {
           ...RichTextBlockFragment
         }
-
-        timeCreated
-        timeUpdated
       }
     }
 
     partsOfSpeech {
       id
       name
-
-      statistics {
-        inflectionTableCount
-        definitionCount
-      }
-
       timeCreated
       timeUpdated
+
+      statistics {
+        definitionCount
+      }
+    }
+
+    inflectionTables {
+      id
+      name
+      timeCreated
+      timeUpdated
+
+      usedByDefinitions {
+        page {
+          totalCount
+        }
+      }
     }
 
     tags(page: {page: 0, perPage: 100}) {

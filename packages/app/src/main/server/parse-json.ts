@@ -100,12 +100,8 @@ const parseEvent = (value: unknown, index: number): DictionaryEvent => {
     }
     case 'inflectionTable': {
       const id = parseId(value.id, `${path}.id`);
-      const partOfSpeechId = parseId(
-        value.partOfSpeechId,
-        `${path}.partOfSpeechId`
-      );
       const languageId = parseId(value.languageId, `${path}.languageId`);
-      return {type: 'inflectionTable', action, id, partOfSpeechId, languageId};
+      return {type: 'inflectionTable', action, id, languageId};
     }
     case 'tag': {
       const id = parseId(value.id, `${path}.id`);

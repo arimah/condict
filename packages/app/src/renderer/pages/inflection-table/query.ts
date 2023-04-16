@@ -6,27 +6,23 @@ import {
   Query,
   InflectionTableId,
   UtcInstant,
-  PartOfSpeechId,
   LanguageId,
   DefinitionId,
   BlockKind,
-  LemmaId
+  LemmaId,
+  PartOfSpeechId
 } from "../../graphql";
 
-export default "query($id:InflectionTableId!){inflectionTable(id:$id){name,timeCreated,timeUpdated,partOfSpeech{id,name,language{id,name}}layout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{inflectionPattern,displayName}}...on InflectionTableHeaderCell{headerText}}}}oldLayouts{page{totalCount}}usedBy:usedByDefinitions(layout:ALL_LAYOUTS){page{totalCount,hasNext}nodes{definition{...DefinitionSummaryFragment}hasOldLayouts}}oldUsedBy:usedByDefinitions(layout:OLD_LAYOUTS){page{totalCount,hasNext}nodes{definition{...DefinitionSummaryFragment}}}}}fragment DefinitionSummaryFragment on Definition{id,term,partOfSpeech{name}description{...RichTextBlockFragment}timeCreated,timeUpdated}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Query<{
+export default "query($id:InflectionTableId!){inflectionTable(id:$id){name,timeCreated,timeUpdated,language{id,name}layout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{inflectionPattern,displayName}}...on InflectionTableHeaderCell{headerText}}}}oldLayouts{page{totalCount}}usedBy:usedByDefinitions(layout:ALL_LAYOUTS){page{totalCount,hasNext}nodes{definition{...DefinitionSummaryFragment}hasOldLayouts}}oldUsedBy:usedByDefinitions(layout:OLD_LAYOUTS){page{totalCount,hasNext}nodes{definition{...DefinitionSummaryFragment}}}}}fragment DefinitionSummaryFragment on Definition{id,term,partOfSpeech{name}description{...RichTextBlockFragment}timeCreated,timeUpdated}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Query<{
   id: InflectionTableId;
 }, {
   inflectionTable: {
     name: string;
     timeCreated: UtcInstant;
     timeUpdated: UtcInstant;
-    partOfSpeech: {
-      id: PartOfSpeechId;
+    language: {
+      id: LanguageId;
       name: string;
-      language: {
-        id: LanguageId;
-        name: string;
-      };
     };
     layout: {
       rows: {

@@ -19,7 +19,7 @@ import {Toolbar, Menu} from '@condict/ui';
 import {InflectionTable, SelectionShape} from '@condict/table-editor';
 
 import {useOpenPanel} from '../../navigation';
-import {InflectionTableId, LanguageId, PartOfSpeechId} from '../../graphql';
+import {InflectionTableId, LanguageId} from '../../graphql';
 
 import * as S from '../styles';
 
@@ -33,7 +33,6 @@ type Props = {
   canRedo: boolean;
   valueRef: { current: InflectionTable };
   languageId: LanguageId;
-  partOfSpeechId: PartOfSpeechId;
   inflectionTableId: InflectionTableId | null;
   onChange: (table: InflectionTable) => void;
 };
@@ -49,7 +48,6 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
     canRedo,
     valueRef,
     languageId,
-    partOfSpeechId,
     inflectionTableId,
     onChange,
   } = props;
@@ -69,7 +67,6 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
   const handleImportLayout = useCallback(() => {
     void openPanel(importLayoutPanel({
       languageId,
-      partOfSpeechId,
       inflectionTableId,
     })).then(value => {
       if (value) {
@@ -78,7 +75,6 @@ const TableToolbar = React.memo((props: Props): JSX.Element => {
     });
   }, [
     languageId,
-    partOfSpeechId,
     inflectionTableId,
     openPanel,
     onChange,

@@ -1,4 +1,4 @@
-import {useState, useMemo, useCallback, useRef} from 'react';
+import {useState, useCallback, useRef} from 'react';
 import produce from 'immer';
 
 import {Form} from '../../form';
@@ -20,7 +20,6 @@ export type Options = {
 
 export interface PartOfSpeechOptions {
   partsOfSpeech: readonly PartOfSpeechFields[];
-  partOfSpeechOptions: JSX.Element[];
   handleCreatePartOfSpeech: () => void;
 }
 
@@ -49,8 +48,6 @@ const usePartOfSpeechOptions = ({
             draft.push({
               id: newPos.id,
               name: newPos.name,
-              // Brand new part of speech can't have any tables.
-              inflectionTables: [],
             });
             // Sort the list so the options end up in the order they'll probably
             // be in once we reload.
@@ -68,10 +65,8 @@ const usePartOfSpeechOptions = ({
   const requestId = useRef(0);
   useDictionaryEvents(({events}) => {
     const needRefetch = events.some(event =>
-      (
-        event.type === 'partOfSpeech' ||
-        event.type === 'inflectionTable'
-      ) && event.languageId === languageId
+      event.type === 'partOfSpeech' &&
+      event.languageId === languageId
     );
     if (!needRefetch) {
       return;
@@ -106,17 +101,8 @@ const usePartOfSpeechOptions = ({
     });
   });
 
-  const partOfSpeechOptions = useMemo<JSX.Element[]>(() => {
-    return partsOfSpeech.map(pos =>
-      <option key={pos.id} value={String(pos.id)}>
-        {pos.name}
-      </option>
-    );
-  }, [partsOfSpeech]);
-
   return {
     partsOfSpeech,
-    partOfSpeechOptions,
     handleCreatePartOfSpeech,
   };
 };

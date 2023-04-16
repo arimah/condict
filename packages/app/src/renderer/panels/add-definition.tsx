@@ -1,4 +1,4 @@
-import {useState, useMemo, useCallback, useRef} from 'react';
+import {useState, useCallback, useRef} from 'react';
 import {Localized} from '@fluent/react';
 
 import {
@@ -9,7 +9,7 @@ import {
 import {FlowContent, MainHeader, BlockFields, renderData} from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {DefinitionData, DefinitionForm} from '../forms';
-import {DefinitionId, LanguageId, PartOfSpeechId} from '../graphql';
+import {DefinitionId, LanguageId} from '../graphql';
 import {useData, useExecute} from '../data';
 import {useRefocusOnData} from '../hooks';
 
@@ -92,25 +92,15 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
     preventScroll: entering,
   });
 
-  const initialPartsOfSpeech = useMemo(() => {
-    if (data.state === 'loading' || !data.result.data?.language) {
-      return [];
-    }
-    return data.result.data.language.partsOfSpeech;
-  }, [data]);
-
   const openPanel = useOpenPanel();
 
   const createPartOfSpeech = useCallback(() => {
     return openPanel(addPartOfSpeechPanel(languageId));
   }, [languageId, openPanel]);
 
-  const createInflectionTable = useCallback((
-    partOfSpeechId: PartOfSpeechId
-  ) => {
+  const createInflectionTable = useCallback(() => {
     return openPanel(addInflectionTablePanel({
       languageId,
-      partOfSpeechId,
     }));
   }, [languageId, openPanel]);
 
@@ -121,10 +111,11 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
           <Localized id='language-define-word-title'/>
         </h1>
       </MainHeader>
-      {renderData(data, () =>
+      {renderData(data, ({language}) =>
         <DefinitionForm
           languageId={languageId}
-          initialPartsOfSpeech={initialPartsOfSpeech}
+          initialPartsOfSpeech={language?.partsOfSpeech ?? []}
+          initialInflectionTables={language?.inflectionTables ?? []}
           submitError={
             submitError && <Localized id='inflection-table-save-error'/>
           }

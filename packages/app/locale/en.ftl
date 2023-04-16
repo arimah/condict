@@ -558,15 +558,9 @@ table-editor-rename-forms = Edit all form names...
 
 table-editor-import-layout-title = Import layout
 
-table-editor-import-same-pos-heading = From the same part of speech
-
-table-editor-import-same-pos-empty = There are no other inflection tables in this part of speech.
-
-table-editor-import-other-pos-heading = From another part of speech
-
-table-editor-import-other-pos-empty = There are no inflection tables in any other part of speech in this language.
-
 table-editor-import-open-table-button = View the table in a new tab
+
+table-editor-import-no-other-tables = There are no other inflection tables in this language.
 
 table-editor-import-error = The selected table could not be loaded. It may help to try again.
 
@@ -699,13 +693,10 @@ home-recent-definition-description = Definition in <lang-link>{$language}</lang-
 home-recent-part-of-speech-description = Part of speech in <lang-link>{$language}</lang-link>
 
 # Variables:
-#   partOfSpeech: The name of the part of speech that the inflection table belongs to.
 #   language: The name of the language that the inflection table is in.
 # Elements:
-#   <pos-link>: Link to the part of speech that the inflection table belongs to. Wraps around $partOfSpeech.
 #   <lang-link>: Link to the language that the definition is in. Wraps around $language.
-home-recent-inflection-table-description =
-    Inflection table of <pos-link>{$partOfSpeech}</pos-link> in <lang-link>{$language}</lang-link>
+home-recent-inflection-table-description = Inflection table in <lang-link>{$language}</lang-link>
 
 home-recent-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
@@ -747,24 +738,6 @@ language-recent-definitions-heading = Recent definitions
 
 language-parts-of-speech-heading = Parts of speech
 
-language-add-part-of-speech-button = Add part of speech
-
-language-no-parts-of-speech-description =
-  There are no parts of speech in this language. Parts of speech are a way to group your words. They can also contain inflection rules for words.
-
-language-tags-heading = Tags
-
-language-no-tags-description = The definitions in this language do not have any tags. You can add tags to a definition when you create or edit it.
-
-# Variables:
-#   tableCount: The total number of inflection tables in the part of speech.
-language-part-of-speech-tables =
-  {$tableCount ->
-    [0] No inflection tables
-    [one] {$tableCount} inflection table
-   *[other] {$tableCount} inflection tables
-  }
-
 # Variables:
 #   definitionCount: The total number of definitions that use the part of speech.
 language-part-of-speech-used-by-definitions =
@@ -773,6 +746,28 @@ language-part-of-speech-used-by-definitions =
     [one] Used by {$definitionCount} definition
    *[other] Used by {$definitionCount} definitions
   }
+
+language-add-part-of-speech-button = Add part of speech
+
+language-no-parts-of-speech-description =
+  There are no parts of speech in this language. Parts of speech are a way to group your words. You can also search for words by part of speech.
+
+language-tables-heading = Inflection tables
+
+language-table-used-by-definitions =
+  {$definitionCount ->
+    [0] Not used by any definitions
+    [one] Used by {$definitionCount} definition
+   *[other] Used by {$definitionCount} definitions
+  }
+
+language-add-table-button = Add inflection table
+
+language-no-tables-description = There are no inflection tables in this language. Inflection tables can be added to a word to display its inflected forms. Inflected forms can also be added to the dictionary as searchable terms.
+
+language-tags-heading = Tags
+
+language-no-tags-description = The definitions in this language do not have any tags. You can add tags to a definition when you create or edit it.
 
 language-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
@@ -946,8 +941,6 @@ definition-table-has-new-version-notice = A new version of this table is availab
 
 definition-table-needs-new-version-error = A new version of this table is available. The table must be updated before you save the definition.
 
-definition-table-wrong-part-of-speech-error = This table belongs to a different part of speech. It cannot be added to the definition.
-
 definition-table-deleted-error = This table has been deleted. It cannot be added to the definition.
 
 definition-upgrade-layout-button = Update to latest layout
@@ -955,8 +948,6 @@ definition-upgrade-layout-button = Update to latest layout
 definition-add-table-button = Add inflection table
 
 definition-new-table-menu = New inflection table...
-
-definition-tables-select-part-of-speech-helper = Select a part of speech to add inflections to this word.
 
 definition-stems-label = Inflection stems
 
@@ -1001,15 +992,6 @@ definition-not-found-error = Definition not found. This definition has been dele
 #   <lang-link>: Link to the language that the part of speech belongs to. Wraps around $language.
 part-of-speech-subheading = Part of speech in language <lang-link>{$language}</lang-link>
 
-part-of-speech-tables-heading = Inflection tables
-
-part-of-speech-table-used-by-definitions =
-  {$definitionCount ->
-    [0] Not used by any definitions
-    [one] Used by {$definitionCount} definition
-   *[other] Used by {$definitionCount} definitions
-  }
-
 part-of-speech-definitions-heading = Definitions of this part of speech
 
 part-of-speech-browse-definitions-title =
@@ -1024,10 +1006,6 @@ part-of-speech-added-on = Added {DATETIME($time, dateStyle: "short", timeStyle: 
 
 part-of-speech-edited-on = Edited {DATETIME($time, dateStyle: "short", timeStyle: "short")}
 
-part-of-speech-add-table-button = Add inflection table
-
-part-of-speech-no-tables-description = There are no inflection tables in this part of speech. Inflection tables can be added to a word to display its inflected forms. Inflected forms can also be added to the dictionary as searchable terms.
-
 part-of-speech-name-label = Name
 
 part-of-speech-name-required-error = A part of speech name is required.
@@ -1040,7 +1018,7 @@ part-of-speech-delete-title = Delete part of speech
 
 # Elements:
 #   <bold>: Bold text.
-part-of-speech-delete-confirm = The part of speech and all inflection tables in it will be deleted. This <bold>cannot be undone</bold>.
+part-of-speech-delete-confirm = The part of speech will be deleted. This <bold>cannot be undone</bold>.
 
 # Variables:
 #   definitionCount: The total number of definitions that use the part of speech.
@@ -1053,7 +1031,7 @@ part-of-speech-delete-not-possible =
      *[other] {$definitionCount} definitions
     }.
 
-part-of-speech-delete-button = Delete part of speech and tables
+part-of-speech-delete-button = Delete part of speech
 
 part-of-speech-delete-error = An error occurred when deleting the part of speech. It may help to try again.
 
@@ -1066,13 +1044,11 @@ part-of-speech-add-table-title = Add inflection table
 ## Inflection table messages
 
 # Variables:
-#   partOfSpeech: The name of the part of speech that the table belongs to.
 #   language: The name of the language that the table belongs to.
 #
 # Elements:
-#   <pos-link>: Link to the part of speech that the table belongs to. Wraps around $partOfSpeech.
 #   <lang-link>: Link to the language that the table belongs to. Wraps around $language.
-inflection-table-subheading = Inflection table in part of speech <pos-link>{$partOfSpeech}</pos-link>, in language <lang-link>{$language}</lang-link>
+inflection-table-subheading = Inflection table in language <lang-link>{$language}</lang-link>
 
 inflection-table-layout-heading = Layout
 
