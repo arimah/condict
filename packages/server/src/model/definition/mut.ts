@@ -92,7 +92,7 @@ const DefinitionMut = {
       const derivedDefinitions = await this.updateInflectionTables(
         db,
         definitionId,
-        partOfSpeech.id,
+        language.id,
         term,
         stemMap,
         inflectionTables,
@@ -143,9 +143,9 @@ const DefinitionMut = {
       partOfSpeechId,
       description,
       stems,
+      inflectionTables,
       tags,
     } = data;
-    let {inflectionTables} = data;
 
     const definition = await Definition.byIdRequired(context.db, id);
 
@@ -157,24 +157,12 @@ const DefinitionMut = {
 
       newFields.set('time_updated', Date.now());
       const actualTerm = this.updateTerm(context, definition, term, newFields);
-      const actualPartOfSpeechId = await this.updatePartOfSpeech(
+      await this.updatePartOfSpeech(
         db,
         definition,
         partOfSpeechId,
         newFields
       );
-      // If the part of speech is changed, we can't keep the old inflection
-      // tables, since they belong to the wrong part of speech. If no new
-      // tables were provided, delete the old ones.
-      if (
-        actualPartOfSpeechId !== definition.part_of_speech_id &&
-        inflectionTables == null
-      ) {
-        inflectionTables = [];
-        logger.debug(
-          'Clearing inflection tables: part of speech changed, but no new tables given'
-        );
-      }
 
       db.exec`
         update definitions
@@ -196,13 +184,12 @@ const DefinitionMut = {
       await this.updateInflectionTablesAndForms(
         context,
         definition,
-        actualPartOfSpeechId,
         actualTerm,
         stemMap,
         inflectionTables,
         // If the term or stems have changed, we have to rederive all forms
         // for this definition.
-        term !== definition.term || stems != null
+        actualTerm !== definition.term || stems != null
       );
 
       if (tags) {
@@ -274,7 +261,7 @@ const DefinitionMut = {
   },
 
   async updatePartOfSpeech(
-    db: DataWriter,
+    db: DataReader,
     definition: DefinitionRow,
     partOfSpeechId: PartOfSpeechId | undefined | null,
     newFields: FieldSet<DefinitionRow>
@@ -388,7 +375,6 @@ const DefinitionMut = {
   async updateInflectionTablesAndForms(
     context: WriteContext,
     definition: DefinitionRow,
-    partOfSpeechId: PartOfSpeechId,
     term: string,
     stemMap: Map<string, string>,
     inflectionTables: EditDefinitionInflectionTableInput[] | undefined | null,
@@ -402,7 +388,7 @@ const DefinitionMut = {
       derivedDefinitions = await this.updateInflectionTables(
         db,
         definition.id,
-        partOfSpeechId,
+        definition.language_id,
         term,
         stemMap,
         inflectionTables,
@@ -443,7 +429,7 @@ const DefinitionMut = {
   async updateInflectionTables(
     db: DataWriter,
     definitionId: DefinitionId,
-    partOfSpeechId: PartOfSpeechId,
+    languageId: LanguageId,
     term: string,
     stemMap: Map<string, string>,
     inflectionTables: EditDefinitionInflectionTableInput[],
@@ -455,7 +441,7 @@ const DefinitionMut = {
       id: definitionId,
       term,
       stemMap,
-      partOfSpeechId,
+      languageId,
     };
 
     const currentTableIds: DefinitionInflectionTableId[] = [];

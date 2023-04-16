@@ -2,28 +2,34 @@
 scalar InflectionTableId @id
 
 """
-An inflection table defines how to inflect words that belong to the table's part
-of speech. The table is a true 2-dimensional table, not merely a list of forms.
-As such, it can contain any number of rows and columns, and some cells may be
-headers. Cells can span multiple rows and columns.
+An inflection table defines how to inflect definitions. The table is a true
+2-dimensional table, not merely a list of forms. As such, it can contain any
+number of rows and columns, and some cells may be headers. Cells can span
+multiple rows and columns.
 
 To access the contents of an inflection table, query the `layout` field. Through
 it, you can read the table's rows and cells to construct the table, fetch the
 inflected forms (see `InflectedForm`) that are contained in the table, as well
 as query the definitions that use the table layout.
 
-In addition to the current table layout, inflection tables record some historical
-layouts. If the layout is altered while it is in use by one or more definitions,
-the previous layout is kept, allowing existing definitions to keep using it. Old
-layouts are available through the `oldLayouts` field.
+## Historical layouts
 
-Historical layouts are saved for two reasons:
+If you change the layout of a table that is used by one or more definitions, the
+previous layout may be kept. The precise conditions are not specified here, but
+the rule of thumb is this: if the new layout would cause derived forms to be
+added, edited or removed, the old layout is kept.
+
+Historical layouts are saved in order to prevent potential dictionary-wide
+alterations:
 
 1. Inflected forms may be added to the dictionary (see `InflectedForm`), and
-   recalculating new forms for every definition that uses a table is costly.
+   recalculating new forms for every definition that uses a table may be costly.
 2. It is exceedingly difficult for the user to predict the effect of altering
    an inflection table across the entire dictionary, especially if the table is
-   used by many definitions.
+   used by many definitions. By forcing the user to update definitions manually,
+   we effectively make them check each one.
+
+Old layouts are available through the `oldLayouts` field.
 """
 type InflectionTable implements RecentItem {
   "The globally unique ID of the inflection table."
@@ -50,8 +56,8 @@ type InflectionTable implements RecentItem {
   """
   oldLayouts(page: PageParams): InflectionTableLayoutConnection!
 
-  "The part of speech that this inflection table belongs to."
-  partOfSpeech: PartOfSpeech!
+  "The language that this inflection table belongs to."
+  language: Language!
 
   """
   Indicates whether any version of the inflection table is currently used by any
@@ -321,8 +327,8 @@ extend type Query {
 
 "Input type for a new inflection table."
 input NewInflectionTableInput {
-  "The part of speech that the inflection table will be added to."
-  partOfSpeechId: PartOfSpeechId!
+  "The language that the inflection table will be added to."
+  languageId: LanguageId!
 
   "The name of the inflection table."
   name: String!
@@ -336,7 +342,7 @@ input NewInflectionTableInput {
 
 """
 Input type for editing an existing inflection table. It is not possible to move
-an inflection table to another part of speech.
+an inflection table to another language.
 """
 input EditInflectionTableInput {
   "If set, renames the inflection table."

@@ -1,14 +1,14 @@
 import {normalizePattern} from '@condict/inflect';
 
 import {DataReader} from '../../database';
-import {InflectionTableId, PartOfSpeechId} from '../../graphql';
+import {InflectionTableId, LanguageId} from '../../graphql';
 
 import validator, {minLength, unique} from '../validator';
 
 export const validateName = (
   db: DataReader,
   currentId: InflectionTableId | null,
-  partOfSpeechId: PartOfSpeechId,
+  languageId: LanguageId,
   value: string
 ): string =>
   validator<string>('name')
@@ -21,7 +21,7 @@ export const validateName = (
           select id
           from inflection_tables
           where name = ${name}
-            and part_of_speech_id = ${partOfSpeechId}
+            and language_id = ${languageId}
         `;
         return row ? row.id : null;
       },

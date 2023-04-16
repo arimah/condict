@@ -2,13 +2,13 @@ import {
   InflectionTableId,
   InflectionTableLayoutId,
   InflectedFormId,
-  PartOfSpeechId,
+  LanguageId,
   DefinitionId,
 } from '../../graphql';
 
 export type InflectionTableRow = {
   id: InflectionTableId;
-  part_of_speech_id: PartOfSpeechId;
+  language_id: LanguageId;
   time_created: number;
   time_updated: number;
   name: string;

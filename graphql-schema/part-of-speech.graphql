@@ -2,10 +2,9 @@
 scalar PartOfSpeechId @id
 
 """
-A part of speech is associated with each word in the dictionary. In addition to
-providing a way to group words, a part of speech can define any number of
-inflection tables, which describe how to inflect words in that part of speech.
-See `InflectionTable` for more.
+A part of speech is associated with each word in the dictionary. It is possible
+to search and filter definitions by part of speech, and every definition must
+belong to a part of speech.
 """
 type PartOfSpeech implements RecentItem {
   "The globally unique ID of the part of speech."
@@ -13,12 +12,6 @@ type PartOfSpeech implements RecentItem {
 
   "The display name of the part of speech."
   name: String!
-
-  "The inflection tables defined in this part of speech."
-  inflectionTables: [InflectionTable!]!
-
-  "Finds an inflection table by name."
-  inflectionTableByName(name: String!): InflectionTable
 
   "The language that the part of speech belongs to."
   language: Language!
@@ -46,11 +39,7 @@ type PartOfSpeech implements RecentItem {
   "The time that the part of speech was created."
   timeCreated: UtcInstant!
 
-  """
-  The time of the most recent update to the part of speech. This time covers
-  updates performed on the part of speech itself, but not to any of its
-  inflection tables.
-  """
+  "The time of the most recent update to the part of speech."
   timeUpdated: UtcInstant!
 
   "Assorted statistics about a part of speech."
@@ -59,9 +48,6 @@ type PartOfSpeech implements RecentItem {
 
 "Contains statistics about a part of speech."
 type PartOfSpeechStats {
-  "The number of inflection tables in the part of speech."
-  inflectionTableCount: Int!
-
   "The total number of definitions that use the part of speech."
   definitionCount: Int!
 }

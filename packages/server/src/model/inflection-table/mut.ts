@@ -7,13 +7,12 @@ import {
   EditInflectionTableInput,
   InflectionTableRowInput,
   InflectedFormInput,
-  PartOfSpeechId,
   LanguageId,
 } from '../../graphql';
 import {UserInputError} from '../../errors';
 
 import {Definition} from '../definition';
-import {PartOfSpeech} from '../part-of-speech';
+import {Language} from '../language';
 import FieldSet from '../field-set';
 import {MutContext, WriteContext} from '../types';
 
@@ -35,28 +34,28 @@ const InflectionTableMut = {
     context: MutContext,
     data: NewInflectionTableInput
   ): Promise<InflectionTableRow> {
-    const {partOfSpeechId, layout} = data;
+    const {languageId, layout} = data;
     let {name} = data;
 
-    const partOfSpeech = await PartOfSpeech.byIdRequired(
+    const language = await Language.byIdRequired(
       context.db,
-      partOfSpeechId,
-      'partOfSpeechId'
+      languageId,
+      'languageId'
     );
 
-    name = validateName(context.db, null, partOfSpeech.id, name);
+    name = validateName(context.db, null, language.id, name);
 
     return MutContext.transact(context, context => {
       const {db, events, logger} = context;
       const now = Date.now();
       const {insertId: tableId} = db.exec<InflectionTableId>`
         insert into inflection_tables (
-          part_of_speech_id,
+          language_id,
           name,
           time_created,
           time_updated
         )
-        values (${partOfSpeech.id}, ${name}, ${now}, ${now})
+        values (${language.id}, ${name}, ${now}, ${now})
       `;
 
       InflectionTableLayoutMut.insert(db, tableId, layout);
@@ -65,8 +64,7 @@ const InflectionTableMut = {
         type: 'inflectionTable',
         action: 'create',
         id: tableId,
-        partOfSpeechId: partOfSpeech.id,
-        languageId: partOfSpeech.language_id,
+        languageId: language.id,
       });
       logger.verbose(`Created inflection table: ${tableId}`);
 
@@ -88,17 +86,11 @@ const InflectionTableMut = {
     if (name != null) {
       newFields.set(
         'name',
-        validateName(db, table.id, table.part_of_speech_id, name)
+        validateName(db, table.id, table.language_id, name)
       );
     }
 
     if (newFields.hasValues || layout != null) {
-      // We need the part of speech for the language ID.
-      const partOfSpeech = await PartOfSpeech.byIdRequired(
-        db,
-        table.part_of_speech_id
-      );
-
       await MutContext.transact(context, async context => {
         const {db, events, logger} = context;
         newFields.set('time_updated', Date.now());
@@ -117,8 +109,7 @@ const InflectionTableMut = {
           type: 'inflectionTable',
           action: 'update',
           id: table.id,
-          partOfSpeechId: table.part_of_speech_id,
-          languageId: partOfSpeech.language_id,
+          languageId: table.language_id,
         });
         logger.verbose(`Updated inflection table: ${table.id}`);
       });
@@ -139,12 +130,6 @@ const InflectionTableMut = {
     // more definitions.
     this.ensureUnused(db, table.id);
 
-    // We need the part of speech for the language ID.
-    const partOfSpeech = await PartOfSpeech.byIdRequired(
-      db,
-      table.part_of_speech_id
-    );
-
     await MutContext.transact(context, context => {
       const {db, events, logger} = context;
       db.exec`
@@ -156,8 +141,7 @@ const InflectionTableMut = {
         type: 'inflectionTable',
         action: 'delete',
         id: table.id,
-        partOfSpeechId: table.part_of_speech_id,
-        languageId: partOfSpeech.language_id,
+        languageId: table.language_id,
       });
       logger.verbose(`Deleted inflection table: ${table.id}`);
     });
@@ -324,7 +308,6 @@ const InflectionTableLayoutMut = {
     if (deleted.length > 0) {
       type Row = {
         id: InflectionTableId;
-        part_of_speech_id: PartOfSpeechId;
         language_id: LanguageId;
       };
       // We must now emit an update event on every inflection table that was
@@ -338,10 +321,8 @@ const InflectionTableLayoutMut = {
       const updated = db.all<Row>`
         select
           it.id as id,
-          it.part_of_speech_id as part_of_speech_id,
-          pos.language_id as language_id
+          it.language_id as language_id
         from inflection_tables it
-        inner join parts_of_speech pos on pos.id = it.part_of_speech_id
         where it.id in (${tableIds})
       `;
 
@@ -350,7 +331,6 @@ const InflectionTableLayoutMut = {
           type: 'inflectionTable',
           action: 'update',
           id: row.id,
-          partOfSpeechId: row.part_of_speech_id,
           languageId: row.language_id,
         });
       }

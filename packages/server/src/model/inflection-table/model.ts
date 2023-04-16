@@ -2,10 +2,10 @@ import {GraphQLResolveInfo} from 'graphql';
 
 import {DataReader} from '../../database';
 import {
-  PartOfSpeechId,
   InflectionTableId,
   InflectionTableLayoutId,
   InflectedFormId,
+  LanguageId,
   PageParams,
   validatePageParams,
   LayoutVersionFilter,
@@ -24,7 +24,7 @@ import {
 
 const InflectionTable = {
   byIdKey: 'InflectionTable.byId',
-  allByPartOfSpeechKey: 'InflectionTable.allByPartOfSpeechKey',
+  allByLanguageKey: 'InflectionTable.allByLanguageKey',
   defaultPagination: {
     page: 0,
     perPage: 50,
@@ -64,32 +64,32 @@ const InflectionTable = {
 
   byName(
     db: DataReader,
-    partOfSpeechId: PartOfSpeechId,
+    languageId: LanguageId,
     name: string
   ): InflectionTableRow | null {
     return db.get`
       select *
       from inflection_tables
-      where part_of_speech_id = ${partOfSpeechId}
+      where language_id = ${languageId}
         and name = ${name}
     `;
   },
 
-  allByPartOfSpeech(
+  allByLanguage(
     db: DataReader,
-    partOfSpeechId: PartOfSpeechId
+    languageId: LanguageId
   ): Promise<InflectionTableRow[]> {
     return db.batchOneToMany(
-      this.allByPartOfSpeechKey,
-      partOfSpeechId,
-      (db, partOfSpeechIds) =>
+      this.allByLanguageKey,
+      languageId,
+      (db, languageIds) =>
         db.all<InflectionTableRow>`
           select *
           from inflection_tables
-          where part_of_speech_id in (${partOfSpeechIds})
-          order by part_of_speech_id, name
+          where language_id in (${languageIds})
+          order by language_id, name
         `,
-      row => row.part_of_speech_id
+      row => row.language_id
     );
   },
 

@@ -4,7 +4,7 @@ import {
   InflectionTableLayout as InflectionTableLayoutModel,
   InflectedForm as InflectedFormModel,
   Definition,
-  PartOfSpeech,
+  Language,
   InflectionTableRow,
   InflectionTableLayoutRow,
   InflectedFormRow,
@@ -34,7 +34,7 @@ const InflectionTable: ResolversFor<InflectionTableType, InflectionTableRow> = {
   oldLayouts: (p, {page}, {db}, info) =>
     InflectionTableLayoutModel.allOldByTable(db, p.id, page, info),
 
-  partOfSpeech: (p, _args, {db}) => PartOfSpeech.byId(db, p.part_of_speech_id),
+  language: (p, _args, {db}) => Language.byId(db, p.language_id),
 
   isInUse: (p, _args, {db}) => Definition.anyUsesInflectionTable(db, p.id),
 

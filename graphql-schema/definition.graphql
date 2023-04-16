@@ -7,8 +7,6 @@ speech, a description, and, optionally, some inflection tables.
 
 A definition's description contains free-form formatted text. Paragraphs, list
 items, headings and other things.
-
-A definition's inflection tables must belong to the definition's part of speech.
 """
 type Definition implements RecentItem {
   "The globally unique ID of the definition."
@@ -268,14 +266,7 @@ input EditDefinitionInput {
   "If set, updates the definition term."
   term: String
 
-  """
-  If set, updates the part of speech.
-
-  If this field is set to a value other than the definition's current part of
-  speech, and `inflectionTables` is _not_ set, then the definition's inflection
-  tables will all be deleted. In other words, changing the part of speech will
-  delete inflection tables unless you specify new ones.
-  """
+  "If set, updates the part of speech."
   partOfSpeechId: PartOfSpeechId
 
   "If set, updates the definition description."
