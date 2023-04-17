@@ -15,7 +15,9 @@ import {
   ResourceTime,
   Selectable,
   Link,
+  RichContent,
   renderData,
+  hasRichContent,
 } from '../../ui';
 import {PartOfSpeechId, LanguageId} from '../../graphql';
 import {editPartOfSpeechPanel} from '../../panels';
@@ -91,6 +93,18 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
               />
             </ResourceMeta>
           </Subheader>
+
+          {hasRichContent(pos.description) && <>
+            <h2>
+              <Localized id='part-of-speech-about-heading'/>
+            </h2>
+            <RichContent
+              value={pos.description}
+              heading1='h3'
+              heading2='h4'
+              selectable
+            />
+          </>}
 
           <DefinitionList
             definitions={usedBy}

@@ -10,6 +10,10 @@ query($id: PartOfSpeechId!) {
       name
     }
 
+    description {
+      ...RichTextBlockFragment
+    }
+
     usedByDefinitions(page: {page: 0, perPage: 5}) {
       page {
         totalCount

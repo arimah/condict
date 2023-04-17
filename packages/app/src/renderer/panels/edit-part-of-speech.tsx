@@ -1,7 +1,11 @@
-import {useState, useCallback, useRef} from 'react';
+import {useState, useCallback, useMemo, useRef} from 'react';
 import {Localized} from '@fluent/react';
 
 import {Button} from '@condict/ui';
+import {
+  descriptionFromGraphQLResponse,
+  descriptionToGraphQLInput,
+} from '@condict/rich-text-editor';
 
 import {FlowContent, MainHeader} from '../ui';
 import {PanelParams, PanelProps} from '../navigation';
@@ -35,7 +39,10 @@ const EditPartOfSpeechPanel = (props: Props) => {
 
     const res = await execute(EditPartOfSpeechMut, {
       id,
-      data: {name: formData.name},
+      data: {
+        name: formData.name,
+        description: descriptionToGraphQLInput(formData.description),
+      },
     });
     if (res.errors) {
       // TODO: Distinguish between different kinds of errors.
@@ -58,6 +65,15 @@ const EditPartOfSpeechPanel = (props: Props) => {
     const res = await execute(DeletePartOfSpeechMut, {id: partOfSpeech.id});
     return res.errors;
   }, [data, execute, onResolve]);
+
+  const description = useMemo(() => {
+    if (data.state === 'loading' || !data.result.data?.partOfSpeech) {
+      return [];
+    }
+    return descriptionFromGraphQLResponse(
+      data.result.data.partOfSpeech.description
+    );
+  }, [data]);
 
   const firstFieldRef = useRef<HTMLInputElement>(null);
 
@@ -102,6 +118,7 @@ const EditPartOfSpeechPanel = (props: Props) => {
             initialData={{
               id: partOfSpeech.id,
               name: partOfSpeech.name,
+              description,
             }}
             languageId={partOfSpeech.language.id}
             submitError={submitError && <Localized id='part-of-speech-save-error'/>}

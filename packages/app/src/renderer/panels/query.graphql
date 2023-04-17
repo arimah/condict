@@ -59,6 +59,10 @@ query EditPartOfSpeechQuery($id: PartOfSpeechId!) {
       name
     }
 
+    description {
+      ...RichTextBlockFragment
+    }
+
     isInUse
     usedByDefinitions {
       page {

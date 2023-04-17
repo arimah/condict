@@ -276,6 +276,11 @@ export type NewPartOfSpeechInput = {
    * The display name of the part of speech.
    */
   name: string;
+  /**
+   * Formatted text that provides a description of the part of speech. If omitted
+   * or null, the part of speech has no description.
+   */
+  description?: BlockElementInput[] | null | undefined;
 };
 
 /**
@@ -286,6 +291,10 @@ export type EditPartOfSpeechInput = {
    * If set, renames the part of speech.
    */
   name?: string | null | undefined;
+  /**
+   * If set, updates the part of speech description.
+   */
+  description?: BlockElementInput[] | null | undefined;
 };
 
 /**

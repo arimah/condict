@@ -992,6 +992,8 @@ definition-not-found-error = Definition not found. This definition has been dele
 #   <lang-link>: Link to the language that the part of speech belongs to. Wraps around $language.
 part-of-speech-subheading = Part of speech in language <lang-link>{$language}</lang-link>
 
+part-of-speech-about-heading = About this part of speech
+
 part-of-speech-definitions-heading = Definitions of this part of speech
 
 part-of-speech-browse-definitions-title =
@@ -1011,6 +1013,8 @@ part-of-speech-name-label = Name
 part-of-speech-name-required-error = A part of speech name is required.
 
 part-of-speech-name-taken-error = The language already has a part of speech with this name. The name must be unique within the language.
+
+part-of-speech-description-label = Description (optional)
 
 part-of-speech-edit-title = Edit part of speech
 

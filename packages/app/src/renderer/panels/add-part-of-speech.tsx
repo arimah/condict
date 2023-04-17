@@ -1,6 +1,8 @@
 import {useState, useCallback} from 'react';
 import {Localized} from '@fluent/react';
 
+import {descriptionToGraphQLInput} from '@condict/rich-text-editor';
+
 import {FlowContent} from '../ui';
 import {PanelParams, PanelProps} from '../navigation';
 import {PartOfSpeechData, PartOfSpeechForm} from '../forms';
@@ -36,6 +38,7 @@ const AddPartOfSpeechPanel = (props: Props) => {
       data: {
         languageId,
         name: formData.name,
+        description: descriptionToGraphQLInput(formData.description),
       },
     });
     if (res.errors) {

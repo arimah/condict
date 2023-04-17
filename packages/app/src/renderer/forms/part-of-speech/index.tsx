@@ -1,8 +1,10 @@
 import {ReactNode, RefObject} from 'react';
 import {Localized} from '@fluent/react';
 
+import {BlockElement, emptyDescription} from '@condict/rich-text-editor';
+
 import {FormProvider, useForm} from '../../form';
-import {TextField, FormButtons} from '../../form-fields';
+import {TextField, DescriptionField, FormButtons} from '../../form-fields';
 import {PartOfSpeechId, LanguageId} from '../../graphql';
 import {useExecute} from '../../data';
 
@@ -24,11 +26,13 @@ export type Props = {
 export interface PartOfSpeechData {
   id: PartOfSpeechId | null;
   name: string;
+  description: BlockElement[];
 }
 
 const EmptyData: PartOfSpeechData = {
   id: null,
   name: '',
+  description: emptyDescription(),
 };
 
 export const PartOfSpeechForm = (props: Props): JSX.Element => {
@@ -70,6 +74,10 @@ export const PartOfSpeechForm = (props: Props): JSX.Element => {
           }}
           defaultError={<Localized id='part-of-speech-name-required-error'/>}
           inputRef={firstFieldRef as RefObject<HTMLInputElement> | undefined}
+        />
+        <DescriptionField
+          name='description'
+          label={<Localized id='part-of-speech-description-label'/>}
         />
         <FormButtons submitError={submitError} onCancel={onCancel}/>
       </form>
