@@ -152,11 +152,6 @@ export type Definition = {
    */
   description: BlockElement[];
   /**
-   * A raw JSON string equivalent of `description`. Generally, you should avoid
-   * using this field; prefer `description` whenever possible.
-   */
-  descriptionRaw: string;
-  /**
    * Inflection stems that belong to this definition.
    */
   stems: DefinitionStem[];
@@ -510,6 +505,10 @@ export type EditPartOfSpeechInput = {
    * If set, renames the part of speech.
    */
   name?: string | null;
+  /**
+   * If set, updates the part of speech description.
+   */
+  description?: BlockElementInput[] | null;
 };
 
 /**
@@ -1113,14 +1112,9 @@ export type Language = {
    */
   name: string;
   /**
-   * Formatted text that provides a description of the language
+   * Formatted text that provides a description of the language.
    */
   description: BlockElement[];
-  /**
-   * A raw JSON string equivalent of `description`. Generally, you should avoid
-   * using this field; prefer `description` whenever possible.
-   */
-  descriptionRaw: string;
   /**
    * The parts of speech that belong to this language.
    */
@@ -1882,6 +1876,11 @@ export type NewPartOfSpeechInput = {
    * The display name of the part of speech.
    */
   name: string;
+  /**
+   * Formatted text that provides a description of the part of speech. If omitted
+   * or null, the part of speech has no description.
+   */
+  description?: BlockElementInput[] | null;
 };
 
 /**
@@ -1945,6 +1944,10 @@ export type PartOfSpeech = {
    * The language that the part of speech belongs to.
    */
   language: Language;
+  /**
+   * Formatted text that provides a description of the part of speech.
+   */
+  description: BlockElement[];
   /**
    * Indicates whether the part of speech is currently used by any definitions.
    * 

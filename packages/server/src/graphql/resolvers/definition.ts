@@ -36,12 +36,7 @@ import {ResolversFor, Mutators} from './types';
 const Definition: ResolversFor<DefinitionType, DefinitionRow> = {
   partOfSpeech: (p, _args, {db}) => PartOfSpeech.byId(db, p.part_of_speech_id),
 
-  async description(p, _args, {db}) {
-    const description = await Description.rawById(db, p.description_id);
-    return JSON.parse(description) as unknown;
-  },
-
-  descriptionRaw: (p, _args, {db}) => Description.rawById(db, p.description_id),
+  description: (p, _args, {db}) => Description.parsedById(db, p.description_id),
 
   stems: (p, _args, {db}) => DefinitionStemModel.allByDefinition(db, p.id),
 

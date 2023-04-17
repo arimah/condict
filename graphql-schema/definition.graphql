@@ -24,12 +24,6 @@ type Definition implements RecentItem {
   "Formatted text that describes the definition."
   description: [BlockElement!]!
 
-  """
-  A raw JSON string equivalent of `description`. Generally, you should avoid
-  using this field; prefer `description` whenever possible.
-  """
-  descriptionRaw: String!
-
   "Inflection stems that belong to this definition."
   stems: [DefinitionStem!]!
 

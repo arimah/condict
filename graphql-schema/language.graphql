@@ -112,14 +112,8 @@ type Language implements RecentItem {
   "The display name of the language."
   name: String!
 
-  "Formatted text that provides a description of the language"
+  "Formatted text that provides a description of the language."
   description: [BlockElement!]!
-
-  """
-  A raw JSON string equivalent of `description`. Generally, you should avoid
-  using this field; prefer `description` whenever possible.
-  """
-  descriptionRaw: String!
 
   "The parts of speech that belong to this language."
   partsOfSpeech: [PartOfSpeech!]!

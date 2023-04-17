@@ -25,12 +25,7 @@ import {mutator} from '../helpers';
 import {ResolversFor, Mutators} from './types';
 
 const Language: ResolversFor<LanguageType, LanguageRow> = {
-  async description(p, _args, {db}) {
-    const description = await Description.rawById(db, p.description_id);
-    return JSON.parse(description) as unknown;
-  },
-
-  descriptionRaw: (p, _args, {db}) => Description.rawById(db, p.description_id),
+  description: (p, _args, {db}) => Description.parsedById(db, p.description_id),
 
   partsOfSpeech: (p, _args, {db}) => PartOfSpeech.allByLanguage(db, p.id),
 

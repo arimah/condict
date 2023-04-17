@@ -9,12 +9,14 @@ import {UserInputError} from '../../errors';
 
 import {Language} from '../language';
 import {Definition} from '../definition';
+import {DescriptionMut} from '../description';
 import {SearchIndexMut} from '../search-index';
 import {MutContext} from '../types';
 
 import {PartOfSpeech} from './model';
 import {PartOfSpeechRow} from './types';
 import {validateName} from './validators';
+import FieldSet from '../field-set';
 
 const PartOfSpeechMut = {
   async insert(
@@ -22,26 +24,29 @@ const PartOfSpeechMut = {
     data: NewPartOfSpeechInput
   ): Promise<PartOfSpeechRow> {
     const {languageId} = data;
-    let {name} = data;
+    const {name, description} = data;
 
     const language = await Language.byIdRequired(context.db, languageId);
 
-    name = validateName(context.db, null, language.id, name);
+    const validName = validateName(context.db, null, language.id, name);
 
     return MutContext.transact(context, context => {
       const {db, events, logger} = context;
+      const desc = DescriptionMut.insert(db, description ?? []);
+
       const now = Date.now();
       const {insertId} = db.exec<PartOfSpeechId>`
         insert into parts_of_speech (
           language_id,
+          description_id,
           name,
           time_created,
           time_updated
         )
-        values (${language.id}, ${name}, ${now}, ${now})
+        values (${language.id}, ${desc.id}, ${validName}, ${now}, ${now})
       `;
 
-      SearchIndexMut.insertPartOfSpeech(db, insertId, name);
+      SearchIndexMut.insertPartOfSpeech(db, insertId, validName);
 
       events.emit({
         type: 'partOfSpeech',
@@ -60,30 +65,39 @@ const PartOfSpeechMut = {
     id: PartOfSpeechId,
     data: EditPartOfSpeechInput
   ): Promise<PartOfSpeechRow> {
-    const {name} = data;
+    const {name, description} = data;
     const {db} = context;
 
     const partOfSpeech = await PartOfSpeech.byIdRequired(context.db, id);
 
+    const newFields = new FieldSet<PartOfSpeechRow>();
     if (name != null) {
-      const newName = validateName(
+      newFields.set('name', validateName(
         db,
         partOfSpeech.id,
         partOfSpeech.language_id,
         name
-      );
+      ));
+    }
 
+    if (newFields.hasValues || description) {
       await MutContext.transact(context, context => {
         const {db, events, logger} = context;
+        newFields.set('time_updated', Date.now());
         db.exec`
           update parts_of_speech
-          set
-            name = ${newName},
-            time_updated = ${Date.now()}
+          set ${newFields}
           where id = ${partOfSpeech.id}
         `;
 
-        SearchIndexMut.updatePartOfSpeech(db, partOfSpeech.id, newName);
+        const newName = newFields.get('name');
+        if (newName != null) {
+          SearchIndexMut.updatePartOfSpeech(db, partOfSpeech.id, newName);
+        }
+
+        if (description) {
+          DescriptionMut.update(db, partOfSpeech.description_id, description);
+        }
 
         events.emit({
           type: 'partOfSpeech',
@@ -92,9 +106,9 @@ const PartOfSpeechMut = {
           languageId: partOfSpeech.language_id,
         });
         logger.verbose(`Updated part of speech: ${partOfSpeech.id}`);
-      });
 
-      db.clearCache(PartOfSpeech.byIdKey, partOfSpeech.id);
+        db.clearCache(PartOfSpeech.byIdKey, partOfSpeech.id);
+      });
     }
 
     return PartOfSpeech.byIdRequired(db, partOfSpeech.id);

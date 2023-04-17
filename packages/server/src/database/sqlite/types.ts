@@ -219,7 +219,7 @@ export type BatchFn<K extends string | number, Row, E = undefined> = (
 
 /**
  * A database connection that has shared read-only access and must be disposed
- * on the work is complete (by calling `finish`). Exclusive read-write access
+ * once the work is complete (by calling `finish`). Exclusive read-write access
  * can be requested through the `transact` method. Accepting this interface as
  * an argument implies that the function may write to the database by acquiring
  * a read-write access.

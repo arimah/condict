@@ -6,6 +6,7 @@ import {
   Definition,
   PartOfSpeechRow,
   PartOfSpeechStatsRow,
+  Description,
   MutContext,
 } from '../../model';
 
@@ -20,6 +21,8 @@ import {ResolversFor, Mutators} from './types';
 
 const PartOfSpeech: ResolversFor<PartOfSpeechType, PartOfSpeechRow> = {
   language: (p, _args, {db}) => Language.byId(db, p.language_id),
+
+  description: (p, _args, {db}) => Description.parsedById(db, p.description_id),
 
   isInUse: (p, _args, {db}) => Definition.anyUsesPartOfSpeech(db, p.id),
 

@@ -91,6 +91,8 @@ const tables: readonly TableSchema[] = [
         id integer not null primary key,
         -- The language that the part of speech belongs to.
         language_id integer not null,
+        -- The description of the part of speech.
+        description_id integer not null,
         -- The date and time the part of speech was created, as the number of
         -- milliseconds since midnight 1 January, 1970, UTC.
         time_created integer not null,
@@ -102,9 +104,14 @@ const tables: readonly TableSchema[] = [
 
         foreign key (language_id)
           references languages
-          on delete cascade
+          on delete cascade,
+        foreign key (description_id)
+          references descriptions
+          on delete restrict
       )`,
       `create unique index \`parts_of_speech(language_id,name)\` on parts_of_speech(language_id, name)`,
+      // Descriptions are unique per part of speech.
+      `create unique index \`parts_of_speech(description_id)\` on parts_of_speech(description_id)`,
       `create index \`parts_of_speech(time_created)\` on parts_of_speech(time_created)`,
       `create index \`parts_of_speech(time_updated)\` on parts_of_speech(time_updated)`,
     ],

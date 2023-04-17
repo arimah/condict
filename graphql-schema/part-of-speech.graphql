@@ -16,6 +16,9 @@ type PartOfSpeech implements RecentItem {
   "The language that the part of speech belongs to."
   language: Language!
 
+  "Formatted text that provides a description of the part of speech."
+  description: [BlockElement!]!
+
   """
   Indicates whether the part of speech is currently used by any definitions.
 
@@ -64,12 +67,21 @@ input NewPartOfSpeechInput {
 
   "The display name of the part of speech."
   name: String!
+
+  """
+  Formatted text that provides a description of the part of speech. If omitted
+  or null, the part of speech has no description.
+  """
+  description: [BlockElementInput!]
 }
 
 "Input type for editing an existing part of speech."
 input EditPartOfSpeechInput {
   "If set, renames the part of speech."
   name: String
+
+  "If set, updates the part of speech description."
+  description: [BlockElementInput!]
 }
 
 extend type Mutation {
