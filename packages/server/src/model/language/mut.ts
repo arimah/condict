@@ -6,6 +6,7 @@ import {SearchIndexMut} from '../search-index';
 import {DefinitionMut} from '../definition';
 import {LemmaMut} from '../lemma';
 import {PartOfSpeechMut} from '../part-of-speech';
+import {InflectionTableMut} from '../inflection-table';
 import {TagMut} from '../tag';
 
 import {Language} from './model';
@@ -105,6 +106,9 @@ const LanguageMut = {
 
       PartOfSpeechMut.deleteAllInLanguage(db, language.id);
       logger.debug('Deleted all parts of speech');
+
+      InflectionTableMut.deleteAllInLanguage(db, language.id);
+      logger.debug('Deleted all inflection tables');
 
       logger.debug(`Deleting language row: ${language.id}`);
       db.exec`

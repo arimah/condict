@@ -150,6 +150,13 @@ const InflectionTableMut = {
     return true;
   },
 
+  deleteAllInLanguage(db: DataWriter, languageId: LanguageId): void {
+    db.exec`
+      delete from inflection_tables
+      where language_id = ${languageId}
+    `;
+  },
+
   ensureUnused(db: DataReader, id: InflectionTableId): void {
     if (Definition.anyUsesInflectionTable(db, id)) {
       throw new UserInputError(
