@@ -13,7 +13,7 @@ import {CondictServer, ExecutionContext, Logger} from '@condict/server';
 
 import ContextCleanupPlugin from './context-cleanup-plugin';
 import WebSocketEventServer from './ws-event-server';
-import {SessionIdHeader} from './constants';
+import getSessionId from './session-id';
 import {HttpOptions, DictionaryEventDispatch} from './types';
 
 const genRequestId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 8);
@@ -132,7 +132,7 @@ export default class CondictHttpServer {
       express.json(),
       expressMiddleware(apollo, {
         context: ({req}) => server.getContextValue(
-          req.header(SessionIdHeader),
+          getSessionId(req.headers),
           genRequestId()
         ),
       })

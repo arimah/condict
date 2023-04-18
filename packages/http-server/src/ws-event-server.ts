@@ -5,7 +5,7 @@ import WebSocket, {WebSocketServer} from 'ws';
 
 import {Logger, DictionaryEventBatch} from '@condict/server';
 
-import {SessionIdHeader} from './constants';
+import getSessionId from './session-id';
 import {DictionaryEventDispatch} from './types';
 
 export type ValidateSessionFn = (sessionId: string) => Promise<boolean>;
@@ -86,7 +86,7 @@ export default class WebSocketEventServer implements DictionaryEventDispatch {
       );
     }
 
-    const sessionId = request.headers[SessionIdHeader];
+    const sessionId = getSessionId(request.headers);
     const isValidSessionPromise =
       typeof sessionId === 'string'
         ? this.isValidSession(sessionId)
@@ -112,23 +112,32 @@ export default class WebSocketEventServer implements DictionaryEventDispatch {
   private handleConnection = (connection: WebSocket): void => {
     this.logger.debug('Accepted WebSocket connection');
 
-    if (this.wss.clients.size === 1) {
-      // This is the first active connection. Start periodically pinging
-      // active clients. `unref()` allows Node to end the process even if
-      // the interval is still active.
-      this.pingTimeout = setInterval(this.pingClients, PingFrequency).unref();
-    }
+    this.tryStartPingingClients();
 
     connection.on('close', () => {
-      if (this.wss.clients.size === 0) {
-        this.logger.debug('Lost last WebSocket connection');
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        clearInterval(this.pingTimeout!);
-        this.pingTimeout = null;
-      }
+      this.tryStopPingingClients();
     });
   };
+
+  private tryStartPingingClients(): void {
+    if (this.pingTimeout === null) {
+      // We've received our first connection. Start periodically pinging
+      // active clients. `unref()` allows Node to end the process even if
+      // the interval is still active.
+      this.logger.debug('Got first WebSocket connection');
+      this.pingTimeout = setInterval(this.pingClients, PingFrequency).unref();
+    }
+  }
+
+  private tryStopPingingClients(): void {
+    if (this.wss.clients.size === 0 && this.pingTimeout !== null) {
+      this.logger.debug('Lost last WebSocket connection');
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      clearInterval(this.pingTimeout);
+      this.pingTimeout = null;
+    }
+  }
 
   /**
    * Pings every active WebSocket client, to keep the connection alive.
