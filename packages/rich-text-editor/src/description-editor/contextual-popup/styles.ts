@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 
 import {Button} from '@condict/ui';
 
@@ -7,15 +7,15 @@ import PopupBase from '../popup';
 export const Popup = styled(PopupBase)`
   max-width: 480px;
 
-  animation-name: enter;
+  animation-name: ${keyframes`
+    from { opacity: 0; }
+    to { opacity: 1; }
+  `};
+  animation-delay: 300ms;
   animation-duration: ${p => p.theme.timing.short}ms;
   animation-iteration-count: 1;
   animation-timing-function: linear;
-
-  @keyframes enter {
-    from { opacity: 0; }
-    to { opactiy: 1 }
-  }
+  animation-fill-mode: backwards;
 `;
 
 export const Columns = styled.div`
