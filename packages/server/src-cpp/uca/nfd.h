@@ -1,6 +1,7 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
+
 #include "tiny_queue.h"
 #include "utf8.h"
 

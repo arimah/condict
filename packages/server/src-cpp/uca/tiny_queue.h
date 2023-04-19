@@ -120,12 +120,17 @@ namespace condict_uca {
       } heap;
     };
 
-    inline T* buf() {
-      return this->on_heap ? this->heap.buf : this->stack_buf;
-    }
-
     void grow() {
-      uint32_t old_capacity = this->capacity();
+      uint32_t old_capacity;
+      T* old_buf;
+      if (this->on_heap) {
+        old_capacity = this->heap.capacity;
+        old_buf = this->heap.buf;
+      } else {
+        old_capacity = INIT_CAP;
+        old_buf = this->stack_buf;
+      }
+
       uint32_t new_capacity = old_capacity * 2;
       T* new_buf = reinterpret_cast<T*>(calloc(new_capacity, sizeof(T)));
       if (!new_buf) {
@@ -134,23 +139,18 @@ namespace condict_uca {
         std::abort();
       }
 
-      T* old_buf = this->buf();
       // We only grow when len == capacity, so we know for sure we need
       // to copy the entire queue.
       uint32_t start = this->start;
-      if (start == 0) {
-        memcpy(new_buf, old_buf, old_capacity * sizeof(T));
-      } else {
-        uint32_t count = old_capacity - start;
-        memcpy(new_buf, old_buf + start, count * sizeof(T));
-        memcpy(new_buf + count, old_buf, start * sizeof(T));
-      }
+      uint32_t count = old_capacity - start;
+      memcpy(new_buf, old_buf + start, count * sizeof(T));
+      memcpy(new_buf + count, old_buf, start * sizeof(T));
 
       // Now we've allocated a new buffer, copied the data across, *and*
       // reoriented the data to start at index 0. If we were already on
       // the heap, we can now free the previous buffer.
       if (this->on_heap) {
-        free(this->heap.buf);
+        free(old_buf);
       }
       this->start = 0;
       this->on_heap = true;

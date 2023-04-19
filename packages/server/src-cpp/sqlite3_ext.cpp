@@ -9,7 +9,7 @@ SQLITE_EXTENSION_INIT1
 
 #include "uca/uca.h"
 
-int sqlite3_compare(
+int condict_collate_unicode(
   void* _context,
   int a_len,
   const void* a,
@@ -36,7 +36,7 @@ extern "C" CONDICT_EXPORT int sqlite3_extension_init(
     "unicode",
     SQLITE_UTF8,
     nullptr,
-    sqlite3_compare,
+    condict_collate_unicode,
     nullptr
   );
 

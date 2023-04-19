@@ -242,13 +242,13 @@ namespace condict_uca {
         // And from PropList.txt, Unicode version 15.0.0:
         //   3400..4DBF    ; Unified_Ideograph
         //   4E00..9FFF    ; Unified_Ideograph  --- CJK Unified Ideographs
-        //   FA0E..FA0F    ; Unified_Ideograph  ‾\
+        //   FA0E..FA0F    ; Unified_Ideograph  ‾|
         //   FA11          ; Unified_Ideograph   |
         //   FA13..FA14    ; Unified_Ideograph   |
         //   FA1F          ; Unified_Ideograph    > CJK Compatibility Ideographs
         //   FA21          ; Unified_Ideograph   |
         //   FA23..FA24    ; Unified_Ideograph   |
-        //   FA27..FA29    ; Unified_Ideograph  _/
+        //   FA27..FA29    ; Unified_Ideograph  _|
         //   20000..2A6DF  ; Unified_Ideograph
         //   2A700..2B739  ; Unified_Ideograph
         //   2B740..2B81D  ; Unified_Ideograph

@@ -123,7 +123,16 @@ namespace condict_uca {
     }
 
     void grow() {
-      uint32_t old_capacity = this->capacity();
+      uint32_t old_capacity;
+      WeightPair* old_buf;
+      if (this->on_heap) {
+        old_capacity = this->heap.capacity;
+        old_buf = this->heap.buf;
+      } else {
+        old_capacity = STACK_CAP;
+        old_buf = this->stack_buf;
+      }
+
       uint32_t new_capacity = old_capacity * 2;
       WeightPair* new_buf = reinterpret_cast<WeightPair*>(calloc(
         new_capacity,
@@ -135,23 +144,18 @@ namespace condict_uca {
         std::abort();
       }
 
-      WeightPair* old_buf = this->buf();
       // We only grow when len == capacity, so we know for sure we need
       // to copy the entire queue.
       uint32_t start = this->start;
-      if (start == 0) {
-        memcpy(new_buf, old_buf, old_capacity * sizeof(WeightPair));
-      } else {
-        uint32_t count = old_capacity - start;
-        memcpy(new_buf, old_buf + start, count * sizeof(WeightPair));
-        memcpy(new_buf + count, old_buf, start * sizeof(WeightPair));
-      }
+      uint32_t count = old_capacity - start;
+      memcpy(new_buf, old_buf + start, count * sizeof(WeightPair));
+      memcpy(new_buf + count, old_buf, start * sizeof(WeightPair));
 
       // Now we've allocated a new buffer, copied the data across, *and*
       // reoriented the data to start at index 0. If we were already on
       // the heap, we can now free the previous buffer.
       if (this->on_heap) {
-        free(this->heap.buf);
+        free(old_buf);
       }
       this->start = 0;
       this->on_heap = true;
@@ -180,7 +184,7 @@ namespace condict_uca {
         break;
       }
 
-      if (r = level_1.push(e_left.level_1, e_right.level_1)) {
+      if ((r = level_1.push(e_left.level_1, e_right.level_1))) {
         return r;
       }
       level_2.push(e_left.level_2, e_right.level_2);
@@ -188,13 +192,13 @@ namespace condict_uca {
       level_4.push(e_left.level_4, e_right.level_4);
     }
 
-    if (r = level_1.final_result()) {
+    if ((r = level_1.final_result())) {
       return r;
     }
-    if (r = level_2.final_result()) {
+    if ((r = level_2.final_result())) {
       return r;
     }
-    if (r = level_3.final_result()) {
+    if ((r = level_3.final_result())) {
       return r;
     }
     return level_4.final_result();
