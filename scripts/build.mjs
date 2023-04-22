@@ -98,11 +98,7 @@ const main = () => {
     'build:children',
     '--',
     // Arguments to lerna run in root
-    '--loglevel=warn',
     `--scope=${lernaScope}`,
-    // Arguments to npm run in each package
-    '--',
-    '-s'
   ]);
 
   console.log(LogPrefix, 'Running compile command');

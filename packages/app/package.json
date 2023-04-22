@@ -12,13 +12,14 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development CONDICT_DATA_DIR=. electron .",
     "start:prod": "cross-env NODE_ENV=production electron .",
-    "build": "npm run -s build:graphql && npm run -s build:main",
+    "build": "npm-run-all --silent build:graphql build:main",
     "build:main": "rollup -c",
     "build:graphql": "condict-graphql-typer --schema-dir ../../graphql-schema --target=client --src=./src/renderer/ --defs=./src/renderer/graphql.ts",
-    "build:native": "electron-rebuild -f -w bcrypt,better-sqlite3,fsevents,@condict/server",
+    "build:native": "electron-rebuild -f -w bcrypt,better-sqlite3,fsevents,@condict/server && node ../../scripts/native-target.cjs set app",
+    "build:native-if-needed": "node ../../scripts/native-target.cjs test app || npm run -s build:native",
     "build:dist": "electron-builder --config electron-builder.yml",
-    "bundle": "npm-run-all --silent --print-label build build:dist",
-    "watch": "npm-run-all --silent --parallel --print-label watch:main watch:graphql",
+    "bundle": "npm-run-all --silent --print-label build build:native-if-needed build:dist",
+    "watch": "npm-run-all --silent --print-label --serial build:native-if-needed --parallel watch:main watch:graphql",
     "watch:main": "rollup -c --watch",
     "watch:graphql": "condict-graphql-typer --schema-dir ../../graphql-schema --target=client --src=./src/renderer/ --defs=./src/renderer/graphql.ts --watch"
   },

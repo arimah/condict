@@ -13,15 +13,15 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "copyGraphql": "copyfiles --up 3 ../../graphql-schema/*.graphql ./graphql-schema",
-    "build": "npm run -s build:graphqlTypes && npm run -s copyGraphql && npm run build:native-own",
-    "build:graphqlTypes": "condict-graphql-typer --schema-dir ../../graphql-schema --target=server --output ./src/graphql/types.ts",
-    "build:native": "npm run -s build:native-own && npm run -s build:native-deps",
+    "copy-graphql": "copyfiles --up 3 ../../graphql-schema/*.graphql ./graphql-schema",
+    "build": "npm-run-all --silent build:graphql-types copy-graphql build:native-own",
+    "build:graphql-types": "condict-graphql-typer --schema-dir ../../graphql-schema --target=server --output ./src/graphql/types.ts",
+    "build:native": "npm-run-all --silent build:native-own build:native-deps && node ../../scripts/native-target.cjs set server",
     "build:native-own": "node-gyp rebuild --release",
     "build:native-deps": "npm rebuild bcrypt better-sqlite3",
     "test": "mocha --recursive --ignore test/helpers.js",
     "install": "prebuild-install || npm run build:native-own",
-    "watch:graphqlTypes": "condict-graphql-typer --schema-dir ../../graphql-schema --target=server --output ./src/graphql/types.ts --watch"
+    "watch:graphql-types": "condict-graphql-typer --schema-dir ../../graphql-schema --target=server --output ./src/graphql/types.ts --watch"
   },
   "dependencies": {
     "@condict/inflect": "^0.1.0",

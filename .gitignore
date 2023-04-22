@@ -14,3 +14,4 @@ node_modules/
 
 .buildcache/
 .rollup.cache/
+.last-native-target
