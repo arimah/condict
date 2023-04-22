@@ -15,7 +15,6 @@
     "test": "mocha"
   },
   "devDependencies": {
-    "chalk": "^4.1.2",
     "mocha": "^10.1.0"
   }
 }

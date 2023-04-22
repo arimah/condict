@@ -91,6 +91,10 @@ export default [
     }),
 
     onwarn,
+
+    watch: {
+      clearScreen: false,
+    },
   },
   {
     input: './src/main/index.ts',
@@ -125,5 +129,9 @@ export default [
     }),
 
     onwarn,
+
+    watch: {
+      clearScreen: false,
+    },
   },
 ];

@@ -59,12 +59,10 @@ const runCommand = (cmd, args) => {
     case null:
       // Process terminated due to a signal, such as by ^C.
       process.exit();
-      break;
     default:
       // Other error; this process fails too.
       console.log(LogPrefix, `Terminated by error: ${result.status}`);
       process.exit(1);
-      break;
   }
 };
 

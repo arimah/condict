@@ -173,6 +173,9 @@ export const configureTarget = (pkg, target, options = {}) => {
       packagePath,
     }),
     onwarn,
+    watch: {
+      clearScreen: false,
+    },
   };
 };
 

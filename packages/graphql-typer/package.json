@@ -24,7 +24,6 @@
   },
   "devDependencies": {
     "@types/command-line-args": "^5.2.0",
-    "@types/node": "^18.11.10",
-    "chalk": "^4.1.2"
+    "@types/node": "^18.11.10"
   }
 }
