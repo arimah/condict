@@ -1,5 +1,4 @@
 import {IResolvers} from '@graphql-tools/utils';
-import merge from 'deepmerge';
 
 import DefinitionResolvers from './definition';
 import ElementResolvers from './element';
@@ -18,10 +17,10 @@ export * from './types';
 /**
  * Gets an object that contains all resolvers.
  */
-export const getResolvers = (): IResolvers<any, any> =>
-  // I have no idea if it's even slightly possible to get TypeScript to generate
-  // a meaningful type for allResolvers. We will just forcefully cast it.
-  merge.all([
+export const getResolvers = (): IResolvers<any, any> => {
+  const result: IResolvers<any, any> = {};
+
+  const allTypeResolvers = [
     DefinitionResolvers,
     ElementResolvers,
     InflectionTableResolvers,
@@ -33,4 +32,13 @@ export const getResolvers = (): IResolvers<any, any> =>
     SearchResolvers,
     TagResolvers,
     UserResolvers,
-  ]) as IResolvers<any, any>;
+  ];
+
+  for (const typeResolvers of allTypeResolvers) {
+    for (const [typeName, fieldResolvers] of Object.entries(typeResolvers)) {
+      result[typeName] = Object.assign(result[typeName] ?? {}, fieldResolvers);
+    }
+  }
+
+  return result;
+};
