@@ -1,5 +1,6 @@
 export * from './description';
 export * from './definition';
+export * from './field';
 export * from './inflection-table';
 export * from './language';
 export * from './lemma';

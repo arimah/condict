@@ -1,5 +1,5 @@
 import {DataReader} from '../../database';
-import {LanguageId, PartOfSpeechId} from '../../graphql';
+import {FieldId, LanguageId, PartOfSpeechId} from '../../graphql';
 import {UserInputError} from '../../errors';
 
 import {PartOfSpeechRow, PartOfSpeechStatsRow} from './types';
@@ -7,6 +7,7 @@ import {PartOfSpeechRow, PartOfSpeechStatsRow} from './types';
 const PartOfSpeech = {
   byIdKey: 'PartOfSpeech.byId',
   allByLanguageKey: 'PartOfSpeech.allByLanguage',
+  allByFieldKey: 'PartOfSpeech.allByField',
 
   byId(db: DataReader, id: PartOfSpeechId): Promise<PartOfSpeechRow | null> {
     return db.batchOneToOne(
@@ -64,6 +65,29 @@ const PartOfSpeech = {
           order by name
         `,
       row => row.language_id
+    );
+  },
+
+  allByField(
+    db: DataReader,
+    fieldId: FieldId
+  ): Promise<PartOfSpeechRow[]> {
+    type Row = PartOfSpeechRow & {
+      field_id: FieldId;
+    };
+    return db.batchOneToMany(
+      this.allByFieldKey,
+      fieldId,
+      (db, fieldIds) =>
+        db.all<Row>`
+          select
+            pos.*,
+            fpos.field_id as field_id
+          from field_parts_of_speech fpos
+          inner join parts_of_speech pos on pos.id = fpos.part_of_speech_id
+          where fpos.field_id in (${fieldIds})
+        `,
+      row => row.field_id
     );
   },
 } as const;
