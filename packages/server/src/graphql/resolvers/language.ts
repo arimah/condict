@@ -6,6 +6,7 @@ import {
   Definition,
   PartOfSpeech,
   InflectionTable,
+  Field,
   Lemma,
   Tag,
   SearchIndex,
@@ -35,6 +36,10 @@ const Language: ResolversFor<LanguageType, LanguageRow> = {
 
   inflectionTableByName: (p, {name}, {db}) =>
     InflectionTable.byName(db, p.id, name),
+
+  fields: (p, _args, {db}) => Field.allByLanguage(db, p.id),
+
+  fieldByName: (p, {name}, {db}) => Field.byName(db, p.id, name),
 
   lemmaCount: p => p.lemma_count,
 

@@ -2,6 +2,7 @@ import {IResolvers} from '@graphql-tools/utils';
 
 import DefinitionResolvers from './definition';
 import ElementResolvers from './element';
+import FieldResolvers from './field';
 import InflectionTableResolvers from './inflection-table';
 import LanguageResolvers from './language';
 import LemmaResolvers from './lemma';
@@ -23,6 +24,7 @@ export const getResolvers = (): IResolvers<any, any> => {
   const allTypeResolvers = [
     DefinitionResolvers,
     ElementResolvers,
+    FieldResolvers,
     InflectionTableResolvers,
     LanguageResolvers,
     LemmaResolvers,
