@@ -4,6 +4,7 @@ import {
   PartOfSpeech,
   DefinitionStem as DefinitionStemModel,
   DefinitionInflectionTable as DefinitionInflectionTableModel,
+  DefinitionFieldValue as DefinitionFieldValueModel,
   DerivedDefinition as DerivedDefinitionModel,
   Description,
   Tag,
@@ -13,27 +14,37 @@ import {
   InflectionTable,
   InflectionTableLayout,
   InflectedForm,
+  Field,
+  FieldValue,
   DefinitionRow,
   DefinitionStemRow,
   DefinitionInflectionTableRow,
   CustomInflectedFormRow,
+  DefinitionFieldValueRow,
+  DefinitionFieldTrueValueRow,
+  DefinitionFieldListValueRow,
+  DefinitionFieldPlainTextValueRow,
   DerivedDefinitionRow,
   MutContext,
 } from '../../model';
 
 import {
-  Definition as DefinitionType,
-  DefinitionStem as DefinitionStemType,
-  DefinitionInflectionTable as DefinitionInflectionTableType,
-  CustomInflectedForm as CustomInflectedFormType,
-  DerivedDefinition as DerivedDefinitionType,
-  Query as QueryType,
+  Definition,
+  DefinitionStem,
+  DefinitionInflectionTable,
+  CustomInflectedForm,
+  DefinitionFieldValue,
+  DefinitionFieldTrueValue,
+  DefinitionFieldListValue,
+  DefinitionFieldPlainTextValue,
+  DerivedDefinition,
+  Query,
 } from '../types';
 import {mutator} from '../helpers';
 
 import {ResolversFor, Mutators} from './types';
 
-const Definition: ResolversFor<DefinitionType, DefinitionRow> = {
+const Definition: ResolversFor<Definition, DefinitionRow> = {
   partOfSpeech: (p, _args, {db}) => PartOfSpeech.byId(db, p.part_of_speech_id),
 
   description: (p, _args, {db}) => Description.parsedById(db, p.description_id),
@@ -44,6 +55,9 @@ const Definition: ResolversFor<DefinitionType, DefinitionRow> = {
     DefinitionInflectionTableModel.allByDefinition(db, p.id),
 
   tags: (p, _args, {db}) => Tag.allByDefinition(db, p.id),
+
+  fields: (p, _args, {db}) =>
+    DefinitionFieldValueModel.allByDefinition(db, p.id),
 
   derivedDefinitions: (p, {page}, {db}, info) =>
     DerivedDefinitionModel.allByDerivedFrom(db, p.id, page, info),
@@ -57,13 +71,13 @@ const Definition: ResolversFor<DefinitionType, DefinitionRow> = {
   timeUpdated: p => p.time_updated,
 };
 
-const DefinitionStem: ResolversFor<DefinitionStemType, DefinitionStemRow> = {
+const DefinitionStem: ResolversFor<DefinitionStem, DefinitionStemRow> = {
   definition: (p, _args, {db}) =>
     DefinitionModel.byId(db, p.definition_id),
 };
 
 const DefinitionInflectionTable: ResolversFor<
-  DefinitionInflectionTableType,
+  DefinitionInflectionTable,
   DefinitionInflectionTableRow
 > = {
   caption: p => p.caption && JSON.parse(p.caption) as unknown,
@@ -83,7 +97,7 @@ const DefinitionInflectionTable: ResolversFor<
 };
 
 const CustomInflectedForm: ResolversFor<
-  CustomInflectedFormType,
+  CustomInflectedForm,
   CustomInflectedFormRow
 > = {
   table: (p, _args, {db}) =>
@@ -95,8 +109,44 @@ const CustomInflectedForm: ResolversFor<
   value: p => p.inflected_form,
 };
 
+const DefinitionFieldValue: ResolversFor<
+  DefinitionFieldValue,
+  DefinitionFieldValueRow
+> = {
+  __resolveType: p => {
+    switch (p.kind) {
+      case 'bool': return 'DefinitionFieldTrueValue';
+      case 'list': return 'DefinitionFieldListValue';
+      case 'plain_text': return 'DefinitionFieldPlainTextValue';
+    }
+  },
+};
+
+const DefinitionFieldTrueValue: ResolversFor<
+  DefinitionFieldTrueValue,
+  DefinitionFieldTrueValueRow
+> = {
+  field: (p, _args, {db}) => Field.byId(db, p.field_id),
+};
+
+const DefinitionFieldListValue: ResolversFor<
+  DefinitionFieldListValue,
+  DefinitionFieldListValueRow
+> = {
+  field: (p, _args, {db}) => Field.byId(db, p.field_id),
+
+  values: (p, _args, {db}) => p.value_ids.map(id => FieldValue.byId(db, id)),
+};
+
+const DefinitionFieldPlainTextValue: ResolversFor<
+  DefinitionFieldPlainTextValue,
+  DefinitionFieldPlainTextValueRow
+> = {
+  field: (p, _args, {db}) => Field.byId(db, p.field_id),
+};
+
 const DerivedDefinition: ResolversFor<
-  DerivedDefinitionType,
+  DerivedDefinition,
   DerivedDefinitionRow
 > = {
   derivedFrom: (p, _args, {db}) =>
@@ -110,15 +160,11 @@ const DerivedDefinition: ResolversFor<
   language: (p, _args, {db}) => Language.byId(db, p.language_id),
 };
 
-const Query: ResolversFor<QueryType, null> = {
+const Query: ResolversFor<Query, null> = {
   definition: (_root, {id}, {db}) =>
     DefinitionModel.byId(db, id),
 
-  definitionInflectionTable: (
-    _root,
-    {id},
-    {db}
-  ) =>
+  definitionInflectionTable: (_root, {id}, {db}) =>
     DefinitionInflectionTableModel.byId(db, id),
 };
 
@@ -141,6 +187,10 @@ export default {
   DefinitionStem,
   DefinitionInflectionTable,
   CustomInflectedForm,
+  DefinitionFieldValue,
+  DefinitionFieldTrueValue,
+  DefinitionFieldListValue,
+  DefinitionFieldPlainTextValue,
   DerivedDefinition,
   Query,
   Mutation,

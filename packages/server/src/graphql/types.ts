@@ -165,6 +165,14 @@ export type Definition = {
    */
   tags: Tag[];
   /**
+   * Custom field values attached to this definition. This list only includes those
+   * fields which have been explicitly assigned a value. If a field is absent from
+   * this list, it counts as unset. Note that boolean fields are not strictly true
+   * or false, but rather set or unset: when a boolean field is absent here, it is
+   * treated as being false.
+   */
+  fields: DefinitionFieldValue[];
+  /**
    * Definitions derived from inflected forms of this definition.
    * 
    * Note that this list only includes inflected forms set to have lemmas derived
@@ -216,6 +224,73 @@ export type DefinitionConnection = {
    */
   nodes: Definition[];
 };
+
+/**
+ * Input type for a single custom field value attached to a definition. At most one
+ * of `booleanValue`, `listValues` and `textValue` can be set, and must match the
+ * field's type.
+ */
+export type DefinitionFieldInput = {
+  /**
+   * The field to assign a value to.
+   */
+  fieldId: FieldId;
+  /**
+   * The value of a boolean field.
+   */
+  booleanValue?: boolean | null;
+  /**
+   * The value of a list field. Some fields may only accept a single value. Passing
+   * the empty list is equivalent to omitting the field altogether.
+   */
+  listValues?: FieldValueId[] | null;
+  /**
+   * The value of a plain-text field.
+   */
+  textValue?: string | null;
+};
+
+/**
+ * Contains the value(s) of a list-type field.
+ */
+export type DefinitionFieldListValue = {
+  field: Field;
+  /**
+   * The selected values. The field may allow only one value to be selected, or
+   * multiple. This list always has at least one entry, as the empty list is not
+   * stored anywhere; it's equivalent to not setting the field.
+   */
+  values: FieldValue[];
+};
+
+/**
+ * Contains the value of a plain text field.
+ */
+export type DefinitionFieldPlainTextValue = {
+  field: Field;
+  /**
+   * The field value. The empty string is a valid value, and is *not* equivalent
+   * to not setting the field.
+   */
+  value: string;
+};
+
+/**
+ * For a boolean field, indicates that the field has the value `true`. Fields that
+ * were set to `false` are omitted altogether; they will not be present in the
+ * definition's `Definition.fields` list.
+ */
+export type DefinitionFieldTrueValue = {
+  field: Field;
+};
+
+/**
+ * The value of a single field as associated with a definition.
+ */
+export type DefinitionFieldValue =
+  | DefinitionFieldTrueValue
+  | DefinitionFieldListValue
+  | DefinitionFieldPlainTextValue;
 
 /**
  * Represents a definition ID.
@@ -463,6 +538,11 @@ export type EditDefinitionInput = {
    * If set, updates the definition's tags.
    */
   tags?: string[] | null;
+  /**
+   * If set, updates the definition's custom field values. To clear the
+   * definition's field values, pass an empty array, not `null`.
+   */
+  fields?: DefinitionFieldInput[] | null;
 };
 
 /**
@@ -2090,6 +2170,10 @@ export type NewDefinitionInput = {
    * Tags associated with this definition.
    */
   tags: string[];
+  /**
+   * Custom field values.
+   */
+  fields: DefinitionFieldInput[];
 };
 
 /**

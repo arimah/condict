@@ -37,6 +37,15 @@ type Definition implements RecentItem {
   tags: [Tag!]!
 
   """
+  Custom field values attached to this definition. This list only includes those
+  fields which have been explicitly assigned a value. If a field is absent from
+  this list, it counts as unset. Note that boolean fields are not strictly true
+  or false, but rather set or unset: when a boolean field is absent here, it is
+  treated as being false.
+  """
+  fields: [DefinitionFieldValue!]!
+
+  """
   Definitions derived from inflected forms of this definition.
 
   Note that this list only includes inflected forms set to have lemmas derived
@@ -173,6 +182,44 @@ type CustomInflectedForm {
   value: String!
 }
 
+"The value of a single field as associated with a definition."
+interface DefinitionFieldValue {
+  "The field that the value belongs to."
+  field: Field!
+}
+
+"""
+For a boolean field, indicates that the field has the value `true`. Fields that
+were set to `false` are omitted altogether; they will not be present in the
+definition's `Definition.fields` list.
+"""
+type DefinitionFieldTrueValue implements DefinitionFieldValue {
+  field: Field!
+}
+
+"Contains the value(s) of a list-type field."
+type DefinitionFieldListValue implements DefinitionFieldValue {
+  field: Field!
+
+  """
+  The selected values. The field may allow only one value to be selected, or
+  multiple. This list always has at least one entry, as the empty list is not
+  stored anywhere; it's equivalent to not setting the field.
+  """
+  values: [FieldValue!]!
+}
+
+"Contains the value of a plain text field."
+type DefinitionFieldPlainTextValue implements DefinitionFieldValue {
+  field: Field!
+
+  """
+  The field value. The empty string is a valid value, and is *not* equivalent
+  to not setting the field.
+  """
+  value: String!
+}
+
 "Contains paginated results from the `Definition.derivedDefinitions` field."
 type DerivedDefinitionConnection {
   "Pagination metadata for this batch."
@@ -253,6 +300,9 @@ input NewDefinitionInput {
 
   "Tags associated with this definition."
   tags: [String!]!
+
+  "Custom field values."
+  fields: [DefinitionFieldInput!]!
 }
 
 "Input type for editing an existing definition. The ID is a separate argument."
@@ -278,6 +328,12 @@ input EditDefinitionInput {
 
   "If set, updates the definition's tags."
   tags: [String!]
+
+  """
+  If set, updates the definition's custom field values. To clear the
+  definition's field values, pass an empty array, not `null`.
+  """
+  fields: [DefinitionFieldInput!]
 }
 
 "Input type for a definition inflection stem."
@@ -353,6 +409,28 @@ input CustomInflectedFormInput {
 
   "The inflected word itself; the value of the table cell."
   value: String!
+}
+
+"""
+Input type for a single custom field value attached to a definition. At most one
+of `booleanValue`, `listValues` and `textValue` can be set, and must match the
+field's type.
+"""
+input DefinitionFieldInput {
+  "The field to assign a value to."
+  fieldId: FieldId!
+
+  "The value of a boolean field."
+  booleanValue: Boolean
+
+  """
+  The value of a list field. Some fields may only accept a single value. Passing
+  the empty list is equivalent to omitting the field altogether.
+  """
+  listValues: [FieldValueId!]
+
+  "The value of a plain-text field."
+  textValue: String
 }
 
 extend type Mutation {
