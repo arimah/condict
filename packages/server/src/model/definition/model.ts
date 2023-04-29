@@ -23,7 +23,10 @@ import {
   DefinitionStemRow,
   DefinitionInflectionTableRow,
   CustomInflectedFormRow,
+  DefinitionFieldValueRow,
+  RawDefinitionFieldValueRow,
   DerivedDefinitionRow,
+  DefinitionFieldListValueRow,
 } from './types';
 
 const Definition = {
@@ -357,6 +360,97 @@ const CustomInflectedForm = {
   },
 } as const;
 
+const DefinitionFieldValue = {
+  allByDefinitionKey: 'DefinitionFieldValue.allByDefinition',
+
+  async allByDefinition(
+    db: DataReader,
+    definitionId: DefinitionId
+  ): Promise<DefinitionFieldValueRow[]> {
+    const rows = await db.batchOneToMany(
+      this.allByDefinitionKey,
+      definitionId,
+      (db, definitionIds) =>
+        db.all<RawDefinitionFieldValueRow>`
+          select
+            'bool' as kind,
+            dfv.definition_id as definition_id,
+            dfv.field_id as field_id,
+            null as value_id,
+            null as text_value
+          from definition_field_true_values dfv
+          where dfv.definition_id in (${definitionIds})
+
+          union all
+
+          select
+            'list',
+            dfv.definition_id,
+            dfv.field_id,
+            dfv.field_value_id,
+            null
+          from definition_field_list_values dfv
+          where dfv.definition_id in (${definitionIds})
+
+          union all
+
+          select
+            'plain_text',
+            dfv.definition_id,
+            dfv.field_id,
+            null,
+            dfv.value
+          from definition_field_text_values dfv
+          where dfv.definition_id in (${definitionIds})
+
+          order by definition_id, field_id
+        `,
+      row => row.definition_id
+    );
+    return this.formatRows(rows);
+  },
+
+  formatRows(
+    rows: RawDefinitionFieldValueRow[]
+  ): DefinitionFieldValueRow[] {
+    // The rows are ordered by field id, so list values that belong to the
+    // same field will be consecutive.
+    const result: DefinitionFieldValueRow[] = [];
+    let lastList: DefinitionFieldListValueRow | null = null;
+
+    for (const row of rows) {
+      switch (row.kind) {
+        case 'bool':
+          result.push({kind: 'bool', field_id: row.field_id});
+          break;
+        case 'list':
+          if (lastList && lastList.field_id === row.field_id) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            lastList.value_ids.push(row.value_id!);
+          } else {
+            lastList = {
+              kind: 'list',
+              field_id: row.field_id,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              value_ids: [row.value_id!],
+            };
+            result.push(lastList);
+          }
+          break;
+        case 'plain_text':
+          result.push({
+            kind: 'plain_text',
+            field_id: row.field_id,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            value: row.text_value!,
+          });
+          break;
+      }
+    }
+    return result;
+  },
+} as const;
+
 const DerivedDefinition = {
   allByLemmaKey: 'DerivedDefinition.allByLemma',
   defaultPagination: {
@@ -427,5 +521,6 @@ export {
   DefinitionStem,
   DefinitionInflectionTable,
   CustomInflectedForm,
+  DefinitionFieldValue,
   DerivedDefinition,
 };

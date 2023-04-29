@@ -7,6 +7,8 @@ import {
   InflectionTableId,
   InflectionTableLayoutId,
   InflectedFormId,
+  FieldId,
+  FieldValueId,
 } from '../../graphql';
 
 import {DescriptionId} from '../description';
@@ -41,6 +43,36 @@ export type CustomInflectedFormRow = {
   definition_inflection_table_id: DefinitionInflectionTableId;
   inflected_form_id: InflectedFormId;
   inflected_form: string;
+};
+
+export type DefinitionFieldValueRow =
+  | DefinitionFieldTrueValueRow
+  | DefinitionFieldListValueRow
+  | DefinitionFieldPlainTextValueRow;
+
+export type DefinitionFieldTrueValueRow = {
+  kind: 'bool';
+  field_id: FieldId;
+};
+
+export type DefinitionFieldListValueRow = {
+  kind: 'list';
+  field_id: FieldId;
+  value_ids: FieldValueId[];
+};
+
+export type DefinitionFieldPlainTextValueRow = {
+  kind: 'plain_text';
+  field_id: FieldId;
+  value: string;
+};
+
+export type RawDefinitionFieldValueRow = {
+  kind: 'bool' | 'list' | 'plain_text';
+  definition_id: DefinitionId;
+  field_id: FieldId;
+  value_id: FieldValueId | null;
+  text_value: string | null;
 };
 
 export type DerivedDefinitionRow = {
