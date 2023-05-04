@@ -1,15 +1,7 @@
 export type Disposition = 'read' | 'write';
 
-type Request = ReaderRequest | WriterRequest;
-
-interface ReaderRequest {
-  readonly type: 'reader';
-  readonly resolve: (token: RwToken) => void;
-  readonly reject: (error: Error) => void;
-}
-
-interface WriterRequest {
-  readonly type: 'writer';
+interface Request {
+  readonly type: 'reader' | 'writer';
   readonly resolve: (token: RwToken) => void;
   readonly reject: (error: Error) => void;
 }
@@ -167,15 +159,15 @@ export default class RwLock {
    *         closed before the token could be acquired.
    */
   public upgrade(token: RwToken): Promise<RwToken> {
-    // NB: Don't throw here if the lock is closed. Calling upgrade means that
-    // the read-only work is completed, so we *must* invalidate the old token
-    // and try to acquire a writer.
     if (!this.isValid(token)) {
       throw new Error('Invalid token');
     }
 
     if (!this.isWriter(token)) {
+      // Even if the lock is closed, we *must* invalidate the reader token, to
+      // make sure we resolve the `close()` promise.
       this.finish(token);
+      // This call can now safely throw if the lock is closed.
       return this.writer();
     }
     return Promise.resolve(token);
@@ -194,16 +186,17 @@ export default class RwLock {
    * @return The reader token.
    */
   public downgrade(token: RwToken): RwToken {
-    // NB: Don't throw here if the lock is closed. Calling downgrade means that
-    // the write work is completed, so we *must* invalidate the old token and
-    // try to acquire a reader.
     if (!this.isValid(token)) {
       throw new Error('Invalid token');
     }
 
     if (this.closed) {
+      // If the lock is closed, we *must* invalidate the writer token first, to
+      // make sure we resolve the `close()` promise.
       this.finish(token);
-      throw new Error('The lock has been closed');
+      // We can't acquire a reader token, as the lock is closed, and the writer
+      // has been invalidated. Now it's safe to throw.
+      throw new Error('The lock is closed');
     }
 
     if (token === this.currentWriter) {
@@ -248,7 +241,6 @@ export default class RwLock {
         this.resolveClose?.();
         this.resolveClose = null;
       }
-      return;
     } else {
       this.tryAdvance();
     }
@@ -367,7 +359,7 @@ export class RwToken {
    *
    *     if (!token.isWriter) {
    *       token.finish();
-   *       token = await token.lock.writer();
+   *       token = await lock.writer();
    *     }
    * @return A promise that resolves with a writer token once exclusive write
    *         access has been acquired. The promise is rejected if the lock is
