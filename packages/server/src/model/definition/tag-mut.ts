@@ -29,7 +29,7 @@ const DefinitionTagMut = {
     context: WriteContext,
     definitionId: DefinitionId,
     tags: string[]
-  ): [TagId[], TagId[]] {
+  ): [prev: TagId[], next: TagId[]] {
     const {db} = context;
     // We could compute a delta here, but it's kind of messy and complex, and
     // this all happens inside a transaction anyway.

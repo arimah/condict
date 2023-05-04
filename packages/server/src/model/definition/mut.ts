@@ -27,6 +27,7 @@ import {DefinitionRow} from './types';
 import DefinitionStemMut from './stem-mut';
 import DefinitionInflectionTableMut, {DefinitionData} from './table-mut';
 import DefinitionTagMut from './tag-mut';
+import DefinitionFieldValueMut from './field-value-mut';
 import DerivedDefinitionMut from './derived-mut';
 
 const DefinitionMut = {
@@ -42,6 +43,7 @@ const DefinitionMut = {
       stems,
       inflectionTables,
       tags,
+      fields,
     } = data;
 
     const language = await Language.byIdRequired(
@@ -101,6 +103,14 @@ const DefinitionMut = {
 
       const tagIds = DefinitionTagMut.insertAll(context, definitionId, tags);
 
+      const fieldIds = DefinitionFieldValueMut.insertAll(
+        db,
+        definitionId,
+        partOfSpeech.id,
+        language.id,
+        fields
+      );
+
       DerivedDefinitionMut.insertAll(
         context,
         language.id,
@@ -127,6 +137,17 @@ const DefinitionMut = {
           prevTagIds: [],
         });
       }
+      if (fieldIds.length > 0) {
+        events.emit({
+          type: 'definitionField',
+          action: 'update',
+          definitionId,
+          lemmaId,
+          languageId: language.id,
+          nextFieldIds: fieldIds,
+          prevFieldIds: [],
+        });
+      }
       logger.verbose(`Definition created: ${definitionId}`);
 
       return Definition.byIdRequired(db, definitionId);
@@ -145,6 +166,7 @@ const DefinitionMut = {
       stems,
       inflectionTables,
       tags,
+      fields,
     } = data;
 
     const definition = await Definition.byIdRequired(context.db, id);
@@ -192,6 +214,11 @@ const DefinitionMut = {
         actualTerm !== definition.term || stems != null
       );
 
+      const newLemmaId = newFields.get('lemma_id') ?? definition.lemma_id;
+      const newPartOfSpeechId =
+        newFields.get('part_of_speech_id') ??
+        definition.part_of_speech_id;
+
       if (tags) {
         const [prevTagIds, nextTagIds] = DefinitionTagMut.update(
           context,
@@ -207,12 +234,32 @@ const DefinitionMut = {
             type: 'definitionTag',
             action: 'update',
             definitionId: definition.id,
-            lemmaId: newFields.get('lemma_id') ?? definition.lemma_id,
+            lemmaId: newLemmaId,
             languageId: definition.language_id,
             prevTagIds,
             nextTagIds,
           });
         }
+      }
+
+      if (fields) {
+        const [prevFieldIds, nextFieldIds] = DefinitionFieldValueMut.update(
+          db,
+          definition.id,
+          newPartOfSpeechId,
+          definition.language_id,
+          fields
+        );
+
+        events.emit({
+          type: 'definitionField',
+          action: 'update',
+          definitionId: definition.id,
+          lemmaId: newLemmaId,
+          languageId: definition.language_id,
+          prevFieldIds,
+          nextFieldIds,
+        });
       }
 
       // If the derived definitions or term have changed, we may have orphaned
@@ -223,11 +270,9 @@ const DefinitionMut = {
         type: 'definition',
         action: 'update',
         id: definition.id,
-        lemmaId: newFields.get('lemma_id') ?? definition.lemma_id,
+        lemmaId: newLemmaId,
         prevLemmaId: definition.lemma_id,
-        partOfSpeechId:
-          newFields.get('part_of_speech_id') ??
-          definition.part_of_speech_id,
+        partOfSpeechId: newPartOfSpeechId,
         prevPartOfSpeechId: definition.part_of_speech_id,
         languageId: definition.language_id,
       });
@@ -300,6 +345,8 @@ const DefinitionMut = {
         TagMut.deleteOrphaned(context);
       }
 
+      const prevFieldIds = DefinitionFieldValueMut.deleteAll(db, definition.id);
+
       db.exec`
         delete from definitions
         where id = ${id}
@@ -328,6 +375,17 @@ const DefinitionMut = {
           languageId: definition.language_id,
           prevTagIds,
           nextTagIds: [],
+        });
+      }
+      if (prevFieldIds.length > 0) {
+        events.emit({
+          type: 'definitionField',
+          action: 'update',
+          definitionId: definition.id,
+          lemmaId: definition.lemma_id,
+          languageId: definition.language_id,
+          prevFieldIds,
+          nextFieldIds: [],
         });
       }
       logger.verbose(`Definition deleted: ${definition.id}`);
