@@ -65,7 +65,8 @@ export type DictionaryEvent =
   | PartOfSpeechEvent
   | InflectionTableEvent
   | TagEvent
-  | DefinitionTagEvent;
+  | DefinitionTagEvent
+  | DefinitionFieldEvent;
 
 export const DictionaryEvent = {
   /**
@@ -182,4 +183,30 @@ export interface DefinitionTagEvent extends
   readonly prevTagIds: readonly number[];
   /** The IDs of the tags that are now assigned to the definition. */
   readonly nextTagIds: readonly number[];
+}
+
+/**
+ * Occurs when a definition's field values are changed. When a definition is
+ * created, a DefinitionFieldEvent is emitted with prevFieldIds set to the empty
+ * array. Likewise, a deleted definition emits one of these events with
+ * nextFieldIds set to the empty array. Both of the aforementioned events can
+ * also occur when a definition is edited to receive its first field values or
+ * lose all of its field values.
+ */
+export interface DefinitionFieldEvent extends
+  BaseEvent<'definitionField', 'update'>
+{
+  /** The ID of the definition whose fields were edited. */
+  readonly definitionId: number;
+  /** The ID of the lemma that the definition belongs/belonged to. */
+  readonly lemmaId: number;
+  /** The ID of the language that the definition belongs to. */
+  readonly languageId: number;
+  /**
+   * The IDs of the fields that were previously assigned values in the
+   * definition.
+   */
+  readonly prevFieldIds: readonly number[];
+  /** The IDs of the fields that are now assigned values in the definition. */
+  readonly nextFieldIds: readonly number[];
 }
