@@ -64,6 +64,7 @@ export type DictionaryEvent =
   | DefinitionEvent
   | PartOfSpeechEvent
   | InflectionTableEvent
+  | FieldEvent
   | TagEvent
   | DefinitionTagEvent
   | DefinitionFieldEvent;
@@ -154,6 +155,13 @@ export interface InflectionTableEvent extends BaseEvent<'inflectionTable'> {
   /** The ID of the inflection table. */
   readonly id: number;
   /** The ID of the language that the inflection table belongs/belonged to. */
+  readonly languageId: number;
+}
+
+export interface FieldEvent extends BaseEvent<'field'> {
+  /** The ID of the field. */
+  readonly id: number;
+  /** The ID of the language that the field belongs/belonged to. */
   readonly languageId: number;
 }
 

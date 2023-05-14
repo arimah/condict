@@ -9,6 +9,7 @@ import {
   PartOfSpeechId,
   InflectionTableId,
   InflectionTableLayoutId,
+  FieldId,
   RecentItemOrder,
   PageParams,
   validatePageParams,
@@ -221,6 +222,26 @@ const Definition = {
       `,
       info
     );
+  },
+
+  anyUsesField(db: DataReader, fieldId: FieldId): boolean {
+    const {used} = db.getRequired<{used: number}>`
+      select
+        exists (
+          select 1
+          from definition_field_true_values dv
+          where dv.field_id = ${fieldId}
+        ) or exists (
+          select 1
+          from definition_field_text_values dv
+          where dv.field_id = ${fieldId}
+        ) or exists (
+          select 1
+          from definition_field_list_values dv
+          where dv.field_id = ${fieldId}
+        ) as used
+    `;
+    return used === 1;
   },
 
   recentByLanguage(

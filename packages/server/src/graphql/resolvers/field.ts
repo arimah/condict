@@ -1,6 +1,8 @@
 import {
   Field as FieldModel,
+  FieldMut,
   FieldValue as FieldValueModel,
+  FieldValueMut,
   PartOfSpeech,
   Language,
   FieldRow,
@@ -9,6 +11,7 @@ import {
   MutContext,
 } from '../../model';
 
+import {mutator} from '../helpers';
 import {
   Field,
   FieldValue,
@@ -67,8 +70,35 @@ const Query: ResolversFor<Query, null> = {
   fieldValue: (_root, {id}, {db}) => FieldValueModel.byId(db, id),
 };
 
+const Mutation: Mutators = {
+  addField: mutator((_root, {data}, context) =>
+    FieldMut.insert(MutContext.from(context), data)
+  ),
+
+  editField: mutator((_root, {id, data}, context) =>
+    FieldMut.update(MutContext.from(context), id, data)
+  ),
+
+  deleteField: mutator((_root, {id}, context) =>
+    FieldMut.delete(MutContext.from(context), id)
+  ),
+
+  addFieldValue: mutator((_root, {data}, context) =>
+    FieldValueMut.insert(MutContext.from(context), data)
+  ),
+
+  editFieldValue: mutator((_root, {id, data}, context) =>
+    FieldValueMut.update(MutContext.from(context), id, data)
+  ),
+
+  deleteFieldValue: mutator((_root, {id}, context) =>
+    FieldValueMut.delete(MutContext.from(context), id)
+  ),
+};
+
 export default {
   Field,
   FieldValue,
   Query,
+  Mutation,
 };
