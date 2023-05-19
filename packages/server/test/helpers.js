@@ -5,8 +5,6 @@ const {GraphQLError} = require('graphql');
 
 const {CondictServer, createLogger, executeLocalOperation} = require('../dist');
 
-const {AssertionError} = assert;
-
 const Optional = Symbol();
 const ObjectMatcher = Symbol();
 
@@ -270,16 +268,25 @@ const instanceOf = (expectedType, expectedProps) =>
 const allowExtraProps = expected =>
   createObjectMatcher(expected, {allowExtraProps: true});
 
-const inputError = (message, path, args, extensions = null) =>
-  allowExtraProps(instanceOf(GraphQLError, {
+const expectData = data => ({
+  errors: optional(),
+  data,
+});
+
+const inputError = (message, path, args, extensions = null) => {
+  const ext = {
+    code: 'BAD_USER_INPUT',
+    ...extensions,
+  };
+  if (args !== undefined) {
+    ext.invalidArgs = typeof args === 'string' ? [args] : args;
+  }
+  return allowExtraProps(instanceOf(GraphQLError, {
     message,
     path: typeof path === 'string' ? [path] : path,
-    extensions: {
-      code: 'BAD_USER_INPUT',
-      invalidArgs: typeof args === 'string' ? [args] : args,
-      ...extensions,
-    },
+    extensions: ext,
   }));
+}
 
 const nullLogger = createLogger({stdout: false, files: []});
 
@@ -291,10 +298,92 @@ const startServer = async () => {
   return server;
 };
 
+const withServer = cb => async () => {
+  const server = await startServer();
+  try {
+    await cb(server);
+  } finally {
+    await server.stop();
+  }
+};
+
+const addLanguage = async (server, name) => {
+  const {data: {addLanguage: {id}}} = await executeLocalOperation(
+    server,
+    `mutation($name: String!) {
+      addLanguage(data: {name: $name}) {
+        id
+      }
+    }`,
+    {name}
+  );
+  return id;
+};
+
+const addPartOfSpeech = async (server, lang, name) => {
+  const {data: {addPartOfSpeech: {id}}} = await executeLocalOperation(
+    server,
+    `mutation($lang: LanguageId!, $name: String!) {
+      addPartOfSpeech(data: {
+        languageId: $lang
+        name: $name
+      }) {
+        id
+      }
+    }`,
+    {lang, name}
+  );
+  return id;
+};
+
+const addField = async (server, data) => {
+  const {
+    languageId,
+    name = 'Before',
+    nameAbbr = 'bf',
+    valueType = 'FIELD_BOOLEAN',
+    listValues = null,
+    partOfSpeechIds = [],
+  } = data;
+  const {
+    data: {
+      addField: {id, listValues: values},
+    },
+  } = await executeLocalOperation(
+    server,
+    `mutation($data: NewFieldInput!) {
+      addField(data: $data) {
+        id
+        listValues { id }
+      }
+    }`,
+    {
+      data: {
+        languageId,
+        name,
+        nameAbbr,
+        valueType,
+        listValues,
+        partOfSpeechIds,
+      }
+    }
+  );
+  const captures = {id};
+  values?.forEach(({id}, index) => {
+    captures[`value${index + 1}`] = id;
+  });
+  return captures;
+};
+
 exports.assertOperationResult = assertOperationResult;
 exports.capture = capture;
 exports.optional = optional;
 exports.instanceOf = instanceOf;
 exports.allowExtraProps = allowExtraProps;
+exports.expectData = expectData;
 exports.inputError = inputError;
 exports.startServer = startServer;
+exports.withServer = withServer;
+exports.addLanguage = addLanguage;
+exports.addPartOfSpeech = addPartOfSpeech;
+exports.addField = addField;

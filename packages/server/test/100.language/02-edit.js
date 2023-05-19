@@ -1,28 +1,27 @@
 const {
   assertOperationResult,
   capture,
-  optional,
+  expectData,
   inputError,
-  startServer,
+  withServer,
 } = require('../helpers');
 
 describe('Language: editLanguage', () => {
+  // We don't use addLanguage() from ../helpers here because we want to assert
+  // that the language adding actually works. Other tests assume that adding
+  // languages works correctly.
   const addLanguage = (server, name = 'Before') => assertOperationResult(
     server,
     `mutation($name: String!) {
       addLanguage(data: {name: $name}) { id, name }
     }`,
     {name},
-    {
-      data: {
-        addLanguage: {id: capture('id'), name},
-      },
-      errors: optional(),
-    }
+    expectData({
+      addLanguage: {id: capture('id'), name},
+    })
   );
 
-  it('does nothing with empty input', async () => {
-    const server = await startServer();
+  it('does nothing with empty input', withServer(async server => {
     const {id} = await addLanguage(server);
     await assertOperationResult(
       server,
@@ -30,12 +29,9 @@ describe('Language: editLanguage', () => {
         editLanguage(id: $id, data: {}) { name }
       }`,
       {id},
-      {
-        data: {
-          editLanguage: {name: 'Before'},
-        },
-        errors: optional(),
-      }
+      expectData({
+        editLanguage: {name: 'Before'},
+      })
     );
     await assertOperationResult(
       server,
@@ -43,17 +39,13 @@ describe('Language: editLanguage', () => {
         language(id: $id) { name }
       }`,
       {id},
-      {
-        data: {
-          language: {name: 'Before'},
-        },
-        errors: optional(),
-      }
+      expectData({
+        language: {name: 'Before'},
+      })
     );
-  });
+  }));
 
-  it('updates the language name', async () => {
-    const server = await startServer();
+  it('updates the name', withServer(async server => {
     const {id} = await addLanguage(server);
     await assertOperationResult(
       server,
@@ -61,12 +53,9 @@ describe('Language: editLanguage', () => {
         editLanguage(id: $id, data: {name: "After"}) { name }
       }`,
       {id},
-      {
-        data: {
-          editLanguage: {name: 'After'},
-        },
-        errors: optional(),
-      }
+      expectData({
+        editLanguage: {name: 'After'},
+      })
     );
     await assertOperationResult(
       server,
@@ -74,17 +63,13 @@ describe('Language: editLanguage', () => {
         language(id: $id) { name }
       }`,
       {id},
-      {
-        data: {
-          language: {name: 'After'},
-        },
-        errors: optional(),
-      }
+      expectData({
+        language: {name: 'After'},
+      })
     );
-  });
+  }));
 
-  it('trims the language name', async () => {
-    const server = await startServer();
+  it('trims the name', withServer(async server => {
     const {id: id1} = await addLanguage(server, 'Start Before');
     const {id: id2} = await addLanguage(server, 'End Before');
     const {id: id3} = await addLanguage(server, 'Both Before');
@@ -96,14 +81,11 @@ describe('Language: editLanguage', () => {
         lang3: editLanguage(id: $id3, data: {name: "  Both After  "}) { name }
       }`,
       {id1, id2, id3},
-      {
-        data: {
-          lang1: {name: 'Start After'},
-          lang2: {name: 'End After'},
-          lang3: {name: 'Both After'},
-        },
-        errors: optional(),
-      }
+      expectData({
+        lang1: {name: 'Start After'},
+        lang2: {name: 'End After'},
+        lang3: {name: 'Both After'},
+      })
     );
     await assertOperationResult(
       server,
@@ -113,19 +95,15 @@ describe('Language: editLanguage', () => {
         lang3: language(id: $id3) { name }
       }`,
       {id1, id2, id3},
-      {
-        data: {
-          lang1: {name: 'Start After'},
-          lang2: {name: 'End After'},
-          lang3: {name: 'Both After'},
-        },
-        errors: optional(),
-      }
+      expectData({
+        lang1: {name: 'Start After'},
+        lang2: {name: 'End After'},
+        lang3: {name: 'Both After'},
+      })
     );
-  });
+  }));
 
-  it('rejects the empty language name', async () => {
-    const server = await startServer();
+  it('rejects the empty name', withServer(async server => {
     const {id} = await addLanguage(server);
     await assertOperationResult(
       server,
@@ -134,9 +112,7 @@ describe('Language: editLanguage', () => {
       }`,
       {id},
       {
-        data: {
-          editLanguage: null,
-        },
+        data: {editLanguage: null},
         errors: [inputError(
           'Language name cannot be empty',
           'editLanguage',
@@ -150,15 +126,11 @@ describe('Language: editLanguage', () => {
         language(id: $id) { name }
       }`,
       {id},
-      {
-        data: {language: {name: 'Before'}},
-        errors: optional(),
-      }
+      expectData({language: {name: 'Before'}})
     );
-  });
+  }));
 
-  it('rejects a white space-only language name', async () => {
-    const server = await startServer();
+  it('rejects a white space-only name', withServer(async server => {
     const {id} = await addLanguage(server);
     await assertOperationResult(
       server,
@@ -167,9 +139,7 @@ describe('Language: editLanguage', () => {
       }`,
       {id},
       {
-        data: {
-          editLanguage: null,
-        },
+        data: {editLanguage: null},
         errors: [inputError(
           'Language name cannot be empty',
           'editLanguage',
@@ -183,15 +153,11 @@ describe('Language: editLanguage', () => {
         language(id: $id) { name }
       }`,
       {id},
-      {
-        data: {language: {name: 'Before'}},
-        errors: optional(),
-      }
+      expectData({language: {name: 'Before'}})
     );
-  });
+  }));
 
-  it('rejects duplicate language names', async () => {
-    const server = await startServer();
+  it('rejects duplicate names', withServer(async server => {
     const {id: id1} = await addLanguage(server, 'Hello');
     const {id: id2} = await addLanguage(server, 'World');
     await assertOperationResult(
@@ -201,9 +167,7 @@ describe('Language: editLanguage', () => {
       }`,
       {id: id2},
       {
-        data: {
-          editLanguage: null,
-        },
+        data: {editLanguage: null},
         errors: [inputError(
           "There is already a language with the name 'Hello'",
           'editLanguage',
@@ -219,13 +183,10 @@ describe('Language: editLanguage', () => {
         world: language(id: $id2) { name }
       }`,
       {id1, id2},
-      {
-        data: {
-          hello: {name: 'Hello'},
-          world: {name: 'World'},
-        },
-        errors: optional(),
-      }
+      expectData({
+        hello: {name: 'Hello'},
+        world: {name: 'World'},
+      })
     );
-  });
+  }));
 });

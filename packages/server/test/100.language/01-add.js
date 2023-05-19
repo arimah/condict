@@ -1,26 +1,22 @@
 const {
   assertOperationResult,
   capture,
-  optional,
+  expectData,
   inputError,
-  startServer,
+  withServer,
 } = require('../helpers');
 
 describe('Language: addLanguage', () => {
-  it('adds a language', async () => {
-    const server = await startServer();
+  it('adds a language', withServer(async server => {
     const {id} = await assertOperationResult(
       server,
       `mutation {
         addLanguage(data: {name: "Newspeak"}) { id, name }
       }`,
       {},
-      {
-        data: {
-          addLanguage: {id: capture('id'), name: 'Newspeak'},
-        },
-        errors: optional(),
-      }
+      expectData({
+        addLanguage: {id: capture('id'), name: 'Newspeak'},
+      })
     );
     await assertOperationResult(
       server,
@@ -29,20 +25,16 @@ describe('Language: addLanguage', () => {
         language(id: $id) { name }
       }`,
       {id},
-      {
-        data: {
-          languages: [
-            {id, name: 'Newspeak'},
-          ],
-          language: {name: 'Newspeak'},
-        },
-        errors: optional(),
-      }
+      expectData({
+        languages: [
+          {id, name: 'Newspeak'},
+        ],
+        language: {name: 'Newspeak'},
+      })
     );
-  });
+  }));
 
-  it('adds several languages', async () => {
-    const server = await startServer();
+  it('adds several languages', withServer(async server => {
     const {id1, id2} = await assertOperationResult(
       server,
       `mutation {
@@ -50,13 +42,10 @@ describe('Language: addLanguage', () => {
         lang2: addLanguage(data: {name: "Alang"}) { id, name }
       }`,
       {},
-      {
-        data: {
-          lang1: {id: capture('id1'), name: 'Blang'},
-          lang2: {id: capture('id2'), name: 'Alang'},
-        },
-        errors: optional(),
-      }
+      expectData({
+        lang1: {id: capture('id1'), name: 'Blang'},
+        lang2: {id: capture('id2'), name: 'Alang'},
+      })
     );
     await assertOperationResult(
       server,
@@ -66,23 +55,19 @@ describe('Language: addLanguage', () => {
         languages { id, name }
       }`,
       {id1, id2},
-      {
-        data: {
-          lang1: {id: id1, name: 'Blang'},
-          lang2: {id: id2, name: 'Alang'},
-          // Languages are ordered alphabetically, not by ID.
-          languages: [
-            {id: id2, name: 'Alang'},
-            {id: id1, name: 'Blang'},
-          ],
-        },
-        errors: optional(),
-      }
+      expectData({
+        lang1: {id: id1, name: 'Blang'},
+        lang2: {id: id2, name: 'Alang'},
+        // Languages are ordered alphabetically, not by ID.
+        languages: [
+          {id: id2, name: 'Alang'},
+          {id: id1, name: 'Blang'},
+        ],
+      })
     );
-  });
+  }));
 
-  it('trims the language name', async () => {
-    const server = await startServer();
+  it('trims the name', withServer(async server => {
     const {id1, id2, id3} = await assertOperationResult(
       server,
       `mutation {
@@ -91,14 +76,11 @@ describe('Language: addLanguage', () => {
         lang3: addLanguage(data: {name: "  Trim both "}) { id, name }
       }`,
       {},
-      {
-        data: {
-          lang1: {id: capture('id1'), name: 'Trim start'},
-          lang2: {id: capture('id2'), name: 'Trim end'},
-          lang3: {id: capture('id3'), name: 'Trim both'},
-        },
-        errors: optional(),
-      }
+      expectData({
+        lang1: {id: capture('id1'), name: 'Trim start'},
+        lang2: {id: capture('id2'), name: 'Trim end'},
+        lang3: {id: capture('id3'), name: 'Trim both'},
+      })
     );
     await assertOperationResult(
       server,
@@ -109,25 +91,21 @@ describe('Language: addLanguage', () => {
         languages { id, name }
       }`,
       {id1, id2, id3},
-      {
-        data: {
-          lang1: {id: id1, name: 'Trim start'},
-          lang2: {id: id2, name: 'Trim end'},
-          lang3: {id: id3, name: 'Trim both'},
-          // Languages are ordered alphabetically, not by ID.
-          languages: [
-            {id: id3, name: 'Trim both'},
-            {id: id2, name: 'Trim end'},
-            {id: id1, name: 'Trim start'},
-          ],
-        },
-        errors: optional(),
-      }
+      expectData({
+        lang1: {id: id1, name: 'Trim start'},
+        lang2: {id: id2, name: 'Trim end'},
+        lang3: {id: id3, name: 'Trim both'},
+        // Languages are ordered alphabetically, not by ID.
+        languages: [
+          {id: id3, name: 'Trim both'},
+          {id: id2, name: 'Trim end'},
+          {id: id1, name: 'Trim start'},
+        ],
+      })
     );
-  });
+  }));
 
-  it('rejects the empty language name', async () => {
-    const server = await startServer();
+  it('rejects the empty name', withServer(async server => {
     await assertOperationResult(
       server,
       `mutation {
@@ -135,9 +113,7 @@ describe('Language: addLanguage', () => {
       }`,
       {},
       {
-        data: {
-          addLanguage: null,
-        },
+        data: {addLanguage: null},
         errors: [inputError(
           'Language name cannot be empty',
           'addLanguage',
@@ -151,15 +127,11 @@ describe('Language: addLanguage', () => {
         languages { id }
       }`,
       {},
-      {
-        data: {languages: []},
-        errors: optional(),
-      }
+      expectData({languages: []})
     );
-  });
+  }));
 
-  it('rejects a white space-only language name', async () => {
-    const server = await startServer();
+  it('rejects a white space-only name', withServer(async server => {
     await assertOperationResult(
       server,
       `mutation {
@@ -167,9 +139,7 @@ describe('Language: addLanguage', () => {
       }`,
       {},
       {
-        data: {
-          addLanguage: null,
-        },
+        data: {addLanguage: null},
         errors: [inputError(
           'Language name cannot be empty',
           'addLanguage',
@@ -183,27 +153,20 @@ describe('Language: addLanguage', () => {
         languages { id }
       }`,
       {},
-      {
-        data: {languages: []},
-        errors: optional(),
-      }
+      expectData({languages: []})
     );
-  });
+  }));
 
-  it('rejects duplicate language names', async () => {
-    const server = await startServer();
+  it('rejects duplicate names', withServer(async server => {
     const {id} = await assertOperationResult(
       server,
       `mutation {
         addLanguage(data: {name: "Hello"}) { id }
       }`,
       {},
-      {
-        data: {
-          addLanguage: {id: capture('id')},
-        },
-        errors: optional(),
-      }
+      expectData({
+        addLanguage: {id: capture('id')},
+      })
     );
     await assertOperationResult(
       server,
@@ -212,9 +175,7 @@ describe('Language: addLanguage', () => {
       }`,
       {},
       {
-        data: {
-          addLanguage: null,
-        },
+        data: {addLanguage: null},
         errors: [inputError(
           "There is already a language with the name 'Hello'",
           'addLanguage',
@@ -229,12 +190,9 @@ describe('Language: addLanguage', () => {
         languages { id, name }
       }`,
       {},
-      {
-        data: {
-          languages: [{id, name: 'Hello'}],
-        },
-        errors: optional(),
-      }
+      expectData({
+        languages: [{id, name: 'Hello'}],
+      })
     );
-  });
+  }));
 });
