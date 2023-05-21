@@ -126,7 +126,7 @@ const LanguageMut = {
       logger.debug(`Deleting orphaned tags`);
       TagMut.deleteOrphaned(context);
 
-      logger.debug(`Language deleted: ${language.id}`);
+      logger.verbose(`Language deleted: ${language.id}`);
     });
     return true;
   },

@@ -26,7 +26,11 @@ const PartOfSpeechMut = {
     const {languageId} = data;
     const {name, description} = data;
 
-    const language = await Language.byIdRequired(context.db, languageId);
+    const language = await Language.byIdRequired(
+      context.db,
+      languageId,
+      'languageId'
+    );
 
     const validName = validateName(context.db, null, language.id, name);
 
