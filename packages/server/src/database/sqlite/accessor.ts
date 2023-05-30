@@ -2,7 +2,7 @@ import {Database, Statement} from 'better-sqlite3';
 
 import {FieldSet} from '../../model';
 
-import {RwToken} from './rwlock';
+import {RwGuard} from './rwlock';
 import RequestCache from './request-cache';
 import {
   DataAccessor,
@@ -42,21 +42,18 @@ const escapeId = (id: string) => '`' + id + '`';
  * more details in the the `DataAccessor` interface's documentation.
  */
 export default class Accessor implements DataAccessor, DataWriter {
-  private readonly database: Database;
-  private rwToken: RwToken;
+  private readonly database: RwGuard<Database>;
   private readonly logger: SqlLogger;
 
   // TODO: See if it's meaningful to break out batching into a separate type.
   private readonly cache: RequestCache;
 
   public constructor(
-    database: Database,
-    rwToken: RwToken,
+    database: RwGuard<Database>,
     logger: SqlLogger,
     sharedCache?: RequestCache
   ) {
     this.database = database;
-    this.rwToken = rwToken;
     this.logger = logger;
     this.cache = sharedCache ?? new RequestCache(this);
   }
@@ -72,7 +69,7 @@ export default class Accessor implements DataAccessor, DataWriter {
     const sql = formatSql(parts, values, params);
 
     const stmt = this.prepare(sql);
-    if (!stmt.readonly && this.rwToken.isReader) {
+    if (this.database.isReader && !stmt.readonly) {
       throw new Error('Cannot execute a mutating statement as a reader');
     }
     if (!stmt.reader) {
@@ -93,7 +90,7 @@ export default class Accessor implements DataAccessor, DataWriter {
     const sql = formatSql(parts, values, params);
 
     const stmt = this.prepare(sql);
-    if (this.rwToken.isReader && !stmt.readonly) {
+    if (this.database.isReader && !stmt.readonly) {
       throw new Error('Cannot execute a mutating statement as a reader');
     }
     if (!stmt.reader) {
@@ -119,7 +116,7 @@ export default class Accessor implements DataAccessor, DataWriter {
     const sql = formatSql(parts, values, params);
 
     const stmt = this.prepare(sql);
-    if (this.rwToken.isReader && !stmt.readonly) {
+    if (this.database.isReader && !stmt.readonly) {
       throw new Error('Cannot execute a mutating statement as a reader');
     }
     if (!stmt.reader) {
@@ -143,7 +140,7 @@ export default class Accessor implements DataAccessor, DataWriter {
     const sql = formatSql(parts, values, params);
 
     const stmt = this.prepare(sql);
-    if (this.rwToken.isReader && !stmt.readonly) {
+    if (this.database.isReader && !stmt.readonly) {
       throw new Error('Cannot execute a mutating statement as a reader');
     }
 
@@ -165,30 +162,23 @@ export default class Accessor implements DataAccessor, DataWriter {
   ): Promise<R> {
     this.ensureValid();
 
-    // We have to upgrade the token *first*, so we have exclusive write access
+    // We have to upgrade access *first*, so we have exclusive write access
     // once the transaction is underway.
-    const writerToken = await this.rwToken.upgrade();
+    await this.database.upgrade();
+    this.cache.setDataReader(this);
 
     this.prepare('begin').run();
 
     let result: R;
     try {
-      const writer = new Accessor(
-        this.database,
-        writerToken,
-        this.logger,
-        this.cache
-      );
-      this.cache.setDataReader(writer);
-      result = await callback(writer);
+      result = await callback(this);
 
       this.prepare('commit').run();
     } catch (e) {
       this.prepare('rollback').run();
       throw e;
     } finally {
-      this.rwToken = writerToken.downgrade();
-      this.cache.setDataReader(this);
+      this.database.downgrade();
     }
     return result;
   }
@@ -234,23 +224,23 @@ export default class Accessor implements DataAccessor, DataWriter {
   }
 
   public finish(): void {
-    if (this.rwToken.isValid) {
-      if (this.rwToken.isWriter) {
+    if (this.database.isValid) {
+      if (this.database.isWriter) {
         throw new Error('Writers are disposed automatically: cannot call `finish`');
       }
-      this.rwToken.finish();
+      this.database.finish();
     }
   }
 
   private prepare(sql: string): Statement {
     this.logger.logQuery(sql);
-    return this.database.prepare(sql);
+    return this.database.get().prepare(sql);
   }
 
   private explainQueryPlan(sql: string, params: Param[]): void {
     type Row = [number, number, number, string];
 
-    const stmt = this.database.prepare(`explain query plan ${sql}`);
+    const stmt = this.database.get().prepare(`explain query plan ${sql}`);
     stmt.raw(true);
 
     const rows = stmt.all(params) as Row[];
@@ -264,7 +254,7 @@ export default class Accessor implements DataAccessor, DataWriter {
   }
 
   private ensureValid(): void {
-    if (!this.rwToken.isValid) {
+    if (!this.database.isValid) {
       throw new Error('This accessor is no longer valid');
     }
   }
