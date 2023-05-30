@@ -9,6 +9,7 @@ export {
   Value,
   Scalar,
   Options,
+  RwLock,
   validateOptions,
 } from './sqlite';
 export {default as reindentQuery} from './reindent-query';

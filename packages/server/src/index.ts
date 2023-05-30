@@ -40,4 +40,5 @@ export {
   Scalar,
   RawSql,
   Options as DatabaseConfig,
+  RwLock as _INTERNAL_RwLock,
 } from './database';

@@ -25,8 +25,7 @@ type QueryPlanLogger = (logger: Logger) => (nodes: QueryPlanNode[]) => void;
  */
 export default class Connection {
   private readonly defaultLogger: Logger;
-  private readonly db: Database;
-  private readonly lock: RwLock;
+  private readonly lock: RwLock<Database>;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private readonly logQuery: QueryLogger = () => () => { };
   private readonly logQueryPlan: QueryPlanLogger | undefined = undefined;
@@ -37,9 +36,8 @@ export default class Connection {
     const db = new Sqlite(options.file);
     db.pragma('journal_mode = WAL');
     registerExtension(db);
-    this.db = db;
 
-    this.lock = new RwLock();
+    this.lock = new RwLock(db);
 
     const queryLogging = getQueryLogSetting(process.env.DEBUG_QUERIES);
 
@@ -74,18 +72,18 @@ export default class Connection {
    *         be acquired.
    */
   public async getAccessor(reqLogger?: Logger): Promise<DataAccessor> {
-    const token = await this.lock.reader();
+    const guard = await this.lock.reader();
     const logger = reqLogger ?? this.defaultLogger;
     const logQueryPlan = this.logQueryPlan;
-    return new Accessor(this.db, token, {
+    return new Accessor(guard, {
       logQuery: this.logQuery(logger),
       logQueryPlan: logQueryPlan && logQueryPlan(logger),
     });
   }
 
   public async close(): Promise<void> {
-    await this.lock.close();
-    this.db.close();
+    const db = await this.lock.close();
+    db.close();
   }
 }
 
