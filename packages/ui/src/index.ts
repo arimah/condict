@@ -14,6 +14,7 @@ export {
 } from './button';
 export {Checkbox, Props as CheckboxProps} from './checkbox';
 export {ConlangFlag, Props as ConlangFlagProps} from './conlang-flag';
+export {FieldInput, Props as FieldInputProps} from './field-input';
 export {
   FocusScope,
   FocusScopeProps,
