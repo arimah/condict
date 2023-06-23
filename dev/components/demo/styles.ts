@@ -52,6 +52,7 @@ export const Main = styled.div.attrs({
   flex-direction: column;
   border-radius: 8px;
   background-color: var(--bg);
+  box-shadow: var(--shadow-elevation-1);
 
   ${p => AlignXValues[p.$alignX]}
   ${p => AlignYValues[p.$alignY]}

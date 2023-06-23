@@ -6,6 +6,7 @@ import ButtonDemo from './button';
 import CheckboxDemo from './checkbox';
 import CommandDemo from './command';
 import ConlangFlagDemo from './conlang-flag';
+import FieldInputDemo from './field-input';
 import FocusDemo from './focus';
 import MenuDemo from './menu';
 import NonIdealStateDemo from './non-ideal-state';
@@ -35,6 +36,7 @@ const Components: Record<string, ComponentDemo> = {
   checkbox: D('Checkbox', CheckboxDemo),
   command: D('Command', CommandDemo),
   'conlang-flag': D('ConlangFlag', ConlangFlagDemo),
+  'field-input': D('FieldInput', FieldInputDemo),
   focus: D('Focus management', FocusDemo),
   menu: D('Menu', MenuDemo),
   'non-ideal-state': D('NonIdealState', NonIdealStateDemo),
