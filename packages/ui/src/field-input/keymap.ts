@@ -54,12 +54,7 @@ const getKeyboardMap = (dir: WritingDirection): ShortcutMap<KeyCommand> =>
           if (newIndex !== state.index) {
             args.dispatch({type: 'selectSuggestion', index: newIndex});
           }
-
-          if (newIndex === -1) {
-            args.input.focus();
-          } else {
-            args.dropdown.focus();
-          }
+          args.input.focus();
         },
       },
       {
@@ -85,12 +80,7 @@ const getKeyboardMap = (dir: WritingDirection): ShortcutMap<KeyCommand> =>
           if (newIndex !== state.index) {
             args.dispatch({type: 'selectSuggestion', index: newIndex});
           }
-
-          if (newIndex === -1) {
-            args.input.focus();
-          } else {
-            args.dropdown.focus();
-          }
+          args.input.focus();
         },
       },
       {

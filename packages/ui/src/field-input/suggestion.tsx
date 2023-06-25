@@ -33,6 +33,7 @@ function Suggestion<T>(props: Props<T>): JSX.Element {
     <S.Suggestion
       id={`${parentId}-${index}`}
       $focused={focused}
+      aria-selected={selected}
       onClick={() => onClick(value)}
       onMouseEnter={() => onHover(index)}
     >
