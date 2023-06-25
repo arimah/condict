@@ -376,6 +376,12 @@ export function FieldInput<T>(props: Props<T>): JSX.Element {
           aria-expanded={showDropdown}
           aria-controls={`${id}-list`}
           aria-haspopup='listbox'
+          aria-multiselectable={!singleSelect}
+          aria-activedescendant={
+            state.index >= 0
+              ? `${id}-${state.index}`
+              : undefined
+          }
           onChange={handleInput}
           ref={inputRef}
         />
@@ -384,17 +390,11 @@ export function FieldInput<T>(props: Props<T>): JSX.Element {
         * even when hidden */}
       <S.Dropdown
         $visible={showDropdown}
-        aria-activedescendant={`${id}-list`}
         onMouseLeave={() => handleHoverSuggestion(-1)}
         ref={dropdownRef}
       >
         <S.SuggestionList
           id={`${id}-list`}
-          aria-activedescendant={
-            state.index >= 0
-              ? `${id}-${state.index}`
-              : undefined
-          }
           ref={suggestionListRef}
         >
           {showDropdown && suggestions.map((val, i) => {
