@@ -79,7 +79,7 @@ export const unique = <T, K>(
   };
 
 // Same reasoning as the IdOf type in ../graphql/types.ts.
-const ValidatorKind = Symbol();
+declare const ValidatorKind: unique symbol;
 
 // This type can be used by validators to express a validated value of type T,
 // as validated by the validator V.

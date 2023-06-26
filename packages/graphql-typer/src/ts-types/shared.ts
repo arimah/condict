@@ -4,7 +4,7 @@ export const CommonHeader =
   '// THIS FILE IS AUTO GENERATED.\n';
 
 export const IdOfDefinition =
-  'const IdKind = Symbol();\n' +
+  'declare const IdKind: unique symbol;\n' +
   '\n' +
   '// This is a hack to get TypeScript to treat different ID types as distinct.\n' +
   '// The actual value will be a number (hence the `number` part), but by\n' +
@@ -18,7 +18,7 @@ export const IdOfDefinition =
   '};\n';
 
 export const ArgsDefinition =
-  `const ArgsType = Symbol();\n` +
+  `declare const ArgsType: unique symbol;\n` +
   '\n' +
   '/**\n' +
   " * Specifies that a field has one or more arguments. The field's argument\n" +

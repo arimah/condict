@@ -2,7 +2,7 @@
 
 // THIS FILE IS AUTO GENERATED.
 
-const IdKind = Symbol();
+declare const IdKind: unique symbol;
 
 // This is a hack to get TypeScript to treat different ID types as distinct.
 // The actual value will be a number (hence the `number` part), but by
@@ -15,9 +15,9 @@ export type IdOf<T extends string> = number & {
   [IdKind]: T;
 };
 
-const OperationSymbol = Symbol();
-const ArgsSymbol = Symbol();
-const ResultSymbol = Symbol();
+declare const OperationSymbol: unique symbol;
+declare const ArgsSymbol: unique symbol;
+declare const ResultSymbol: unique symbol;
 
 // Similar to the IdOf type, this is a hack to attach extra metadata to an operation.
 // The symbol fields don't actually exist (the value is just a string), but allow us

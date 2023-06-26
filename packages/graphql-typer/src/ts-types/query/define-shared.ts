@@ -59,9 +59,9 @@ writeType = (type: GraphQLType): string => {
 };
 
 const OperationDefinition =
-  `const OperationSymbol = Symbol();\n` +
-  `const ArgsSymbol = Symbol();\n` +
-  `const ResultSymbol = Symbol();\n` +
+  `declare const OperationSymbol: unique symbol;\n` +
+  `declare const ArgsSymbol: unique symbol;\n` +
+  `declare const ResultSymbol: unique symbol;\n` +
   `\n` +
   `// Similar to the IdOf type, this is a hack to attach extra metadata to an operation.\n` +
   `// The symbol fields don't actually exist (the value is just a string), but allow us\n` +
