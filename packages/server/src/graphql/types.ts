@@ -2,7 +2,7 @@
 
 // THIS FILE IS AUTO GENERATED.
 
-const IdKind = Symbol();
+declare const IdKind: unique symbol;
 
 // This is a hack to get TypeScript to treat different ID types as distinct.
 // The actual value will be a number (hence the `number` part), but by
@@ -15,7 +15,7 @@ export type IdOf<T extends string> = number & {
   [IdKind]: T;
 };
 
-const ArgsType = Symbol();
+declare const ArgsType: unique symbol;
 
 /**
  * Specifies that a field has one or more arguments. The field's argument
