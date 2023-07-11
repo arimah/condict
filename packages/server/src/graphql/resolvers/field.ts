@@ -94,6 +94,10 @@ const Mutation: Mutators = {
   deleteFieldValue: mutator((_root, {id}, context) =>
     FieldValueMut.delete(MutContext.from(context), id)
   ),
+
+  validateFieldValues: mutator((_root, {values}, {db}) =>
+    FieldValueModel.validateSet(db, values)
+  ),
 };
 
 export default {
