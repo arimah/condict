@@ -567,10 +567,10 @@ export type EditFieldInput = {
    *   values for the field. When going from multi-select to single-select, note
    *   that existing assigned values are *not* affected, but when editing a
    *   definition with multiple values, extraneous values must be deselected.
-   * * In all other cases – when moving from boolean to non-boolean, list non-list,
-   *   text to non-text – the change is allowed only if there are no definitions
-   *   using the field. This is to prevent confusion and complexity arising from
-   *   having to decide what to do with existing values.
+   * * In all other cases – when moving from boolean to non-boolean, list to
+   *   non-list, text to non-text – the change is allowed only if there are no
+   *   definitions using the field. This is to prevent confusion and complexity
+   *   arising from having to decide what to do with existing values.
    */
   valueType?: FieldValueType | null;
   /**
@@ -731,6 +731,11 @@ export type Field = {
  */
 export type FieldId = IdOf<'Field'>;
 
+/**
+ * A field value is one of a set of pre-defined options that can be assigned to
+ * a definition. Only fields of a list type (`FIELD_LIST_ONE`, `FIELD_LIST_MANY`)
+ * contain `FieldValue`s.
+ */
 export type FieldValue = {
   /**
    * The globally unique ID of the field value.
@@ -751,6 +756,27 @@ export type FieldValue = {
   field: Field;
 };
 
+/**
+ * A duplicated field value as returned by failed validation.
+ */
+export type FieldValueDuplicate = {
+  /**
+   * The field value *after* normalization. Normalization at minimum involves
+   * trimming leading and trailing white space, but may include more steps in
+   * the future.
+   */
+  normalizedValue: string;
+  /**
+   * The indices of all occurrences of the value. Since normalization is performed
+   * on input values, `normalizedValue` may not match any item in the input, and
+   * this list of indices can be used to locate the inputs that failed validation.
+   */
+  indices: number[];
+};
+
+/**
+ * Represents ID of a field value.
+ */
 export type FieldValueId = IdOf<'FieldValue'>;
 
 /**
@@ -800,6 +826,30 @@ export type FieldValueType =
    */
   | 'FIELD_PLAIN_TEXT'
 ;
+
+/**
+ * The result of `Mutation.validateFieldValues`. See that field for details.
+ */
+export type FieldValueValidity = {
+  /**
+   * True if the set of field values is valid.
+   */
+  valid: boolean;
+  /**
+   * If validation failed, contains indices of values that were invalid. The list
+   * may be empty.
+   * 
+   * If validation succeeded, this field is always null.
+   */
+  invalid: number[] | null;
+  /**
+   * If validation failed, contains values occur more than once but are otherwise
+   * valid. The list may be empty.
+   * 
+   * If validation succeeded, this field is always null.
+   */
+  duplicates: FieldValueDuplicate[] | null;
+};
 
 /**
  * Formatted text content. These appear as children of block elements, either
@@ -1993,6 +2043,18 @@ export type Mutation = {
   deleteField: WithArgs<{
     id: FieldId;
   }, boolean | null>;
+  /**
+   * Validates a set of field values to find invalid values and duplicates. This
+   * mutation can be used for pre-validation before submitting field data for
+   * `addField` or `editField`.
+   * 
+   * This mutation does not actually update the database.
+   * 
+   * Requires authentication.
+   */
+  validateFieldValues: WithArgs<{
+    values: string[];
+  }, FieldValueValidity>;
   /**
    * Adds a value to a list-type field.
    * 

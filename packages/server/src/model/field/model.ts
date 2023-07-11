@@ -1,8 +1,15 @@
 import {DataReader} from '../../database';
-import {FieldId, FieldValueId, LanguageId} from '../../graphql';
+import {
+  FieldId,
+  FieldValueId,
+  FieldValueValidity,
+  LanguageId,
+} from '../../graphql';
 import {UserInputError} from '../../errors';
 
 import {FieldRow, FieldValueRow} from './types';
+import {ValueWithIndex, findDuplicateFieldValues} from './validate-values';
+import {validateValueText} from './validators';
 
 const Field = {
   byIdKey: 'Field.byId',
@@ -110,6 +117,33 @@ const FieldValue = {
         `,
       row => row.field_id
     );
+  },
+
+  validateSet(
+    db: DataReader,
+    values: readonly string[]
+  ): FieldValueValidity {
+    const invalid: number[] = [];
+    const valid: ValueWithIndex[] = [];
+
+    let index = 0;
+    for (const value of values) {
+      try {
+        const validValue = validateValueText(value);
+        valid.push([validValue, index]);
+      } catch (_e) {
+        invalid.push(index);
+      }
+      index++;
+    }
+
+    const duplicates = findDuplicateFieldValues(db, valid);
+
+    if (invalid.length > 0 || duplicates.length > 0) {
+      return {valid: false, invalid, duplicates};
+    }
+    return {valid: true, invalid: null, duplicates: null};
+
   },
 } as const;
 
