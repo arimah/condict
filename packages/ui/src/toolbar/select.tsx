@@ -1,4 +1,4 @@
-import React, {Ref, KeyboardEventHandler, useRef} from 'react';
+import React, {Ref, RefAttributes, KeyboardEventHandler, useRef} from 'react';
 
 import {Select as RegularSelect, Props as SelectProps} from '../select';
 import combineRefs from '../combine-refs';
@@ -14,12 +14,20 @@ const handleKeyDown: KeyboardEventHandler = e => {
   }
 };
 
-export type Props = {
+export type Props<T> = {
   label?: string;
-} & Omit<SelectProps, 'minimal' | 'onKeyDown' | 'tabIndex'>;
+} & Omit<
+  SelectProps<T>,
+  'minimal' | 'onKeyDown' | 'tabIndex'
+> & RefAttributes<HTMLSelectElement>;
 
-const Select = React.forwardRef((props: Props, ref: Ref<HTMLSelectElement>) => {
-  const {label, children, ...otherProps} = props;
+type SelectComponent = <T>(props: Props<T>) => JSX.Element;
+
+const Select = React.forwardRef(function<T>(
+  props: Props<T>,
+  ref: Ref<HTMLSelectElement>
+) {
+  const {label, ...otherProps} = props;
 
   const ownRef = useRef<HTMLSelectElement>(null);
   const isCurrent = useManagedFocus(ownRef);
@@ -33,13 +41,11 @@ const Select = React.forwardRef((props: Props, ref: Ref<HTMLSelectElement>) => {
         tabIndex={isCurrent ? 0 : -1}
         onKeyDown={handleKeyDown}
         ref={combineRefs(ref, ownRef)}
-      >
-        {children}
-      </RegularSelect>
+      />
     </S.SelectLabel>
   );
 });
 
 Select.displayName = 'Select';
 
-export default Select;
+export default Select as SelectComponent;
