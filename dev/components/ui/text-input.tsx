@@ -2,7 +2,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {TextInput, TextInputType, Checkbox, Select} from '@condict/ui';
+import {
+  TextInput,
+  TextInputType,
+  Checkbox,
+  Select,
+  SelectOption,
+} from '@condict/ui';
 
 import Demo, {useDemoState} from '../demo';
 
@@ -27,7 +33,7 @@ const MaxWidthTextInput = styled(TextInput)`
   max-width: 400px;
 `;
 
-const Types = [
+const Types: readonly SelectOption<TextInputType>[] = [
   {value: 'email', name: 'email'},
   {value: 'password', name: 'password'},
   {value: 'search', name: 'search'},
@@ -47,7 +53,7 @@ const Main = (): JSX.Element => {
           Type: <Select
             value={type}
             options={Types}
-            onChange={e => set('type', e.target.value as TextInputType)}
+            onChange={type => set('type', type)}
           />
         </label>,
         <Checkbox

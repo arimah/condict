@@ -18,6 +18,7 @@ import {
   MenuProps,
   Shortcut,
   Shortcuts,
+  SelectOption,
 } from '@condict/ui';
 
 import Demo, {useDemoState} from '../demo';
@@ -44,7 +45,7 @@ const InitialState: State = {
 
 const StorageKey = 'condict/ui/toolbar';
 
-const BlockStyles = [
+const BlockStyles: readonly SelectOption<string>[] = [
   {value: 'paragraph', name: 'Paragraph'},
   {value: 'heading1', name: 'Heading 1'},
   {value: 'heading2', name: 'Heading 2'},
@@ -248,7 +249,7 @@ const Main = (): JSX.Element => {
             label='Block type: '
             value={blockStyle}
             options={BlockStyles}
-            onChange={e => set('blockStyle', e.target.value)}
+            onChange={blockStyle => set('blockStyle', blockStyle)}
           />
           <Button title='Increase indentation'>
             <IndentMoreIcon className='rtl-mirror'/>

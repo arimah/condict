@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-key */
 import styled from 'styled-components';
 
-import {FieldInput, Checkbox, Select} from '@condict/ui';
+import {FieldInput, Checkbox, Select, SelectOption} from '@condict/ui';
 
 import Demo, {useDemoState} from '../demo';
 
@@ -63,12 +63,12 @@ const InitialState: State = {
   valueMode: 'known',
 };
 
-const ModeOptions = [
+const ModeOptions: readonly SelectOption<'single' | 'multi'>[] = [
   {value: 'single', name: 'single'},
   {value: 'multi', name: 'multi'},
 ];
 
-const ValueModeOptions = [
+const ValueModeOptions: readonly SelectOption<ValueMode>[] = [
   {value: 'known', name: 'knownValues'},
   {value: 'search', name: 'onSearch'},
   {value: 'empty', name: 'empty'},
@@ -108,14 +108,14 @@ const Main = (): JSX.Element => {
           Mode: <Select
             value={mode}
             options={ModeOptions}
-            onChange={e => set('mode', e.target.value as 'single' | 'multi')}
+            onChange={mode => set('mode', mode)}
           />
         </label>,
         <label>
           Values: <Select
             value={valueMode}
             options={ValueModeOptions}
-            onChange={e => set('valueMode', e.target.value as ValueMode)}
+            onChange={valueMode => set('valueMode', valueMode)}
           />
         </label>,
         <Checkbox

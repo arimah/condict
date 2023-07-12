@@ -33,7 +33,7 @@ const Main = (): JSX.Element => {
           Marker: <Select
             value={marker}
             options={MarkerLocations}
-            onChange={e => set('marker', e.target.value as MarkerLocation)}
+            onChange={marker => set('marker', marker)}
           />
         </label>,
         <Checkbox

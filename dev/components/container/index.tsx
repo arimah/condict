@@ -13,6 +13,7 @@ import Link from 'next/link';
 import {
   Switch,
   Select,
+  SelectOption,
   GlobalStyles,
   Theme,
   Shade,
@@ -63,11 +64,6 @@ interface ThemeGenerator {
   readonly table: typeof lightThemeTableVars;
 }
 
-interface ShadeOption {
-  readonly value: ShadeName;
-  readonly name: string;
-}
-
 const ThemeGenerators: Record<ThemeName, ThemeGenerator> = {
   light: {
     ui: lightThemeVars,
@@ -90,7 +86,7 @@ const Shades: Record<ShadeName, Shade> = {
   gray: Gray,
 };
 
-const ShadeOptions: readonly ShadeOption[] = [
+const ShadeOptions: readonly SelectOption<ShadeName>[] = [
   {value: 'red', name: 'Red'},
   {value: 'orange', name: 'Orange'},
   {value: 'yellow', name: 'Yellow'},
@@ -153,25 +149,17 @@ const Container = (props: Props): JSX.Element | null => {
     });
   }, []);
 
-  const handleChangeAccent = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
-    const newAccent = e.target.value as ShadeName;
+  const handleChangeAccent = useCallback((accent: ShadeName) => {
     setAppearance(app => {
-      const nextAppearance = {
-        ...app,
-        accent: newAccent,
-      };
+      const nextAppearance = {...app, accent};
       saveAppearance(nextAppearance);
       return nextAppearance;
     });
   }, []);
 
-  const handleChangeDanger = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
-    const newDanger = e.target.value as ShadeName;
+  const handleChangeDanger = useCallback((danger: ShadeName) => {
     setAppearance(app => {
-      const nextAppearance = {
-        ...app,
-        danger: newDanger,
-      };
+      const nextAppearance = {...app, danger};
       saveAppearance(nextAppearance);
       return nextAppearance;
     });
@@ -219,16 +207,16 @@ const Container = (props: Props): JSX.Element | null => {
             <label>
               {'Accent colour: '}
               <Select
-                options={ShadeOptions}
                 value={appearance.accent}
+                options={ShadeOptions}
                 onChange={handleChangeAccent}
               />
             </label>
             <label>
               {'Danger colour: '}
               <Select
-                options={ShadeOptions}
                 value={appearance.danger}
+                options={ShadeOptions}
                 onChange={handleChangeDanger}
               />
             </label>

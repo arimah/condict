@@ -2,7 +2,7 @@ import {ReactNode, RefObject, useMemo, useCallback} from 'react';
 import {Localized, useLocalization} from '@fluent/react';
 import shallowEqual from 'shallowequal';
 
-import {genUniqueId} from '@condict/ui';
+import {SelectOption, genUniqueId} from '@condict/ui';
 import {emptyDescription} from '@condict/rich-text-editor';
 import {DefinitionTable} from '@condict/table-editor';
 
@@ -17,9 +17,11 @@ import {
 import {LanguageId, PartOfSpeechId} from '../../graphql';
 import type {NewPartOfSpeech, NewInflectionTable} from '../../panels';
 
+import {useSyncFormDirtiness} from '../utils';
 import {notEmpty} from '../validators';
 
 import usePartOfSpeechOptions from './part-of-speech-options';
+import useInflectionTableOptions from './inflection-table-options';
 import TableList from './table-list';
 import StemsField from './stems-field';
 import {
@@ -28,8 +30,6 @@ import {
   PartOfSpeechFields,
   InflectionTableFields,
 } from './types';
-import {useSyncFormDirtiness} from '../utils';
-import useInflectionTableOptions from './inflection-table-options';
 
 export type Props = {
   languageId: LanguageId;
@@ -123,17 +123,28 @@ export const DefinitionForm = (props: Props): JSX.Element => {
       ),
     };
     return onSubmit(submittedData);
-  }, [partsOfSpeech, onSubmit]);
-
-  const partOfSpeechOptions = useMemo<JSX.Element[]>(() => {
-    return partsOfSpeech.map(pos =>
-      <option key={pos.id} value={String(pos.id)}>
-        {pos.name}
-      </option>
-    );
-  }, [partsOfSpeech]);
+  }, [onSubmit]);
 
   const hasPartsOfSpeech = partsOfSpeech.length > 0 ? 'yes' : 'no';
+
+  const partOfSpeechOptions = useMemo(() => {
+    const options: readonly SelectOption<PartOfSpeechId | null>[] = [
+      {
+        key: '',
+        value: null,
+        name: l10n.getString('definition-part-of-speech-empty-hint', {
+          hasPartsOfSpeech,
+        }),
+        disabled: true,
+      },
+      ...partsOfSpeech.map(pos => ({
+        key: String(pos.id),
+        value: pos.id,
+        name: pos.name,
+      })),
+    ];
+    return options;
+  }, [partsOfSpeech, hasPartsOfSpeech, l10n]);
 
   return (
     <FormProvider form={form}>
@@ -153,8 +164,7 @@ export const DefinitionForm = (props: Props): JSX.Element => {
         <SelectField
           name='partOfSpeech'
           label={<Localized id='definition-part-of-speech-label'/>}
-          mapValueToOption={partOfSpeechValueToOption}
-          mapOptionToValue={partOfSpeechOptionToValue}
+          options={partOfSpeechOptions}
           validate={validatePartOfSpeech}
           defaultError={
             <Localized
@@ -166,14 +176,7 @@ export const DefinitionForm = (props: Props): JSX.Element => {
             <Localized id='definition-create-part-of-speech-button'/>
           }
           onCreateNew={handleCreatePartOfSpeech}
-        >
-          <option disabled value=''>
-            {l10n.getString('definition-part-of-speech-empty-hint', {
-              hasPartsOfSpeech,
-            })}
-          </option>
-          {partOfSpeechOptions}
-        </SelectField>
+        />
         <TableList
           inflectionTables={inflectionTables}
           onCreateInflectionTable={onCreateInflectionTable}
@@ -189,17 +192,7 @@ export const DefinitionForm = (props: Props): JSX.Element => {
   );
 };
 
-type PartOfSpeechValue = DefinitionData['partOfSpeech'];
-
-const partOfSpeechValueToOption = (value: PartOfSpeechValue): string =>
-  value !== null ? String(value) : '';
-
-const partOfSpeechOptionToValue = (value: string): PartOfSpeechValue =>
-  value !== ''
-    ? Number(value) as PartOfSpeechId
-    : null;
-
-const validatePartOfSpeech = (value: PartOfSpeechValue): 'invalid' | null =>
+const validatePartOfSpeech = (value: PartOfSpeechId | null): 'invalid' | null =>
   value === null ? 'invalid' : null;
 
 const isUnchanged = (

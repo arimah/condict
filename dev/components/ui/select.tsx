@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
 
-import {Select, Checkbox} from '@condict/ui';
+import {Select, SelectOption, Checkbox} from '@condict/ui';
 
 import Demo, {useDemoState} from '../demo';
 
@@ -19,7 +19,7 @@ const InitialState: State = {
 
 const StorageKey = 'condict/ui/select';
 
-const Options = [
+const Options: readonly SelectOption<string>[] = [
   {value: 'a', name: 'Option A'},
   {value: 'b', name: 'Option B'},
   {value: 'c', name: 'Option C'},
@@ -52,7 +52,7 @@ const Main = (): JSX.Element => {
         minimal={minimal}
         value={value}
         options={Options}
-        onChange={e => set('value', e.target.value)}
+        onChange={value => set('value', value)}
       />
     </Demo>
   );

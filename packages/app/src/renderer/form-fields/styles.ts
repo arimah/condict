@@ -60,7 +60,7 @@ export const SelectWrapper = styled.div`
   }
 `;
 
-export const Select = styled(SelectBase)<{
+export const Select = styled(SelectBase<any>)<{
   $invalid: boolean;
 }>`
   flex: 0 1 auto;

@@ -8,7 +8,14 @@ import DeathStarIcon from 'mdi-react/DeathStarVariantIcon';
 import PuzzleIcon from 'mdi-react/PuzzleIcon';
 import PaletteIcon from 'mdi-react/PaletteIcon';
 
-import {Button, LinkButton, ButtonIntent, Select, Checkbox} from '@condict/ui';
+import {
+  Button,
+  LinkButton,
+  ButtonIntent,
+  Select,
+  SelectOption,
+  Checkbox,
+} from '@condict/ui';
 
 import Demo, {List, Row, useDemoState} from '../demo';
 
@@ -18,18 +25,13 @@ type State = {
   slim: boolean;
 };
 
-interface IntentOption {
-  readonly value: ButtonIntent;
-  readonly name: string;
-}
-
 const InitialState: State = {
   intent: 'general',
   disabled: false,
   slim: false,
 };
 
-const Intents: readonly IntentOption[] = [
+const Intents: readonly SelectOption<ButtonIntent>[] = [
   {value: 'general', name: 'general'},
   {value: 'accent', name: 'accent'},
   {value: 'bold', name: 'bold'},
@@ -49,7 +51,7 @@ const Main = (): JSX.Element => {
           Intent: <Select
             value={intent}
             options={Intents}
-            onChange={e => set('intent', e.target.value as ButtonIntent)}
+            onChange={intent => set('intent', intent)}
           />
         </label>,
         <Checkbox

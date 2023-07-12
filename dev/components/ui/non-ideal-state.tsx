@@ -7,6 +7,7 @@ import {
   Button,
   Checkbox,
   Select,
+  SelectOption,
 } from '@condict/ui';
 
 import Demo, {useDemoState} from '../demo';
@@ -31,10 +32,10 @@ const InitialState: State = {
 
 const StorageKey = 'condict/ui/non-ideal-state';
 
-const HeadingLevels = [
-  {value: '2', name: '2'},
-  {value: '3', name: '3'},
-  {value: '4', name: '4'},
+const HeadingLevels: readonly SelectOption<HeadingLevel>[] = [
+  {value: 2, name: '2'},
+  {value: 3, name: '3'},
+  {value: 4, name: '4'},
 ];
 
 const Main = (): JSX.Element => {
@@ -52,9 +53,9 @@ const Main = (): JSX.Element => {
         </Checkbox>,
         <label>
           Heading level: <Select
-            value={String(headingLevel)}
+            value={headingLevel}
             options={HeadingLevels}
-            onChange={e => set('headingLevel', +e.target.value as HeadingLevel)}
+            onChange={headingLevel => set('headingLevel', headingLevel)}
           />
         </label>,
         <Checkbox
