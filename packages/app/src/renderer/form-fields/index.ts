@@ -24,4 +24,4 @@ export {
   Props as DeleteFormButtonProps,
 } from './delete-form-buttons';
 
-export {Field, Label, ErrorMessage} from './styles';
+export {Field, Label, ErrorMessage, FieldGroup} from './styles';

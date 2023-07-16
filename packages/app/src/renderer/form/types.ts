@@ -102,6 +102,18 @@ export interface Form<D> {
    * @return A function that is called to unwatch the state.
    */
   watchState(wake: WakeFn): UnwatchFn;
+
+  /**
+   * Creates a validator function that runs on submit only. If invoked outside
+   * pre-submission validation, it returns the previous validation result. The
+   * validator function should be memoized with `useCallback` or `useMemo`.
+   * @param validate A validator function that is called only when the form is
+   *        being submitted.
+   * @return A function that can be called to validate the field, which only
+   *         invokes the specified validator function when the form is being
+   *         submitted.
+   */
+  validateOnSubmit<T>(validate: ValidatorFn<T>): ValidatorFn<T>;
 }
 
 export type WakeFn = Dispatch<SetStateAction<number>>;

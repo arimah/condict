@@ -54,6 +54,8 @@ query($id: LanguageId!) {
       }
     }
 
+    fields { id }
+
     tags(page: {page: 0, perPage: 100}) {
       page {
         page

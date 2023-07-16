@@ -21,7 +21,12 @@ import {
   EditInflectionTableInput,
   NewDefinitionInput,
   DefinitionInflectionTableId,
-  EditDefinitionInput
+  EditDefinitionInput,
+  FieldId,
+  FieldValueType,
+  FieldValueId,
+  NewFieldInput,
+  EditFieldInput
 } from "../graphql";
 
 export const AddLanguageMut = "mutation AddLanguageMut($data:NewLanguageInput!){addLanguage(data:$data){id,name,description{...RichTextBlockFragment}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}" as Mutation<{
@@ -385,7 +390,7 @@ export const DeleteInflectionTableMut = "mutation DeleteInflectionTableMut($id:I
   deleteInflectionTable: boolean | null;
 }>;
 
-export const AddDefinitionQuery = "query AddDefinitionQuery($lang:LanguageId!){language(id:$lang){...DefinitionFormPartsOfSpeechFragment...DefinitionFormInflectionTablesFragment}}fragment DefinitionFormPartsOfSpeechFragment on Language{partsOfSpeech{id,name}}fragment DefinitionFormInflectionTablesFragment on Language{inflectionTables{id,name,layout{id,stems...DefinitionTableFragment}}}fragment DefinitionTableFragment on InflectionTableLayout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern,displayName}}...on InflectionTableHeaderCell{headerText}}}}" as Query<{
+export const AddDefinitionQuery = "query AddDefinitionQuery($lang:LanguageId!){language(id:$lang){...FormPartsOfSpeechFragment...DefinitionFormInflectionTablesFragment}}fragment FormPartsOfSpeechFragment on Language{partsOfSpeech{id,name}}fragment DefinitionFormInflectionTablesFragment on Language{inflectionTables{id,name,layout{id,stems...DefinitionTableFragment}}}fragment DefinitionTableFragment on InflectionTableLayout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern,displayName}}...on InflectionTableHeaderCell{headerText}}}}" as Query<{
   lang: LanguageId;
 }, {
   language: {
@@ -495,7 +500,7 @@ export const AddDefinitionMut = "mutation AddDefinitionMut($data:NewDefinitionIn
   } | null;
 }>;
 
-export const EditDefinitionQuery = "query EditDefinitionQuery($id:DefinitionId!){definition(id:$id){id,term,partOfSpeech{id}description{...RichTextBlockFragment}stems{name,value}inflectionTables{id,caption{inlines{...RichTextFragment}}customForms{inflectedForm{id}value}inflectionTable{id}inflectionTableLayout{id,isCurrent,stems...DefinitionTableFragment}}tags{name}language{id...DefinitionFormPartsOfSpeechFragment...DefinitionFormInflectionTablesFragment}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}fragment DefinitionTableFragment on InflectionTableLayout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern,displayName}}...on InflectionTableHeaderCell{headerText}}}}fragment DefinitionFormPartsOfSpeechFragment on Language{partsOfSpeech{id,name}}fragment DefinitionFormInflectionTablesFragment on Language{inflectionTables{id,name,layout{id,stems...DefinitionTableFragment}}}" as Query<{
+export const EditDefinitionQuery = "query EditDefinitionQuery($id:DefinitionId!){definition(id:$id){id,term,partOfSpeech{id}description{...RichTextBlockFragment}stems{name,value}inflectionTables{id,caption{inlines{...RichTextFragment}}customForms{inflectedForm{id}value}inflectionTable{id}inflectionTableLayout{id,isCurrent,stems...DefinitionTableFragment}}tags{name}language{id...FormPartsOfSpeechFragment...DefinitionFormInflectionTablesFragment}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}fragment DefinitionTableFragment on InflectionTableLayout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern,displayName}}...on InflectionTableHeaderCell{headerText}}}}fragment FormPartsOfSpeechFragment on Language{partsOfSpeech{id,name}}fragment DefinitionFormInflectionTablesFragment on Language{inflectionTables{id,name,layout{id,stems...DefinitionTableFragment}}}" as Query<{
   id: DefinitionId;
 }, {
   definition: {
@@ -671,5 +676,88 @@ export const DeleteDefinitionMut = "mutation DeleteDefinitionMut($id:DefinitionI
   id: DefinitionId;
 }, {
   deleteDefinition: boolean | null;
+}>;
+
+export const AllFieldsQuery = "query AllFieldsQuery($languageId:LanguageId!){language(id:$languageId){fields{id,name,nameAbbr,valueType,listValues{id}}}}" as Query<{
+  languageId: LanguageId;
+}, {
+  language: {
+    fields: {
+      id: FieldId;
+      name: string;
+      nameAbbr: string;
+      valueType: FieldValueType;
+      listValues: {
+        id: FieldValueId;
+      }[] | null;
+    }[];
+  } | null;
+}>;
+
+export const AddFieldQuery = "query AddFieldQuery($lang:LanguageId!){language(id:$lang){...FormPartsOfSpeechFragment}}fragment FormPartsOfSpeechFragment on Language{partsOfSpeech{id,name}}" as Query<{
+  lang: LanguageId;
+}, {
+  language: {
+    partsOfSpeech: {
+      id: PartOfSpeechId;
+      name: string;
+    }[];
+  } | null;
+}>;
+
+export const AddFieldMut = "mutation AddFieldMut($data:NewFieldInput!){addField(data:$data){id,name,nameAbbr,valueType,language{id,name}}}" as Mutation<{
+  data: NewFieldInput;
+}, {
+  addField: {
+    id: FieldId;
+    name: string;
+    nameAbbr: string;
+    valueType: FieldValueType;
+    language: {
+      id: LanguageId;
+      name: string;
+    };
+  } | null;
+}>;
+
+export const EditFieldQuery = "query EditFieldQuery($id:FieldId!){field(id:$id){id,name,nameAbbr,partsOfSpeech{id}valueType,listValues{id,value,valueAbbr}language{id...FormPartsOfSpeechFragment}}}fragment FormPartsOfSpeechFragment on Language{partsOfSpeech{id,name}}" as Query<{
+  id: FieldId;
+}, {
+  field: {
+    id: FieldId;
+    name: string;
+    nameAbbr: string;
+    partsOfSpeech: {
+      id: PartOfSpeechId;
+    }[] | null;
+    valueType: FieldValueType;
+    listValues: {
+      id: FieldValueId;
+      value: string;
+      valueAbbr: string;
+    }[] | null;
+    language: {
+      id: LanguageId;
+      partsOfSpeech: {
+        id: PartOfSpeechId;
+        name: string;
+      }[];
+    };
+  } | null;
+}>;
+
+export const EditFieldMut = "mutation EditFieldMut($id:FieldId!,$data:EditFieldInput!){editField(id:$id,data:$data){id}}" as Mutation<{
+  id: FieldId;
+  data: EditFieldInput;
+}, {
+  editField: {
+    id: FieldId;
+  } | null;
+}>;
+
+export const DeleteFieldMut = "mutation DeleteFieldMut($id:FieldId!){deleteField(id:$id)}" as Mutation<{
+  id: FieldId;
+}, {
+  deleteField: boolean | null;
 }>;
 

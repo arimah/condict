@@ -30,6 +30,7 @@ import {
   addDefinitionPanel,
   addPartOfSpeechPanel,
   addInflectionTablePanel,
+  manageCustomFieldsPanel,
 } from '../../panels';
 
 import usePageData from '../page-data';
@@ -40,6 +41,7 @@ import LanguageSearch from './language-search';
 import LemmaAndDefinitionList from './lemma-and-definition-list';
 import PartOfSpeechList from './part-of-speech-list';
 import InflectionTableList from './inflection-table-list';
+import CustomFieldList from './custom-field-list';
 
 export type Props = {
   id: LanguageId;
@@ -58,7 +60,9 @@ const LanguagePage = (props: Props): JSX.Element => {
         event.type === 'definition' ||
         event.type === 'definitionTag' ||
         event.type === 'partOfSpeech' ||
-        event.type === 'inflectionTable'
+        event.type === 'inflectionTable' ||
+        event.type === 'field' ||
+        event.type === 'definitionField'
       ) && event.languageId === id
     ),
     pageRef,
@@ -109,6 +113,10 @@ const LanguagePage = (props: Props): JSX.Element => {
         });
       }
     });
+  }, [id]);
+
+  const handleManageFields = useCallback(() => {
+    void openPanel(manageCustomFieldsPanel(id));
   }, [id]);
 
   const htmlId = useUniqueId();
@@ -177,6 +185,8 @@ const LanguagePage = (props: Props): JSX.Element => {
             tables={language.inflectionTables}
             onAddTable={handleAddTable}
           />
+
+          <CustomFieldList onManageFields={handleManageFields}/>
 
           <section>
             <h2>

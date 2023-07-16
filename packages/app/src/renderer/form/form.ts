@@ -446,6 +446,25 @@ export const useForm = <D>(options: FormOptions<D>): Form<D> => {
         internal.stateWatchers.delete(wake);
       };
     },
+
+    validateOnSubmit: <T>(validate: ValidatorFn<T>): ValidatorFn<T> => {
+      let lastResult: string | null = null;
+      return (value: T): Promise<string | null> | string | null => {
+        if (!internal.state.isSubmitting) {
+          return lastResult;
+        }
+        const result = validate(value);
+        if (result instanceof Promise) {
+          return result.then(validity => {
+            lastResult = validity;
+            return validity;
+          });
+        } else {
+          lastResult = result;
+          return result;
+        }
+      };
+    },
   })).current;
 
   return form;

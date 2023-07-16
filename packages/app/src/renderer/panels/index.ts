@@ -9,3 +9,7 @@ export {editInflectionTablePanel} from './edit-inflection-table';
 
 export {NewDefinition, addDefinitionPanel} from './add-definition';
 export {editDefinitionPanel} from './edit-definition';
+
+export {manageCustomFieldsPanel} from './manage-custom-fields';
+export {NewField, addFieldPanel} from './add-field';
+export {editFieldPanel} from './edit-field';

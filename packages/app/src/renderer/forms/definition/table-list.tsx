@@ -8,7 +8,7 @@ import {emptyTableCaption} from '@condict/rich-text-editor';
 import {DefinitionTable} from '@condict/table-editor';
 
 import {useNearestForm, useField, useFormValue} from '../../form';
-import {Field, Label} from '../../form-fields';
+import {Field, Label, FieldGroup} from '../../form-fields';
 import {InflectionTableId, InflectedFormId} from '../../graphql';
 import type {NewInflectionTable} from '../../panels';
 
@@ -124,49 +124,51 @@ const TableList = React.memo((props: Props): JSX.Element => {
       <Label as='span' id={`${id}-label`}>
         <Localized id='definition-inflection-tables-label'/>
       </Label>
-      <S.TableList ref={listRef}>
-        {tables.map((table, index) =>
-          <Table
-            key={table.key}
-            id={table.key}
-            index={index}
-            totalCount={tables.length}
-            allTableMap={inflectionTableMap}
-            stems={stems}
-            moving={moving && CurrentMovingState.get(moving, index)}
-            onMove={onMove}
-            onDragStart={onDragStart}
-            onRemove={handleRemove}
-            onMoveDone={
-              moving && index === moving.from
-                ? onMoveDone
-                : undefined
+      <FieldGroup>
+        <S.TableList ref={listRef}>
+          {tables.map((table, index) =>
+            <Table
+              key={table.key}
+              id={table.key}
+              index={index}
+              totalCount={tables.length}
+              allTableMap={inflectionTableMap}
+              stems={stems}
+              moving={moving && CurrentMovingState.get(moving, index)}
+              onMove={onMove}
+              onDragStart={onDragStart}
+              onRemove={handleRemove}
+              onMoveDone={
+                moving && index === moving.from
+                  ? onMoveDone
+                  : undefined
+              }
+            />
+          )}
+        </S.TableList>
+        <div>
+          <MenuTrigger
+            menu={
+              <Menu>
+                {inflectionTableOptions}
+                {inflectionTableOptions.length > 0 && <Menu.Separator/>}
+                <Menu.Item
+                  label={l10n.getString('definition-new-table-menu')}
+                  onActivate={handleCreateInflectionTable}
+                />
+              </Menu>
             }
-          />
-        )}
-      </S.TableList>
-      <S.ListTools>
-        <MenuTrigger
-          menu={
-            <Menu>
-              {inflectionTableOptions}
-              {inflectionTableOptions.length > 0 && <Menu.Separator/>}
-              <Menu.Item
-                label={l10n.getString('definition-new-table-menu')}
-                onActivate={handleCreateInflectionTable}
-              />
-            </Menu>
-          }
-          openClass='force-active'
-        >
-          <Button>
-            <AddIcon/>
-            <span>
-              <Localized id='definition-add-table-button'/>
-            </span>
-          </Button>
-        </MenuTrigger>
-      </S.ListTools>
+            openClass='force-active'
+          >
+            <Button>
+              <AddIcon/>
+              <span>
+                <Localized id='definition-add-table-button'/>
+              </span>
+            </Button>
+          </MenuTrigger>
+        </div>
+      </FieldGroup>
     </Field>
   );
 });

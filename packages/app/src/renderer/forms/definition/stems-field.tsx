@@ -6,7 +6,7 @@ import CustomStemIcon from 'mdi-react/PencilBoxIcon';
 import {SROnly, useUniqueId} from '@condict/ui';
 
 import {useNearestForm, useField, useFormValue, useFormState} from '../../form';
-import {Field, Label} from '../../form-fields';
+import {Field, Label, FieldGroup} from '../../form-fields';
 
 import useActiveStemNames from './active-stem-names';
 import * as S from './styles';
@@ -39,24 +39,26 @@ const StemsField = React.memo((): JSX.Element => {
       <Label as='span' id={`${id}-label`}>
         <Localized id='definition-stems-label'/>
       </Label>
-      <S.StemsList
-        aria-labelledby={`${id}-label`}
-        aria-describedby={`${id}-desc`}
-      >
-        {activeStems.map(name =>
-          <Stem
-            key={name}
-            name={name}
-            value={stems.get(name)}
-            term={term}
-            readOnly={isSubmitting}
-            onChange={handleStemChange}
-          />
-        )}
-      </S.StemsList>
-      <S.ListTools id={`${id}-desc`}>
-        <Localized id='definition-stems-description'/>
-      </S.ListTools>
+      <FieldGroup>
+        <S.StemsList
+          aria-labelledby={`${id}-label`}
+          aria-describedby={`${id}-desc`}
+        >
+          {activeStems.map(name =>
+            <Stem
+              key={name}
+              name={name}
+              value={stems.get(name)}
+              term={term}
+              readOnly={isSubmitting}
+              onChange={handleStemChange}
+            />
+          )}
+        </S.StemsList>
+        <div id={`${id}-desc`}>
+          <Localized id='definition-stems-description'/>
+        </div>
+      </FieldGroup>
     </Field>
   );
 });

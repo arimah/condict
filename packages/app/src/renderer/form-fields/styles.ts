@@ -35,6 +35,35 @@ export const ErrorMessage = styled.p`
   color: var(--fg-danger);
 `;
 
+export const FieldGroup = styled.div`
+  flex: none;
+
+  > :not(:last-child) {
+    margin-inline-start: 6px;
+    padding-inline-start: 16px;
+    position: relative;
+    border-inline-start: 2px solid var(--border);
+  }
+
+  > :last-child {
+    padding-inline-start: 24px;
+    position: relative;
+
+    &::before {
+      content: '';
+      box-sizing: border-box;
+      position: absolute;
+      top: 0;
+      inset-inline-start: 6px;
+      width: 14px;
+      height: calc(50% + 1px);
+      border-inline-start: 2px solid var(--border);
+      border-bottom: 2px solid var(--border);
+      border-end-start-radius: 5px;
+    }
+  }
+`;
+
 export const TextInput = styled(TextInputBase)<{
   $invalid: boolean;
 }>`

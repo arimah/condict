@@ -33,15 +33,7 @@ const BaseStyles = css`
   }
 `;
 
-export const Card = styled.div.attrs({
-  role: 'group',
-})`
-  ${BaseStyles}
-  color: var(--card-fg);
-`;
-
-export const LinkCard = styled(Link)`
-  ${BaseStyles}
+const InteractiveStyles = css`
   transition: box-shadow ${p => 1.25 * p.theme.timing.short}ms ease-in-out;
 
   && {
@@ -63,6 +55,30 @@ export const LinkCard = styled(Link)`
     border-color: var(--focus-border);
     border-radius: 7px;
   }
+`;
+
+export const Card = styled.div.attrs({
+  role: 'group',
+})`
+  ${BaseStyles}
+  color: var(--card-fg);
+`;
+
+export const LinkCard = styled(Link)`
+  ${BaseStyles}
+  ${InteractiveStyles}
+`;
+
+// This is a link that pretends to be a button. Using a link means we
+// get some interactivity for free, it sizes itself better than a button,
+// has fewer weird styling quirks, and can contain block elements. It's
+// not ideal from an accessibility standpoint and we have to do a bit of
+// extra work to make it function properly.
+export const ActionCard = styled.a.attrs({
+  role: 'button',
+})`
+  ${BaseStyles}
+  ${InteractiveStyles}
 `;
 
 // The weird margins and paddings inside the title are to enable focus

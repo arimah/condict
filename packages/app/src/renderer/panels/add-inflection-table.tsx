@@ -61,7 +61,7 @@ const AddInflectionTablePanel = (props: Props) => {
       return;
     }
 
-    // If there were no errors, we should have a part of speech.
+    // If there were no errors, we should have an inflection table.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     onResolve(res.data!.addInflectionTable);
   }, [onResolve]);
