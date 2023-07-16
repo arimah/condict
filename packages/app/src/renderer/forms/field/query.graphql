@@ -1,0 +1,17 @@
+query CheckNameQuery($lang: LanguageId!, $name: String!) {
+  language(id: $lang) {
+    fieldByName(name: $name) {
+      id
+    }
+  }
+}
+
+mutation ValidateValuesMut($values: [String!]!) {
+  validateFieldValues(values: $values) {
+    valid
+    invalid
+    duplicates {
+      indices
+    }
+  }
+}

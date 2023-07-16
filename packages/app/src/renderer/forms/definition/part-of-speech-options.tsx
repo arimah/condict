@@ -1,15 +1,15 @@
-import {useState, useCallback, useRef} from 'react';
+import {useCallback} from 'react';
 import produce from 'immer';
 
 import {Form} from '../../form';
 import {useOpenPanel} from '../../navigation';
-import {useExecute, useDictionaryEvents} from '../../data';
 import {LanguageId, PartOfSpeechId} from '../../graphql';
 import type {NewPartOfSpeech} from '../../panels';
 
+import {PartOfSpeechFields, useCurrentPartsOfSpeech} from '../utils';
+
 import NeutralCollator from './neutral-collator';
-import {AllPartsOfSpeechQuery} from './query';
-import {DefinitionFormState, PartOfSpeechFields} from './types';
+import {DefinitionFormState} from './types';
 
 export type Options = {
   form: Form<DefinitionFormState>;
@@ -31,7 +31,20 @@ const usePartOfSpeechOptions = ({
 }: Options): PartOfSpeechOptions => {
   const openPanel = useOpenPanel;
 
-  const [partsOfSpeech, setPartsOfSpeech] = useState(initialPartsOfSpeech);
+  const {partsOfSpeech, setPartsOfSpeech} = useCurrentPartsOfSpeech(
+    languageId,
+    initialPartsOfSpeech,
+    partsOfSpeech => {
+      // If the currently selected part of speech has been deleted, deselect it.
+      const selectedPos = form.get<PartOfSpeechId | null>('partOfSpeech');
+      if (
+        selectedPos !== null &&
+        !partsOfSpeech.some(pos => pos.id === selectedPos)
+      ) {
+        form.set('partOfSpeech', null);
+      }
+    }
+  );
 
   const handleCreatePartOfSpeech = useCallback(() => {
     void onCreatePartOfSpeech().then(newPos => {
@@ -59,47 +72,6 @@ const usePartOfSpeechOptions = ({
       }
     });
   }, [openPanel, onCreatePartOfSpeech]);
-
-  const execute = useExecute();
-
-  const requestId = useRef(0);
-  useDictionaryEvents(({events}) => {
-    const needRefetch = events.some(event =>
-      event.type === 'partOfSpeech' &&
-      event.languageId === languageId
-    );
-    if (!needRefetch) {
-      return;
-    }
-
-    const id = ++requestId.current;
-    void execute(AllPartsOfSpeechQuery, {lang: languageId}).then(result => {
-      if (result.errors) {
-        console.error('Error fetching parts of speech:', result.errors);
-        return;
-      }
-
-      if (id !== requestId.current) {
-        // Old request; ignore results.
-        return;
-      }
-
-      // If there were no errors, there should be a result. If the language
-      // has been deleted, just use an empty list.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const partsOfSpeech = result.data!.language?.partsOfSpeech ?? [];
-
-      // If the currently selected part of speech has been deleted, deselect it.
-      const selectedPos = form.get<PartOfSpeechId | null>('partOfSpeech');
-      if (
-        selectedPos !== null &&
-        !partsOfSpeech.some(pos => pos.id === selectedPos)
-      ) {
-        form.set('partOfSpeech', null);
-      }
-      setPartsOfSpeech(partsOfSpeech);
-    });
-  });
 
   return {
     partsOfSpeech,

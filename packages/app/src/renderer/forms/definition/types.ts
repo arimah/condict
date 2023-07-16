@@ -50,11 +50,6 @@ export interface DefinitionTableFormData extends DefinitionTableData {
   readonly key: string;
 }
 
-export interface PartOfSpeechFields {
-  readonly id: PartOfSpeechId;
-  readonly name: string;
-}
-
 export interface InflectionTableFields {
   readonly id: InflectionTableId;
   readonly name: string;

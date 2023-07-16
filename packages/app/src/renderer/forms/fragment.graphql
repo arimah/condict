@@ -1,0 +1,6 @@
+fragment FormPartsOfSpeechFragment on Language {
+  partsOfSpeech {
+    id
+    name
+  }
+}

@@ -1,7 +1,14 @@
 export * from './styles';
 
 export {default as BrokenLink, Props as BrokenLinkProps} from './broken-link';
-export {Card, CardProps, LinkCard, LinkCardProps} from './card';
+export {
+  Card,
+  CardProps,
+  LinkCard,
+  LinkCardProps,
+  ActionCard,
+  ActionCardProps,
+} from './card';
 export {
   default as ConfirmButton,
   Props as ConfirmButtonProps,
@@ -26,6 +33,11 @@ export {
   default as ErrorBoundary,
   Props as ErrorBoundaryProps,
 } from './error-boundary';
+export {
+  default as FieldCard,
+  Props as FieldCardProps,
+  FieldCardData,
+} from './field-card';
 export {
   default as HighlightedSnippet,
   Props as HighlightedSnippetProps,

@@ -23,7 +23,6 @@ export type Props = {
   | 'minLength'
   | 'maxLength'
   | 'aria-label'
-  | 'aria-labelledby'
   | 'aria-describedby'
   | 'aria-invalid'
   | 'onChange'
@@ -40,6 +39,7 @@ export const TextField = React.memo((props: Props): JSX.Element => {
     readOnly,
     defaultError,
     errorMessages,
+    className,
     inputRef,
     ...otherProps
   } = props;
@@ -61,7 +61,7 @@ export const TextField = React.memo((props: Props): JSX.Element => {
     : null;
 
   return (
-    <S.Field>
+    <S.Field className={className}>
       {label &&
         <S.Label htmlFor={id ?? autoId}>
           {label}

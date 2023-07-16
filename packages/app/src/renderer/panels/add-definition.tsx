@@ -6,7 +6,7 @@ import {
   tableCaptionToGraphQLInput,
 } from '@condict/rich-text-editor';
 
-import {FlowContent, MainHeader, BlockFields, renderData} from '../ui';
+import {FlowContent, MainHeader, BlockFields} from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {DefinitionData, DefinitionForm} from '../forms';
 import {DefinitionId, LanguageId} from '../graphql';
@@ -15,6 +15,7 @@ import {useRefocusOnData} from '../hooks';
 
 import {addPartOfSpeechPanel} from './add-part-of-speech';
 import {addInflectionTablePanel} from './add-inflection-table';
+import renderFormData from './render-form-data';
 import {formatCustomForms, formatStems, hasTableCaption} from './utils';
 import {AddDefinitionQuery, AddDefinitionMut} from './query';
 
@@ -69,6 +70,7 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
         })),
         stems: formatStems(formData.stems),
         tags: formData.tags,
+        fields: [],
       },
     });
     if (res.errors) {
@@ -104,6 +106,8 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
     }));
   }, [languageId, openPanel]);
 
+  const handleCancel = () => onResolve(null);
+
   return (
     <FlowContent>
       <MainHeader>
@@ -111,7 +115,7 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
           <Localized id='language-define-word-title'/>
         </h1>
       </MainHeader>
-      {renderData(data, ({language}) =>
+      {renderFormData(data, handleCancel, ({language}) =>
         <DefinitionForm
           languageId={languageId}
           initialPartsOfSpeech={language?.partsOfSpeech ?? []}
@@ -121,7 +125,7 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
           }
           firstFieldRef={firstFieldRef}
           onSubmit={onSubmit}
-          onCancel={() => onResolve(null)}
+          onCancel={handleCancel}
           onDirtyChange={dirty => updatePanel({dirty})}
           onCreatePartOfSpeech={createPartOfSpeech}
           onCreateInflectionTable={createInflectionTable}

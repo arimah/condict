@@ -765,6 +765,10 @@ language-add-table-button = Add inflection table
 
 language-no-tables-description = There are no inflection tables in this language. Inflection tables can be added to a word to display its inflected forms. Inflected forms can also be added to the dictionary as searchable terms.
 
+language-custom-fields-heading = User-defined fields
+
+language-manage-fields-button = Manage user-defined fields
+
 language-tags-heading = Tags
 
 language-no-tags-description = The definitions in this language do not have any tags. You can add tags to a definition when you create or edit it.
@@ -826,6 +830,14 @@ language-not-found-error = Language not found. This language has been deleted.
 language-define-word-title = Define a word
 
 language-add-part-of-speech-title = Add part of speech
+
+language-manage-fields-title = Manage user-defined fields
+
+language-no-fields = This language has no user-defined fields.
+
+language-add-field-button = Add field
+
+language-add-field-title = Add field
 
 ## Lemma (headword) messages
 
@@ -965,7 +977,7 @@ definition-stem-custom-tooltip =
 
 definition-stem-source-label = Keep stem identical to the definition term
 
-definition-stems-description = These stem names are used in the selected inflection tables.
+definition-stems-description = These stem names occur in the selected inflection tables.
 
 definition-tags-label = Tags
 
@@ -1095,7 +1107,7 @@ inflection-table-name-label = Name
 
 inflection-table-name-required-error = An inflection table name is required.
 
-inflection-table-name-taken-error = The part of speech already has an inflection table with this name. The name must be unique within the part of speech.
+inflection-table-name-taken-error = The language already has an inflection table with this name. The name must be unique within the lanugage.
 
 inflection-table-layout-label = Layout
 
@@ -1123,6 +1135,84 @@ inflection-table-delete-error = An error occurred when deleting the inflection t
 inflection-table-save-error = An error occurred when saving the inflection table. {-check-form-data}
 
 inflection-table-not-found-error = Inflection table not found. This inflection table has been deleted.
+
+## Custom field messages
+
+field-card-type-boolean = Yes/no value
+
+# Variables:
+#   listValueCount: The number of values defined in the list field.
+field-card-type-list-one =
+  List of values (single selection) – {$listValueCount ->
+    [0] No values
+    [one] {$listValueCount} value
+   *[other] {$listValueCount} values
+  }
+
+# Variables:
+#   listValueCount: The number of values defined in the list field.
+field-card-type-list-many =
+  List of values (multiple selections) – {$listValueCount ->
+    [0] No values
+    [one] {$listValueCount} value
+   *[other] {$listValueCount} values
+  }
+
+field-card-type-text-plain = Text value
+
+field-edit-title = Edit field
+
+field-name-label = Name
+
+field-name-required-error = A field name is required.
+
+field-name-taken-error = The language already has a field with this name. The name must be unique within the language.
+
+field-name-abbr-label = Name abbreviation (optional)
+
+field-parts-of-speech-label = Applicable parts of speech
+
+field-parts-of-speech-description = The field will be visible only in definitions of the selected parts of speech.
+
+field-parts-of-speech-all-label = All parts of speech, including those added in the future
+
+field-value-type-label = Value type
+
+field-value-type-boolean = Yes/no value
+
+field-value-type-list = List of predefined values
+
+field-value-type-plain-text = Text value
+
+field-list-values-label = Available values
+
+field-list-value-value-label = Value
+
+field-list-value-abbr-label = Abbreviation (optional)
+
+field-list-value-empty-error = The value cannot be empty
+
+field-list-value-duplicate-error = This value occurs more than once
+
+field-delete-list-value-button = Delete value
+
+field-add-list-value-button = Add value
+
+field-undo-delete-list-value-button = Undo delete
+
+field-multi-select-label = Allow multiple selected values per definition
+
+# Elements:
+#   <bold>: Bold text.
+field-delete-confirm = The field will be deleted. It will also disappear from every definition that uses it. This <bold>cannot be undone</bold>.
+
+field-delete-button = Delete field
+
+field-delete-error = An error occurred when deleting the field. It may help to try again.
+
+field-save-error = An error occurred when saving the field. {-check-form-data}
+
+field-not-found-error = Field not found. This field has been deleted.
 
 ## Internal link tooltips
 

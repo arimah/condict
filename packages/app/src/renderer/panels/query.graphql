@@ -143,7 +143,7 @@ mutation DeleteInflectionTableMut($id: InflectionTableId!) {
 
 query AddDefinitionQuery($lang: LanguageId!) {
   language(id: $lang) {
-    ...DefinitionFormPartsOfSpeechFragment
+    ...FormPartsOfSpeechFragment
     ...DefinitionFormInflectionTablesFragment
   }
 }
@@ -212,7 +212,7 @@ query EditDefinitionQuery($id: DefinitionId!) {
 
     language {
       id
-      ...DefinitionFormPartsOfSpeechFragment
+      ...FormPartsOfSpeechFragment
       ...DefinitionFormInflectionTablesFragment
     }
   }
@@ -236,4 +236,75 @@ mutation EditDefinitionMut($id: DefinitionId!, $data: EditDefinitionInput!) {
 
 mutation DeleteDefinitionMut($id: DefinitionId!) {
   deleteDefinition(id: $id)
+}
+
+# Custom field operations
+
+query AllFieldsQuery($languageId: LanguageId!) {
+  language(id: $languageId) {
+    fields {
+      id
+      name
+      nameAbbr
+      valueType
+
+      listValues {
+        id
+      }
+    }
+  }
+}
+
+query AddFieldQuery($lang: LanguageId!) {
+  language(id: $lang) {
+    ...FormPartsOfSpeechFragment
+  }
+}
+
+mutation AddFieldMut($data: NewFieldInput!) {
+  addField(data: $data) {
+    id
+    name
+    nameAbbr
+    valueType
+
+    language {
+      id
+      name
+    }
+  }
+}
+
+query EditFieldQuery($id: FieldId!) {
+  field(id: $id) {
+    id
+    name
+    nameAbbr
+
+    partsOfSpeech {
+      id
+    }
+
+    valueType
+    listValues {
+      id
+      value
+      valueAbbr
+    }
+
+    language {
+      id
+      ...FormPartsOfSpeechFragment
+    }
+  }
+}
+
+mutation EditFieldMut($id: FieldId!, $data: EditFieldInput!) {
+  editField(id: $id, data: $data) {
+    id
+  }
+}
+
+mutation DeleteFieldMut($id: FieldId!) {
+  deleteField(id: $id)
 }

@@ -1,9 +1,3 @@
-query AllPartsOfSpeechQuery($lang: LanguageId!) {
-  language(id: $lang) {
-    ...DefinitionFormPartsOfSpeechFragment
-  }
-}
-
 query AllInflectionTablesQuery($lang: LanguageId!) {
   language(id: $lang) {
     ...DefinitionFormInflectionTablesFragment

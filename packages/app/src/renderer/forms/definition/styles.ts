@@ -8,18 +8,19 @@ export const TableItemGap = 16;
 
 export const TableList = styled.ul`
   margin-block: 0;
-  margin-inline-start: 6px;
-  padding-bottom: 8px;
-  padding-inline-start: 16px;
+  padding-block: 8px;
   list-style-type: none;
-  border-inline-start: 2px solid var(--border);
+
+  &:empty {
+    padding-top: 0;
+  }
 `;
 
 export const TableItem = styled.li<{
   $moving?: boolean;
   $held?: boolean;
 }>`
-  margin-block: 8px ${TableItemGap}px;
+  margin-block: 0 ${TableItemGap}px;
   padding-inline: 16px;
   padding-bottom: 16px;
   position: relative;
@@ -99,13 +100,10 @@ export const TableName = styled.span`
 
 export const StemsList = styled.div`
   display: grid;
-  margin-inline-start: 6px;
   padding-block: 8px;
-  padding-inline-start: 16px;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   row-gap: 8px;
-  border-inline-start: 2px solid var(--border);
 
   &:empty {
     padding-bottom: 0;
@@ -137,34 +135,18 @@ export const StemAction = styled(NakedButton)<{
   $usesTerm: boolean;
 }>`
   display: block;
-  margin-block: -3px;
-  padding: 1px;
-  color: ${p => !p.$usesTerm && 'var(--fg-accent)'};
+  margin-block: -4px;
+  padding: 1px 2px;
+  ${p => !p.$usesTerm && `
+    --button-fg: var(--fg-accent);
+  `};
 
   &:focus {
-    padding: 1px;
+    padding: 1px 2px;
   }
 
   > .mdi-icon.mdi-icon {
     display: block;
     margin: 0;
-  }
-`;
-
-export const ListTools = styled.div`
-  padding-inline-start: 24px;
-  position: relative;
-
-  &::before {
-    content: '';
-    box-sizing: border-box;
-    position: absolute;
-    top: 0;
-    inset-inline-start: 6px;
-    width: 14px;
-    height: calc(50% + 1px);
-    border-inline-start: 2px solid var(--border);
-    border-bottom: 2px solid var(--border);
-    border-end-start-radius: 5px;
   }
 `;

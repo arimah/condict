@@ -17,7 +17,7 @@ import {
 import {LanguageId, PartOfSpeechId} from '../../graphql';
 import type {NewPartOfSpeech, NewInflectionTable} from '../../panels';
 
-import {useSyncFormDirtiness} from '../utils';
+import {PartOfSpeechFields, useSyncFormDirtiness} from '../utils';
 import {notEmpty} from '../validators';
 
 import usePartOfSpeechOptions from './part-of-speech-options';
@@ -27,7 +27,6 @@ import StemsField from './stems-field';
 import {
   DefinitionData,
   DefinitionFormState,
-  PartOfSpeechFields,
   InflectionTableFields,
 } from './types';
 

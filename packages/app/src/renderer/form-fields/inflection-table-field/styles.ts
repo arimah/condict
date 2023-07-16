@@ -87,7 +87,7 @@ export const InflectedFormLabel = styled.div`
   > span {
     flex: 1 1 auto;
     font-style: italic;
-    text-align: right;
+    text-align: end;
   }
 `;
 
@@ -106,15 +106,14 @@ export const InflectedFormAction = styled(NakedButton)<{
 }>`
   display: block;
   flex: none;
-  margin-block: -3px;
-  padding: 1px;
-
+  margin-block: -4px;
+  padding: 1px 2px;
   ${p => p.$hasCustomName && `
     --button-fg: var(--fg-accent);
   `}
 
   &:focus {
-    padding: 1px;
+    padding: 1px 2px;
   }
 
   > .mdi-icon.mdi-icon {

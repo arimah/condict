@@ -22,7 +22,6 @@ export type Props<T> = {
   | 'value'
   | 'form'
   | 'aria-label'
-  | 'aria-labelledby'
   | 'aria-describedby'
   | 'onChange'
   | 'ref'
@@ -42,6 +41,7 @@ export const SelectField = React.memo(function<T>(
     label,
     defaultError,
     errorMessages,
+    className,
     inputRef,
     createLabel,
     onCreateNew,
@@ -66,7 +66,7 @@ export const SelectField = React.memo(function<T>(
     : null;
 
   return (
-    <S.Field>
+    <S.Field className={className}>
       {label &&
         <S.Label htmlFor={id ?? autoId}>
           {label}
