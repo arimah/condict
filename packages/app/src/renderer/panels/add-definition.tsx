@@ -69,7 +69,7 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
             : null,
         })),
         stems: formatStems(formData.stems),
-        tags: formData.tags,
+        tags: formData.tags.map(t => t.name),
         fields: [],
       },
     });

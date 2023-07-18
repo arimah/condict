@@ -71,3 +71,25 @@ fragment LanguageFragment on Language {
   id
   name
 }
+
+query SearchTagsQuery($query: String!) {
+  search(
+    params: {
+      query: $query
+      scopes: [SEARCH_TAGS]
+    }
+    page: {
+      page: 0
+      perPage: 50
+    }
+  ) {
+    nodes {
+      __typename
+      ...on TagSearchResult {
+        tag { id, name }
+      }
+    }
+  }
+
+  tag(name: $query) { id, name }
+}

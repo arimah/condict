@@ -90,6 +90,11 @@ export type InflectionTableId = IdOf<'InflectionTable'>;
 export type PartOfSpeechId = IdOf<'PartOfSpeech'>;
 
 /**
+ * Represents a tag ID.
+ */
+export type TagId = IdOf<'Tag'>;
+
+/**
  * Represents an inflection table layout ID.
  */
 export type InflectionTableLayoutId = IdOf<'InflectionTableLayout'>;
@@ -143,11 +148,6 @@ export type DefinitionInflectionTableId = IdOf<'DefinitionInflectionTable'>;
  * `Date` type).
  */
 export type UtcInstant = number;
-
-/**
- * Represents a tag ID.
- */
-export type TagId = IdOf<'Tag'>;
 
 /**
  * Input type for a new language.

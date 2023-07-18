@@ -207,6 +207,7 @@ query EditDefinitionQuery($id: DefinitionId!) {
     }
 
     tags {
+      id
       name
     }
 

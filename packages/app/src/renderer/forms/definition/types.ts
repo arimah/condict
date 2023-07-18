@@ -8,6 +8,7 @@ import {
   InflectionTableLayoutId,
   DefinitionInflectionTableId,
 } from '../../graphql';
+import {TagValue} from '../../form-fields';
 
 export interface DefinitionData {
   id: DefinitionId | null;
@@ -16,7 +17,7 @@ export interface DefinitionData {
   description: BlockElement[];
   inflectionTables: DefinitionTableData[];
   stems: Map<string, string>;
-  tags: string[];
+  tags: TagValue[];
 }
 
 /**
@@ -33,7 +34,7 @@ export interface DefinitionFormState {
   description: BlockElement[];
   inflectionTables: DefinitionTableFormData[];
   stems: Map<string, string>;
-  tags: string[];
+  tags: TagValue[];
 }
 
 export interface DefinitionTableData {
