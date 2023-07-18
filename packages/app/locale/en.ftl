@@ -396,7 +396,7 @@ rich-text-ipa-dialog-insert = Insert
 #   query: The user's search query.
 # Elements:
 #   <query>: Wraps around $query to highlight it. Should not contain anything else.
-rich-text-ipa-dialog-no-matches = No matches for <query>{$query}</query>.
+rich-text-ipa-dialog-no-matches = No matches for <query>{$query}</query>
 
 rich-text-ipa-dialog-search-hint = Check your spelling or try a less specific query.
 
@@ -588,51 +588,19 @@ table-editor-name-source-label = Use automatic name
 
 ## Tag input messages
 
-# Can also be translated as "tag list" or similar.
-tag-input-component-name = Tag input
-
-tag-input-input-label = New tag
-
-tag-input-usage-helper = Use arrow keys to select tags
-
-tag-input-no-tags = No tags
+tag-input-new-tag = new tag
 
 # Variables:
-#   tagCount: The total number of tags in the tag input.
-#   tagList: Separated list of tags in the tag input.
-tag-input-current-tags =
-  {$tagCount ->
-    [one] {$tagCount} tag
-   *[other] {$tagCount} tags: {$tagList}
-  }
+#   query: The user's input
+# Elements:
+#   <query>: Formats the query. Wraps around $query.
+tag-input-no-results = No matches for <query>{$query}</query>
 
-# Variables:
-#   index: The 1-based index of the currently selected tag.
-#   total: The total number of tags in the tag input.
-tag-input-tag-position = Tag {$index} of {$total}
+tag-input-no-results-helper = Check your spelling or try a less specific query.
 
-# Variables:
-#   tag: The tag that was added.
-tag-input-tag-added = Tag added: {$tag}
+tag-input-type-to-search = Type to search for tags
 
-tag-input-no-new-tags = No new tags added
-
-# Variables:
-#   tag: The tag that was removed.
-tag-input-tag-removed = Tag removed: {$tag}
-
-# SR-only announcement when the user edits a tag.
-#
-# Variables:
-#   tag: The tag that is being edited.
-tag-input-editing-tag = Editing tag: {$tag}
-
-# SR-only announcement when user edits a tag, and the previous text was added as a tag.
-#
-# Variables:
-#   tag: The tag that is being edited.
-#   newTag: The tag that was added from the previous text.
-tag-input-editing-added-tag = Editing tag: {$tag}; and added: {$newTag}
+tag-input-no-values = There are no tags to select
 
 ## Home page messages
 

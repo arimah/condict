@@ -21,6 +21,7 @@ import {
   EditInflectionTableInput,
   NewDefinitionInput,
   DefinitionInflectionTableId,
+  TagId,
   EditDefinitionInput,
   FieldId,
   FieldValueType,
@@ -500,7 +501,7 @@ export const AddDefinitionMut = "mutation AddDefinitionMut($data:NewDefinitionIn
   } | null;
 }>;
 
-export const EditDefinitionQuery = "query EditDefinitionQuery($id:DefinitionId!){definition(id:$id){id,term,partOfSpeech{id}description{...RichTextBlockFragment}stems{name,value}inflectionTables{id,caption{inlines{...RichTextFragment}}customForms{inflectedForm{id}value}inflectionTable{id}inflectionTableLayout{id,isCurrent,stems...DefinitionTableFragment}}tags{name}language{id...FormPartsOfSpeechFragment...DefinitionFormInflectionTablesFragment}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}fragment DefinitionTableFragment on InflectionTableLayout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern,displayName}}...on InflectionTableHeaderCell{headerText}}}}fragment FormPartsOfSpeechFragment on Language{partsOfSpeech{id,name}}fragment DefinitionFormInflectionTablesFragment on Language{inflectionTables{id,name,layout{id,stems...DefinitionTableFragment}}}" as Query<{
+export const EditDefinitionQuery = "query EditDefinitionQuery($id:DefinitionId!){definition(id:$id){id,term,partOfSpeech{id}description{...RichTextBlockFragment}stems{name,value}inflectionTables{id,caption{inlines{...RichTextFragment}}customForms{inflectedForm{id}value}inflectionTable{id}inflectionTableLayout{id,isCurrent,stems...DefinitionTableFragment}}tags{id,name}language{id...FormPartsOfSpeechFragment...DefinitionFormInflectionTablesFragment}}}fragment RichTextBlockFragment on BlockElement{kind,level,inlines{__typename...RichTextFragment...RichLinkFragment}}fragment RichTextFragment on FormattedText{text,bold,italic,underline,strikethrough,subscript,superscript}fragment RichLinkFragment on LinkInline{linkTarget,internalLinkTarget{__typename...on LanguageLinkTarget{language{id,name}}...on LemmaLinkTarget{lemma{id,term,language{id,name}}}...on DefinitionLinkTarget{definition{id,term,language{id,name}}}...on PartOfSpeechLinkTarget{partOfSpeech{id,name,language{id,name}}}}inlines{...RichTextFragment}}fragment DefinitionTableFragment on InflectionTableLayout{rows{cells{rowSpan,columnSpan...on InflectionTableDataCell{inflectedForm{id,inflectionPattern,displayName}}...on InflectionTableHeaderCell{headerText}}}}fragment FormPartsOfSpeechFragment on Language{partsOfSpeech{id,name}}fragment DefinitionFormInflectionTablesFragment on Language{inflectionTables{id,name,layout{id,stems...DefinitionTableFragment}}}" as Query<{
   id: DefinitionId;
 }, {
   definition: {
@@ -620,6 +621,7 @@ export const EditDefinitionQuery = "query EditDefinitionQuery($id:DefinitionId!)
       };
     }[];
     tags: {
+      id: TagId;
       name: string;
     }[];
     language: {

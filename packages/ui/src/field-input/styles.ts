@@ -264,6 +264,7 @@ export const ItemName = styled.span`
 
 export const ItemTag = styled.span`
   flex: 1 1 auto;
+  margin-inline-start: 8px;
   opacity: 0.7;
 `;
 
