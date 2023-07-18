@@ -16,7 +16,6 @@ import RadioDemo from './radio';
 import SelectDemo from './select';
 import SpinnerDemo from './spinner';
 import SwitchDemo from './switch';
-import TagInputDemo from './tag-input';
 import TextInputDemo from './text-input';
 import ToolbarDemo from './toolbar';
 import TypographyDemo from './typography';
@@ -46,7 +45,6 @@ const Components: Record<string, ComponentDemo> = {
   select: D('Select', SelectDemo),
   spinner: D('Spinner', SpinnerDemo),
   switch: D('Switch', SwitchDemo),
-  'tag-input': D('TagInput', TagInputDemo),
   'text-input': D('TextInput', TextInputDemo),
   toolbar: D('Toolbar', ToolbarDemo),
   typography: D('Typography', TypographyDemo),
