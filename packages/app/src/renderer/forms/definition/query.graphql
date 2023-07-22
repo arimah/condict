@@ -3,3 +3,9 @@ query AllInflectionTablesQuery($lang: LanguageId!) {
     ...DefinitionFormInflectionTablesFragment
   }
 }
+
+query AllFieldsQuery($lang: LanguageId!) {
+  language(id: $lang) {
+    ...DefinitionFormFieldsFragment
+  }
+}

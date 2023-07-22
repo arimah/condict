@@ -7,6 +7,9 @@ import {
   InflectionTableId,
   InflectionTableLayoutId,
   DefinitionInflectionTableId,
+  FieldId,
+  FieldValueId,
+  FieldValueType,
 } from '../../graphql';
 import {TagValue} from '../../form-fields';
 
@@ -18,6 +21,30 @@ export interface DefinitionData {
   inflectionTables: DefinitionTableData[];
   stems: Map<string, string>;
   tags: TagValue[];
+  fields: DefinitionFieldData[];
+}
+
+export type DefinitionFieldData =
+  | DefinitionFieldBooleanData
+  | DefinitionFieldListData
+  | DefinitionFieldPlainTextData;
+
+export interface DefinitionFieldBooleanData {
+  type: 'boolean';
+  fieldId: FieldId;
+  value: boolean;
+}
+
+export interface DefinitionFieldListData {
+  type: 'list';
+  fieldId: FieldId;
+  value: FieldValueId[];
+}
+
+export interface DefinitionFieldPlainTextData {
+  type: 'plainText';
+  fieldId: FieldId;
+  value: string;
 }
 
 /**
@@ -35,6 +62,7 @@ export interface DefinitionFormState {
   inflectionTables: DefinitionTableFormData[];
   stems: Map<string, string>;
   tags: TagValue[];
+  fields: Readonly<Record<FieldId, DefinitionFieldValue>>;
 }
 
 export interface DefinitionTableData {
@@ -51,7 +79,58 @@ export interface DefinitionTableFormData extends DefinitionTableData {
   readonly key: string;
 }
 
-export interface InflectionTableFields {
+export interface DefinitionFieldValue {
+  readonly boolean: boolean;
+  readonly list: FieldValueId[];
+  readonly plainText: string;
+}
+
+export const EmptyFieldValue: DefinitionFieldValue = {
+  boolean: false,
+  list: [],
+  plainText: '',
+};
+
+export interface FieldData {
+  readonly id: FieldId;
+  readonly name: string;
+  readonly nameAbbr: string;
+  readonly valueType: FieldValueType;
+  readonly partsOfSpeech: readonly {
+    readonly id: PartOfSpeechId;
+  }[] | null;
+  readonly listValues: readonly FieldValueData[] | null;
+}
+
+export const isFieldSelectable = (
+  field: FieldData,
+  partOfSpeech: PartOfSpeechId | null
+): boolean => {
+  if (field.partsOfSpeech == null) {
+    // Field can be used in any part of speech
+    return true;
+  }
+
+  if (partOfSpeech === null) {
+    // We need a part of speech but don't have one
+    return false;
+  }
+
+  for (let i = 0; i < field.partsOfSpeech.length; i++) {
+    if (field.partsOfSpeech[i].id === partOfSpeech) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export interface FieldValueData {
+  readonly id: FieldValueId;
+  readonly value: string;
+  readonly valueAbbr: string;
+}
+
+export interface InflectionTableData {
   readonly id: InflectionTableId;
   readonly name: string;
   readonly layout: InflectionTableLayoutFields;
@@ -63,9 +142,9 @@ export interface InflectionTableLayoutFields {
   readonly rows: DefinitionTableRowJson[];
 }
 
-export type InflectionTableMap = Map<InflectionTableId, InflectionTableFields>;
+export type InflectionTableMap = Map<InflectionTableId, InflectionTableData>;
 
-// Used when moving
+// Used when moving inflection tables
 export interface MovingState {
   readonly offset: number; // pixels
   readonly primary: boolean;

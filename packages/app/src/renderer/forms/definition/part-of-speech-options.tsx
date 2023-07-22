@@ -6,7 +6,7 @@ import {useOpenPanel} from '../../navigation';
 import {LanguageId, PartOfSpeechId} from '../../graphql';
 import type {NewPartOfSpeech} from '../../panels';
 
-import {PartOfSpeechFields, useCurrentPartsOfSpeech} from '../utils';
+import {PartOfSpeechData, useCurrentPartsOfSpeech} from '../utils';
 
 import NeutralCollator from './neutral-collator';
 import {DefinitionFormState} from './types';
@@ -14,12 +14,12 @@ import {DefinitionFormState} from './types';
 export type Options = {
   form: Form<DefinitionFormState>;
   languageId: LanguageId;
-  initialPartsOfSpeech: readonly PartOfSpeechFields[];
+  initialPartsOfSpeech: readonly PartOfSpeechData[];
   onCreatePartOfSpeech: () => Promise<NewPartOfSpeech | null>;
 };
 
 export interface PartOfSpeechOptions {
-  partsOfSpeech: readonly PartOfSpeechFields[];
+  partsOfSpeech: readonly PartOfSpeechData[];
   handleCreatePartOfSpeech: () => void;
 }
 

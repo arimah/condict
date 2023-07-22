@@ -120,6 +120,7 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
           languageId={languageId}
           initialPartsOfSpeech={language?.partsOfSpeech ?? []}
           initialInflectionTables={language?.inflectionTables ?? []}
+          initialCustomFields={language?.fields ?? []}
           submitError={
             submitError && <Localized id='inflection-table-save-error'/>
           }

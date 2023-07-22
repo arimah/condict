@@ -10,7 +10,7 @@ import {LanguageId} from '../../graphql';
 import {useExecute} from '../../data';
 
 import {nameNotTaken, notEmpty} from '../validators';
-import {PartOfSpeechFields, useSyncFormDirtiness} from '../utils';
+import {PartOfSpeechData, useSyncFormDirtiness} from '../utils';
 
 import PartsOfSpeechField from './parts-of-speech-field';
 import ListValuesField from './list-values-field';
@@ -25,7 +25,7 @@ import {
 
 export type Props = {
   languageId: LanguageId;
-  initialPartsOfSpeech: readonly PartOfSpeechFields[];
+  initialPartsOfSpeech: readonly PartOfSpeechData[];
   initialData?: FieldData;
   submitError?: ReactNode;
   firstFieldRef?: RefObject<HTMLElement>;

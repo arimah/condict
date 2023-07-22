@@ -110,6 +110,33 @@ export type InflectedFormId = IdOf<'InflectedForm'>;
 export type FieldId = IdOf<'Field'>;
 
 /**
+ * The type of a field's value.
+ */
+export type FieldValueType =
+  /**
+   * The field contains a boolean value (on/off, true/false, yes/no).
+   */
+  | 'FIELD_BOOLEAN'
+  /**
+   * The field contains a single value selected from a list of values.
+   */
+  | 'FIELD_LIST_ONE'
+  /**
+   * The field contains zero or more values selected from a list of values.
+   */
+  | 'FIELD_LIST_MANY'
+  /**
+   * The field contains plain (unformatted) text.
+   */
+  | 'FIELD_PLAIN_TEXT'
+;
+
+/**
+ * Represents ID of a field value.
+ */
+export type FieldValueId = IdOf<'FieldValue'>;
+
+/**
  * The kind of a block element.
  */
 export type BlockKind =
@@ -532,11 +559,6 @@ export type DefinitionFieldInput = {
 };
 
 /**
- * Represents ID of a field value.
- */
-export type FieldValueId = IdOf<'FieldValue'>;
-
-/**
  * Input type for editing an existing definition. The ID is a separate argument.
  */
 export type EditDefinitionInput = {
@@ -604,28 +626,6 @@ export type EditDefinitionInflectionTableInput = {
    */
   upgradeTableLayout?: boolean | null | undefined;
 };
-
-/**
- * The type of a field's value.
- */
-export type FieldValueType =
-  /**
-   * The field contains a boolean value (on/off, true/false, yes/no).
-   */
-  | 'FIELD_BOOLEAN'
-  /**
-   * The field contains a single value selected from a list of values.
-   */
-  | 'FIELD_LIST_ONE'
-  /**
-   * The field contains zero or more values selected from a list of values.
-   */
-  | 'FIELD_LIST_MANY'
-  /**
-   * The field contains plain (unformatted) text.
-   */
-  | 'FIELD_PLAIN_TEXT'
-;
 
 /**
  * Input type for adding new fields.

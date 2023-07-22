@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import {TextInput, Toolbar} from '@condict/ui';
+import {Checkbox, TextInput, Toolbar} from '@condict/ui';
 
 import {NakedButton} from '../../ui';
 
@@ -148,5 +148,42 @@ export const StemAction = styled(NakedButton)<{
   > .mdi-icon.mdi-icon {
     display: block;
     margin: 0;
+  }
+`;
+
+export const BooleanFieldInput = styled(Checkbox)`
+  align-self: start;
+  font-weight: bold;
+`;
+
+export const CustomFieldsHeading = styled.div`
+  margin-block: 24px 2px;
+`;
+
+export const CustomFieldGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  padding-block: 14px 18px;
+  padding-inline-start: 24px;
+  gap: 16px;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    inset-inline-start: 6px;
+    width: 28px;
+    border-inline-start: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+    border-end-start-radius: 5px;
+    pointer-events: none;
+  }
+
+  > :nth-child(n) {
+    flex: none;
+    margin-block: 0;
   }
 `;
