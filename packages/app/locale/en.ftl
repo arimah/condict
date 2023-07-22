@@ -949,6 +949,12 @@ definition-stems-description = These stem names occur in the selected inflection
 
 definition-tags-label = Tags
 
+definition-custom-fields-global-label =
+  <bold>User-defined fields</bold> – All parts of speech
+
+definition-custom-fields-part-of-speech-label =
+  <bold>User-defined fields</bold> – {$partOfSpeech}
+
 definition-edit-title = Edit definition
 
 # Elements:

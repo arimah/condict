@@ -29,3 +29,20 @@ fragment DefinitionTableFragment on InflectionTableLayout {
     }
   }
 }
+
+fragment DefinitionFormFieldsFragment on Language {
+  fields {
+    id
+    name
+    nameAbbr
+    valueType
+
+    partsOfSpeech { id }
+
+    listValues {
+      id
+      value
+      valueAbbr
+    }
+  }
+}

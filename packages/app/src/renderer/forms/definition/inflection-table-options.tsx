@@ -4,17 +4,17 @@ import {useExecute, useDictionaryEvents} from '../../data';
 import {LanguageId} from '../../graphql';
 
 import {AllInflectionTablesQuery} from './query';
-import {InflectionTableFields} from './types';
+import {InflectionTableData} from './types';
 
 export type Options = {
   languageId: LanguageId;
-  initialInflectionTables: readonly InflectionTableFields[];
+  initialInflectionTables: readonly InflectionTableData[];
 };
 
 const useInflectionTableOptions = ({
   languageId,
   initialInflectionTables,
-}: Options): readonly InflectionTableFields[] => {
+}: Options): readonly InflectionTableData[] => {
   const [inflectionTables, setInflectionTables] = useState(initialInflectionTables);
 
   const execute = useExecute();

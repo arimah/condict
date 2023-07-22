@@ -13,8 +13,13 @@ import {DefinitionTable} from '@condict/table-editor';
 
 import {FlowContent, MainHeader} from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
-import {DefinitionData, DefinitionForm} from '../forms';
-import {DefinitionId, LanguageId, LemmaId} from '../graphql';
+import {
+  DefinitionData,
+  DefinitionTableData,
+  DefinitionFieldData,
+  DefinitionForm,
+} from '../forms';
+import {DefinitionId, LanguageId, LemmaId, OperationResult} from '../graphql';
 import {useData, useExecute} from '../data';
 import {useRefocusOnData} from '../hooks';
 
@@ -22,7 +27,12 @@ import ConfirmDeleteButton from './confirm-delete-button';
 import {addPartOfSpeechPanel} from './add-part-of-speech';
 import {addInflectionTablePanel} from './add-inflection-table';
 import renderFormData from './render-form-data';
-import {formatCustomForms, formatStems, hasTableCaption} from './utils';
+import {
+  formatCustomForms,
+  formatStems,
+  formatFields,
+  hasTableCaption,
+} from './utils';
 import {
   EditDefinitionQuery,
   EditDefinitionMut,
@@ -40,6 +50,20 @@ export interface EditedDefinition {
     name: string;
   };
 }
+
+type Definition = NonNullable<
+  OperationResult<typeof EditDefinitionQuery>['definition']
+>;
+
+type DefinitionInflectionTable =
+  Definition['inflectionTables'] extends readonly (infer T)[]
+    ? T
+    : unknown;
+
+type DefinitionFieldValue =
+  Definition['fields'] extends readonly (infer T)[]
+    ? T
+    : unknown;
 
 type Props = {
   id: DefinitionId;
@@ -73,6 +97,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
         })),
         stems: formatStems(formData.stems),
         tags: formData.tags.map(t => t.name),
+        fields: formatFields(formData.fields),
       },
     });
     if (res.errors) {
@@ -136,22 +161,10 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
       term: def.term,
       description: descriptionFromGraphQLResponse(def.description),
       partOfSpeech: def.partOfSpeech.id,
-      inflectionTables: def.inflectionTables.map(t => ({
-        id: t.id,
-        tableId: t.inflectionTable.id,
-        layoutId: t.inflectionTableLayout.id,
-        caption: t.caption
-          ? tableCaptionFromGraphQLResponse(t.caption)
-          : emptyTableCaption(),
-        table: DefinitionTable.fromJson(
-          t.inflectionTableLayout.rows,
-          new Map(t.customForms.map(f => [f.inflectedForm.id, f.value]))
-        ),
-        stems: t.inflectionTableLayout.stems,
-        upgraded: false,
-      })),
+      inflectionTables: def.inflectionTables.map(convertInflectionTable),
       stems: new Map(def.stems.map(s => [s.name, s.value])),
       tags: def.tags,
+      fields: def.fields.map(convertFieldValue),
     };
   }, [data]);
 
@@ -194,6 +207,7 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
             languageId={def.language.id}
             initialPartsOfSpeech={def.language.partsOfSpeech}
             initialInflectionTables={def.language.inflectionTables}
+            initialCustomFields={def.language.fields}
             submitError={
               submitError && <Localized id='definition-save-error'/>
             }
@@ -217,6 +231,48 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
       )}
     </FlowContent>
   );
+};
+
+const convertInflectionTable = (
+  table: DefinitionInflectionTable
+): DefinitionTableData => ({
+  id: table.id,
+  tableId: table.inflectionTable.id,
+  layoutId: table.inflectionTableLayout.id,
+  caption: table.caption
+    ? tableCaptionFromGraphQLResponse(table.caption)
+    : emptyTableCaption(),
+  table: DefinitionTable.fromJson(
+    table.inflectionTableLayout.rows,
+    new Map(table.customForms.map(f => [f.inflectedForm.id, f.value]))
+  ),
+  stems: table.inflectionTableLayout.stems,
+  upgraded: false,
+});
+
+const convertFieldValue = (
+  value: DefinitionFieldValue
+): DefinitionFieldData => {
+  switch (value.__typename) {
+    case 'DefinitionFieldTrueValue':
+      return {
+        type: 'boolean',
+        fieldId: value.field.id,
+        value: true,
+      };
+    case 'DefinitionFieldListValue':
+      return {
+        type: 'list',
+        fieldId: value.field.id,
+        value: value.values.map(v => v.id),
+      };
+    case 'DefinitionFieldPlainTextValue':
+      return {
+        type: 'plainText',
+        fieldId: value.field.id,
+        value: value.value,
+      };
+  }
 };
 
 export const editDefinitionPanel = (

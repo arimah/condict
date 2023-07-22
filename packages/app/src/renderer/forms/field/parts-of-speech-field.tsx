@@ -7,14 +7,14 @@ import {useNearestForm, useField} from '../../form';
 import {Field, Label, FieldGroup} from '../../form-fields';
 import {LanguageId, PartOfSpeechId} from '../../graphql';
 
-import {PartOfSpeechFields, useCurrentPartsOfSpeech} from '../utils';
+import {PartOfSpeechData, useCurrentPartsOfSpeech} from '../utils';
 
 import {FieldFormState} from './types';
 import * as S from './styles';
 
 export type Props = {
   languageId: LanguageId;
-  initialPartsOfSpeech: readonly PartOfSpeechFields[];
+  initialPartsOfSpeech: readonly PartOfSpeechData[];
 };
 
 const PartsOfSpeechField = React.memo((props: Props): JSX.Element => {

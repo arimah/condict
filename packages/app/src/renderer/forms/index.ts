@@ -17,6 +17,8 @@ export {
   DefinitionForm,
   Props as DefinitionFormProps,
   DefinitionData,
+  DefinitionTableData,
+  DefinitionFieldData,
 } from './definition';
 export {
   FieldForm,

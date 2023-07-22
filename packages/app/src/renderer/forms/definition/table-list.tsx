@@ -14,11 +14,11 @@ import type {NewInflectionTable} from '../../panels';
 
 import useTableReordering, {CurrentMovingState} from './table-reordering';
 import Table from './table';
-import {DefinitionTableFormData, InflectionTableFields} from './types';
+import {DefinitionTableFormData, InflectionTableData} from './types';
 import * as S from './styles';
 
 export type Props = {
-  inflectionTables: readonly InflectionTableFields[];
+  inflectionTables: readonly InflectionTableData[];
   onCreateInflectionTable: () => Promise<NewInflectionTable | null>;
 };
 
@@ -67,7 +67,7 @@ const TableList = React.memo((props: Props): JSX.Element => {
   }, []);
 
   const inflectionTableMap = useMemo(() => {
-    const result = new Map<InflectionTableId, InflectionTableFields>();
+    const result = new Map<InflectionTableId, InflectionTableData>();
     for (const table of inflectionTables) {
       result.set(table.id, table);
     }

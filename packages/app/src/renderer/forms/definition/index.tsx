@@ -14,26 +14,35 @@ import {
   TagField,
   FormButtons,
 } from '../../form-fields';
-import {LanguageId, PartOfSpeechId} from '../../graphql';
+import {LanguageId, PartOfSpeechId, FieldId, FieldValueId} from '../../graphql';
 import type {NewPartOfSpeech, NewInflectionTable} from '../../panels';
 
-import {PartOfSpeechFields, useSyncFormDirtiness} from '../utils';
+import {PartOfSpeechData, useSyncFormDirtiness} from '../utils';
 import {notEmpty} from '../validators';
 
 import usePartOfSpeechOptions from './part-of-speech-options';
 import useInflectionTableOptions from './inflection-table-options';
+import useCustomFields from './custom-field-data';
 import TableList from './table-list';
 import StemsField from './stems-field';
+import CustomFieldValues from './custom-field-values';
 import {
   DefinitionData,
+  DefinitionTableData,
+  DefinitionFieldData,
   DefinitionFormState,
-  InflectionTableFields,
+  DefinitionFieldValue,
+  InflectionTableData,
+  FieldData,
+  EmptyFieldValue,
+  isFieldSelectable,
 } from './types';
 
 export type Props = {
   languageId: LanguageId;
-  initialPartsOfSpeech: PartOfSpeechFields[];
-  initialInflectionTables: InflectionTableFields[];
+  initialPartsOfSpeech: PartOfSpeechData[];
+  initialInflectionTables: InflectionTableData[];
+  initialCustomFields: FieldData[];
   initialData?: DefinitionData;
   submitError?: ReactNode;
   firstFieldRef?: RefObject<HTMLElement>;
@@ -44,7 +53,7 @@ export type Props = {
   onCreateInflectionTable: () => Promise<NewInflectionTable | null>;
 };
 
-export {DefinitionData};
+export {DefinitionData, DefinitionTableData, DefinitionFieldData};
 
 const EmptyData: DefinitionData = {
   id: null,
@@ -54,6 +63,7 @@ const EmptyData: DefinitionData = {
   inflectionTables: [],
   stems: new Map<string, string>(),
   tags: [],
+  fields: [],
 };
 
 export const DefinitionForm = (props: Props): JSX.Element => {
@@ -61,6 +71,7 @@ export const DefinitionForm = (props: Props): JSX.Element => {
     languageId,
     initialPartsOfSpeech,
     initialInflectionTables,
+    initialCustomFields,
     initialData,
     submitError,
     firstFieldRef,
@@ -82,6 +93,7 @@ export const DefinitionForm = (props: Props): JSX.Element => {
           key: genUniqueId(),
           ...table,
         })),
+        fields: importFieldData(data.fields, initialCustomFields),
       };
     },
     isUnchanged,
@@ -104,6 +116,12 @@ export const DefinitionForm = (props: Props): JSX.Element => {
     initialInflectionTables,
   });
 
+  const customFields = useCustomFields({
+    form,
+    languageId,
+    initialCustomFields,
+  });
+
   const handleSubmit = useCallback((
     data: DefinitionFormState
   ): Promise<void> | void => {
@@ -120,9 +138,15 @@ export const DefinitionForm = (props: Props): JSX.Element => {
           exportedStems.has(name)
         )
       ),
+      // Convert field values to the right format
+      fields: exportFieldValues(
+        data.fields,
+        data.partOfSpeech,
+        customFields
+      ),
     };
     return onSubmit(submittedData);
-  }, [onSubmit]);
+  }, [onSubmit, customFields]);
 
   const hasPartsOfSpeech = partsOfSpeech.length > 0 ? 'yes' : 'no';
 
@@ -185,10 +209,97 @@ export const DefinitionForm = (props: Props): JSX.Element => {
           name='tags'
           label={<Localized id='definition-tags-label'/>}
         />
+        <CustomFieldValues
+          allFields={customFields}
+          partsOfSpeech={partsOfSpeech}
+        />
         <FormButtons submitError={submitError} onCancel={onCancel}/>
       </form>
     </FormProvider>
   );
+};
+
+const importFieldData = (
+  fieldValues: DefinitionFieldData[],
+  allFields: FieldData[]
+): Record<FieldId, DefinitionFieldValue> => {
+  const result: Record<FieldId, DefinitionFieldValue> = {};
+
+  for (const field of fieldValues) {
+    result[field.fieldId] = importFieldValue(field);
+  }
+
+  // Fill in empty values for every field that lacks a value - it drastically
+  // simplifies form interactions down the line.
+  for (const field of allFields) {
+    if (!result[field.id]) {
+      result[field.id] = EmptyFieldValue;
+    }
+  }
+
+  return result;
+};
+
+const importFieldValue = (field: DefinitionFieldData): DefinitionFieldValue => {
+  let bool = false;
+  let plainText = '';
+  let list: FieldValueId[] = [];
+
+  switch (field.type) {
+    case 'boolean':
+      bool = field.value;
+      break;
+    case 'plainText':
+      plainText = field.value;
+      break;
+    case 'list':
+      list = field.value;
+      break;
+  }
+
+  return {boolean: bool, plainText, list};
+};
+
+const exportFieldValues = (
+  values: Readonly<Record<FieldId, DefinitionFieldValue>>,
+  partOfSpeech: PartOfSpeechId | null,
+  fields: readonly FieldData[]
+): DefinitionFieldData[] => {
+  const fieldsWithValues = fields.filter(f =>
+    values[f.id] != null &&
+    isFieldSelectable(f, partOfSpeech)
+  );
+  return fieldsWithValues.map(f => {
+    const value = values[f.id];
+    switch (f.valueType) {
+      case 'FIELD_BOOLEAN':
+        return {
+          type: 'boolean',
+          fieldId: f.id,
+          value: value.boolean,
+        };
+      case 'FIELD_LIST_ONE':
+        return {
+          type: 'list',
+          fieldId: f.id,
+          // Forcefully select only the first value if it's a single-select
+          // field.
+          value: value.list.slice(0, 1),
+        };
+      case 'FIELD_LIST_MANY':
+        return {
+          type: 'list',
+          fieldId: f.id,
+          value: value.list,
+        };
+      case 'FIELD_PLAIN_TEXT':
+        return {
+          type: 'plainText',
+          fieldId: f.id,
+          value: value.plainText,
+        };
+    }
+  });
 };
 
 const validatePartOfSpeech = (value: PartOfSpeechId | null): 'invalid' | null =>

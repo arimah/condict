@@ -145,6 +145,7 @@ query AddDefinitionQuery($lang: LanguageId!) {
   language(id: $lang) {
     ...FormPartsOfSpeechFragment
     ...DefinitionFormInflectionTablesFragment
+    ...DefinitionFormFieldsFragment
   }
 }
 
@@ -211,10 +212,27 @@ query EditDefinitionQuery($id: DefinitionId!) {
       name
     }
 
+    fields {
+      field {
+        id
+      }
+
+      __typename
+      ...on DefinitionFieldPlainTextValue {
+        value
+      }
+      ...on DefinitionFieldListValue {
+        values {
+          id
+        }
+      }
+    }
+
     language {
       id
       ...FormPartsOfSpeechFragment
       ...DefinitionFormInflectionTablesFragment
+      ...DefinitionFormFieldsFragment
     }
   }
 }
