@@ -50,11 +50,11 @@ export const Value = styled.button.attrs({
 })`
   box-sizing: border-box;
   flex: none;
-  padding-block: 1px;
+  padding-block: 0;
   padding-inline: 10px 24px;
   position: relative;
   max-width: calc(100% - 4px);
-  min-height: 24px;
+  min-height: 22px;
   font: inherit;
   text-align: start;
   background-color: var(--button-bg);
@@ -100,12 +100,6 @@ export const DeleteMarker = styled(DeleteIcon)`
   }
 `;
 
-export const InputWrapper = styled.span`
-  display: flex;
-  box-sizing: border-box;
-  flex: 1 1 auto;
-`;
-
 export const Input = styled.input.attrs({
   type: 'text',
   size: 1,
@@ -114,9 +108,9 @@ export const Input = styled.input.attrs({
   box-sizing: border-box;
   flex: 1 1 auto;
   margin: -2px;
-  padding: 5px 4px;
+  padding: 4px;
   min-width: 128px;
-  min-height: 28px;
+  min-height: 26px;
   font: inherit;
   border: none;
   border-radius: 0;

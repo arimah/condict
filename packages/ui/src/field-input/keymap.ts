@@ -53,6 +53,7 @@ const getKeyboardMap = (dir: WritingDirection): ShortcutMap<KeyCommand> =>
 
           if (newIndex !== state.index) {
             args.dispatch({type: 'selectSuggestion', index: newIndex});
+            args.dispatch({type: 'showDropdown'});
           }
           args.input.focus();
         },
@@ -79,6 +80,7 @@ const getKeyboardMap = (dir: WritingDirection): ShortcutMap<KeyCommand> =>
 
           if (newIndex !== state.index) {
             args.dispatch({type: 'selectSuggestion', index: newIndex});
+            args.dispatch({type: 'showDropdown'});
           }
           args.input.focus();
         },
@@ -160,6 +162,7 @@ const getKeyboardMap = (dir: WritingDirection): ShortcutMap<KeyCommand> =>
           const index = Math.max(state.index, 0);
           args.select(index);
           args.dispatch({type: 'input', input: ''});
+          args.dispatch({type: 'hideDropdown'});
 
           if (state.index !== -1) {
             args.dispatch({type: 'selectSuggestion', index: -1});
@@ -173,9 +176,15 @@ const getKeyboardMap = (dir: WritingDirection): ShortcutMap<KeyCommand> =>
           const {state} = args;
           e.preventDefault();
           if (state.focus === 'input' && state.index === -1) {
-            args.dispatch({type: 'input', input: ''});
+            // First Esc hides the dropdown, second clears the input
+            if (state.dropdownOpen) {
+              args.dispatch({type: 'hideDropdown'});
+            } else {
+              args.dispatch({type: 'input', input: ''});
+            }
           } else {
             args.dispatch({type: 'selectSuggestion', index: -1});
+            args.dispatch({type: 'hideDropdown'});
             args.input.focus();
           }
         },
@@ -312,7 +321,7 @@ const getNextValueButton = <T>(
 const getLastValueButton = <T>(
   args: KeyCommandArgs<T>
 ): HTMLButtonElement | null => {
-  const last = args.input.parentElement?.previousElementSibling;
+  const last = args.input.previousElementSibling;
   return isValueButton(last) ? last : null;
 };
 

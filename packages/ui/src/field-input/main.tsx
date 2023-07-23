@@ -50,6 +50,7 @@ interface DropdownRect {
 const InitialState: State<any> = {
   focus: false,
   input: '',
+  dropdownOpen: false,
   index: -1,
   results: null,
   showSelected: false,
@@ -66,7 +67,12 @@ function reduce<T>(state: State<T>, msg: Message<T>): State<T> {
       };
     }
     case 'blur':
-      return {...state, focus: false, index: -1};
+      return {
+        ...state,
+        focus: false,
+        dropdownOpen: false,
+        index: -1,
+      };
     case 'input':
       return {
         ...state,
@@ -79,6 +85,9 @@ function reduce<T>(state: State<T>, msg: Message<T>): State<T> {
     case 'results':
       return {
         ...state,
+        // When search/filter results arrive, always show the dropdown, even if
+        // the result is empty - we have to show the user there are no results.
+        dropdownOpen: true,
         index: -1,
         results: msg.results,
       };
@@ -94,6 +103,16 @@ function reduce<T>(state: State<T>, msg: Message<T>): State<T> {
         ...state,
         index: msg.index,
         showSelected: true,
+      };
+    case 'showDropdown':
+      return {
+        ...state,
+        dropdownOpen: true,
+      };
+    case 'hideDropdown':
+      return {
+        ...state,
+        dropdownOpen: false,
       };
   }
 }
@@ -145,7 +164,7 @@ export function FieldInput<T>(props: Props<T>): JSX.Element {
 
   // Currently displayed dropdown contents, which we need here for
   // the 'prevSuggestion' and 'nextSuggestion' messages.
-  const suggestions = getSuggestions(state, knownValues, values);
+  const suggestions = getSuggestions(state, knownValues);
 
   const selectValue = useCallback((value: T) => {
     if (!canEdit) {
@@ -303,7 +322,7 @@ export function FieldInput<T>(props: Props<T>): JSX.Element {
     dropdownRef.current?.scrollTo(0, 0);
   }, [suggestions]);
 
-  const showDropdown = !!state.focus;
+  const showDropdown = state.dropdownOpen;
 
   useLayoutEffect(() => {
     if (!showDropdown) {
@@ -359,33 +378,31 @@ export function FieldInput<T>(props: Props<T>): JSX.Element {
           {!disabled && <S.DeleteMarker/>}
         </S.Value>
       )}
-      <S.InputWrapper>
-        <S.Input
-          value={state.input}
-          readOnly={readOnly}
-          disabled={disabled}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledby}
-          aria-describedby={
-            hintMessage && ariaDescribedby
-              ? `${id}-hint ${ariaDescribedby}`
-              : hintMessage
-                ? `${id}-hint`
-                : ariaDescribedby
-          }
-          aria-expanded={showDropdown}
-          aria-controls={`${id}-list`}
-          aria-haspopup='listbox'
-          aria-multiselectable={!singleSelect}
-          aria-activedescendant={
-            state.index >= 0
-              ? `${id}-${state.index}`
-              : undefined
-          }
-          onChange={handleInput}
-          ref={inputRef}
-        />
-      </S.InputWrapper>
+      <S.Input
+        value={state.input}
+        readOnly={readOnly}
+        disabled={disabled}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledby}
+        aria-describedby={
+          hintMessage && ariaDescribedby
+            ? `${id}-hint ${ariaDescribedby}`
+            : hintMessage
+              ? `${id}-hint`
+              : ariaDescribedby
+        }
+        aria-expanded={showDropdown}
+        aria-controls={`${id}-list`}
+        aria-haspopup='listbox'
+        aria-multiselectable={!singleSelect}
+        aria-activedescendant={
+          state.index >= 0
+            ? `${id}-${state.index}`
+            : undefined
+        }
+        onChange={handleInput}
+        ref={inputRef}
+      />
       {/* For aria-controls, the suggestion list has to be present in the DOM
         * even when hidden */}
       <S.Dropdown
@@ -430,8 +447,7 @@ function getTagDefault<T>(_value: T): string | null | undefined {
 
 function getSuggestions<T>(
   state: State<T>,
-  knownValues: readonly T[] | undefined,
-  selectedValues: readonly T[]
+  knownValues: readonly T[] | undefined
 ): readonly T[] {
   // If there are search/filter results, display those
   if (state.results) {
@@ -442,9 +458,9 @@ function getSuggestions<T>(
   if (knownValues) {
     return knownValues;
   }
-  // Otherwise, fall back to the currently selected values. In this case, the
-  // user should be able to type to search.
-  return selectedValues;
+  // Otherwise, fall back to showing nothing. The user has to search to find
+  // selectable values.
+  return [];
 }
 
 function searchDefault<T>(
@@ -487,7 +503,7 @@ function getHintMessage<T>(
       <div>{messages.noResultsHelp()}</div>
     </>;
   }
-  if (props.onSearch && props.values.length === 0) {
+  if (props.onSearch) {
     return <>
       <TypeToSearchIcon className='rtl-mirror'/>
       <span>{messages.typeToSearch()}</span>

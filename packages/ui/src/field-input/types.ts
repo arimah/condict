@@ -3,6 +3,8 @@ export interface State<T> {
   focus: Focus;
   /** Search/filter input. */
   input: string;
+  /** True if the dropdown is open. */
+  dropdownOpen: boolean;
   /**
    * Currently focused search result index, or -1 if nothing is selected
    * (in which case the focus is in the input).
@@ -22,4 +24,6 @@ export type Message<T> =
   | {type: 'input'; input: string}
   | {type: 'results'; results: readonly T[]}
   | {type: 'hoverSuggestion'; index: number}
-  | {type: 'selectSuggestion'; index: number};
+  | {type: 'selectSuggestion'; index: number}
+  | {type: 'showDropdown'}
+  | {type: 'hideDropdown'};
