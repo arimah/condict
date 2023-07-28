@@ -94,18 +94,70 @@ namespace condict_uca {
       // Now we try to find discontiguous matches, if there are any non-starters
       // following the longest match.
       if (b_cur->cont_count > 0) {
-        uint8_t prev_ccc = nfd::get_ccc(str.peek(idx));
-        // We start at idx + 1 since we know the current code point didn't
-        // match a continuation.
+        // The exclusive end index of the current match, that is, the sequence
+        // of code points consumed by the contraction, including any non-starters
+        // that have been shifted back.
+        uint32_t match_end_idx = idx;
+        // The next index at which we'll try to find a discontiguous match.
+        // We start at idx + 1 since we know the current code point didn't match
+        // a continuation.
         uint32_t discontig_idx = idx + 1;
 
-        // if prev_ccc is 0, then the next index is blocked by a starter.
-        // At the end of the string, str.peek() yields 0, which is a starter.
+        // A non-starter C is *blocked* with respect to a string S if there is
+        // any character B between S and C such that ccc(B) = 0 or ccc(B) >= ccc(C).
+        // In our case, S is the (possibly denormalized) discontiguous match so far.
+        //
+        // Suppose there is a contraction <a ˛ ´>, and the input string is <a ˛ ^ ´>.
+        // When we get to ´, we will be in this state:
+        //
+        //      a    ˛    ^    ´
+        //      ------    |    |
+        //      |         |    C = currently working on
+        //      |         |
+        //      |         B = blocking context
+        //      |
+        //      S = matched so far (normalized)
+        //
+        // Here, ^ blocks ´ because ccc(^) = ccc(´), meaning we will never match
+        // <a ˛ ´>. On the other hand, suppose there is the contraction <a ^ ´>
+        // and no <a ˛ ´> nor <a ˛>, then we will be in a different state at ´:
+        //
+        //      a    ^    ˛    ´
+        //      ------    |    |
+        //      |         |    C = currently working on
+        //      |         |
+        //      |         intervening character, *not* blocking
+        //      |
+        //      S = matched so far (denormalized!)
+        //
+        // ccc(˛) < ccc(´), hence C is not blocked with respect to S. Since the
+        // string after S is normalized, we need only look at the code point
+        // immediately preceding C.
+        //
+        // Note that if there are *no* intervening characters, then C is *not*
+        // blocked! If the string is <a ^ ´>, when we get to ´ we must *not*
+        // consider ´ blocked by ^ even though they have the same CCC, because
+        // ^ is part of the matched string. Only intervening characters block.
+        // We do not actually have to test for that here: we are guaranteed to
+        // have at least one intervening character, as this part of the code
+        // explicitly tests for *dis*contiguous matches.
+
+        // prev_ccc will contain the CCC of the character immediately before C,
+        // i.e. the character we're processing at.
+        uint8_t prev_ccc = nfd::get_ccc(str.peek(idx));
+        // If prev_ccc == 0, then we've found a starter and must stop.
         while (prev_ccc != 0 && b_cur->cont_count > 0) {
           uint32_t next_cp = str.peek(discontig_idx);
           uint8_t next_ccc = nfd::get_ccc(next_cp);
-          if (prev_ccc < next_ccc) {
-            // The next character is not blocked by the previous
+
+          // In practice, prev_ccc can bever be greater than next_cc due to
+          // normalization, but UCA says >=.
+          bool is_blocked = prev_ccc >= next_ccc;
+          // Advance prev_ccc immediately. If we find a discontiguous match,
+          // we will overwrite it.
+          prev_ccc = next_ccc;
+
+          if (!is_blocked) {
             Bucket* b = hash_find(
               next_cp,
               b_cur->cont_count,
@@ -114,17 +166,23 @@ namespace condict_uca {
             if (b) {
               // We found a discontiguous match!
               // To make sure this character is *not* matched later, we must
-              // shift it back to index idx. This will denormalize the string.
-              str.shift_backwards(discontig_idx, idx);
+              // shift it back to match_end_idx. This will denormalize the string.
+              str.shift_backwards(discontig_idx, match_end_idx);
+              // And now we grow the match.
+              match_end_idx++;
+
+              // The CCC immediately preceding the next character is now *not*
+              // the same as next_ccc, since that character has been shifted.
+              // We must therefore find the actual previous CCC again.
+              prev_ccc = nfd::get_ccc(str.peek(discontig_idx));
+
               // All discontiguous matches have values of their own
-              idx++;
               candidate = b->value;
-              candidate_len = idx;
+              candidate_len = match_end_idx;
               // Keep searching for another discontiguous match
               b_cur = b;
             }
           }
-          prev_ccc = next_ccc;
           discontig_idx++;
         }
       }
