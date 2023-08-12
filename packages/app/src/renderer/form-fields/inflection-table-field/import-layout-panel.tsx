@@ -1,10 +1,10 @@
-import {useState, useMemo, useCallback} from 'react';
+import {useState, useCallback} from 'react';
 import {Localized, useLocalization} from '@fluent/react';
 import OpenLinkIcon from 'mdi-react/OpenInNewIcon';
 
 import {InflectionTable, InflectionTableJson} from '@condict/table-editor';
 
-import {EventPredicate, useData, useExecute} from '../../data';
+import {useLiveData, useExecute} from '../../data';
 import {PanelParams, PanelProps} from '../../navigation';
 import {LanguageId, InflectionTableId} from '../../graphql';
 import {InflectionTablePage, LanguagePage} from '../../page';
@@ -37,22 +37,25 @@ const ImportLayoutPanel = (props: Props): JSX.Element => {
 
   const [submitState, setSubmitState] = useState<SubmitState>(null);
 
-  const data = useData(AllTableLayoutsQuery, {lang: languageId}, shouldReload);
+  const data = useLiveData(AllTableLayoutsQuery, {lang: languageId}, {
+    shouldReload: event =>
+      event.type === 'language' && event.id === languageId ||
+      event.type === 'inflectionTable' && event.languageId === languageId,
 
-  const tables = useMemo(() => {
-    if (data.state === 'loading' || !data.result.data?.language) {
-      return [];
-    }
+    mapData: data => {
+      const {language} = data;
+      if (!language) {
+        return [];
+      }
 
-    const {language} = data.result.data;
-    const langPage = LanguagePage(language.id, language.name);
-
-    return (
-      language.inflectionTables
-        .filter(table => table.id !== inflectionTableId)
-        .map(table => InflectionTablePage(table.id, table.name, langPage))
-    );
-  }, [data]);
+      const langPage = LanguagePage(language.id, language.name);
+      return (
+        language.inflectionTables
+          .filter(table => table.id !== inflectionTableId)
+          .map(table => InflectionTablePage(table.id, table.name, langPage))
+      );
+    },
+  });
 
   const execute = useExecute();
   const handlePickTable = useCallback((id: InflectionTableId) => {
@@ -97,7 +100,7 @@ const ImportLayoutPanel = (props: Props): JSX.Element => {
             <Localized id='table-editor-import-error'/>
           </S.SubmitError>}
       </div>
-      {renderData(data, () => {
+      {renderData(data, tables => {
         if (tables.length === 0) {
           return (
             <p>
@@ -110,11 +113,6 @@ const ImportLayoutPanel = (props: Props): JSX.Element => {
     </FlowContent>
   );
 };
-
-const shouldReload: EventPredicate = event =>
-  event.type === 'language' ||
-  event.type === 'partOfSpeech' ||
-  event.type === 'inflectionTable';
 
 const importLayoutPanel = (ids: {
   languageId: LanguageId;

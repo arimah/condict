@@ -1,4 +1,4 @@
-import {ReactNode, useMemo, useRef, useEffect} from 'react';
+import {ReactNode, useContext, useMemo, useRef, useEffect} from 'react';
 
 import type {DictionaryEventListener} from '@condict/server';
 
@@ -8,7 +8,7 @@ import {Operation, OperationArgs, OperationResult} from '../graphql';
 import ipc from '../ipc';
 
 import DataContext from './context';
-import {DataContextValue} from './types';
+import {DataContextValue, ExecuteFn} from './types';
 
 export type Props = {
   children: ReactNode;
@@ -56,3 +56,24 @@ const DataProvider = (props: Props): JSX.Element => {
 };
 
 export default DataProvider;
+
+export const useExecute = (): ExecuteFn => useContext(DataContext).execute;
+
+export const useDictionaryEvents = (
+  subscriber: DictionaryEventListener
+): void => {
+  const {subscribe, unsubscribe} = useContext(DataContext);
+
+  const subscriberRef = useRef(subscriber);
+  subscriberRef.current = subscriber;
+
+  useEffect(() => {
+    const listener: DictionaryEventListener = batch => {
+      subscriberRef.current(batch);
+    };
+    subscribe(listener);
+    return () => {
+      unsubscribe(listener);
+    };
+  }, []);
+};

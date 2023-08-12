@@ -41,7 +41,7 @@ const DefinitionPage = (props: Props): JSX.Element => {
     args: {id},
     isEmpty: data => data.definition === null,
     pageTitle: data => data.definition?.term,
-    reloadOn: event => (
+    shouldReload: event => (
       event.type === 'definition' && event.id === id ||
       event.type === 'language' && event.id === languageId ||
       (

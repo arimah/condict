@@ -11,7 +11,7 @@ import {FlowContent, MainHeader} from '../ui';
 import {PanelParams, PanelProps} from '../navigation';
 import {PartOfSpeechData, PartOfSpeechForm} from '../forms';
 import {PartOfSpeechId} from '../graphql';
-import {useData, useExecute} from '../data';
+import {useData, useExecute, hasData} from '../data';
 import {useRefocusOnData} from '../hooks';
 
 import ConfirmDeleteButton from './confirm-delete-button';
@@ -31,7 +31,23 @@ const EditPartOfSpeechPanel = (props: Props) => {
 
   const execute = useExecute();
 
-  const data = useData(EditPartOfSpeechQuery, {id});
+  const data = useData(EditPartOfSpeechQuery, {id}, ({partOfSpeech: pos}) => {
+    if (!pos) {
+      return null;
+    }
+    const initialData: PartOfSpeechData = {
+      id: pos.id,
+      name: pos.name,
+      description: descriptionFromGraphQLResponse(pos.description),
+    };
+    return {
+      id: pos.id,
+      initialData,
+      languageId: pos.language.id,
+      isInUse: pos.isInUse,
+      usedByDefinitions: pos.usedByDefinitions,
+    };
+  });
   const [submitError, setSubmitError] = useState(false);
 
   const onSubmit = useCallback(async (formData: PartOfSpeechData) => {
@@ -57,23 +73,12 @@ const EditPartOfSpeechPanel = (props: Props) => {
   }, [id, onResolve]);
 
   const onDelete = useCallback(async () => {
-    if (data.state === 'loading' || !data.result.data?.partOfSpeech) {
+    if (!hasData(data) || !data.data) {
       return;
     }
-
-    const {partOfSpeech} = data.result.data;
-    const res = await execute(DeletePartOfSpeechMut, {id: partOfSpeech.id});
+    const res = await execute(DeletePartOfSpeechMut, {id: data.data.id});
     return res.errors;
   }, [data, execute, onResolve]);
-
-  const description = useMemo(() => {
-    if (data.state === 'loading' || !data.result.data?.partOfSpeech) {
-      return [];
-    }
-    return descriptionFromGraphQLResponse(
-      data.result.data.partOfSpeech.description
-    );
-  }, [data]);
 
   const firstFieldRef = useRef<HTMLInputElement>(null);
 
@@ -83,7 +88,7 @@ const EditPartOfSpeechPanel = (props: Props) => {
     preventScroll: entering,
   });
 
-  const pos = data.state === 'data' && data.result.data?.partOfSpeech;
+  const pos = hasData(data) && data.data;
   return (
     <FlowContent>
       <MainHeader>
@@ -112,15 +117,11 @@ const EditPartOfSpeechPanel = (props: Props) => {
             onAfterDelete={onResolve}
           />}
       </MainHeader>
-      {renderFormData(data, onResolve, ({partOfSpeech}) =>
-        partOfSpeech ? (
+      {renderFormData(data, onResolve, data =>
+        data ? (
           <PartOfSpeechForm
-            initialData={{
-              id: partOfSpeech.id,
-              name: partOfSpeech.name,
-              description,
-            }}
-            languageId={partOfSpeech.language.id}
+            initialData={data.initialData}
+            languageId={data.languageId}
             submitError={submitError && <Localized id='part-of-speech-save-error'/>}
             firstFieldRef={firstFieldRef}
             onSubmit={onSubmit}

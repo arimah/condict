@@ -43,7 +43,7 @@ const InflectionTablePage = (props: Props): JSX.Element => {
     args: {id},
     isEmpty: data => data.inflectionTable === null,
     pageTitle: data => data.inflectionTable?.name,
-    reloadOn: event => (
+    shouldReload: event => (
       event.type === 'inflectionTable' && event.id === id ||
       event.type === 'partOfSpeech' && event.languageId === languageId ||
       event.type === 'definition' && event.languageId === languageId ||

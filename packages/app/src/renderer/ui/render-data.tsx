@@ -4,48 +4,42 @@ import {Localized} from '@fluent/react';
 import {ExecuteError} from '../../types';
 
 import {QueryResult} from '../data';
-import {Query, OperationResult} from '../graphql';
 
 import Loading from './loading';
 import DataError from './data-error';
 
-export interface Options<Q extends Query<any, any>> {
-  render: (data: OperationResult<Q>) => ReactNode;
+export interface Options<T> {
+  render: (data: T) => ReactNode;
   renderLoading?: () => ReactNode;
   renderErrors?: (errors: readonly ExecuteError[]) => ReactNode;
   renderNoData?: () => ReactNode;
 }
 
-export type RenderDataFn<Q extends Query<any, any>> =
-  (data: OperationResult<Q>) => ReactNode;
+export type RenderDataFn<T> = (data: T) => ReactNode;
 
-export function renderData<Q extends Query<any, any>>(
-  result: QueryResult<Q>,
-  renderOrOptions: Options<Q> | RenderDataFn<Q>
+export function renderData<T>(
+  result: QueryResult<T>,
+  renderOrOptions: Options<T> | RenderDataFn<T>
 ): ReactNode {
   const {
     render,
     renderLoading = renderLoadingDefault,
     renderErrors = renderErrorsDefault,
     renderNoData = renderNoDataDefault,
-  }: Options<Q> =
+  }: Options<T> =
     typeof renderOrOptions === 'function'
       ? {render: renderOrOptions}
       : renderOrOptions;
   if (result.state === 'loading') {
     return renderLoading();
   }
-
-  const {data, errors} = result.result;
-  if (errors && errors.length > 0) {
-    // Errors are always more severe than missing data, so take precedence.
-    // Often an error causes missing data, too.
-    return <>{renderErrors(errors)}</>;
+  if (result.state === 'error') {
+    return <>{renderErrors(result.errors)}</>;
   }
-  if (data == null) {
+  if (result.data == null) {
     return renderNoData();
   }
-  return render(data);
+  return render(result.data);
 }
 
 const renderLoadingDefault = () => <Loading delay={150}/>;

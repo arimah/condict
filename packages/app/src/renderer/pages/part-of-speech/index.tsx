@@ -40,7 +40,7 @@ const PartOfSpeechPage = (props: Props): JSX.Element => {
     args: {id},
     isEmpty: data => data.partOfSpeech === null,
     pageTitle: data => data.partOfSpeech?.name,
-    reloadOn: event => (
+    shouldReload: event => (
       event.type === 'partOfSpeech' && event.id === id ||
       event.type === 'definition' && (
         event.partOfSpeechId === id ||

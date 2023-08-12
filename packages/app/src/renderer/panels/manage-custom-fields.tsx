@@ -12,7 +12,7 @@ import {
 } from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {FieldId, LanguageId} from '../graphql';
-import {useData} from '../data';
+import {useLiveData} from '../data';
 
 import renderFormData from './render-form-data';
 import {AllFieldsQuery} from './query';
@@ -26,7 +26,7 @@ type Props = {
 const ManageCustomFieldsPanel = (props: Props): JSX.Element => {
   const {languageId, titleId, onResolve} = props;
 
-  const data = useData(
+  const data = useLiveData(
     AllFieldsQuery,
     {languageId},
     event =>

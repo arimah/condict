@@ -1,8 +1,8 @@
-import {Dispatch, SetStateAction, useState, useEffect, useRef} from 'react';
+import {Dispatch, SetStateAction, useCallback, useEffect} from 'react';
 
 import {Form} from '../form';
-import {useDictionaryEvents, useExecute} from '../data';
-import {LanguageId, PartOfSpeechId} from '../graphql';
+import {useLiveMutData} from '../data';
+import {LanguageId, PartOfSpeechId, OperationResult} from '../graphql';
 
 import {AllPartsOfSpeechQuery} from './query';
 
@@ -60,41 +60,41 @@ export const useCurrentPartsOfSpeech = (
   initial: readonly PartOfSpeechData[],
   onUpdate?: (partsOfSpeech: readonly PartOfSpeechData[]) => void
 ): CurrentPartsOfSpeech => {
-  const [partsOfSpeech, setPartsOfSpeech] = useState(initial);
+  const [{data: partsOfSpeech}, setData] = useLiveMutData(
+    AllPartsOfSpeechQuery,
+    {lang: languageId},
+    {
+      initial,
+      mapData: mapPartOfSpeechData,
 
-  const execute = useExecute();
+      shouldReload: event =>
+        event.type === 'partOfSpeech' &&
+        event.languageId === languageId,
 
-  const requestId = useRef(0);
-  useDictionaryEvents(({events}) => {
-    const needRefetch = events.some(event =>
-      event.type === 'partOfSpeech' &&
-      event.languageId === languageId
-    );
-    if (!needRefetch) {
-      return;
+      ignoreReloadErrors: true,
+
+      onLoadedData: onUpdate,
     }
+  );
 
-    const id = ++requestId.current;
-    void execute(AllPartsOfSpeechQuery, {lang: languageId}).then(result => {
-      if (result.errors) {
-        console.error('Error fetching parts of speech:', result.errors);
-        return;
-      }
-
-      if (id !== requestId.current) {
-        // Old request; ignore results.
-        return;
-      }
-
-      // If there were no errors, there should be a result. If the language
-      // has been deleted, just use an empty list.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const partsOfSpeech = result.data!.language?.partsOfSpeech ?? [];
-
-      setPartsOfSpeech(partsOfSpeech);
-      onUpdate?.(partsOfSpeech);
-    });
-  });
+  const setPartsOfSpeech = useCallback((
+    action: SetStateAction<readonly PartOfSpeechData[]>
+  ): void => {
+    if (typeof action === 'function') {
+      setData(prev => ({
+        state: 'data',
+        data: action(prev.data),
+      }));
+    } else {
+      setData({state: 'data', data: action});
+    }
+  }, []);
 
   return {partsOfSpeech, setPartsOfSpeech};
 };
+
+const mapPartOfSpeechData = (
+  data: OperationResult<typeof AllPartsOfSpeechQuery>
+): readonly PartOfSpeechData[] =>
+  // If the language has been deleted, use an empty list.
+  data.language?.partsOfSpeech ?? [];

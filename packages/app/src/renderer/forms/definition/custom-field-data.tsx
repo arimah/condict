@@ -1,7 +1,5 @@
-import {useState, useRef} from 'react';
-
-import {useExecute, useDictionaryEvents} from '../../data';
-import {LanguageId} from '../../graphql';
+import {useLiveData} from '../../data';
+import {LanguageId, OperationResult} from '../../graphql';
 import {Form} from '../../form';
 
 import {AllFieldsQuery} from './query';
@@ -17,39 +15,18 @@ const useCustomFields = ({
   form,
   languageId,
   initialCustomFields,
-}: Options): FieldData[] => {
-  const [customFields, setCustomFields] = useState(initialCustomFields);
+}: Options): FieldData[] =>
+  useLiveData(AllFieldsQuery, {lang: languageId}, {
+    initial: initialCustomFields,
+    mapData,
 
-  const execute = useExecute();
-
-  const requestId = useRef(0);
-  useDictionaryEvents(({events}) => {
-    const needRefetch = events.some(event =>
+    shouldReload: event =>
       event.type === 'field' &&
-      event.languageId === languageId
-    );
-    if (!needRefetch) {
-      return;
-    }
+      event.languageId === languageId,
 
-    const id = ++requestId.current;
-    void execute(AllFieldsQuery, {lang: languageId}).then(result => {
-      if (result.errors) {
-        console.error('Error fetching custom fields:', result.errors);
-        return;
-      }
+    ignoreReloadErrors: true,
 
-      if (id !== requestId.current) {
-        // Old request; ignore results.
-        return;
-      }
-
-      // If there were no errors, there should be a result. If the language
-      // has been deleted, just use an empty list.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const customFields = result.data!.language?.fields ?? [];
-
-      setCustomFields(customFields);
+    onLoadedData: customFields => {
       // If there are any new fields, we need to add empty values for them,
       // or the form will refuse to show them as the path does not exist.
       form.update<DefinitionFormState['fields']>('fields', fieldValues => {
@@ -59,10 +36,11 @@ const useCustomFields = ({
           }
         }
       });
-    });
-  });
-
-  return customFields;
-};
+    },
+  }).data;
 
 export default useCustomFields;
+
+const mapData = (data: OperationResult<typeof AllFieldsQuery>): FieldData[] =>
+  // If the language has been deleted, use an empty list.
+  data.language?.fields ?? [];

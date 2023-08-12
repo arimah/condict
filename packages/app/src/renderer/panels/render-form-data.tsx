@@ -7,12 +7,11 @@ import {ExecuteError} from '../../types';
 
 import {DataError, RenderDataFn, renderData} from '../ui';
 import {QueryResult} from '../data';
-import {Query} from '../graphql';
 
-export default function renderFormData<Q extends Query<any, any>>(
-  result: QueryResult<Q>,
+export default function renderFormData<T>(
+  result: QueryResult<T>,
   onClose: () => void,
-  render: RenderDataFn<Q>
+  render: RenderDataFn<T>
 ): ReactNode {
   return renderData(result, {
     render,

@@ -34,7 +34,7 @@ const LemmaPage = (props: Props): JSX.Element => {
     args: {id},
     isEmpty: data => data.lemma === null,
     pageTitle: data => data.lemma?.term,
-    reloadOn: event => (
+    shouldReload: event => (
       event.type === 'lemma' && event.id === id ||
       event.type === 'definition' && (
         event.lemmaId === id ||

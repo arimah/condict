@@ -1,10 +1,9 @@
 import type {DictionaryEvent, DictionaryEventListener} from '@condict/server';
 
-import {OperationResult} from '../../types';
+import {ExecuteError, OperationResult} from '../../types';
 
 import {
   Operation,
-  Query,
   OperationArgs,
   OperationResult as OperationData,
 } from '../graphql';
@@ -25,9 +24,10 @@ export interface DataContextValue {
 }
 
 /** The result of the `useData()` hook. */
-export type QueryResult<Q extends Query<any, any>> =
+export type QueryResult<T> =
   | LoadingResult
-  | DataResult<Q>;
+  | ErrorResult
+  | DataResult<T>;
 
 /** Indicates that the data is still being fetched. */
 export interface LoadingResult {
@@ -36,11 +36,22 @@ export interface LoadingResult {
 
 export const LoadingResult: LoadingResult = {state: 'loading'};
 
-/** Contains the result of a query when fetched by the `useData()` hook.` */
-export interface DataResult<Q extends Query<any, any>> {
-  readonly state: 'data';
-  readonly result: ExecuteResult<Q>;
+export interface ErrorResult {
+  readonly state: 'error';
+  readonly errors: readonly ExecuteError[];
 }
+
+/** Contains the result of a query when fetched by the `useData()` hook.` */
+export interface DataResult<T> {
+  readonly state: 'data';
+  readonly data: T;
+}
+
+export const hasData = <T>(result: QueryResult<T>): result is DataResult<T> =>
+  result.state === 'data';
+
+export const hasErrors = (result: QueryResult<any>): result is ErrorResult =>
+  result.state === 'error';
 
 /**
  * Determines whether to reload the data in response to a dictionary event. The
