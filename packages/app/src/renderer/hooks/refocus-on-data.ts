@@ -1,7 +1,6 @@
 import {RefObject, useRef, useEffect} from 'react';
 
-import {Query, OperationResult} from '../graphql';
-import {QueryResult} from '../data';
+import {QueryResult, hasData, hasErrors} from '../data';
 
 import {getTabReachable} from '@condict/ui';
 
@@ -51,21 +50,20 @@ export type FocusFn = () => void;
  * @param data The data to watch.
  * @param options Determines how to move focus.
  */
-export const useRefocusOnData = <Q extends Query<any, any>>(
-  data: QueryResult<Q>,
-  options: Options<OperationResult<Q>>
+export const useRefocusOnData = <T>(
+  data: QueryResult<T>,
+  options: Options<T>
 ): void => {
   const lastState = useRef(data.state);
   const lastEmpty = useRef(false);
 
   const isEmpty =
-    data.state === 'data' &&
-    data.result.data != null &&
-    (options.isEmpty?.(data.result.data) ?? false);
+    hasData(data) && options.isEmpty?.(data.data) ||
+    false;
 
   useEffect(() => {
     const needRefocus =
-      data.state === 'data' && (
+      data.state !== 'loading' && (
         // If we were previously loading and now have data, always refocus.
         lastState.current == 'loading' ||
         // If we have data, refocus if the emptiness of the data has changed.
@@ -96,7 +94,7 @@ export const useRefocusOnData = <Q extends Query<any, any>>(
         let hasFocus =
           // If there are errors and errorFocus is specified, try that first.
           // We cannot get here unless data.state === 'data'.
-          data.result.errors && tryFocus(options.errorFocus, preventScroll) ||
+          hasErrors(data) && tryFocus(options.errorFocus, preventScroll) ||
           // Empty data? Try `emptyFocus`.
           isEmpty && tryFocus(options.emptyFocus, preventScroll) ||
           // Try regular focus next.

@@ -45,7 +45,14 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
 
   const execute = useExecute();
 
-  const data = useData(AddDefinitionQuery, {lang: languageId});
+  const data = useData(AddDefinitionQuery, {lang: languageId}, data => {
+    const {language} = data;
+    return {
+      partsOfSpeech: language?.partsOfSpeech ?? [],
+      inflectionTables: language?.inflectionTables ?? [],
+      customFields: language?.fields ?? [],
+    };
+  });
   const [submitError, setSubmitError] = useState(false);
 
   const onSubmit = useCallback(async (formData: DefinitionData) => {
@@ -115,12 +122,12 @@ const AddDefinitionPanel = (props: Props): JSX.Element => {
           <Localized id='language-define-word-title'/>
         </h1>
       </MainHeader>
-      {renderFormData(data, handleCancel, ({language}) =>
+      {renderFormData(data, handleCancel, data =>
         <DefinitionForm
           languageId={languageId}
-          initialPartsOfSpeech={language?.partsOfSpeech ?? []}
-          initialInflectionTables={language?.inflectionTables ?? []}
-          initialCustomFields={language?.fields ?? []}
+          initialPartsOfSpeech={data.partsOfSpeech}
+          initialInflectionTables={data.inflectionTables}
+          initialCustomFields={data.customFields}
           submitError={
             submitError && <Localized id='inflection-table-save-error'/>
           }

@@ -1,4 +1,4 @@
-import {useState, useCallback, useMemo, useRef} from 'react';
+import {useState, useCallback, useRef} from 'react';
 import {Localized} from '@fluent/react';
 
 import {Button} from '@condict/ui';
@@ -11,7 +11,7 @@ import {FlowContent, MainHeader, HeaderAction} from '../ui';
 import {PanelParams, PanelProps, useOpenPanel} from '../navigation';
 import {LanguageData, LanguageForm} from '../forms';
 import {LanguageId} from '../graphql';
-import {useData, useExecute} from '../data';
+import {useData, useExecute, hasData} from '../data';
 import {useRefocusOnData} from '../hooks';
 
 import {deleteLanguagePanel} from './delete-language';
@@ -28,7 +28,21 @@ const EditLanguagePanel = (props: Props) => {
   const openPanel = useOpenPanel();
   const execute = useExecute();
 
-  const data = useData(EditLanguageQuery, {id});
+  const data = useData(EditLanguageQuery, {id}, ({language}) => {
+    if (!language) {
+      return null;
+    }
+    const initialData: LanguageData = {
+      id: language.id,
+      name: language.name,
+      description: descriptionFromGraphQLResponse(language.description),
+    };
+    return {
+      id: language.id,
+      initialData,
+      statistics: language.statistics,
+    };
+  });
   const [submitError, setSubmitError] = useState(false);
 
   const onSubmit = useCallback(async (formData: LanguageData) => {
@@ -54,11 +68,11 @@ const EditLanguagePanel = (props: Props) => {
   }, [id, onResolve]);
 
   const onDelete = useCallback(() => {
-    if (data.state === 'loading' || !data.result.data?.language) {
+    if (!hasData(data) || !data.data) {
       return;
     }
 
-    const {language} = data.result.data;
+    const language = data.data;
     void openPanel(deleteLanguagePanel(
       language.id,
       language.statistics
@@ -68,15 +82,6 @@ const EditLanguagePanel = (props: Props) => {
       }
     });
   }, [id, data, onResolve]);
-
-  const description = useMemo(() => {
-    if (data.state === 'loading' || !data.result.data?.language) {
-      return [];
-    }
-    return descriptionFromGraphQLResponse(
-      data.result.data.language.description
-    );
-  }, [data]);
 
   const firstFieldRef = useRef<HTMLInputElement>(null);
 
@@ -92,19 +97,15 @@ const EditLanguagePanel = (props: Props) => {
         <h1 id={titleId}>
           <Localized id='language-edit-title'/>
         </h1>
-        {data.state === 'data' && data.result.data?.language &&
+        {hasData(data) && data.data &&
           <HeaderAction onClick={onDelete}>
             <Localized id='generic-delete-button'/>
           </HeaderAction>}
       </MainHeader>
-      {renderFormData(data, onResolve, ({language}) =>
-        language ? (
+      {renderFormData(data, onResolve, data =>
+        data ? (
           <LanguageForm
-            initialData={{
-              id: language.id,
-              name: language.name,
-              description,
-            }}
+            initialData={data.initialData}
             submitError={submitError && <Localized id='language-save-error'/>}
             firstFieldRef={firstFieldRef}
             onSubmit={onSubmit}

@@ -21,7 +21,7 @@ import * as S from './styles';
 const HomePage = (props: PageProps): JSX.Element => {
   const data = usePageData(HomeQuery, {
     args: {tagsPage: 0},
-    reloadOn: shouldReload,
+    shouldReload,
     pageRef: props.pageRef,
   });
 

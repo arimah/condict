@@ -1,4 +1,4 @@
-import {useState, useMemo, useCallback, useRef} from 'react';
+import {useState, useCallback, useRef} from 'react';
 import {Localized} from '@fluent/react';
 
 import {Button} from '@condict/ui';
@@ -8,7 +8,7 @@ import {FlowContent, MainHeader} from '../ui';
 import {PanelParams, PanelProps} from '../navigation';
 import {InflectionTableData, InflectionTableForm} from '../forms';
 import {InflectionTableId, InflectionTableRowInput} from '../graphql';
-import {useData, useExecute} from '../data';
+import {useData, useExecute, hasData} from '../data';
 import {useRefocusOnData} from '../hooks';
 
 import ConfirmDeleteButton from './confirm-delete-button';
@@ -28,7 +28,24 @@ const EditInflectionTablePanel = (props: Props) => {
 
   const execute = useExecute();
 
-  const data = useData(EditInflectionTableQuery, {id});
+  const data = useData(EditInflectionTableQuery, {id}, data => {
+    const {inflectionTable: table} = data;
+    if (!table) {
+      return null;
+    }
+    const initialData: InflectionTableData = {
+      id: table.id,
+      name: table.name,
+      layout: InflectionTable.fromJson(table.layout.rows),
+    };
+    return {
+      id: table.id,
+      initialData,
+      languageId: table.language.id,
+      isInUse: table.isInUse,
+      usedByDefinitions: table.usedByDefinitions,
+    };
+  });
   const [submitError, setSubmitError] = useState(false);
 
   const onSubmit = useCallback(async (formData: InflectionTableData) => {
@@ -56,25 +73,14 @@ const EditInflectionTablePanel = (props: Props) => {
   }, [id, onResolve]);
 
   const onDelete = useCallback(async () => {
-    if (data.state === 'loading' || !data.result.data?.inflectionTable) {
+    if (!hasData(data) || !data.data) {
       return;
     }
-
-    const {inflectionTable} = data.result.data;
-    const res = await execute(DeleteInflectionTableMut, {id: inflectionTable.id});
+    const res = await execute(DeleteInflectionTableMut, {id: data.data.id});
     return res.errors;
   }, [data, execute, onResolve]);
 
   const firstFieldRef = useRef<HTMLInputElement>(null);
-
-  const layout = useMemo(() => {
-    if (data.state === 'loading' || !data.result.data?.inflectionTable) {
-      return null;
-    }
-    return InflectionTable.fromJson(
-      data.result.data.inflectionTable.layout.rows
-    );
-  }, [data]);
 
   useRefocusOnData(data, {
     focus: firstFieldRef,
@@ -82,7 +88,7 @@ const EditInflectionTablePanel = (props: Props) => {
     preventScroll: entering,
   });
 
-  const table = data.state === 'data' && data.result.data?.inflectionTable;
+  const table = hasData(data) && data.data;
   return (
     <FlowContent>
       <MainHeader>
@@ -111,16 +117,11 @@ const EditInflectionTablePanel = (props: Props) => {
             onAfterDelete={onResolve}
           />}
       </MainHeader>
-      {renderFormData(data, onResolve, ({inflectionTable: table}) =>
-        table ? (
+      {renderFormData(data, onResolve, data =>
+        data ? (
           <InflectionTableForm
-            initialData={{
-              id: table.id,
-              name: table.name,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              layout: layout!,
-            }}
-            languageId={table.language.id}
+            initialData={data.initialData}
+            languageId={data.languageId}
             submitError={
               submitError && <Localized id='inflection-table-save-error'/>
             }

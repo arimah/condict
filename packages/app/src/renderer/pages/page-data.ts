@@ -1,14 +1,14 @@
 import {RefObject, useEffect} from 'react';
 
 import {Query, OperationArgs, OperationResult} from '../graphql';
-import {QueryResult, EventPredicate, useData} from '../data';
+import {QueryResult, EventPredicate, useLiveData, hasData} from '../data';
 import {useUpdateTab} from '../navigation';
 import {FocusFn, useRefocusOnData} from '../hooks';
 
 export interface Params<Q extends Query<any, any>> {
   args: OperationArgs<Q>;
 
-  reloadOn: EventPredicate;
+  shouldReload: EventPredicate;
 
   pageTitle?: (data: OperationResult<Q>) => string | undefined;
 
@@ -22,10 +22,10 @@ export interface Params<Q extends Query<any, any>> {
 const usePageData = <Q extends Query<any, any>>(
   query: Q,
   params: Params<Q>
-): QueryResult<Q> => {
+): QueryResult<OperationResult<Q>> => {
   const {
     args,
-    reloadOn,
+    shouldReload,
     pageTitle,
     isEmpty,
     dataFocus,
@@ -34,7 +34,7 @@ const usePageData = <Q extends Query<any, any>>(
     pageRef,
   } = params;
 
-  const data = useData(query, args, reloadOn);
+  const data = useLiveData(query, args, shouldReload);
 
   useRefocusOnData(data, {
     isEmpty,
@@ -44,11 +44,7 @@ const usePageData = <Q extends Query<any, any>>(
     ownedElem: pageRef,
   });
 
-  const title =
-    pageTitle &&
-    data.state === 'data' &&
-    data.result.data &&
-    pageTitle(data.result.data);
+  const title = hasData(data) && pageTitle?.(data.data);
 
   const updateTab = useUpdateTab();
   useEffect(() => {

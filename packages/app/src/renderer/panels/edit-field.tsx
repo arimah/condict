@@ -1,4 +1,4 @@
-import {useState, useMemo, useCallback, useRef} from 'react';
+import {useState, useCallback, useRef} from 'react';
 import {Localized} from '@fluent/react';
 
 import {Button} from '@condict/ui';
@@ -7,7 +7,7 @@ import {FlowContent, MainHeader} from '../ui';
 import {PanelParams, PanelProps} from '../navigation';
 import {FieldData, FieldForm} from '../forms';
 import {FieldId} from '../graphql';
-import {useData, useExecute} from '../data';
+import {useData, useExecute, hasData} from '../data';
 import {useRefocusOnData} from '../hooks';
 
 import ConfirmDeleteButton from './confirm-delete-button';
@@ -23,7 +23,27 @@ const EditFieldPanel = (props: Props): JSX.Element => {
 
   const execute = useExecute();
 
-  const data = useData(EditFieldQuery, {id});
+  const data = useData(EditFieldQuery, {id}, ({field}) => {
+    if (!field) {
+      return null;
+    }
+    const initialData: FieldData = {
+      id: field.id,
+      name: field.name,
+      nameAbbr: field.nameAbbr,
+      partOfSpeechIds:
+        field.partsOfSpeech &&
+        field.partsOfSpeech.map(pos => pos.id),
+      valueType: field.valueType,
+      listValues: field.listValues,
+    };
+    return {
+      id: field.id,
+      initialData,
+      languageId: field.language.id,
+      partsOfSpeech: field.language.partsOfSpeech,
+    };
+  });
   const [submitError, setSubmitError] = useState(false);
 
   const onSubmit = useCallback(async (formData: FieldData) => {
@@ -52,33 +72,14 @@ const EditFieldPanel = (props: Props): JSX.Element => {
   }, [id, onResolve]);
 
   const onDelete = useCallback(async () => {
-    if (data.state === 'loading' || !data.result.data?.field) {
+    if (!hasData(data) || !data.data) {
       return;
     }
-
-    const {field} = data.result.data;
-    const res = await execute(DeleteFieldMut, {id: field.id});
+    const res = await execute(DeleteFieldMut, {id: data.data.id});
     return res.errors;
   }, [data, execute, onResolve]);
 
   const firstFieldRef = useRef<HTMLInputElement>(null);
-
-  const initialData = useMemo<FieldData | undefined>(() => {
-    if (data.state === 'loading' || !data.result.data?.field) {
-      return;
-    }
-    const field = data.result.data.field;
-    return {
-      id: field.id,
-      name: field.name,
-      nameAbbr: field.nameAbbr,
-      partOfSpeechIds:
-        field.partsOfSpeech &&
-        field.partsOfSpeech.map(pos => pos.id),
-      valueType: field.valueType,
-      listValues: field.listValues,
-    };
-  }, [data]);
 
   useRefocusOnData(data, {
     focus: firstFieldRef,
@@ -86,14 +87,13 @@ const EditFieldPanel = (props: Props): JSX.Element => {
     preventScroll: entering,
   });
 
-  const field = data.state === 'data' && data.result.data?.field;
   return (
     <FlowContent>
       <MainHeader>
         <h1 id={titleId}>
           <Localized id='field-edit-title'/>
         </h1>
-        {field &&
+        {hasData(data) && data.data &&
           <ConfirmDeleteButton
             canDelete
             description={
@@ -107,12 +107,12 @@ const EditFieldPanel = (props: Props): JSX.Element => {
             onAfterDelete={onResolve}
           />}
       </MainHeader>
-      {renderFormData(data, onResolve, ({field}) =>
-        field ? (
+      {renderFormData(data, onResolve, data =>
+        data ? (
           <FieldForm
-            languageId={field.language.id}
-            initialPartsOfSpeech={field.language.partsOfSpeech}
-            initialData={initialData}
+            initialData={data.initialData}
+            languageId={data.languageId}
+            initialPartsOfSpeech={data.partsOfSpeech}
             submitError={submitError && <Localized id='field-save-error'/>}
             firstFieldRef={firstFieldRef}
             onSubmit={onSubmit}

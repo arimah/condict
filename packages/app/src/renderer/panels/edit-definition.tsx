@@ -1,4 +1,4 @@
-import {useState, useMemo, useCallback, useRef} from 'react';
+import {useState, useCallback, useRef} from 'react';
 import {Localized} from '@fluent/react';
 
 import {Button} from '@condict/ui';
@@ -20,7 +20,7 @@ import {
   DefinitionForm,
 } from '../forms';
 import {DefinitionId, LanguageId, LemmaId, OperationResult} from '../graphql';
-import {useData, useExecute} from '../data';
+import {useData, useExecute, hasData} from '../data';
 import {useRefocusOnData} from '../hooks';
 
 import ConfirmDeleteButton from './confirm-delete-button';
@@ -74,7 +74,29 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
 
   const execute = useExecute();
 
-  const data = useData(EditDefinitionQuery, {id});
+  const data = useData(EditDefinitionQuery, {id}, ({definition: def}) => {
+    if (!def) {
+      return null;
+    }
+    const initialData: DefinitionData = {
+      id: def.id,
+      term: def.term,
+      description: descriptionFromGraphQLResponse(def.description),
+      partOfSpeech: def.partOfSpeech.id,
+      inflectionTables: def.inflectionTables.map(convertInflectionTable),
+      stems: new Map(def.stems.map(s => [s.name, s.value])),
+      tags: def.tags,
+      fields: def.fields.map(convertFieldValue),
+    };
+    return {
+      id: def.id,
+      initialData,
+      languageId: def.language.id,
+      partsOfSpeech: def.language.partsOfSpeech,
+      inflectionTables: def.language.inflectionTables,
+      customFields: def.language.fields,
+    };
+  });
   const [submitError, setSubmitError] = useState(false);
 
   const onSubmit = useCallback(async (formData: DefinitionData) => {
@@ -114,23 +136,18 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
   }, [id, onResolve]);
 
   const onDelete = useCallback(async () => {
-    if (data.state === 'loading' || !data.result.data?.definition) {
+    if (!hasData(data) || !data.data) {
       return;
     }
-
-    const {definition} = data.result.data;
-    const res = await execute(DeleteDefinitionMut, {id: definition.id});
+    const res = await execute(DeleteDefinitionMut, {id: data.data.id});
     return res.errors;
   }, [data, execute, onResolve]);
 
   const firstFieldRef = useRef<HTMLInputElement>(null);
 
-  const languageId = useMemo(() => {
-    if (data.state === 'loading' || !data.result.data?.definition?.language) {
-      return null;
-    }
-    return data.result.data.definition.language.id;
-  }, [data]);
+  const languageId = hasData(data) && data.data
+    ? data.data.languageId
+    : null;
 
   const openPanel = useOpenPanel();
 
@@ -150,24 +167,6 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
     }));
   }, [languageId, openPanel]);
 
-  const initialData = useMemo<DefinitionData | undefined>(() => {
-    if (data.state === 'loading' || !data.result.data?.definition) {
-      return undefined;
-    }
-
-    const def = data.result.data.definition;
-    return {
-      id: def.id,
-      term: def.term,
-      description: descriptionFromGraphQLResponse(def.description),
-      partOfSpeech: def.partOfSpeech.id,
-      inflectionTables: def.inflectionTables.map(convertInflectionTable),
-      stems: new Map(def.stems.map(s => [s.name, s.value])),
-      tags: def.tags,
-      fields: def.fields.map(convertFieldValue),
-    };
-  }, [data]);
-
   useRefocusOnData(data, {
     focus: firstFieldRef,
     ownedElem: panelRef,
@@ -176,14 +175,13 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
 
   const onClose = () => onResolve(null);
 
-  const def = data.state === 'data' && data.result.data?.definition;
   return (
     <FlowContent>
       <MainHeader>
         <h1 id={titleId}>
           <Localized id='definition-edit-title'/>
         </h1>
-        {def &&
+        {hasData(data) && data.data &&
           <ConfirmDeleteButton
             canDelete={true}
             description={
@@ -200,14 +198,14 @@ const EditDefinitionPanel = (props: Props): JSX.Element => {
             onAfterDelete={onClose}
           />}
       </MainHeader>
-      {renderFormData(data, onClose, ({definition: def}) =>
-        def ? (
+      {renderFormData(data, onClose, data =>
+        data ? (
           <DefinitionForm
-            initialData={initialData}
-            languageId={def.language.id}
-            initialPartsOfSpeech={def.language.partsOfSpeech}
-            initialInflectionTables={def.language.inflectionTables}
-            initialCustomFields={def.language.fields}
+            initialData={data.initialData}
+            languageId={data.languageId}
+            initialPartsOfSpeech={data.partsOfSpeech}
+            initialInflectionTables={data.inflectionTables}
+            initialCustomFields={data.customFields}
             submitError={
               submitError && <Localized id='definition-save-error'/>
             }

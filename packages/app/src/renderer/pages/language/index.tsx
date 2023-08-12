@@ -54,7 +54,7 @@ const LanguagePage = (props: Props): JSX.Element => {
     args: {id},
     isEmpty: data => data.language === null,
     pageTitle: data => data.language?.name,
-    reloadOn: event => (
+    shouldReload: event => (
       event.type === 'language' && event.id === id ||
       (
         event.type === 'definition' ||
