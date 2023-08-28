@@ -55,8 +55,6 @@ const TranslationProvider = (props: Props): JSX.Element => {
       control: localization.getString('key-modifier-control'),
       shift: localization.getString('key-modifier-shift'),
       alt: localization.getString('key-modifier-alt'),
-      windows: localization.getString('key-modifier-windows'),
-      super: localization.getString('key-modifier-super'),
     },
     translateKey: key => localization.getString('key-name', {key}),
   }), [localization]);

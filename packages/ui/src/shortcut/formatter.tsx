@@ -10,8 +10,6 @@ const DefaultModifiers: ModifierNames = {
   control: 'Ctrl',
   shift: 'Shift',
   alt: 'Alt',
-  windows: 'Win',
-  super: 'Super',
 };
 
 const translateKeyDefault = (key: string): string => {
@@ -51,14 +49,6 @@ export interface ModifierNames {
    * symbol, `⌥`).
    */
   readonly alt: string;
-  /**
-   * The Windows key (Windows only; `super` on *nix; no equivalent on macOS).
-   */
-  readonly windows: string;
-  /**
-   * The Super key (*nix only; `windows` on Windows; no equivalent on macOS).
-   */
-  readonly super: string;
   // Not mentioned: macOS Command key, which again uses a hardcoded symbol, `⌘`.
 }
 
@@ -120,15 +110,13 @@ const formatModifiers: ModifierFormatter = selectPlatform({
     (alt ? '\u2325' : '') +
     (shift ? '\u21E7' : '') +
     (primary ? '\u2318' : ''),
-  windows: ({primary, secondary, shift, alt}, n) =>
-    // Windows order: Win+Ctrl+Alt+Shift+(key)
-    (secondary ? n.windows + '+' : '') +
+  windows: ({primary, shift, alt}, n) =>
+    // Windows order: Ctrl+Alt+Shift+(key)
     (primary ? n.control + '+' : '') +
     (alt ? n.alt + '+' : '') +
     (shift ? n.shift + '+' : ''),
-  other: ({primary, secondary, shift, alt}, n) =>
-    // Linux order: Super+Ctrl+Alt+Shift+(key)
-    (secondary ? n.super + '+' : '') +
+  other: ({primary, shift, alt}, n) =>
+    // Linux order: Ctrl+Alt+Shift+(key)
     (primary ? n.control + '+' : '') +
     (alt ? n.alt + '+' : '') +
     (shift ? n.shift + '+' : ''),

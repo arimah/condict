@@ -1290,20 +1290,6 @@ key-modifier-shift = Shift
 # The Alt modifier key. Windows and Linux; macOS uses symbols for modifiers.
 key-modifier-alt = Alt
 
-# The Windows key, which opens the Start menu, among other things. Windows only.
-#
-# Linux equivalent: key-modifier-super
-#
-# macOS uses symbols for modifiers.
-key-modifier-windows = Win
-
-# The Super key, which performs various OS-level tasks. Linux only.
-#
-# Windows equivalent: key-modifier-windows
-#
-# macOS uses symbols for modifiers.
-key-modifier-super = Super
-
 # Translates the name of a keyboard key to a localized form. The key name is either a "raw" key value, that is a letter or several typed by the user such as "v", "3", "!", or a special key name. This message should be used only to translate special key names.
 #
 # Full list of key names: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
