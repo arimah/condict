@@ -11,10 +11,10 @@ import initMainWindow from './main-window';
 import ipc from './ipc';
 
 const main = (): void => {
-  const translations = initTranslations();
-
-  const config = initConfig(translations.availableLocales);
+  const config = initConfig();
   const {logger} = config;
+
+  const translations = initTranslations(logger);
 
   const server = initServer(
     logger,
@@ -54,12 +54,16 @@ const main = (): void => {
     mainWindow.send('user-theme-change');
   };
 
+  translations.onLocaleAdded = locale => {
+    mainWindow.send('locale-added', locale);
+  };
+
   translations.onLocaleUpdated = locale => {
     mainWindow.send('locale-updated', locale);
   };
 
-  translations.onAvailableLocalesChanged = locales => {
-    mainWindow.send('available-locales-changed', locales);
+  translations.onLocaleDeleted = localeName => {
+    mainWindow.send('locale-deleted', localeName);
   };
 
   updater.onStatusChanged = status => {
@@ -85,22 +89,15 @@ const main = (): void => {
   ipc.handle('get-initial-state', async () => {
     const cfg = config.current;
 
-    const defaultBundle = await translations.loadBundle(DefaultLocale);
-    const currentBundle = await translations.loadBundle(cfg.locale);
+    const availableLocales = await translations.getAvailableLocales();
     const currentUserTheme = await config.loadUserTheme();
 
     return {
       config: cfg,
       systemTheme: nativeTheme.shouldUseDarkColors ? 'dark' : 'light',
-      availableLocales: translations.availableLocales,
-      defaultLocale: {
-        locale: DefaultLocale,
-        source: defaultBundle,
-      },
-      currentLocale: {
-        locale: cfg.locale,
-        source: currentBundle,
-      },
+      availableLocales,
+      defaultLocale: DefaultLocale,
+      currentLocale: cfg.locale,
       lastSession: session.current,
       userTheme: currentUserTheme,
     };

@@ -14,9 +14,8 @@ type Props = {
   initialConfig: AppConfig;
   initialSystemTheme: ThemeName;
   initialUserTheme: UserTheme | null;
-  initialLocale: Locale;
-  initialDefaultLocale: Locale;
-  initialAvailableLocales: readonly string[];
+  initialAvailableLocales: readonly Locale[];
+  defaultLocale: string;
   lastSession: SavedSession | null;
 };
 
@@ -25,9 +24,8 @@ const App = (props: Props): JSX.Element => {
     initialConfig,
     initialSystemTheme,
     initialUserTheme,
-    initialDefaultLocale,
-    initialLocale,
     initialAvailableLocales,
+    defaultLocale,
     lastSession,
   } = props;
 
@@ -36,8 +34,6 @@ const App = (props: Props): JSX.Element => {
   const [config, setConfig] = useState(initialConfig);
   const [systemTheme, setSystemTheme] = useState(initialSystemTheme);
   const [userTheme, setUserTheme] = useState(initialUserTheme);
-  const [defaultLocale, setDefaultLocale] = useState(initialDefaultLocale);
-  const [currentLocale, setCurrentLocale] = useState(initialLocale);
   const [availableLocales, setAvailableLocales] = useState(
     initialAvailableLocales
   );
@@ -61,23 +57,6 @@ const App = (props: Props): JSX.Element => {
       });
     });
 
-    const defaultLocaleName = defaultLocale.locale;
-    ipc.on('locale-updated', (_, localeName) => {
-      void ipc.invoke('get-locale', localeName).then(locale => {
-        if (defaultLocaleName === locale.locale) {
-          setDefaultLocale(locale);
-        }
-
-        if (localeConfigRef.current === locale.locale) {
-          setCurrentLocale(locale);
-        }
-      });
-    });
-
-    ipc.on('available-locales-changed', (_, locales) => {
-      setAvailableLocales(locales);
-    });
-
     void ipc.invoke('window-ready').then(() => {
       setLoading(false);
     });
@@ -90,30 +69,14 @@ const App = (props: Props): JSX.Element => {
     }
   }, [zoomFactor]);
 
-  const localeConfigRef = useRef(config.locale);
-  const localeRef = useRef(currentLocale);
-  localeConfigRef.current = config.locale;
-  localeRef.current = currentLocale;
-
-  useEffect(() => {
-    if (localeRef.current?.locale !== config.locale) {
-      void ipc.invoke('get-locale', config.locale).then(nextLocale => {
-        if (localeConfigRef.current === nextLocale.locale) {
-          setCurrentLocale(nextLocale);
-        }
-      });
-    }
-  }, [config.locale]);
-
   return (
     <AppContexts
       config={config}
       initialConfig={initialConfig}
       systemTheme={systemTheme}
       userTheme={userTheme}
-      currentLocale={currentLocale}
       defaultLocale={defaultLocale}
-      availableLocales={availableLocales}
+      initialLocales={availableLocales}
       lastSession={lastSession}
       onUpdateConfig={updateConfig}
     >
@@ -131,9 +94,8 @@ void ipc.invoke('get-initial-state').then(state => {
       initialConfig={state.config}
       initialSystemTheme={state.systemTheme}
       initialUserTheme={state.userTheme}
-      initialLocale={state.currentLocale}
-      initialDefaultLocale={state.defaultLocale}
       initialAvailableLocales={state.availableLocales}
+      defaultLocale={state.defaultLocale}
       lastSession={state.lastSession}
     />,
     document.getElementById('root')

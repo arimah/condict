@@ -164,7 +164,7 @@ export interface ExecuteError {
 /** A translation bundle for a specific locale. */
 export interface Locale {
   /** The locale name, as an ISO language code. */
-  readonly locale: string;
+  readonly name: string;
   /** The locale's raw translation bundle. */
   readonly source: string;
 }

@@ -29,9 +29,8 @@ export type Props = {
   initialConfig: AppConfig;
   systemTheme: ThemeName;
   userTheme: UserTheme | null;
-  currentLocale: Locale;
-  defaultLocale: Locale;
-  availableLocales: readonly string[];
+  defaultLocale: string;
+  initialLocales: readonly Locale[];
   lastSession: SavedSession | null;
   onUpdateConfig: (recipe: ConfigRecipe) => void;
   children: ReactNode;
@@ -43,9 +42,8 @@ const AppContexts = (props: Props): JSX.Element => {
     initialConfig,
     systemTheme,
     userTheme,
-    currentLocale,
     defaultLocale,
-    availableLocales,
+    initialLocales,
     lastSession,
     onUpdateConfig,
     children,
@@ -57,9 +55,9 @@ const AppContexts = (props: Props): JSX.Element => {
       onUpdateConfig={onUpdateConfig}
     >
       <TranslationProvider
-        currentLocale={currentLocale}
+        currentLocale={config.locale}
         defaultLocale={defaultLocale}
-        availableLocales={availableLocales}
+        initialLocales={initialLocales}
       >
         <AppThemeProvider
           appearance={config.appearance}

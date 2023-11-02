@@ -37,13 +37,21 @@ export type MainChannels = {
   'user-theme-change': void;
 
   /**
-   * Informs the renderer that a locale source file has changed. The renderer
-   * must request the updated locale by invoking `get-locale`.
+   * Informs the renderer that a locale source file has changed. The message
+   * includes the full source text.
    */
-  'locale-updated': string;
+  'locale-updated': Locale;
 
-  /** Informs the renderer that the set of available locales has changed. */
-  'available-locales-changed': readonly string[];
+  /**
+   * Informs the renderer that a locale has been added. The message includes the
+   * full source text.
+   */
+  'locale-added': Locale;
+
+  /**
+   * Informs the renderer that a locale has been deleted.
+   */
+  'locale-deleted': string;
 
   /** Informs the renderer that the update status has changed. */
   'update-status-changed': UpdateStatus;
@@ -148,12 +156,10 @@ export type RendererChannels = {
     config: AppConfig;
     /** The system theme (light/dark). */
     systemTheme: ThemeName;
-    /** The available translation locales (as ISO language codes). */
-    availableLocales: readonly string[];
-    /** The default/fallback locale. */
-    defaultLocale: Locale;
-    /** The user's selected locale. */
-    currentLocale: Locale;
+    /** The initially available translation locales. */
+    availableLocales: readonly Locale[];
+    /** The default/fallback locale, as an ISO language code. */
+    defaultLocale: string;
     /** The previous session, if there is one. */
     lastSession: SavedSession | null;
     /** The current user theme, or null if none is loaded. */

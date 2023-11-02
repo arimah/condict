@@ -3,22 +3,31 @@ import path from 'path';
 
 import {watch} from 'chokidar';
 
+import {Logger} from '@condict/server';
+
 import {getAppRootDir} from './paths';
 import ipc from './ipc';
 
+import {Locale} from '../types';
+
 export interface Translations {
-  /** The currently available locales. */
-  readonly availableLocales: readonly string[];
+  /** The names of the currently available locales. */
+  getAvailableLocales(): Promise<readonly Locale[]>;
+  /**
+   * A function that is called when a new locale is added.
+   * @param locale The new locale.
+   */
+  onLocaleAdded: LocaleUpdatedCallback | null;
   /**
    * A function that is called when the source file of a locale is changed.
-   * @param locale The name of the locale that has changed.
+   * @param locale The locale that has changed.
    */
   onLocaleUpdated: LocaleUpdatedCallback | null;
   /**
-   * A function that is called when the set of available locales has changed.
-   * @param locales Array of all locales that are now available.
+   * A function that is called when a locale is deleted.
+   * @param locale The name of the locale that was deleted.
    */
-  onAvailableLocalesChanged: AvailableLocalesChangedCallback | null;
+  onLocaleDeleted: LocaleDeletedCallback | null;
   /**
    * Loads the source text of the locale with the specified name.
    * @param locale The locale to load.
@@ -29,10 +38,12 @@ export interface Translations {
   loadBundle(locale: string): Promise<string>;
 }
 
-export type LocaleUpdatedCallback = (locale: string) => void;
+export type LocaleUpdatedCallback = (locale: Locale) => void;
+
+export type LocaleDeletedCallback = (locale: string) => void;
 
 export type AvailableLocalesChangedCallback = (
-  locales: readonly string[]
+  locales: readonly Locale[]
 ) => void;
 
 export const DefaultLocale = 'en';
@@ -42,26 +53,18 @@ const getLocaleName = (filePath: string): string => {
   return fileName.replace(/\.ftl$/, '');
 };
 
-const initTranslations = (): Translations => {
+const initTranslations = (logger: Logger): Translations => {
   const translationsDir = path.join(getAppRootDir(), 'locale');
 
-  const availableLocales =
+  const availableLocaleNames =
     fs.readdirSync(translationsDir, {withFileTypes: true})
       .filter(f => f.isFile() && f.name.endsWith('.ftl'))
       .map(f => getLocaleName(f.name))
       .sort();
 
-  // Cache of loaded bundles
-  const loaded = new Map<string, string>();
-
   const loadBundle = (locale: string): Promise<string> => {
-    if (!availableLocales.includes(locale)) {
+    if (!availableLocaleNames.includes(locale)) {
       return Promise.reject(new Error(`Unknown locale: ${locale}`));
-    }
-
-    const text = loaded.get(locale);
-    if (text !== undefined) {
-      return Promise.resolve(text);
     }
 
     const fileName = path.join(translationsDir, `${locale}.ftl`);
@@ -70,19 +73,15 @@ const initTranslations = (): Translations => {
         if (err) {
           reject(err);
         } else {
-          loaded.set(locale, text);
           resolve(text);
         }
       });
     });
   };
 
-  ipc.handle('get-locale', (_e, locale) =>
-    loadBundle(locale).then(source => ({locale, source}))
-  );
-
+  let onLocaleAdded: LocaleUpdatedCallback | null = null;
   let onLocaleUpdated: LocaleUpdatedCallback | null = null;
-  let onAvailableLocalesChanged: AvailableLocalesChangedCallback | null = null;
+  let onLocaleDeleted: LocaleDeletedCallback | null = null;
 
   // Chokidar globs must use / instead of \, so we need to normalize on Windows.
   const watcher = watch(`${translationsDir.replace(/\\/g, '/')}/*.ftl`, {
@@ -93,50 +92,67 @@ const initTranslations = (): Translations => {
   });
   watcher.on('add', file => {
     const locale = getLocaleName(file);
-    if (!availableLocales.includes(locale)) {
-      availableLocales.push(locale);
-      availableLocales.sort();
-      onAvailableLocalesChanged?.(availableLocales);
-    } else {
-      // The locale might have been loaded, then deleted, then readded. In this
-      // case we emit it as a change to the locale rather than an addition.
-      loaded.delete(locale); // Invalide cached contents
-      onLocaleUpdated?.(locale);
+    if (!availableLocaleNames.includes(locale)) {
+      availableLocaleNames.push(locale);
+      availableLocaleNames.sort();
     }
+
+    // The locale might have been loaded, then deleted, then readded. In this
+    // case we emit it as a change to the locale rather than an addition.
+    loadBundle(locale).then(
+      source => {
+        onLocaleAdded?.({name: locale, source});
+      }, err => {
+        logger.error(`Error loading locale '${locale}':`, err);
+      }
+    );
   });
   watcher.on('change', file => {
     const locale = getLocaleName(file);
-    if (!availableLocales.includes(locale)) {
+    if (!availableLocaleNames.includes(locale)) {
       // Change event for a locale we haven't seen before? Ignore it.
       return;
     }
-    loaded.delete(locale);
-    onLocaleUpdated?.(locale);
+
+    loadBundle(locale).then(
+      source => {
+        onLocaleUpdated?.({name: locale, source});
+      },
+      err => {
+        logger.error(`Error loading locale '${locale}':`, err);
+      }
+    );
   });
   watcher.on('unlink', file => {
     const locale = getLocaleName(file);
-    if (!availableLocales.includes(locale)) {
+    if (!availableLocaleNames.includes(locale)) {
       // Unknown locale deleted. Ignore it.
       return;
     }
-    // Here we do a bit of special handling. If the locale has already been
-    // loaded by the app, we let the app keep using it. Since we have the file
-    // contents, there's no point in invalidating the app. This gives us a bit
-    // of resilience against delete-then-recreate flows. If the locale is *not*
-    // loaded, however, we can safely forget it.
-    if (!loaded.has(locale)) {
-      const index = availableLocales.indexOf(locale);
-      availableLocales.splice(index, 1);
-      onAvailableLocalesChanged?.(availableLocales);
-    }
+
+    const index = availableLocaleNames.indexOf(locale);
+    availableLocaleNames.splice(index, 1);
+    onLocaleDeleted?.(locale);
   });
 
   return {
-    get availableLocales(): readonly string[] {
-      return availableLocales;
+    async getAvailableLocales(): Promise<readonly Locale[]> {
+      return await Promise.all(availableLocaleNames.map(
+        async (locale: string): Promise<Locale> => {
+          const source = await loadBundle(locale);
+          return {name: locale, source};
+        }
+      ));
     },
 
     loadBundle,
+
+    get onLocaleAdded(): LocaleUpdatedCallback | null {
+      return onLocaleAdded;
+    },
+    set onLocaleAdded(value: LocaleUpdatedCallback | null) {
+      onLocaleAdded = value;
+    },
 
     get onLocaleUpdated(): LocaleUpdatedCallback | null {
       return onLocaleUpdated;
@@ -145,13 +161,11 @@ const initTranslations = (): Translations => {
       onLocaleUpdated = value;
     },
 
-    get onAvailableLocalesChanged(): AvailableLocalesChangedCallback | null {
-      return onAvailableLocalesChanged;
+    get onLocaleDeleted(): LocaleDeletedCallback | null {
+      return onLocaleDeleted;
     },
-    set onAvailableLocalesChanged(
-      value: AvailableLocalesChangedCallback | null
-    ) {
-      onAvailableLocalesChanged = value;
+    set onLocaleDeleted(value: LocaleDeletedCallback |  null) {
+      onLocaleDeleted = value;
     },
   };
 };

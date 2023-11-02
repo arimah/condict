@@ -40,9 +40,9 @@ export interface ConfigInstance {
   onUserThemeUpdated: UpdatedCallback | null;
 }
 
-const initConfig = (availableLocales: readonly string[]): ConfigInstance => {
+const initConfig = (): ConfigInstance => {
   let errors: string[] = [];
-  let config: AppConfig = loadConfig(ConfigFile, availableLocales, errors);
+  let config: AppConfig = loadConfig(ConfigFile, errors);
 
   const logger = createLogger(config.log);
   if (errors.length > 0) {
@@ -99,7 +99,6 @@ export default initConfig;
 
 const loadConfig = (
   fileName: string,
-  availableLocales: readonly string[],
   errors: string[]
 ): AppConfig => {
   let configText: string;
@@ -123,21 +122,17 @@ const loadConfig = (
     return DefaultConfig;
   }
 
-  return validateConfig(config, availableLocales, errors);
+  return validateConfig(config, errors);
 };
 
-const validateConfig = (
-  value: unknown,
-  availableLocales: readonly string[],
-  errors: string[]
-): AppConfig => {
+const validateConfig = (value: unknown, errors: string[]): AppConfig => {
   if (!isPlainObject(value)) {
     errors.push('Config is not an object');
     return DefaultConfig;
   }
 
   const appearance = validateAppearanceConfig(value.appearance, errors);
-  const locale = validateLocale(value.locale, availableLocales, errors);
+  const locale = validateLocale(value.locale, errors);
   const updates = validateUpdatePolicy(value.updates, errors);
   const log = validateLoggerConfig(value.log, errors);
   const server = validateServerConfig(value.server, errors);
@@ -177,17 +172,9 @@ const validateAppearanceConfig = (
   };
 };
 
-const validateLocale = (
-  value: unknown,
-  availableLocales: readonly string[],
-  errors: string[]
-): string => {
+const validateLocale = (value: unknown, errors: string[]): string => {
   if (typeof value !== 'string') {
     errors.push(`locale: Config is not a string: ${value}`);
-    return DefaultConfig.locale;
-  }
-  if (!availableLocales.includes(value)) {
-    errors.push(`locale: invalid value: ${value}`);
     return DefaultConfig.locale;
   }
   return value;

@@ -1,6 +1,13 @@
-import React, {ReactNode, useMemo, useContext, useEffect} from 'react';
+import React, {
+  ReactNode,
+  useState,
+  useMemo,
+  useContext,
+  useEffect,
+} from 'react';
 import {FluentBundle, FluentResource} from '@fluent/bundle';
 import {LocalizationProvider, ReactLocalization} from '@fluent/react';
+import produce from 'immer';
 
 import {
   WritingDirection,
@@ -10,11 +17,12 @@ import {
 } from '@condict/ui';
 
 import {Locale} from '../../types';
+import ipc from '../ipc';
 
 export type Props = {
-  currentLocale: Locale;
-  defaultLocale: Locale;
-  availableLocales: readonly string[];
+  currentLocale: string;
+  defaultLocale: string;
+  initialLocales: readonly Locale[];
   children: ReactNode;
 };
 
@@ -23,22 +31,61 @@ type ShortcutFormatProps = Omit<ShortcutFormatProviderProps, 'children'>;
 const AvailableLocalesContext = React.createContext<readonly string[]>([]);
 
 const TranslationProvider = (props: Props): JSX.Element => {
-  const {defaultLocale, currentLocale, availableLocales, children} = props;
+  const {defaultLocale, currentLocale, initialLocales, children} = props;
 
-  const defaultBundle = useMemo(
-    () => createBundle(defaultLocale),
-    [defaultLocale]
+  const [bundles, setBundles] = useState(() =>
+    new Map(initialLocales.map(loc =>
+      [loc.name, createBundle(loc)]
+    ))
   );
 
-  const currentBundle = useMemo(
-    () => createBundle(currentLocale),
-    [currentLocale]
+  const availableLocales = useMemo<readonly string[]>(
+    () => Array.from(bundles.keys()),
+    [bundles]
   );
 
   const localization = useMemo(
-    () => new ReactLocalization([currentBundle, defaultBundle]),
-    [currentBundle, defaultBundle]
+    () => createLocalization(bundles, currentLocale, defaultLocale),
+    [bundles, currentLocale, defaultLocale]
   );
+
+  useEffect(() => {
+    ipc.on('locale-added', (_, locale) => {
+      setBundles(produce(draft => {
+        if (draft.has(locale.name)) {
+          console.warn(
+            `Received 'locale-added' event for already known locale: ${
+              locale.name
+            }`
+          );
+        }
+        draft.set(locale.name, createBundle(locale));
+      }));
+    });
+
+    ipc.on('locale-updated', (_, locale) => {
+      setBundles(produce(draft => {
+        if (!draft.has(locale.name)) {
+          console.warn(
+            `Received 'locale-updated' event for unknown locale: ${
+              locale.name
+            }`
+          );
+        }
+        draft.set(locale.name, createBundle(locale));
+      }));
+    });
+
+    ipc.on('locale-deleted', (_, name) => {
+      setBundles(produce(draft => {
+        if (!draft.delete(name)) {
+          console.warn(
+            `Received 'locale-deleted' event for unknown locale: ${name}`
+          );
+        }
+      }));
+    });
+  }, []);
 
   const dir: WritingDirection =
     localization.getString('dir') === 'rtl'
@@ -46,7 +93,7 @@ const TranslationProvider = (props: Props): JSX.Element => {
       : 'ltr';
   useEffect(() => {
     const html = document.documentElement;
-    html.setAttribute('lang', currentLocale.locale);
+    html.setAttribute('lang', currentLocale);
     html.setAttribute('dir', dir);
   }, [currentLocale, dir]);
 
@@ -75,7 +122,7 @@ const TranslationProvider = (props: Props): JSX.Element => {
 export default TranslationProvider;
 
 const createBundle = (locale: Locale): FluentBundle => {
-  const {locale: localeName, source} = locale;
+  const {name: localeName, source} = locale;
 
   const resource = new FluentResource(source);
 
@@ -91,6 +138,41 @@ const createBundle = (locale: Locale): FluentBundle => {
   }
 
   return bundle;
+};
+
+const createLocalization = (
+  allBundles: Map<string, FluentBundle>,
+  currentLocale: string,
+  defaultLocale: string
+): ReactLocalization => {
+  const selectedBundles: FluentBundle[] = [];
+
+  const currentBundle = allBundles.get(currentLocale);
+  if (currentBundle) {
+    selectBundle(selectedBundles, currentBundle);
+  } else {
+    console.warn(`Could not resolve current locale: ${currentLocale}`);
+  }
+
+  const defaultBundle = allBundles.get(defaultLocale);
+  if (defaultBundle) {
+    selectBundle(selectedBundles, defaultBundle);
+  } else {
+    console.error(`Could not resolve default locale: ${defaultLocale}`);
+  }
+
+  return new ReactLocalization(selectedBundles);
+};
+
+const selectBundle = (
+  selected: FluentBundle[],
+  bundle: FluentBundle
+): boolean => {
+  if (!selected.includes(bundle)) {
+    selected.push(bundle);
+    return true;
+  }
+  return false;
 };
 
 export const useAvailableLocales = (): readonly string[] =>
