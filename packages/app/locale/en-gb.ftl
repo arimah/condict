@@ -1,6 +1,7 @@
 ### This is a subtype of en.ftl. Only define messages where the translation differs from those in en.ftl.
 ### Note: Date formats differ between en and en-GB. Messages with datetimes must be redefined here.
-### For the most part, this file is identical to en-CA.
+### Canadian English uses British spellings; synchronize with en-CA as necessary.
+extends = en
 
 settings-accent-color-label = Accent colour
 

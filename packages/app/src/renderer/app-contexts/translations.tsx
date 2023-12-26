@@ -26,6 +26,9 @@ export type Props = {
   children: ReactNode;
 };
 
+const BundleParentKey = 'extends';
+const BundleWritingDirectionKey = 'dir';
+
 type ShortcutFormatProps = Omit<ShortcutFormatProviderProps, 'children'>;
 
 const AvailableLocalesContext = React.createContext<readonly string[]>([]);
@@ -88,7 +91,7 @@ const TranslationProvider = (props: Props): JSX.Element => {
   }, []);
 
   const dir: WritingDirection =
-    localization.getString('dir') === 'rtl'
+    localization.getString(BundleWritingDirectionKey) === 'rtl'
       ? 'rtl'
       : 'ltr';
   useEffect(() => {
@@ -145,23 +148,26 @@ const createLocalization = (
   currentLocale: string,
   defaultLocale: string
 ): ReactLocalization => {
-  const selectedBundles: FluentBundle[] = [];
+  const selected: FluentBundle[] = [];
 
   const currentBundle = allBundles.get(currentLocale);
   if (currentBundle) {
-    selectBundle(selectedBundles, currentBundle);
+    selectBundle(selected, currentBundle);
+    selectAncestors(allBundles, selected, currentLocale, currentBundle);
   } else {
     console.warn(`Could not resolve current locale: ${currentLocale}`);
   }
 
+  // Note: The default bundle cannot have a parent locale, hence we never even
+  // attempt to process it here.
   const defaultBundle = allBundles.get(defaultLocale);
   if (defaultBundle) {
-    selectBundle(selectedBundles, defaultBundle);
+    selectBundle(selected, defaultBundle);
   } else {
     console.error(`Could not resolve default locale: ${defaultLocale}`);
   }
 
-  return new ReactLocalization(selectedBundles);
+  return new ReactLocalization(selected);
 };
 
 const selectBundle = (
@@ -173,6 +179,62 @@ const selectBundle = (
     return true;
   }
   return false;
+};
+
+const selectAncestors = (
+  allBundles: Map<string, FluentBundle>,
+  selected: FluentBundle[],
+  currentLocale: string,
+  currentBundle: FluentBundle
+): void => {
+  const inheritanceChain = [currentLocale];
+  let parentLocale = getParentLocale(currentBundle);
+  while (parentLocale) {
+    const parentBundle = allBundles.get(parentLocale);
+    if (!parentBundle) {
+      // The most recent child locale, i.e. the locale we're attempting to
+      // resolve a parent for.
+      const childLocale = inheritanceChain.at(-1);
+      console.warn(
+        `Could not resolve locale: ${
+          parentLocale
+        } (required by '${
+          childLocale
+        }')`
+      );
+      break;
+    }
+
+    // Add it to the inheritance chain now so it's clearer where the loop is
+    // if there is one. The message in case of a loop will look like this:
+    //
+    //   aa < bb < cc < aa
+    //
+    // as opposed to:
+    //
+    //   aa < bb < cc
+    //
+    // In the former case, it is hopefully more obvious that 'cc' extends 'aa'.
+    inheritanceChain.push(parentLocale);
+
+    if (!selectBundle(selected, parentBundle)) {
+      console.warn(
+        `Locale ${parentLocale} extends itself: ${
+          inheritanceChain.join(' < ')
+      }`);
+      break;
+    }
+
+    parentLocale = getParentLocale(parentBundle);
+  }
+};
+
+const getParentLocale = (bundle: FluentBundle): string | null => {
+  const parent = bundle.getMessage(BundleParentKey);
+  if (!parent || !parent.value) {
+    return null;
+  }
+  return bundle.formatPattern(parent.value);
 };
 
 export const useAvailableLocales = (): readonly string[] =>
