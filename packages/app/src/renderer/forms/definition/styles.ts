@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
-import {Checkbox, TextInput, Toolbar} from '@condict/ui';
-
-import {NakedButton} from '../../ui';
+import {Button, Checkbox, TextInput, Toolbar} from '@condict/ui';
 
 export const TableItemGap = 16;
 
@@ -131,7 +129,9 @@ export const StemStatus = styled.span`
   flex: none;
 `;
 
-export const StemAction = styled(NakedButton)<{
+export const StemAction = styled(Button).attrs({
+  intent: 'naked',
+})<{
   $usesTerm: boolean;
 }>`
   display: block;

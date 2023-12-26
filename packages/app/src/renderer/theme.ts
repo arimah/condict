@@ -3,17 +3,6 @@ import {Gray, Shade, ThemeVariables} from '@condict/ui';
 import {ColorName} from '../types';
 
 export const lightThemeVars = (accent: Shade): ThemeVariables => ({
-  'button-naked-fg': 'var(--fg)',
-  'button-naked-fg-disabled': 'var(--fg-disabled)',
-  'button-naked-bg': 'var(--bg)',
-  'button-naked-bg-hover': 'var(--bg-hover)',
-  'button-naked-bg-pressed': 'var(--bg-pressed)',
-  'button-naked-bg-disabled': 'var(--bg)',
-  'button-naked-border': 'var(--button-naked-bg)',
-  'button-naked-border-hover': 'var(--button-naked-bg-hover)',
-  'button-naked-border-pressed': 'var(--button-naked-bg-pressed)',
-  'button-naked-border-disabled': 'var(--button-naked-bg-disabled)',
-
   'slider-tick-fg': 'var(--fg)',
   'slider-tick-fg-selected': 'var(--fg-accent)',
   'slider-tick-bg': Gray.palette[2],
@@ -36,17 +25,6 @@ export const lightThemeVars = (accent: Shade): ThemeVariables => ({
 });
 
 export const darkThemeVars = (accent: Shade): ThemeVariables => ({
-  'button-naked-fg': 'var(--fg)',
-  'button-naked-fg-disabled': 'var(--fg-disabled)',
-  'button-naked-bg': 'var(--bg)',
-  'button-naked-bg-hover': 'var(--bg-hover)',
-  'button-naked-bg-pressed': 'var(--bg-pressed)',
-  'button-naked-bg-disabled': 'var(--bg)',
-  'button-naked-border': 'var(--button-naked-bg)',
-  'button-naked-border-hover': 'var(--button-naked-bg-hover)',
-  'button-naked-border-pressed': 'var(--button-naked-bg-pressed)',
-  'button-naked-border-disabled': 'var(--button-naked-bg-disabled)',
-
   'slider-tick-fg': 'var(--fg)',
   'slider-tick-fg-selected': 'var(--fg-accent)',
   'slider-tick-bg': Gray.palette[8],

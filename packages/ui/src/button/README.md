@@ -45,7 +45,7 @@ import {Button, LinkButton} from '@condict/ui';
 | --- | --- | --- | --- |
 | `className` | string | `''` | One or more class names that are forwarded to the underlying element. |
 | `disabled` | boolean | `false` | If true, the button is disabled. This prop has no effect on link buttons. If the button has a [command][], the command can also disable the button. |
-| `intent` | one of `'general'`, `'accent'`, `'bold'`, `'danger'` | `'general'` | Determines what intent styling to give the button. |
+| `intent` | one of `'general'`, `'accent'`, `'bold'`, `'danger'`, `'naked'` | `'general'` | Determines the button's colour, which helps communicate its intent. The `naked` intent causes a button to blend into the background; use this extremely sparingly, as it is often hard to identify these as buttons outside a narrow range of contexts. |
 | `slim` | boolean | `false` | If true, reduce the button's padding, to make it fit better alongside text inputs, selects, and similar. |
 | `type` | one of `'button'`, `'submit'` | `'button'` | Determines the button's type. Submit buttons are used in forms. This prop has no effect on link buttons. |
 | `command` | string | `null` | Attaches the named [command][] to the button. The command overrides the `disabled` and `onClick` props. |

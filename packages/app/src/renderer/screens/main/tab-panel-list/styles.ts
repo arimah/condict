@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
-import {FlowContent, NakedButton} from '../../../ui';
+import {Button} from '@condict/ui';
+
+import {FlowContent} from '../../../ui';
 
 export const TabPanel = styled.div.attrs({
   role: 'tabpanel',
@@ -28,7 +30,9 @@ export const BackButtonColumn = styled.div`
   top: 0;
 `;
 
-export const BackButton = styled(NakedButton)`
+export const BackButton = styled(Button).attrs({
+  intent: 'naked',
+})`
   padding: 2px;
 
   > .mdi-icon.mdi-icon {

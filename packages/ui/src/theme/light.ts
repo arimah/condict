@@ -81,6 +81,17 @@ export const lightThemeVars = (
   'button-danger-border-pressed': 'var(--button-danger-bg-pressed)',
   'button-danger-border-disabled': 'var(--button-danger-bg-disabled)',
 
+  'button-naked-fg': 'var(--fg)',
+  'button-naked-fg-disabled': 'var(--fg-disabled)',
+  'button-naked-bg': 'var(--bg)',
+  'button-naked-bg-hover': 'var(--bg-hover)',
+  'button-naked-bg-pressed': 'var(--bg-pressed)',
+  'button-naked-bg-disabled': 'var(--bg)',
+  'button-naked-border': 'var(--button-naked-bg)',
+  'button-naked-border-hover': 'var(--button-naked-bg-hover)',
+  'button-naked-border-pressed': 'var(--button-naked-bg-pressed)',
+  'button-naked-border-disabled': 'var(--button-naked-bg-disabled)',
+
   'input-fg': 'var(--fg)',
   'input-fg-disabled': 'var(--fg-disabled)',
   'input-bg': 'var(--bg)',

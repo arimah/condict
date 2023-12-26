@@ -1,6 +1,11 @@
 import styled, {css} from 'styled-components';
 
-export type ButtonIntent = 'accent' | 'bold' | 'danger' | 'general';
+export type ButtonIntent =
+  | 'general'
+  | 'accent'
+  | 'bold'
+  | 'danger'
+  | 'naked';
 
 export const ButtonStyle = css<{
   $slim: boolean;

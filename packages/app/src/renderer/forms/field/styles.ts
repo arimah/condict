@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
-import {Checkbox} from '@condict/ui';
+import {Button, Checkbox} from '@condict/ui';
 
-import {NakedButton} from '../../ui';
 import {TextField} from '../../form-fields';
 
 export const PartOfSpeechList = styled.div`
@@ -49,9 +48,9 @@ export const ListValueTextField = styled(TextField)`
   margin-block: 0;
 `;
 
-export const ListValueDeleteButton = styled(NakedButton)`
-  display: block;
-  flex: none;
+export const ListValueDeleteButton = styled(Button).attrs({
+  intent: 'naked',
+})`
   margin-block: -4px;
   padding: 1px 2px;
 

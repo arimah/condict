@@ -36,6 +36,7 @@ const Intents: readonly SelectOption<ButtonIntent>[] = [
   {value: 'accent', name: 'accent'},
   {value: 'bold', name: 'bold'},
   {value: 'danger', name: 'danger'},
+  {value: 'naked', name: 'naked'},
 ];
 
 const StorageKey = 'condict/ui/button';

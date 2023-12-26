@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
-import {CardGrid, NakedButton, Link} from '../../ui';
+import {Button} from '@condict/ui';
+
+import {CardGrid, Link} from '../../ui';
 
 export const SubmitError = styled.p`
   color: var(--fg-danger);
@@ -20,7 +22,9 @@ export const TableCard = styled.div`
   box-shadow: var(--shadow-elevation-1);
 `;
 
-export const TableButton = styled(NakedButton)`
+export const TableButton = styled(Button).attrs({
+  intent: 'naked',
+})`
   flex: 1 1 auto;
   justify-content: start;
   border-start-end-radius: 0;
@@ -101,7 +105,9 @@ export const InflectedFormInput = styled.div`
   }
 `;
 
-export const InflectedFormAction = styled(NakedButton)<{
+export const InflectedFormAction = styled(Button).attrs({
+  intent: 'naked',
+})<{
   $hasCustomName: boolean;
 }>`
   display: block;

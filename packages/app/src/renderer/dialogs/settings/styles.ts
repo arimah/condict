@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
-import {BodyText} from '@condict/ui';
-
-import {NakedButton} from '../../ui';
+import {Button, BodyText} from '@condict/ui';
 
 import StandardDialog from '../standard-dialog';
 
@@ -117,7 +115,9 @@ export const SectionTitle = styled.h2<{
   grid-column: 2;
 `;
 
-export const CloseButton = styled(NakedButton)`
+export const CloseButton = styled(Button).attrs({
+  intent: 'naked',
+})`
   padding: 6px;
   position: absolute;
   top: 8px;

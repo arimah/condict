@@ -98,19 +98,6 @@ export const Secondary = styled.span`
   opacity: 0.7;
 `;
 
-export const NakedButton = styled(Button)`
-  --button-fg: var(--button-naked-fg);
-  --button-fg-disabled: var(--button-naked-fg-disabled);
-  --button-bg: var(--button-naked-bg);
-  --button-bg-hover: var(--button-naked-bg-hover);
-  --button-bg-pressed: var(--button-naked-bg-pressed);
-  --button-bg-disabled: var(--button-naked-bg-disabled);
-  --button-border: var(--button-naked-border);
-  --button-border-hover: var(--button-naked-border-hover);
-  --button-border-pressed: var(--button-naked-border-pressed);
-  --button-border-disabled: var(--button-naked-border-disabled);
-`;
-
 export const Table = styled.table`
   border-collapse: collapse;
 
