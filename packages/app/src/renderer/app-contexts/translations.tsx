@@ -26,12 +26,20 @@ export type Props = {
   children: ReactNode;
 };
 
+export type AvailableLocale = {
+  readonly key: string;
+  readonly name: string;
+};
+
 const BundleParentKey = 'extends';
+const BundleDisplayNameKey = 'name';
 const BundleWritingDirectionKey = 'dir';
 
 type ShortcutFormatProps = Omit<ShortcutFormatProviderProps, 'children'>;
 
-const AvailableLocalesContext = React.createContext<readonly string[]>([]);
+const AvailableLocalesContext = React.createContext<readonly AvailableLocale[]>(
+  []
+);
 
 const TranslationProvider = (props: Props): JSX.Element => {
   const {defaultLocale, currentLocale, initialLocales, children} = props;
@@ -42,8 +50,11 @@ const TranslationProvider = (props: Props): JSX.Element => {
     ))
   );
 
-  const availableLocales = useMemo<readonly string[]>(
-    () => Array.from(bundles.keys()),
+  const availableLocales = useMemo<readonly AvailableLocale[]>(
+    () => Array.from(bundles, ([key, bundle]) => ({
+      key,
+      name: getDisplayName(bundle) ?? key,
+    })),
     [bundles]
   );
 
@@ -237,5 +248,13 @@ const getParentLocale = (bundle: FluentBundle): string | null => {
   return bundle.formatPattern(parent.value);
 };
 
-export const useAvailableLocales = (): readonly string[] =>
+const getDisplayName = (bundle: FluentBundle): string | null => {
+  const name = bundle.getMessage(BundleDisplayNameKey);
+  if (!name || !name.value) {
+    return null;
+  }
+  return bundle.formatPattern(name.value);
+};
+
+export const useAvailableLocales = (): readonly AvailableLocale[] =>
   useContext(AvailableLocalesContext);

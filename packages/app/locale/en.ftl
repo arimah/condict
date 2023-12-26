@@ -1,3 +1,4 @@
+name = English, United States
 # The language's writing direction. Valid values are:
 #
 # * ltr = Left-to-right
@@ -246,14 +247,6 @@ settings-motion-none-description = Completely disables all motion and animations
 #   <help-link>: Link to the page where the user can help translate Condict.
 settings-help-translate =
   Want Condict in your language? Found a translation error? You can <help-link>help translate Condict</help-link>.
-
-settings-locale-en = English, United States
-
-settings-locale-en-ca = English, Canada
-
-settings-locale-en-gb = English, United Kingdom
-
-settings-locale-sv = Svenska – Swedish
 
 ## Settings > Application updates section
 

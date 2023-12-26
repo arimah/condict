@@ -39,17 +39,15 @@ const Content: SectionComponent = React.forwardRef((_props, ref) => {
     </Localized>
 
     <S.OptionList>
-      {availableLocales.map(locale =>
+      {availableLocales.map(({key, name}) =>
         <Radio
-          key={locale}
+          key={key}
           name={`${id}-locale`}
-          value={locale}
-          checked={locale === config.locale}
+          value={key}
+          checked={key === config.locale}
           onChange={handleChangeLocale}
         >
-          <Localized id={`settings-locale-${locale}`}>
-            {locale}
-          </Localized>
+          {name}
         </Radio>
       )}
     </S.OptionList>

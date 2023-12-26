@@ -2,6 +2,7 @@
 ### Note: Date formats differ between en and en-CA. Messages with datetimes must be redefined here.
 ### Canadian English uses British spellings; synchronize with en-GB as necessary.
 extends = en
+name = English, Canada
 
 settings-accent-color-label = Accent colour
 
